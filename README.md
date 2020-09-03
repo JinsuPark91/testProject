@@ -1,68 +1,59 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+본 저장소는 TeeSpace Platform 에 대한 저장소 입니다.
 
-## Available Scripts
+## 초기 설정
 
-In the project directory, you can run:
+VSCode 기준으로 다음과 같은 Extension 을 설치 합니다.
+
+- prettier - Code formatter
+- ESLint
+
+nodejs와 yarn 패키지를 설치합니다. 다음과 같이 의존 라이브러리를 설치합니다.
+
+```
+$ yarn install
+```
+
+## 사용 가능한 명령어
 
 ### `yarn start`
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+리액트 앱을 개발모드로 실행합니다. <br />
+화면을 보기 위해서는 [http://localhost:3000](http://localhost:3000) 주소를 브라우저에서 접속하시면 됩니다.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+코드를 수정하면 자동으로 화면을 다시 그립니다. 또한, 콘솔에서 코드 컨벤션 오류를 확인할 수 있습니다.
 
 ### `yarn test`
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+테스트 러너를 실행합니다.<br />
+테스트 하는 방법은 [running tests](https://facebook.github.io/create-react-app/docs/running-tests) 을 참고하세요.
 
 ### `yarn build`
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+리액트 프로젝트를 운영환경으로 빌드 합니다. 최고의 성능을 낼 수 있도록 코드를 최적화 합니다.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+배포에 대한 자세한 내용은 [deployment](https://facebook.github.io/create-react-app/docs/deployment) 을 참고하세요.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 기여 방법
 
-### `yarn eject`
+### git commit 메세지 컨벤션
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+git commit 메세지 컨벤션은 [본 문서](https://www.conventionalcommits.org/ko/v1.0.0/)를 기반으로 작성될 예정입니다.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- feat(module): Message
+- refactor(module): Message
+- fix(module): Message
+- fix(module): #IMS-Number Message
+- docs: Message
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Merge Request
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+작성 예정
 
-## Learn More
+### Code Review
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+작성 예정
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 주의
 
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+- 깨진 코드 (빌드 되지 않거나 동작하지 않는 코드)를 develop 브랜치에 머지 되면 안됩니다.
+- pull 받으실 때는 꼭 rebase pull 을 사용하세요. (git pull --rebase origin)
