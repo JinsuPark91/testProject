@@ -2,6 +2,8 @@
   "name": "teespace-platform",
   "version": "0.1.0",
   "private": true,
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
   "dependencies": {
     "@craco/craco": "^5.6.4",
     "@testing-library/jest-dom": "^4.2.4",
@@ -22,6 +24,8 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
+    "start-lib": "rollup -c -w",
+    "build-lib": "rollup -c",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -40,6 +44,11 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@rollup/plugin-commonjs": "^15.0.0",
+    "@rollup/plugin-image": "^2.0.5",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.22.0",
@@ -47,6 +56,12 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-react-hooks": "^4.1.0",
-    "prettier": "^2.1.1"
+    "prettier": "^2.1.1",
+    "rollup": "^2.26.10",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-peer-deps-external": "^2.2.3",
+    "rollup-plugin-postcss": "^3.1.8",
+    "rollup-plugin-url": "^3.0.1",
+    "rollup-plugin-visualizer": "^4.1.1"
   }
 }

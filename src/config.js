@@ -1,18 +1,20 @@
 const Config = (() => {
-  let config = {
+  const config = {
     serviceURL: '',
     websocketURL: '',
   };
 
+  global.window.$config = config;
+
   return {
     setConfig(opts) {
-      config = { config, ...opts };
+      global.window.$config = { config, ...opts };
     },
     get serviceURL() {
-      return config.serviceURL;
+      return global.window.$config.serviceURL;
     },
     get websocketURL() {
-      return config.websocketURL;
+      return global.window.$config.websocketURL;
     },
   };
 })();

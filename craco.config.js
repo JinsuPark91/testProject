@@ -2,7 +2,15 @@ const CracoLessPlugin = require('craco-less');
 
 module.exports = {
   babel: {
-    plugins: [['@babel/plugin-proposal-decorators', { legacy: true }]],
+    plugins: [
+      ['@babel/plugin-proposal-decorators', { legacy: true }],
+      '@babel/plugin-proposal-class-properties',
+    ],
+  },
+  webpack: {
+    alias: {
+      react: require.resolve('react'),
+    },
   },
   plugins: [
     {
