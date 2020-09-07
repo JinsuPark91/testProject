@@ -13,6 +13,7 @@
     "autobind-decorator": "^2.4.0",
     "axios": "^0.20.0",
     "craco-less": "^1.17.0",
+    "crypto-js": "^4.0.0",
     "js-sha512": "^0.8.0",
     "mobx": "^5.15.6",
     "mobx-react": "^6.3.0",
