@@ -28,3 +28,20 @@ API.prototype = {
 };
 
 export default new API();
+
+/**
+ * API 요청에 대한 응답을 일관성있게 처리 하기 위한 DTO
+ */
+export class ApiResponse {
+  status = null; /* fulfilled | rejected */
+
+  data = null; /* fulfilled 상태 일 때 얻은 응답 데이터 */
+
+  error = null; /* rejected 상태 일 때 설정된 오류 데이터 */
+
+  constructor({ status = null, data = null, error = null }) {
+    this.status = status;
+    this.data = data;
+    this.error = error;
+  }
+}

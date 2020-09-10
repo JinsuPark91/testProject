@@ -6815,6 +6815,11 @@ jest@24.9.0:
     import-local "^2.0.0"
     jest-cli "^24.9.0"
 
+js-cookie@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/js-cookie/-/js-cookie-2.2.1.tgz#69e106dc5d5806894562902aa5baec3744e9b2b8"
+  integrity sha512-HvdH2LzI/EAZcUwA8+0nKNtWHqS+ZmijLA30RwZA0bo7ToCckjK5MkGhjED9KoRcXO6BaGI3I9UIzSA1FKFPOQ==
+
 js-sha512@^0.8.0:
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/js-sha512/-/js-sha512-0.8.0.tgz#dd22db8d02756faccf19f218e3ed61ec8249f7d4"
@@ -7611,6 +7616,13 @@ mkdirp@^0.5.5:
   dependencies:
     minimist "^1.2.5"
 
+mobx-persist@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/mobx-persist/-/mobx-persist-0.4.1.tgz#fe5790eda04e0ee0b91c512d1347104e09363f9a"
+  integrity sha512-cPxVuZTY5neesxOV/Z25SF4+/NbC6wfHOe9HT5XoSEkAALNxNE41yDK48peJQ3iK14m0G2ywQRklCXeV3wftnQ==
+  dependencies:
+    serializr "^1.1.11"
+
 mobx-react-lite@>=2.2.0:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/mobx-react-lite/-/mobx-react-lite-2.2.1.tgz#9c05dd799005d29ec1671ae86ca30b3ab5411055"
@@ -7622,6 +7634,11 @@ mobx-react@^6.3.0:
   integrity sha512-C14yya2nqEBRSEiJjPkhoWJLlV8pcCX3m2JRV7w1KivwANJqipoiPx9UMH4pm6QNMbqDdvJqoyl+LqNu9AhvEQ==
   dependencies:
     mobx-react-lite ">=2.2.0"
+
+mobx-utils@^5.6.1:
+  version "5.6.1"
+  resolved "https://registry.yarnpkg.com/mobx-utils/-/mobx-utils-5.6.1.tgz#b7d9184b7442fe704be367d4363a2e9961be28cc"
+  integrity sha512-bpTJzM8MXniGnXCZY+ImjPDqBKQ3+G3g/QFSPtNkH6HM3x14DAPqKH7No7NDyhbXBMv3FaVetsgnoEPozbi45Q==
 
 mobx@^5.15.6:
   version "5.15.6"
@@ -9319,7 +9336,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.4"
 
-prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.5.7, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -9982,6 +9999,14 @@ react-scripts@3.4.3:
     workbox-webpack-plugin "4.3.1"
   optionalDependencies:
     fsevents "2.1.2"
+
+react-split@^2.0.9:
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/react-split/-/react-split-2.0.9.tgz#8267b198c6b186857671da94c3feed828e6b2c66"
+  integrity sha512-IxKtxxmcbNUmWMSd5vlNnlE0jwbgQS1HyQYxt7h8qFgPskSkUTNzMbO838xapmmNf9D+u9B/bdtFnVjt+JC2JA==
+  dependencies:
+    prop-types "^15.5.7"
+    split.js "^1.6.0"
 
 react@^16.13.1:
   version "16.13.1"
@@ -10662,6 +10687,11 @@ serialize-javascript@^4.0.0:
   dependencies:
     randombytes "^2.1.0"
 
+serializr@^1.1.11:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/serializr/-/serializr-1.5.4.tgz#3ddf1cb7b4465c9c3f72bab0cbc41e09dbe50c33"
+  integrity sha512-ImLlkNfNSSv9d7Ah1j/yrPk1FHbRC1zkD7URcgx/8M1eYHGUxGf/Ig/d8ML04ifqN7QesyYKsfLYA4xjAVAR/g==
+
 serve-index@^1.9.1:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/serve-index/-/serve-index-1.9.1.tgz#d3768d69b1e7d82e5ce050fff5b453bea12a9239"
@@ -10990,6 +11020,11 @@ split-string@^3.0.1, split-string@^3.0.2:
   integrity sha512-NzNVhJDYpwceVVii8/Hu6DKfD2G+NrQHlS/V/qgv763EYudVwEcMQNxd2lh+0VrUByXN/oJkl5grOhYWvQUYiw==
   dependencies:
     extend-shallow "^3.0.0"
+
+split.js@^1.6.0:
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/split.js/-/split.js-1.6.2.tgz#b8c63aeef2b15d84a003ead09e7def6ad166bb40"
+  integrity sha512-72C7zcQePzlmWqPOKkB2Ro0sUmnWSx+qEWXjLJKk6Qp4jAkFRz1hJgJb+ay6ZQyz/Aw9r8N/PZiCEKbPVpFoDQ==
 
 sprintf-js@~1.0.2:
   version "1.0.3"
