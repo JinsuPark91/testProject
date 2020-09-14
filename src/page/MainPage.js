@@ -3,9 +3,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { Tabs, Button } from 'antd';
 import styled from 'styled-components';
 import Split from 'react-split';
-import { useStore } from '../store';
-
-const { TabPane } = Tabs;
+import { useCoreStores } from 'teespace-core';
 
 const AppLayout = styled.div`
   width: 100%;
@@ -40,7 +38,7 @@ const AppSplitView = styled(Split)`
 `;
 
 function MainPage() {
-  const { authStore } = useStore();
+  const { authStore } = useCoreStores();
   const { id, mainApp } = useParams();
   const history = useHistory();
 

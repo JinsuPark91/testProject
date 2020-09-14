@@ -1,9 +1,9 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { useStore } from '../store';
+import { useCoreStores } from 'teespace-core';
 
 export default function PrivateRoute({ component, ...rest }) {
-  const { authStore } = useStore();
+  const { authStore } = useCoreStores();
 
   return (
     <Route

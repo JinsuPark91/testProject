@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useObserver } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-import { useStore } from '../store';
+import { useCoreStores } from 'teespace-core';
 
 const layout = {
   labelCol: {
@@ -20,7 +20,7 @@ const tailLayout = {
 };
 
 function LoginPage() {
-  const { authStore } = useStore();
+  const { authStore } = useCoreStores();
   const [form] = Form.useForm();
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);

@@ -25,14 +25,13 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "react-split": "^2.0.9",
-    "styled-components": "^5.1.1"
+    "styled-components": "^5.1.1",
+    "teespace-core": "git+ssh://git@192.168.158.12:teespace/teespace-core#develop"
   },
   "scripts": {
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "start-lib": "rollup -c -w",
-    "build-lib": "rollup -c",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
