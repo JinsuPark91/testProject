@@ -4,6 +4,7 @@ import { Tabs, Button } from 'antd';
 import styled from 'styled-components';
 import Split from 'react-split';
 import { useCoreStores } from 'teespace-core';
+import { TeeTalk } from 'teespace-talk-app';
 
 const AppLayout = styled.div`
   width: 100%;
@@ -25,6 +26,14 @@ const LeftSide = styled.div`
 const MainSide = styled.div`
   flex: 1;
 `;
+
+const MainAppContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+`;
+
+const SubAppContainer = styled.div``;
 
 const AppSplitView = styled(Split)`
   height: 100%;
@@ -65,16 +74,16 @@ function MainPage() {
           direction="horizontal"
           cursor="col-resize"
         >
-          <div>
+          <MainAppContainer>
             <Header>Header</Header>
-            Main App Area
-          </div>
-          <div>
+            <TeeTalk loginUserId="2ae4c526-961a-4719-b8b4-938ee8d71699" />
+          </MainAppContainer>
+          <SubAppContainer>
             <Header>
               <Button onClick={doLogout}>Logout</Button>
             </Header>
             Sub App Area
-          </div>
+          </SubAppContainer>
         </AppSplitView>
       </MainSide>
     </AppLayout>
