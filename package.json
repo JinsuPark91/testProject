@@ -37,7 +37,9 @@
     "react-scripts": "3.4.3",
     "react-split": "^2.0.9",
     "styled-components": "^5.1.1",
+    "suneditor-react": "^2.13.4",
     "teespace-core": "git+ssh://git@192.168.158.12:teespace/teespace-core#develop",
+    "teespace-note-app": "git+ssh://git@192.168.158.12:teespace/teespace-note-app#develop",
     "teespace-talk-app": "git+ssh://git@192.168.158.12:teespace/teespace-talk-app#develop"
   },
   "scripts": {
