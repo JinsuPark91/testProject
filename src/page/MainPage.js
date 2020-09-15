@@ -6,6 +6,7 @@ import Split from 'react-split';
 import { useCoreStores } from 'teespace-core';
 import { TeeTalk } from 'teespace-talk-app';
 import { NoteApp } from 'teespace-note-app';
+import { CalendarApp } from 'teespace-calendar-app';
 
 const AppLayout = styled.div`
   width: 100%;
