@@ -1,45 +1,48 @@
-import React, { useCallback } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import React, { useCallback, useState } from 'react';
+import { useParams, useHistory, useRouteMatch } from 'react-router-dom';
 import { Tabs, Button } from 'antd';
 import styled from 'styled-components';
 import Split from 'react-split';
 import { useCoreStores } from 'teespace-core';
 import { TeeTalk } from 'teespace-talk-app';
-import { NoteApp } from 'teespace-note-app';
-import { CalendarApp } from 'teespace-calendar-app';
+// import { NoteApp } from 'teespace-note-app';
+// import { CalendarApp } from 'teespace-calendar-app';
 
 const AppLayout = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
-  display: flex;
 `;
 
 const Header = styled.div`
   display: flex;
-  height: 60px;
+  flex: 0 0 60px;
+  width: 100%;
 `;
 
-const LeftSide = styled.div`
-  width: 300px;
-  height: 100%;
-  flex-shrink: 0;
-`;
-
-const MainSide = styled.div`
-  flex: 1;
-`;
-
-const MainAppContainer = styled.div`
+const Content = styled.div`
   display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  flex: 1;
+  width: 100%;
 `;
 
-const SubAppContainer = styled.div``;
+const Tab = styled.div`
+  display: flex;
+  flex: 0 0 300px;
+  background: green;
+`;
+
+const Title = styled.div`
+  display: flex;
+  flex: auto;
+  background: yellow;
+`;
 
 const AppSplitView = styled(Split)`
-  height: 100%;
   display: flex;
+  height: 100%;
+  flex: auto;
   & .gutter {
     border-right: 1px solid #e3e7eb;
   }
@@ -48,46 +51,120 @@ const AppSplitView = styled(Split)`
   }
 `;
 
+const MainAppContainer = styled.div`
+  display: flex;
+  flex: auto;
+  background: gray;
+`;
+
+const SubAppContainer = styled.div`
+  display: flex;
+  flex: auto;
+  background: skyblue;
+`;
+
+const Lnb = styled.div`
+  display: flex;
+  flex: 0 0 300px;
+  background: orange;
+`;
+
 function MainPage() {
   const { authStore } = useCoreStores();
-  const { id, mainApp } = useParams();
+  const params = useParams();
   const history = useHistory();
+  const routeMatch = useRouteMatch();
+  const [layoutState, setLayoutState] = useState('collapse');
+  console.log('Params : ', params);
+  console.log('History : ', history);
+  console.log('RouteMatch : ', routeMatch);
 
   const doLogout = useCallback(async () => {
     await authStore.logout();
     history.push('/login');
   }, [authStore, history]);
 
+  const renderContent = () => {
+    switch (layoutState) {
+      case 'full':
+        return <SubAppContainer>subapp</SubAppContainer>;
+        break;
+      case 'expand':
+        return (
+          <>
+            <Lnb></Lnb>
+            <SubAppContainer>subapp</SubAppContainer>
+          </>
+        );
+        break;
+      case 'collapse':
+        return (
+          <>
+            <Lnb></Lnb>
+            <AppSplitView
+              sizes={[75, 25]}
+              minSize={400}
+              expandToMin={false}
+              gutterSize={5}
+              gutterAlign="center"
+              snapOffset={10}
+              dragInterval={1}
+              direction="horizontal"
+              cursor="col-resize"
+            >
+              <MainAppContainer>mainapp</MainAppContainer>
+              <SubAppContainer>subapp</SubAppContainer>
+            </AppSplitView>
+          </>
+        );
+        break;
+      case 'close':
+        return (
+          <>
+            <Lnb></Lnb>
+            <MainAppContainer>mainapp</MainAppContainer>
+          </>
+        );
+        break;
+    }
+  };
+
   return (
     <AppLayout>
-      <LeftSide>
-        <Header>Tab Area</Header>
-        LNB
-      </LeftSide>
-      <MainSide>
-        <AppSplitView
-          sizes={[75, 25]}
-          minSize={400}
-          expandToMin={false}
-          gutterSize={3}
-          gutterAlign="center"
-          snapOffset={10}
-          dragInterval={1}
-          direction="horizontal"
-          cursor="col-resize"
-        >
-          <MainAppContainer>
-            <Header>Header</Header>
-            <TeeTalk loginUserId="2ae4c526-961a-4719-b8b4-938ee8d71699" />
-          </MainAppContainer>
-          <SubAppContainer>
-            <Header>
-              <Button onClick={doLogout}>Logout</Button>
-            </Header>
-            <NoteApp />
-          </SubAppContainer>
-        </AppSplitView>
-      </MainSide>
+      <Header>
+        <Tab></Tab>
+        <Title>
+          <button
+            onClick={() => {
+              setLayoutState('full');
+            }}
+          >
+            전체
+          </button>
+          <button
+            onClick={() => {
+              setLayoutState('expand');
+            }}
+          >
+            확장
+          </button>
+          <button
+            onClick={() => {
+              setLayoutState('collapse');
+            }}
+          >
+            축소
+          </button>
+          <button
+            onClick={() => {
+              setLayoutState('close');
+            }}
+          >
+            닫기
+          </button>
+        </Title>
+      </Header>
+      <Content>{renderContent()}</Content>
     </AppLayout>
   );
 }
