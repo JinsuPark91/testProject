@@ -54,6 +54,8 @@ const Lnb = styled.div`
   background: orange;
 `;
 
+const DEFAULT_MAIN_APP = 'talk';
+
 function MainPage() {
   const { authStore } = useCoreStores();
   const params = useParams();
@@ -61,7 +63,8 @@ function MainPage() {
   const routeMatch = useRouteMatch();
   const urlSearchParams = new URLSearchParams(history.location.search);
   const [mainApp, setMainApp] = useState(params.mainApp);
-  const [subApp, setSubApp] = useState(null);
+  const [subApp, setSubApp] = useState(urlSearchParams.get('sub'));
+  const [rootUrlType, setRootUrlType] = useState(params['0']);
 
   console.log(params);
   console.log(history);
@@ -76,6 +79,11 @@ function MainPage() {
   useEffect(() => {
     setMainApp(params.mainApp);
   }, [params.mainApp]);
+
+  // mainApp useEffect
+  useEffect(() => {
+    setRootUrlType(params['0']);
+  }, [params['0']]);
 
   const doLogout = useCallback(async () => {
     await authStore.logout();
@@ -93,22 +101,54 @@ function MainPage() {
         return <Drive />;
       case 'office':
         return <Office />;
+      case 'mail':
+        return <Mail />;
       default:
         return null;
     }
   };
 
+  const handleTabClick = key => {
+    let pathname = null;
+    let search = null;
+    switch (key) {
+      /* friend : /f/:id 형식 (query string, app 정보 없음) */
+      case 'f':
+        pathname = `/${key}/${params.id}`;
+        search = null;
+        break;
+      /* space, mail : /f/:id/:app?sub... 형식  */
+      case 's':
+        pathname = `/${key}/${params.id}/${DEFAULT_MAIN_APP}`;
+        search = history.location.search;
+        break;
+      /* mail 누르면 sub 앱 없어져야 하나? 정책 결정 필요 */
+      case 'm':
+        pathname = `/${key}/${params.id}/mail`;
+        search = null;
+        break;
+      default:
+        break;
+    }
+    history.push({
+      pathname,
+      search,
+    });
+  };
+
   return (
     <AppLayout>
       <LeftSide>
-        <Tabs>
-          <TabPane key="1" tab="Friend">
+        <Tabs onTabClick={handleTabClick}>
+          <TabPane key="f" tab="Friend">
             <FriendLnb />
           </TabPane>
-          <TabPane key="2" tab="Space">
+
+          <TabPane key="s" tab="Space">
             <SpaceLnb />
           </TabPane>
-          <TabPane key="3" tab="Mail">
+
+          <TabPane key="m" tab="Mail">
             <MailLnb />
           </TabPane>
         </Tabs>
@@ -159,6 +199,17 @@ function MainPage() {
           >
             메인 토크
           </Button>
+          <Button
+            type="button"
+            onClick={() => {
+              history.push({
+                pathname: `/${params['0']}/${params.id}/mail`,
+                search: history.location.search,
+              });
+            }}
+          >
+            메인 메일
+          </Button>
         </Header>
         <AppContainer>
           <MainAppContainer>{renderApp(true)}</MainAppContainer>
@@ -188,6 +239,10 @@ const SpaceLnb = () => {
 
 const MailLnb = () => {
   return <div>Mail LNB</div>;
+};
+
+const Mail = () => {
+  return <div>Mail Content</div>;
 };
 
 const Calendar = () => {
