@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams, useHistory, useRouteMatch } from 'react-router-dom';
 import { Tabs, Button } from 'antd';
 import styled from 'styled-components';
 import { useCoreStores } from 'teespace-core';
+import Splitter from '../components/Splitter';
 // import { TeeTalk } from 'teespace-talk-app';
 // import { NoteApp } from 'teespace-note-app';
 // import { CalendarApp } from 'teespace-calendar-app';
@@ -62,9 +63,10 @@ function MainPage() {
   const history = useHistory();
   const routeMatch = useRouteMatch();
   const urlSearchParams = new URLSearchParams(history.location.search);
-  const [mainApp, setMainApp] = useState(params.mainApp);
-  const [subApp, setSubApp] = useState(urlSearchParams.get('sub'));
-  const [rootUrlType, setRootUrlType] = useState(params['0']);
+  const [mainApp, setMainApp] = useState(null);
+  const [subApp, setSubApp] = useState(null);
+  const [rootUrlType, setRootUrlType] = useState(null);
+  const [layoutState, setLayoutState] = useState('collapse');
 
   console.log(params);
   console.log(history);
@@ -210,10 +212,59 @@ function MainPage() {
           >
             메인 메일
           </Button>
+
+          <Button
+            type="button"
+            onClick={() => {
+              setLayoutState('full');
+            }}
+          >
+            전체
+          </Button>
+
+          <Button
+            type="button"
+            onClick={() => {
+              setLayoutState('expand');
+            }}
+          >
+            확장
+          </Button>
+
+          <Button
+            type="button"
+            onClick={() => {
+              setLayoutState('collapse');
+            }}
+          >
+            축소
+          </Button>
+
+          <Button
+            type="button"
+            onClick={() => {
+              setLayoutState('close');
+            }}
+          >
+            닫기
+          </Button>
         </Header>
         <AppContainer>
-          <MainAppContainer>{renderApp(true)}</MainAppContainer>
-          <SubAppContainer>{renderApp(false)}</SubAppContainer>
+          <Splitter
+            sizes={[75, 25]}
+            minSize={400}
+            expandToMin={false}
+            gutterSize={5}
+            gutterAlign="center"
+            snapOffset={10}
+            dragInterval={1}
+            direction="horizontal"
+            cursor="col-resize"
+            layoutState={layoutState}
+          >
+            <MainAppContainer>{renderApp(true)}</MainAppContainer>
+            <SubAppContainer>{renderApp(false)}</SubAppContainer>
+          </Splitter>
         </AppContainer>
       </MainSide>
     </AppLayout>
