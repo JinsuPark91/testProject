@@ -7,6 +7,8 @@ import Splitter from '../components/Splitter';
 // import { TeeTalk } from 'teespace-talk-app';
 // import { NoteApp } from 'teespace-note-app';
 // import { CalendarApp } from 'teespace-calendar-app';
+import './mainPage.css';
+
 const { TabPane } = Tabs;
 
 const AppLayout = styled.div`
@@ -142,15 +144,24 @@ function MainPage() {
     <AppLayout>
       <LeftSide>
         <Tabs onTabClick={handleTabClick}>
-          <TabPane key="f" tab="Friend">
+          <TabPane
+            key="f"
+            tab={<img src="/LNB_people_list.svg" style={{ width: '40px' }} />}
+          >
             <FriendLnb />
           </TabPane>
 
-          <TabPane key="s" tab="Space">
+          <TabPane
+            key="s"
+            tab={<img src="/LNB_chatting.svg" style={{ width: '40px' }} />}
+          >
             <SpaceLnb />
           </TabPane>
 
-          <TabPane key="m" tab="Mail">
+          <TabPane
+            key="m"
+            tab={<img src="/LNB_mail.svg" style={{ width: '30px' }} />}
+          >
             <MailLnb />
           </TabPane>
         </Tabs>

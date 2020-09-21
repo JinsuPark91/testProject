@@ -1,0 +1,23 @@
+.ant-tabs-nav {
+  height: 60px;
+}
+
+.ant-tabs.ant-tabs-top {
+  width: 100%;
+}
+
+.ant-tabs-nav-list {
+  flex: 1;
+}
+
+.ant-tabs-tab {
+  width: calc(100% / 3);
+  justify-content: center;
+  margin: 0;
+  background: #0b1d41;
+}
+
+.ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar {
+  background: #ff486d;
+  height: 3px;
+}
