@@ -3,9 +3,9 @@ import { useParams, useHistory, useRouteMatch } from 'react-router-dom';
 import { Tabs, Button } from 'antd';
 import styled from 'styled-components';
 import { useCoreStores } from 'teespace-core';
+import { Talk } from 'teespace-talk-app';
+import { NoteApp } from 'teespace-note-app';
 import Splitter from '../components/Splitter';
-// import { TeeTalk } from 'teespace-talk-app';
-// import { NoteApp } from 'teespace-note-app';
 // import { CalendarApp } from 'teespace-calendar-app';
 import './mainPage.css';
 
@@ -21,18 +21,42 @@ const LeftSide = styled.div`
   display: flex;
   height: 100%;
   flex: 0 0 300px;
+  border-right: 1px solid #dddddd;
 `;
 
 const Header = styled.div`
+  display: flex;
   height: 60px;
-  background: yellow;
+  align-items: center;
+  border-bottom: 1px solid #dddddd;
+`;
+
+const Title = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  flex: auto;
+  height: 100%;
+  border-right: 1px solid #dddddd;
+`;
+
+const AppIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  border-right: 1px solid #dddddd;
+  height: 40px;
+  padding: 0 15px;
+`;
+
+const Profile = styled.div`
+  width: 60px;
 `;
 
 const MainSide = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  width: 100%;
+  width: calc(100% - 300px);
 `;
 
 const AppContainer = styled.div`
@@ -42,19 +66,13 @@ const AppContainer = styled.div`
 const MainAppContainer = styled.div`
   display: flex;
   flex: auto;
-  background: gray;
+  overflow: hidden;
 `;
 
 const SubAppContainer = styled.div`
   display: flex;
   flex: auto;
-  background: skyblue;
-`;
-
-const Lnb = styled.div`
-  display: flex;
-  flex: 0 0 300px;
-  background: orange;
+  overflow: hidden;
 `;
 
 const DEFAULT_MAIN_APP = 'talk';
@@ -67,7 +85,6 @@ function MainPage() {
   const urlSearchParams = new URLSearchParams(history.location.search);
   const [mainApp, setMainApp] = useState(null);
   const [subApp, setSubApp] = useState(null);
-  const [rootUrlType, setRootUrlType] = useState(null);
   const [layoutState, setLayoutState] = useState('collapse');
 
   console.log(params);
@@ -84,11 +101,6 @@ function MainPage() {
     setMainApp(params.mainApp);
   }, [params.mainApp]);
 
-  // mainApp useEffect
-  useEffect(() => {
-    setRootUrlType(params['0']);
-  }, [params['0']]);
-
   const doLogout = useCallback(async () => {
     await authStore.logout();
     history.push('/login');
@@ -99,6 +111,8 @@ function MainPage() {
     switch (targetApp) {
       case 'talk':
         return <Talk />;
+      case 'note':
+        return <NoteApp />;
       case 'schedule':
         return <Calendar />;
       case 'drive':
@@ -146,21 +160,35 @@ function MainPage() {
         <Tabs onTabClick={handleTabClick}>
           <TabPane
             key="f"
-            tab={<img src="/LNB_people_list.svg" style={{ width: '40px' }} />}
+            tab={
+              <img
+                src="/LNB_people_list.svg"
+                alt="friends"
+                style={{ width: '40px' }}
+              />
+            }
           >
             <FriendLnb />
           </TabPane>
 
           <TabPane
             key="s"
-            tab={<img src="/LNB_chatting.svg" style={{ width: '40px' }} />}
+            tab={
+              <img
+                src="/LNB_chatting.svg"
+                alt="chat"
+                style={{ width: '40px' }}
+              />
+            }
           >
             <SpaceLnb />
           </TabPane>
 
           <TabPane
             key="m"
-            tab={<img src="/LNB_mail.svg" style={{ width: '30px' }} />}
+            tab={
+              <img src="/LNB_mail.svg" alt="mail" style={{ width: '30px' }} />
+            }
           >
             <MailLnb />
           </TabPane>
@@ -168,97 +196,11 @@ function MainPage() {
       </LeftSide>
       <MainSide>
         <Header>
-          <Button
-            type="button"
-            onClick={() => {
-              history.push({
-                pathname: `/${params['0']}/${params.id}/${params.mainApp}`,
-                search: '?sub=schedule',
-              });
-            }}
-          >
-            서브 스케줄
-          </Button>
-          <Button
-            type="button"
-            onClick={() => {
-              history.push({
-                pathname: `/${params['0']}/${params.id}/${params.mainApp}`,
-                search: '?sub=office',
-              });
-            }}
-          >
-            서브 오피스
-          </Button>
-          <Button
-            type="button"
-            onClick={() => {
-              history.push({
-                pathname: `/${params['0']}/${params.id}/drive`,
-                search: history.location.search,
-              });
-            }}
-          >
-            메인 드라이브
-          </Button>
-          <Button
-            type="button"
-            onClick={() => {
-              history.push({
-                pathname: `/${params['0']}/${params.id}/talk`,
-                search: history.location.search,
-              });
-            }}
-          >
-            메인 토크
-          </Button>
-          <Button
-            type="button"
-            onClick={() => {
-              history.push({
-                pathname: `/${params['0']}/${params.id}/mail`,
-                search: history.location.search,
-              });
-            }}
-          >
-            메인 메일
-          </Button>
-
-          <Button
-            type="button"
-            onClick={() => {
-              setLayoutState('full');
-            }}
-          >
-            전체
-          </Button>
-
-          <Button
-            type="button"
-            onClick={() => {
-              setLayoutState('expand');
-            }}
-          >
-            확장
-          </Button>
-
-          <Button
-            type="button"
-            onClick={() => {
-              setLayoutState('collapse');
-            }}
-          >
-            축소
-          </Button>
-
-          <Button
-            type="button"
-            onClick={() => {
-              setLayoutState('close');
-            }}
-          >
-            닫기
-          </Button>
+          <Title>Title 영역 (icon container에 따라 가변)</Title>
+          <AppIconContainer>
+            App Icon Container (content에 따라 가변)
+          </AppIconContainer>
+          <Profile>Profile 영역 (고정)</Profile>
         </Header>
         <AppContainer>
           <Splitter
@@ -281,15 +223,6 @@ function MainPage() {
     </AppLayout>
   );
 }
-
-const Talk = () => {
-  return (
-    <div>
-      Talk App
-      <input type="text" style={{ height: '30px' }} />
-    </div>
-  );
-};
 
 const FriendLnb = () => {
   return <div>Friend LNB</div>;
