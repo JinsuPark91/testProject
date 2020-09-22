@@ -86,6 +86,7 @@ function MainPage() {
   const history = useHistory();
   const routeMatch = useRouteMatch();
   const urlSearchParams = new URLSearchParams(history.location.search);
+  const [tabType, setTabType] = useState('f');
   const [mainApp, setMainApp] = useState(null);
   const [subApp, setSubApp] = useState(null);
   const [layoutState, setLayoutState] = useState('collapse');
@@ -93,6 +94,11 @@ function MainPage() {
   console.log(params);
   console.log(history);
   console.log(routeMatch);
+
+  // root tab useEffect
+  useEffect(() => {
+    setTabType(params['0']);
+  }, [params['0']]);
 
   // subApp useEffect
   useEffect(() => {
@@ -160,7 +166,7 @@ function MainPage() {
   return (
     <AppLayout>
       <LeftSide>
-        <Tabs onTabClick={handleTabClick}>
+        <Tabs activeKey={tabType} onTabClick={handleTabClick}>
           <TabPane
             key="f"
             tab={
@@ -254,32 +260,6 @@ const FriendLnb = () => {
 
 const SpaceLnb = () => {
   return <div>Space LNB</div>;
-};
-
-const MailLnb = () => {
-  return <div>Mail LNB</div>;
-};
-
-const Mail = () => {
-  return <div>Mail Content</div>;
-};
-
-const Calendar = () => {
-  return (
-    <div>
-      Schedule App
-      <input type="text" style={{ height: '30px' }} />
-    </div>
-  );
-};
-
-const Drive = () => {
-  return (
-    <div>
-      Drive App
-      <input type="text" style={{ height: '30px' }} />
-    </div>
-  );
 };
 
 const Office = () => {
