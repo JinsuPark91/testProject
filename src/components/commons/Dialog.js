@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal } from 'antd';
-import './Dialog.scss';
+import CommonButton from './Button';
+import './commons.scss';
 
 /**
  * Common Dialog
@@ -8,7 +9,7 @@ import './Dialog.scss';
  * @param {('small'|'medium'|'large')} props.size
  */
 function CommonDialog(props) {
-  const { size } = props;
+  const { size, children, onOk, onCancel } = props;
   const getDialogWidth = sizeProp => {
     switch (sizeProp) {
       case 'medium':
@@ -25,9 +26,17 @@ function CommonDialog(props) {
       {...props}
       width={getDialogWidth(size)}
       style={{ top: 20 }}
-      className="teespace-common-modal"
+      className="teespace-common"
+      footer={[
+        <CommonButton key="submit" type="solid" onClick={onOk}>
+          Submit
+        </CommonButton>,
+        <CommonButton key="back" type="outlined" onClick={onCancel}>
+          Return
+        </CommonButton>,
+      ]}
     >
-      <div>asdasda</div>
+      {children}
     </Modal>
   );
 }

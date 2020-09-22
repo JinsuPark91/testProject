@@ -1,0 +1,92 @@
+$common-dialog-height: 43px;
+$common-dialog-padding-top: 9px;
+$common-dialog-line-height: 20px;
+$common-dialog-title-font-size: 14px;
+$common-dialog-border-radius: 4px;
+$common-dialog-body-margin: 16px 16px 0 16px;
+$common-dialog-footer-padding: 20px 0 20px 0;
+
+$common-button-height: 30px;
+$common-button-line-height: 18px;
+$common-button-font-size: 12px;
+$common-button-border-radius: 15px;
+$common-button-padding: 3px 23px 9px 23px;
+.teespace-common {
+
+    .ant-modal-content {
+        border-radius: $common-dialog-border-radius;
+    }
+    .ant-modal-header {
+        border-radius: $common-dialog-border-radius $common-dialog-border-radius 0 0;
+        padding-top: $common-dialog-padding-top;
+        height: $common-dialog-height;
+        line-height: $common-dialog-line-height;
+    }
+    
+    .ant-modal-close .ant-modal-close-x {
+        width: $common-dialog-height;
+        height: $common-dialog-height;
+        line-height: $common-dialog-height;
+    }
+    .ant-modal-title {
+        text-align: center;
+        font-size: $common-dialog-title-font-size;
+    }
+    
+    .ant-modal-body {
+        margin: $common-dialog-body-margin;
+    }
+
+    .ant-modal-footer {
+        padding: $common-dialog-footer-padding;
+        text-align: center;
+    }
+
+    &.ant-btn {
+        height: $common-button-height;
+        border-radius: $common-button-border-radius;
+        font-size: $common-button-font-size;
+        line-height: $common-button-line-height;
+        padding: $common-button-padding;
+
+        &.ant-btn-solid {
+            background-color: #6C56E5;
+            color: #fff;
+
+            &:hover {
+                background-color: #DCDDFF;
+                color: #000000;
+            }
+            
+            &:active {
+                background-color: #523DC7;
+                color: #fff;
+            }
+
+            &:disabled {
+                background-color: #CCCCCC;
+                color: #fff;
+            }
+        }
+
+        &.ant-btn-outlined {
+            border: 1px solid #C6CED6;
+            background-color: #fff;
+            color: #3b3b3b;
+
+            &:hover {
+                background-color: #DCDDFF;
+                color: #000000;
+            }
+            &:active {
+                border: 1px solid #6C56E5;
+                color: #3b3b3b;
+                background-color: #fff;
+            }
+            &:disabled {
+                background-color: #CCCCCC;
+                color: #fff;
+            }
+        }
+    }
+}
