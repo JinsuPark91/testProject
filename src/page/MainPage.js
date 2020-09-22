@@ -5,8 +5,9 @@ import styled from 'styled-components';
 import { useCoreStores } from 'teespace-core';
 import { Talk } from 'teespace-talk-app';
 import { NoteApp } from 'teespace-note-app';
+import { CalendarApp } from 'teespace-calendar-app';
+import { MailMainView, MailSideView, MailSubView } from 'teespace-mail-app';
 import Splitter from '../components/Splitter';
-// import { CalendarApp } from 'teespace-calendar-app';
 import './mainPage.css';
 
 const { TabPane } = Tabs;
@@ -20,7 +21,7 @@ const AppLayout = styled.div`
 const LeftSide = styled.div`
   display: flex;
   height: 100%;
-  flex: 0 0 300px;
+  width: 300px;
   border-right: 1px solid #dddddd;
 `;
 
@@ -55,13 +56,14 @@ const Profile = styled.div`
 const MainSide = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1;
   width: calc(100% - 300px);
+  height: calc(100% - 60px);
 `;
 
 const AppContainer = styled.div`
   display: flex;
-  flex: 1;
+  width: 100%;
+  height: 100%;
 `;
 const MainAppContainer = styled.div`
   display: flex;
@@ -114,13 +116,14 @@ function MainPage() {
       case 'note':
         return <NoteApp />;
       case 'schedule':
+        // return <CalendarApp />;
         return <Calendar />;
       case 'drive':
         return <Drive />;
       case 'office':
         return <Office />;
       case 'mail':
-        return <Mail />;
+        return <MailMainView />;
       default:
         return null;
     }
@@ -190,7 +193,7 @@ function MainPage() {
               <img src="/LNB_mail.svg" alt="mail" style={{ width: '30px' }} />
             }
           >
-            <MailLnb />
+            <MailSideView />
           </TabPane>
         </Tabs>
       </LeftSide>
