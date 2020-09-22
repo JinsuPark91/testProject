@@ -43,7 +43,8 @@
     "teespace-core": "git+ssh://git@192.168.158.12:teespace/teespace-core#develop",
     "teespace-mail-app": "git+ssh://git@192.168.158.12:teespace/teespace-mail-app#develop",
     "teespace-note-app": "git+ssh://git@192.168.158.12:teespace/teespace-note-app#develop",
-    "teespace-talk-app": "git+ssh://git@192.168.158.12:teespace/teespace-talk-app#develop"
+    "teespace-talk-app": "git+ssh://git@192.168.158.12:teespace/teespace-talk-app#develop",
+    "teespace-drive-app": "git+ssh://git@192.168.158.12:teespace/teespace-drive-app#develop"
   },
   "scripts": {
     "start": "craco start",

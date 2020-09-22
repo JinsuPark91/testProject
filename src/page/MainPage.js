@@ -7,6 +7,7 @@ import { Talk } from 'teespace-talk-app';
 import { NoteApp } from 'teespace-note-app';
 import { CalendarApp } from 'teespace-calendar-app';
 import { MailMainView, MailSideView, MailSubView } from 'teespace-mail-app';
+import { DriveApp } from 'teespace-drive-app';
 import Splitter from '../components/Splitter';
 import './mainPage.css';
 
@@ -57,13 +58,13 @@ const MainSide = styled.div`
   display: flex;
   flex-direction: column;
   width: calc(100% - 300px);
-  height: calc(100% - 60px);
+  height: 100%;
 `;
 
 const AppContainer = styled.div`
   display: flex;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 60px);
 `;
 const MainAppContainer = styled.div`
   display: flex;
@@ -119,7 +120,7 @@ function MainPage() {
         // return <CalendarApp />;
         return <Calendar />;
       case 'drive':
-        return <Drive />;
+        return <DriveApp />;
       case 'office':
         return <Office />;
       case 'mail':
