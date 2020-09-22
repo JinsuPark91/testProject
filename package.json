@@ -41,10 +41,10 @@
     "suneditor-react": "^2.13.4",
     "teespace-calendar-app": "git+ssh://git@192.168.158.12:teespace/teespace-calendar-app#develop",
     "teespace-core": "git+ssh://git@192.168.158.12:teespace/teespace-core#develop",
+    "teespace-drive-app": "git+ssh://git@192.168.158.12:teespace/teespace-drive-app#develop",
     "teespace-mail-app": "git+ssh://git@192.168.158.12:teespace/teespace-mail-app#develop",
     "teespace-note-app": "git+ssh://git@192.168.158.12:teespace/teespace-note-app#develop",
-    "teespace-talk-app": "git+ssh://git@192.168.158.12:teespace/teespace-talk-app#develop",
-    "teespace-drive-app": "git+ssh://git@192.168.158.12:teespace/teespace-drive-app#develop"
+    "teespace-talk-app": "git+ssh://git@192.168.158.12:teespace/teespace-talk-app#develop"
   },
   "scripts": {
     "start": "craco start",

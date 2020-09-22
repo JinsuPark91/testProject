@@ -4,10 +4,10 @@ import { Tabs, Button } from 'antd';
 import styled from 'styled-components';
 import { useCoreStores } from 'teespace-core';
 import { Talk } from 'teespace-talk-app';
-import { NoteApp } from 'teespace-note-app';
+import { NoteApp, NoteIcon } from 'teespace-note-app';
 import { CalendarApp } from 'teespace-calendar-app';
 import { MailMainView, MailSideView, MailSubView } from 'teespace-mail-app';
-import { DriveApp } from 'teespace-drive-app';
+import { DriveApp, DriveIcon } from 'teespace-drive-app';
 import Splitter from '../components/Splitter';
 import './mainPage.css';
 
@@ -97,7 +97,7 @@ function MainPage() {
   // subApp useEffect
   useEffect(() => {
     setSubApp(urlSearchParams.get('sub'));
-  }, [history.location.search]);
+  }, [urlSearchParams]);
 
   // mainApp useEffect
   useEffect(() => {
@@ -117,8 +117,7 @@ function MainPage() {
       case 'note':
         return <NoteApp />;
       case 'schedule':
-        // return <CalendarApp />;
-        return <Calendar />;
+        return <CalendarApp />;
       case 'drive':
         return <DriveApp />;
       case 'office':
@@ -202,7 +201,28 @@ function MainPage() {
         <Header>
           <Title>Title 영역 (icon container에 따라 가변)</Title>
           <AppIconContainer>
-            App Icon Container (content에 따라 가변)
+            <NoteIcon
+              width={50}
+              height={50}
+              state={subApp === 'note' ? 'active' : 'default'}
+              onClick={() => {
+                history.push({
+                  pathname: history.location.pathname,
+                  search: `?sub=note`,
+                });
+              }}
+            />
+            <DriveIcon
+              width={50}
+              height={50}
+              state={subApp === 'drive' ? 'active' : 'default'}
+              onClick={() => {
+                history.push({
+                  pathname: history.location.pathname,
+                  search: `?sub=drive`,
+                });
+              }}
+            />
           </AppIconContainer>
           <Profile>Profile 영역 (고정)</Profile>
         </Header>
