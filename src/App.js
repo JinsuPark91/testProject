@@ -5,6 +5,7 @@ import { create } from 'mobx-persist';
 import { useCoreStores } from 'teespace-core';
 import ServicePage from './page/ServicePage';
 import LoginPage from './page/LoginPage';
+import CommonIntroPage from './page/CommonIntroPage';
 import NotFoundPage from './page/NotFoundPage';
 import SignUpPage from './page/SignUpPage';
 import MainPage from './page/MainPage';
@@ -29,6 +30,7 @@ function App() {
     <BrowserRouter>
       <Switch>
         <Route exact path="/" component={ServicePage} />
+        <Route exact path="/commons" component={CommonIntroPage} />
         <RedirectablePublicRoute
           exact
           path="/login"
