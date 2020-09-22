@@ -8,6 +8,7 @@ module.exports = {
   },
   extends: [
     'airbnb',
+    'airbnb-base',
     'airbnb/hooks',
     'prettier',
     'prettier/react',
