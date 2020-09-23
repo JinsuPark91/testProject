@@ -153,6 +153,9 @@ function MainPage() {
             Title 영역 (icon container에 따라 가변)
             <button
               type="button"
+              style={{
+                display: !(subApp && layoutState !== 'full') ? 'none' : 'block',
+              }}
               onClick={() => {
                 eventBus.dispatch('onLayoutFull', {
                   isMaximize: true,
@@ -167,6 +170,11 @@ function MainPage() {
             </button>
             <button
               type="button"
+              style={{
+                display: !(subApp && layoutState !== 'expand')
+                  ? 'none'
+                  : 'block',
+              }}
               onClick={() => {
                 eventBus.dispatch('onLayoutExpand', {
                   isMaximize: true,
@@ -181,6 +189,11 @@ function MainPage() {
             </button>
             <button
               type="button"
+              style={{
+                display: !(subApp && layoutState !== 'collapse')
+                  ? 'none'
+                  : 'block',
+              }}
               onClick={() => {
                 eventBus.dispatch('onLayoutCollapse', {
                   isMaximize: true,
@@ -195,6 +208,11 @@ function MainPage() {
             </button>
             <button
               type="button"
+              style={{
+                display: !(subApp && layoutState !== 'close')
+                  ? 'none'
+                  : 'block',
+              }}
               onClick={() => {
                 eventBus.dispatch('onLayoutClose', {
                   isMaximize: true,
