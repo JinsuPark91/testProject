@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useCoreStores } from 'teespace-core';
 import { Talk } from 'teespace-talk-app';
 import { NoteApp, NoteIcon } from 'teespace-note-app';
-import { CalendarApp } from 'teespace-calendar-app';
+import { CalendarApp, CalendarIcon } from 'teespace-calendar-app';
 import { MailMainView, MailSideView, MailSubView } from 'teespace-mail-app';
 import { DriveApp, DriveIcon } from 'teespace-drive-app';
 import Splitter from '../components/Splitter';
@@ -226,6 +226,17 @@ function MainPage() {
                 history.push({
                   pathname: history.location.pathname,
                   search: `?sub=drive`,
+                });
+              }}
+            />
+            <CalendarIcon
+              width={50}
+              height={50}
+              state={subApp === 'schedule' ? 'active' : 'default'}
+              onClick={() => {
+                history.push({
+                  pathname: history.location.pathname,
+                  search: `?sub=schedule`,
                 });
               }}
             />
