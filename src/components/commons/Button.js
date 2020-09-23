@@ -5,12 +5,18 @@ import './commons.scss';
 /**
  * 
  * @param {Object} props
- * @param {('solid'|'outlined')} props.type
+ * @param {('solid'|'outlined'|'text'|'system')} props.type
+ * @param {('small'|'default')} props.size
  */
 function CommonButton(props) {
-  const { children } = props;
+  const { children, size } = props;
+
   return (
-    <Button {...props} className="teespace-common">
+    <Button
+      {...props}
+      className="teespace-common"
+      style={{ height: size === 'small' ? 27 : 30 }}
+    >
       {children}
     </Button>
   );

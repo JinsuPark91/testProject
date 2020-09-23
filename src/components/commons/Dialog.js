@@ -7,6 +7,8 @@ import './commons.scss';
  * Common Dialog
  * @param {Object} props
  * @param {('small'|'medium'|'large')} props.size
+ * @param {function} props.onOk
+ * @param {function} props.onCancel
  */
 function CommonDialog(props) {
   const { size, children, onOk, onCancel } = props;

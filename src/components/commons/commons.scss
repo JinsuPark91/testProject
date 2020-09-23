@@ -6,13 +6,15 @@ $common-dialog-border-radius: 4px;
 $common-dialog-body-margin: 16px 16px 0 16px;
 $common-dialog-footer-padding: 20px 0 20px 0;
 
-$common-button-height: 30px;
 $common-button-line-height: 18px;
 $common-button-font-size: 12px;
 $common-button-border-radius: 15px;
 $common-button-padding: 3px 23px 9px 23px;
 .teespace-common {
 
+    &.ant-modal {
+        animation-duration: 0s !important;
+    }
     .ant-modal-content {
         border-radius: $common-dialog-border-radius;
     }
@@ -43,7 +45,6 @@ $common-button-padding: 3px 23px 9px 23px;
     }
 
     &.ant-btn {
-        height: $common-button-height;
         border-radius: $common-button-border-radius;
         font-size: $common-button-font-size;
         line-height: $common-button-line-height;
@@ -86,6 +87,39 @@ $common-button-padding: 3px 23px 9px 23px;
             &:disabled {
                 background-color: #CCCCCC;
                 color: #fff;
+            }
+        }
+
+        &.ant-btn-text {
+            background-color: transparent;
+            border: none;
+            &:hover {
+                background-color: #DCDDFF;
+            }
+            &:active {
+                color: #523DC7;
+            }
+            &:disabled {
+                color: #999999;
+                background-color: transparent;
+            }
+        }
+        
+        &.ant-btn-system {
+            background-color: #ffffff;
+            border: 1px solid #c6ced6;
+            border-radius: 4px;
+            &:hover {
+                background-color: #DCDDFF;
+                color: #000000;
+            }
+            &:active {
+                background-color: #BCBEFF;
+                color: #3b3b3b;
+            }
+            &:disabled {
+                background-color: #cccccc;
+                color: #ffffff;
             }
         }
     }
