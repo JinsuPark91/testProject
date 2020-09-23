@@ -35,8 +35,6 @@ function MainPage() {
     setTabType(params['0']);
     setMainApp(params.mainApp);
     setSubApp(subAppQuery);
-    console.log('SUB APP : ', subAppQuery);
-    console.log('layout state : ', layoutState);
     if (subAppQuery) {
       if (layoutState === 'close') setLayoutState('collapse');
     } else {
