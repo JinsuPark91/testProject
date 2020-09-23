@@ -16,71 +16,6 @@ import './mainPage.css';
 
 const { TabPane } = Tabs;
 
-const AppLayout = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-`;
-
-const LeftSide = styled.div`
-  display: flex;
-  height: 100%;
-  width: 300px;
-  border-right: 1px solid #dddddd;
-`;
-
-const Header = styled.div`
-  display: flex;
-  height: 60px;
-  align-items: center;
-  border-bottom: 1px solid #dddddd;
-`;
-
-const Title = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 0 15px;
-  flex: auto;
-  height: 100%;
-  border-right: 1px solid #dddddd;
-`;
-
-const AppIconContainer = styled.div`
-  display: flex;
-  align-items: center;
-  border-right: 1px solid #dddddd;
-  height: 40px;
-  padding: 0 15px;
-`;
-
-const Profile = styled.div`
-  padding: 0 10px;
-`;
-
-const MainSide = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: calc(100% - 300px);
-  height: 100%;
-`;
-
-const AppContainer = styled.div`
-  display: flex;
-  width: 100%;
-  height: calc(100% - 60px);
-`;
-const MainAppContainer = styled.div`
-  display: flex;
-  flex: auto;
-  overflow: hidden;
-`;
-
-const SubAppContainer = styled.div`
-  display: flex;
-  flex: auto;
-  overflow: hidden;
-`;
-
 const DEFAULT_MAIN_APP = 'talk';
 const eventBus = new EventBus();
 
@@ -88,29 +23,26 @@ function MainPage() {
   const { authStore } = useCoreStores();
   const params = useParams();
   const history = useHistory();
-  const routeMatch = useRouteMatch();
-  const [tabType, setTabType] = useState('f');
+  const [tabType, setTabType] = useState(null);
   const [mainApp, setMainApp] = useState(null);
   const [subApp, setSubApp] = useState(null);
   const [layoutState, setLayoutState] = useState('close');
 
-  console.log(params);
-  console.log(history);
-  console.log(routeMatch);
-  console.log(EventBus);
-
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(history.location.search);
+    const subAppQuery = urlSearchParams.get('sub');
 
     setTabType(params['0']);
     setMainApp(params.mainApp);
-    setSubApp(urlSearchParams.get('sub'));
-  }, [params, history]);
-
-  useEffect(() => {
-    if (subApp) setLayoutState('collapse');
-    else setLayoutState('close');
-  }, [subApp]);
+    setSubApp(subAppQuery);
+    console.log('SUB APP : ', subAppQuery);
+    console.log('layout state : ', layoutState);
+    if (subAppQuery) {
+      if (layoutState === 'close') setLayoutState('collapse');
+    } else {
+      setLayoutState('close');
+    }
+  }, [params, history, layoutState]);
 
   useEffect(() => {
     const fullHandleId = eventBus.on('onLayoutFull', param => {
@@ -330,7 +262,7 @@ function MainPage() {
           <Splitter
             sizes={[75, 25]}
             minSize={400}
-            gutterSize={5}
+            gutterSize={10}
             layoutState={layoutState}
           >
             <MainAppContainer>{renderApp(true)}</MainAppContainer>
@@ -349,5 +281,71 @@ const FriendLnb = () => {
 const SpaceLnb = () => {
   return <div>Space LNB</div>;
 };
+
+const AppLayout = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+`;
+
+const LeftSide = styled.div`
+  display: flex;
+  height: 100%;
+  width: 300px;
+  border-right: 1px solid #dddddd;
+`;
+
+const Header = styled.div`
+  display: flex;
+  height: 60px;
+  align-items: center;
+  border-bottom: 1px solid #dddddd;
+`;
+
+const Title = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  flex: auto;
+  height: 100%;
+  border-right: 1px solid #dddddd;
+`;
+
+const AppIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  border-right: 1px solid #dddddd;
+  height: 40px;
+  padding: 0 15px;
+`;
+
+const Profile = styled.div`
+  padding: 0 10px;
+`;
+
+const MainSide = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 300px);
+  height: 100%;
+`;
+
+const AppContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: calc(100% - 60px);
+`;
+const MainAppContainer = styled.div`
+  display: flex;
+  flex: auto;
+  overflow: hidden;
+`;
+
+const SubAppContainer = styled.div`
+  display: flex;
+  flex: auto;
+  overflow: hidden;
+  background: white;
+`;
 
 export default MainPage;
