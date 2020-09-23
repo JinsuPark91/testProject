@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useHistory, useRouteMatch } from 'react-router-dom';
-import { Tabs, Button } from 'antd';
+import { Tabs } from 'antd';
 import styled from 'styled-components';
 import { useCoreStores } from 'teespace-core';
 import { Talk } from 'teespace-talk-app';
@@ -9,6 +9,9 @@ import { CalendarApp, CalendarIcon } from 'teespace-calendar-app';
 import { MailMainView, MailSideView, MailSubView } from 'teespace-mail-app';
 import { DriveApp, DriveIcon } from 'teespace-drive-app';
 import Splitter from '../components/Splitter';
+import mailIcon from '../assets/icon_lnb_mail.svg';
+import chatIcon from '../assets/icon_lnb_chatting.svg';
+import friendIcon from '../assets/icon_lnb_friend.svg';
 import './mainPage.css';
 
 const { TabPane } = Tabs;
@@ -85,7 +88,6 @@ function MainPage() {
   const params = useParams();
   const history = useHistory();
   const routeMatch = useRouteMatch();
-  const urlSearchParams = new URLSearchParams(history.location.search);
   const [tabType, setTabType] = useState('f');
   const [mainApp, setMainApp] = useState(null);
   const [subApp, setSubApp] = useState(null);
@@ -95,20 +97,13 @@ function MainPage() {
   console.log(history);
   console.log(routeMatch);
 
-  // root tab useEffect
   useEffect(() => {
+    const urlSearchParams = new URLSearchParams(history.location.search);
+
     setTabType(params['0']);
-  }, [params['0']]);
-
-  // subApp useEffect
-  useEffect(() => {
-    setSubApp(urlSearchParams.get('sub'));
-  }, [urlSearchParams]);
-
-  // mainApp useEffect
-  useEffect(() => {
     setMainApp(params.mainApp);
-  }, [params.mainApp]);
+    setSubApp(urlSearchParams.get('sub'));
+  }, [params, history]);
 
   const doLogout = useCallback(async () => {
     await authStore.logout();
@@ -127,7 +122,7 @@ function MainPage() {
       case 'drive':
         return <DriveApp />;
       case 'office':
-        return <Office />;
+        return null;
       case 'mail':
         return <MailMainView />;
       default:
@@ -170,11 +165,7 @@ function MainPage() {
           <TabPane
             key="f"
             tab={
-              <img
-                src="/LNB_people_list.svg"
-                alt="friends"
-                style={{ width: '40px' }}
-              />
+              <img src={friendIcon} alt="friends" style={{ width: '40px' }} />
             }
           >
             <FriendLnb />
@@ -182,22 +173,14 @@ function MainPage() {
 
           <TabPane
             key="s"
-            tab={
-              <img
-                src="/LNB_chatting.svg"
-                alt="chat"
-                style={{ width: '40px' }}
-              />
-            }
+            tab={<img src={chatIcon} alt="chat" style={{ width: '40px' }} />}
           >
             <SpaceLnb />
           </TabPane>
 
           <TabPane
             key="m"
-            tab={
-              <img src="/LNB_mail.svg" alt="mail" style={{ width: '30px' }} />
-            }
+            tab={<img src={mailIcon} alt="mail" style={{ width: '30px' }} />}
           >
             <MailSideView />
           </TabPane>
@@ -271,15 +254,6 @@ const FriendLnb = () => {
 
 const SpaceLnb = () => {
   return <div>Space LNB</div>;
-};
-
-const Office = () => {
-  return (
-    <div>
-      Office App
-      <input type="text" style={{ height: '30px' }} />
-    </div>
-  );
 };
 
 export default MainPage;
