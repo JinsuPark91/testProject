@@ -9,6 +9,7 @@ const NoStyledInput = styled(Input)`
   border: none !important;
   height: inherit;
   font-size: inherit;
+  flex: 1;
   &:focus {
     border-color: none;
     box-shadow: none;
@@ -17,7 +18,8 @@ const NoStyledInput = styled(Input)`
 `;
 
 const StyledInputChipsWrapper = styled.div`
-  display: inline-block;
+  display: flex;
+  flex-wrap: wrap;
   height: auto;
   min-height: 30px;
   border: 1px solid #c6ced6;
@@ -54,18 +56,24 @@ function InputChips({
   const handleKeyPress = e => {
     const { value: text } = e.target;
     if (e.key === ' ' || e.key === 'Enter') {
-      onAddChip(text);
+      if (onAddChip) {
+        onAddChip(text);
+      }
       setInputValue('');
     }
   };
+
+  const handleOnCloseChip = chip => (onDeleteChip ? onDeleteChip(chip) : null);
+
   return (
     <StyledInputChipsWrapper style={{ width: size }}>
       {chips.map(chip => (
         <CommonChip
+          style={{}}
           key={chip}
           text={chip}
           size="small"
-          onClose={() => onDeleteChip(chip)}
+          onClose={() => handleOnCloseChip(chip)}
         />
       ))}
       <NoStyledInput

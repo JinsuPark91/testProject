@@ -12,6 +12,54 @@ $common-button-border-radius: 15px;
 $common-button-padding: 3px 23px 9px 23px;
 .teespace-common {
 
+    &.ant-select {
+        width: auto;
+        min-width: 72px;
+        .ant-select-selector {
+            background-color: #FFFFFF;
+            border: 1px solid #C6CED6 !important;
+            border-radius: 25px !important;
+
+            &:hover {
+                background-color: #DCDDFF;
+                color: #000000;
+            }
+
+        }
+        &.ant-select-focused {
+            .ant-select-selector {
+                background-color: #DCDDFF;
+                border: 1px solid #6C56E5 !important;
+            }
+        }
+    }
+
+    &.ant-select-dropdown {
+        &.full-w {
+            width: 100%;
+        }
+
+        border-radius: 4px;
+        border: 1px solid #c6ced6;
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.20);
+
+        .ant-select-item {
+            font-size: 12px;
+            line-height: 20px;
+            color: #000000;
+            border-radius: 13px;
+
+            &.ant-select-item-option-active {
+                background-color: #DCDDFF;
+            }
+            &.ant-select-item-option-selected {
+                background-color: #BCBEFF;
+                color: #010101;
+                line-height: 20px;
+            }
+        }
+    }
+
     &.ant-modal {
         animation-duration: 0s !important;
     }
