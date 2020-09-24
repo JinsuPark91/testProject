@@ -13233,9 +13233,9 @@ tar@^2.0.0:
     fstream "^1.0.12"
     inherits "2"
 
-"teespace-calendar-app@git+ssh://git@192.168.158.12:teespace/teespace-calendar-app#develop":
+"teespace-calendar-app@git+ssh://git@192.168.158.12:teespace/teespace-calendar-app#for-build":
   version "0.1.1"
-  resolved "git+ssh://git@192.168.158.12:teespace/teespace-calendar-app#37aff8caf61afd8df8ca4a77ba39b2ed2558b2ff"
+  resolved "git+ssh://git@192.168.158.12:teespace/teespace-calendar-app#a98ca963dfb521ec278ce4e64e1652f75701e123"
   dependencies:
     "@ant-design/icons" "^4.2.2"
     "@craco/craco" "^5.6.4"
