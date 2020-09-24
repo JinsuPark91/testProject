@@ -13320,8 +13320,8 @@ tar@^2.0.0:
     react-scripts "3.4.3"
 
 "teespace-core@git+ssh://git@192.168.158.12:teespace/teespace-core#develop":
-  version "0.1.13"
-  resolved "git+ssh://git@192.168.158.12:teespace/teespace-core#dec6bee6790de24b7c084f075ab90cda14f86c48"
+  version "0.1.14"
+  resolved "git+ssh://git@192.168.158.12:teespace/teespace-core#edade59dd80493bf3e1b2f8c73034056d791a97a"
   dependencies:
     "@craco/craco" "^5.6.4"
     "@testing-library/jest-dom" "^4.2.4"
