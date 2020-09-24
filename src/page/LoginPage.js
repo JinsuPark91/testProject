@@ -24,20 +24,24 @@ function LoginPage() {
   const [form] = Form.useForm();
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
-  const [loginResult, setLoginResult] = useState({});
+  const [loginResult, setLoginResult] = useState(null);
+  const [errorResult, setErrorResult] = useState(null);
 
   const onFinish = async values => {
     setIsLoading(true);
-    const res = await authStore.login({
-      id: values.username,
-      pw: values.password,
-      isLocalLogin: process.env.REACT_APP_ENV === 'local',
-    });
-    setIsLoading(false);
-    setLoginResult(res);
 
-    if (res.status === 'fulfilled') {
-      history.push(`/f/${authStore.getMyInfo.userLoginId}`);
+    try {
+      const res = await authStore.login({
+        id: values.username,
+        pw: values.password,
+        isLocalLogin: process.env.REACT_APP_ENV === 'local',
+      });
+      setLoginResult(res);
+      history.push(`/f/${authStore.user.loginId}`);
+    } catch (e) {
+      setErrorResult(e.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -89,15 +93,10 @@ function LoginPage() {
       </Form.Item>
 
       {isLoading === true && <span>로그인 중</span>}
-      {(isLoading === false && loginResult.status) === 'rejected' && (
-        <span>
-          로그인 실패! 사유: ({loginResult.error.code}){' '}
-          {loginResult.error.message}
-        </span>
+      {isLoading === false && errorResult && (
+        <span>로그인 실패! 사유: {errorResult}</span>
       )}
-      {(isLoading === false && loginResult.status) === 'fulfilled' && (
-        <span>로그인 성공</span>
-      )}
+      {isLoading === false && loginResult && <span>로그인 성공</span>}
     </Form>
   ));
 }

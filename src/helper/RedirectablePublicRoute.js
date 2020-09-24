@@ -14,7 +14,7 @@ export default function RedirectablePublicRoute({ component, ...rest }) {
         ) : (
           <Redirect
             to={{
-              pathname: `/f/${authStore.getMyInfo.userLoginId}`,
+              pathname: `/f/${authStore.user.loginId}`,
               state: { from: location },
             }}
           />
