@@ -17,7 +17,7 @@ import './mainPage.css';
 const { TabPane } = Tabs;
 
 const DEFAULT_MAIN_APP = 'talk';
-const eventBus = new EventBus();
+const eventBus = EventBus;
 
 function MainPage() {
   const { authStore } = useCoreStores();
