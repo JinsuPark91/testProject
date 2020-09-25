@@ -15,15 +15,24 @@ import CommonTabs, { CommonTabPane } from '../components/commons/Tabs';
 import CommonCheckbox from '../components/commons/Checkbox';
 import CommonRadio from '../components/commons/Radio';
 import CommonSwitch from '../components/commons/Switch';
-import CommonForm, { CommonFormItem } from '../components/commons/Form';
+import CommonDropdown, { CommonMenu } from '../components/commons/Dropdown';
 
 const { Title } = Typography;
+
+const menu = (
+  <CommonMenu>
+    <CommonMenu.Item>TeeDrive에 첨부</CommonMenu.Item>
+    <CommonMenu.Item>내 로컬에 첨부</CommonMenu.Item>
+    <CommonMenu.Item>TeeDrive에 저장 후 첨부</CommonMenu.Item>
+  </CommonMenu>
+);
 
 function CommonIntroPage() {
   const [modalVisible, setModalVisible] = useState(false);
   const [messageVisible, setMessageVisible] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
   const [inputChips, setInputChips] = useState(['test1', 'test2']);
+  const [dropdownQuery, setDropdownQuery] = useState('');
   const onAddChip = text => {
     /* immutable unique insert */
     const chips = new Set(inputChips);
@@ -31,7 +40,7 @@ function CommonIntroPage() {
     setInputChips(Array.from(chips));
   };
   const onDeleteChip = text => {
-    console.log(text)
+    console.log(text);
     const chips = new Set(inputChips);
     chips.delete(text);
     setInputChips(Array.from(chips));
@@ -160,8 +169,12 @@ function CommonIntroPage() {
         <CommonOption value="7">text</CommonOption>
       </CommonSelect>
       <CommonSelect optionLabelProp="title">
-        <CommonOption value="+82" title="+82" >+82 (82) Korea, Republic of</CommonOption>
-        <CommonOption value="+70" title="+70">+70 (70) Korea, Republic of</CommonOption>
+        <CommonOption value="+82" title="+82">
+          +82 (82) Korea, Republic of
+        </CommonOption>
+        <CommonOption value="+70" title="+70">
+          +70 (70) Korea, Republic of
+        </CommonOption>
       </CommonSelect>
       <Title>Attachment</Title>
       <CommonAttachment title="Guideline_reference.doc" />
@@ -244,7 +257,7 @@ function CommonIntroPage() {
       <CommonCheckbox checked />
       <CommonCheckbox disabled />
       <CommonCheckbox disabled checked />
-      <CommonCheckbox shape="round"/>
+      <CommonCheckbox shape="round" />
       <CommonCheckbox shape="round" checked />
       <CommonCheckbox shape="round" disabled />
       <CommonCheckbox shape="round" disabled checked />
@@ -258,6 +271,33 @@ function CommonIntroPage() {
       <CommonSwitch checked />
       <CommonSwitch disabled />
       <CommonSwitch disabled checked />
+      <Title>Dropdown</Title>
+      <CommonDropdown overlay={menu}>
+        <CommonButton type="solid">Click me</CommonButton>
+      </CommonDropdown>
+
+      <CommonDropdown
+        searchable
+        data={['test1', 'test2'].filter(
+          item => dropdownQuery === '' || item.includes(dropdownQuery),
+        )}
+        onSearch={query => setDropdownQuery(query)}
+      >
+        <CommonButton type="solid">Click me</CommonButton>
+      </CommonDropdown>
+      <CommonDropdown
+        overlay={
+          <CommonInputChips
+            onAddChip={onAddChip}
+            onDeleteChip={onDeleteChip}
+            chips={inputChips}
+            size={300}
+            placeholder="Enter text"
+          />
+        }
+      >
+        <CommonButton type="solid">Click me</CommonButton>
+      </CommonDropdown>
     </>
   );
 }
