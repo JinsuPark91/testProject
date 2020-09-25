@@ -240,16 +240,6 @@ function MainPage() {
                 >
                   Note 새창
                 </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    WWMS.send(
-                      JSON.stringify({ CH_TYPE: 'CHN0001', TEXT: '하이' }),
-                    );
-                  }}
-                >
-                  Websocket TEST
-                </button>
               </Title>
               <AppIconContainer>
                 <NoteIcon
