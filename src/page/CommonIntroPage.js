@@ -118,10 +118,7 @@ function CommonIntroPage() {
       <Title>Input</Title>
       <CommonInput placeholder="Hinted Text" style={{ width: 120 }} />
       <CommonInput value="Normal Text" style={{ width: 120 }} />
-      <CommonInput
-        alert="asdkjadklajdsaklj"
-        placement="top"
-      />
+      <CommonInput alert="Error message" placement="top" />
       <CommonInput value="Disabled Text" disabled style={{ width: 120 }} />
       <CommonTextArea rows={2} value="Input Box Text" style={{ width: 200 }} />
       <Title>Chips</Title>
@@ -169,7 +166,42 @@ function CommonIntroPage() {
       <Title>Attachment</Title>
       <CommonAttachment title="Guideline_reference.doc" />
       <CommonAttachment title="Guideline_reference.doc" closable />
-      <CommonAttachment title="12.[UI]TeeSpace_TeeNote_Gasdasdsad" closable />
+      <CommonAttachment title="Guideline_reference.doc" closable deleted />
+      <CommonAttachment title="Guideline_reference_teemail.pptx" closable />
+      <CommonAttachment
+        title="Guideline_reference_teemail.pptx"
+        closable
+        deleted
+      />
+      <CommonAttachment title="Guideline_reference.xls" closable />
+      <CommonAttachment title="Guideline_reference.xls" closable deleted />
+      <CommonAttachment title="Guideline_reference.txt" closable />
+      <CommonAttachment title="Guideline_reference.txt" closable deleted />
+      <CommonAttachment title="Guideline_reference.png" closable />
+      <CommonAttachment title="Guideline_reference.png" closable deleted />
+      <CommonAttachment title="Guideline_reference.zip" closable />
+      <CommonAttachment title="Guideline_reference.zip" closable deleted />
+      <CommonAttachment title="Guideline_reference.dps" closable />
+      <CommonAttachment title="Guideline_reference.dps" closable deleted />
+      <CommonAttachment title="Guideline_reference.mp3" closable />
+      <CommonAttachment title="Guideline_reference.mp3" closable deleted />
+      <CommonAttachment title="Guideline_reference.pdf" closable />
+      <CommonAttachment title="Guideline_reference.pdf" closable deleted />
+      <CommonAttachment title="Guideline_reference.mkv" closable />
+      <CommonAttachment title="Guideline_reference.mkv" closable deleted />
+      <CommonAttachment
+        title="Guideline_reference.mkv"
+        closable
+        bigsize
+        progress={80}
+        downloading
+      />
+      <CommonAttachment
+        title="Guideline_reference.mkv"
+        closable
+        progress={80}
+        downloading
+      />
       <Title>Tab</Title>
       <CommonTabs style={{ width: 320 }}>
         <CommonTabPane tab="Selected" key="1">

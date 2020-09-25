@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
+    <title>Icon/attachment/movie</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M24,5 C24.5522847,5 25,5.44771525 25,6 L25,24 C25,24.5522847 24.5522847,25 24,25 L6,25 C5.44771525,25 5,24.5522847 5,24 L5,6 C5,5.44771525 5.44771525,5 6,5 L24,5 Z M20,6.999 L10,7 L10,23 L20,23 L20,6.999 Z M23.5,20 L21.5,20 L21.5,22 L23.5,22 L23.5,20 Z M8.5,20 L6.5,20 L6.5,22 L8.5,22 L8.5,20 Z M23.5,16 L21.5,16 L21.5,18 L23.5,18 L23.5,16 Z M8.5,16 L6.5,16 L6.5,18 L8.5,18 L8.5,16 Z M13.1460501,12.5215423 L13.2236068,12.5527864 L17.2236068,14.5527864 C17.563783,14.7228745 17.5899505,15.1840649 17.302109,15.3989379 L17.2236068,15.4472136 L13.2236068,17.4472136 C12.9167294,17.6006523 12.5598305,17.4064689 12.5067388,17.0833416 L12.5,17 L12.5,13 C12.5,12.6569006 12.8332929,12.424522 13.1460501,12.5215423 Z M23.5,12 L21.5,12 L21.5,14 L23.5,14 L23.5,12 Z M8.5,12 L6.5,12 L6.5,14 L8.5,14 L8.5,12 Z M23.5,8 L21.5,8 L21.5,10 L23.5,10 L23.5,8 Z M8.5,8 L6.5,8 L6.5,10 L8.5,10 L8.5,8 Z" id="path-1"></path>
+    </defs>
+    <g id="Icon/attachment/movie" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" fill="#FBE8E8" x="0" y="0" width="30" height="30" rx="6"></rect>
+        <g id="Combined-Shape">
+            <use fill="#F66464" xlink:href="#path-1"></use>
+            <use fill-opacity="0.1" fill="#000000" xlink:href="#path-1"></use>
+        </g>
+    </g>
+</svg>

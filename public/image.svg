@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
+    <title>Icon/attachment/image</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icon/attachment/image" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" fill="#DEEFF8" x="0" y="0" width="30" height="30" rx="6"></rect>
+        <g id="note" transform="translate(5.000000, 6.000000)">
+            <rect id="Combined-Shape" stroke="#2295CE" stroke-width="2" transform="translate(10.000000, 9.000000) rotate(-270.000000) translate(-10.000000, -9.000000) " x="2" y="9.09494702e-13" width="16" height="18" rx="1"></rect>
+            <polyline id="Path-9" stroke="#2295CE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="1 15 8 10 11.8980282 13.0680404 19 8"></polyline>
+            <rect id="Rectangle-Copy-13" fill="#2295CE" x="4" y="4" width="3" height="3" rx="1.5"></rect>
+        </g>
+    </g>
+</svg>
