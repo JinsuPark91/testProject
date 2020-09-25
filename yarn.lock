@@ -5226,6 +5226,11 @@ emoji-mart@^3.0.0:
     "@babel/runtime" "^7.0.0"
     prop-types "^15.6.0"
 
+emoji-picker-react@^3.2.3:
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/emoji-picker-react/-/emoji-picker-react-3.2.4.tgz#04eb0f9aa9683300b402efe2a0fc9156d8fac394"
+  integrity sha512-X9AESw1olo73kWBS25hlBcr5GQltHI6kZueV11bR5NJrrG/Dt8TrMbhSMSngs4rMxeAoVT04ST9ixI1KxPThJg==
+
 emoji-regex@^7.0.1, emoji-regex@^7.0.2:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-7.0.3.tgz#933a04052860c85e83c122479c4748a8e4c72156"
@@ -13233,9 +13238,9 @@ tar@^2.0.0:
     fstream "^1.0.12"
     inherits "2"
 
-"teespace-calendar-app@git+ssh://git@192.168.158.12:teespace/teespace-calendar-app#for-build":
+"teespace-calendar-app@git+http://192.168.158.12:9000/teespace/teespace-calendar-app#for-build":
   version "0.1.1"
-  resolved "git+ssh://git@192.168.158.12:teespace/teespace-calendar-app#a98ca963dfb521ec278ce4e64e1652f75701e123"
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-calendar-app#a98ca963dfb521ec278ce4e64e1652f75701e123"
   dependencies:
     "@ant-design/icons" "^4.2.2"
     "@craco/craco" "^5.6.4"
@@ -13342,9 +13347,9 @@ tar@^2.0.0:
     react-dom "^16.13.1"
     react-scripts "3.4.3"
 
-"teespace-drive-app@git+ssh://git@192.168.158.12:teespace/teespace-drive-app#develop":
+"teespace-drive-app@git+http://192.168.158.12:9000/teespace/teespace-drive-app#develop":
   version "0.1.0"
-  resolved "git+ssh://git@192.168.158.12:teespace/teespace-drive-app#b5ea4ca90c1976db92468f14ae452769752c182e"
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-drive-app#8c34fb6a5a12036999e4bf956d87a663cbc3bd76"
   dependencies:
     "@ant-design/icons" "^4.2.2"
     "@craco/craco" "^5.6.4"
@@ -13373,9 +13378,9 @@ tar@^2.0.0:
     styled-tools "^1.7.2"
     teespace-core "git+http://192.168.158.12:9000/teespace/teespace-core#develop"
 
-"teespace-mail-app@git+ssh://git@192.168.158.12:teespace/teespace-mail-app#develop":
+"teespace-mail-app@git+http://192.168.158.12:9000/teespace/teespace-mail-app#develop":
   version "0.1.0"
-  resolved "git+ssh://git@192.168.158.12:teespace/teespace-mail-app#25dcf167182f7d13930f529e5c95617ff349ae27"
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-mail-app#5fc6eed516696a83f52b3c45beae5e5b21872fda"
   dependencies:
     "@craco/craco" "^5.6.4"
     "@testing-library/jest-dom" "^4.2.4"
@@ -13394,9 +13399,9 @@ tar@^2.0.0:
     styled-components "^5.1.1"
     teespace-core "git+http://192.168.158.12:9000/teespace/teespace-core#develop"
 
-"teespace-note-app@git+ssh://git@192.168.158.12:teespace/teespace-note-app#develop":
+"teespace-note-app@git+http://192.168.158.12:9000/teespace/teespace-note-app#develop":
   version "0.1.1"
-  resolved "git+ssh://git@192.168.158.12:teespace/teespace-note-app#598c61208a020f8045b6aa241107e5d2317d4575"
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-note-app#674cd1947b09c9906a96f2175cc94b362f7bc75d"
   dependencies:
     "@craco/craco" "^5.6.4"
     "@fortawesome/fontawesome-svg-core" "^1.2.30"
@@ -13422,9 +13427,9 @@ tar@^2.0.0:
     styled-components "^5.1.1"
     teespace-core "git+http://192.168.158.12:9000/teespace/teespace-core#develop"
 
-"teespace-talk-app@git+ssh://git@192.168.158.12:teespace/teespace-talk-app#develop":
+"teespace-talk-app@git+http://192.168.158.12:9000/teespace/teespace-talk-app#develop":
   version "0.1.0"
-  resolved "git+ssh://git@192.168.158.12:teespace/teespace-talk-app#0d3f6c79824b19fa1ff0eb2f547392f4bbaa5f4a"
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-talk-app#04a2f96fea193749df62f34baf56eb92b6fe01f9"
   dependencies:
     "@craco/craco" "^5.6.4"
     "@testing-library/jest-dom" "^4.2.4"
@@ -13434,10 +13439,8 @@ tar@^2.0.0:
     autobind-decorator "^2.4.0"
     axios "^0.20.0"
     craco-less "^1.17.0"
-    draft-js "^0.11.7"
-    draft-js-mention-plugin "^3.1.5"
-    draft-js-plugins-editor "^3.0.0"
     emoji-mart "^3.0.0"
+    emoji-picker-react "^3.2.3"
     mobx "^5.15.6"
     mobx-react "^6.3.0"
     moment "^2.27.0"
