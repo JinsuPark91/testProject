@@ -10,19 +10,29 @@ const StyledInput = styled(Input)`
   font-size: 12px;
   height: 30px;
   color: #3b3b3b;
+  box-shadow: none !important;
   &::placeholder {
     color: #bdc6d3;
   }
-  &:hover {
-    background-color: #dcddff;
-    border: 1px solid #c6ced6;
-    color: #000000;
+  &:hover:not(:disabled) {
+    ${props =>
+      !props.alert &&
+      css`
+        background-color: #dcddff;
+        border: 1px solid #c6ced6;
+        color: #000000;
+      `}
   }
   &:active,
   &:focus {
-    border: 1px solid #6c56e5;
-    color: #000000;
-    box-shadow: none;
+    &:not(:disabled) {
+      ${props =>
+        !props.alert &&
+        css`
+          border: 1px solid #6c56e5;
+          color: #000000;
+        `}
+    }
   }
   &:disabled {
     background-color: #cccccc;
@@ -32,7 +42,7 @@ const StyledInput = styled(Input)`
   ${props =>
     props.alert &&
     css`
-      border: 1px solid #ff5151;
+      border: 1px solid #ff5151 !important;
     `}
 `;
 
