@@ -1,5 +1,6 @@
 .ant-tabs-nav {
   height: 60px;
+  margin-bottom: 0 !important;
 }
 
 .ant-tabs.ant-tabs-top {

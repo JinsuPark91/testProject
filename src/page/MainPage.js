@@ -9,6 +9,7 @@ import { NoteApp, NoteIcon } from 'teespace-note-app';
 import { CalendarApp, CalendarIcon } from 'teespace-calendar-app';
 import { MailMainView, MailSideView, MailSubView } from 'teespace-mail-app';
 import { DriveApp, DriveIcon, ViewFileIcon } from 'teespace-drive-app';
+import FriendLnb from '../components/friends/FriendsLNB';
 import Splitter from '../components/Splitter';
 import mailIcon from '../assets/icon_lnb_mail.svg';
 import chatIcon from '../assets/icon_lnb_chatting.svg';
@@ -20,7 +21,8 @@ const { TabPane } = Tabs;
 const DEFAULT_MAIN_APP = 'talk';
 
 function MainPage() {
-  const { authStore } = useCoreStores();
+  const coreStore = useCoreStores();
+  console.log(coreStore);
   const params = useParams();
   const history = useHistory();
   const [tabType, setTabType] = useState(null);
@@ -308,10 +310,6 @@ function MainPage() {
     </AppLayout>
   );
 }
-
-const FriendLnb = () => {
-  return <div>Friend LNB</div>;
-};
 
 const Profile = ({ userId }) => {
   return <div>{`${userId}의 profile`}</div>;
