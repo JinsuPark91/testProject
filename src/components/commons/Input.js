@@ -18,6 +18,13 @@ const StyledInput = styled(Input)`
   &::placeholder {
     color: #bdc6d3;
   }
+
+  ${props =>
+    props.hasrighticon &&
+    css`
+      padding-right: 30px;
+    `}
+
   &:hover:not(:disabled) {
     ${props =>
       !props.alert &&
@@ -109,9 +116,16 @@ function CommonInput(props) {
     setVisibleAlert(!visibleAlert);
   };
 
+  const hasRightIcon = type === 'password' || !!alert;
+
   return (
     <div style={style}>
-      <StyledInput {...inputProps} alert={alert} type={inputType} />
+      <StyledInput
+        {...inputProps}
+        alert={alert}
+        type={inputType}
+        hasrighticon={hasRightIcon}
+      />
       {type === 'password' && (
         <>
           {visibleText && <PasswordVisibleIcon onClick={handleVisibleText} />}
