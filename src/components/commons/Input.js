@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { Input, Tooltip } from 'antd';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import {
+  EyeOutlined,
+  EyeInvisibleOutlined,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons';
 
 const StyledInput = styled(Input)`
   width: inherit;
@@ -52,6 +56,25 @@ const AlertIcon = styled(ExclamationCircleOutlined)`
   margin-left: -28px;
   font-size: 26px;
   color: #ff5151;
+  cursor: pointer;
+`;
+
+const PasswordVisibleIcon = styled(EyeOutlined)`
+  position: absolute;
+  font-size: 20px;
+  margin-left: -26px;
+  margin-top: 6px;
+  cursor: pointer;
+  color: #c6ced6;
+`;
+
+const PasswordInvisibleIcon = styled(EyeInvisibleOutlined)`
+  position: absolute;
+  font-size: 20px;
+  margin-left: -26px;
+  margin-top: 6px;
+  cursor: pointer;
+  color: #c6ced6;
 `;
 
 /**
@@ -61,15 +84,37 @@ const AlertIcon = styled(ExclamationCircleOutlined)`
  * @param {('topLeft'|'topRight'|'leftTop'|'left'|'leftBottom'|'rightTop'|'right'|'rightBottom'|'bottomLeft'|'bottom'|'bottomRight')} props.placement
  */
 function CommonInput(props) {
-  const { style, alert, placement } = props;
+  const { style, alert, placement, type } = props;
+
+  const [visibleText, setVisibleText] = useState(true);
+  const [inputType, setInputType] = useState(type);
   const inputProps = {
     ...props,
     style: {},
   };
 
+  useEffect(() => {
+    if (type === 'password') {
+      setVisibleText(false);
+    }
+  }, [type]);
+
+  const handleVisibleText = () => {
+    setInputType(visibleText ? 'password' : 'text');
+    setVisibleText(!visibleText);
+  };
+
   return (
     <div style={style}>
-      <StyledInput {...inputProps} alert={alert} />
+      <StyledInput {...inputProps} alert={alert} type={inputType} />
+      {type === 'password' && (
+        <>
+          {visibleText && <PasswordVisibleIcon onClick={handleVisibleText} />}
+          {!visibleText && (
+            <PasswordInvisibleIcon onClick={handleVisibleText} />
+          )}
+        </>
+      )}
       {!!alert && (
         <Tooltip
           color="#ff5151"

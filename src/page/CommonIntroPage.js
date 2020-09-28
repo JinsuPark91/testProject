@@ -126,6 +126,11 @@ function CommonIntroPage() {
 
       <Title>Input</Title>
       <CommonInput placeholder="Hinted Text" style={{ width: 120 }} />
+      <CommonInput
+        placeholder="Password"
+        type="password"
+        style={{ width: 120 }}
+      />
       <CommonInput value="Normal Text" style={{ width: 120 }} />
       <CommonInput alert="Error message" placement="top" />
       <CommonInput value="Disabled Text" disabled style={{ width: 120 }} />
