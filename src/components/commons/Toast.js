@@ -66,23 +66,36 @@ const ToastContent = styled.div`
 const ToastClose = styled(CloseOutlined)`
   cursor: pointer;
   font-size: 10.9px;
-`
+`;
 
 /**
- * 
+ *
  * @param {Object} props
  * @param {boolean} props.visible
  * @param {('small'|'medium'|'large')} props.size
  * @param {ReactNode} props.children
  * @param {function} props.onClose
+ * @param {number} props.timeoutMs
  */
-function Toast({ children, visible, onClose, size = 'medium' }) {
+function Toast({
+  children,
+  visible,
+  onClose,
+  size = 'medium',
+  timeoutMs = 2000,
+}) {
   const el = document.createElement('div');
 
   useEffect(() => {
     messageRoot.appendChild(el);
-    return () => messageRoot.removeChild(el);
-  });
+    const timeoutFunc = setTimeout(() => {
+      onClose();
+    }, timeoutMs);
+    return () => {
+      clearTimeout(timeoutFunc);
+      messageRoot.removeChild(el);
+    };
+  }, [el, onClose, timeoutMs, visible]);
 
   return ReactDOM.createPortal(
     <Wrapper visible={visible}>
@@ -104,8 +117,9 @@ function Toast({ children, visible, onClose, size = 'medium' }) {
           </Row>
         </ToastContent>
       </ToastWrapper>
-    </Wrapper>
-  , el);
+    </Wrapper>,
+    el,
+  );
 }
 
 export default Toast;
