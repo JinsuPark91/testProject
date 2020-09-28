@@ -88,6 +88,7 @@ function CommonInput(props) {
 
   const [visibleText, setVisibleText] = useState(true);
   const [inputType, setInputType] = useState(type);
+  const [visibleAlert, setVisibleAlert] = useState(!!alert);
   const inputProps = {
     ...props,
     style: {},
@@ -102,6 +103,10 @@ function CommonInput(props) {
   const handleVisibleText = () => {
     setInputType(visibleText ? 'password' : 'text');
     setVisibleText(!visibleText);
+  };
+
+  const handleVisibleAlert = () => {
+    setVisibleAlert(!visibleAlert);
   };
 
   return (
@@ -119,11 +124,11 @@ function CommonInput(props) {
         <Tooltip
           color="#ff5151"
           title={alert}
-          visible
+          visible={visibleAlert}
           overlayStyle={{ fontSize: 12 }}
           placement={placement || 'bottom'}
         >
-          <AlertIcon />
+          <AlertIcon onClick={handleVisibleAlert} />
         </Tooltip>
       )}
     </div>
