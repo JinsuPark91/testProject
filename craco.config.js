@@ -10,6 +10,7 @@ module.exports = {
   webpack: {
     alias: {
       react: require.resolve('react'),
+      'teespace-core': require.resolve('teespace-core'),
     },
   },
   plugins: [
