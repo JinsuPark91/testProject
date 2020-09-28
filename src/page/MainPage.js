@@ -9,6 +9,7 @@ import { NoteApp, NoteIcon } from 'teespace-note-app';
 import { CalendarApp, CalendarIcon } from 'teespace-calendar-app';
 import { MailMainView, MailSideView, MailSubView } from 'teespace-mail-app';
 import { DriveApp, DriveIcon, ViewFileIcon } from 'teespace-drive-app';
+import RoomList from '../components/RoomList';
 import Splitter from '../components/Splitter';
 import mailIcon from '../assets/icon_lnb_mail.svg';
 import chatIcon from '../assets/icon_lnb_chatting.svg';
@@ -207,7 +208,7 @@ function MainPage() {
                   <img src={chatIcon} alt="chat" style={{ width: '40px' }} />
                 }
               >
-                <SpaceLnb />
+                <RoomList />
               </TabPane>
 
               <TabPane
@@ -315,10 +316,6 @@ const FriendLnb = () => {
 
 const Profile = ({ userId }) => {
   return <div>{`${userId}의 profile`}</div>;
-};
-
-const SpaceLnb = () => {
-  return <div>Space LNB</div>;
 };
 
 const AppLayout = styled.div`
