@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroller';
 import { List } from 'antd';
 import styled from 'styled-components';
@@ -75,15 +76,20 @@ function RoomItem({ roomInfo, onClick }) {
   );
 }
 
+const TEMP_USER_ID = 'd404f9aa-c9db-4b21-8911-c1305c46b5f7';
+
 function RoomList() {
   const [hasMore, setHasMore] = useState(false);
   const [roomList, setRoomList] = useState([]);
+  const history = useHistory();
+  const params = useParams();
   const { roomStore, authStore } = useCoreStores();
+  console.log(history, params);
 
   useEffect(() => {
     async function getRooms() {
       const { data } = await API.Get(
-        `/Messenger/ttalkmessengers?action=List&user-id=${'d404f9aa-c9db-4b21-8911-c1305c46b5f7'}&istemp=false&show=true`,
+        `/Messenger/ttalkmessengers?action=List&user-id=${TEMP_USER_ID}&istemp=false&show=true`,
       );
       setRoomList(data.dto.ttalkMessengersList);
     }
@@ -96,7 +102,11 @@ function RoomList() {
   };
 
   const handleRoomClick = roomInfo => {
-    console.log(roomInfo);
+    const { CH_ID: roomId } = roomInfo;
+    history.push({
+      pathname: `/${params['0']}/${roomId}/${params.mainApp}`,
+      search: history.location.search,
+    });
   };
 
   return (

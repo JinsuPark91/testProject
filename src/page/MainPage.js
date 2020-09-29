@@ -133,7 +133,13 @@ function MainPage() {
         // TODO : Profile Component 받기.
         return <Profile />;
       case 'talk':
-        return <Talk layoutState={layoutState} />;
+        return (
+          <Talk
+            layoutState={layoutState}
+            loginUserId="d404f9aa-c9db-4b21-8911-c1305c46b5f7"
+            roomId={params.id}
+          />
+        );
       case 'note':
         return <NoteApp layoutState={layoutState} />;
       case 'schedule':
