@@ -92,7 +92,13 @@ const PasswordInvisibleIcon = styled(EyeInvisibleOutlined)`
  * @param {function} props.getPopupContainer - alert tooltip의 DOM이 append될 container DOM을 반환. ex) () => document.body
  */
 function CommonInput(props) {
-  const { style, alert, placement, type, getPopupContainer } = props;
+  const {
+    style,
+    alert,
+    placement,
+    type,
+    getPopupContainer = () => document.body,
+  } = props;
 
   const [visibleText, setVisibleText] = useState(true);
   const [inputType, setInputType] = useState(type);
