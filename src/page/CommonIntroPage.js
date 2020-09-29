@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Typography } from 'antd';
-import CommonDialog from '../components/commons/Dialog';
+import CommonDialog, { ContentWrapper } from '../components/commons/Dialog';
 import CommonMessage from '../components/commons/Message';
 import CommonButton from '../components/commons/Button';
 import CommonToast from '../components/commons/Toast';
@@ -59,7 +59,9 @@ function CommonIntroPage() {
         onCancel={() => setModalVisible(false)}
         size="medium"
       >
-        <div>Hello Dialog</div>
+        <ContentWrapper>
+          <div>Hello Dialog</div>
+        </ContentWrapper>
       </CommonDialog>
       <CommonButton onClick={() => setMessageVisible(true)}>
         Open CommonMessage
