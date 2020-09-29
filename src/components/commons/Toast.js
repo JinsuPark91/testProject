@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   left: 0;
   overflow: auto;
   outline: 0;
-  z-index: 1000;
+  z-index: 2000;
   ${props =>
     !props.visible &&
     css`

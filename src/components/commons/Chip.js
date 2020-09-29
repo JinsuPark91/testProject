@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import styled, { css } from 'styled-components';
 import { Row } from 'antd';
 import {
@@ -103,7 +103,7 @@ const ChipCheckedIcon = styled(CheckOutlined)`
 /**
  * Common Chip
  * @param {Object} props
- * @param {string || ReactNode} props.icon
+ * @param {(string | ReactNode)} props.icon
  * @param {string} props.text
  * @param {('small'|'default')} props.size
  * @param {boolean} props.alert

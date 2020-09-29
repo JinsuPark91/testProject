@@ -90,10 +90,15 @@ const StyledButton = styled(Button)`
  * @param {('small'|'default')} props.size
  */
 function CommonButton(props) {
-  const { children, size } = props;
+  const { children, size, style } = props;
+
+  const btnStyle = {
+    height: size === 'small' ? 27 : 30,
+    ...style,
+  };
 
   return (
-    <StyledButton {...props} style={{ height: size === 'small' ? 27 : 30 }}>
+    <StyledButton {...props} style={btnStyle}>
       {children}
     </StyledButton>
   );

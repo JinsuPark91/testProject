@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Input, Tooltip } from 'antd';
 import {
@@ -89,16 +89,28 @@ const PasswordInvisibleIcon = styled(EyeInvisibleOutlined)`
  * @param {Object} props
  * @param {string|boolean} props.alert
  * @param {('topLeft'|'topRight'|'leftTop'|'left'|'leftBottom'|'rightTop'|'right'|'rightBottom'|'bottomLeft'|'bottom'|'bottomRight')} props.placement
+ * @param {function} props.getPopupContainer - alert tooltip의 DOM이 append될 container DOM을 반환. ex) () => document.body
  */
 function CommonInput(props) {
-  const { style, alert, placement, type } = props;
+  const { style, alert, placement, type, getPopupContainer } = props;
 
   const [visibleText, setVisibleText] = useState(true);
   const [inputType, setInputType] = useState(type);
   const [visibleAlert, setVisibleAlert] = useState(!!alert);
+  const [prevAlert, setPrevAlert] = useState('');
+
+  /* 입력창 입력 도중 alert 뜨고 right icon 누를 시 visible 변경이 blur와 겹쳐서 제대로 동작하지 않음 */
+  const [onBlurring, setOnBlurring] = useState(false);
+
+  const inputWrapperRef = useRef(null);
+
+  if (alert !== prevAlert) {
+    setPrevAlert(alert);
+    setVisibleAlert(true);
+  }
+
   const inputProps = {
     ...props,
-    style: {},
   };
 
   useEffect(() => {
@@ -110,16 +122,30 @@ function CommonInput(props) {
   const handleVisibleText = () => {
     setInputType(visibleText ? 'password' : 'text');
     setVisibleText(!visibleText);
+    inputWrapperRef.current.focus();
   };
 
   const handleVisibleAlert = () => {
+    if (onBlurring) {
+      setOnBlurring(false);
+      return;
+    }
     setVisibleAlert(!visibleAlert);
+    inputWrapperRef.current.focus();
+  };
+
+  const handleOnBlur = () => {
+    setOnBlurring(true);
+    setVisibleAlert(false);
+    setTimeout(() => {
+      setOnBlurring(false);
+    }, 100);
   };
 
   const hasRightIcon = type === 'password' || !!alert;
 
   return (
-    <div style={style}>
+    <div style={style} ref={inputWrapperRef} onBlur={handleOnBlur}>
       <StyledInput
         {...inputProps}
         alert={alert}
@@ -140,9 +166,16 @@ function CommonInput(props) {
           title={alert}
           visible={visibleAlert}
           overlayStyle={{ fontSize: 12 }}
-          placement={placement || 'bottom'}
+          placement={placement || 'bottomRight'}
+          trigger="contextMenu"
+          getPopupContainer={
+            getPopupContainer || (() => inputWrapperRef.current)
+          }
         >
-          <AlertIcon onClick={handleVisibleAlert} />
+          <AlertIcon
+            onClick={handleVisibleAlert}
+            onFocus={() => console.log('icon focus')}
+          />
         </Tooltip>
       )}
     </div>

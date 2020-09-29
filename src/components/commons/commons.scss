@@ -3,7 +3,6 @@ $common-dialog-padding-top: 9px;
 $common-dialog-line-height: 20px;
 $common-dialog-title-font-size: 14px;
 $common-dialog-border-radius: 4px;
-$common-dialog-body-margin: 16px 16px 0 16px;
 $common-dialog-footer-padding: 20px 0 20px 0;
 
 .teespace-common {
@@ -80,7 +79,8 @@ $common-dialog-footer-padding: 20px 0 20px 0;
     }
     
     .ant-modal-body {
-        margin: $common-dialog-body-margin;
+        margin: 0;
+        padding: 0;
     }
 
     .ant-modal-footer {
