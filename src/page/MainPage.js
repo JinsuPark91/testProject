@@ -56,35 +56,33 @@ function MainPage() {
     },
   );
 
-  // console.log(params);
-  // console.log(history);
-  useEffect(() => {
-    WWMS.setConfig({
-      url: `${process.env.REACT_APP_WEBSOCKET_URL}?USER_ID=${authStore.myInfo.id}&action=&CONNECTION_ID=undefined`,
-      isDebug: true,
+  // useEffect(() => {
+  //   WWMS.setConfig({
+  //     url: `${process.env.REACT_APP_WEBSOCKET_URL}?USER_ID=${authStore.myInfo.id}&action=&CONNECTION_ID=undefined`,
+  //     isDebug: true,
 
-      useInterval: false,
-      intervalTime: 1000,
+  //     useInterval: false,
+  //     intervalTime: 1000,
 
-      useReconnect: true,
-      reconnectInterval: 2000,
+  //     useReconnect: true,
+  //     reconnectInterval: 2000,
 
-      intervalFunction: () => {
-        console.log('send ping.');
-      },
+  //     intervalFunction: () => {
+  //       console.log('send ping.');
+  //     },
 
-      onopen: null,
-      onerror: null,
-      onmessage: null,
-      onclose: null,
-    });
+  //     onopen: null,
+  //     onerror: null,
+  //     onmessage: null,
+  //     onclose: null,
+  //   });
 
-    WWMS.addHandler('CHN0001', msg => {
-      console.log('WWMS received : ', msg);
-    });
+  //   WWMS.addHandler('CHN0001', msg => {
+  //     console.log('WWMS received : ', msg);
+  //   });
 
-    WWMS.connect();
-  }, []);
+  //   WWMS.connect();
+  // }, []);
 
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(history.location.search);
@@ -136,7 +134,7 @@ function MainPage() {
         return (
           <Talk
             layoutState={layoutState}
-            loginUserId="d404f9aa-c9db-4b21-8911-c1305c46b5f7"
+            loginUserId={authStore.myInfo.id}
             roomId={params.id}
           />
         );

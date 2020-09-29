@@ -76,26 +76,23 @@ function RoomItem({ roomInfo, onClick }) {
   );
 }
 
-const TEMP_USER_ID = 'd404f9aa-c9db-4b21-8911-c1305c46b5f7';
-
 function RoomList() {
   const [hasMore, setHasMore] = useState(false);
   const [roomList, setRoomList] = useState([]);
   const history = useHistory();
   const params = useParams();
-  const { roomStore, authStore } = useCoreStores();
-  console.log(history, params);
+  const { authStore } = useCoreStores();
 
   useEffect(() => {
     async function getRooms() {
       const { data } = await API.Get(
-        `/Messenger/ttalkmessengers?action=List&user-id=${TEMP_USER_ID}&istemp=false&show=true`,
+        `/Messenger/ttalkmessengers?action=List&user-id=${authStore.myInfo.id}&istemp=false&show=true`,
       );
       setRoomList(data.dto.ttalkMessengersList);
     }
 
     getRooms();
-  }, []);
+  }, [authStore.myInfo.id]);
 
   const handleInfiniteOnLoad = () => {
     // TODO : 무한스크롤 적용할거면 구현 하자.
