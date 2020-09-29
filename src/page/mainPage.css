@@ -1,5 +1,6 @@
 .ant-tabs-nav {
   height: 60px;
+  margin: 0 !important;
 }
 
 .ant-tabs.ant-tabs-top {
@@ -20,4 +21,19 @@
 .ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar {
   background: #ff486d;
   height: 3px;
+}
+
+.ant-tabs-content.ant-tabs-content-top {
+  height: 100%;
+}
+
+.ant-list-item-meta-description,
+.ant-list-item-meta-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ant-list-items{
+  background : rgb(245, 245, 251);
 }
