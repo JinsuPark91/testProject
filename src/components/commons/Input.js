@@ -110,6 +110,7 @@ function CommonInput(props) {
 
   const inputWrapperRef = useRef(null);
 
+  // alert 메세지가 변경되면 다시 보여준다.
   if (alert !== prevAlert) {
     setPrevAlert(alert);
     setVisibleAlert(true);
@@ -125,6 +126,7 @@ function CommonInput(props) {
     }
   }, [type]);
 
+  // 타입이 비밀번호이면 텍스트로 전환할 수 있는 모드를 추가
   const handleVisibleText = () => {
     setInputType(visibleText ? 'password' : 'text');
     setVisibleText(!visibleText);
@@ -140,6 +142,7 @@ function CommonInput(props) {
     inputWrapperRef.current.focus();
   };
 
+  // alert message를 Input창에서 blur 했을 때 가린다.
   const handleOnBlur = () => {
     setOnBlurring(true);
     setVisibleAlert(false);
