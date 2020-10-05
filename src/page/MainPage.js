@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { useOpenInWindow } from 'use-open-window';
 import { Tabs } from 'antd';
 import styled from 'styled-components';
-import { useCoreStores, EventBus, WWMS } from 'teespace-core';
+import { EventBus, WWMS } from 'teespace-core';
 import { Talk } from 'teespace-talk-app';
 import { NoteApp, NoteIcon } from 'teespace-note-app';
 import { CalendarApp, CalendarIcon } from 'teespace-calendar-app';
@@ -21,7 +21,6 @@ const { TabPane } = Tabs;
 const DEFAULT_MAIN_APP = 'talk';
 
 function MainPage() {
-  const { authStore } = useCoreStores();
   const params = useParams();
   const history = useHistory();
   const [tabType, setTabType] = useState(null);
@@ -32,7 +31,7 @@ function MainPage() {
 
   // NEW WINDOW TEST
   const [handleTalkWindowOpen, newTalkWindowHandler] = useOpenInWindow(
-    `${window.location.origin}/s/1234/talk?mini=true`,
+    `${window.location.origin}/s/${params.id}/talk?mini=true`,
     {
       name: '_blank',
       centered: true,
@@ -45,7 +44,7 @@ function MainPage() {
 
   // NEW WINDOW TEST
   const [handleNoteWindowOpen, newNoteWindowHandler] = useOpenInWindow(
-    `${window.location.origin}/s/1234/note?mini=true`,
+    `${window.location.origin}/s/${params.id}/note?mini=true`,
     {
       name: '_blank',
       centered: true,
@@ -123,41 +122,50 @@ function MainPage() {
       EventBus.off('onLayoutCollapse', collapseHandleId);
       EventBus.off('onLayoutClose', closeHandleId);
     };
-  }, []);
+  }, [history]);
 
-  const renderApp = app => {
-    switch (app) {
-      case 'profile':
-        // TODO : Profile Component 받기.
-        return <Profile />;
-      case 'talk':
-        return (
-          <Talk
-            layoutState={layoutState}
-            loginUserId={authStore.myInfo.id}
-            roomId={params.id}
-          />
-        );
-      case 'note':
-        return <NoteApp layoutState={layoutState} />;
-      case 'schedule':
-        return <CalendarApp layoutState={layoutState} />;
-      case 'drive':
-        return <DriveApp layoutState={layoutState} />;
-      case 'plus':
-        return <DriveApp layoutState={layoutState} />;
-      case 'mail':
-        return <MailMainView layoutState={layoutState} />;
-      case 'office':
-        // TODO : Office Component 받기.
-        return null;
-      case 'Meeting':
-        // TODO : Meeting Component 받기.
-        return null;
-      default:
-        return null;
-    }
-  };
+  // RoomId 가 바뀌면 다시 그려야 한다. getAppComponent 를 다시 메모이제이션 한다.
+  const getAppComponent = useCallback(
+    appName => {
+      switch (appName) {
+        case 'profile':
+          // TODO : Profile Component 받기.
+          return <Profile />;
+        case 'talk':
+          return <Talk layoutState={layoutState} roomId={params.id} />;
+        case 'note':
+          return <NoteApp layoutState={layoutState} roomId={params.id} />;
+        case 'schedule':
+          return <CalendarApp layoutState={layoutState} roomId={params.id} />;
+        case 'drive':
+          return <DriveApp layoutState={layoutState} roomId={params.id} />;
+        case 'plus':
+          return <DriveApp layoutState={layoutState} roomId={params.id} />;
+        case 'mail':
+          return <MailMainView layoutState={layoutState} roomId={params.id} />;
+        case 'office':
+          // TODO : Office Component 받기.
+          return null;
+        case 'Meeting':
+          // TODO : Meeting Component 받기.
+          return null;
+        default:
+          return null;
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [params.id],
+  );
+
+  // Room ID 가 바뀌면, getAppComponent가 변경(새로 생성) 되므로, mainApplication 또는 subApplication을 다시 메모이제이션 한다.
+  // 별개로, mainApp / subApp state가 변경 되었을 때도, mainApplication 또는 subApplication을 다시 메모이제이션 한다.
+  const mainApplication = useMemo(() => {
+    return getAppComponent(mainApp);
+  }, [getAppComponent, mainApp]);
+
+  const subApplication = useMemo(() => {
+    return getAppComponent(subApp);
+  }, [getAppComponent, subApp]);
 
   const handleTabClick = key => {
     let pathname = null;
@@ -301,14 +309,14 @@ function MainPage() {
                 gutterSize={10}
                 layoutState={layoutState}
               >
-                <MainAppContainer>{renderApp(mainApp)}</MainAppContainer>
-                <SubAppContainer>{renderApp(subApp)}</SubAppContainer>
+                <MainAppContainer>{mainApplication}</MainAppContainer>
+                <SubAppContainer>{subApplication}</SubAppContainer>
               </Splitter>
             </AppContainer>
           </MainSide>
         </>
       ) : (
-        renderApp(mainApp)
+        mainApplication
       )}
     </AppLayout>
   );
