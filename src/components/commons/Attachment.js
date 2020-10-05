@@ -90,6 +90,7 @@ const AttachmentBarProgress = styled(Progress)`
  * @param {boolean} props.bigsize
  * @param {number}  props.progress
  * @param {boolean} props.downloading
+ * @param {function} props.onClose
  */
 function Attachment(props) {
   const {
@@ -100,8 +101,9 @@ function Attachment(props) {
     bigsize,
     progress,
     downloading,
+    onClose,
   } = props;
-  const ext = title.split('.').slice(-1).pop().toLowerCase().trim();
+  const ext = (title || '').split('.').slice(-1).pop().toLowerCase().trim();
 
   const ext2path = fileExtension => {
     switch (fileExtension) {
@@ -167,7 +169,7 @@ function Attachment(props) {
         {!bigsize && downloading && (
           <Progress
             type="circle"
-            percent={progress}
+            percent={progress || 0}
             width={30}
             trailColor="#E3E4E9"
             strokeColor="#6C56E5"
@@ -187,11 +189,11 @@ function Attachment(props) {
             <AttachmentTitle>{title}</AttachmentTitle>
             <AttachmentSubTitle>{subtitle}</AttachmentSubTitle>
           </TextWrapper>
-          {closable && <AttachmentClose />}
+          {closable && <AttachmentClose onClick={onClose} />}
         </div>
         {bigsize && downloading && (
           <AttachmentBarProgress
-            percent={progress}
+            percent={progress || 0}
             showInfo={false}
             strokeWidth={4}
             trailColor="#E3E4E9"

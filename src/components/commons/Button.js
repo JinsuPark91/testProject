@@ -4,10 +4,12 @@ import { Button } from 'antd';
 import './commons.scss';
 
 const StyledButton = styled(Button)`
+  outline: 0;
   border-radius: 15px;
   font-size: 12px;
   line-height: 18px;
   padding: 3px 23px 9px 23px;
+  border: 1px solid transparent;
 
   &.ant-btn-solid {
     background-color: #6c56e5;

@@ -61,26 +61,26 @@ const MessageTitle = styled(Title)`
   font-size: 15px !important;
   line-height: 22px !important;
   margin-top: 13px !important;
-`
+`;
 
 const MessageSubTitle = styled(Paragraph)`
   color: #777777;
   line-height: 19px;
   size: 13px;
   margin-top: 9px !important;
-`
+`;
 const MessageActionContent = styled.div`
   margin-top: 22px;
   & > button:not(:first-child) {
     margin-left: 9.8px;
   }
-`
+`;
 
 /**
  * Message Dialog
  * @param {Object} props
  * @param {Array} props.btns
- * @param {function} props.btns.handler
+ * @param {function} props.btns.onClick
  * @param {string} props.btns.text
  * @param {string} props.btns.type
  */
@@ -118,8 +118,8 @@ function Message({ visible = false, title = '', subtitle = '', btns = [] }) {
                   ))}
                 </MessageSubTitle>
                 <MessageActionContent>
-                  {btns.map(({ type, handler, text }) => (
-                    <CommonButton type={type} key={text} onClick={handler}>
+                  {btns.map(({ type, onClick, text }) => (
+                    <CommonButton type={type} key={text} onClick={onClick}>
                       {text}
                     </CommonButton>
                   ))}

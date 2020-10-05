@@ -50,20 +50,20 @@ const SearchCloseButton = styled(CloseOutlined)`
   z-index: 10;
   margin-left: -26px;
   cursor: pointer;
-`
-
+`;
 
 /**
- * 
+ * Common Search
  * @param {Object} props
  * @param {('default'|'large')} props.size
  * @param {function} props.onChange
- * @param {boolean} disabled
- * @param {string} value
- * @param {('round'|'square')} shape
+ * @param {function} props.onClear
+ * @param {boolean} props.disabled
+ * @param {string} props.value
+ * @param {('round'|'square')} props.shape
  */
 function CommonSearch(props) {
-  const { size, style, onChange, disabled, value, shape } = props;
+  const { size, style, onChange, disabled, value, shape, onClear } = props;
   console.log('value', value);
   const [visibleClose, setVisibleClose] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -79,14 +79,18 @@ function CommonSearch(props) {
   };
 
   const handleOnChange = e => {
-    console.log('asdsadasdasd');
     if (onChange) {
       onChange(e.target.value);
     }
     setInputValue(e.target.value);
-  }
+  };
 
-  const handleInputClear = () => setInputValue('');
+  const handleInputClear = () => {
+    setInputValue('');
+    if (onClear) {
+      onClear();
+    }
+  };
 
   const handleOnFocus = () => setIsFocused(true);
   const handleOnBlur = () => setIsFocused(false);
@@ -109,7 +113,7 @@ function CommonSearch(props) {
         {...props}
       />
       {visibleClose && !disabled && (
-        <SearchCloseButton onClick={handleInputClear}/>
+        <SearchCloseButton onClick={handleInputClear} />
       )}
     </SearchWrapper>
   );

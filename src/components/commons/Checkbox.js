@@ -33,9 +33,10 @@ const StyledCheckbox = styled(Checkbox)`
 `;
 
 /**
- * 
+ *
  * @param {Object} props
  * @param {('default'|'round')} props.shape
+ * @param {function} props.onChange
  */
 function CommonCheckbox(props) {
   const { shape = 'default' } = props;

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Row } from 'antd';
+import { Avatar, Row } from 'antd';
 import {
   CheckOutlined,
   InfoCircleOutlined,
@@ -57,6 +57,19 @@ const ChipWrapper = styled.div`
         `}
 `;
 
+const StyledAvatar = styled(Avatar)`
+  ${props =>
+    props.size === 'small'
+      ? css`
+          width: 26px;
+          height: 26px;
+        `
+      : css`
+          width: 30px;
+          height: 30px;
+        `}
+`;
+
 const ChipContent = styled.div`
   height: 100%;
   align-items: center;
@@ -103,7 +116,7 @@ const ChipCheckedIcon = styled(CheckOutlined)`
 /**
  * Common Chip
  * @param {Object} props
- * @param {(string | ReactNode)} props.icon
+ * @param {string} props.icon
  * @param {string} props.text
  * @param {('small'|'default')} props.size
  * @param {boolean} props.alert
@@ -121,8 +134,7 @@ function CommonChip(props) {
       checked={checked}
     >
       <ChipContent>
-        {typeof icon === 'string' && icon}
-        {typeof icon !== 'string' && icon}
+        {icon && <StyledAvatar src={icon} size={size} />}
         {alert && <ChipInfoIcon alert={alert} />}
         <ChipTextContent align="middle">{text}</ChipTextContent>
         {checked && <ChipCheckedIcon alert={alert} />}

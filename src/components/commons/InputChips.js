@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Input } from 'antd';
 import CommonChip from './Chip';
 
@@ -22,9 +22,13 @@ const StyledInputChipsWrapper = styled.div`
   flex-wrap: wrap;
   height: auto;
   min-height: 30px;
-  border: 1px solid #c6ced6;
+  ${props =>
+    !props.noinput &&
+    css`
+      border: 1px solid #c6ced6;
+      border-radius: 25px;
+    `}
   padding: 1px 12px;
-  border-radius: 25px;
   font-size: 12px;
   color: #3b3b3b;
   align-items: center;
@@ -35,10 +39,11 @@ const StyledInputChipsWrapper = styled.div`
 
 /**
  * Common Input Chips
- * @param {Object} props
- * @param {Array} props.chips
- * @param {function} props.onAddChip
- * @param {function} props.onDeleteChip
+ * @param {Object}    props
+ * @param {Array.<{icon: string, alert: boolean, checked: boolean, text: string, disabled: boolean}>} props.chips
+ * @param {boolean}   props.noInput
+ * @param {function}  props.onAddChip
+ * @param {function}  props.onDeleteChip
  */
 function InputChips({
   size,
@@ -46,6 +51,7 @@ function InputChips({
   onAddChip,
   onDeleteChip,
   placeholder,
+  noInput,
 }) {
   const [inputValue, setInputValue] = useState('');
 
@@ -66,22 +72,28 @@ function InputChips({
   const handleOnCloseChip = chip => (onDeleteChip ? onDeleteChip(chip) : null);
 
   return (
-    <StyledInputChipsWrapper style={{ width: size }}>
+    <StyledInputChipsWrapper style={{ width: size }} noinput={noInput}>
       {chips.map(chip => (
         <CommonChip
           style={{}}
-          key={chip}
-          text={chip}
+          key={chip.text}
+          text={chip.text}
           size="small"
           onClose={() => handleOnCloseChip(chip)}
+          disabled={chip.disabled}
+          checked={chip.checked}
+          alert={chip.alert}
+          icon={chip.icon}
         />
       ))}
-      <NoStyledInput
-        onKeyPress={handleKeyPress}
-        onChange={handleInputChange}
-        value={inputValue}
-        placeholder={chips.length === 0 && placeholder}
-      />
+      {!noInput && (
+        <NoStyledInput
+          onKeyPress={handleKeyPress}
+          onChange={handleInputChange}
+          value={inputValue}
+          placeholder={chips.length === 0 && placeholder}
+        />
+      )}
     </StyledInputChipsWrapper>
   );
 }

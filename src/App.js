@@ -30,7 +30,6 @@ function App() {
     <BrowserRouter>
       <Switch>
         <Route exact path="/" component={ServicePage} />
-        <Route exact path="/commons" component={CommonIntroPage} />
         <RedirectablePublicRoute
           exact
           path="/login"

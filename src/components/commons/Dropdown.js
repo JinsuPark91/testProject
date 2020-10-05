@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Divider, Dropdown, Menu } from 'antd';
 import CommonInput from './Input';
@@ -35,25 +35,36 @@ const MenuSearchWrapper = styled.div`
 
 const { Item } = StyledMenu;
 
-const CommonMenuWrapper = ({ searchable, overlay, data, onSearch }) => {
+const CommonMenuWrapper = ({
+  searchable,
+  overlay,
+  data,
+  onSearch,
+  searchQuery,
+}) => {
   return (
     <StyledMenuWrapper>
       <StyledMenu>
-        {searchable && data.map(item => <Item key={item}>{item}</Item>)}
-        {!searchable && overlay}
+        {!overlay &&
+          data &&
+          data
+            .filter(item => item.text.includes(searchQuery))
+            .map(item => (
+              <Item key={item.text} onClick={item.onClick}>
+                {item.text}
+              </Item>
+            ))}
+        {!!overlay && overlay}
       </StyledMenu>
       <Divider style={{ margin: 0 }} />
       {searchable && (
         <MenuSearchWrapper>
-          <CommonInput
-            onClick={e => e.stopPropagation()}
-            onChange={e => onSearch(e.target.value)}
-          />
+          <CommonInput onClick={e => e.stopPropagation()} onChange={onSearch} />
         </MenuSearchWrapper>
       )}
     </StyledMenuWrapper>
   );
-}
+};
 /**
  * Common Dropdown
  * @param {Object} props
@@ -63,17 +74,23 @@ const CommonMenuWrapper = ({ searchable, overlay, data, onSearch }) => {
  */
 function CommonDropdown(props) {
   const { children, searchable, overlay, onSearch, data } = props;
+  const [searchQuery, setSearchQuery] = useState('');
   const antdProps = {
     ...props,
   };
 
+  const handleDropdownSearch = e => {
+    setSearchQuery(e.target.value);
+    onSearch(e);
+  };
   delete antdProps.searchable;
   antdProps.overlay = (
     <CommonMenuWrapper
       searchable={searchable}
       overlay={overlay}
       data={data}
-      onSearch={onSearch}
+      onSearch={handleDropdownSearch}
+      searchQuery={searchQuery}
     />
   );
 
@@ -84,4 +101,5 @@ function CommonDropdown(props) {
   );
 }
 export const CommonMenu = StyledMenu;
+CommonMenu.displayName = 'CommonMenu';
 export default CommonDropdown;

@@ -11,9 +11,10 @@ document.body.appendChild(messageRoot);
 const Wrapper = styled.div`
   position: fixed;
   right: 0;
-  bottom: 0;
+  bottom: 20px;
   left: 0;
   overflow: auto;
+  text-align: center;
   outline: 0;
   z-index: 2000;
   ${props =>
@@ -25,12 +26,12 @@ const Wrapper = styled.div`
 
 const ToastWrapper = styled.div`
   z-index: 1000;
-  position: fixed;
-  bottom: 20px;
+  text-align: left;
   left: 0;
   right: 0;
   margin: 0 auto;
-  width: 0;
+  width: auto;
+  display: inline-block;
   ${props => {
     switch (props.size) {
       case 'large':

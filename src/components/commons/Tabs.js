@@ -81,8 +81,9 @@ const TabsType2 = styled(Tabs)`
 /**
  * Common Tabs
  * @param {Object} props
- * @param {string} barColor
- * @param {string} textColor
+ * @param {string} props.barColor
+ * @param {string} props.textColor
+ * @param {('1'|'2')} props.type
  */
 function CommonTabs(props) {
   const { type = '1', children, barColor = '#6C56E5', textColor } = props;

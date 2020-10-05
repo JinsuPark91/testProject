@@ -4,9 +4,12 @@ import { Modal } from 'antd';
 import CommonButton from './Button';
 import './commons.scss';
 
-export const ContentWrapper = styled.div`
+const StyledContentWrapper = styled.div`
   padding: 16px 16px 0 16px;
 `;
+
+export const ContentWrapper = StyledContentWrapper;
+ContentWrapper.displayName = 'ContentWrapper';
 /**
  * Common Dialog
  * @param {Object} props
@@ -28,24 +31,28 @@ function CommonDialog(props) {
         return 390;
     }
   };
+
+  let footerElem = [
+    <CommonButton key="submit" type="solid" onClick={onOk}>
+      예
+    </CommonButton>,
+    <CommonButton key="back" type="outlined" onClick={onCancel}>
+      아니오
+    </CommonButton>,
+  ];
+  if (footer === null) {
+    footerElem = null;
+  }
+  if (footer !== undefined) {
+    footerElem = footer;
+  }
   return (
     <Modal
       {...props}
       width={getDialogWidth(size)}
       style={{ top: 20 }}
       className="teespace-common"
-      footer={
-        footer !== null
-          ? [
-              <CommonButton key="submit" type="solid" onClick={onOk}>
-                Submit
-              </CommonButton>,
-              <CommonButton key="back" type="outlined" onClick={onCancel}>
-                Return
-              </CommonButton>,
-            ]
-          : null
-      }
+      footer={footerElem}
     >
       {children}
     </Modal>
