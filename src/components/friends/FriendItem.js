@@ -79,7 +79,7 @@ function FriendItem({
   friendInfo: {
     friendNick = '',
     userName = '',
-    friendFav = 'FAV0002',
+    friendFavorite = false,
     friendId,
   },
 }) {
@@ -106,33 +106,29 @@ function FriendItem({
   }, [dropdownVisible]);
 
   const handleAddBookmark = useCallback(() => {
-    friendStore.updateFriendInfo({
-      userId: authStore.user.userId,
-      friendId,
-      editedInfo: { friendFav: 'FAV0001' },
-    });
+    friendStore.setFriendFavorite(authStore.user.id, friendId, true);
     setIsHovering(false);
     setDropdownVisible(false);
   }, [friendStore, authStore, friendId]);
 
   const handleCancelBookmark = useCallback(() => {
-    friendStore.updateFriendInfo({
-      userId: authStore.user.userId,
-      friendId,
-      editedInfo: { friendFav: 'FAV0002' },
-    });
+    friendStore.setFriendFavorite(authStore.user.id, friendId, false);
     setIsHovering(false);
     setDropdownVisible(false);
   }, [friendStore, authStore, friendId]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleRemoveFriend = useCallback(() => {});
+  const handleRemoveFriend = useCallback(() => {
+    friendStore.deleteFriendInfo(authStore.user.id, friendId);
+    setIsHovering(false);
+    setDropdownVisible(false);
+  }, [friendStore, authStore, friendId]);
   const menu = (
     <Menu>
-      {friendFav === 'FAV0001' && (
+      {friendFavorite && (
         <Menu.Item onClick={handleCancelBookmark}>즐겨찾기 해제</Menu.Item>
       )}
-      {friendFav === 'FAV0002' && (
+      {!friendFavorite && (
         <Menu.Item onClick={handleAddBookmark}>즐겨찾기</Menu.Item>
       )}
       <Menu.Item onClick={handleRemoveFriend}>프렌즈 삭제</Menu.Item>

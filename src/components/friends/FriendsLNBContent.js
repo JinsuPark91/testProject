@@ -40,7 +40,7 @@ function FriendsLNBContent({ searchKeyword }) {
   const { authStore, friendStore } = useCoreStores();
 
   const favFriendList = friendStore.friendInfoList.filter(
-    friendInfo => friendInfo.friendFav === 'FAV0001',
+    friendInfo => friendInfo.friendFavorite,
   );
 
   const filteredFriendList = friendStore.friendInfoList.filter(
@@ -50,7 +50,7 @@ function FriendsLNBContent({ searchKeyword }) {
   );
 
   useEffect(() => {
-    friendStore.getFriendInfoList({ userId: authStore.user.userId });
+    friendStore.getFriendInfoList({ userId: authStore.user.id });
   }, [friendStore, authStore]);
 
   const renderFriendList = friendList => (

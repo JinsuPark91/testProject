@@ -21,7 +21,7 @@ const { TabPane } = Tabs;
 const DEFAULT_MAIN_APP = 'talk';
 
 function MainPage() {
-  const { authStore } = useCoreStores();
+  const { authStore, friendStore } = useCoreStores();
   const params = useParams();
   const history = useHistory();
   const [tabType, setTabType] = useState(null);
@@ -81,6 +81,12 @@ function MainPage() {
 
     WWMS.addHandler('CHN0001', msg => {
       console.log('WWMS received : ', msg);
+    });
+    WWMS.addHandler('SYSTEM', msg => {
+      console.log('WWMS received : ', msg);
+      if (msg.NOTI_TYPE === 'addFriend') {
+        // friendStore.getFriendInfoList({ userId: authStore.user.id });
+      }
     });
 
     WWMS.connect();
