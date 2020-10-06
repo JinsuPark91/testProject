@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Divider, Dropdown, Menu } from 'antd';
 import CommonInput from './Input';
@@ -42,6 +42,13 @@ const CommonMenuWrapper = ({
   onSearch,
   searchQuery,
 }) => {
+  const scrollRef = useRef(window.pageYOffset);
+
+  scrollRef.current = window.pageYOffset;
+  useEffect(() => {
+    window.scrollTo(0, scrollRef.current);
+  }, [searchQuery]);
+
   return (
     <StyledMenuWrapper>
       <StyledMenu>
@@ -59,7 +66,7 @@ const CommonMenuWrapper = ({
       <Divider style={{ margin: 0 }} />
       {searchable && (
         <MenuSearchWrapper>
-          <CommonInput onClick={e => e.stopPropagation()} onChange={onSearch} />
+          <CommonInput onChange={onSearch} />
         </MenuSearchWrapper>
       )}
     </StyledMenuWrapper>
