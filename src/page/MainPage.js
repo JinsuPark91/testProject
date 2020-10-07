@@ -3,7 +3,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { useOpenInWindow } from 'use-open-window';
 import { Tabs } from 'antd';
 import styled from 'styled-components';
-import { EventBus, WWMS } from 'teespace-core';
+import { EventBus, WWMS, useCoreStores } from 'teespace-core';
 import { Talk } from 'teespace-talk-app';
 import { NoteApp, NoteIcon } from 'teespace-note-app';
 import { CalendarApp, CalendarIcon } from 'teespace-calendar-app';
