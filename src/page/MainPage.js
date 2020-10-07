@@ -21,7 +21,6 @@ const { TabPane } = Tabs;
 const DEFAULT_MAIN_APP = 'talk';
 
 function MainPage() {
-  const { authStore, friendStore } = useCoreStores();
   const params = useParams();
   const history = useHistory();
   const [tabType, setTabType] = useState(null);
