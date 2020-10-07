@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { useOpenInWindow } from 'use-open-window';
 import { Tabs } from 'antd';
 import styled from 'styled-components';
-import { EventBus, WWMS, useCoreStores } from 'teespace-core';
+import { EventBus } from 'teespace-core';
 import { Talk } from 'teespace-talk-app';
 import { NoteApp, NoteIcon } from 'teespace-note-app';
 import { CalendarApp, CalendarIcon } from 'teespace-calendar-app';
@@ -29,72 +28,10 @@ function MainPage() {
   const [mainApp, setMainApp] = useState(null);
   const [subApp, setSubApp] = useState(null);
   const [layoutState, setLayoutState] = useState('close');
-  const [isNewWindow, setIsNewWindow] = useState(false);
-
-  // NEW WINDOW TEST
-  const [handleTalkWindowOpen, newTalkWindowHandler] = useOpenInWindow(
-    `${window.location.origin}/s/${params.id}/talk?mini=true`,
-    {
-      name: '_blank',
-      centered: true,
-      specs: {
-        width: 600,
-        height: 900,
-      },
-    },
-  );
-
-  // NEW WINDOW TEST
-  const [handleNoteWindowOpen, newNoteWindowHandler] = useOpenInWindow(
-    `${window.location.origin}/s/${params.id}/note?mini=true`,
-    {
-      name: '_blank',
-      centered: true,
-      specs: {
-        width: 1024,
-        height: 768,
-      },
-    },
-  );
-
-  // useEffect(() => {
-  //   WWMS.setConfig({
-  //     url: `${process.env.REACT_APP_WEBSOCKET_URL}?USER_ID=${authStore.myInfo.id}&action=&CONNECTION_ID=undefined`,
-  //     isDebug: true,
-
-  //     useInterval: false,
-  //     intervalTime: 1000,
-
-  //     useReconnect: true,
-  //     reconnectInterval: 2000,
-
-  //     intervalFunction: () => {
-  //       console.log('send ping.');
-  //     },
-
-  //     onopen: null,
-  //     onerror: null,
-  //     onmessage: null,
-  //     onclose: null,
-  //   });
-
-  WWMS.addHandler('CHN0001', msg => {
-    console.log('WWMS received : ', msg);
-  });
-  WWMS.addHandler('SYSTEM', msg => {
-    console.log('WWMS received : ', msg);
-    if (msg.NOTI_TYPE === 'addFriend') {
-      // friendStore.getFriendInfoList({ userId: authStore.user.id });
-    }
-  });
-
-  //   WWMS.connect();
-  // }, []);
 
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(history.location.search);
     const subAppQuery = urlSearchParams.get('sub');
-    setIsNewWindow(urlSearchParams.has('mini'));
 
     setTabType(params['0']);
     setMainApp(params.mainApp);
@@ -107,16 +44,16 @@ function MainPage() {
   }, [params, history, layoutState]);
 
   useEffect(() => {
-    const fullHandleId = EventBus.on('onLayoutFull', param => {
+    const fullHandleId = EventBus.on('onLayoutFull', () => {
       setLayoutState('full');
     });
-    const expandHandleId = EventBus.on('onLayoutExpand', param => {
+    const expandHandleId = EventBus.on('onLayoutExpand', () => {
       setLayoutState('expand');
     });
-    const collapseHandleId = EventBus.on('onLayoutCollapse', param => {
+    const collapseHandleId = EventBus.on('onLayoutCollapse', () => {
       setLayoutState('collapse');
     });
-    const closeHandleId = EventBus.on('onLayoutClose', param => {
+    const closeHandleId = EventBus.on('onLayoutClose', () => {
       setLayoutState('close');
       history.push({
         pathname: history.location.pathname,
@@ -140,7 +77,8 @@ function MainPage() {
           // TODO : Profile Component 받기.
           return <Profile />;
         case 'talk':
-          return <Talk layoutState={layoutState} roomId={params.id} />;
+          return null;
+        // return <Talk layoutState={layoutState} roomId={params.id} />;
         case 'note':
           return <NoteApp layoutState={layoutState} roomId={params.id} />;
         case 'schedule':
@@ -205,127 +143,95 @@ function MainPage() {
 
   return (
     <AppLayout>
-      {!isNewWindow ? (
-        <>
-          <LeftSide>
-            <Tabs activeKey={tabType} onTabClick={handleTabClick}>
-              <TabPane
-                key="f"
-                tab={
-                  <img
-                    src={friendIcon}
-                    alt="friends"
-                    style={{ width: '40px' }}
-                  />
-                }
-              >
-                <FriendLnb />
-              </TabPane>
+      <LeftSide>
+        <Tabs activeKey={tabType} onTabClick={handleTabClick}>
+          <TabPane
+            key="f"
+            tab={
+              <img src={friendIcon} alt="friends" style={{ width: '40px' }} />
+            }
+          >
+            <FriendLnb />
+          </TabPane>
 
-              <TabPane
-                key="s"
-                tab={
-                  <img src={chatIcon} alt="chat" style={{ width: '40px' }} />
-                }
-              >
-                <RoomList />
-              </TabPane>
+          <TabPane
+            key="s"
+            tab={<img src={chatIcon} alt="chat" style={{ width: '40px' }} />}
+          >
+            <RoomList />
+          </TabPane>
 
-              <TabPane
-                key="m"
-                tab={
-                  <img src={mailIcon} alt="mail" style={{ width: '30px' }} />
-                }
-              >
-                <MailSideView />
-              </TabPane>
-            </Tabs>
-          </LeftSide>
-          <MainSide>
-            <Header>
-              <Title>
-                Title 영역 (icon container에 따라 가변)
-                <button
-                  type="button"
-                  onClick={() => {
-                    console.log(handleTalkWindowOpen());
-                  }}
-                >
-                  Talk 새창
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    console.log(handleNoteWindowOpen());
-                  }}
-                >
-                  Note 새창
-                </button>
-              </Title>
-              <AppIconContainer>
-                <NoteIcon
-                  width={50}
-                  height={50}
-                  state={subApp === 'note' ? 'active' : 'default'}
-                  onClick={() => {
-                    history.push({
-                      pathname: history.location.pathname,
-                      search: `?sub=note`,
-                    });
-                  }}
-                />
-                <DriveIcon
-                  width={50}
-                  height={50}
-                  state={subApp === 'drive' ? 'active' : 'default'}
-                  onClick={() => {
-                    history.push({
-                      pathname: history.location.pathname,
-                      search: `?sub=drive`,
-                    });
-                  }}
-                />
-                <CalendarIcon
-                  width={50}
-                  height={50}
-                  state={subApp === 'schedule' ? 'active' : 'default'}
-                  onClick={() => {
-                    history.push({
-                      pathname: history.location.pathname,
-                      search: `?sub=schedule`,
-                    });
-                  }}
-                />
-                <ViewFileIcon
-                  width={50}
-                  height={50}
-                  state={subApp === 'plus' ? 'active' : 'default'}
-                  onClick={() => {
-                    history.push({
-                      pathname: history.location.pathname,
-                      search: `?sub=plus`,
-                    });
-                  }}
-                />
-              </AppIconContainer>
-              <UserMenu>Profile 영역 (고정)</UserMenu>
-            </Header>
-            <AppContainer>
-              <Splitter
-                sizes={[75, 25]}
-                minSize={400}
-                gutterSize={10}
-                layoutState={layoutState}
-              >
-                <MainAppContainer>{mainApplication}</MainAppContainer>
-                <SubAppContainer>{subApplication}</SubAppContainer>
-              </Splitter>
-            </AppContainer>
-          </MainSide>
-        </>
-      ) : (
-        mainApplication
-      )}
+          <TabPane
+            key="m"
+            tab={<img src={mailIcon} alt="mail" style={{ width: '30px' }} />}
+          >
+            <MailSideView />
+          </TabPane>
+        </Tabs>
+      </LeftSide>
+      <MainSide>
+        <Header>
+          <Title>Title 영역 (icon container에 따라 가변)</Title>
+          <AppIconContainer>
+            <NoteIcon
+              width={50}
+              height={50}
+              state={subApp === 'note' ? 'active' : 'default'}
+              onClick={() => {
+                history.push({
+                  pathname: history.location.pathname,
+                  search: `?sub=note`,
+                });
+              }}
+            />
+            <DriveIcon
+              width={50}
+              height={50}
+              state={subApp === 'drive' ? 'active' : 'default'}
+              onClick={() => {
+                history.push({
+                  pathname: history.location.pathname,
+                  search: `?sub=drive`,
+                });
+              }}
+            />
+            <CalendarIcon
+              width={50}
+              height={50}
+              state={subApp === 'schedule' ? 'active' : 'default'}
+              onClick={() => {
+                history.push({
+                  pathname: history.location.pathname,
+                  search: `?sub=schedule`,
+                });
+              }}
+            />
+            <ViewFileIcon
+              width={50}
+              height={50}
+              state={subApp === 'plus' ? 'active' : 'default'}
+              onClick={() => {
+                history.push({
+                  pathname: history.location.pathname,
+                  search: `?sub=plus`,
+                });
+              }}
+            />
+          </AppIconContainer>
+          <UserMenu>Profile 영역 (고정)</UserMenu>
+        </Header>
+        <AppContainer>
+          <Splitter
+            sizes={[75, 25]}
+            minSize={400}
+            gutterSize={10}
+            layoutState={layoutState}
+          >
+            <MainAppContainer>{mainApplication}</MainAppContainer>
+            <SubAppContainer>{subApplication}</SubAppContainer>
+          </Splitter>
+        </AppContainer>
+      </MainSide>
     </AppLayout>
   );
 }
