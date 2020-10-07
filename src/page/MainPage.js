@@ -10,6 +10,7 @@ import { CalendarApp, CalendarIcon } from 'teespace-calendar-app';
 import { MailMainView, MailSideView, MailSubView } from 'teespace-mail-app';
 import { DriveApp, DriveIcon, ViewFileIcon } from 'teespace-drive-app';
 import RoomList from '../components/RoomList';
+import FriendLnb from '../components/friends/FriendsLNB';
 import Splitter from '../components/Splitter';
 import mailIcon from '../assets/icon_lnb_mail.svg';
 import chatIcon from '../assets/icon_lnb_chatting.svg';
@@ -21,6 +22,7 @@ const { TabPane } = Tabs;
 const DEFAULT_MAIN_APP = 'talk';
 
 function MainPage() {
+  const { authStore, friendStore } = useCoreStores();
   const params = useParams();
   const history = useHistory();
   const [tabType, setTabType] = useState(null);
@@ -76,9 +78,15 @@ function MainPage() {
   //     onclose: null,
   //   });
 
-  //   WWMS.addHandler('CHN0001', msg => {
-  //     console.log('WWMS received : ', msg);
-  //   });
+  WWMS.addHandler('CHN0001', msg => {
+    console.log('WWMS received : ', msg);
+  });
+  WWMS.addHandler('SYSTEM', msg => {
+    console.log('WWMS received : ', msg);
+    if (msg.NOTI_TYPE === 'addFriend') {
+      // friendStore.getFriendInfoList({ userId: authStore.user.id });
+    }
+  });
 
   //   WWMS.connect();
   // }, []);
@@ -321,10 +329,6 @@ function MainPage() {
     </AppLayout>
   );
 }
-
-const FriendLnb = () => {
-  return <div>Friend LNB</div>;
-};
 
 const Profile = ({ userId }) => {
   return <div>{`${userId}의 profile`}</div>;
