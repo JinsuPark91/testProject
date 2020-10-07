@@ -1,8 +1,10 @@
 import React from 'react';
 import UIStore from './UIStore';
+import RoomStore from './RoomStore';
 
 export const RootStore = {
   uiStore: new UIStore(),
+  roomStore: new RoomStore(),
 };
 
 export const StoreContext = React.createContext(RootStore);

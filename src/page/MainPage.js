@@ -8,6 +8,7 @@ import { NoteApp, NoteIcon } from 'teespace-note-app';
 import { CalendarApp, CalendarIcon } from 'teespace-calendar-app';
 import { MailMainView, MailSideView, MailSubView } from 'teespace-mail-app';
 import { DriveApp, DriveIcon, ViewFileIcon } from 'teespace-drive-app';
+import { useStore } from '../stores';
 import RoomList from '../components/RoomList';
 import FriendLnb from '../components/friends/FriendsLNB';
 import Splitter from '../components/Splitter';
@@ -27,6 +28,8 @@ function MainPage() {
   const [mainApp, setMainApp] = useState(null);
   const [subApp, setSubApp] = useState(null);
   const [layoutState, setLayoutState] = useState('close');
+  const stores = useStore();
+  console.log(stores);
 
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(history.location.search);

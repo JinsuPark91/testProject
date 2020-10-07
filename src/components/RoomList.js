@@ -3,21 +3,21 @@ import { useParams, useHistory } from 'react-router-dom';
 import { List } from 'antd';
 import styled from 'styled-components';
 import { API, useCoreStores } from 'teespace-core';
-import { talkRoomStore } from 'teespace-talk-app';
+// import { talkRoomStore } from 'teespace-talk-app';
 import RoomItem from './RoomItem';
 
 function RoomList() {
   const [roomList, setRoomList] = useState([]);
-  const { authStore, roomStore } = useCoreStores();
+  const { authStore } = useCoreStores();
   const history = useHistory();
   const params = useParams();
 
   useEffect(() => {
-    async function getRooms() {
-      const rooms = await talkRoomStore.getRoomList(authStore.myInfo.id);
-      setRoomList(rooms);
-    }
-    getRooms();
+    // async function getRooms() {
+    //   const rooms = await talkRoomStore.getRoomList(authStore.myInfo.id);
+    //   setRoomList(rooms);
+    // }
+    // getRooms();
   }, [authStore.myInfo.id]);
 
   const handleRoomClick = roomInfo => {
