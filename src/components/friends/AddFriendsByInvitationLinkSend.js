@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Row, Col, Input, Typography } from 'antd';
+import CommonInput from '../commons/Input';
+import CommonChip from '../commons/Chip';
+import CommonButton from '../commons/Button';
 import MailChip from './MailChip';
 
 const { Paragraph, Title } = Typography;
@@ -35,20 +38,22 @@ function AddFriendsByInvitationLinkSend() {
       </Paragraph>
       <Row>
         <Col span={24} style={{ display: 'flex' }}>
-          <Input
+          <CommonInput
             onPressEnter={handleUsers}
             value={userEmail}
             onChange={handleUserEmail}
             placeholder="이메일 주소 입력"
+            style={{ width: '100%' }}
           />
-          <Button shape="round" style={{ width: 120 }}>
-            보내기
-          </Button>
+          <CommonButton type="outlined">보내기</CommonButton>
         </Col>
       </Row>
-      <div style={{ backgroundColor: 'purple', maxHeight: 100, overflow: 'auto' }}>
+      <div
+        style={{ backgroundColor: 'purple', maxHeight: 100, overflow: 'auto' }}
+      >
         {users.map(user => (
-          <MailChip
+          <CommonChip
+            size="small"
             text={user}
             key={user}
             onClose={() => handleTagClose(user)}

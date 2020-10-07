@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { Badge, Dropdown, Typography, Menu, Space, Avatar, Button } from 'antd';
 import { useCoreStores } from 'teespace-core';
+import { useOpenInWindow } from 'use-open-window';
 import {
   EllipsisOutlined,
   ExportOutlined,
@@ -10,37 +11,74 @@ import {
   CloseOutlined,
 } from '@ant-design/icons';
 
+import CommonMessage from '../commons/Message';
+
 const { Title } = Typography;
 
 const FriendItemWrapper = styled.div`
-  height: 54px;
-  display: flex;
-  flex-direction: row;
-  padding: 10px;
+  /* 조직도 조회 스타일 */
+  ${props =>
+    props.mode === 'addFriend' &&
+    css`
+      display: flex;
+      height: 54px;
+      flex-direction: row;
+      background-color: transparent;
+      border-bottom: 1px solid #e3e7eb;
+      padding: 10px;
 
-  &:hover {
-    background-color: #eaeafb;
-    border-radius: 27.5px;
-  }
+      &:hover {
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      /* icon */
+      .ant-btn-circle {
+        background: transparent;
+        box-shadow: 0;
+        border: 0;
+        color: #75757f;
+        &:hover {
+          color: #75757f;
+          background-color: #dcddff;
+        }
+      }
+    `}
+
+  /* 내 프로필 아이템과 친구 아이템의 스타일 */
+  ${props =>
+    (props.mode === 'me' || props.mode === 'friend') &&
+    css`
+      height: 54px;
+      display: flex;
+      flex-direction: row;
+      padding: 10px;
+
+      &:hover {
+        background-color: #eaeafb;
+        border-radius: 27.5px;
+      }
+      /* icon */
+      .ant-btn-circle {
+        background: transparent;
+        box-shadow: 0;
+        border: 0;
+        color: #75757f;
+        &:hover {
+          color: #75757f;
+          background-color: #dcddff;
+        }
+      }
+    `}
+
+  /* 내 프로필은 항상 active style */
   ${props =>
     props.mode === 'me' &&
     css`
       background-color: #e2e3fb;
       border-radius: 27.5px;
     `}
-
-  /* icon */
-  .ant-btn-circle {
-    background: transparent;
-    box-shadow: 0;
-    border: 0;
-    color: #75757f;
-    &:hover {
-      color: #75757f;
-      background-color: #dcddff;
-    }
-  }
 `;
+
 const ProfileWrapper = styled.div`
   /* me badge */
   .ant-badge-count {
@@ -71,7 +109,7 @@ const ActionWrapper = styled.div``;
  * @param {string} props.friendInfo.friendId
  * @param {string} props.friendInfo.friendNick
  * @param {string} props.friendInfo.userName
- * @param {('FAV0001'|'FAV0002')} props.friendInfo.friendFav
+ * @param {boolean} props.friendInfo.friendFavorite
  */
 function FriendItem({
   mode = 'friend', // 'me', 'friend', 'readOnly', 'addFriend', 'recommended'
@@ -86,6 +124,18 @@ function FriendItem({
   const { authStore, friendStore } = useCoreStores();
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [visibleMessage, setVisibleMessage] = useState(false);
+  const [handleTalkWindowOpen, newTalkWindowHandler] = useOpenInWindow(
+    `${window.location.origin}/s/1234/talk?mini=true`,
+    {
+      name: '_blank',
+      centered: true,
+      specs: {
+        width: 600,
+        height: 900,
+      },
+    },
+  );
 
   const handleDropdownVisible = useCallback(visible => {
     if (!visible) {
@@ -141,6 +191,22 @@ function FriendItem({
       onMouseLeave={handleMouseLeave}
       mode={mode}
     >
+      <CommonMessage
+        visible={visibleMessage}
+        title={`${friendNick || userName}님을 즐겨찾기에 추가하시겠습니까?`}
+        btns={[
+          {
+            type: 'solid',
+            text: '추가',
+            handler: () => setVisibleMessage(false),
+          },
+          {
+            type: 'outlined',
+            text: '취소',
+            handler: () => setVisibleMessage(false),
+          },
+        ]}
+      />
       <ProfileWrapper>
         {mode === 'me' && (
           <Badge count="나">
@@ -164,11 +230,19 @@ function FriendItem({
                 >
                   <Button shape="circle" icon={<EllipsisOutlined />} />
                 </Dropdown>
-                <Button shape="circle" icon={<ExportOutlined />} />
+                <Button
+                  shape="circle"
+                  icon={<ExportOutlined />}
+                  onClick={() => console.log(handleTalkWindowOpen())}
+                />
               </>
             )}
             {mode === 'me' && (
-              <Button shape="circle" icon={<ExportOutlined />} />
+              <Button
+                shape="circle"
+                icon={<ExportOutlined />}
+                onClick={() => console.log(handleTalkWindowOpen())}
+              />
             )}
             {mode === 'addFriend' && (
               <Button shape="circle" icon={<PlusOutlined />} />

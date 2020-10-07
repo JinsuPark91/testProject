@@ -57,12 +57,12 @@ const dummy = [
 function AddFriendsByOrganizationContent() {
   return (
     <Row align="middle" style={{ flexGrow: 1 }} justify="center">
-      <Col>
-        {false &&
+      <Col span={24}>
+        {true &&
           dummy.map(item => (
             <FriendItem friendInfo={item} key={item.id} mode="addFriend" />
           ))}
-        {true && <Text type="secondary">조직원이 없습니다.</Text>}
+        {false && <Text type="secondary">조직원이 없습니다.</Text>}
       </Col>
     </Row>
   );

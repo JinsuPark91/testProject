@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { Tag, Row, Col, Input, Typography, Button } from 'antd';
+import { Tag, Row, Col, Typography, Button } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import CommonButton from '../commons/Button';
+import CommonInput from '../commons/Input';
+import CommonToast from '../commons/Toast';
 
 const { Paragraph, Title, Text } = Typography;
 
@@ -17,6 +20,7 @@ const dummy = [
 ];
 function AddFriendsByInvitationLinkCopy() {
   const [visibleInvitedFriends, setVisibleInvitedFriends] = useState(false);
+  const [visibleToast, setVisibleToast] = useState(false);
 
   const handleToggle = () => setVisibleInvitedFriends(!visibleInvitedFriends);
   return (
@@ -29,11 +33,23 @@ function AddFriendsByInvitationLinkCopy() {
       </Paragraph>
       <Row>
         <Col span={24} style={{ display: 'flex' }}>
-          <Input readOnly value="https://naver.com"/>
-          <CopyToClipboard text="https://naver.com" onCopy={null} style={{ width: 120 }}>
-            <Button type="primary" shape="round">
-              초대 링크 복사
-            </Button>
+          <CommonInput
+            readOnly
+            value="https://naver.com"
+            style={{ width: '100%' }}
+          />
+          <CommonToast
+            visible={visibleToast}
+            onClose={() => setVisibleToast(false)}
+          >
+            초대 링크가 복사되었습니다.
+          </CommonToast>
+          <CopyToClipboard
+            text="https://naver.com"
+            onCopy={() => setVisibleToast(true)}
+            style={{ width: 120 }}
+          >
+            <CommonButton type="solid">초대 링크 복사</CommonButton>
           </CopyToClipboard>
         </Col>
       </Row>

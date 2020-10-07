@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import CommonInput from './Input';
 
 const SearchWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -64,7 +65,6 @@ const SearchCloseButton = styled(CloseOutlined)`
  */
 function CommonSearch(props) {
   const { size, style, onChange, disabled, value, shape, onClear } = props;
-  console.log('value', value);
   const [visibleClose, setVisibleClose] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [inputValue, setInputValue] = useState(value);
@@ -80,17 +80,17 @@ function CommonSearch(props) {
 
   const handleOnChange = e => {
     if (onChange) {
-      onChange(e.target.value);
+      onChange(e);
     }
     setInputValue(e.target.value);
   };
 
-  const handleInputClear = () => {
+  const handleInputClear = useCallback(() => {
     setInputValue('');
     if (onClear) {
       onClear();
     }
-  };
+  }, [onClear]);
 
   const handleOnFocus = () => setIsFocused(true);
   const handleOnBlur = () => setIsFocused(false);
@@ -104,13 +104,13 @@ function CommonSearch(props) {
     >
       <SearchIcon />
       <StyledSearch
+        {...props}
         size={size}
         style={style}
         value={inputValue}
         onChange={handleOnChange}
         disabled={disabled}
         shape={shape}
-        {...props}
       />
       {visibleClose && !disabled && (
         <SearchCloseButton onClick={handleInputClear} />

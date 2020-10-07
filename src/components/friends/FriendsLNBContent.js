@@ -128,7 +128,7 @@ function FriendsLNBContent({ searchKeyword }) {
   return useObserver(() => (
     <ContentWrapper>
       {!friendStore.friendInfoList.length && renderEmptyContent}
-      {!!friendStore.friendInfoList.length && renderContent}
+      {friendStore.friendInfoList.length && renderContent}
     </ContentWrapper>
   ));
 }

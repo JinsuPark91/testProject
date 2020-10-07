@@ -8,7 +8,7 @@ import {
 } from '@ant-design/icons';
 
 const StyledInput = styled(Input)`
-  width: inherit;
+  width: 100%;
   border: 1px solid #c6ced6;
   border-radius: 25px;
   font-size: 12px;

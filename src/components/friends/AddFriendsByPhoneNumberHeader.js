@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Select, Form, Input } from 'antd';
 import { useStore } from '../../stores';
+import CommonSelect, { CommonOption } from '../commons/Select';
+import CommonInput from '../commons/Input';
 
 function AddFriendsByPhoneNumberHeader() {
   const { uiStore } = useStore();
@@ -23,7 +24,7 @@ function AddFriendsByPhoneNumberHeader() {
   };
 
   useEffect(() => {
-    console.log(formContainer)
+    console.log(formContainer);
     if (formContainer.current) {
       setDropdownWidth(formContainer.current.clientWidth);
     }
@@ -31,29 +32,28 @@ function AddFriendsByPhoneNumberHeader() {
   return (
     <div ref={formContainer}>
       <div style={{ display: 'flex' }}>
-        <Select
+        <CommonSelect
           style={{ width: 130 }}
-          dropdownMatchSelectWidth={false}
           dropdownStyle={{ width: dropdownWidth }}
+          optionLabelProp="title"
         >
-          <Select.Option value="1">+1 (1) United States of America</Select.Option>
-          <Select.Option value="1340">+1 340 (1340) United States Virgin Islands</Select.Option>
-          <Select.Option value="1670">+1 670 (1670) Northern Mariana Islands</Select.Option>
-        </Select>
-        <Form.Item
-          validateStatus={validateStatus}
-          help={validateStatus !== 'success' && '숫자만 입력해 주세요'}
-          hasFeedback={validateStatus !== 'success'}
-          style={{ flex: 1, marginBottom: 0 }}
-        >
-          <Input
-            placeholder="'-'없이 숫자만 입력해 주세요."
-            id="error"
-            onChange={handleChange}
-            value={phoneNumber}
-            style={{ flex: 1 }}
-          />
-        </Form.Item>
+          <CommonOption value="1" title="+1">
+            +1 (1) United States of America
+          </CommonOption>
+          <CommonOption value="1340" title="+1 340">
+            +1 340 (1340) United States Virgin Islands
+          </CommonOption>
+          <CommonOption value="1670" title="+1 670">
+            +1 670 (1670) Northern Mariana Islands
+          </CommonOption>
+        </CommonSelect>
+        <CommonInput
+          alert={validateStatus !== 'success' ? '숫자만 입력해 주세요' : ''}
+          placeholder="'-'없이 숫자만 입력해 주세요."
+          onChange={handleChange}
+          value={phoneNumber}
+          style={{ width: '100%' }}
+        />
       </div>
     </div>
   );

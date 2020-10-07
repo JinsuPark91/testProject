@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import styled from 'styled-components';
 import { Modal, Tabs } from 'antd';
 import AddFriendsByOrganization from './AddFriendsByOrganization';
 import AddFriendsByPhoneNumber from './AddFriendsByPhoneNumber';
@@ -6,8 +7,15 @@ import AddFriendsByEmail from './AddFriendsByEmail';
 import AddFriendsByRecommendataion from './AddFriendsByRecommendation';
 import AddFriendsByInvitation from './AddFriendsByInvitation';
 import { useStore } from '../../stores';
+import CommonDialog, { ContentWrapper } from '../commons/Dialog';
+import CommonTabs from '../commons/Tabs';
 
 const { TabPane } = Tabs;
+
+const StyledTabPane = styled(TabPane)`
+  height: '100%';
+  padding: 16px;
+`;
 
 /**
  * 친구 추가 다이얼로그
@@ -23,37 +31,33 @@ function AddFriendsDialog({ visible, width, height }) {
     uiStore.hideAddFriendsDialog();
   }, [uiStore]);
 
-  const tabPaneStyle = {
-    height: '100%',
-  };
-
   return (
-    <Modal
+    <CommonDialog
       title="프렌즈 추가"
+      size="medium"
       onCancel={handleCancelClick}
       visible={visible}
       width={width}
-      bodyStyle={{ height }}
       footer={null}
     >
-      <Tabs style={{ height: '100%' }}>
-        <TabPane tab="조직도 조회" key="1" style={tabPaneStyle}>
+      <CommonTabs style={{ height: '100%' }}>
+        <StyledTabPane tab="조직도 조회" key="1">
           <AddFriendsByOrganization />
-        </TabPane>
-        <TabPane tab="연락처로 추가" key="2" style={tabPaneStyle}>
+        </StyledTabPane>
+        <StyledTabPane tab="연락처로 추가" key="2">
           <AddFriendsByPhoneNumber />
-        </TabPane>
-        <TabPane tab="아이디 검색" key="3" style={tabPaneStyle}>
+        </StyledTabPane>
+        <StyledTabPane tab="아이디 검색" key="3">
           <AddFriendsByEmail />
-        </TabPane>
-        <TabPane tab="추천 프렌즈" key="4" style={tabPaneStyle}>
+        </StyledTabPane>
+        <StyledTabPane tab="추천 프렌즈" key="4">
           <AddFriendsByRecommendataion />
-        </TabPane>
-        <TabPane tab="초대장 보내기" key="5" style={tabPaneStyle}>
+        </StyledTabPane>
+        <StyledTabPane tab="초대장 보내기" key="5">
           <AddFriendsByInvitation />
-        </TabPane>
-      </Tabs>
-    </Modal>
+        </StyledTabPane>
+      </CommonTabs>
+    </CommonDialog>
   );
 }
 

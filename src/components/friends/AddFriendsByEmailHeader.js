@@ -1,8 +1,8 @@
 import React from 'react';
-import { Input } from 'antd';
+import Search from '../commons/Search';
 
 function AddFriendsByEmailHeader() {
-  return <Input placeholder="아이디 검색" />;
+  return <Search placeholder="아이디 검색" style={{ width: '100%' }} />;
 }
 
 export default AddFriendsByEmailHeader;

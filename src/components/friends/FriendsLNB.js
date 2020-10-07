@@ -22,9 +22,17 @@ function FriendsLNB(props) {
   const handleSearchKeyword = useCallback(e => {
     setSearchKeyword(e.target.value);
   }, []);
+
+  const handleClearKeyword = useCallback(() => {
+    setSearchKeyword('');
+  }, []);
+
   return (
     <FriendsLNBWrapper>
-      <FriendsLNBHeader handleInputChange={handleSearchKeyword} />
+      <FriendsLNBHeader
+        handleInputChange={handleSearchKeyword}
+        handleInputClear={handleClearKeyword}
+      />
       <FriendsLNBContent searchKeyword={searchKeyword} />
       <FriendsLNBFooter />
     </FriendsLNBWrapper>

@@ -5,11 +5,13 @@ import { Layout, Row, Col, Button } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import AddFriendsDialog from './AddFriendsDialog';
 import { useStore } from '../../stores';
+import CommonButton from '../commons/Button';
 
 const { Footer } = Layout;
 
 const FooterWrapper = styled(Footer)`
   background-color: transparent;
+  padding: 14px 20px;
 `;
 function FriendsLNBFooter() {
   const { uiStore } = useStore();
@@ -21,16 +23,15 @@ function FriendsLNBFooter() {
   return useObserver(() => (
     <FooterWrapper>
       <Row>
-        <Col align="center" span="24">
-          <Button
-            type="primary"
-            shape="round"
-            icon={<DownloadOutlined />}
+        <Col align="center" span={24}>
+          <CommonButton
+            type="outlined"
             onClick={showAddFrieldsDialog}
-            size="20"
+            style={{ width: '100%' }}
           >
+            <DownloadOutlined />
             프렌즈 추가
-          </Button>
+          </CommonButton>
           <AddFriendsDialog
             visible={uiStore.visibleAddFriendsDialog}
             width={uiStore.addFriendsDialogInfo.width}

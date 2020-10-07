@@ -1,6 +1,7 @@
 import React from 'react';
-import { Row, Col, Typography, Switch } from 'antd';
+import { Row, Col, Typography } from 'antd';
 import FriendItem from './FriendItem';
+import CommonSwitch from '../commons/Switch';
 
 const { Title, Text } = Typography;
 const dummy = [
@@ -61,7 +62,7 @@ function AddFriendsByRecommendationContent() {
           <Title level={4}>추천 프렌즈 허용</Title>
         </Col>
         <Col span={12} style={{ textAlign: 'right' }}>
-          <Switch />
+          <CommonSwitch />
         </Col>
       </Row>
       <Row>
@@ -82,7 +83,9 @@ function AddFriendsByRecommendationContent() {
               <FriendItem friendInfo={item} key={item.id} mode="recommended" />
             ))}
           {true && (
-            <Title level={4} style={{ textAlign: 'center' }}>추천 프렌즈가 없습니다.</Title>
+            <Title level={4} style={{ textAlign: 'center' }}>
+              추천 프렌즈가 없습니다.
+            </Title>
           )}
         </Col>
       </Row>
