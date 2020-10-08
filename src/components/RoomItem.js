@@ -1,37 +1,34 @@
 import React from 'react';
 import { List } from 'antd';
+import { useObserver } from 'mobx-react';
 import styled from 'styled-components';
 import Photos from './Photos';
 
 const { Item } = List;
 
-function RoomItem({ roomInfo, onClick }) {
-  const { uids: roomName, lastMessage, unreadCount } = roomInfo;
-
+function RoomItem({
+  id,
+  thumbs,
+  maxThumbs,
+  name,
+  lastMessage,
+  unreadCount,
+  onClick,
+}) {
   const handleMoreMenuClick = () => {
-    console.log('MORE : ', roomInfo);
+    console.log('MORE : ', id);
   };
 
   const handleNewWindowClick = () => {
-    console.log('NEW WINDOW : ', roomInfo);
+    console.log('NEW WINDOW : ', id);
   };
 
   return (
     <StyledItem onClick={onClick}>
       <Item.Meta
-        avatar={
-          <Photos
-            srcList={[
-              'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-              'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-              'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-              'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-            ]}
-            maxCount={3}
-          />
-        }
-        title={`${roomName}`}
-        description={`${lastMessage.body}`}
+        avatar={<Photos srcList={thumbs} maxCount={maxThumbs} />}
+        title={`${name}`}
+        description={`${lastMessage}`}
       />
       {unreadCount * 1 ? (
         <UnreadCount className="room-item__unread-count">

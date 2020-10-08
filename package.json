@@ -48,7 +48,8 @@
     "teespace-drive-app": "git+http://192.168.158.12:9000/teespace/teespace-drive-app#develop",
     "teespace-mail-app": "git+http://192.168.158.12:9000/teespace/teespace-mail-app#develop",
     "teespace-note-app": "git+http://192.168.158.12:9000/teespace/teespace-note-app#develop",
-    "teespace-talk-app": "git+http://192.168.158.12:9000/teespace/teespace-talk-app#develop"
+    "teespace-talk-app": "git+http://192.168.158.12:9000/teespace/teespace-talk-app#develop",
+    "use-open-window": "^1.2.5"
   },
   "scripts": {
     "start": "craco start",

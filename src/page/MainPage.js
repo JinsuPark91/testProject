@@ -2,13 +2,14 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { Tabs } from 'antd';
 import styled from 'styled-components';
-import { EventBus } from 'teespace-core';
+import { EventBus, useCoreStores } from 'teespace-core';
 import { Talk } from 'teespace-talk-app';
 import { NoteApp, NoteIcon } from 'teespace-note-app';
 import { CalendarApp, CalendarIcon } from 'teespace-calendar-app';
 import { MailMainView, MailSideView, MailSubView } from 'teespace-mail-app';
 import { DriveApp, DriveIcon, ViewFileIcon } from 'teespace-drive-app';
 import { useStore } from '../stores';
+
 import RoomList from '../components/RoomList';
 import FriendLnb from '../components/friends/FriendsLNB';
 import Splitter from '../components/Splitter';
@@ -28,9 +29,10 @@ function MainPage() {
   const [mainApp, setMainApp] = useState(null);
   const [subApp, setSubApp] = useState(null);
   const [layoutState, setLayoutState] = useState('close');
-  const stores = useStore();
-  console.log(stores);
+  const { authStore } = useCoreStores();
+  const { roomStore } = useStore();
 
+  // URL 에 따른 State 변경
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(history.location.search);
     const subAppQuery = urlSearchParams.get('sub');
@@ -38,6 +40,7 @@ function MainPage() {
     setTabType(params['0']);
     setMainApp(params.mainApp);
     setSubApp(subAppQuery);
+
     if (subAppQuery) {
       if (layoutState === 'close') setLayoutState('collapse');
     } else {
@@ -45,6 +48,18 @@ function MainPage() {
     }
   }, [params, history, layoutState]);
 
+  // ROOM 가져오기
+  useEffect(() => {
+    if (tabType === 's') {
+      const getRooms = async () => {
+        await roomStore.getRooms(authStore.myInfo.id);
+      };
+
+      getRooms();
+    }
+  }, [tabType]);
+
+  // Event 핸들러 등록
   useEffect(() => {
     const fullHandleId = EventBus.on('onLayoutFull', () => {
       setLayoutState('full');
@@ -160,7 +175,7 @@ function MainPage() {
             key="s"
             tab={<img src={chatIcon} alt="chat" style={{ width: '40px' }} />}
           >
-            <RoomList />
+            <RoomList rooms={roomStore.rooms} />
           </TabPane>
 
           <TabPane
