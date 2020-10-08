@@ -8,8 +8,8 @@ import { NoteApp, NoteIcon } from 'teespace-note-app';
 import { CalendarApp, CalendarIcon } from 'teespace-calendar-app';
 import { MailMainView, MailSideView, MailSubView } from 'teespace-mail-app';
 import { DriveApp, DriveIcon, ViewFileIcon } from 'teespace-drive-app';
+import Profile from '../components/Profile';
 import { useStore } from '../stores';
-
 import RoomList from '../components/RoomList';
 import FriendLnb from '../components/friends/FriendsLNB';
 import Splitter from '../components/Splitter';
@@ -92,7 +92,7 @@ function MainPage() {
       switch (appName) {
         case 'profile':
           // TODO : Profile Component 받기.
-          return <Profile />;
+          return <Profile userId={params.id} />;
         case 'talk':
           return null;
         // return <Talk layoutState={layoutState} roomId={params.id} />;
@@ -136,12 +136,12 @@ function MainPage() {
     switch (key) {
       /* friend : /f/:id 형식 (query string, app 정보 없음) */
       case 'f':
-        pathname = `/${key}/${params.id}/profile`;
+        pathname = `/${key}/${authStore.myInfo.loginId}/profile`;
         search = null;
         break;
       /* space, mail : /f/:id/:app?sub... 형식  */
       case 's':
-        pathname = `/${key}/${params.id}/${DEFAULT_MAIN_APP}`;
+        pathname = `/${key}/${roomStore.rooms[0].id}/${DEFAULT_MAIN_APP}`;
         search = history.location.search;
         break;
       /* mail 누르면 sub 앱 없어져야 하나? 정책 결정 필요 */
@@ -252,10 +252,6 @@ function MainPage() {
     </AppLayout>
   );
 }
-
-const Profile = ({ userId }) => {
-  return <div>{`${userId}의 profile`}</div>;
-};
 
 const AppLayout = styled.div`
   display: flex;
