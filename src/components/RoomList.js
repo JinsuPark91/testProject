@@ -9,8 +9,7 @@ function RoomList({ rooms }) {
   const history = useHistory();
   const params = useParams();
 
-  const handleRoomClick = roomInfo => {
-    const { WS_ID: roomId } = roomInfo;
+  const handleRoomClick = roomId => {
     history.push({
       pathname: `/${params['0']}/${roomId}/${params.mainApp}`,
       search: history.location.search,
@@ -60,7 +59,7 @@ function RoomList({ rooms }) {
                   name={roomInfo.name}
                   lastMessage={roomInfo.lastMessage}
                   onClick={() => {
-                    handleRoomClick(roomInfo);
+                    handleRoomClick(roomInfo.id);
                   }}
                 />
               )}

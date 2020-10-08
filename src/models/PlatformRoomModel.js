@@ -5,6 +5,10 @@ export class PlatformRoomModel {
     this.talk = talk;
   }
 
+  get id() {
+    return this.talk.roomId;
+  }
+
   get name() {
     return this.talk.uids;
   }
@@ -15,6 +19,10 @@ export class PlatformRoomModel {
 
   get unreadCount() {
     return this.talk.unreadCount;
+  }
+
+  set id(id) {
+    this.talk.roomId = id;
   }
 
   set name(name) {
