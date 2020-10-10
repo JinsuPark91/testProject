@@ -1,104 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, Checkbox } from 'antd';
+
 import { useObserver } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
+import styled from 'styled-components';
+import TermsFooter from '../components/Login/TermsFooter';
+import LogoHeader from '../components/Login/LogoHeader';
+import LoginContent from '../components/Login/LoginContent';
+import teeIcon from '../assets/ic_favicon.png';
+import loginBG from '../assets/login_background.png';
+import './LoginPage.css';
 
-const layout = {
-  labelCol: {
-    span: 8,
-  },
-  wrapperCol: {
-    span: 16,
-  },
-};
-const tailLayout = {
-  wrapperCol: {
-    offset: 8,
-    span: 16,
-  },
-};
+const LoginContainer = styled.div`
+  margin-left: 11rem;
+  height: 100%;
+  width: 23.06rem;
+  padding-top: 8.75rem;
+`;
+const FlexCenter = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`;
 
 function LoginPage() {
-  const { authStore } = useCoreStores();
-  const [form] = Form.useForm();
   const history = useHistory();
-  const [isLoading, setIsLoading] = useState(false);
-  const [loginResult, setLoginResult] = useState(null);
-  const [errorResult, setErrorResult] = useState(null);
 
-  const onFinish = async values => {
-    setIsLoading(true);
-
-    try {
-      const res = await authStore.login({
-        id: values.username,
-        pw: values.password,
-        isLocalLogin: process.env.REACT_APP_ENV === 'local',
-      });
-      setLoginResult(res);
-      history.push(`/f/${authStore.user.loginId}`);
-    } catch (e) {
-      setErrorResult(e.message);
-    } finally {
-      setIsLoading(false);
-    }
+  const goSignup = () => {
+    history.push(`/register`);
   };
 
-  const onFinishFailed = errorInfo => {
-    console.log('Failed:', errorInfo);
-  };
-
-  return useObserver(() => (
-    <Form
-      {...layout}
-      name="basic"
-      initialValues={{
-        remember: true,
+  return (
+    <div
+      id="LoginBackgroundLayout"
+      style={{
+        backgroundImage: `url(${loginBG})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'right center',
+        backgroundSize: 'cover',
       }}
-      form={form}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
     >
-      <Form.Item
-        label="아이디"
-        name="username"
-        rules={[
-          {
-            required: true,
-            message: '아이디 입력 해주세요',
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
+      <LoginContainer>
+        <FlexCenter>
+          <img alt="login" src={teeIcon} />
+        </FlexCenter>
+        <FlexCenter style={{ marginTop: `0.83rem` }}>
+          만들고 모일수록 즐거운 공간
+        </FlexCenter>
+        <div style={{ height: `1rem` }} />
+        <LogoHeader />
+        <div style={{ height: `2.06rem` }} />
+        <LoginContent />
+        <FlexCenter>
+          <Button name="goSearchID" htmlType="button" type="text">
+            아이디 찾기
+          </Button>
+          <Button name="goSearchPassword" htmlType="button" type="text">
+            비밀번호 찾기
+          </Button>
+          <Button
+            name="goSignup"
+            htmlType="button"
+            type="text"
+            onClick={goSignup}
+          >
+            회원가입
+          </Button>
+        </FlexCenter>
+        <div style={{ height: 'calc(100% - 32rem)' }} />
 
-      <Form.Item
-        label="비밀번호"
-        name="password"
-        rules={[
-          {
-            required: true,
-            message: '비밀번호 입력 해주세요',
-          },
-        ]}
-      >
-        <Input.Password />
-      </Form.Item>
-
-      <Form.Item {...tailLayout}>
-        <Button type="primary" htmlType="submit">
-          로그인
-        </Button>
-      </Form.Item>
-
-      {isLoading === true && <span>로그인 중</span>}
-      {isLoading === false && errorResult && (
-        <span>로그인 실패! 사유: {errorResult}</span>
-      )}
-      {isLoading === false && loginResult && <span>로그인 성공</span>}
-    </Form>
-  ));
+        <TermsFooter isService />
+      </LoginContainer>
+    </div>
+  );
 }
 
 export default LoginPage;

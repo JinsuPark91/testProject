@@ -7,6 +7,7 @@ import ServicePage from './page/ServicePage';
 import LoginPage from './page/LoginPage';
 import NotFoundPage from './page/NotFoundPage';
 import SignUpPage from './page/SignUpPage';
+import SignUpFormPage from './page/SignUpFormPage';
 import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './helper/RedirectablePublicRoute';
 import PrivateRoute from './helper/PrivateRoute';
@@ -38,6 +39,11 @@ function App() {
           exact
           path="/register"
           component={<SignUpPage />}
+        />
+        <RedirectablePublicRoute
+          exact
+          path="/registerForm"
+          component={<SignUpFormPage />}
         />
         <PrivateRoute path="/(s|f|m)/:id/:mainApp?" component={MainPage} />
         <Route component={NotFoundPage} />
