@@ -99,7 +99,7 @@ function MainPage() {
     appName => {
       switch (appName) {
         case 'profile':
-          return <Profile userId={id} editMode={false} isModal={false} />;
+          return <Profile userId={id} editMode isVertical />;
         case 'talk':
           return null;
         // return <Talk layoutState={layoutState} roomId={id} />;

@@ -15,16 +15,16 @@ import { Button, Input, Dropdown, Menu, Upload } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import { toJS } from 'mobx';
 
-const Profile = ({ userId, editMode, isModal }) => {
+const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
   const { userStore, authStore } = useCoreStores();
+  const [isMyId, setIsMyId] = useState(userId === authStore.myInfo.id);
   const [isEditMode, setEditMode] = useState(editMode);
   const [phone, setPhone] = useState('112');
   const [mobile, setMobile] = useState('010-1111-2222');
 
-  const isMyId = () => userId === authStore.myInfo.id;
-
   useEffect(() => {
-    if (!isMyId())
+    setIsMyId(userId === authStore.myInfo.id);
+    if (!isMyId)
       (async () => {
         const myUserId = authStore.myInfo.id;
         const profile = await userStore.getProfile({ userId, myUserId });
@@ -68,20 +68,20 @@ const Profile = ({ userId, editMode, isModal }) => {
   return (
     <Wrapper
       imageSrc="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ0zLGlXZ_vEvQm4RplPIdsjgKSho4EyapEbw&usqp=CAU"
-      isModal={isModal}
+      isVertical={isVertical}
     >
-      <Sidebar isModal={isModal}>
-        <StyledButton isModal={isModal}>
+      <Sidebar isVertical={isVertical}>
+        <StyledButton isVertical={isVertical}>
           <MessageOutlined style={{ fontSize: '30px' }} />
-          <Text>{isMyId() ? `나와의 Talk` : `1:1 Talk`}</Text>
+          <Text>{isMyId ? `나와의 Talk` : `1:1 Talk`}</Text>
         </StyledButton>
-        {isMyId() ? (
-          <StyledButton onClick={handleChangeMode} isModal={isModal}>
+        {isMyId ? (
+          <StyledButton onClick={handleChangeMode} isVertical={isVertical}>
             <EditOutlined style={{ fontSize: '30px' }} />
             <Text>프로필 편집</Text>
           </StyledButton>
         ) : (
-          <StyledButton onClick={handleMeetingClick} isModal={isModal}>
+          <StyledButton onClick={handleMeetingClick} isVertical={isVertical}>
             <VideoCameraOutlined style={{ fontSize: '30px' }} />
             <Text>1:1 Meeting</Text>
           </StyledButton>
@@ -89,7 +89,7 @@ const Profile = ({ userId, editMode, isModal }) => {
       </Sidebar>
 
       <Content>
-        {isEditMode && (
+        {isMyId && isEditMode && (
           <Dropdown
             trigger={['click']}
             overlay={
@@ -110,7 +110,7 @@ const Profile = ({ userId, editMode, isModal }) => {
         )}
         <UserImageWrapper position="br">
           <UserImage src="https://image.yes24.com/momo/TopCate2199/MidCate005/219846755.jpg" />
-          {isEditMode && (
+          {isMyId && isEditMode && (
             <Dropdown
               trigger={['click']}
               overlay={
@@ -139,7 +139,7 @@ const Profile = ({ userId, editMode, isModal }) => {
           </UserInfoItem>
           <UserInfoItem>
             <MobileOutlined style={{ marginRight: '20px' }} />
-            {isEditMode ? (
+            {isMyId && isEditMode ? (
               <Input
                 onChange={e => {
                   setMobile(e.target.value);
@@ -152,7 +152,7 @@ const Profile = ({ userId, editMode, isModal }) => {
           </UserInfoItem>
           <UserInfoItem>
             <PhoneOutlined style={{ marginRight: '20px' }} />
-            {isEditMode ? (
+            {isMyId && isEditMode ? (
               <Input
                 onChange={e => {
                   setPhone(e.target.value);
@@ -169,7 +169,7 @@ const Profile = ({ userId, editMode, isModal }) => {
           </UserInfoItem>
         </UserInfoList>
         <ButtonContainer>
-          {isEditMode && (
+          {isMyId && isEditMode && (
             <>
               <Button style={{ marginRight: '20px' }} onClick={handleConfirm}>
                 저장
@@ -186,7 +186,7 @@ const Profile = ({ userId, editMode, isModal }) => {
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  flex-direction: ${props => (props.isModal ? 'column-reverse' : 'row')};
+  flex-direction: ${props => (props.isVertical ? 'column-reverse' : 'row')};
   width: 100%;
   height: 100%;
   background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
@@ -197,11 +197,11 @@ const Wrapper = styled.div`
 
 const Sidebar = styled.div`
   display: flex;
-  flex-direction: ${props => (props.isModal ? 'row' : 'column')};
+  flex-direction: ${props => (props.isVertical ? 'row' : 'column')};
   align-items: center;
   justify-content: center;
-  width: ${props => (props.isModal ? '100%' : '250px')};
-  height: ${props => (props.isModal ? '200px' : '100%')};
+  width: ${props => (props.isVertical ? '100%' : '250px')};
+  height: ${props => (props.isVertical ? '200px' : '100%')};
   background: rgba(0, 0, 0, 0.3);
 `;
 
@@ -262,7 +262,7 @@ const StyledButton = styled(Text)`
   flex-direction: column;
   align-items: center;
   width: 200px;
-  height: ${props => (props.isModal ? '100px' : '200px')};
+  height: ${props => (props.isVertical ? '100px' : '200px')};
   margin-top: 20px;
   border-radius: 10px;
 
