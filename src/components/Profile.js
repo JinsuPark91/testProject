@@ -9,33 +9,52 @@ import {
   EditOutlined,
   CameraOutlined,
   PictureOutlined,
+  VideoCameraOutlined,
 } from '@ant-design/icons';
-import { Button, Input } from 'antd';
+import { Button, Input, Dropdown, Menu, Upload } from 'antd';
 import { useCoreStores } from 'teespace-core';
+import { toJS } from 'mobx';
 
-const Profile = ({ userId }) => {
-  const [isEditMode, setEditMode] = useState(false);
+const Profile = ({ userId, editMode, isModal }) => {
+  const { userStore, authStore } = useCoreStores();
+  const [isEditMode, setEditMode] = useState(editMode);
   const [phone, setPhone] = useState('112');
   const [mobile, setMobile] = useState('010-1111-2222');
-  // const { userStore, authStore } = useCoreStores();
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const profile = await userStore.getProfile({ userId });
-  //     console.log(profile);
-  //   })();
-  // });
+  const isMyId = () => userId === authStore.myInfo.id;
+
+  useEffect(() => {
+    if (!isMyId())
+      (async () => {
+        const myUserId = authStore.myInfo.id;
+        const profile = await userStore.getProfile({ userId, myUserId });
+        console.log('Profile : ', toJS(profile));
+      })();
+    else console.log('Profile : ', authStore.myInfo);
+  });
 
   const handleChangeMode = () => {
     setEditMode(true);
+  };
+
+  const handleMeetingClick = () => {
+    console.log('1 : 1 미팅');
   };
 
   const handleChangeBackground = () => {
     console.log('Change Background !!');
   };
 
+  const handleChangeDefaultBackground = () => {
+    console.log('Change default Background !!');
+  };
+
   const handleChangePhoto = () => {
     console.log('Change Photo !!');
+  };
+
+  const handleChangeDefaultPhoto = () => {
+    console.log('change default Photo !!');
   };
 
   const handleConfirm = () => {
@@ -47,29 +66,68 @@ const Profile = ({ userId }) => {
   };
 
   return (
-    <Wrapper imageSrc="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ0zLGlXZ_vEvQm4RplPIdsjgKSho4EyapEbw&usqp=CAU">
-      <Sidebar>
-        <StyledButton>
+    <Wrapper
+      imageSrc="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ0zLGlXZ_vEvQm4RplPIdsjgKSho4EyapEbw&usqp=CAU"
+      isModal={isModal}
+    >
+      <Sidebar isModal={isModal}>
+        <StyledButton isModal={isModal}>
           <MessageOutlined style={{ fontSize: '30px' }} />
-          <Text>나와의 Talk</Text>
+          <Text>{isMyId() ? `나와의 Talk` : `1:1 Talk`}</Text>
         </StyledButton>
-        <StyledButton onClick={handleChangeMode}>
-          <EditOutlined style={{ fontSize: '30px' }} />
-          <Text>프로필 편집</Text>
-        </StyledButton>
+        {isMyId() ? (
+          <StyledButton onClick={handleChangeMode} isModal={isModal}>
+            <EditOutlined style={{ fontSize: '30px' }} />
+            <Text>프로필 편집</Text>
+          </StyledButton>
+        ) : (
+          <StyledButton onClick={handleMeetingClick} isModal={isModal}>
+            <VideoCameraOutlined style={{ fontSize: '30px' }} />
+            <Text>1:1 Meeting</Text>
+          </StyledButton>
+        )}
       </Sidebar>
+
       <Content>
         {isEditMode && (
-          <ImageChangeButton position="tl" onClick={handleChangeBackground}>
-            <PictureOutlined />
-          </ImageChangeButton>
+          <Dropdown
+            trigger={['click']}
+            overlay={
+              <Menu>
+                <Menu.Item onClick={handleChangeBackground}>
+                  배경 변경
+                </Menu.Item>
+                <Menu.Item onClick={handleChangeDefaultBackground}>
+                  기본 이미지로 변경
+                </Menu.Item>
+              </Menu>
+            }
+          >
+            <ImageChangeButton position="tl">
+              <PictureOutlined />
+            </ImageChangeButton>
+          </Dropdown>
         )}
-        <UserImageWrapper position="br" onClick={handleChangePhoto}>
+        <UserImageWrapper position="br">
           <UserImage src="https://image.yes24.com/momo/TopCate2199/MidCate005/219846755.jpg" />
           {isEditMode && (
-            <ImageChangeButton position="br">
-              <CameraOutlined />
-            </ImageChangeButton>
+            <Dropdown
+              trigger={['click']}
+              overlay={
+                <Menu>
+                  <Menu.Item onClick={handleChangePhoto}>
+                    프로필 사진 변경
+                  </Menu.Item>
+                  <Menu.Item onClick={handleChangeDefaultPhoto}>
+                    기본 이미지로 변경
+                  </Menu.Item>
+                </Menu>
+              }
+            >
+              <ImageChangeButton position="br">
+                <CameraOutlined />
+              </ImageChangeButton>
+            </Dropdown>
           )}
         </UserImageWrapper>
         <BigText style={{ marginTop: '20px' }}>조득용</BigText>
@@ -128,6 +186,7 @@ const Profile = ({ userId }) => {
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
+  flex-direction: ${props => (props.isModal ? 'column-reverse' : 'row')};
   width: 100%;
   height: 100%;
   background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
@@ -138,11 +197,11 @@ const Wrapper = styled.div`
 
 const Sidebar = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: ${props => (props.isModal ? 'row' : 'column')};
   align-items: center;
   justify-content: center;
-  width: 250px;
-  height: 100%;
+  width: ${props => (props.isModal ? '100%' : '250px')};
+  height: ${props => (props.isModal ? '200px' : '100%')};
   background: rgba(0, 0, 0, 0.3);
 `;
 
@@ -203,7 +262,7 @@ const StyledButton = styled(Text)`
   flex-direction: column;
   align-items: center;
   width: 200px;
-  height: 200px;
+  height: ${props => (props.isModal ? '100px' : '200px')};
   margin-top: 20px;
   border-radius: 10px;
 
