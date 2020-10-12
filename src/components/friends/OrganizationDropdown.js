@@ -1,15 +1,7 @@
-import React from 'react';
-import { Menu, Dropdown, Button, TreeSelect } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-
-
-const menu = (
-  <Menu>
-    <Menu.SubMenu title="AC본부">
-      <Menu.Item>AC1-1팀</Menu.Item>
-    </Menu.SubMenu>
-  </Menu>
-);
+import React, { useEffect } from 'react';
+import { useObserver } from 'mobx-react';
+import { TreeSelect } from 'antd';
+import { useCoreStores } from 'teespace-core';
 
 const treeData = [
   {
@@ -25,8 +17,9 @@ const treeData = [
             title: 'TmaxSoft International',
             value: 'TmaxSoft Int',
             children: [
-              { title: 'Global Marketing', value: 'Global Marketing' },
+              { id: 1, title: 'Global Marketing', value: 'Global Marketing' },
               {
+                id: 2,
                 title: 'TmaxAMS',
                 value: 'TmaxAMS',
                 children: [
@@ -57,14 +50,35 @@ const treeData = [
 ];
 
 function OrganizationDropdown() {
-  return (
+  const { orgStore } = useCoreStores();
+
+  useEffect(() => {
+    orgStore.getOrgTree();
+  }, [orgStore]);
+
+  // org 데이터는 실시간으로 바뀌지 않으므로 index를 id로 써도 무방
+  const orgConverter = (org, index) => ({
+    id: index,
+    title: org.orgname,
+    value: [org.companycode, org.departmentcode],
+    children:
+      org.childrenorg && org.childrenorg.orgList
+        ? org.childrenorg.orgList.map(orgConverter)
+        : null,
+  });
+
+  const handleOrgChange = value => {
+    orgStore.getOrgUserList(...value);
+  };
+
+  return useObserver(() => (
     <TreeSelect
-      treeData={treeData}
+      treeData={orgStore.orgList.map(orgConverter)}
+      onChange={handleOrgChange}
       style={{ width: '100%' }}
       placeholder="please select"
-      treeDefaultExpandAll
     />
-  );
+  ));
 }
 
 export default OrganizationDropdown;
