@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Input, Tooltip } from 'antd';
 import {
+  CheckCircleOutlined,
   EyeOutlined,
   EyeInvisibleOutlined,
   ExclamationCircleOutlined,
@@ -55,15 +56,28 @@ const StyledInput = styled(Input)`
     css`
       border: 1px solid #ff5151 !important;
     `}
+
+  ${props =>
+    props.checked &&
+    css`
+      border: 1px solid #16ac66 !important;
+    `}
 `;
 
-const AlertIcon = styled(ExclamationCircleOutlined)`
+const righticoncss = `
   position: absolute;
   margin-top: 2px;
   margin-left: -28px;
   font-size: 26px;
-  color: #ff5151;
   cursor: pointer;
+`;
+const CheckedIcon = styled(CheckCircleOutlined)`
+  ${righticoncss}
+  color: #16ac66;
+`;
+const AlertIcon = styled(ExclamationCircleOutlined)`
+  ${righticoncss}
+  color: #ff5151;
 `;
 
 const PasswordVisibleIcon = styled(EyeOutlined)`
@@ -98,6 +112,8 @@ function CommonInput(props) {
     placement,
     type,
     getPopupContainer = () => document.body,
+    getFieldError,
+    checked = false,
   } = props;
 
   const [visibleText, setVisibleText] = useState(true);
@@ -109,6 +125,7 @@ function CommonInput(props) {
   const [onBlurring, setOnBlurring] = useState(false);
 
   const inputWrapperRef = useRef(null);
+  console.log(props);
 
   // alert 메세지가 변경되면 다시 보여준다.
   if (alert !== prevAlert) {
@@ -151,8 +168,9 @@ function CommonInput(props) {
     }, 100);
   };
 
-  const hasRightIcon = type === 'password' || !!alert;
+  const hasRightIcon = type === 'password' || !!alert || checked;
 
+  console.log(getFieldError);
   return (
     <div style={style} ref={inputWrapperRef} onBlur={handleOnBlur}>
       <StyledInput
@@ -160,6 +178,7 @@ function CommonInput(props) {
         alert={alert}
         type={inputType}
         hasrighticon={hasRightIcon}
+        checked={checked}
       />
       {type === 'password' && (
         <>
@@ -169,6 +188,7 @@ function CommonInput(props) {
           )}
         </>
       )}
+      {checked && <CheckedIcon />}
       {!!alert && (
         <Tooltip
           color="#ff5151"
