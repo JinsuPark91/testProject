@@ -25,7 +25,8 @@ const DEFAULT_MAIN_APP = 'talk';
 function MainPage() {
   const params = useParams();
   const history = useHistory();
-  const [tabType, setTabType] = useState(null);
+  const [tab, setTab] = useState(null);
+  const [id, setId] = useState(null);
   const [mainApp, setMainApp] = useState(null);
   const [subApp, setSubApp] = useState(null);
   const [layoutState, setLayoutState] = useState('close');
@@ -37,7 +38,8 @@ function MainPage() {
     const urlSearchParams = new URLSearchParams(history.location.search);
     const subAppQuery = urlSearchParams.get('sub');
 
-    setTabType(params['0']);
+    setTab(params.tab);
+    setId(params.id);
     setMainApp(params.mainApp);
     setSubApp(subAppQuery);
 
@@ -48,16 +50,22 @@ function MainPage() {
     }
   }, [params, history, layoutState]);
 
-  // ROOM 가져오기
-  useEffect(() => {
-    if (tabType === 's') {
-      const getRooms = async () => {
-        await roomStore.getRooms(authStore.myInfo.id);
-      };
+  // const getRooms = async () => {
+  //   await roomStore.getRooms(authStore.myInfo.id);
+  //   history.push({
+  //     pathname: `/s/${roomStore.rooms?.[0]?.id}/${DEFAULT_MAIN_APP}`,
+  //     search: history.location.search,
+  //   });
+  // };
 
-      getRooms();
-    }
-  }, [tabType]);
+  // // ROOM 가져오기
+  // useEffect(() => {
+  //   if (tab === 's') {
+  //     (async () => {
+  //       await getRooms();
+  //     })();
+  //   }
+  // }, [tab]);
 
   // Event 핸들러 등록
   useEffect(() => {
@@ -91,33 +99,26 @@ function MainPage() {
     appName => {
       switch (appName) {
         case 'profile':
-          // TODO : Profile Component 받기.
-          return <Profile userId={params.id} />;
+          return <Profile userId={id} editMode={false} isModal={false} />;
         case 'talk':
           return null;
-        // return <Talk layoutState={layoutState} roomId={params.id} />;
+        // return <Talk layoutState={layoutState} roomId={id} />;
         case 'note':
-          return <NoteApp layoutState={layoutState} roomId={params.id} />;
+          return <NoteApp layoutState={layoutState} roomId={id} />;
         case 'schedule':
-          return <CalendarApp layoutState={layoutState} roomId={params.id} />;
+          return <CalendarApp layoutState={layoutState} roomId={id} />;
         case 'drive':
-          return <DriveApp layoutState={layoutState} roomId={params.id} />;
+          return <DriveApp layoutState={layoutState} roomId={id} />;
         case 'plus':
-          return <DriveApp layoutState={layoutState} roomId={params.id} />;
+          return <DriveApp layoutState={layoutState} roomId={id} />;
         case 'mail':
-          return <MailMainView layoutState={layoutState} roomId={params.id} />;
-        case 'office':
-          // TODO : Office Component 받기.
-          return null;
-        case 'Meeting':
-          // TODO : Meeting Component 받기.
-          return null;
+          return <MailMainView layoutState={layoutState} roomId={id} />;
         default:
           return null;
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [params.id],
+    [id],
   );
 
   // Room ID 가 바뀌면, getAppComponent가 변경(새로 생성) 되므로, mainApplication 또는 subApplication을 다시 메모이제이션 한다.
@@ -136,17 +137,17 @@ function MainPage() {
     switch (key) {
       /* friend : /f/:id 형식 (query string, app 정보 없음) */
       case 'f':
-        pathname = `/${key}/${authStore.myInfo.loginId}/profile`;
+        pathname = `/${key}/${authStore.myInfo.id}/profile`;
         search = null;
         break;
       /* space, mail : /f/:id/:app?sub... 형식  */
       case 's':
-        pathname = `/${key}/${roomStore.rooms[0].id}/${DEFAULT_MAIN_APP}`;
+        pathname = `/${key}/${roomStore.rooms?.[0]?.id}/${DEFAULT_MAIN_APP}`;
         search = history.location.search;
         break;
       /* mail 누르면 sub 앱 없어져야 하나? 정책 결정 필요 */
       case 'm':
-        pathname = `/${key}/${params.id}/mail`;
+        pathname = `/${key}/${id}/mail`;
         search = null;
         break;
       default:
@@ -161,7 +162,7 @@ function MainPage() {
   return (
     <AppLayout>
       <LeftSide>
-        <Tabs activeKey={tabType} onTabClick={handleTabClick}>
+        <Tabs activeKey={tab} onTabClick={handleTabClick} animated={false}>
           <TabPane
             key="f"
             tab={
