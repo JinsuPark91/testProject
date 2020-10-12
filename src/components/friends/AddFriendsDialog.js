@@ -44,18 +44,18 @@ function AddFriendsDialog({ visible, width, height }) {
         <StyledTabPane tab="조직도 조회" key="1">
           <AddFriendsByOrganization />
         </StyledTabPane>
-        <StyledTabPane tab="연락처로 추가" key="2">
+        {/* <StyledTabPane tab="연락처로 추가" key="2">
           <AddFriendsByPhoneNumber />
-        </StyledTabPane>
+        </StyledTabPane> */}
         <StyledTabPane tab="아이디 검색" key="3">
           <AddFriendsByEmail />
         </StyledTabPane>
-        <StyledTabPane tab="추천 프렌즈" key="4">
+        {/* <StyledTabPane tab="추천 프렌즈" key="4">
           <AddFriendsByRecommendataion />
         </StyledTabPane>
         <StyledTabPane tab="초대장 보내기" key="5">
           <AddFriendsByInvitation />
-        </StyledTabPane>
+        </StyledTabPane> */}
       </CommonTabs>
     </CommonDialog>
   );

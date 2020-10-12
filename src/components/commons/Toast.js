@@ -90,7 +90,9 @@ function Toast({
   useEffect(() => {
     messageRoot.appendChild(el);
     const timeoutFunc = setTimeout(() => {
-      onClose();
+      if (onClose) {
+        onClose();
+      }
     }, timeoutMs);
     return () => {
       clearTimeout(timeoutFunc);

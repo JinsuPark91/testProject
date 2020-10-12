@@ -31,6 +31,18 @@ const WelcomeBackgroundImage = styled.div`
   padding-top: 96.1%;
 `;
 
+const FriendList = React.memo(({ friendList }) => (
+  <>
+    {friendList.map(friendInfo => (
+      <FriendItem
+        friendInfo={friendInfo}
+        key={friendInfo.friendId}
+        mode="friend"
+      />
+    ))}
+  </>
+));
+
 /**
  * Friends LNB Content
  * @param {Object} props
@@ -52,18 +64,6 @@ function FriendsLNBContent({ searchKeyword }) {
   useEffect(() => {
     friendStore.getFriendInfoList({ userId: authStore.user.id });
   }, [friendStore, authStore]);
-
-  const renderFriendList = friendList => (
-    <>
-      {friendList.map(friendInfo => (
-        <FriendItem
-          friendInfo={friendInfo}
-          key={friendInfo.friendId}
-          mode="friend"
-        />
-      ))}
-    </>
-  );
 
   const renderEmptyContent = (
     <>
@@ -104,13 +104,13 @@ function FriendsLNBContent({ searchKeyword }) {
       {!searchKeyword && (
         <>
           <Title level={5}>즐겨찾기</Title>
-          {renderFriendList(favFriendList)}
+          <FriendList friendList={favFriendList} />
           <Divider />
           <Title level={5}>
             프렌즈
             <Text>{friendStore.friendInfoList.length}</Text>
           </Title>
-          {renderFriendList(friendStore.friendInfoList)}
+          <FriendList friendList={friendStore.friendInfoList} />
         </>
       )}
       {searchKeyword && (
@@ -119,7 +119,7 @@ function FriendsLNBContent({ searchKeyword }) {
             프렌즈
             <Text>{filteredFriendList.length}</Text>
           </Title>
-          {renderFriendList(filteredFriendList)}
+          <FriendList friendList={filteredFriendList} />
         </>
       )}
     </>
@@ -128,7 +128,7 @@ function FriendsLNBContent({ searchKeyword }) {
   return useObserver(() => (
     <ContentWrapper>
       {!friendStore.friendInfoList.length && renderEmptyContent}
-      {friendStore.friendInfoList.length && renderContent}
+      {!!friendStore.friendInfoList.length && renderContent}
     </ContentWrapper>
   ));
 }

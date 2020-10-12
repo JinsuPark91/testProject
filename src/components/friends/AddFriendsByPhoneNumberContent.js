@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useObserver } from 'mobx-react';
 import { Button, Typography, Avatar, Row, Col, Space } from 'antd';
+import { useCoreStores } from 'teespace-core';
 import { useStore } from '../../stores';
 import CommonButton from '../commons/Button';
 
 const { Paragraph, Title } = Typography;
 
-function AddFriendsByPhoneNumberContent() {
+function AddFriendsByPhoneNumberContent({ nationalCode, phone }) {
   const { uiStore } = useStore();
+  const { authStore, friendStore } = useCoreStores();
+
+  const handleAddFriend = useCallback(() => {
+    console.log(phone, nationalCode);
+    friendStore.addFriendInfoByPhone(authStore.user.id, phone, nationalCode);
+  }, [authStore.user.id, friendStore, nationalCode, phone]);
   return useObserver(() => (
     <Row align="middle" style={{ flexGrow: 1 }} justify="center">
       <Col>
@@ -30,6 +37,7 @@ function AddFriendsByPhoneNumberContent() {
               <CommonButton
                 type="outlined"
                 disabled={uiStore.addFriendByPhoneNumberButtonDisabled}
+                onClick={handleAddFriend}
               >
                 프렌즈 추가
               </CommonButton>

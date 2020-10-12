@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { Badge, Dropdown, Typography, Menu, Space, Avatar, Button } from 'antd';
@@ -12,7 +12,9 @@ import {
   CloseOutlined,
 } from '@ant-design/icons';
 
+import CommonDropdown, { CommonMenu } from '../commons/Dropdown';
 import CommonMessage from '../commons/Message';
+import CommonToast from '../commons/Toast';
 
 const { Title } = Typography;
 
@@ -101,6 +103,139 @@ const TitleForName = styled(Title)`
 
 const ActionWrapper = styled.div``;
 
+const DropdownMenu = React.memo(
+  ({
+    friendFavorite,
+    handleCancelBookmark,
+    handleAddBookmark,
+    handleRemoveFriendMessageOpen,
+  }) => (
+    <CommonMenu>
+      {friendFavorite && (
+        <CommonMenu.Item onClick={handleCancelBookmark}>
+          즐겨찾기 해제
+        </CommonMenu.Item>
+      )}
+      {!friendFavorite && (
+        <CommonMenu.Item onClick={handleAddBookmark}>즐겨찾기</CommonMenu.Item>
+      )}
+      <CommonMenu.Item onClick={handleRemoveFriendMessageOpen}>
+        프렌즈 삭제
+      </CommonMenu.Item>
+    </CommonMenu>
+  ),
+);
+const Profile = React.memo(({ mode, imageSize }) => (
+  <>
+    {mode === 'me' && (
+      <Badge count="나">
+        <Avatar icon={<UserOutlined />} size={imageSize} />
+      </Badge>
+    )}
+    {mode !== 'me' && <Avatar icon={<UserOutlined />} size={imageSize} />}
+  </>
+));
+
+const FriendAction = React.memo(
+  ({ mode, menu, handleDropdownVisible, handleTalkWindowOpen }) => (
+    <>
+      {mode === 'friend' && (
+        <>
+          <CommonDropdown
+            overlay={menu}
+            trigger={['click']}
+            onVisibleChange={handleDropdownVisible}
+          >
+            <Button
+              shape="circle"
+              icon={<EllipsisOutlined />}
+              onClick={e => e.stopPropagation()}
+            />
+          </CommonDropdown>
+          <Button
+            shape="circle"
+            icon={<ExportOutlined />}
+            onClick={e => {
+              e.stopPropagation();
+              console.log(handleTalkWindowOpen());
+            }}
+          />
+        </>
+      )}
+    </>
+  ),
+);
+
+const MeAction = React.memo(({ mode, handleTalkWindowOpen }) => (
+  <>
+    {mode === 'me' && (
+      <Button
+        shape="circle"
+        icon={<ExportOutlined />}
+        onClick={() => console.log(handleTalkWindowOpen())}
+      />
+    )}
+  </>
+));
+
+const AddFriendAction = React.memo(
+  ({ mode, alreadyFriendFlag, handleAddFriend }) => (
+    <>
+      {mode === 'addFriend' && !alreadyFriendFlag && (
+        <Button
+          shape="circle"
+          icon={<PlusOutlined onClick={handleAddFriend} />}
+        />
+      )}
+    </>
+  ),
+);
+
+const RecommendedAction = React.memo(({ mode, alreadyFriendFlag }) => (
+  <>
+    {mode === 'recommended' && !alreadyFriendFlag && (
+      <>
+        <Button shape="circle" icon={<PlusOutlined />} />
+        <Button shape="circle" icon={<CloseOutlined />} />
+      </>
+    )}
+  </>
+));
+
+const Action = React.memo(
+  ({
+    mode,
+    isHovering,
+    menu,
+    handleDropdownVisible,
+    handleTalkWindowOpen,
+    alreadyFriendFlag,
+    handleAddFriend,
+  }) => (
+    <>
+      {mode !== 'readOnly' && isHovering && (
+        <>
+          <FriendAction
+            mode={mode}
+            menu={menu}
+            handleDropdownVisible={handleDropdownVisible}
+            handleTalkWindowOpen={handleTalkWindowOpen}
+          />
+          <MeAction mode={mode} handleTalkWindowOpen={handleTalkWindowOpen} />
+          <AddFriendAction
+            mode={mode}
+            alreadyFriendFlag={alreadyFriendFlag}
+            handleAddFriend={handleAddFriend}
+          />
+          <RecommendedAction
+            mode={mode}
+            alreadyFriendFlag={alreadyFriendFlag}
+          />
+        </>
+      )}
+    </>
+  ),
+);
 /**
  * A friend item component to use in the list view.
  * @param {Object} props
@@ -127,6 +262,17 @@ function FriendItem({
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [visibleMessage, setVisibleMessage] = useState(false);
+  const [visibleToast, setVisibleToast] = useState(false);
+  const [visibleRemoveFriendMessage, setVisibleRemoveFriendMessage] = useState(
+    false,
+  );
+
+  const [alreadyFriendFlag, setAlreadyFriendFlag] = useState(
+    !!friendStore.friendInfoList
+      .map(friendInfo => friendInfo.friendId)
+      .includes(friendId),
+  );
+
   const [handleTalkWindowOpen, newTalkWindowHandler] = useOpenInWindow(
     `${window.location.origin}/s/1234/talk?mini=true`,
     {
@@ -138,6 +284,22 @@ function FriendItem({
       },
     },
   );
+
+  useEffect(() => {
+    if (mode === 'addFriend') {
+      console.log(
+        'alreadyFriend',
+        !!friendStore.friendInfoList
+          .map(friendInfo => friendInfo.friendId)
+          .includes(friendId),
+      );
+      setAlreadyFriendFlag(
+        !!friendStore.friendInfoList
+          .map(friendInfo => friendInfo.friendId)
+          .includes(friendId),
+      );
+    }
+  }, [friendId, friendStore.friendInfoList, mode]);
 
   const handleDropdownVisible = useCallback(visible => {
     if (!visible) {
@@ -174,6 +336,7 @@ function FriendItem({
     friendStore.deleteFriendInfo(authStore.user.id, friendId);
     setIsHovering(false);
     setDropdownVisible(false);
+    setVisibleRemoveFriendMessage(false);
   }, [friendStore, authStore, friendId]);
 
   const handleItemClick = useCallback(() => {
@@ -184,17 +347,22 @@ function FriendItem({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [friendId]);
 
-  const menu = (
-    <Menu>
-      {friendFavorite && (
-        <Menu.Item onClick={handleCancelBookmark}>즐겨찾기 해제</Menu.Item>
-      )}
-      {!friendFavorite && (
-        <Menu.Item onClick={handleAddBookmark}>즐겨찾기</Menu.Item>
-      )}
-      <Menu.Item onClick={handleRemoveFriend}>프렌즈 삭제</Menu.Item>
-    </Menu>
-  );
+  const handleRemoveFriendMessageClose = useCallback(() => {
+    setVisibleRemoveFriendMessage(false);
+  }, []);
+
+  const handleRemoveFriendMessageOpen = useCallback(() => {
+    setIsHovering(false);
+    setDropdownVisible(false);
+    setVisibleRemoveFriendMessage(true);
+  }, []);
+
+  const handleAddFriend = useCallback(() => {
+    friendStore.addFriendInfo(authStore.user.id, friendId);
+    setVisibleToast(true);
+  }, [authStore.user.id, friendId, friendStore]);
+
+  const handleToastClose = useCallback(() => setVisibleToast(false), []);
 
   return (
     <FriendItemWrapper
@@ -203,6 +371,27 @@ function FriendItem({
       onClick={handleItemClick}
       mode={mode}
     >
+      <CommonToast
+        visible={visibleToast}
+        timeoutMs={1000}
+        onClose={handleToastClose}
+      >
+        {`${userName || friendNick}님이 프렌즈로 추가되었습니다`}
+      </CommonToast>
+      <CommonMessage
+        visible={visibleRemoveFriendMessage}
+        title={`${
+          userName || friendNick
+        }님을 프렌즈 목록에서 삭제하시겠습니까?`}
+        btns={[
+          { text: '삭제', type: 'solid', onClick: handleRemoveFriend },
+          {
+            text: '취소',
+            type: 'outlined',
+            onClick: handleRemoveFriendMessageClose,
+          },
+        ]}
+      />
       <CommonMessage
         visible={visibleMessage}
         title={`${friendNick || userName}님을 즐겨찾기에 추가하시겠습니까?`}
@@ -220,53 +409,28 @@ function FriendItem({
         ]}
       />
       <ProfileWrapper>
-        {mode === 'me' && (
-          <Badge count="나">
-            <Avatar icon={<UserOutlined />} size={imageSize} />
-          </Badge>
-        )}
-        {mode !== 'me' && <Avatar icon={<UserOutlined />} size={imageSize} />}
+        <Profile mode={mode} imageSize={imageSize} />
       </ProfileWrapper>
       <TextWrapper>
         <TitleForName>{friendNick || userName}</TitleForName>
       </TextWrapper>
       <ActionWrapper>
-        {mode !== 'readOnly' && isHovering && (
-          <>
-            {mode === 'friend' && (
-              <>
-                <Dropdown
-                  overlay={menu}
-                  trigger={['click']}
-                  onVisibleChange={handleDropdownVisible}
-                >
-                  <Button shape="circle" icon={<EllipsisOutlined />} />
-                </Dropdown>
-                <Button
-                  shape="circle"
-                  icon={<ExportOutlined />}
-                  onClick={() => console.log(handleTalkWindowOpen())}
-                />
-              </>
-            )}
-            {mode === 'me' && (
-              <Button
-                shape="circle"
-                icon={<ExportOutlined />}
-                onClick={() => console.log(handleTalkWindowOpen())}
-              />
-            )}
-            {mode === 'addFriend' && (
-              <Button shape="circle" icon={<PlusOutlined />} />
-            )}
-            {mode === 'recommended' && (
-              <>
-                <Button shape="circle" icon={<PlusOutlined />} />
-                <Button shape="circle" icon={<CloseOutlined />} />
-              </>
-            )}
-          </>
-        )}
+        <Action
+          mode={mode}
+          isHovering={isHovering}
+          menu={
+            <DropdownMenu
+              friendFavorite={friendFavorite}
+              handleCancelBookmark={handleCancelBookmark}
+              handleAddBookmark={handleAddBookmark}
+              handleRemoveFriendMessageOpen={handleRemoveFriendMessageOpen}
+            />
+          }
+          handleDropdownVisible={handleDropdownVisible}
+          handleTalkWindowOpen={handleTalkWindowOpen}
+          alreadyFriendFlag={alreadyFriendFlag}
+          handleAddFriend={handleAddFriend}
+        />
       </ActionWrapper>
     </FriendItemWrapper>
   );
