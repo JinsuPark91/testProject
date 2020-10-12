@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Upload from 'rc-upload';
 import styled, { css } from 'styled-components';
 import {
   ContainerOutlined,
@@ -11,7 +12,7 @@ import {
   PictureOutlined,
   VideoCameraOutlined,
 } from '@ant-design/icons';
-import { Button, Input, Dropdown, Menu, Upload } from 'antd';
+import { Button, Input, Dropdown, Menu } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import { toJS } from 'mobx';
 
@@ -65,6 +66,10 @@ const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
     setEditMode(false);
   };
 
+  const handleFileSelect = e => {
+    console.log(e);
+  };
+
   return (
     <Wrapper
       imageSrc="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ0zLGlXZ_vEvQm4RplPIdsjgKSho4EyapEbw&usqp=CAU"
@@ -95,8 +100,18 @@ const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
             overlay={
               <Menu>
                 <Menu.Item onClick={handleChangeBackground}>
-                  배경 변경
+                  <StyledUpload
+                    component="div"
+                    accept={['image/*']}
+                    multiple={false}
+                    customRequest={info => {
+                      console.log('파일 업로드 서비스콜 날리기', info.file);
+                    }}
+                  >
+                    배경 변경
+                  </StyledUpload>
                 </Menu.Item>
+
                 <Menu.Item onClick={handleChangeDefaultBackground}>
                   기본 이미지로 변경
                 </Menu.Item>
@@ -116,7 +131,16 @@ const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
               overlay={
                 <Menu>
                   <Menu.Item onClick={handleChangePhoto}>
-                    프로필 사진 변경
+                    <StyledUpload
+                      component="div"
+                      multiple={false}
+                      accept={['image/*']}
+                      customRequest={info => {
+                        console.log('파일 업로드 서비스콜 날리기', info.file);
+                      }}
+                    >
+                      프로필 사진 변경
+                    </StyledUpload>
                   </Menu.Item>
                   <Menu.Item onClick={handleChangeDefaultPhoto}>
                     기본 이미지로 변경
@@ -203,6 +227,12 @@ const Sidebar = styled.div`
   width: ${props => (props.isVertical ? '100%' : '250px')};
   height: ${props => (props.isVertical ? '200px' : '100%')};
   background: rgba(0, 0, 0, 0.3);
+`;
+
+const StyledUpload = styled(Upload)`
+  &:focus {
+    outline: 0;
+  }
 `;
 
 const Text = styled.span`

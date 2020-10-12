@@ -45,7 +45,7 @@ function App() {
           path="/registerForm"
           component={<SignUpFormPage />}
         />
-        <PrivateRoute path="/(s|f|m)/:id/:mainApp?" component={MainPage} />
+        <PrivateRoute path="/:tab(s|f|m)/:id/:mainApp?" component={MainPage} />
         <Route component={NotFoundPage} />
       </Switch>
     </BrowserRouter>
