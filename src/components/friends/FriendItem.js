@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { Badge, Dropdown, Typography, Menu, Space, Avatar, Button } from 'antd';
 import { useCoreStores } from 'teespace-core';
@@ -121,6 +122,7 @@ function FriendItem({
     friendId,
   },
 }) {
+  const history = useHistory();
   const { authStore, friendStore } = useCoreStores();
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
@@ -173,6 +175,15 @@ function FriendItem({
     setIsHovering(false);
     setDropdownVisible(false);
   }, [friendStore, authStore, friendId]);
+
+  const handleItemClick = useCallback(() => {
+    history.push({
+      pathname: `/f/${mode === 'me' ? authStore.myInfo.id : friendId}/profile`,
+      search: null,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [friendId]);
+
   const menu = (
     <Menu>
       {friendFavorite && (
@@ -189,6 +200,7 @@ function FriendItem({
     <FriendItemWrapper
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onClick={handleItemClick}
       mode={mode}
     >
       <CommonMessage
