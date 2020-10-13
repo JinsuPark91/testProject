@@ -20,7 +20,12 @@ import { toJS } from 'mobx';
 const DEFAULT_BACKGROUND = '/image.svg';
 const DEFAULT_THUMB = '/movie.svg';
 
-const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
+const Profile = ({
+  userId = null,
+  editMode = false,
+  isVertical = false,
+  onModeChange = null,
+}) => {
   const { userStore, authStore } = useCoreStores();
   const [isEditMode, setEditMode] = useState(editMode);
 
@@ -42,6 +47,11 @@ const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
     else console.log('Profile : ', authStore.myInfo);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
+
+  useEffect(() => {
+    if (onModeChange && typeof onModeChange === 'function')
+      onModeChange(isEditMode);
+  }, [isEditMode]);
 
   // const toBase64 = async blobImage =>
   //   new Promise((resolve, reject) => {
