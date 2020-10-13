@@ -12,25 +12,28 @@ import {
   PictureOutlined,
   VideoCameraOutlined,
 } from '@ant-design/icons';
-import { Button, Input, Dropdown, Menu } from 'antd';
+import { Button, Input, Dropdown, Menu, Modal } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import { toJS } from 'mobx';
 
-const DEFAULT_BACKGROUND_URL = '/logo512.png';
-const DEFAULT_THUMB_URL = '/pdf.svg';
+// TODO : 지워야 하는것
+const DEFAULT_BACKGROUND = '/image.svg';
+const DEFAULT_THUMB = '/movie.svg';
 
 const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
   const { userStore, authStore } = useCoreStores();
-  const [isMyId, setIsMyId] = useState(userId === authStore.myInfo.id);
   const [isEditMode, setEditMode] = useState(editMode);
-  const [background, setBackground] = useState(DEFAULT_BACKGROUND_URL);
-  const [thumb, setThumb] = useState(DEFAULT_THUMB_URL);
-  const [phone, setPhone] = useState('112');
-  const [mobile, setMobile] = useState('010-1111-2222');
+
+  // 유저 정보들
+  const [background, setBackground] = useState(DEFAULT_BACKGROUND);
+  const [thumb, setThumb] = useState(DEFAULT_THUMB);
+  const [phone, setPhone] = useState('');
+  const [mobile, setMobile] = useState('');
+
+  const isMyId = () => userId === authStore.myInfo.id;
 
   useEffect(() => {
-    setIsMyId(userId === authStore.myInfo.id);
-    if (!isMyId)
+    if (!isMyId())
       (async () => {
         const myUserId = authStore.myInfo.id;
         const profile = await userStore.getProfile({ userId, myUserId });
@@ -61,12 +64,13 @@ const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
     console.log('1 : 1 미팅');
   };
 
-  const handleChangeDefaultBackground = async () => {
-    setBackground(DEFAULT_BACKGROUND_URL);
+  const handleChangeDefaultBackground = () => {
+    // const defaultBackground = userStore.getUserProfilePhoto({ userId });
+    setBackground(DEFAULT_BACKGROUND);
   };
 
   const handleChangeDefaultPhoto = () => {
-    setThumb(DEFAULT_THUMB_URL);
+    setThumb(DEFAULT_THUMB);
   };
 
   const handleConfirm = async () => {
@@ -79,9 +83,15 @@ const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
   };
 
   const handleCancel = () => {
-    setBackground(DEFAULT_BACKGROUND_URL);
-    setThumb(DEFAULT_THUMB_URL);
-    setEditMode(false);
+    Modal.confirm({
+      centered: true,
+      content: '변경 사항을 저장하지 않고 나가시겠습니까?',
+      onOk: () => {
+        setBackground(DEFAULT_BACKGROUND);
+        setThumb(DEFAULT_THUMB);
+        setEditMode(false);
+      },
+    });
   };
 
   return (
@@ -95,9 +105,9 @@ const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
       <Sidebar isVertical={isVertical}>
         <StyledButton isVertical={isVertical}>
           <MessageOutlined style={{ fontSize: '30px' }} />
-          <Text>{isMyId ? `나와의 Talk` : `1:1 Talk`}</Text>
+          <Text>{isMyId() ? `나와의 Talk` : `1:1 Talk`}</Text>
         </StyledButton>
-        {isMyId ? (
+        {isMyId() ? (
           <StyledButton onClick={handleChangeMode} isVertical={isVertical}>
             <EditOutlined style={{ fontSize: '30px' }} />
             <Text>프로필 편집</Text>
@@ -109,9 +119,8 @@ const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
           </StyledButton>
         )}
       </Sidebar>
-
       <Content>
-        {isMyId && isEditMode && (
+        {isMyId() && isEditMode && (
           <Dropdown
             trigger={['click']}
             overlay={
@@ -147,7 +156,7 @@ const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
               URL.revokeObjectURL(thumb);
             }}
           />
-          {isMyId && isEditMode && (
+          {isMyId() && isEditMode && (
             <Dropdown
               trigger={['click']}
               overlay={
@@ -185,7 +194,7 @@ const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
           </UserInfoItem>
           <UserInfoItem>
             <MobileOutlined style={{ marginRight: '20px' }} />
-            {isMyId && isEditMode ? (
+            {isMyId() && isEditMode ? (
               <Input
                 onChange={e => {
                   setMobile(e.target.value);
@@ -198,7 +207,7 @@ const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
           </UserInfoItem>
           <UserInfoItem>
             <PhoneOutlined style={{ marginRight: '20px' }} />
-            {isMyId && isEditMode ? (
+            {isMyId() && isEditMode ? (
               <Input
                 onChange={e => {
                   setPhone(e.target.value);
@@ -215,7 +224,7 @@ const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
           </UserInfoItem>
         </UserInfoList>
         <ButtonContainer>
-          {isMyId && isEditMode && (
+          {isMyId() && isEditMode && (
             <>
               <Button style={{ marginRight: '20px' }} onClick={handleConfirm}>
                 저장
