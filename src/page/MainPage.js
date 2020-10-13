@@ -99,7 +99,16 @@ function MainPage() {
     appName => {
       switch (appName) {
         case 'profile':
-          return <Profile userId={id} editMode={false} isVertical={false} />;
+          return (
+            <Profile
+              userId={id}
+              editMode={false}
+              isVertical={false}
+              onModeChange={isEditMode => {
+                console.log('zzzz', isEditMode);
+              }}
+            />
+          );
         case 'talk':
           return null;
         // return <Talk layoutState={layoutState} roomId={id} />;
