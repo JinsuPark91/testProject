@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import { useCoreStores } from 'teespace-core';
 import AddFriendsByEmailHeader from './AddFriendsByEmailHeader';
 import AddFriendsByEmailContent from './AddFriendsByEmailContent';
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
 
 function AddFriendsByEmail() {
   const { userStore, authStore } = useCoreStores();
@@ -15,10 +22,10 @@ function AddFriendsByEmail() {
     setUserLoginId(e.target.value);
   };
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <Wrapper>
       <AddFriendsByEmailHeader handleSearchUser={handleSearchUser} />
       <AddFriendsByEmailContent userLoginId={userLoginId} />
-    </div>
+    </Wrapper>
   );
 }
 

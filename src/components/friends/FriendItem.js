@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { Badge, Dropdown, Typography, Menu, Space, Avatar, Button } from 'antd';
+import { Tooltip, Typography, Avatar, Button } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import { useOpenInWindow } from 'use-open-window';
 import {
@@ -125,12 +125,17 @@ const DropdownMenu = React.memo(
     </CommonMenu>
   ),
 );
-const Profile = React.memo(({ mode, imageSize }) => (
+const Profile = React.memo(({ mode, imageSize, tooltipPopupContainer }) => (
   <>
     {mode === 'me' && (
-      <Badge count="나">
+      <Tooltip
+        overlayClassName="teespace-common teespace-me-tooltip"
+        title="나"
+        getPopupContainer={tooltipPopupContainer}
+        visible
+      >
         <Avatar icon={<UserOutlined />} size={imageSize} />
-      </Badge>
+      </Tooltip>
     )}
     {mode !== 'me' && <Avatar icon={<UserOutlined />} size={imageSize} />}
   </>
@@ -240,6 +245,7 @@ const Action = React.memo(
  * A friend item component to use in the list view.
  * @param {Object} props
  * @param {('me'|'friend'|'readOnly'|'addFriend'|'recommended')} props.mode
+ * @param {function} props.tooltipPopupContainer
  * @param {number} props.imageSize
  * @param {object} props.friendInfo
  * @param {string} props.friendInfo.friendId
@@ -250,6 +256,7 @@ const Action = React.memo(
 function FriendItem({
   mode = 'friend', // 'me', 'friend', 'readOnly', 'addFriend', 'recommended'
   imageSize = 34,
+  tooltipPopupContainer = () => document.body,
   friendInfo: {
     friendNick = '',
     userName = '',
@@ -364,6 +371,8 @@ function FriendItem({
 
   const handleToastClose = useCallback(() => setVisibleToast(false), []);
 
+  console.log(tooltipPopupContainer);
+
   return (
     <FriendItemWrapper
       onMouseEnter={handleMouseEnter}
@@ -409,7 +418,11 @@ function FriendItem({
         ]}
       />
       <ProfileWrapper>
-        <Profile mode={mode} imageSize={imageSize} />
+        <Profile
+          mode={mode}
+          imageSize={imageSize}
+          tooltipPopupContainer={tooltipPopupContainer}
+        />
       </ProfileWrapper>
       <TextWrapper>
         <TitleForName>{friendNick || userName}</TitleForName>

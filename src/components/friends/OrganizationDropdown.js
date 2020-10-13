@@ -1,53 +1,39 @@
 import React, { useEffect } from 'react';
+import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { TreeSelect } from 'antd';
 import { useCoreStores } from 'teespace-core';
 
-const treeData = [
-  {
-    title: 'All',
-    children: [
-      {
-        id: 1,
-        value: 'TmaxGroup',
-        title: 'TmaxGroup',
-        children: [
-          {
-            id: 2,
-            title: 'TmaxSoft International',
-            value: 'TmaxSoft Int',
-            children: [
-              { id: 1, title: 'Global Marketing', value: 'Global Marketing' },
-              {
-                id: 2,
-                title: 'TmaxAMS',
-                value: 'TmaxAMS',
-                children: [
-                  { title: 'AMS PM Division', value: 'AMS PM Divison' },
-                ],
-              },
-            ],
-          },
-          {
-            id: 3,
-            title: '데이터그룹',
-            value: '데이터그룹',
-          },
-          {
-            id: 4,
-            title: '소프트그룹',
-            value: '소프트그룹',
-          },
-          {
-            id: 5,
-            title: '에이엔씨그룹',
-            value: '에이엔씨그룹',
-          },
-        ],
-      },
-    ],
-  },
-];
+const StyledTreeSelect = styled(TreeSelect)`
+  width: auto;
+  min-width: 72px;
+  .ant-select-selector {
+    outline: none !important;
+    border-width: 0 !important;
+    box-shadow: none !important;
+    border-radius: 15px !important;
+    transition: none !important;
+  }
+
+  &.ant-select-focused:not(.ant-select-open) .ant-select-selector {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  &.ant-select-open .ant-select-selector {
+    color: #523dc7;
+    border: 1px solid #6c56e5 !important;
+    background-color: #dcddff;
+  }
+
+  &:not(.ant-select-open) .ant-select-selector {
+    &:hover {
+      background-color: #dcddff;
+      border: 1px solid #c6ced6 !important;
+    }
+  }
+`;
 
 function OrganizationDropdown() {
   const { orgStore } = useCoreStores();
@@ -60,23 +46,23 @@ function OrganizationDropdown() {
   const orgConverter = (org, index) => ({
     id: index,
     title: org.orgname,
-    value: [org.companycode, org.departmentcode],
-    children:
-      org.childrenorg && org.childrenorg.orgList
-        ? org.childrenorg.orgList.map(orgConverter)
-        : null,
+    value: `["${org.companycode}", "${org.departmentcode}"]`,
+    children: org.childrenorg ? org.childrenorg.map(orgConverter) : null,
   });
 
   const handleOrgChange = value => {
-    orgStore.getOrgUserList(...value);
+    orgStore.getOrgUserList(...JSON.parse(value));
   };
 
   return useObserver(() => (
-    <TreeSelect
+    <StyledTreeSelect
+      dropdownClassName="teespace-common"
       treeData={orgStore.orgList.map(orgConverter)}
+      treeNodeLabelProp="title"
       onChange={handleOrgChange}
-      style={{ width: '100%' }}
       placeholder="please select"
+      dropdownMatchSelectWidth={false}
+      dropdownStyle={{ minWidth: 500 }}
     />
   ));
 }

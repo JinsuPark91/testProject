@@ -1,17 +1,21 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import { Modal, Tabs } from 'antd';
+import { Tabs } from 'antd';
 import AddFriendsByOrganization from './AddFriendsByOrganization';
 import AddFriendsByPhoneNumber from './AddFriendsByPhoneNumber';
 import AddFriendsByEmail from './AddFriendsByEmail';
 import AddFriendsByRecommendataion from './AddFriendsByRecommendation';
 import AddFriendsByInvitation from './AddFriendsByInvitation';
 import { useStore } from '../../stores';
-import CommonDialog, { ContentWrapper } from '../commons/Dialog';
+import CommonDialog from '../commons/Dialog';
 import CommonTabs from '../commons/Tabs';
 
 const { TabPane } = Tabs;
 
+const Wrapper = styled.div`
+  height: calc(100vh - 2.69rem) !important;
+  max-height: 31.75rem;
+`;
 const StyledTabPane = styled(TabPane)`
   height: '100%';
   padding: 16px;
@@ -40,23 +44,25 @@ function AddFriendsDialog({ visible, width, height }) {
       width={width}
       footer={null}
     >
-      <CommonTabs style={{ height: '100%' }}>
-        <StyledTabPane tab="조직도 조회" key="1">
-          <AddFriendsByOrganization />
-        </StyledTabPane>
-        {/* <StyledTabPane tab="연락처로 추가" key="2">
+      <Wrapper>
+        <CommonTabs style={{ height: '100%' }}>
+          <StyledTabPane tab="조직도 조회" key="1">
+            <AddFriendsByOrganization />
+          </StyledTabPane>
+          {/* <StyledTabPane tab="연락처로 추가" key="2">
           <AddFriendsByPhoneNumber />
         </StyledTabPane> */}
-        <StyledTabPane tab="아이디 검색" key="3">
-          <AddFriendsByEmail />
-        </StyledTabPane>
-        {/* <StyledTabPane tab="추천 프렌즈" key="4">
+          <StyledTabPane tab="아이디 검색" key="3">
+            <AddFriendsByEmail />
+          </StyledTabPane>
+          {/* <StyledTabPane tab="추천 프렌즈" key="4">
           <AddFriendsByRecommendataion />
         </StyledTabPane>
         <StyledTabPane tab="초대장 보내기" key="5">
           <AddFriendsByInvitation />
         </StyledTabPane> */}
-      </CommonTabs>
+        </CommonTabs>
+      </Wrapper>
     </CommonDialog>
   );
 }
