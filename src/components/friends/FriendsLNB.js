@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Layout } from 'antd';
 import FriendsLNBHeader from './FriendsLNBHeader';
@@ -19,6 +19,7 @@ const FriendsLNBWrapper = styled(Layout)`
  */
 function FriendsLNB(props) {
   const [searchKeyword, setSearchKeyword] = useState('');
+  const lnbRef = useRef(null);
   const handleSearchKeyword = useCallback(e => {
     setSearchKeyword(e.target.value);
   }, []);
@@ -29,11 +30,17 @@ function FriendsLNB(props) {
 
   return (
     <FriendsLNBWrapper>
+      <div ref={lnbRef} />
       <FriendsLNBHeader
         handleInputChange={handleSearchKeyword}
         handleInputClear={handleClearKeyword}
       />
-      <FriendsLNBContent searchKeyword={searchKeyword} />
+      <FriendsLNBContent
+        searchKeyword={searchKeyword}
+        meTooltipPopupContainer={() => {
+          return lnbRef.current;
+        }}
+      />
       <FriendsLNBFooter />
     </FriendsLNBWrapper>
   );

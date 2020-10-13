@@ -47,8 +47,9 @@ const FriendList = React.memo(({ friendList }) => (
  * Friends LNB Content
  * @param {Object} props
  * @param {string} props.searchKeyword - 프렌즈 탭의 친구 리스트 검색 키워드
+ * @param {function} props.meTooltipPopupContainer - 프렌즈 아이템의 나일때 표시하는 tooltip
  */
-function FriendsLNBContent({ searchKeyword }) {
+function FriendsLNBContent({ searchKeyword, meTooltipPopupContainer }) {
   const { authStore, friendStore } = useCoreStores();
 
   const favFriendList = friendStore.friendInfoList.filter(
@@ -65,10 +66,12 @@ function FriendsLNBContent({ searchKeyword }) {
     friendStore.getFriendInfoList({ userId: authStore.user.id });
   }, [friendStore, authStore]);
 
+  console.log('me', meTooltipPopupContainer);
   const renderEmptyContent = (
     <>
       <FriendItem
         mode="me"
+        tooltipPopupContainer={meTooltipPopupContainer}
         friendInfo={{
           userName: authStore.user.name,
           friendNIck: authStore.user.nick,
@@ -94,6 +97,7 @@ function FriendsLNBContent({ searchKeyword }) {
     <>
       <FriendItem
         mode="me"
+        tooltipPopupContainer={meTooltipPopupContainer}
         friendInfo={{
           userName: authStore.user.name,
           friendNIck: authStore.user.nick,
