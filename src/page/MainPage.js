@@ -97,7 +97,6 @@ function MainPage() {
   // RoomId, layoutState 가 바뀌면 다시 그려야 한다. getAppComponent 를 다시 메모이제이션 한다.
   const getAppComponent = useCallback(
     appName => {
-      console.log('LAYOUT STATE : ', layoutState);
       switch (appName) {
         case 'profile':
           return <Profile userId={id} editMode={false} isVertical={false} />;
