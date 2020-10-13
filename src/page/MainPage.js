@@ -94,9 +94,10 @@ function MainPage() {
     };
   }, [history]);
 
-  // RoomId 가 바뀌면 다시 그려야 한다. getAppComponent 를 다시 메모이제이션 한다.
+  // RoomId, layoutState 가 바뀌면 다시 그려야 한다. getAppComponent 를 다시 메모이제이션 한다.
   const getAppComponent = useCallback(
     appName => {
+      console.log('LAYOUT STATE : ', layoutState);
       switch (appName) {
         case 'profile':
           return <Profile userId={id} editMode={false} isVertical={false} />;
@@ -118,7 +119,7 @@ function MainPage() {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [id],
+    [id, layoutState],
   );
 
   // Room ID 가 바뀌면, getAppComponent가 변경(새로 생성) 되므로, mainApplication 또는 subApplication을 다시 메모이제이션 한다.
