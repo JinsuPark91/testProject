@@ -16,10 +16,15 @@ import { Button, Input, Dropdown, Menu } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import { toJS } from 'mobx';
 
+const DEFAULT_BACKGROUND_URL = '/logo512.png';
+const DEFAULT_THUMB_URL = '/pdf.svg';
+
 const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
   const { userStore, authStore } = useCoreStores();
   const [isMyId, setIsMyId] = useState(userId === authStore.myInfo.id);
   const [isEditMode, setEditMode] = useState(editMode);
+  const [background, setBackground] = useState(DEFAULT_BACKGROUND_URL);
+  const [thumb, setThumb] = useState(DEFAULT_THUMB_URL);
   const [phone, setPhone] = useState('112');
   const [mobile, setMobile] = useState('010-1111-2222');
 
@@ -32,7 +37,21 @@ const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
         console.log('Profile : ', toJS(profile));
       })();
     else console.log('Profile : ', authStore.myInfo);
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
+
+  // const toBase64 = async blobImage =>
+  //   new Promise((resolve, reject) => {
+  //     const reader = new FileReader();
+  //     reader.readAsDataURL(blobImage);
+  //     reader.onload = () => resolve(reader.result);
+  //     reader.onerror = err => reject(err);
+  //   });
+
+  // const toBlob = async file => {
+  //   const result = await fetch(file).then(r => r.blob());
+  //   return result;
+  // };
 
   const handleChangeMode = () => {
     setEditMode(true);
@@ -42,38 +61,36 @@ const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
     console.log('1 : 1 미팅');
   };
 
-  const handleChangeBackground = () => {
-    console.log('Change Background !!');
-  };
-
-  const handleChangeDefaultBackground = () => {
-    console.log('Change default Background !!');
-  };
-
-  const handleChangePhoto = () => {
-    console.log('Change Photo !!');
+  const handleChangeDefaultBackground = async () => {
+    setBackground(DEFAULT_BACKGROUND_URL);
   };
 
   const handleChangeDefaultPhoto = () => {
-    console.log('change default Photo !!');
+    setThumb(DEFAULT_THUMB_URL);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
+    // const blobImages = await Promise.all([toBlob(background), toBlob(thumb)]);
+    // const base64Images = await Promise.all(
+    //   blobImages.map(blobImage => toBase64(blobImage)),
+    // );
+
     setEditMode(false);
   };
 
   const handleCancel = () => {
+    setBackground(DEFAULT_BACKGROUND_URL);
+    setThumb(DEFAULT_THUMB_URL);
     setEditMode(false);
-  };
-
-  const handleFileSelect = e => {
-    console.log(e);
   };
 
   return (
     <Wrapper
-      imageSrc="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ0zLGlXZ_vEvQm4RplPIdsjgKSho4EyapEbw&usqp=CAU"
+      imageSrc={background}
       isVertical={isVertical}
+      onLoad={() => {
+        URL.revokeObjectURL(background);
+      }}
     >
       <Sidebar isVertical={isVertical}>
         <StyledButton isVertical={isVertical}>
@@ -99,14 +116,14 @@ const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
             trigger={['click']}
             overlay={
               <Menu>
-                <Menu.Item onClick={handleChangeBackground}>
+                <Menu.Item>
                   <StyledUpload
                     component="div"
                     accept={['image/*']}
                     multiple={false}
-                    customRequest={info => {
-                      console.log('파일 업로드 서비스콜 날리기', info.file);
-                    }}
+                    customRequest={({ file }) =>
+                      setBackground(URL.createObjectURL(file))
+                    }
                   >
                     배경 변경
                   </StyledUpload>
@@ -124,20 +141,25 @@ const Profile = ({ userId = null, editMode = false, isVertical = false }) => {
           </Dropdown>
         )}
         <UserImageWrapper position="br">
-          <UserImage src="https://image.yes24.com/momo/TopCate2199/MidCate005/219846755.jpg" />
+          <UserImage
+            src={thumb}
+            onLoad={() => {
+              URL.revokeObjectURL(thumb);
+            }}
+          />
           {isMyId && isEditMode && (
             <Dropdown
               trigger={['click']}
               overlay={
                 <Menu>
-                  <Menu.Item onClick={handleChangePhoto}>
+                  <Menu.Item>
                     <StyledUpload
                       component="div"
                       multiple={false}
                       accept={['image/*']}
-                      customRequest={info => {
-                        console.log('파일 업로드 서비스콜 날리기', info.file);
-                      }}
+                      customRequest={({ file }) =>
+                        setThumb(URL.createObjectURL(file))
+                      }
                     >
                       프로필 사진 변경
                     </StyledUpload>
