@@ -107,6 +107,24 @@ function MainPage() {
     };
   }, [history]);
 
+  useEffect(() => {
+    if (tab === 's') {
+      (async () => {
+        let rooms = [];
+        try {
+          rooms = await getRooms();
+        } catch (e) {
+          console.log('GET ROOM FAILED');
+        } finally {
+          history.push({
+            pathname: `/s/${rooms[0]?.id}/${DEFAULT_MAIN_APP}`,
+            search: history.location.search,
+          });
+        }
+      })();
+    }
+  }, [tab]);
+
   // RoomId, layoutState 가 바뀌면 다시 그려야 한다. getAppComponent 를 다시 메모이제이션 한다.
   const getAppComponent = useCallback(
     appName => {
