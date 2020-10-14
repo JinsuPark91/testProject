@@ -20,21 +20,18 @@ const StyledInput = styled(Input)`
     color: #bdc6d3;
   }
 
-  ${props =>
-    props.numberofrighticons &&
-    css`
-      padding-right: ${props.numberofrighticons * 30}px;
-    `}
-
-  &:hover:not(:disabled) {
-    ${props =>
-      !props.alert &&
-      css`
-        background-color: #dcddff;
-        border: 1px solid #c6ced6;
-        color: #000000;
-      `}
+  &:hover {
+    &:not(:disabled) {
+      ${props =>
+        !props.alert &&
+        css`
+          background-color: #dcddff !important;
+          border: 1px solid #c6ced6;
+          color: #000000;
+        `}
+    }
   }
+
   &:active,
   &:focus {
     &:not(:disabled) {
@@ -46,6 +43,7 @@ const StyledInput = styled(Input)`
         `}
     }
   }
+
   &:disabled {
     background-color: #cccccc;
     border-color: #c6ced6;
@@ -61,6 +59,12 @@ const StyledInput = styled(Input)`
     props.checked &&
     css`
       border: 1px solid #16ac66 !important;
+    `}
+
+  ${props =>
+    props.numberofrighticons &&
+    css`
+      padding-right: ${props.numberofrighticons * 30}px;
     `}
 `;
 
@@ -112,7 +116,7 @@ const PasswordInvisibleIcon = styled(EyeInvisibleOutlined)`
 function CommonInput(props) {
   const {
     style,
-    alert,
+    alert = '',
     placement,
     type,
     getPopupContainer = () => document.body,

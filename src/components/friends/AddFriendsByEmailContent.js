@@ -1,16 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
-import { Button, Typography, Avatar, Row, Col, Space } from 'antd';
+import styled from 'styled-components';
+import { Typography, Avatar, Row, Col, Space } from 'antd';
 import CommonButton from '../commons/Button';
 import CommonToast from '../commons/Toast';
 
-const { Paragraph, Title, Text } = Typography;
+const { Paragraph, Title } = Typography;
+
+const StyledAvatar = styled(Avatar)`
+    width: calc(5.63rem - 0.38rem);
+    height: calc(5.63rem - 0.38rem);
+    border-radius: 50%;
+    top: 0;
+    border: 0.19rem solid rgba(255,255,255,0.50);
+    box-shadow: 0 0 5px 2px rgba(0,0,0,0.20);
+}
+`;
 
 function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
   const { friendStore, authStore } = useCoreStores();
   const [visibleToast, setVisibleToast] = useState(false);
   const [alreadyFriendFlag, setAlreadyFriendFlag] = useState(false);
+
+  const { userStore } = useCoreStores();
 
   const handleAddFriend = () => {
     setAlreadyFriendFlag(true);
@@ -27,6 +40,17 @@ function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
     setAlreadyFriendFlag(friendFlag);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [friendStore.friendInfoList, searchedUser]);
+
+  const profileSrc = (() => {
+    if (searchedUser) {
+      return (
+        searchedUser.thumbPhoto ||
+        `/${userStore.getUserDefaultPhotoUrl({ userId: searchedUser.id })}`
+      );
+    }
+    return null;
+  })();
+
   return useObserver(() => (
     <Row align="middle" style={{ flexGrow: 1 }} justify="center">
       <CommonToast
@@ -48,8 +72,8 @@ function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
             searchedUser &&
             searchedUser.id === authStore.user.id && (
               <>
-                <Avatar size={100} />
-                <Title level={4}>이준규 (AC1-2팀-팀원)</Title>
+                <StyledAvatar src={profileSrc} />
+                <Title level={4}>{authStore.user.name}</Title>
                 <Title level={4}>(내계정)</Title>
                 <CommonButton type="solid">나와의 Talk</CommonButton>
               </>
@@ -59,7 +83,7 @@ function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
             searchedUser.id !== authStore.user.id &&
             alreadyFriendFlag && (
               <>
-                <Avatar size={100} />
+                <StyledAvatar src={profileSrc} />
                 <Title level={4}>{searchedUser.name}</Title>
                 <Title level={4}>(이미 프렌즈)</Title>
                 <CommonButton type="solid">1:1 Talk</CommonButton>
@@ -70,7 +94,7 @@ function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
             searchedUser.id !== authStore.user.id &&
             !alreadyFriendFlag && (
               <>
-                <Avatar size={100} />
+                <StyledAvatar src={profileSrc} />
                 <Title level={4}>{searchedUser.name}</Title>
                 <CommonButton type="solid" onClick={handleAddFriend}>
                   프렌즈 추가
