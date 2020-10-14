@@ -39,7 +39,6 @@ function MainPage() {
   const [subApp, setSubApp] = useState(null);
   const [layoutState, setLayoutState] = useState('close');
   const { roomStore, authStore } = useCoreStores();
-  console.log(history);
   // URL 에 따른 State 변경
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(history.location.search);
