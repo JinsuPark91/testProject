@@ -125,21 +125,29 @@ const DropdownMenu = React.memo(
     </CommonMenu>
   ),
 );
-const Profile = React.memo(({ mode, imageSize, tooltipPopupContainer }) => (
-  <>
-    {mode === 'me' && (
-      <Tooltip
-        overlayClassName="teespace-common teespace-me-tooltip"
-        title="나"
-        getPopupContainer={tooltipPopupContainer}
-        visible
-      >
-        <Avatar icon={<UserOutlined />} size={imageSize} />
-      </Tooltip>
-    )}
-    {mode !== 'me' && <Avatar icon={<UserOutlined />} size={imageSize} />}
-  </>
-));
+const Profile = React.memo(
+  ({ mode, imageSize, tooltipPopupContainer, thumbPhoto, friendId }) => {
+    const { userStore } = useCoreStores();
+    const profileSrc =
+      thumbPhoto ||
+      `/${userStore.getUserDefaultPhotoUrl({ userId: friendId })}`;
+    return (
+      <>
+        {mode === 'me' && (
+          <Tooltip
+            overlayClassName="teespace-common teespace-me-tooltip"
+            title="나"
+            getPopupContainer={tooltipPopupContainer}
+            visible
+          >
+            <Avatar size={imageSize} src={profileSrc} />
+          </Tooltip>
+        )}
+        {mode !== 'me' && <Avatar size={imageSize} src={profileSrc} />}
+      </>
+    );
+  },
+);
 
 const FriendAction = React.memo(
   ({ mode, menu, handleDropdownVisible, handleTalkWindowOpen }) => (
@@ -262,6 +270,7 @@ function FriendItem({
     userName = '',
     friendFavorite = false,
     friendId,
+    thumbPhoto = '',
   },
 }) {
   const history = useHistory();
@@ -347,10 +356,14 @@ function FriendItem({
   }, [friendStore, authStore, friendId]);
 
   const handleItemClick = useCallback(() => {
-    history.push({
-      pathname: `/f/${mode === 'me' ? authStore.myInfo.id : friendId}/profile`,
-      search: null,
-    });
+    if (mode === 'me' || mode === 'friend') {
+      history.push({
+        pathname: `/f/${
+          mode === 'me' ? authStore.myInfo.id : friendId
+        }/profile`,
+        search: null,
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [friendId]);
 
@@ -422,6 +435,8 @@ function FriendItem({
           mode={mode}
           imageSize={imageSize}
           tooltipPopupContainer={tooltipPopupContainer}
+          thumbPhoto={thumbPhoto}
+          friendId={friendId}
         />
       </ProfileWrapper>
       <TextWrapper>

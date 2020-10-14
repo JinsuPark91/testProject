@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { TreeSelect } from 'antd';
-import { useCoreStores } from 'teespace-core';
 
 const StyledTreeSelect = styled(TreeSelect)`
   width: auto;
@@ -35,13 +34,7 @@ const StyledTreeSelect = styled(TreeSelect)`
   }
 `;
 
-function OrganizationDropdown() {
-  const { orgStore } = useCoreStores();
-
-  useEffect(() => {
-    orgStore.getOrgTree();
-  }, [orgStore]);
-
+function OrganizationDropdown({ orgList, handleChange }) {
   // org 데이터는 실시간으로 바뀌지 않으므로 index를 id로 써도 무방
   const orgConverter = (org, index) => ({
     id: index,
@@ -50,16 +43,12 @@ function OrganizationDropdown() {
     children: org.childrenorg ? org.childrenorg.map(orgConverter) : null,
   });
 
-  const handleOrgChange = value => {
-    orgStore.getOrgUserList(...JSON.parse(value));
-  };
-
   return useObserver(() => (
     <StyledTreeSelect
       dropdownClassName="teespace-common"
-      treeData={orgStore.orgList.map(orgConverter)}
+      treeData={orgList.map(orgConverter)}
       treeNodeLabelProp="title"
-      onChange={handleOrgChange}
+      onChange={handleChange}
       placeholder="please select"
       dropdownMatchSelectWidth={false}
       dropdownStyle={{ minWidth: 500 }}

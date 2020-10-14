@@ -13,18 +13,23 @@ const Wrapper = styled.div`
 function AddFriendsByEmail() {
   const { userStore, authStore } = useCoreStores();
   const [userLoginId, setUserLoginId] = useState('');
+  const [searchedUser, setSearchedUser] = useState(null);
 
-  const handleSearchUser = e => {
-    userStore.searchUserById({
-      myUserId: authStore.user.id,
+  const handleSearchUser = async e => {
+    setUserLoginId(e.target.value);
+    const idSearchedUser = await userStore.searchUserById({
+      userId: authStore.user.id,
       userLoginId: e.target.value,
     });
-    setUserLoginId(e.target.value);
+    setSearchedUser(idSearchedUser);
   };
   return (
     <Wrapper>
       <AddFriendsByEmailHeader handleSearchUser={handleSearchUser} />
-      <AddFriendsByEmailContent userLoginId={userLoginId} />
+      <AddFriendsByEmailContent
+        userLoginId={userLoginId}
+        searchedUser={searchedUser}
+      />
     </Wrapper>
   );
 }

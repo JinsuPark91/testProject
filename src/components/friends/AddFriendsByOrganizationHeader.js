@@ -10,18 +10,26 @@ const Wrapper = styled.div`
 const StyledDivider = styled(Divider)`
   margin: 0;
 `;
-function AddFriendsByOrganizationContent() {
+function AddFriendsByOrganizationContent({
+  orgList,
+  onInputChange,
+  onDropdownChange,
+}) {
   return (
     <>
       <Wrapper>
         <CommonInput
           placeholder="팀 이름, 조직원 이름 검색"
           style={{ width: '100%' }}
+          onPressEnter={onInputChange}
         />
       </Wrapper>
       <StyledDivider />
       <Wrapper>
-        <OrganizationDropdown />
+        <OrganizationDropdown
+          orgList={orgList}
+          handleChange={onDropdownChange}
+        />
       </Wrapper>
     </>
   );

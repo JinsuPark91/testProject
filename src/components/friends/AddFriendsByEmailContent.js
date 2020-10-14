@@ -7,29 +7,26 @@ import CommonToast from '../commons/Toast';
 
 const { Paragraph, Title, Text } = Typography;
 
-function AddFriendsByEmailContent({ userLoginId }) {
-  const { friendStore, userStore, authStore } = useCoreStores();
+function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
+  const { friendStore, authStore } = useCoreStores();
   const [visibleToast, setVisibleToast] = useState(false);
   const [alreadyFriendFlag, setAlreadyFriendFlag] = useState(false);
 
   const handleAddFriend = () => {
     setAlreadyFriendFlag(true);
-    friendStore.addFriendInfo(
-      authStore.user.id,
-      userStore.usersSearched[userLoginId].id,
-    );
+    friendStore.addFriendInfo(authStore.user.id, searchedUser.id);
     setVisibleToast(true);
   };
 
   useEffect(() => {
     const friendFlag =
-      userStore.usersSearched[userLoginId] &&
+      searchedUser &&
       friendStore.friendInfoList
         .map(friendInfo => friendInfo.friendId)
-        .includes(userStore.usersSearched[userLoginId].id);
+        .includes(searchedUser.id);
     setAlreadyFriendFlag(friendFlag);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [friendStore.friendInfoList, userStore.usersSearched[userLoginId]]);
+  }, [friendStore.friendInfoList, searchedUser]);
   return useObserver(() => (
     <Row align="middle" style={{ flexGrow: 1 }} justify="center">
       <CommonToast
@@ -37,20 +34,19 @@ function AddFriendsByEmailContent({ userLoginId }) {
         timeoutMs={1000}
         onClose={() => setVisibleToast(false)}
       >
-        {userStore.usersSearched[userLoginId] &&
-          `${userStore.usersSearched[userLoginId].name}님이 친구로 추가되었습니다.`}
+        {searchedUser && `${searchedUser.name}님이 친구로 추가되었습니다.`}
       </CommonToast>
       <Col>
         <Space direction="vertical" align="center">
-          {userLoginId && !userStore.usersSearched[userLoginId] && (
+          {userLoginId && !searchedUser && (
             <>
               <Title level={4}>{`'${userLoginId}'`}</Title>
               <Paragraph>검색 결과가 없습니다.</Paragraph>
             </>
           )}
           {userLoginId &&
-            userStore.usersSearched[userLoginId] &&
-            userStore.usersSearched[userLoginId].id === authStore.user.id && (
+            searchedUser &&
+            searchedUser.id === authStore.user.id && (
               <>
                 <Avatar size={100} />
                 <Title level={4}>이준규 (AC1-2팀-팀원)</Title>
@@ -59,27 +55,23 @@ function AddFriendsByEmailContent({ userLoginId }) {
               </>
             )}
           {userLoginId &&
-            userStore.usersSearched[userLoginId] &&
-            userStore.usersSearched[userLoginId].id !== authStore.user.id &&
+            searchedUser &&
+            searchedUser.id !== authStore.user.id &&
             alreadyFriendFlag && (
               <>
                 <Avatar size={100} />
-                <Title level={4}>
-                  {userStore.usersSearched[userLoginId].name}
-                </Title>
+                <Title level={4}>{searchedUser.name}</Title>
                 <Title level={4}>(이미 프렌즈)</Title>
                 <CommonButton type="solid">1:1 Talk</CommonButton>
               </>
             )}
           {userLoginId &&
-            userStore.usersSearched[userLoginId] &&
-            userStore.usersSearched[userLoginId].id !== authStore.user.id &&
+            searchedUser &&
+            searchedUser.id !== authStore.user.id &&
             !alreadyFriendFlag && (
               <>
                 <Avatar size={100} />
-                <Title level={4}>
-                  {userStore.usersSearched[userLoginId].name}
-                </Title>
+                <Title level={4}>{searchedUser.name}</Title>
                 <CommonButton type="solid" onClick={handleAddFriend}>
                   프렌즈 추가
                 </CommonButton>

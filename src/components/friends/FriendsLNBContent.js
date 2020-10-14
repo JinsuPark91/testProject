@@ -66,7 +66,6 @@ function FriendsLNBContent({ searchKeyword, meTooltipPopupContainer }) {
     friendStore.getFriendInfoList({ userId: authStore.user.id });
   }, [friendStore, authStore]);
 
-  console.log('me', meTooltipPopupContainer);
   const renderEmptyContent = (
     <>
       <FriendItem
@@ -75,7 +74,8 @@ function FriendsLNBContent({ searchKeyword, meTooltipPopupContainer }) {
         friendInfo={{
           userName: authStore.user.name,
           friendNIck: authStore.user.nick,
-          friendFav: null,
+          thumbPhoto: authStore.user.thumbPhoto,
+          friendId: authStore.user.id,
         }}
       />
       <Divider style={{ margin: '6px 0' }} />
@@ -101,7 +101,8 @@ function FriendsLNBContent({ searchKeyword, meTooltipPopupContainer }) {
         friendInfo={{
           userName: authStore.user.name,
           friendNIck: authStore.user.nick,
-          friendFav: null,
+          thumbPhoto: authStore.user.thumbPhoto,
+          friendId: authStore.user.id,
         }}
       />
       <Divider />

@@ -1,9 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { CloseOutlined } from '@ant-design/icons';
-import { Progress, Typography } from 'antd';
-
-const { Text } = Typography;
+import { Progress } from 'antd';
 
 const Wrapper = styled.div`
   border: 1px solid #e0e5e9;
