@@ -21,9 +21,9 @@ const StyledInput = styled(Input)`
   }
 
   ${props =>
-    props.hasrighticon &&
+    props.numberofrighticons &&
     css`
-      padding-right: 30px;
+      padding-right: ${props.numberofrighticons * 30}px;
     `}
 
   &:hover:not(:disabled) {
@@ -83,7 +83,9 @@ const AlertIcon = styled(ExclamationCircleOutlined)`
 const PasswordVisibleIcon = styled(EyeOutlined)`
   position: absolute;
   font-size: 20px;
-  margin-left: -26px;
+  ${props => css`
+    margin-left: ${-props.numberofrighticons * 26}px;
+  `}
   margin-top: 6px;
   cursor: pointer;
   color: #c6ced6;
@@ -92,7 +94,9 @@ const PasswordVisibleIcon = styled(EyeOutlined)`
 const PasswordInvisibleIcon = styled(EyeInvisibleOutlined)`
   position: absolute;
   font-size: 20px;
-  margin-left: -26px;
+  ${props => css`
+    margin-left: ${-props.numberofrighticons * 26}px;
+  `}
   margin-top: 6px;
   cursor: pointer;
   color: #c6ced6;
@@ -112,7 +116,6 @@ function CommonInput(props) {
     placement,
     type,
     getPopupContainer = () => document.body,
-    getFieldError,
     checked = false,
   } = props;
 
@@ -136,6 +139,8 @@ function CommonInput(props) {
   const inputProps = {
     ...props,
   };
+
+  delete inputProps.getPopupContainer;
 
   useEffect(() => {
     if (type === 'password') {
@@ -168,23 +173,29 @@ function CommonInput(props) {
     }, 100);
   };
 
-  const hasRightIcon = type === 'password' || !!alert || checked;
-
-  console.log(getFieldError);
+  const numberOfRightIcons = (type === 'password') + !!alert + !!checked;
   return (
     <div style={style} ref={inputWrapperRef} onBlur={handleOnBlur}>
       <StyledInput
         {...inputProps}
         alert={alert}
         type={inputType}
-        hasrighticon={hasRightIcon}
+        numberofrighticons={numberOfRightIcons}
         checked={checked}
       />
       {type === 'password' && (
         <>
-          {visibleText && <PasswordVisibleIcon onClick={handleVisibleText} />}
+          {visibleText && (
+            <PasswordVisibleIcon
+              onClick={handleVisibleText}
+              numberofrighticons={numberOfRightIcons}
+            />
+          )}
           {!visibleText && (
-            <PasswordInvisibleIcon onClick={handleVisibleText} />
+            <PasswordInvisibleIcon
+              onClick={handleVisibleText}
+              numberofrighticons={numberOfRightIcons}
+            />
           )}
         </>
       )}
