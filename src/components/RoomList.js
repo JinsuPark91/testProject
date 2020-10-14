@@ -11,64 +11,45 @@ function RoomList({ rooms }) {
 
   const handleRoomClick = roomId => {
     history.push({
-      pathname: `/${params['0']}/${roomId}/${params.mainApp}`,
+      pathname: `/s/${roomId}/${params.mainApp}`,
       search: history.location.search,
     });
   };
 
-  return useObserver(() => {
-    return (
-      <Wrapper>
-        <button
-          type="button"
-          onClick={() => {
-            rooms[0].unreadCount++;
-          }}
-        >
-          unread test
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            rooms.splice(rooms.length - 1, 1);
-          }}
-        >
-          remove test
-        </button>
-
-        <List
-          itemLayout="horizontal"
-          // rooms 그대로 넣으면 안터진다.
+  return useObserver(() => (
+    <Wrapper>
+      <List
+        itemLayout="horizontal"
+        // rooms 그대로 넣으면 안터진다.
+        // https://github.com/mobxjs/mobx-react/issues/484
+        dataSource={rooms}
+        renderItem={roomInfo => (
+          // 그냥 값 바꾸면 안터진다.
           // https://github.com/mobxjs/mobx-react/issues/484
-          dataSource={rooms.slice()}
-          renderItem={roomInfo => (
-            // 그냥 값 바꾸면 안터진다.
-            // https://github.com/mobxjs/mobx-react/issues/484
-            <Observer>
-              {() => (
-                <RoomItem
-                  id={roomInfo.roomId}
-                  thumbs={[
-                    'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                    'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                    'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                    'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                  ]}
-                  maxThumbs={2}
-                  unreadCount={roomInfo.unreadCount}
-                  name={roomInfo.name}
-                  lastMessage={roomInfo.lastMessage}
-                  onClick={() => {
-                    handleRoomClick(roomInfo.id);
-                  }}
-                />
-              )}
-            </Observer>
-          )}
-        />
-      </Wrapper>
-    );
-  });
+          <Observer>
+            {() => (
+              <RoomItem
+                id={roomInfo.roomId}
+                thumbs={[
+                  'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+                  'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+                  'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+                  'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+                ]}
+                maxThumbs={2}
+                unreadCount={roomInfo.unreadCount}
+                name={roomInfo.name}
+                lastMessage={roomInfo.lastMessage}
+                onClick={() => {
+                  handleRoomClick(roomInfo.id);
+                }}
+              />
+            )}
+          </Observer>
+        )}
+      />
+    </Wrapper>
+  ));
 }
 
 const Wrapper = styled.div`

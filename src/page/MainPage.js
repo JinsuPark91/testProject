@@ -9,7 +9,6 @@ import { CalendarApp, CalendarIcon } from 'teespace-calendar-app';
 import { MailMainView, MailSideView, MailSubView } from 'teespace-mail-app';
 import { DriveApp, DriveIcon, ViewFileIcon } from 'teespace-drive-app';
 import Profile from '../components/Profile';
-import { useStore } from '../stores';
 import RoomList from '../components/RoomList';
 import FriendLnb from '../components/friends/FriendsLNB';
 import Splitter from '../components/Splitter';
@@ -22,6 +21,15 @@ const { TabPane } = Tabs;
 
 const DEFAULT_MAIN_APP = 'talk';
 
+const queryStringToObject = queryString => {
+  let result = null;
+  if (queryString) {
+    const urlParams = new URLSearchParams(queryString);
+    result = Object.fromEntries(urlParams);
+  }
+  return null;
+};
+
 function MainPage() {
   const params = useParams();
   const history = useHistory();
@@ -30,9 +38,8 @@ function MainPage() {
   const [mainApp, setMainApp] = useState(null);
   const [subApp, setSubApp] = useState(null);
   const [layoutState, setLayoutState] = useState('close');
-  const { authStore } = useCoreStores();
-  const { roomStore } = useStore();
-
+  const { roomStore, authStore } = useCoreStores();
+  console.log(history);
   // URL 에 따른 State 변경
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(history.location.search);
@@ -50,22 +57,13 @@ function MainPage() {
     }
   }, [params, history, layoutState]);
 
-  // const getRooms = async () => {
-  //   await roomStore.getRooms(authStore.myInfo.id);
-  //   history.push({
-  //     pathname: `/s/${roomStore.rooms?.[0]?.id}/${DEFAULT_MAIN_APP}`,
-  //     search: history.location.search,
-  //   });
-  // };
+  const getRooms = async () => {
+    const response = await roomStore.updateRoomList({
+      userId: authStore.myInfo.id,
+    });
 
-  // // ROOM 가져오기
-  // useEffect(() => {
-  //   if (tab === 's') {
-  //     (async () => {
-  //       await getRooms();
-  //     })();
-  //   }
-  // }, [tab]);
+    return Object.values(response)?.map(obj => obj.room);
+  };
 
   // Event 핸들러 등록
   useEffect(() => {
@@ -86,11 +84,26 @@ function MainPage() {
       });
     });
 
+    const changeQueryStringHandler = EventBus.on(
+      'onChangeQueryString',
+      queryObj => {
+        history.push({
+          pathname: history.location.pathname,
+          search: queryObj
+            ? Object.entries(queryObj)
+                .map(e => e.join('='))
+                .join('&')
+            : null,
+        });
+      },
+    );
+
     return function cleanUp() {
       EventBus.off('onLayoutFull', fullHandleId);
       EventBus.off('onLayoutExpand', expandHandleId);
       EventBus.off('onLayoutCollapse', collapseHandleId);
       EventBus.off('onLayoutClose', closeHandleId);
+      EventBus.off('onChangeQueryString', changeQueryStringHandler);
     };
   }, [history]);
 
@@ -121,7 +134,25 @@ function MainPage() {
         case 'plus':
           return <DriveApp layoutState={layoutState} roomId={id} />;
         case 'mail':
-          return <MailMainView layoutState={layoutState} roomId={id} />;
+          return (
+            <MailMainView
+              queryString={queryStringToObject(
+                history.location.search?.substring(1),
+              )}
+              layoutState={layoutState}
+              roomId={id}
+            />
+          );
+        case 'mailsub':
+          return (
+            <MailSubView
+              queryString={queryStringToObject(
+                history.location.search?.substring(1),
+              )}
+              layoutState={layoutState}
+              roomId={id}
+            />
+          );
         default:
           return null;
       }
@@ -141,31 +172,40 @@ function MainPage() {
   }, [getAppComponent, subApp]);
 
   const handleTabClick = key => {
-    let pathname = null;
-    let search = null;
     switch (key) {
       /* friend : /f/:id 형식 (query string, app 정보 없음) */
       case 'f':
-        pathname = `/${key}/${authStore.myInfo.id}/profile`;
-        search = null;
+        history.push({
+          pathname: `/${key}/${authStore.myInfo.id}/profile`,
+          search: null,
+        });
         break;
       /* space, mail : /f/:id/:app?sub... 형식  */
       case 's':
-        pathname = `/${key}/${roomStore.rooms?.[0]?.id}/${DEFAULT_MAIN_APP}`;
-        search = history.location.search;
+        (async () => {
+          let rooms = [];
+          try {
+            rooms = await getRooms();
+          } catch (e) {
+            console.log('GET ROOM FAILED');
+          } finally {
+            history.push({
+              pathname: `/s/${rooms[0]?.id}/${DEFAULT_MAIN_APP}`,
+              search: history.location.search,
+            });
+          }
+        })();
         break;
       /* mail 누르면 sub 앱 없어져야 하나? 정책 결정 필요 */
       case 'm':
-        pathname = `/${key}/${id}/mail`;
-        search = null;
+        history.push({
+          pathname: `/${key}/${id}/mail`,
+          search: null,
+        });
         break;
       default:
         break;
     }
-    history.push({
-      pathname,
-      search,
-    });
   };
 
   return (
@@ -185,14 +225,21 @@ function MainPage() {
             key="s"
             tab={<img src={chatIcon} alt="chat" style={{ width: '40px' }} />}
           >
-            <RoomList rooms={roomStore.rooms} />
+            <RoomList
+              rooms={Object.values(roomStore.rooms)?.map(obj => obj.room)}
+            />
           </TabPane>
 
           <TabPane
             key="m"
             tab={<img src={mailIcon} alt="mail" style={{ width: '30px' }} />}
           >
-            <MailSideView />
+            <MailSideView
+              queryString={queryStringToObject(
+                history.location.search?.substring(1),
+              )}
+              layoutState={layoutState}
+            />
           </TabPane>
         </Tabs>
       </LeftSide>
