@@ -16,10 +16,6 @@ import { Button, Input, Dropdown, Menu, Modal } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import { toJS } from 'mobx';
 
-// TODO : 지워야 하는것
-const DEFAULT_BACKGROUND = '/image.svg';
-const DEFAULT_THUMB = '/movie.svg';
-
 const Profile = ({
   userId = null,
   editMode = false,
@@ -30,10 +26,11 @@ const Profile = ({
   const [isEditMode, setEditMode] = useState(editMode);
 
   // 유저 정보들
-  const [background, setBackground] = useState(DEFAULT_BACKGROUND);
-  const [thumb, setThumb] = useState(DEFAULT_THUMB);
+  const [background, setBackground] = useState(null);
+  const [thumb, setThumb] = useState(null);
   const [phone, setPhone] = useState('');
   const [mobile, setMobile] = useState('');
+  const [isChange, setIsChange] = useState(false);
 
   const isMyId = () => userId === authStore.myInfo.id;
 
@@ -51,6 +48,7 @@ const Profile = ({
   useEffect(() => {
     if (onModeChange && typeof onModeChange === 'function')
       onModeChange(isEditMode);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditMode]);
 
   // const toBase64 = async blobImage =>
@@ -74,13 +72,27 @@ const Profile = ({
     console.log('1 : 1 미팅');
   };
 
+  const handleChangeBackground = file => {
+    setIsChange(true);
+    setBackground(URL.createObjectURL(file));
+  };
+
+  const handleChangePhoto = file => {
+    setIsChange(true);
+    setThumb(URL.createObjectURL(file));
+  };
+
   const handleChangeDefaultBackground = () => {
-    // const defaultBackground = userStore.getUserProfilePhoto({ userId });
-    setBackground(DEFAULT_BACKGROUND);
+    setIsChange(true);
+    const defaultBackground = userStore.getDefaultBackground({ userId });
+    console.log(defaultBackground);
+    setBackground(`/${defaultBackground}`);
   };
 
   const handleChangeDefaultPhoto = () => {
-    setThumb(DEFAULT_THUMB);
+    setIsChange(true);
+    const defaultPhoto = userStore.getUserDefaultPhotoUrl({ userId });
+    setThumb(`/${defaultPhoto}`);
   };
 
   const handleConfirm = async () => {
@@ -97,8 +109,15 @@ const Profile = ({
       centered: true,
       content: '변경 사항을 저장하지 않고 나가시겠습니까?',
       onOk: () => {
-        setBackground(DEFAULT_BACKGROUND);
-        setThumb(DEFAULT_THUMB);
+        setIsChange(false);
+
+        // 서버에서 받아온 back, thumb, phone, mobile로 바꾸자.
+        // 정보가 back, thumb 정보 없으면 기본사진으로 하자.
+
+        // const defaultBackground = userStore.getDefaultBackground({ userId });
+        // const defaultPhoto = userStore.getUserDefaultPhotoUrl({ userId });
+        // setBackground(`/${defaultBackground}`);
+        // setThumb(`/${defaultPhoto}`);
         setEditMode(false);
       },
     });
@@ -140,9 +159,7 @@ const Profile = ({
                     component="div"
                     accept={['image/*']}
                     multiple={false}
-                    customRequest={({ file }) =>
-                      setBackground(URL.createObjectURL(file))
-                    }
+                    customRequest={({ file }) => handleChangeBackground(file)}
                   >
                     배경 변경
                   </StyledUpload>
@@ -176,9 +193,7 @@ const Profile = ({
                       component="div"
                       multiple={false}
                       accept={['image/*']}
-                      customRequest={({ file }) =>
-                        setThumb(URL.createObjectURL(file))
-                      }
+                      customRequest={({ file }) => handleChangePhoto(file)}
                     >
                       프로필 사진 변경
                     </StyledUpload>
@@ -207,6 +222,7 @@ const Profile = ({
             {isMyId() && isEditMode ? (
               <Input
                 onChange={e => {
+                  setIsChange(true);
                   setMobile(e.target.value);
                 }}
                 value={mobile}
@@ -220,6 +236,7 @@ const Profile = ({
             {isMyId() && isEditMode ? (
               <Input
                 onChange={e => {
+                  setIsChange(true);
                   setPhone(e.target.value);
                 }}
                 value={phone}
@@ -236,7 +253,11 @@ const Profile = ({
         <ButtonContainer>
           {isMyId() && isEditMode && (
             <>
-              <Button style={{ marginRight: '20px' }} onClick={handleConfirm}>
+              <Button
+                style={{ marginRight: '20px' }}
+                disabled={!isChange}
+                onClick={handleConfirm}
+              >
                 저장
               </Button>
               <Button onClick={handleCancel}>취소</Button>
