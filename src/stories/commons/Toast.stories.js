@@ -52,3 +52,30 @@ const Template = props => {
 };
 export const Toast = Template.bind({});
 Toast.args = { timeoutMs: 1000 };
+Toast.parameters = {
+  docs: {
+    source: {
+      code: `
+import CommonButtom from './components/commons/Button';
+import CommonToast from './components/commons/Toast';
+const Template = props => {
+  const [toastVisible, setToastVisible] = useState(false);
+  const { timeoutMs } = props;
+  return (
+    <>
+      <CommonButton onClick={() => setToastVisible(true)} type="solid">
+        Open CommonToast
+      </CommonButton>
+      <CommonToast
+        visible={toastVisible}
+        onClose={() => setToastVisible(false)}
+        timeoutMs={timeoutMs}
+      >
+        Toast Content
+      </CommonToast>
+    </>
+  );
+};`,
+    },
+  },
+};

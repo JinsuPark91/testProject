@@ -52,4 +52,49 @@ const Template = props => {
   );
 };
 export const Message = Template.bind({});
+Message.parameters = {
+  docs: {
+    source: {
+      code: `
+import CommonButton from './components/common/Button';
+import CommonMessage from './components/common/Message';
+const Template = props => {
+  const [messageVisible, setMessageVisible] = useState(false);
+  const { title, subtitle } = props;
+  return (
+    <>
+      <CommonButton onClick={() => setMessageVisible(true)} type="solid">
+        Open CommonMessage
+      </CommonButton>
+      <CommonMessage
+        visible={messageVisible}
+        title={title}
+        subtitle={subtitle}
+        btns={[
+          {
+            type: 'solid',
+            text: '저장 후 종료',
+            onClick: action('onClick'),
+          },
+          {
+            type: 'solid',
+            text: '종료',
+            onClick: action('onClick'),
+          },
+          {
+            type: 'outlined',
+            text: '취소',
+            onClick: () => {
+              setMessageVisible(false);
+              action('onClick')();
+            },
+          },
+        ]}
+      />
+    </>
+  );
+};`,
+    },
+  },
+};
 Message.args = { title: '타이틀', subtitle: '서브 타이틀' };

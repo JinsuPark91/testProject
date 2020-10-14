@@ -75,6 +75,72 @@ const footer = [
 ];
 export const DialogCustomFooter = Template.bind({});
 DialogCustomFooter.args = { title: 'Dialog', footer };
+DialogCustomFooter.parameters = {
+  docs: {
+    source: {
+      code: `
+import CommonButton from './components/commons/Button';
+import CommonDialog, { ContentWraper } from './components/commons/Dialog';
+const Template = props => {
+  const [visible, setVisible] = useState(false);
+  const { title } = props;
+  return (
+    <>
+      <CommonButton type="solid" onClick={() => setVisible(true)}>
+        Open Dialog
+      </CommonButton>
+      <CommonDialog
+        visible={visible}
+        title={title}
+        onCancel={() => setVisible(false)}
+        footer={[
+          <CommonButton onClick={() => {/* no-op */}} type="solid">
+            Btn1
+          </CommonButton>,
+          <CommonButton onClick={() => {/* no-op */}} type="solid">
+            Btn2
+          </CommonButton>,
+          <CommonButton onClick={() => {/* no-op */}} type="solid">
+            Btn3
+          </CommonButton>,
+        ]}
+      >
+        <ContentWrapper>Dialog Content</ContentWrapper>
+      </CommonDialog>
+    </>
+  );
+};`,
+    },
+  },
+};
 
 export const DialogNoFooter = Template.bind({});
 DialogNoFooter.args = { title: 'Dialog', footer: null };
+DialogNoFooter.parameters = {
+  docs: {
+    source: {
+      code: `
+import CommonButton from './components/commons/Button';
+import CommonDialog, { ContentWraper } from './components/commons/Dialog';
+const Template = props => {
+  const [visible, setVisible] = useState(false);
+  const { title } = props;
+  return (
+    <>
+      <CommonButton type="solid" onClick={() => setVisible(true)}>
+        Open Dialog
+      </CommonButton>
+      <CommonDialog
+        visible={visible}
+        title={title}
+        onCancel={() => setVisible(false)}
+        footer={null}
+      >
+        <ContentWrapper>Dialog Content</ContentWrapper>
+      </CommonDialog>
+    </>
+  );
+};`,
+    },
+  },
+};

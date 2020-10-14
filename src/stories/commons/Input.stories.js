@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Input, Form } from 'antd';
+import React, { useState } from 'react';
+import { Form } from 'antd';
 import CommonInput from '../../components/commons/Input';
 import CommonButton from '../../components/commons/Button';
 
