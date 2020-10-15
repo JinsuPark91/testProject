@@ -56,10 +56,18 @@ const FriendItemWrapper = styled.div`
       flex-direction: row;
       padding: 10px;
 
+      ${props.isActive
+        ? css`
+            background-color: #eaeafb;
+            border-radius: 27.5px;
+          `
+        : ''}
+
       &:hover {
         background-color: #eaeafb;
         border-radius: 27.5px;
       }
+
       /* icon */
       .ant-btn-circle {
         background: transparent;
@@ -71,14 +79,6 @@ const FriendItemWrapper = styled.div`
           background-color: #dcddff;
         }
       }
-    `}
-
-  /* 내 프로필은 항상 active style */
-  ${props =>
-    props.mode === 'me' &&
-    css`
-      background-color: #e2e3fb;
-      border-radius: 27.5px;
     `}
 `;
 
@@ -265,6 +265,8 @@ const Action = React.memo(
 function FriendItem({
   mode = 'friend', // 'me', 'friend', 'readOnly', 'addFriend', 'recommended'
   imageSize = 34,
+  isActive = false,
+  onClick,
   tooltipPopupContainer = () => document.body,
   friendInfo: {
     friendNick = '',
@@ -356,17 +358,23 @@ function FriendItem({
     setVisibleRemoveFriendMessage(false);
   }, [friendStore, authStore, friendId]);
 
-  const handleItemClick = useCallback(() => {
-    if (mode === 'me' || mode === 'friend') {
-      history.push({
-        pathname: `/f/${
-          mode === 'me' ? authStore.myInfo.id : friendId
-        }/profile`,
-        search: null,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [friendId]);
+  const handleItemClick = useCallback(
+    e => {
+      if (mode === 'me' || mode === 'friend') {
+        history.push({
+          pathname: `/f/${
+            mode === 'me' ? authStore.myInfo.id : friendId
+          }/profile`,
+          search: null,
+        });
+      }
+      if (onClick) {
+        onClick(e);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [authStore.myInfo.id, friendId, history, mode, onClick],
+  );
 
   const handleRemoveFriendMessageClose = useCallback(() => {
     setVisibleRemoveFriendMessage(false);
@@ -385,13 +393,12 @@ function FriendItem({
 
   const handleToastClose = useCallback(() => setVisibleToast(false), []);
 
-  console.log(tooltipPopupContainer);
-
   return (
     <FriendItemWrapper
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={handleItemClick}
+      isActive={isActive}
       mode={mode}
     >
       <CommonToast

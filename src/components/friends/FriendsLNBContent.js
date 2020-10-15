@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
-import { Layout, Image, Divider, Typography } from 'antd';
+import { Layout, Divider, Typography } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import FriendItem from './FriendItem';
 
@@ -32,13 +32,15 @@ const WelcomeBackgroundImage = styled.div`
   padding-top: 96.1%;
 `;
 
-const FriendList = React.memo(({ friendList }) => (
+const FriendList = React.memo(({ friendList, onClick, activeFriendId }) => (
   <>
     {friendList.map(friendInfo => (
       <FriendItem
         friendInfo={friendInfo}
         key={friendInfo.friendId}
         mode="friend"
+        isActive={activeFriendId === friendInfo.friendId}
+        onClick={() => onClick(friendInfo.friendId)}
       />
     ))}
   </>
@@ -54,6 +56,9 @@ const FriendsLNBContent = React.forwardRef(
   ({ searchKeyword, meTooltipPopupContainer }, ref) => {
     const { authStore, friendStore } = useCoreStores();
 
+    const [favFriendActiveId, setFavFriendActiveId] = useState('');
+    const [friendActiveId, setFriendActiveId] = useState('');
+
     console.log(friendStore.friendInfoList);
 
     const favFriendList = friendStore.friendInfoList.filter(
@@ -66,6 +71,16 @@ const FriendsLNBContent = React.forwardRef(
         (friendInfo.userNick || '').includes(searchKeyword) ||
         (friendInfo.userName || '').includes(searchKeyword),
     );
+
+    const handleFavFriendActive = friendId => {
+      setFavFriendActiveId(friendId);
+      setFriendActiveId('');
+    };
+
+    const handleFriendActive = friendId => {
+      setFavFriendActiveId('');
+      setFriendActiveId(friendId);
+    };
 
     useEffect(() => {
       friendStore.getFriendInfoList({ userId: authStore.user.id });
@@ -82,6 +97,8 @@ const FriendsLNBContent = React.forwardRef(
             thumbPhoto: authStore.user.thumbPhoto,
             friendId: authStore.user.id,
           }}
+          onClick={() => handleFriendActive(authStore.user.id)}
+          isActive={friendActiveId}
         />
         <Divider style={{ margin: '6px 0' }} />
         <WelcomeWrapper>
@@ -109,18 +126,28 @@ const FriendsLNBContent = React.forwardRef(
             thumbPhoto: authStore.user.thumbPhoto,
             friendId: authStore.user.id,
           }}
+          onClick={() => handleFriendActive(authStore.user.id)}
+          isActive={friendActiveId}
         />
         <Divider />
         {!searchKeyword && (
           <>
             <Title level={5}>즐겨찾기</Title>
-            <FriendList friendList={favFriendList} />
+            <FriendList
+              friendList={favFriendList}
+              onClick={handleFavFriendActive}
+              activeFriendId={favFriendActiveId}
+            />
             <Divider />
             <Title level={5}>
               프렌즈
               <Text>{friendStore.friendInfoList.length}</Text>
             </Title>
-            <FriendList friendList={friendStore.friendInfoList} />
+            <FriendList
+              friendList={friendStore.friendInfoList}
+              onClick={handleFriendActive}
+              activeFriendId={friendActiveId}
+            />
           </>
         )}
         {searchKeyword && (
@@ -129,7 +156,11 @@ const FriendsLNBContent = React.forwardRef(
               프렌즈
               <Text>{filteredFriendList.length}</Text>
             </Title>
-            <FriendList friendList={filteredFriendList} />
+            <FriendList
+              friendList={filteredFriendList}
+              onClick={handleFriendActive}
+              activeFriendId={friendActiveId}
+            />
           </>
         )}
       </>
