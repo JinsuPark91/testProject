@@ -18,6 +18,7 @@ import friendIcon from '../assets/icon_lnb_friend.svg';
 import './mainPage.css';
 import CommonButton from './../components/commons/Button';
 import SettingDialog from '../components/Usersettings/SettingDialog';
+import { useStore } from '../stores'
 
 const { TabPane } = Tabs;
 
@@ -41,7 +42,7 @@ function MainPage() {
   const [subApp, setSubApp] = useState(null);
   const [layoutState, setLayoutState] = useState('close');
   const { roomStore, authStore } = useCoreStores();
-  const { roomStore, uiStore } = useStore();
+  const { uiStore } = useStore();
 
   // URL 에 따른 State 변경
   useEffect(() => {
