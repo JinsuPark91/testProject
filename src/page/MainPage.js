@@ -16,9 +16,9 @@ import mailIcon from '../assets/icon_lnb_mail.svg';
 import chatIcon from '../assets/icon_lnb_chatting.svg';
 import friendIcon from '../assets/icon_lnb_friend.svg';
 import './mainPage.css';
-import CommonButton from './../components/commons/Button';
+import CommonButton from '../components/commons/Button';
 import SettingDialog from '../components/Usersettings/SettingDialog';
-import { useStore } from '../stores'
+import { useStore } from '../stores';
 
 const { TabPane } = Tabs;
 
@@ -30,7 +30,7 @@ const queryStringToObject = queryString => {
     const urlParams = new URLSearchParams(queryString);
     result = Object.fromEntries(urlParams);
   }
-  return null;
+  return result;
 };
 
 function MainPage() {
@@ -230,11 +230,9 @@ function MainPage() {
     }
   };
 
-  const handleSettingDialogOpen=() => {
-    uiStore.showSettingDialog()
-  }
-
- 
+  const handleSettingDialogOpen = () => {
+    uiStore.showSettingDialog();
+  };
 
   return (
     <AppLayout>
@@ -320,7 +318,12 @@ function MainPage() {
               }}
             />
           </AppIconContainer>
-          <UserMenu><CommonButton onClick={handleSettingDialogOpen}>Profile 영역 (고정)</CommonButton><SettingDialog/></UserMenu>
+          <UserMenu>
+            <CommonButton onClick={handleSettingDialogOpen}>
+              Profile 영역 (고정)
+            </CommonButton>
+            <SettingDialog />
+          </UserMenu>
         </Header>
         <AppContainer>
           <Splitter
