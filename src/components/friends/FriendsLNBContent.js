@@ -39,8 +39,8 @@ const FriendList = React.memo(({ friendList, onClick, activeFriendId }) => (
         friendInfo={friendInfo}
         key={friendInfo.friendId}
         mode="friend"
+        onClick={onClick}
         isActive={activeFriendId === friendInfo.friendId}
-        onClick={() => onClick(friendInfo.friendId)}
       />
     ))}
   </>
@@ -97,8 +97,8 @@ const FriendsLNBContent = React.forwardRef(
             thumbPhoto: authStore.user.thumbPhoto,
             friendId: authStore.user.id,
           }}
-          onClick={() => handleFriendActive(authStore.user.id)}
-          isActive={friendActiveId}
+          onClick={handleFriendActive}
+          isActive={friendActiveId === authStore.user.id}
         />
         <Divider style={{ margin: '6px 0' }} />
         <WelcomeWrapper>
@@ -126,8 +126,8 @@ const FriendsLNBContent = React.forwardRef(
             thumbPhoto: authStore.user.thumbPhoto,
             friendId: authStore.user.id,
           }}
-          onClick={() => handleFriendActive(authStore.user.id)}
-          isActive={friendActiveId}
+          onClick={handleFriendActive}
+          isActive={friendActiveId === authStore.user.id}
         />
         <Divider />
         {!searchKeyword && (
