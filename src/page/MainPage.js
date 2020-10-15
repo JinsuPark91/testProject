@@ -16,6 +16,8 @@ import mailIcon from '../assets/icon_lnb_mail.svg';
 import chatIcon from '../assets/icon_lnb_chatting.svg';
 import friendIcon from '../assets/icon_lnb_friend.svg';
 import './mainPage.css';
+import CommonButton from './../components/commons/Button';
+import SettingDialog from '../components/Usersettings/SettingDialog';
 
 const { TabPane } = Tabs;
 
@@ -39,6 +41,8 @@ function MainPage() {
   const [subApp, setSubApp] = useState(null);
   const [layoutState, setLayoutState] = useState('close');
   const { roomStore, authStore } = useCoreStores();
+  const { roomStore, uiStore } = useStore();
+
   // URL 에 따른 State 변경
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(history.location.search);
@@ -225,6 +229,12 @@ function MainPage() {
     }
   };
 
+  const handleSettingDialogOpen=() => {
+    uiStore.showSettingDialog()
+  }
+
+ 
+
   return (
     <AppLayout>
       <LeftSide>
@@ -309,7 +319,7 @@ function MainPage() {
               }}
             />
           </AppIconContainer>
-          <UserMenu>Profile 영역 (고정)</UserMenu>
+          <UserMenu><CommonButton onClick={handleSettingDialogOpen}>Profile 영역 (고정)</CommonButton><SettingDialog/></UserMenu>
         </Header>
         <AppContainer>
           <Splitter

@@ -12,9 +12,21 @@ class UIStore {
     height: 600,
   };
 
+  @observable visibleSettingDialog: Boolean = false;
+
   @action
   showAddFriendsDialog() {
     this.visibleAddFriendsDialog = true;
+  }
+  @action
+  showSettingDialog() {
+    console.log("tesdtt")
+    this.visibleSettingDialog = true;
+  }
+  @action
+  hideSettingDialog() {
+    console.log("tesdtt")
+    this.visibleSettingDialog = false;
   }
 
   @action
