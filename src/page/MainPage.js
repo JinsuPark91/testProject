@@ -8,6 +8,7 @@ import { NoteApp, NoteIcon } from 'teespace-note-app';
 import { CalendarApp, CalendarIcon } from 'teespace-calendar-app';
 import { MailMainView, MailSideView, MailSubView } from 'teespace-mail-app';
 import { DriveApp, DriveIcon, ViewFileIcon } from 'teespace-drive-app';
+import { queryStringToObject } from '../libs/utils';
 import Profile from '../components/Profile';
 import RoomList from '../components/RoomList';
 import FriendLnb from '../components/friends/FriendsLNB';
@@ -23,15 +24,6 @@ import { useStore } from '../stores';
 const { TabPane } = Tabs;
 
 const DEFAULT_MAIN_APP = 'talk';
-
-const queryStringToObject = queryString => {
-  let result = null;
-  if (queryString) {
-    const urlParams = new URLSearchParams(queryString);
-    result = Object.fromEntries(urlParams);
-  }
-  return result;
-};
 
 function MainPage() {
   const params = useParams();
