@@ -9,8 +9,16 @@ $common-dialog-footer-padding: 20px 0 20px 0;
 
     &.teespace-me-tooltip {
         left: 10px !important;
-        top: 125px !important;
-        transform-origin: 50% 28.5938px !important;
+        top: 0px !important;
+        transform-origin: 50% 8.5938px !important;
+        margin-top: -8px;
+
+        .ant-tooltip-arrow {
+            top: 25px;
+            .ant-tooltip-arrow-content {
+                transform: translateY(-6.53553391px) rotate(45deg);
+            }
+        }
         .ant-tooltip-inner {
             font-size: 0.56rem;
             padding: 0.05rem 0.25rem;

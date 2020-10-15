@@ -9,7 +9,8 @@ const { Paragraph, Text, Title } = Typography;
 const { Content } = Layout;
 
 const ContentWrapper = styled(Content)`
-  flexgrow: 1;
+  position: relative;
+  flex-grow: 1;
   overflow: auto;
   display: flex;
   flex-direction: column;
@@ -49,93 +50,99 @@ const FriendList = React.memo(({ friendList }) => (
  * @param {string} props.searchKeyword - 프렌즈 탭의 친구 리스트 검색 키워드
  * @param {function} props.meTooltipPopupContainer - 프렌즈 아이템의 나일때 표시하는 tooltip
  */
-function FriendsLNBContent({ searchKeyword, meTooltipPopupContainer }) {
-  const { authStore, friendStore } = useCoreStores();
+const FriendsLNBContent = React.forwardRef(
+  ({ searchKeyword, meTooltipPopupContainer }, ref) => {
+    const { authStore, friendStore } = useCoreStores();
 
-  const favFriendList = friendStore.friendInfoList.filter(
-    friendInfo => friendInfo.friendFavorite,
-  );
+    console.log(friendStore.friendInfoList);
 
-  const filteredFriendList = friendStore.friendInfoList.filter(
-    friendInfo =>
-      (friendInfo.userName || '').includes(searchKeyword) ||
-      (friendInfo.friendNick || '').includes(searchKeyword),
-  );
+    const favFriendList = friendStore.friendInfoList.filter(
+      friendInfo => friendInfo.friendFavorite,
+    );
 
-  useEffect(() => {
-    friendStore.getFriendInfoList({ userId: authStore.user.id });
-  }, [friendStore, authStore]);
+    const filteredFriendList = friendStore.friendInfoList.filter(
+      friendInfo =>
+        (friendInfo.friendNick || '').includes(searchKeyword) ||
+        (friendInfo.userNick || '').includes(searchKeyword) ||
+        (friendInfo.userName || '').includes(searchKeyword),
+    );
 
-  const renderEmptyContent = (
-    <>
-      <FriendItem
-        mode="me"
-        tooltipPopupContainer={meTooltipPopupContainer}
-        friendInfo={{
-          userName: authStore.user.name,
-          friendNIck: authStore.user.nick,
-          thumbPhoto: authStore.user.thumbPhoto,
-          friendId: authStore.user.id,
-        }}
-      />
-      <Divider style={{ margin: '6px 0' }} />
-      <WelcomeWrapper>
-        <Title level={4}>
-          {authStore.user.name} 님, 환영합니다. <br />
-          프렌즈 추가 버튼을 눌러 <br />내 동료를 찾아보세요!
-        </Title>
-        <Paragraph>
-          프렌즈가 되고 싶은 동료를 검색하거나 <br />
-          조직도에서 간편하게 추가할 수 있습니다.
-        </Paragraph>
-        <WelcomeBackgroundImage />
-      </WelcomeWrapper>
-    </>
-  );
+    useEffect(() => {
+      friendStore.getFriendInfoList({ userId: authStore.user.id });
+    }, [friendStore, authStore]);
 
-  const renderContent = (
-    <>
-      <FriendItem
-        mode="me"
-        tooltipPopupContainer={meTooltipPopupContainer}
-        friendInfo={{
-          userName: authStore.user.name,
-          friendNIck: authStore.user.nick,
-          thumbPhoto: authStore.user.thumbPhoto,
-          friendId: authStore.user.id,
-        }}
-      />
-      <Divider />
-      {!searchKeyword && (
-        <>
-          <Title level={5}>즐겨찾기</Title>
-          <FriendList friendList={favFriendList} />
-          <Divider />
-          <Title level={5}>
-            프렌즈
-            <Text>{friendStore.friendInfoList.length}</Text>
+    const renderEmptyContent = (
+      <>
+        <FriendItem
+          mode="me"
+          tooltipPopupContainer={meTooltipPopupContainer}
+          friendInfo={{
+            userName: authStore.user.name,
+            friendNIck: authStore.user.nick,
+            thumbPhoto: authStore.user.thumbPhoto,
+            friendId: authStore.user.id,
+          }}
+        />
+        <Divider style={{ margin: '6px 0' }} />
+        <WelcomeWrapper>
+          <Title level={4}>
+            {authStore.user.name} 님, 환영합니다. <br />
+            프렌즈 추가 버튼을 눌러 <br />내 동료를 찾아보세요!
           </Title>
-          <FriendList friendList={friendStore.friendInfoList} />
-        </>
-      )}
-      {searchKeyword && (
-        <>
-          <Title level={5}>
-            프렌즈
-            <Text>{filteredFriendList.length}</Text>
-          </Title>
-          <FriendList friendList={filteredFriendList} />
-        </>
-      )}
-    </>
-  );
+          <Paragraph>
+            프렌즈가 되고 싶은 동료를 검색하거나 <br />
+            조직도에서 간편하게 추가할 수 있습니다.
+          </Paragraph>
+          <WelcomeBackgroundImage />
+        </WelcomeWrapper>
+      </>
+    );
 
-  return useObserver(() => (
-    <ContentWrapper>
-      {!friendStore.friendInfoList.length && renderEmptyContent}
-      {!!friendStore.friendInfoList.length && renderContent}
-    </ContentWrapper>
-  ));
-}
+    const renderContent = (
+      <>
+        <FriendItem
+          mode="me"
+          tooltipPopupContainer={meTooltipPopupContainer}
+          friendInfo={{
+            userName: authStore.user.name,
+            friendNIck: authStore.user.nick,
+            thumbPhoto: authStore.user.thumbPhoto,
+            friendId: authStore.user.id,
+          }}
+        />
+        <Divider />
+        {!searchKeyword && (
+          <>
+            <Title level={5}>즐겨찾기</Title>
+            <FriendList friendList={favFriendList} />
+            <Divider />
+            <Title level={5}>
+              프렌즈
+              <Text>{friendStore.friendInfoList.length}</Text>
+            </Title>
+            <FriendList friendList={friendStore.friendInfoList} />
+          </>
+        )}
+        {searchKeyword && (
+          <>
+            <Title level={5}>
+              프렌즈
+              <Text>{filteredFriendList.length}</Text>
+            </Title>
+            <FriendList friendList={filteredFriendList} />
+          </>
+        )}
+      </>
+    );
+
+    return useObserver(() => (
+      <ContentWrapper>
+        <div ref={ref} />
+        {!friendStore.friendInfoList.length && renderEmptyContent}
+        {!!friendStore.friendInfoList.length && renderContent}
+      </ContentWrapper>
+    ));
+  },
+);
 
 export default FriendsLNBContent;

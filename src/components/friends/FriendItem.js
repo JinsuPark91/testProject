@@ -138,6 +138,7 @@ const Profile = React.memo(
             overlayClassName="teespace-common teespace-me-tooltip"
             title="나"
             getPopupContainer={tooltipPopupContainer}
+            placement="top"
             visible
           >
             <Avatar size={imageSize} src={profileSrc} />

@@ -30,14 +30,15 @@ function FriendsLNB(props) {
 
   return (
     <FriendsLNBWrapper>
-      <div ref={lnbRef} />
       <FriendsLNBHeader
         handleInputChange={handleSearchKeyword}
         handleInputClear={handleClearKeyword}
       />
       <FriendsLNBContent
+        ref={lnbRef}
         searchKeyword={searchKeyword}
         meTooltipPopupContainer={() => {
+          console.log('ref', lnbRef.current);
           return lnbRef.current;
         }}
       />
