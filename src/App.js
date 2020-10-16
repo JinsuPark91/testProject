@@ -8,6 +8,7 @@ import LoginPage from './page/LoginPage';
 import NotFoundPage from './page/NotFoundPage';
 import SignUpPage from './page/SignUpPage';
 import SignUpFormPage from './page/SignUpFormPage';
+import SignUpCompletePage from './page/SignUpCompletePage';
 import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
 import PrivateRoute from './libs/PrivateRoute';
@@ -45,7 +46,12 @@ function App() {
           path="/registerForm"
           component={<SignUpFormPage />}
         />
-        <PrivateRoute path="/(s|f|m)/:id/:mainApp?" component={MainPage} />
+        <RedirectablePublicRoute
+          exact
+          path="/registerComplete"
+          component={<SignUpCompletePage  />}
+        />
+        <PrivateRoute path="/:tab(s|f|m)/:id/:mainApp?" component={MainPage} />
         <Route component={NotFoundPage} />
       </Switch>
     </BrowserRouter>

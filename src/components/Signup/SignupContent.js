@@ -4,6 +4,8 @@ import { useHistory } from 'react-router-dom';
 import { Checkbox, Row, Col, Input, Button } from 'antd';
 import CommonButton from '../commons/Button';
 import CommonCheckbox from '../commons/Checkbox';
+import CommonTextArea  from '../commons/TextArea'
+import useLocalStorage from '../../libs/useLocalStroage';
 
 const CommonContent = styled.div`
   height: auto;
@@ -18,16 +20,16 @@ const CommonContent = styled.div`
   flex-direction: column;
 `;
 
-const { TextArea } = Input;
 const CheckboxGroup = Checkbox.Group;
-const plainOptions = ['agreeAge', 'agreeTerms', 'agreePersonal', 'agreeMail'];
-
-const defaultCheckedList = [];
+const plainOptions = ['agreeAge', 'agreeTerms', 'agreePersonal', 'agreeAd'];
 
 const SignupContent = () => {
-  const [checkedList, setCheckedList] = useState(defaultCheckedList);
-  const [checkAll, setCheckAll] = useState(false);
+  const [storedCheckedList ,setStoredCheckedList] = useLocalStorage('RegisterCheckedList', []);
+  const [checkedList, setCheckedList] = useState(storedCheckedList);
+  const [checkAll, setCheckAll] = useState(storedCheckedList.length === plainOptions.length);
   const history = useHistory();
+  
+
 
   const onChange = checkedList => {
     setCheckedList(checkedList);
@@ -42,6 +44,7 @@ const SignupContent = () => {
     setCheckAll(e.target.checked);
   };
   const handleGoSignUpForm = () => {
+    setStoredCheckedList(checkedList)
     history.push(`/registerForm`);
   };
 
@@ -83,7 +86,7 @@ const SignupContent = () => {
                 (필수) 서비스 이용약관 동의
               </CommonCheckbox>
             </Col>
-            <TextArea
+            <CommonTextArea 
               rows={4}
               disabled
               defaultValue="
@@ -168,7 +171,7 @@ const SignupContent = () => {
                 (필수) 개인정보 수집 및 이용 동의
               </CommonCheckbox>
             </Col>
-            <TextArea
+            <CommonTextArea 
               rows={4}
               disabled
               defaultValue="        
@@ -178,7 +181,7 @@ const SignupContent = () => {
 보유 및 이용기간 : 회원 탈퇴 후 5일 이내 혹은 개인정보의 수집 및 이용목적이 달성 이후 즉시 파기이용자는 상기 개인정보 수집 및 이용 동의를 거부할 권리가 있습니다. 다만, 동의 거부 시 회원 가입이 불가하여 회원 서비스를 이용하실 수 없습니다. 상세 내용은 개인정보처리방침을 참고 바랍니다."
             />
             <Col span={24}>
-              <CommonCheckbox shape="round" value="agreeMail">
+              <CommonCheckbox shape="round" value="agreeAd">
                 (선택) 뉴스레터, 프로모션 등 안내 메일을 받겠습니다.
               </CommonCheckbox>
             </Col>

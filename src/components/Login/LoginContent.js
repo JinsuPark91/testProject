@@ -45,6 +45,9 @@ const LoginContent = () => {
   const [saveIdCheck, setSaveIdCheck] = useState(false);
   const [loginStateCheck, setLoginStateCheck] = useState(false);
 
+  localStorage.removeItem('RegisterCheckedList');
+  localStorage.removeItem('CreateUser');
+
   const onFinish = async values => {
     setIsLoading(true);
     try {
@@ -58,7 +61,6 @@ const LoginContent = () => {
       history.push(`/f/${authStore.user.loginId}`);
     } catch (e) {
       setErrorResult(e.message);
-    } finally {
       setIsLoading(false);
     }
   };

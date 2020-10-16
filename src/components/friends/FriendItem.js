@@ -128,9 +128,9 @@ const DropdownMenu = React.memo(
 const Profile = React.memo(
   ({ mode, imageSize, tooltipPopupContainer, thumbPhoto, friendId }) => {
     const { userStore } = useCoreStores();
-    const profileSrc =
-      thumbPhoto ||
-      `/${userStore.getUserDefaultPhotoUrl({ userId: friendId })}`;
+    const profileSrc = null;
+      // thumbPhoto ||
+      // `/${userStore.getUserDefaultPhotoUrl({ userId: friendId })}`;
     return (
       <>
         {mode === 'me' && (
@@ -373,7 +373,7 @@ const FriendItem = React.memo(
         }); */
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [authStore.myInfo.id, friendId, history, mode, onClick]);
+    }, [authStore.user.id, friendId, history, mode, onClick]);
 
     const handleRemoveFriendMessageClose = useCallback(() => {
       setVisibleRemoveFriendMessage(false);
