@@ -16,10 +16,10 @@ const hydrate = create();
 
 function App() {
   const [isHydrating, setIsHydrating] = useState(false);
-  const { authStore } = useCoreStores();
+  const { authStore, userStore } = useCoreStores();
 
   useEffect(() => {
-    Promise.all([hydrate('auth', authStore)])
+    Promise.all([hydrate('auth', authStore), hydrate('user', userStore)])
       .then(() => setIsHydrating(true))
       .catch(e => console.error(e));
   });
