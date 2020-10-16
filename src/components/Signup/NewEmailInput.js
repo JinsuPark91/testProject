@@ -1,24 +1,24 @@
 import React from 'react';
-import { Form, Input } from 'antd';
+import { Form, Row } from 'antd';
+import CommonInput from '../commons/Input';
 
-const NewEmailInput = () => {
+const NewEmailInput = ({ msg }) => {
   return (
-    <Form.Item
-      name="email"
-      label="E-mail"
-      rules={[
-        {
-          type: 'email',
-          message: 'The input is not valid E-mail!',
-        },
-        {
-          required: true,
-          message: 'Please input your E-mail!',
-        },
-      ]}
-    >
-      <Input />
-    </Form.Item>
+    <>
+      <div>본인확인 이메일 (선택)</div>
+      <Form.Item
+        noStyle
+        name="email"
+        rules={[
+          {
+            type: 'email',
+            message: '올바른 형식의 이메일 주소를 입력해 주세요.',
+          },
+        ]}
+      >
+        <CommonInput alert={msg} placement="topLeft" />
+      </Form.Item>
+    </>
   );
 };
 
