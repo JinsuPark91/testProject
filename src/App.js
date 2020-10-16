@@ -9,8 +9,8 @@ import NotFoundPage from './page/NotFoundPage';
 import SignUpPage from './page/SignUpPage';
 import SignUpFormPage from './page/SignUpFormPage';
 import MainPage from './page/MainPage';
-import RedirectablePublicRoute from './helper/RedirectablePublicRoute';
-import PrivateRoute from './helper/PrivateRoute';
+import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
+import PrivateRoute from './libs/PrivateRoute';
 
 const hydrate = create();
 
