@@ -28,7 +28,6 @@ function AddFriendsByPhoneNumber() {
         handlePhoneChange={handlePhoneChange}
         handleNationalCodeChange={handleNationalCodeChange}
         phone={phoneNumber}
-        nationalCode={nationalCode}
       />
       <AddFriendsByPhoneNumberContent
         nationalCode={nationalCode}

@@ -3,25 +3,30 @@ const patternEngs = /[a-z]/;
 const patternEngb = /[A-Z]/;
 const patternSpc = /[`'";~!@#$%^&*()_+|<>?:{}.\\/\\,\\=\\-]/;
 const patternKor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
-//loginId pattern
+const patternEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+// loginId pattern
 const patternId = /[^-_0-9a-z]/;
 
-//loginId length
+// email validation
+export const checkEmailValid = value => {
+  return typeof value === 'string' && patternEmail.test(value);
+};
+// loginId length
 export const checkLoginIdLength = length => {
   return length >= 5 && length <= 20;
 };
 
-//loginId validation
+// loginId validation
 export const checkLoginIdValid = value => {
   return !patternId.test(value);
 };
 
-//password length
+// password length
 export const checkPasswordLength = length => {
   return length >= 9 && length <= 20;
 };
 
-//password validation
+// password validation
 export const checkPasswordValid = value => {
   let countValid = 0;
   if (patternNum.test(value)) countValid += 1;
@@ -30,25 +35,24 @@ export const checkPasswordValid = value => {
   if (patternSpc.test(value)) countValid += 1;
   if (patternKor.test(value)) countValid = 0;
 
-  return countValid >= 3 ? true : false;
+  return countValid >= 3;
 };
 
-//name validation
+// name validation
 export const checkNameValid = value => {
-    return !patternSpc.test(value);
-}
+  return !patternSpc.test(value);
+};
 
-
-//phone validation
+// phone validation
 export const checkPhoneValid = value => {
-   return !(
-     value.length <= 3 ||
-     patternEngs.test(value) ||
-     patternEngb.test(value) ||
-     patternSpc.test(value) ||
-     patternKor.test(value)
-   );
-}
+  return !(
+    value.length <= 3 ||
+    patternEngs.test(value) ||
+    patternEngb.test(value) ||
+    patternSpc.test(value) ||
+    patternKor.test(value)
+  );
+};
 
 export const checkAuthNumber = value => {
   return !(
@@ -58,7 +62,7 @@ export const checkAuthNumber = value => {
     patternSpc.test(value) ||
     patternKor.test(value)
   );
-}
+};
 
 export default {
   checkLoginIdLength,

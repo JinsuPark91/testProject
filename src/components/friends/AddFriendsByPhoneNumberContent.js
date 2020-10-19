@@ -1,9 +1,8 @@
 import React, { useCallback } from 'react';
 import { useObserver } from 'mobx-react';
-import { Button, Typography, Avatar, Row, Col, Space } from 'antd';
-import { useCoreStores } from 'teespace-core';
+import { Typography, Avatar, Row, Col, Space } from 'antd';
+import { useCoreStores, Button } from 'teespace-core';
 import { useStore } from '../../stores';
-import CommonButton from '../commons/Button';
 
 const { Paragraph, Title } = Typography;
 
@@ -34,13 +33,13 @@ function AddFriendsByPhoneNumberContent({ nationalCode, phone }) {
                 상대가 TeeSpace 회원이고, 연락처 검색 허용을 <br />한 경우
                 프렌즈로 추가할 수 있습니다.
               </Paragraph>
-              <CommonButton
+              <Button
                 type="outlined"
                 disabled={uiStore.addFriendByPhoneNumberButtonDisabled}
                 onClick={handleAddFriend}
               >
                 프렌즈 추가
-              </CommonButton>
+              </Button>
             </>
           )}
         </Space>

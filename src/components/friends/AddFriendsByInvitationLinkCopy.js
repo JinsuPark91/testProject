@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
-import { Tag, Row, Col, Typography, Button } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useObserver } from 'mobx-react';
+import styled from 'styled-components';
+import { Row, Col, Typography } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import CommonButton from '../commons/Button';
-import CommonInput from '../commons/Input';
-import CommonToast from '../commons/Toast';
+import { useCoreStores, Button, Input, Toast } from 'teespace-core';
 
 const { Paragraph, Title, Text } = Typography;
 
-const dummy = [
-  {
-    friendNick: '김수한',
-    userName: 'soohan_kim',
-  },
-  {
-    friendNick: '안소희',
-    userName: 'sohee_ahn',
-  },
-];
+const InvitedFriendsText = styled(Text)`
+  color: #6c56e5;
+  font-size: 13px;
+`;
+
 function AddFriendsByInvitationLinkCopy() {
+  const { authStore, friendStore } = useCoreStores();
   const [visibleInvitedFriends, setVisibleInvitedFriends] = useState(false);
   const [visibleToast, setVisibleToast] = useState(false);
 
+  useEffect(() => {
+    friendStore.getUserInviteLink({ userId: authStore.user.id });
+  }, [authStore.user.id, friendStore]);
+
   const handleToggle = () => setVisibleInvitedFriends(!visibleInvitedFriends);
-  return (
+  return useObserver(() => (
     <>
       <Title level={4}>초대 링크 복사하기</Title>
       <Paragraph>
@@ -33,33 +33,36 @@ function AddFriendsByInvitationLinkCopy() {
       </Paragraph>
       <Row>
         <Col span={24} style={{ display: 'flex' }}>
-          <CommonInput
+          <Input
             readOnly
-            value="https://naver.com"
+            value={friendStore.userInviteLink}
             style={{ width: '100%' }}
           />
-          <CommonToast
-            visible={visibleToast}
-            onClose={() => setVisibleToast(false)}
-          >
+          <Toast visible={visibleToast} onClose={() => setVisibleToast(false)}>
             초대 링크가 복사되었습니다.
-          </CommonToast>
+          </Toast>
           <CopyToClipboard
-            text="https://naver.com"
+            text={friendStore.userInviteLink}
             onCopy={() => setVisibleToast(true)}
             style={{ width: 120 }}
           >
-            <CommonButton type="solid">초대 링크 복사</CommonButton>
+            <Button type="solid">초대 링크 복사</Button>
           </CopyToClipboard>
         </Col>
       </Row>
       <Row>
         <Col>
           <Text>나의 초대 링크로 가입한 프렌즈 수 </Text>
-          <Text>1</Text>
+          <InvitedFriendsText>
+            {friendStore.invitedFriendInfoList.length}
+          </InvitedFriendsText>
           <Button type="link" onClick={handleToggle}>
-            {!visibleInvitedFriends && <DownOutlined />}
-            {visibleInvitedFriends && <UpOutlined />}
+            {!visibleInvitedFriends && (
+              <DownOutlined style={{ color: '#000000' }} />
+            )}
+            {visibleInvitedFriends && (
+              <UpOutlined style={{ color: '#000000' }} />
+            )}
           </Button>
         </Col>
       </Row>
@@ -67,7 +70,7 @@ function AddFriendsByInvitationLinkCopy() {
         <Col>
           {visibleInvitedFriends && (
             <>
-              {dummy.map(item => (
+              {friendStore.invitedFriendInfoList.map(item => (
                 <div>
                   {item.friendNick} {item.userName}
                 </div>
@@ -77,7 +80,7 @@ function AddFriendsByInvitationLinkCopy() {
         </Col>
       </Row>
     </>
-  );
+  ));
 }
 
 export default AddFriendsByInvitationLinkCopy;

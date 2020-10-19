@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, Button, Toast } from 'teespace-core';
 import styled from 'styled-components';
 import { Typography, Avatar, Row, Col, Space } from 'antd';
-import CommonButton from '../commons/Button';
-import CommonToast from '../commons/Toast';
 
 const { Paragraph, Title } = Typography;
 
@@ -23,8 +21,6 @@ function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
   const [visibleToast, setVisibleToast] = useState(false);
   const [alreadyFriendFlag, setAlreadyFriendFlag] = useState(false);
 
-  const { userStore } = useCoreStores();
-
   const handleAddFriend = () => {
     setAlreadyFriendFlag(true);
     friendStore.addFriendInfo(authStore.user.id, searchedUser.id);
@@ -41,25 +37,22 @@ function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [friendStore.friendInfoList, searchedUser]);
 
-  const profileSrc = (() => {
-    if (searchedUser) {
-      return (
-        searchedUser.thumbPhoto ||
-        `/${userStore.getUserDefaultPhotoUrl({ userId: searchedUser.id })}`
-      );
+  const profileSrc = (user => {
+    if (!searchedUser) {
+      return null;
     }
-    return null;
-  })();
+    return `/${user.profilePhoto || user.defaultPhotoUrl}`;
+  })(searchedUser);
 
   return useObserver(() => (
     <Row align="middle" style={{ flexGrow: 1 }} justify="center">
-      <CommonToast
+      <Toast
         visible={visibleToast}
         timeoutMs={1000}
         onClose={() => setVisibleToast(false)}
       >
         {searchedUser && `${searchedUser.name}님이 친구로 추가되었습니다.`}
-      </CommonToast>
+      </Toast>
       <Col>
         <Space direction="vertical" align="center">
           {userLoginId && !searchedUser && (
@@ -73,9 +66,9 @@ function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
             searchedUser.id === authStore.user.id && (
               <>
                 <StyledAvatar src={profileSrc} />
-                <Title level={4}>{authStore.user.name}</Title>
+                <Title level={4}>{searchedUser.displayName}</Title>
                 <Title level={4}>(내계정)</Title>
-                <CommonButton type="solid">나와의 Talk</CommonButton>
+                <Button type="solid">나와의 Talk</Button>
               </>
             )}
           {userLoginId &&
@@ -84,9 +77,9 @@ function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
             alreadyFriendFlag && (
               <>
                 <StyledAvatar src={profileSrc} />
-                <Title level={4}>{searchedUser.name}</Title>
+                <Title level={4}>{searchedUser.displayName}</Title>
                 <Title level={4}>(이미 프렌즈)</Title>
-                <CommonButton type="solid">1:1 Talk</CommonButton>
+                <Button type="solid">1:1 Talk</Button>
               </>
             )}
           {userLoginId &&
@@ -96,9 +89,9 @@ function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
               <>
                 <StyledAvatar src={profileSrc} />
                 <Title level={4}>{searchedUser.name}</Title>
-                <CommonButton type="solid" onClick={handleAddFriend}>
+                <Button type="solid" onClick={handleAddFriend}>
                   프렌즈 추가
-                </CommonButton>
+                </Button>
               </>
             )}
           {!userLoginId && (

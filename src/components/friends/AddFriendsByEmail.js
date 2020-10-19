@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { useCoreStores } from 'teespace-core';
 import AddFriendsByEmailHeader from './AddFriendsByEmailHeader';
@@ -11,18 +11,21 @@ const Wrapper = styled.div`
 `;
 
 function AddFriendsByEmail() {
-  const { userStore, authStore } = useCoreStores();
+  const { userStore } = useCoreStores();
   const [userLoginId, setUserLoginId] = useState('');
   const [searchedUser, setSearchedUser] = useState(null);
 
-  const handleSearchUser = async e => {
-    setUserLoginId(e.target.value);
-    const idSearchedUser = await userStore.searchUserById({
-      userId: authStore.user.id,
-      userLoginId: e.target.value,
-    });
-    setSearchedUser(idSearchedUser);
-  };
+  const handleSearchUser = useCallback(
+    async e => {
+      setUserLoginId(e.target.value);
+      const idSearchedUser = await userStore.searchUserById({
+        userLoginId: e.target.value,
+      });
+      setSearchedUser(idSearchedUser);
+    },
+    [userStore],
+  );
+
   return (
     <Wrapper>
       <AddFriendsByEmailHeader handleSearchUser={handleSearchUser} />

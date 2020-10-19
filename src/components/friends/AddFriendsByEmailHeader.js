@@ -1,5 +1,5 @@
 import React from 'react';
-import Search from '../commons/Search';
+import { Search } from 'teespace-core';
 
 function AddFriendsByEmailHeader({ handleSearchUser }) {
   return (

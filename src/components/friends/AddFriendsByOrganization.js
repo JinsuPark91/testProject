@@ -16,7 +16,7 @@ const StyledDivider = styled(Divider)`
 function AddFriendsByOrganization() {
   const [searchedUserList, setSearchedUserList] = useState([]);
 
-  const { orgStore, authStore, userStore } = useCoreStores();
+  const { orgStore, userStore } = useCoreStores();
 
   useEffect(() => {
     orgStore.getOrgTree();
@@ -25,12 +25,11 @@ function AddFriendsByOrganization() {
   const handleInputChange = useCallback(
     async e => {
       const userList = await userStore.searchUsersByKeyword({
-        userId: authStore.user.id,
         keyword: e.target.value,
       });
       setSearchedUserList(userList);
     },
-    [authStore.user.id, userStore],
+    [userStore],
   );
 
   const handleDropdownChange = useCallback(

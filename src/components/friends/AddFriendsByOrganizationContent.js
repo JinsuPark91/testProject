@@ -19,11 +19,7 @@ function AddFriendsByOrganizationContent({ orgUserList }) {
       <Row align="middle" style={{ flexGrow: 1 }} justify="center">
         <Col span={24}>
           {orgUserList.map(item => (
-            <FriendItem
-              friendInfo={{ userName: item.name, friendId: item.id }}
-              key={item.id}
-              mode="addFriend"
-            />
+            <FriendItem frienInfo={item} key={item.id} mode="addFriend" />
           ))}
         </Col>
         <Centered>
