@@ -20,6 +20,7 @@ import './mainPage.css';
 import CommonButton from '../components/commons/Button';
 import SettingDialog from '../components/Usersettings/SettingDialog';
 import { useStore } from '../stores';
+import roomStore from '../stores/RoomStore';
 
 const { TabPane } = Tabs;
 
@@ -49,14 +50,6 @@ function MainPage() {
       setLayoutState('close');
     }
   }, [params, history, layoutState]);
-
-  // const getRooms = async () => {
-  //   const response = await roomStore.updateRoomList({
-  //     userId: userStore.myProfile.id,
-  //   });
-
-  //   return Object.values(response)?.map(obj => obj.room);
-  // };
 
   // Event 핸들러 등록
   useEffect(() => {
@@ -99,24 +92,6 @@ function MainPage() {
       EventBus.off('onChangeQueryString', changeQueryStringHandler);
     };
   }, [history]);
-
-  // useEffect(() => {
-  //   if (tab === 's') {
-  //     (async () => {
-  //       let rooms = [];
-  //       try {
-  //         rooms = await getRooms();
-  //       } catch (e) {
-  //         console.log('GET ROOM FAILED');
-  //       } finally {
-  //         history.push({
-  //           pathname: `/s/${rooms[0]?.id}/${DEFAULT_MAIN_APP}`,
-  //           search: history.location.search,
-  //         });
-  //       }
-  //     })();
-  //   }
-  // }, [tab]);
 
   // RoomId, layoutState 가 바뀌면 다시 그려야 한다. getAppComponent 를 다시 메모이제이션 한다.
   const getAppComponent = useCallback(
@@ -173,50 +148,10 @@ function MainPage() {
     return getAppComponent(subApp);
   }, [getAppComponent, subApp]);
 
-  // const handleTabClick = key => {
-  //   switch (key) {
-  //     /* friend : /f/:id 형식 (query string, app 정보 없음) */
-  //     case 'f':
-  //       // history.push({
-  //       //   pathname: `/${key}/${userStore.myProfile.id}/profile`,
-  //       //   search: null,
-  //       // });
-  //       break;
-  //     /* space, mail : /f/:id/:app?sub... 형식  */
-  //     case 's':
-  //       // (async () => {
-  //       //   let rooms = [];
-  //       //   try {
-  //       //     rooms = await getRooms();
-  //       //   } catch (e) {
-  //       //     console.log('GET ROOM FAILED');
-  //       //   }
-  //       //   // finally {
-  //       //   //   history.push({
-  //       //   //     pathname: `/s/${rooms[0]?.id}/${DEFAULT_MAIN_APP}`,
-  //       //   //     search: history.location.search,
-  //       //   //   });
-  //       //   // }
-  //       // })();
-  //       break;
-  //     /* mail 누르면 sub 앱 없어져야 하나? 정책 결정 필요 */
-  //     case 'm':
-  //       // history.push({
-  //       //   pathname: `/${key}/${id}/mail`,
-  //       //   search: null,
-  //       // });
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
   const handleSettingDialogOpen = () => {
     uiStore.showSettingDialog();
   };
 
-  // activeKey={tab}
-  // onTabClick={handleTabClick}
   return (
     <AppLayout>
       <LeftSide>
@@ -252,7 +187,7 @@ function MainPage() {
       </LeftSide>
       <MainSide>
         <Header>
-          <Title>Title 영역 (icon container에 따라 가변)</Title>
+          <Title>{tab === 's' && <span>Room Header</span>}</Title>
           <AppIconContainer>
             <NoteIcon
               width={50}
