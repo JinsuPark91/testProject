@@ -21,12 +21,15 @@ function App() {
 
   useEffect(() => {
     Promise.all([hydrate('auth', authStore), hydrate('user', userStore)])
-      .then(() => setIsHydrating(true))
+      .then(() => {
+        userStore.initHydratedMyProfile({});
+        setIsHydrating(true);
+      })
       .catch(e => console.error(e));
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!isHydrating) return <></>;
-
   return (
     <BrowserRouter>
       <Switch>
@@ -49,7 +52,7 @@ function App() {
         <RedirectablePublicRoute
           exact
           path="/registerComplete"
-          component={<SignUpCompletePage  />}
+          component={<SignUpCompletePage />}
         />
         <PrivateRoute path="/:tab(s|f|m)/:id/:mainApp?" component={MainPage} />
         <Route component={NotFoundPage} />
