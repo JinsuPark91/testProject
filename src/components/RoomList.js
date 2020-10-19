@@ -1,17 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { useObserver, Observer } from 'mobx-react';
 import { List } from 'antd';
 import styled from 'styled-components';
+import { useCoreStores } from 'teespace-core';
 import RoomItem from './RoomItem';
 
-function RoomList({ rooms }) {
+const DEFAULT_MAIN_APP = 'talk';
+
+function RoomList() {
+  const [rooms, setRooms] = useState([]);
   const history = useHistory();
   const params = useParams();
+  const { userStore, roomStore } = useCoreStores();
+
+  useEffect(() => {
+    try {
+      (async () => {
+        const response = await roomStore.updateRoomList({
+          userId: userStore.myProfile.id,
+        });
+        const roomList = Object.values(response)?.map(obj => obj.room);
+        setRooms(roomList);
+      })();
+    } catch (e) {
+      console.warn('GET ROOMLIST ERROR : ', e);
+      setRooms([]);
+    }
+  }, [roomStore]);
 
   const handleRoomClick = roomId => {
     history.push({
-      pathname: `/s/${roomId}/${params.mainApp}`,
+      pathname: `/s/${roomId}/${DEFAULT_MAIN_APP}`,
       search: history.location.search,
     });
   };

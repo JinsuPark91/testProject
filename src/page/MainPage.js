@@ -23,8 +23,6 @@ import { useStore } from '../stores';
 
 const { TabPane } = Tabs;
 
-const DEFAULT_MAIN_APP = 'talk';
-
 function MainPage() {
   const params = useParams();
   const history = useHistory();
@@ -33,7 +31,6 @@ function MainPage() {
   const [mainApp, setMainApp] = useState(null);
   const [subApp, setSubApp] = useState(null);
   const [layoutState, setLayoutState] = useState('close');
-  const { roomStore, userStore } = useCoreStores();
   const { uiStore } = useStore();
 
   // URL 에 따른 State 변경
@@ -53,13 +50,13 @@ function MainPage() {
     }
   }, [params, history, layoutState]);
 
-  const getRooms = async () => {
-    const response = await roomStore.updateRoomList({
-      userId: userStore.myProfile.id,
-    });
+  // const getRooms = async () => {
+  //   const response = await roomStore.updateRoomList({
+  //     userId: userStore.myProfile.id,
+  //   });
 
-    return Object.values(response)?.map(obj => obj.room);
-  };
+  //   return Object.values(response)?.map(obj => obj.room);
+  // };
 
   // Event 핸들러 등록
   useEffect(() => {
@@ -103,23 +100,23 @@ function MainPage() {
     };
   }, [history]);
 
-  useEffect(() => {
-    if (tab === 's') {
-      (async () => {
-        let rooms = [];
-        try {
-          rooms = await getRooms();
-        } catch (e) {
-          console.log('GET ROOM FAILED');
-        } finally {
-          history.push({
-            pathname: `/s/${rooms[0]?.id}/${DEFAULT_MAIN_APP}`,
-            search: history.location.search,
-          });
-        }
-      })();
-    }
-  }, [tab]);
+  // useEffect(() => {
+  //   if (tab === 's') {
+  //     (async () => {
+  //       let rooms = [];
+  //       try {
+  //         rooms = await getRooms();
+  //       } catch (e) {
+  //         console.log('GET ROOM FAILED');
+  //       } finally {
+  //         history.push({
+  //           pathname: `/s/${rooms[0]?.id}/${DEFAULT_MAIN_APP}`,
+  //           search: history.location.search,
+  //         });
+  //       }
+  //     })();
+  //   }
+  // }, [tab]);
 
   // RoomId, layoutState 가 바뀌면 다시 그려야 한다. getAppComponent 를 다시 메모이제이션 한다.
   const getAppComponent = useCallback(
@@ -176,51 +173,54 @@ function MainPage() {
     return getAppComponent(subApp);
   }, [getAppComponent, subApp]);
 
-  const handleTabClick = key => {
-    switch (key) {
-      /* friend : /f/:id 형식 (query string, app 정보 없음) */
-      case 'f':
-        history.push({
-          pathname: `/${key}/${userStore.myProfile.id}/profile`,
-          search: null,
-        });
-        break;
-      /* space, mail : /f/:id/:app?sub... 형식  */
-      case 's':
-        (async () => {
-          let rooms = [];
-          try {
-            rooms = await getRooms();
-          } catch (e) {
-            console.log('GET ROOM FAILED');
-          } finally {
-            history.push({
-              pathname: `/s/${rooms[0]?.id}/${DEFAULT_MAIN_APP}`,
-              search: history.location.search,
-            });
-          }
-        })();
-        break;
-      /* mail 누르면 sub 앱 없어져야 하나? 정책 결정 필요 */
-      case 'm':
-        history.push({
-          pathname: `/${key}/${id}/mail`,
-          search: null,
-        });
-        break;
-      default:
-        break;
-    }
-  };
+  // const handleTabClick = key => {
+  //   switch (key) {
+  //     /* friend : /f/:id 형식 (query string, app 정보 없음) */
+  //     case 'f':
+  //       // history.push({
+  //       //   pathname: `/${key}/${userStore.myProfile.id}/profile`,
+  //       //   search: null,
+  //       // });
+  //       break;
+  //     /* space, mail : /f/:id/:app?sub... 형식  */
+  //     case 's':
+  //       // (async () => {
+  //       //   let rooms = [];
+  //       //   try {
+  //       //     rooms = await getRooms();
+  //       //   } catch (e) {
+  //       //     console.log('GET ROOM FAILED');
+  //       //   }
+  //       //   // finally {
+  //       //   //   history.push({
+  //       //   //     pathname: `/s/${rooms[0]?.id}/${DEFAULT_MAIN_APP}`,
+  //       //   //     search: history.location.search,
+  //       //   //   });
+  //       //   // }
+  //       // })();
+  //       break;
+  //     /* mail 누르면 sub 앱 없어져야 하나? 정책 결정 필요 */
+  //     case 'm':
+  //       // history.push({
+  //       //   pathname: `/${key}/${id}/mail`,
+  //       //   search: null,
+  //       // });
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
 
   const handleSettingDialogOpen = () => {
     uiStore.showSettingDialog();
   };
 
+  // activeKey={tab}
+  // onTabClick={handleTabClick}
   return (
     <AppLayout>
       <LeftSide>
-        <Tabs activeKey={tab} onTabClick={handleTabClick} animated={false}>
+        <Tabs animated={false}>
           <TabPane
             key="f"
             tab={
@@ -234,9 +234,7 @@ function MainPage() {
             key="s"
             tab={<img src={chatIcon} alt="chat" style={{ width: '40px' }} />}
           >
-            <RoomList
-              rooms={Object.values(roomStore.rooms)?.map(obj => obj.room)}
-            />
+            <RoomList />
           </TabPane>
 
           <TabPane
