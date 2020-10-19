@@ -33,7 +33,7 @@ function MainPage() {
   const [mainApp, setMainApp] = useState(null);
   const [subApp, setSubApp] = useState(null);
   const [layoutState, setLayoutState] = useState('close');
-  const { roomStore, authStore } = useCoreStores();
+  const { roomStore, userStore } = useCoreStores();
   const { uiStore } = useStore();
 
   // URL 에 따른 State 변경
@@ -55,7 +55,7 @@ function MainPage() {
 
   const getRooms = async () => {
     const response = await roomStore.updateRoomList({
-      userId: authStore.myInfo.id,
+      userId: userStore.myProfile.id,
     });
 
     return Object.values(response)?.map(obj => obj.room);
@@ -190,7 +190,7 @@ function MainPage() {
       /* friend : /f/:id 형식 (query string, app 정보 없음) */
       case 'f':
         history.push({
-          pathname: `/${key}/${authStore.myInfo.id}/profile`,
+          pathname: `/${key}/${userStore.myProfile.id}/profile`,
           search: null,
         });
         break;
