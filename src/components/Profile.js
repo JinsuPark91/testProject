@@ -73,18 +73,18 @@ const Profile = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditMode]);
 
-  // const toBase64 = async blobImage =>
-  //   new Promise((resolve, reject) => {
-  //     const reader = new FileReader();
-  //     reader.readAsDataURL(blobImage);
-  //     reader.onload = () => resolve(reader.result);
-  //     reader.onerror = err => reject(err);
-  //   });
+  const toBase64 = async blobImage =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(blobImage);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = err => reject(err);
+    });
 
-  // const toBlob = async file => {
-  //   const result = await fetch(file).then(r => r.blob());
-  //   return result;
-  // };
+  const toBlob = async file => {
+    const result = await fetch(file).then(r => r.blob());
+    return result;
+  };
 
   const handleChangeMode = () => {
     setEditMode(true);
@@ -101,6 +101,8 @@ const Profile = ({
 
   const handleChangePhoto = file => {
     setIsChange(true);
+    // const thumbPhoto = ;
+    // console.log('CHANGE PHOTO : ', thumbPhoto);
     setThumb(URL.createObjectURL(file));
   };
 
@@ -119,6 +121,36 @@ const Profile = ({
     // const base64Images = await Promise.all(
     //   blobImages.map(blobImage => toBase64(blobImage)),
     // );
+    console.log('BACK PHOTO : ', background);
+    console.log('THUMB PHOTO : ', thumb);
+
+    const updatedInfo = {
+      companyNum: phone,
+      phone: mobile,
+    };
+
+    if (thumb.includes('blob:')) {
+      const blobImage = await toBlob(thumb);
+      const base64Image = await toBase64(blobImage);
+      updatedInfo.profilePhoto = base64Image;
+
+      URL.revokeObjectURL(thumb);
+    }
+
+    if (background.includes('blob:')) {
+      const blobImage = await toBlob(background);
+      const base64Image = await toBase64(blobImage);
+      updatedInfo.backPhoto = base64Image;
+
+      URL.revokeObjectURL(background);
+    }
+
+    console.log('updated Info : ', updatedInfo);
+    const updatedProfile = await userStore.updateMyProfile({ updatedInfo });
+
+    console.log('UPDATED!!!!!!!!!!!!! : ', updatedProfile);
+    setPhone(updatedProfile?.companyNum);
+    setMobile(updatedProfile?.phone);
 
     setEditMode(false);
   };
@@ -140,13 +172,7 @@ const Profile = ({
   };
 
   return (
-    <Wrapper
-      imageSrc={background}
-      isVertical={isVertical}
-      onLoad={() => {
-        URL.revokeObjectURL(background);
-      }}
-    >
+    <Wrapper imageSrc={background} isVertical={isVertical}>
       <Sidebar isVertical={isVertical}>
         <StyledButton isVertical={isVertical}>
           <MessageOutlined style={{ fontSize: '30px' }} />
@@ -193,12 +219,7 @@ const Profile = ({
           </Dropdown>
         )}
         <UserImageWrapper position="br">
-          <UserImage
-            src={thumb}
-            onLoad={() => {
-              URL.revokeObjectURL(thumb);
-            }}
-          />
+          <UserImage src={thumb} />
           {isMyId() && isEditMode && (
             <Dropdown
               trigger={['click']}
