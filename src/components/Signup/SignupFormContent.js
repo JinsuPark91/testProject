@@ -64,7 +64,7 @@ const SignupFormContent = () => {
   const [authNumber, setAuthNumber] = useState('');
   const [validAuthNumber, setValidAuthNumber] = useState('init');
   const [checkDuplicationId, setCheckDuplicationId] = useState('');
-  
+
   const handleFinishFailed = () => {
     const errors = {};
     form
@@ -94,15 +94,14 @@ const SignupFormContent = () => {
   //가입완료 누를시..
   const onFinish = async values => {
     //first view Validation
-    if(checkDuplicationId!=="RST0001"){
+    if (checkDuplicationId !== 'RST0001') {
       return;
     }
     // 인증번호  검사.
     if (checkAuthNumber(authNumber)) {
       setValidAuthNumber('success');
-      const res = await authStore.AuthNumberGetPhone(authNumber, values.phone);
-
-      if (res.RESULT_CD === 'RST0001') {
+      const res = await authStore.getAuthNumberPhone(authNumber, values.phone);
+      if (typeof res !== 'undefined' && res === 'RST0001') {
         // no nationalcode
         values.nationalCode = '+82';
         typeof values.email === 'undefined'
@@ -125,11 +124,14 @@ const SignupFormContent = () => {
           advertise: agreeAd,
           path: 'Csp',
         };
-        const resRegi = await authStore.CreateUser(registerInfo);
-          if (resRegi.data.dto.RESULT_CD === 'RST0001') {
-            localStorage.setItem('CreateUser',values.loginId)
-            history.push(`/registerComplete`);
-          }
+        const resRegi = await authStore.createUser(registerInfo);
+        if (resRegi.data.dto.RESULT_CD === 'RST0001') {
+          localStorage.setItem('CreateUser', values.loginId);
+          history.push(`/registerComplete`);
+        }
+      } else {
+        setValidAuthNumber('error');
+        return;
       }
     } else {
       setValidAuthNumber('error');
@@ -147,7 +149,11 @@ const SignupFormContent = () => {
         onFieldsChange={handleFinishFailed}
         scrollToFirstError
       >
-        <NewIdInput checkDuplicationId={checkDuplicationId} setCheckDuplicationId={setCheckDuplicationId} msg={msg.loginId} />
+        <NewIdInput
+          checkDuplicationId={checkDuplicationId}
+          setCheckDuplicationId={setCheckDuplicationId}
+          msg={msg.loginId}
+        />
 
         <NewPasswordInput msg={msg.password} msg2={msg.passwordConfirm} />
         <div>이름</div>

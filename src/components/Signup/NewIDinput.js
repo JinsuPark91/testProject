@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Form ,Col} from 'antd';
+import { Row, Form, Col } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
 import { useCoreStores } from 'teespace-core';
 import CommonButton from '../commons/Button';
 import CommonInput from '../commons/Input';
 import { checkLoginIdLength, checkLoginIdValid } from '../../libs/Regex';
 
-const NewIdInput = (props) => {
-  const { checkDuplicationId,setCheckDuplicationId, msg  } = props;
+const NewIdInput = props => {
+  const { checkDuplicationId, setCheckDuplicationId, msg } = props;
   const { authStore } = useCoreStores();
   const [loginId, setLoginId] = useState('');
   const [lengthStatus, setLenghtStatus] = useState('error');
   const [validStatus, setValidStatus] = useState('error');
   const [strange, setStrange] = useState('success');
 
-
   const handleDuplicationID = () => {
-    authStore.DuplicationCheckId(loginId)
+    authStore
+      .duplicationCheckId(loginId)
       .then(x =>
-        x.RESULT_CD === 'RST0001'
+        x === 'RST0001'
           ? setCheckDuplicationId('RST0001')
-          : setCheckDuplicationId('RST0002')
-          );
+          : setCheckDuplicationId('RST0002'),
+      );
   };
 
   const handleOnChangeId = e => {
@@ -56,7 +56,7 @@ const NewIdInput = (props) => {
       setLenghtStatus('error');
       setValidStatus('error');
     }
-    setCheckDuplicationId('')
+    setCheckDuplicationId('');
     setLoginId(e.target.value);
   };
 
@@ -92,18 +92,18 @@ const NewIdInput = (props) => {
         ]}
       >
         <Row>
-          <Col span='18'>
-          <CommonInput
-            onChange={handleOnChangeId}
-            value={loginId}
-            placement="topLeft"
-            checked={checkDuplicationId === 'RST0001'}
-            alert={
-              checkDuplicationId === 'RST0002'
-                ? '이미 사용 중인 아이디 입니다. 다른 아이디를 입력하세요.'
-                : msg
-            }
-          />
+          <Col span="18">
+            <CommonInput
+              onChange={handleOnChangeId}
+              value={loginId}
+              placement="topLeft"
+              checked={checkDuplicationId === 'RST0001'}
+              alert={
+                checkDuplicationId === 'RST0002'
+                  ? '이미 사용 중인 아이디 입니다. 다른 아이디를 입력하세요.'
+                  : msg
+              }
+            />
           </Col>
           <CommonButton
             disabled={

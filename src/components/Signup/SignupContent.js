@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { Checkbox, Row, Col, Input, Button } from 'antd';
 import CommonButton from '../commons/Button';
 import CommonCheckbox from '../commons/Checkbox';
-import CommonTextArea  from '../commons/TextArea'
+import CommonTextArea from '../commons/TextArea';
 import useLocalStorage from '../../libs/useLocalStroage';
 
 const CommonContent = styled.div`
@@ -24,12 +24,15 @@ const CheckboxGroup = Checkbox.Group;
 const plainOptions = ['agreeAge', 'agreeTerms', 'agreePersonal', 'agreeAd'];
 
 const SignupContent = () => {
-  const [storedCheckedList ,setStoredCheckedList] = useLocalStorage('RegisterCheckedList', []);
+  const [storedCheckedList, setStoredCheckedList] = useLocalStorage(
+    'RegisterCheckedList',
+    [],
+  );
   const [checkedList, setCheckedList] = useState(storedCheckedList);
-  const [checkAll, setCheckAll] = useState(storedCheckedList.length === plainOptions.length);
+  const [checkAll, setCheckAll] = useState(
+    storedCheckedList.length === plainOptions.length,
+  );
   const history = useHistory();
-  
-
 
   const onChange = checkedList => {
     setCheckedList(checkedList);
@@ -44,7 +47,7 @@ const SignupContent = () => {
     setCheckAll(e.target.checked);
   };
   const handleGoSignUpForm = () => {
-    setStoredCheckedList(checkedList)
+    setStoredCheckedList(checkedList);
     history.push(`/registerForm`);
   };
 
@@ -86,7 +89,7 @@ const SignupContent = () => {
                 (필수) 서비스 이용약관 동의
               </CommonCheckbox>
             </Col>
-            <CommonTextArea 
+            <CommonTextArea
               rows={4}
               disabled
               defaultValue="
@@ -171,7 +174,7 @@ const SignupContent = () => {
                 (필수) 개인정보 수집 및 이용 동의
               </CommonCheckbox>
             </Col>
-            <CommonTextArea 
+            <CommonTextArea
               rows={4}
               disabled
               defaultValue="        

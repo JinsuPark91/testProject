@@ -4,7 +4,7 @@ import { CheckOutlined } from '@ant-design/icons';
 import CommonInput from '../commons/Input';
 import { checkPasswordValid, checkPasswordLength } from '../../libs/Regex';
 
-const NewPasswordInput = ({ msg , msg2}) => {
+const NewPasswordInput = ({ msg, msg2 }) => {
   const [password, setPassword] = useState('');
   const [lengthStatus, setLengthStatus] = useState('error');
   const [validStatus, setValidStatus] = useState('error');
