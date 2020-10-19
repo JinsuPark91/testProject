@@ -14,7 +14,8 @@ import {
 } from '@ant-design/icons';
 import { Button, Input, Dropdown, Menu, Modal } from 'antd';
 import { useCoreStores } from 'teespace-core';
-import { toJS } from 'mobx';
+
+const IS_LOCAL = true;
 
 const Profile = ({
   userId = null,
@@ -22,9 +23,9 @@ const Profile = ({
   isVertical = false,
   onModeChange = null,
 }) => {
-  const { userStore, authStore } = useCoreStores();
+  const { userStore } = useCoreStores();
   const [isEditMode, setEditMode] = useState(editMode);
-
+  const [profile, setProfile] = useState(null);
   // 유저 정보들
   const [background, setBackground] = useState(null);
   const [thumb, setThumb] = useState(null);
@@ -32,16 +33,37 @@ const Profile = ({
   const [mobile, setMobile] = useState('');
   const [isChange, setIsChange] = useState(false);
 
-  const isMyId = () => userId === authStore.myInfo.id;
+  const isMyId = () => userId === userStore.myProfile.id;
+
+  const getBackPhoto = backPhoto => {
+    return userStore.getUserBackPhoto({
+      userId,
+      size: 'medium',
+      isLocal: IS_LOCAL,
+      backPhoto: backPhoto || null,
+    });
+  };
+
+  const getThumbPhoto = thumbPhoto => {
+    return userStore.getUserProfilePhoto({
+      userId,
+      size: 'medium',
+      isLocal: IS_LOCAL,
+      thumbPhoto: thumbPhoto || null,
+    });
+  };
 
   useEffect(() => {
-    if (!isMyId())
-      (async () => {
-        const myUserId = authStore.myInfo.id;
-        const profile = await userStore.getProfile({ userId, myUserId });
-        console.log('Profile : ', toJS(profile));
-      })();
-    else console.log('Profile : ', authStore.myInfo);
+    setEditMode(false);
+    (async () => {
+      const userProfile = await userStore.getProfile({ userId });
+      setProfile(userProfile);
+      setPhone(userProfile?.companyNum);
+      setMobile(userProfile?.phone);
+
+      setThumb(`/${getThumbPhoto()}`);
+      setBackground(`/${getBackPhoto()}`);
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
@@ -84,15 +106,12 @@ const Profile = ({
 
   const handleChangeDefaultBackground = () => {
     setIsChange(true);
-    const defaultBackground = userStore.getDefaultBackground({ userId });
-    console.log(defaultBackground);
-    setBackground(`/${defaultBackground}`);
+    setBackground(`/${getBackPhoto()}`);
   };
 
   const handleChangeDefaultPhoto = () => {
     setIsChange(true);
-    const defaultPhoto = userStore.getUserDefaultPhotoUrl({ userId });
-    setThumb(`/${defaultPhoto}`);
+    setThumb(`/${getThumbPhoto()}`);
   };
 
   const handleConfirm = async () => {
@@ -110,15 +129,12 @@ const Profile = ({
       content: '변경 사항을 저장하지 않고 나가시겠습니까?',
       onOk: () => {
         setIsChange(false);
-
-        // 서버에서 받아온 back, thumb, phone, mobile로 바꾸자.
-        // 정보가 back, thumb 정보 없으면 기본사진으로 하자.
-
-        // const defaultBackground = userStore.getDefaultBackground({ userId });
-        // const defaultPhoto = userStore.getUserDefaultPhotoUrl({ userId });
-        // setBackground(`/${defaultBackground}`);
-        // setThumb(`/${defaultPhoto}`);
         setEditMode(false);
+
+        setMobile(profile?.phone);
+        setPhone(profile?.companyNum);
+        setBackground(`/${getBackPhoto()}`);
+        setThumb(`/${getThumbPhoto()}`);
       },
     });
   };
@@ -149,7 +165,7 @@ const Profile = ({
         )}
       </Sidebar>
       <Content>
-        {isMyId() && isEditMode && (
+        {isEditMode && (
           <Dropdown
             trigger={['click']}
             overlay={
@@ -210,16 +226,16 @@ const Profile = ({
             </Dropdown>
           )}
         </UserImageWrapper>
-        <BigText style={{ marginTop: '20px' }}>조득용</BigText>
-        <Text>(deuckyoung_cho@tmax.teespace.net)</Text>
+        <BigText style={{ marginTop: '20px' }}>{profile?.name}</BigText>
+        <Text>{`(${profile?.loginId}@tmax.teepsace.net)`}</Text>
         <UserInfoList>
           <UserInfoItem>
             <ContainerOutlined style={{ marginRight: '20px' }} />
-            TmaxGroup·AC2-3팀·팀원
+            {profile?.fullCompanyJob}
           </UserInfoItem>
           <UserInfoItem>
             <MobileOutlined style={{ marginRight: '20px' }} />
-            {isMyId() && isEditMode ? (
+            {isEditMode ? (
               <Input
                 onChange={e => {
                   setIsChange(true);
@@ -233,7 +249,7 @@ const Profile = ({
           </UserInfoItem>
           <UserInfoItem>
             <PhoneOutlined style={{ marginRight: '20px' }} />
-            {isMyId() && isEditMode ? (
+            {isEditMode ? (
               <Input
                 onChange={e => {
                   setIsChange(true);
@@ -247,11 +263,11 @@ const Profile = ({
           </UserInfoItem>
           <UserInfoItem>
             <MailOutlined style={{ marginRight: '20px' }} />
-            deuckyoung_cho@tmax.co.kr
+            {profile?.email}
           </UserInfoItem>
         </UserInfoList>
         <ButtonContainer>
-          {isMyId() && isEditMode && (
+          {isEditMode && (
             <>
               <Button
                 style={{ marginRight: '20px' }}
@@ -391,6 +407,7 @@ const UserImage = styled.img`
 `;
 
 const UserInfoList = styled.div`
+  min-width: 300px;
   display: flex;
   flex-direction: column;
 `;
