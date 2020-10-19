@@ -5,8 +5,6 @@ import FriendsLNBHeader from './FriendsLNBHeader';
 import FriendsLNBContent from './FriendsLNBContent';
 import FriendsLNBFooter from './FriendsLNBFooter';
 
-const { Content, Footer, Sider } = Layout;
-
 const FriendsLNBWrapper = styled(Layout)`
   display: flex;
   flex-direction: column;
@@ -17,7 +15,7 @@ const FriendsLNBWrapper = styled(Layout)`
  * 프렌즈 LNB
  * @param {Object} props
  */
-function FriendsLNB(props) {
+function FriendsLNB() {
   const [searchKeyword, setSearchKeyword] = useState('');
   const lnbRef = useRef(null);
   const handleSearchKeyword = useCallback(e => {
@@ -37,10 +35,9 @@ function FriendsLNB(props) {
       <FriendsLNBContent
         ref={lnbRef}
         searchKeyword={searchKeyword}
-        meTooltipPopupContainer={() => {
-          console.log('ref', lnbRef.current);
+        meTooltipPopupContainer={useCallback(() => {
           return lnbRef.current;
-        }}
+        }, [])}
       />
       <FriendsLNBFooter />
     </FriendsLNBWrapper>

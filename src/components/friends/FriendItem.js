@@ -2,26 +2,21 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { Tooltip, Typography, Avatar, Button } from 'antd';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, Dropdown, Menu, Message, Toast } from 'teespace-core';
 import { useOpenInWindow } from 'use-open-window';
 import {
   EllipsisOutlined,
   ExportOutlined,
-  UserOutlined,
   PlusOutlined,
   CloseOutlined,
 } from '@ant-design/icons';
 
-import CommonDropdown, { CommonMenu } from '../commons/Dropdown';
-import CommonMessage from '../commons/Message';
-import CommonToast from '../commons/Toast';
-
 const { Title } = Typography;
 
 const FriendItemWrapper = styled.div`
-  /* 조직도 조회 스타일 */
+  /* 조직도 조회, 추천친구 스타일 */
   ${props =>
-    props.mode === 'addFriend' &&
+    (props.mode === 'addFriend' || props.mode === 'recommended') &&
     css`
       display: flex;
       height: 54px;
@@ -110,27 +105,19 @@ const DropdownMenu = React.memo(
     handleAddBookmark,
     handleRemoveFriendMessageOpen,
   }) => (
-    <CommonMenu>
+    <Menu>
       {friendFavorite && (
-        <CommonMenu.Item onClick={handleCancelBookmark}>
-          즐겨찾기 해제
-        </CommonMenu.Item>
+        <Menu.Item onClick={handleCancelBookmark}>즐겨찾기 해제</Menu.Item>
       )}
       {!friendFavorite && (
-        <CommonMenu.Item onClick={handleAddBookmark}>즐겨찾기</CommonMenu.Item>
+        <Menu.Item onClick={handleAddBookmark}>즐겨찾기</Menu.Item>
       )}
-      <CommonMenu.Item onClick={handleRemoveFriendMessageOpen}>
-        프렌즈 삭제
-      </CommonMenu.Item>
-    </CommonMenu>
+      <Menu.Item onClick={handleRemoveFriendMessageOpen}>프렌즈 삭제</Menu.Item>
+    </Menu>
   ),
 );
 const Profile = React.memo(
-  ({ mode, imageSize, tooltipPopupContainer, thumbPhoto, friendId }) => {
-    const { userStore } = useCoreStores();
-    const profileSrc = null;
-    // thumbPhoto ||
-    // `/${userStore.getUserDefaultPhotoUrl({ userId: friendId })}`;
+  ({ mode, imageSize, tooltipPopupContainer, profilePhoto }) => {
     return (
       <>
         {mode === 'me' && (
@@ -141,10 +128,10 @@ const Profile = React.memo(
             placement="top"
             visible
           >
-            <Avatar size={imageSize} src={profileSrc} />
+            <Avatar size={imageSize} src={`/${profilePhoto}`} />
           </Tooltip>
         )}
-        {mode !== 'me' && <Avatar size={imageSize} src={profileSrc} />}
+        {mode !== 'me' && <Avatar size={imageSize} src={`/${profilePhoto}`} />}
       </>
     );
   },
@@ -155,7 +142,7 @@ const FriendAction = React.memo(
     <>
       {mode === 'friend' && (
         <>
-          <CommonDropdown
+          <Dropdown
             overlay={menu}
             trigger={['click']}
             onVisibleChange={handleDropdownVisible}
@@ -165,7 +152,7 @@ const FriendAction = React.memo(
               icon={<EllipsisOutlined />}
               onClick={e => e.stopPropagation()}
             />
-          </CommonDropdown>
+          </Dropdown>
           <Button
             shape="circle"
             icon={<ExportOutlined />}
@@ -270,15 +257,16 @@ const FriendItem = React.memo(
     onClick,
     tooltipPopupContainer = () => document.body,
     friendInfo: {
-      friendNick = '',
-      userName = '',
+      displayName,
       friendFavorite = false,
-      friendId,
-      thumbPhoto = '',
-    },
+      friendId = '',
+      id: userId = '',
+      profilePhoto = '',
+      defaultPhotoUrl,
+    } = {},
   }) => {
     const history = useHistory();
-    const { authStore, friendStore, userStore } = useCoreStores();
+    const { authStore, friendStore } = useCoreStores();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
     const [visibleMessage, setVisibleMessage] = useState(false);
@@ -287,6 +275,9 @@ const FriendItem = React.memo(
       visibleRemoveFriendMessage,
       setVisibleRemoveFriendMessage,
     ] = useState(false);
+
+    /* merged info of userInfo and friendInfo */
+    const itemId = friendId || userId;
 
     const [alreadyFriendFlag, setAlreadyFriendFlag] = useState(
       !!friendStore.friendInfoList
@@ -308,19 +299,13 @@ const FriendItem = React.memo(
 
     useEffect(() => {
       if (mode === 'addFriend') {
-        console.log(
-          'alreadyFriend',
-          !!friendStore.friendInfoList
-            .map(friendInfo => friendInfo.friendId)
-            .includes(friendId),
-        );
         setAlreadyFriendFlag(
           !!friendStore.friendInfoList
             .map(friendInfo => friendInfo.friendId)
-            .includes(friendId),
+            .includes(itemId),
         );
       }
-    }, [friendId, friendStore.friendInfoList, mode]);
+    }, [itemId, friendStore.friendInfoList, mode]);
 
     const handleDropdownVisible = useCallback(visible => {
       if (!visible) {
@@ -340,40 +325,52 @@ const FriendItem = React.memo(
       }
     }, [dropdownVisible]);
 
-    const handleAddBookmark = useCallback(() => {
-      friendStore.setFriendFavorite(authStore.user.id, friendId, true);
-      setIsHovering(false);
-      setDropdownVisible(false);
-    }, [friendStore, authStore, friendId]);
+    const handleAddBookmark = useCallback(
+      ({ domEvent: e }) => {
+        console.log(e);
+        e.stopPropagation();
+        friendStore.setFriendFavorite(authStore.user.id, itemId, true);
+        setIsHovering(false);
+        setDropdownVisible(false);
+      },
+      [friendStore, authStore, itemId],
+    );
 
-    const handleCancelBookmark = useCallback(() => {
-      friendStore.setFriendFavorite(authStore.user.id, friendId, false);
-      setIsHovering(false);
-      setDropdownVisible(false);
-    }, [friendStore, authStore, friendId]);
+    const handleCancelBookmark = useCallback(
+      ({ domEvent: e }) => {
+        console.log(e);
+        e.stopPropagation();
+        friendStore.setFriendFavorite(authStore.user.id, itemId, false);
+        setIsHovering(false);
+        setDropdownVisible(false);
+      },
+      [friendStore, authStore, itemId],
+    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const handleRemoveFriend = useCallback(() => {
-      friendStore.deleteFriendInfo(authStore.user.id, friendId);
-      setIsHovering(false);
-      setDropdownVisible(false);
-      setVisibleRemoveFriendMessage(false);
-    }, [friendStore, authStore, friendId]);
+    const handleRemoveFriend = useCallback(
+      e => {
+        e.stopPropagation();
+        friendStore.deleteFriendInfo(authStore.user.id, itemId);
+        setIsHovering(false);
+        setDropdownVisible(false);
+        setVisibleRemoveFriendMessage(false);
+      },
+      [friendStore, authStore, itemId],
+    );
 
     const handleItemClick = useCallback(() => {
       if (onClick) {
-        onClick(friendId);
+        onClick(itemId);
       }
       if (mode === 'me' || mode === 'friend') {
         history.push({
-          pathname: `/f/${
-            mode === 'me' ? userStore.myProfile.id : friendId
-          }/profile`,
+          pathname: `/f/${itemId}/profile`,
           search: null,
         });
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [authStore.user.id, friendId, history, mode, onClick]);
+    }, [itemId, history, mode, onClick]);
 
     const handleRemoveFriendMessageClose = useCallback(() => {
       setVisibleRemoveFriendMessage(false);
@@ -386,9 +383,9 @@ const FriendItem = React.memo(
     }, []);
 
     const handleAddFriend = useCallback(() => {
-      friendStore.addFriendInfo(authStore.user.id, friendId);
+      friendStore.addFriendInfo(authStore.user.id, itemId);
       setVisibleToast(true);
-    }, [authStore.user.id, friendId, friendStore]);
+    }, [authStore.user.id, itemId, friendStore]);
 
     const handleToastClose = useCallback(() => setVisibleToast(false), []);
 
@@ -400,18 +397,16 @@ const FriendItem = React.memo(
         isActive={isActive}
         mode={mode}
       >
-        <CommonToast
+        <Toast
           visible={visibleToast}
           timeoutMs={1000}
           onClose={handleToastClose}
         >
-          {`${userName || friendNick}님이 프렌즈로 추가되었습니다`}
-        </CommonToast>
-        <CommonMessage
+          {`${displayName}님이 프렌즈로 추가되었습니다`}
+        </Toast>
+        <Message
           visible={visibleRemoveFriendMessage}
-          title={`${
-            userName || friendNick
-          }님을 프렌즈 목록에서 삭제하시겠습니까?`}
+          title={`${displayName}님을 프렌즈 목록에서 삭제하시겠습니까?`}
           btns={[
             { text: '삭제', type: 'solid', onClick: handleRemoveFriend },
             {
@@ -421,9 +416,9 @@ const FriendItem = React.memo(
             },
           ]}
         />
-        <CommonMessage
+        <Message
           visible={visibleMessage}
-          title={`${friendNick || userName}님을 즐겨찾기에 추가하시겠습니까?`}
+          title={`${displayName}님을 즐겨찾기에 추가하시겠습니까?`}
           btns={[
             {
               type: 'solid',
@@ -442,12 +437,11 @@ const FriendItem = React.memo(
             mode={mode}
             imageSize={imageSize}
             tooltipPopupContainer={tooltipPopupContainer}
-            thumbPhoto={thumbPhoto}
-            friendId={friendId}
+            profilePhoto={profilePhoto || defaultPhotoUrl}
           />
         </ProfileWrapper>
         <TextWrapper>
-          <TitleForName>{friendNick || userName}</TitleForName>
+          <TitleForName>{displayName}</TitleForName>
         </TextWrapper>
         <ActionWrapper>
           <Action

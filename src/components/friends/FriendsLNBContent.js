@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { Layout, Divider, Typography } from 'antd';
@@ -54,7 +54,7 @@ const FriendList = React.memo(({ friendList, onClick, activeFriendId }) => (
  */
 const FriendsLNBContent = React.forwardRef(
   ({ searchKeyword, meTooltipPopupContainer }, ref) => {
-    const { authStore, friendStore } = useCoreStores();
+    const { userStore, friendStore } = useCoreStores();
 
     const [favFriendActiveId, setFavFriendActiveId] = useState('');
     const [friendActiveId, setFriendActiveId] = useState('');
@@ -65,45 +65,37 @@ const FriendsLNBContent = React.forwardRef(
       friendInfo => friendInfo.friendFavorite,
     );
 
-    const filteredFriendList = friendStore.friendInfoList.filter(
-      friendInfo =>
-        (friendInfo.friendNick || '').includes(searchKeyword) ||
-        (friendInfo.userNick || '').includes(searchKeyword) ||
-        (friendInfo.userName || '').includes(searchKeyword),
+    const filteredFriendList = friendStore.friendInfoList.filter(friendInfo =>
+      friendInfo.displayName.includes(searchKeyword),
     );
 
-    const handleFavFriendActive = friendId => {
+    const handleFavFriendActive = useCallback(friendId => {
       setFavFriendActiveId(friendId);
       setFriendActiveId('');
-    };
+    }, []);
 
-    const handleFriendActive = friendId => {
+    const handleFriendActive = useCallback(friendId => {
       setFavFriendActiveId('');
       setFriendActiveId(friendId);
-    };
+    }, []);
 
     useEffect(() => {
-      friendStore.getFriendInfoList({ userId: authStore.user.id });
-    }, [friendStore, authStore]);
+      friendStore.getFriendInfoList({ userId: userStore.myProfile.id });
+    }, [friendStore, userStore.myProfile.id]);
 
     const renderEmptyContent = (
       <>
         <FriendItem
           mode="me"
           tooltipPopupContainer={meTooltipPopupContainer}
-          friendInfo={{
-            userName: authStore.user.name,
-            friendNIck: authStore.user.nick,
-            thumbPhoto: authStore.user.thumbPhoto,
-            friendId: authStore.user.id,
-          }}
+          friendInfo={userStore.myProfile}
           onClick={handleFriendActive}
-          isActive={friendActiveId === authStore.user.id}
+          isActive={friendActiveId === userStore.myProfile.id}
         />
         <Divider style={{ margin: '6px 0' }} />
         <WelcomeWrapper>
           <Title level={4}>
-            {authStore.user.name} 님, 환영합니다. <br />
+            {userStore.myProfile.displayName} 님, 환영합니다. <br />
             프렌즈 추가 버튼을 눌러 <br />내 동료를 찾아보세요!
           </Title>
           <Paragraph>
@@ -120,17 +112,12 @@ const FriendsLNBContent = React.forwardRef(
         <FriendItem
           mode="me"
           tooltipPopupContainer={meTooltipPopupContainer}
-          friendInfo={{
-            userName: authStore.user.name,
-            friendNIck: authStore.user.nick,
-            thumbPhoto: authStore.user.thumbPhoto,
-            friendId: authStore.user.id,
-          }}
+          friendInfo={userStore.myProfile}
           onClick={handleFriendActive}
-          isActive={friendActiveId === authStore.user.id}
+          isActive={friendActiveId === userStore.myProfile.id}
         />
         <Divider />
-        {!searchKeyword && (
+        <div style={{ display: searchKeyword ? 'none' : 'block' }}>
           <>
             <Title level={5}>즐겨찾기</Title>
             <FriendList
@@ -149,20 +136,18 @@ const FriendsLNBContent = React.forwardRef(
               activeFriendId={friendActiveId}
             />
           </>
-        )}
-        {searchKeyword && (
-          <>
-            <Title level={5}>
-              프렌즈
-              <Text>{filteredFriendList.length}</Text>
-            </Title>
-            <FriendList
-              friendList={filteredFriendList}
-              onClick={handleFriendActive}
-              activeFriendId={friendActiveId}
-            />
-          </>
-        )}
+        </div>
+        <div style={{ display: searchKeyword ? 'block' : 'none' }}>
+          <Title level={5}>
+            프렌즈
+            <Text>{filteredFriendList.length}</Text>
+          </Title>
+          <FriendList
+            friendList={filteredFriendList}
+            onClick={handleFriendActive}
+            activeFriendId={friendActiveId}
+          />
+        </div>
       </>
     );
 

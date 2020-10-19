@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
-import { Layout, Row, Col, Button } from 'antd';
+import { Layout, Row, Col } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
+import { Button } from 'teespace-core';
 import AddFriendsDialog from './AddFriendsDialog';
 import { useStore } from '../../stores';
-import CommonButton from '../commons/Button';
 
 const { Footer } = Layout;
 
@@ -24,14 +24,14 @@ function FriendsLNBFooter() {
     <FooterWrapper>
       <Row>
         <Col align="center" span={24}>
-          <CommonButton
+          <Button
             type="outlined"
             onClick={showAddFrieldsDialog}
             style={{ width: '100%' }}
           >
             <DownloadOutlined />
             프렌즈 추가
-          </CommonButton>
+          </Button>
           <AddFriendsDialog
             visible={uiStore.visibleAddFriendsDialog}
             width={uiStore.addFriendsDialogInfo.width}

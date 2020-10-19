@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Layout, Input } from 'antd';
-import CommonSearch from '../commons/Search';
+import { Layout } from 'antd';
+import { Search } from 'teespace-core';
 
 const { Header } = Layout;
 
@@ -20,7 +20,7 @@ const StyledHeader = styled(Header)`
 function FriendsLNBHeader({ handleInputChange, handleInputClear }) {
   return (
     <StyledHeader>
-      <CommonSearch
+      <Search
         onChange={handleInputChange}
         onClear={handleInputClear}
         placeholder="프렌즈 검색"
