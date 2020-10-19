@@ -129,8 +129,8 @@ const Profile = React.memo(
   ({ mode, imageSize, tooltipPopupContainer, thumbPhoto, friendId }) => {
     const { userStore } = useCoreStores();
     const profileSrc = null;
-      // thumbPhoto ||
-      // `/${userStore.getUserDefaultPhotoUrl({ userId: friendId })}`;
+    // thumbPhoto ||
+    // `/${userStore.getUserDefaultPhotoUrl({ userId: friendId })}`;
     return (
       <>
         {mode === 'me' && (
@@ -278,7 +278,7 @@ const FriendItem = React.memo(
     },
   }) => {
     const history = useHistory();
-    const { authStore, friendStore } = useCoreStores();
+    const { authStore, friendStore, userStore } = useCoreStores();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
     const [visibleMessage, setVisibleMessage] = useState(false);
@@ -365,12 +365,12 @@ const FriendItem = React.memo(
         onClick(friendId);
       }
       if (mode === 'me' || mode === 'friend') {
-        /* history.push({
+        history.push({
           pathname: `/f/${
-            mode === 'me' ? authStore.myInfo.id : friendId
+            mode === 'me' ? userStore.myProfile.id : friendId
           }/profile`,
           search: null,
-        }); */
+        });
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [authStore.user.id, friendId, history, mode, onClick]);
