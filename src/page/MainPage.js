@@ -172,7 +172,7 @@ function MainPage() {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [id, layoutState],
+    [id, layoutState, history.location.search],
   );
 
   // Room ID 가 바뀌면, getAppComponent가 변경(새로 생성) 되므로, mainApplication 또는 subApplication을 다시 메모이제이션 한다.
