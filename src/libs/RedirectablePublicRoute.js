@@ -3,7 +3,7 @@ import { Route, Redirect } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
 
 export default function RedirectablePublicRoute({ component, ...rest }) {
-  const { authStore } = useCoreStores();
+  const { userStore, authStore } = useCoreStores();
 
   return (
     <Route
@@ -14,7 +14,7 @@ export default function RedirectablePublicRoute({ component, ...rest }) {
         ) : (
           <Redirect
             to={{
-              pathname: `/f/${authStore.user.loginId}`,
+              pathname: `/f/${userStore.myProfile.id}/profile`,
               state: { from: location },
             }}
           />
