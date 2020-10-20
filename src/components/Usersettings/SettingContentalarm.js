@@ -6,7 +6,7 @@ import { Switch } from 'teespace-core';
 import { useCoreStores } from 'teespace-core';
 
 function onChange(checked) {
-  console.log(`switch to ${checked}`);
+  // console.log(`switch to ${checked}`);
 }
 
 function SettingContentalarm(props) {
@@ -17,9 +17,8 @@ function SettingContentalarm(props) {
   // const form = useRef(alarmsettingform);
 
   const handleFinish = values => {
-    // authStore.updateMyInfo(values) ->toggle change store 참조
+    // ----Store.-------(values) ->toggle change store 참조
     console.log(values)
-
   };
 
   return (

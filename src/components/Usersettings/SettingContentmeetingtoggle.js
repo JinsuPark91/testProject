@@ -4,7 +4,7 @@ import { Form } from 'antd';
 
 
 function onChange(e) {
-  console.log(`checked = ${e.target.checked}`);
+  // console.log(`checked = ${e.target.checked}`);
 }
 
 function SettingContentmeetingtoggle(props) {

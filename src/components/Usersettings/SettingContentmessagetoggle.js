@@ -3,7 +3,7 @@ import { Checkbox } from 'teespace-core';
 import { Form } from 'antd';
 
 function onChange(e) {
-  console.log(`checked = ${e.target.checked}`);
+//   console.log(`checked = ${e.target.checked}`);
 }
 function SettingContentmessagetoggle(props) {
     const { form } = props;

@@ -6,24 +6,32 @@ import { useStore } from '../../stores';
 import { useCoreStores } from 'teespace-core';
 import { Toast, Message, Button } from 'teespace-core';
 
-
 function Settingsave(props) {
   const [canclevisible, setcanclevisible] = useState(false);
   const [savevisible, setsavevisible] = useState(false);
   const { authStore } = useCoreStores();
   const { form } = props;
- 
+
   return (
     <>
-      <Button type="solid" onClick={() => {
-          setsavevisible(true); form.current.submit() 
-        }}>변경사항 저장</Button>
+      <Button
+        type="solid"
+        onClick={() => {
+          setsavevisible(true);
+          form.current.submit();
+        }}
+      >
+        변경사항 저장
+      </Button>
 
       <Toast
         visible={savevisible}
         timeoutMs={1000}
         onClose={() => setsavevisible(false)}
-      > 변경사항이 저장되었습니다. </Toast>        
+      >
+        {' '}
+        변경사항이 저장되었습니다.{' '}
+      </Toast>
 
       <Button
         onClick={() => {
@@ -37,9 +45,9 @@ function Settingsave(props) {
         visible={canclevisible}
         btns={[
           {
-            onClick:  () => {
-                setcanclevisible(false);
-              },
+            onClick: () => {
+              setcanclevisible(false);
+            },
             text: '나가기',
             type: 'solid',
           },

@@ -12,8 +12,8 @@ const StyledPageHeader = styled(PageHeader)`
 class SettingContentTitle extends Component {
   render() {
     return (
-      <StyledPageHeader 
-        className="site-page-header" 
+      <StyledPageHeader
+        className="site-page-header"
         title={this.props.title}
         subTitle={this.props.subTitle}
       ></StyledPageHeader>
