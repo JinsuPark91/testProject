@@ -192,16 +192,21 @@ const AddFriendAction = React.memo(
   ),
 );
 
-const RecommendedAction = React.memo(({ mode, alreadyFriendFlag }) => (
-  <>
-    {mode === 'recommended' && !alreadyFriendFlag && (
-      <>
-        <Button shape="circle" icon={<PlusOutlined />} />
-        <Button shape="circle" icon={<CloseOutlined />} />
-      </>
-    )}
-  </>
-));
+const RecommendedAction = React.memo(
+  ({ mode, alreadyFriendFlag, handleAddFriend }) => (
+    <>
+      {mode === 'recommended' && !alreadyFriendFlag && (
+        <>
+          <Button
+            shape="circle"
+            icon={<PlusOutlined onClick={handleAddFriend} />}
+          />
+          <Button shape="circle" icon={<CloseOutlined />} />
+        </>
+      )}
+    </>
+  ),
+);
 
 const Action = React.memo(
   ({
@@ -231,6 +236,7 @@ const Action = React.memo(
           <RecommendedAction
             mode={mode}
             alreadyFriendFlag={alreadyFriendFlag}
+            handleAddFriend={handleAddFriend}
           />
         </>
       )}
@@ -256,15 +262,17 @@ const FriendItem = React.memo(
     isActive = false,
     onClick,
     tooltipPopupContainer = () => document.body,
-    friendInfo: {
+    friendInfo,
+  }) => {
+    const {
       displayName,
       friendFavorite = false,
       friendId = '',
       id: userId = '',
       profilePhoto = '',
       defaultPhotoUrl,
-    } = {},
-  }) => {
+    } = friendInfo;
+    console.log('displayName', displayName, defaultPhotoUrl);
     const history = useHistory();
     const { authStore, friendStore } = useCoreStores();
     const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -281,7 +289,7 @@ const FriendItem = React.memo(
 
     const [alreadyFriendFlag, setAlreadyFriendFlag] = useState(
       !!friendStore.friendInfoList
-        .map(friendInfo => friendInfo.friendId)
+        .map(__friendInfo => __friendInfo.friendId)
         .includes(friendId),
     );
 
@@ -301,7 +309,7 @@ const FriendItem = React.memo(
       if (mode === 'addFriend') {
         setAlreadyFriendFlag(
           !!friendStore.friendInfoList
-            .map(friendInfo => friendInfo.friendId)
+            .map(__friendInfo => __friendInfo.friendId)
             .includes(itemId),
         );
       }
@@ -384,8 +392,9 @@ const FriendItem = React.memo(
 
     const handleAddFriend = useCallback(() => {
       friendStore.addFriendInfo(authStore.user.id, itemId);
+      friendStore.addFriendInfoToFriendInfoList(friendInfo);
       setVisibleToast(true);
-    }, [authStore.user.id, itemId, friendStore]);
+    }, [friendStore, authStore.user.id, itemId, friendInfo]);
 
     const handleToastClose = useCallback(() => setVisibleToast(false), []);
 

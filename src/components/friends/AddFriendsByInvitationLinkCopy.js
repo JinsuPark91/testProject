@@ -14,13 +14,9 @@ const InvitedFriendsText = styled(Text)`
 `;
 
 function AddFriendsByInvitationLinkCopy() {
-  const { authStore, friendStore } = useCoreStores();
+  const { friendStore } = useCoreStores();
   const [visibleInvitedFriends, setVisibleInvitedFriends] = useState(false);
   const [visibleToast, setVisibleToast] = useState(false);
-
-  useEffect(() => {
-    friendStore.getUserInviteLink({ userId: authStore.user.id });
-  }, [authStore.user.id, friendStore]);
 
   const handleToggle = () => setVisibleInvitedFriends(!visibleInvitedFriends);
   return useObserver(() => (

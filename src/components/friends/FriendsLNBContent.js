@@ -59,8 +59,6 @@ const FriendsLNBContent = React.forwardRef(
     const [favFriendActiveId, setFavFriendActiveId] = useState('');
     const [friendActiveId, setFriendActiveId] = useState('');
 
-    console.log(friendStore.friendInfoList);
-
     const favFriendList = friendStore.friendInfoList.filter(
       friendInfo => friendInfo.friendFavorite,
     );
@@ -81,6 +79,11 @@ const FriendsLNBContent = React.forwardRef(
 
     useEffect(() => {
       friendStore.getFriendInfoList({ userId: userStore.myProfile.id });
+      friendStore.getInvitedFriendInfoList({ userId: userStore.myProfile.id });
+      friendStore.getRecommendedFriendInfoList({
+        userId: userStore.myProfile.id,
+      });
+      friendStore.getUserInviteLink({ userId: userStore.myProfile.id });
     }, [friendStore, userStore.myProfile.id]);
 
     const renderEmptyContent = (
