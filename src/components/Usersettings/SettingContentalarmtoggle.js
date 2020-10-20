@@ -1,9 +1,9 @@
 import React, { Component, useState } from 'react';
+import { Form } from 'antd';
 import SettingContentmessagetoggle from './SettingContentmessagetoggle';
 import SettingContentmeetingtoggle from './SettingContentmeetingtoggle';
-import CommonSwitch from '../commons/Switch';
+import { Switch } from 'teespace-core';
 import styled from 'styled-components';
-
 
 const Bordertop = styled.div`
   display: flex;
@@ -14,59 +14,83 @@ const Bordertop = styled.div`
   font-color: #777777;
 `;
 
-function onChange(checked) { 
-  console.log(`switch to ${checked}`);
+function onChange(checked) {
+  // console.log(`switch to ${checked}`);
 }
 
-function SettingContentalarmtoggle(){
+function SettingContentalarmtoggle(props) {
   const [Checked, setChecked] = useState(true);
   const [Checked2, setChecked2] = useState(true);
-  
-     return (<>
-      
-      <div>
-        
-        <Bordertop>
-        <div>
+  const { form } = props;
 
-          TeeTalk 새 메시지 수신 
-          <CommonSwitch  defaultChecked onChange={(Checked) => setChecked(Checked)}
-             /><br/><br/><br/>
-            {Checked ? <SettingContentmessagetoggle></SettingContentmessagetoggle>: null}
-                         </div> </Bordertop>
+
+  return (
+    <>
+      <div>
+        <Bordertop>
+          <div>
+            TeeTalk 새 메시지 수신
+            <Form.Item name="newmessagetoggle" valuePropName="checked">
+              <Switch
+                defaultChecked
+                onChange={Checked => setChecked(Checked)}
+              />
+            </Form.Item>
+            {Checked ? (
+              <SettingContentmessagetoggle></SettingContentmessagetoggle>
+            ) : null}
+          </div>{' '}
+        </Bordertop>
         <br />
         <br />
         <Bordertop>
-        <div>
-          TeeMeeting 회의 알림
-          <CommonSwitch 
-            defaultChecked onChange={(Checked2) => setChecked2(Checked2)}
-             /><br/><br/><br/>
-            {Checked2 ? <SettingContentmeetingtoggle></SettingContentmeetingtoggle>: null}
-          <br />
-          <br />
-        </div> </Bordertop>
-        <Bordertop>
-        <div >
-          TeeMail 새 편지 수신 <CommonSwitch defaultChecked onChange={onChange} />{' '}
-          <br />
-          <br />
-        </div>
+          <div>
+            TeeMeeting 회의 알림
+            <Form.Item name="TeeMeetingalarmtoggle" valuePropName="checked">
+              <Switch
+                defaultChecked
+                onChange={Checked2 => setChecked2(Checked2)}
+              />
+            </Form.Item>
+            {Checked2 ? (
+              <SettingContentmeetingtoggle></SettingContentmeetingtoggle>
+            ) : null}
+            <br />
+            <br />
+          </div>{' '}
         </Bordertop>
         <Bordertop>
-        <div>
-          TeeCalendar 일정 미리 알림{' '}
-          <CommonSwitch defaultChecked onChange={onChange} /> <br />
-          <br />
-        </div> </Bordertop>
+          <div>
+            TeeMail 새 편지 수신
+            <Form.Item name="Newlettertoggle" valuePropName="checked">
+              <Switch defaultChecked onChange={onChange} />
+            </Form.Item>{' '}
+            <br />
+            <br />
+          </div>
+        </Bordertop>
         <Bordertop>
-        <div >
-          그룹 스페이스 초대 알림 <CommonSwitch defaultChecked onChange={onChange} />{' '}
-          <br />
-          <br />
-        </div> </Bordertop>
-      </div> </>
-    );
-  
+          <div>
+            TeeCalendar 일정 미리 알림{' '}
+            <Form.Item name="TeeCalenderscheduletoggle" valuePropName="checked">
+              <Switch defaultChecked onChange={onChange} />
+            </Form.Item>{' '}
+            <br />
+            <br />
+          </div>{' '}
+        </Bordertop>
+        <Bordertop>
+          <div>
+            그룹 스페이스 초대 알림{' '}
+            <Form.Item name="Teespaceinvitetoggle" valuePropName="checked">
+              <Switch defaultChecked onChange={onChange} />
+            </Form.Item>{' '}
+            <br />
+            <br />
+          </div>{' '}
+        </Bordertop>
+      </div>{' '}
+    </>
+  );
 }
 export default SettingContentalarmtoggle;

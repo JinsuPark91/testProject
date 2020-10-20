@@ -1,5 +1,5 @@
-import React, { Component, useState, useEffect } from 'react';
-import { Layout, Menu, Button } from 'antd';
+import React, { Component, useState, useEffect, useRef } from 'react';
+import { Layout, Menu, Button, Form } from 'antd';
 import SettingContentcommon from './SettingContentcommon';
 import SettingContentalarm from './SettingContentalarm';
 import SettingContentaccount from './SettingContentaccount';
@@ -37,16 +37,20 @@ const StyledButton = styled(Button)`
   }
 `;
 
-
 const { Sider, Content } = Layout;
 
-function SettingDialog() {
-  const [selectedKey, setSelectedKey] = useState('2');
+function SettingDialog(props) {
+  const {selectedKeyA}=props
+  const [selectedKey, setSelectedKey] = useState(selectedKeyA);
   const { uiStore } = useStore();
-  const [buttonFooter, setbuttonFooter] = useState((selectedKey === '6' || selectedKey === true))
-  useEffect(()=> {
-    setbuttonFooter(selectedKey === '6' || selectedKey === true)
-  }, [selectedKey])
+  const [settingform] = Form.useForm();
+  const form = useRef(settingform);
+  const [buttonFooter, setbuttonFooter] = useState(
+    selectedKey === '6' || selectedKey === true,
+  );
+  useEffect(() => {
+    setbuttonFooter(selectedKey === '6' || selectedKey === true);
+  }, [selectedKey]);
   const handleSettingDialogClose = () => {
     uiStore.hideSettingDialog();
   };
@@ -60,21 +64,15 @@ function SettingDialog() {
         <>
           {!buttonFooter && <TermsFooter></TermsFooter>}
 
-          {buttonFooter && <Settingsave></Settingsave>}
-
+          {buttonFooter && <Settingsave form={form}></Settingsave>}
         </>
       }
       title="설정"
     >
       <ContentWrapper>
         <div>
-          <Layout style={{backgroundColor: 'white'}}>
-            <Sider
-              // trigger={null}
-              // collapsible
-              // collapsed={this.state.collapsed}
-              style={{ backgroundColor: '#edf0ff' }}
-            >
+          <Layout style={{ backgroundColor: 'white' }}>
+            <Sider style={{ backgroundColor: '#edf0ff' }}>
               <div className="logo" />
               <br />
               <Menu
@@ -88,8 +86,8 @@ function SettingDialog() {
                     color: '#000000',
                     fontSize: 15,
                     fontWeight: 'bold',
-                    borderBottom: 'solid 1px', 
-                    borderBottomColor:'lightgrey'
+                    borderBottom: 'solid 1px',
+                    borderBottomColor: 'lightgrey',
                   }}
                   key="0"
                 >
@@ -107,8 +105,8 @@ function SettingDialog() {
                     color: '#000000',
                     fontSize: 15,
                     fontWeight: 'bold',
-                    borderBottom: 'solid 1px', 
-                    borderBottomColor:'lightgrey'
+                    borderBottom: 'solid 1px',
+                    borderBottomColor: 'lightgrey',
                   }}
                   key="3"
                 >
@@ -124,46 +122,48 @@ function SettingDialog() {
               </Menu>
             </Sider>
             <Content
-                className="site-layout-background"
-                style={{
-                  padding: 24,
-                  height: 700,
-                }}
-              >
-                <div>
-                  {' '}
-                  {/* {selectedKey === '1' && (
+              className="site-layout-background"
+              style={{
+                padding: 24,
+                height: 650,
+              }}
+            >
+              <div>
+                {' '}
+                {/* {selectedKey === '1' && (
                     <SettingContentcommon></SettingContentcommon>
                   )} */}
-                  {selectedKey === '2' && (
-                    <SettingContentalarm></SettingContentalarm>
-                  )}
-                  {selectedKey === '3' && (
-                    <SettingContentaccountedit
-                    onChange={()=>setbuttonFooter(true)}
-                    ></SettingContentaccountedit>
-                    
-                  )}
-                  {selectedKey === '4' && (
-                    <SettingContentaccount
-                      onClick={() => setSelectedKey('3')}
-                    ></SettingContentaccount>
-                  )}
-                  {selectedKey === '5' && (
-                    <SettingContentpassword
-                      onClick={() => setSelectedKey('6')}
-                    ></SettingContentpassword>
-                  )}
-                  {/* {this.state.selectedKey === '6' && (
+                {selectedKey === '2' && (
+                  <SettingContentalarm
+                  form={form}>
+                  </SettingContentalarm>
+                )}
+                {selectedKey === '3' && (
+                  <SettingContentaccountedit
+                    onChange={() => setbuttonFooter(true)}
+                    form={form}
+                    footonChange={() => setbuttonFooter(false)}
+                  ></SettingContentaccountedit>
+                )}
+                {selectedKey === '4' && (
+                  <SettingContentaccount
+                    onClick={() => setSelectedKey('3')}
+                  ></SettingContentaccount>
+                )}
+                {selectedKey === '5' && (
+                  <SettingContentpassword
+                    onClick={() => setSelectedKey('6')}
+                  ></SettingContentpassword>
+                )}
+                {/* {this.state.selectedKey === '6' && (
                 <SettingContent6></SettingContent6>
               )} */}
-                  {selectedKey === '6' && (
-                    <SettingContentpasswordedit></SettingContentpasswordedit>
-                  )}
-                </div>
-              </Content>
+                {selectedKey === '6' && (
+                  <SettingContentpasswordedit></SettingContentpasswordedit>
+                )}
+              </div>
+            </Content>
           </Layout>
-          <div style={{ height: 100 }}></div>
         </div>
       </ContentWrapper>
     </CommonDialog>

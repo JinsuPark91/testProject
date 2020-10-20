@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Button } from 'antd';
 import SettingContentTitle from './SettingContentTitle';
-import CommonButton from '../commons/Button';
+import { Button } from 'teespace-core';
 
 
 class SettingContentpassword extends Component {
@@ -23,7 +22,7 @@ handleChange(checked){
       subTitle="보안을 위해 비밀번호를 항상 최신 상태로 업데이트하세요."></SettingContentTitle>
 
         <div>
-          최종 변경일 {this.state.date.toLocaleDateString()}   {this.state.date.toLocaleTimeString()} <CommonButton type="system" onClick= {this.props.onClick} onChange={this.handleChange}>비밀번호 변경</CommonButton>
+          최종 변경일 {this.state.date.toLocaleDateString()}   {this.state.date.toLocaleTimeString()} <Button type="system" onClick= {this.props.onClick} onChange={this.handleChange}>비밀번호 변경</Button>
         </div>
       </div>
     );
