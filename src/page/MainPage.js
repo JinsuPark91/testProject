@@ -20,7 +20,6 @@ import './mainPage.css';
 import CommonButton from '../components/commons/Button';
 import SettingDialog from '../components/Usersettings/SettingDialog';
 import { useStore } from '../stores';
-import roomStore from '../stores/RoomStore';
 
 const { TabPane } = Tabs;
 
