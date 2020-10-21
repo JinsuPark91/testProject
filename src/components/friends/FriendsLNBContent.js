@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { Layout, Divider, Typography } from 'antd';
@@ -76,15 +76,6 @@ const FriendsLNBContent = React.forwardRef(
       setFavFriendActiveId('');
       setFriendActiveId(friendId);
     }, []);
-
-    useEffect(() => {
-      friendStore.getFriendInfoList({ userId: userStore.myProfile.id });
-      friendStore.getInvitedFriendInfoList({ userId: userStore.myProfile.id });
-      friendStore.getRecommendedFriendInfoList({
-        userId: userStore.myProfile.id,
-      });
-      friendStore.getUserInviteLink({ userId: userStore.myProfile.id });
-    }, [friendStore, userStore.myProfile.id]);
 
     const renderEmptyContent = (
       <>
