@@ -20,7 +20,7 @@ const IS_LOCAL = true;
 const Profile = ({
   userId = null,
   editMode = false,
-  isVertical = false,
+  showSider = true,
   onModeChange = null,
 }) => {
   const { userStore } = useCoreStores();
@@ -54,7 +54,7 @@ const Profile = ({
   };
 
   useEffect(() => {
-    setEditMode(false);
+    setEditMode(editMode);
     (async () => {
       const userProfile = await userStore.getProfile({ userId });
       setProfile(userProfile);
@@ -172,25 +172,27 @@ const Profile = ({
   };
 
   return (
-    <Wrapper imageSrc={background} isVertical={isVertical}>
-      <Sidebar isVertical={isVertical}>
-        <StyledButton isVertical={isVertical}>
-          <MessageOutlined style={{ fontSize: '30px' }} />
-          <Text>{isMyId() ? `나와의 Talk` : `1:1 Talk`}</Text>
-        </StyledButton>
-        {isMyId() ? (
-          <StyledButton onClick={handleChangeMode} isVertical={isVertical}>
-            <EditOutlined style={{ fontSize: '30px' }} />
-            <Text>프로필 편집</Text>
+    <Wrapper imageSrc={background}>
+      {showSider && (
+        <Sidebar>
+          <StyledButton>
+            <MessageOutlined style={{ fontSize: '30px' }} />
+            <Text>{isMyId() ? `나와의 Talk` : `1:1 Talk`}</Text>
           </StyledButton>
-        ) : (
-          <StyledButton onClick={handleMeetingClick} isVertical={isVertical}>
-            <VideoCameraOutlined style={{ fontSize: '30px' }} />
-            <Text>1:1 Meeting</Text>
-          </StyledButton>
-        )}
-      </Sidebar>
-      <Content>
+          {isMyId() ? (
+            <StyledButton onClick={handleChangeMode}>
+              <EditOutlined style={{ fontSize: '30px' }} />
+              <Text>프로필 편집</Text>
+            </StyledButton>
+          ) : (
+            <StyledButton onClick={handleMeetingClick}>
+              <VideoCameraOutlined style={{ fontSize: '30px' }} />
+              <Text>1:1 Meeting</Text>
+            </StyledButton>
+          )}
+        </Sidebar>
+      )}
+      <Content showSider={showSider}>
         {isEditMode && (
           <Dropdown
             trigger={['click']}
@@ -309,7 +311,7 @@ const Profile = ({
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  flex-direction: ${props => (props.isVertical ? 'column-reverse' : 'row')};
+  flex-direction: row;
   width: 100%;
   height: 100%;
   background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
@@ -320,7 +322,7 @@ const Wrapper = styled.div`
 
 const Sidebar = styled.div`
   display: flex;
-  flex-direction: ${props => (props.isVertical ? 'row' : 'column')};
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: ${props => (props.isVertical ? '100%' : '250px')};
@@ -391,7 +393,7 @@ const StyledButton = styled(Text)`
   flex-direction: column;
   align-items: center;
   width: 200px;
-  height: ${props => (props.isVertical ? '100px' : '200px')};
+  height: 200px;
   margin-top: 20px;
   border-radius: 10px;
 
@@ -404,7 +406,7 @@ const StyledButton = styled(Text)`
 const Content = styled.div`
   display: flex;
   position: relative;
-  width: calc(100% - 250px);
+  width: ${({ showSider }) => (showSider ? `calc(100% - 250px)` : `100%`)};
   height: 100%;
   flex-direction: column;
   align-items: center;
