@@ -44,6 +44,7 @@ function AddFriendsByOrganization() {
     <NegativeMargin>
       <AddFriendsByOrganizationHeader
         orgList={orgStore.orgList}
+        orgUserSize={searchedUserList.length}
         onInputChange={handleInputChange}
         onDropdownChange={handleDropdownChange}
       />

@@ -5,13 +5,21 @@ import { Input } from 'teespace-core';
 import OrganizationDropdown from './OrganizationDropdown';
 
 const Wrapper = styled.div`
+  display: flex;
   margin: 0.38rem 0.75rem;
 `;
 const StyledDivider = styled(Divider)`
   margin: 0;
 `;
-function AddFriendsByOrganizationContent({
+
+const UserCounter = styled.div`
+  flex: 1;
+  text-align: right;
+  align-self: center;
+`;
+function AddFriendsByOrganizationHeader({
   orgList,
+  orgUserSize,
   onInputChange,
   onDropdownChange,
 }) {
@@ -30,9 +38,10 @@ function AddFriendsByOrganizationContent({
           orgList={orgList}
           handleChange={onDropdownChange}
         />
+        <UserCounter>{orgUserSize}명</UserCounter>
       </Wrapper>
     </>
   );
 }
 
-export default AddFriendsByOrganizationContent;
+export default AddFriendsByOrganizationHeader;

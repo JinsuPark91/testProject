@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { List } from 'react-virtualized';
 import { Row, Col, Typography } from 'antd';
 import FriendItem from './FriendItem';
 
@@ -13,14 +14,27 @@ const Centered = styled(Col)`
   text-align: center;
 `;
 
-function AddFriendsByOrganizationContent({ orgUserList }) {
+function AddFriendsByOrganizationContent({ orgUserList = [] }) {
   return (
     <Wrapper>
       <Row align="middle" style={{ flexGrow: 1 }} justify="center">
         <Col span={24}>
-          {orgUserList.map(item => (
-            <FriendItem friendInfo={item} key={item.id} mode="addFriend" />
-          ))}
+          <List
+            overscanRowCount={10}
+            style={{ outline: 'none' }}
+            rowCount={orgUserList.length}
+            height={orgUserList.length === 0 ? 0 : 324}
+            width={636}
+            rowHeight={54}
+            rowRenderer={({ index, key, style }) => (
+              <FriendItem
+                style={style}
+                friendInfo={orgUserList[index]}
+                key={key}
+                mode="addFriend"
+              />
+            )}
+          />
         </Col>
         <Centered>
           {orgUserList.length === 0 && (
