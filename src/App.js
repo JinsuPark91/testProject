@@ -9,6 +9,7 @@ import NotFoundPage from './page/NotFoundPage';
 import SignUpPage from './page/SignUpPage';
 import SignUpFormPage from './page/SignUpFormPage';
 import SignUpCompletePage from './page/SignUpCompletePage';
+import TestPage from './local-test/TestPage';
 import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
 import PrivateRoute from './libs/PrivateRoute';
@@ -34,6 +35,7 @@ function App() {
     <BrowserRouter>
       <Switch>
         <Route exact path="/" component={ServicePage} />
+        <Route exact path="/test" component={() => <TestPage />} />
         <RedirectablePublicRoute
           exact
           path="/login"
