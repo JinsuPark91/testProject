@@ -83,12 +83,17 @@ function MainPage() {
       },
     );
 
+    const goBackHandler = EventBus.on('goBack', () => {
+      history.goBack();
+    });
+
     return function cleanUp() {
       EventBus.off('onLayoutFull', fullHandleId);
       EventBus.off('onLayoutExpand', expandHandleId);
       EventBus.off('onLayoutCollapse', collapseHandleId);
       EventBus.off('onLayoutClose', closeHandleId);
       EventBus.off('onChangeQueryString', changeQueryStringHandler);
+      EventBus.off('goBack', goBackHandler);
     };
   }, [history]);
 
