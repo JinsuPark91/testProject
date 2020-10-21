@@ -83,6 +83,16 @@ function MainPage() {
       },
     );
 
+    const pushHistoryHandler = EventBus.on(
+      'pushHistory',
+      ({ pathname, search }) => {
+        history.push({
+          pathname,
+          search,
+        });
+      },
+    );
+
     const goBackHandler = EventBus.on('goBack', () => {
       history.goBack();
     });
@@ -93,6 +103,7 @@ function MainPage() {
       EventBus.off('onLayoutCollapse', collapseHandleId);
       EventBus.off('onLayoutClose', closeHandleId);
       EventBus.off('onChangeQueryString', changeQueryStringHandler);
+      EventBus.off('pushHistroy', pushHistoryHandler);
       EventBus.off('goBack', goBackHandler);
     };
   }, [history]);
