@@ -18,9 +18,7 @@ function AddFriendsByOrganization() {
 
   const { orgStore, userStore } = useCoreStores();
 
-  useEffect(() => {
-    orgStore.getOrgTree();
-  }, [orgStore]);
+  useEffect(() => {}, [orgStore]);
 
   const handleInputChange = useCallback(
     async e => {

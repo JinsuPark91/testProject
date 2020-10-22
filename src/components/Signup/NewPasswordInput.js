@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Form, Row } from 'antd';
+import { Row } from 'antd';
+import { Form, Input } from 'teespace-core';
 import { CheckOutlined } from '@ant-design/icons';
-import CommonInput from '../commons/Input';
 import { checkPasswordValid, checkPasswordLength } from '../../libs/Regex';
 
 const NewPasswordInput = ({ msg, msg2 }) => {
@@ -54,7 +54,7 @@ const NewPasswordInput = ({ msg, msg2 }) => {
           },
         ]}
       >
-        <CommonInput
+        <Input
           type="password"
           placement="topLeft"
           onChange={handleOnChangePw}
@@ -106,7 +106,7 @@ const NewPasswordInput = ({ msg, msg2 }) => {
           }),
         ]}
       >
-        <CommonInput alert={msg2} type="password" placement="topLeft" />
+        <Input alert={msg2} type="password" placement="topLeft" />
       </Form.Item>
     </>
   );

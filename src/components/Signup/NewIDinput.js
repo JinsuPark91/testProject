@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Form, Col } from 'antd';
+import { Row, Col } from 'antd';
+import { Form, useCoreStores, Input } from 'teespace-core';
 import { CheckOutlined } from '@ant-design/icons';
-import { useCoreStores } from 'teespace-core';
+
 import CommonButton from '../commons/Button';
-import CommonInput from '../commons/Input';
+
 import { checkLoginIdLength, checkLoginIdValid } from '../../libs/Regex';
 
 const NewIdInput = props => {
@@ -93,7 +94,7 @@ const NewIdInput = props => {
       >
         <Row>
           <Col span="18">
-            <CommonInput
+            <Input
               onChange={handleOnChangeId}
               value={loginId}
               placement="topLeft"

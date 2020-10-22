@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Checkbox } from 'antd';
+import React, { useState } from 'react';
+import { Button, Checkbox, Form, useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-import { useCoreStores } from 'teespace-core';
+
 import LoginPasswordInput from './LoginPasswordInput';
 import LoginIdInput from './LoginIdInput';
-import CommonButton from '../commons/Button';
-import CommonCheckbox from '../commons/Checkbox';
 
 const layout = {
   labelCol: {
@@ -91,7 +89,7 @@ const LoginContent = () => {
             valuePropName="checked"
             wrapperCol={{ span: 24 }}
           >
-            <CommonCheckbox shape="round">아이디저장</CommonCheckbox>
+            <Checkbox shape="round">아이디저장</Checkbox>
           </Form.Item>
           <Form.Item
             {...tailLayout}
@@ -99,7 +97,7 @@ const LoginContent = () => {
             valuePropName="checked"
             wrapperCol={{ span: 24 }}
           >
-            <CommonCheckbox shape="round">로그인 상태 유지</CommonCheckbox>
+            <Checkbox shape="round">로그인 상태 유지</Checkbox>
           </Form.Item>
         </FlexLeft>
         {isLoading === true && <span>로그인 중</span>}
@@ -109,13 +107,9 @@ const LoginContent = () => {
         {isLoading === false && loginResult && <span>로그인 성공</span>}
         <FlexCenter>
           <Form.Item {...tailLayout} noStyle>
-            <CommonButton
-              type="solid"
-              htmlType="submit"
-              style={{ width: `100%` }}
-            >
+            <Button type="solid" htmlType="submit" style={{ width: `100%` }}>
               로그인
-            </CommonButton>
+            </Button>
           </Form.Item>
         </FlexCenter>
       </Form>

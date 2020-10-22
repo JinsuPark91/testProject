@@ -1,6 +1,5 @@
-import { Form, Input } from 'antd';
+import { Form, Input } from 'teespace-core';
 import React from 'react';
-import CommonInput from '../commons/Input';
 
 const LoginPasswordInput = () => {
   return (
@@ -14,7 +13,7 @@ const LoginPasswordInput = () => {
       ]}
       wrapperCol={{ span: 24 }}
     >
-      <CommonInput type="password" placeholder="비밀번호" />
+      <Input type="password" placeholder="비밀번호" />
     </Form.Item>
   );
 };
