@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Form } from 'antd';
 import { Button, Checkbox, Form, useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
@@ -67,6 +66,7 @@ const FlexBox = styled.div`
       width: 16px;
       height: 16px;
     }
+
     & + .ant-form-item {
       margin-bottom: 0;
     }
@@ -149,13 +149,12 @@ const LoginContent = () => {
           )}
           {isLoading === false && loginResult && <span>로그인 성공</span>}
         <Form.Item {...tailLayout} noStyle>
-          <CommonButton
+          <Button
             type="solid"
             htmlType="submit"
-            style={{ width: `100%` }}
           >
             로그인
-          </CommonButton>
+          </Button>
         </Form.Item>
       </Form>
     </LoginForm>
