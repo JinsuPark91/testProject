@@ -5,28 +5,35 @@ import './commons.scss';
 
 const StyledButton = styled(Button)`
   outline: 0;
-  border-radius: 15px;
-  font-size: 12px;
-  line-height: 18px;
-  padding: 3px 23px 9px 23px;
+  border-radius: 20px;
+  height: auto;
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  padding: 11px 0;
+  text-align: center;
   border: 1px solid transparent;
 
   &.ant-btn-solid {
     background-color: #6c56e5;
+    border-color: #6c56e5;
     color: #fff;
 
     &:hover {
       background-color: #dcddff;
-      color: #000000;
+      border-color: #dcddff;
+      color: #fff;
     }
 
-    &:active {
+    &:active,
+    &:focus {
       background-color: #523dc7;
+      border-color: #523dc7;
       color: #fff;
     }
 
     &:disabled {
       background-color: #cccccc;
+      border-color: #cccccc;
       color: #fff;
     }
   }
@@ -92,15 +99,10 @@ const StyledButton = styled(Button)`
  * @param {('small'|'default')} props.size
  */
 function CommonButton(props) {
-  const { children, size, style } = props;
-
-  const btnStyle = {
-    height: size === 'small' ? 27 : 30,
-    ...style,
-  };
+  const { children } = props;
 
   return (
-    <StyledButton {...props} style={btnStyle}>
+    <StyledButton {...props} >
       {children}
     </StyledButton>
   );

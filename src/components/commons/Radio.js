@@ -7,7 +7,7 @@ const StyledRadio = styled(Radio)`
     outline: 0;
     box-shadow: 0 !important;
     outline: 0 !important;
-    border: 1px solid #c6ced6 !important;
+    border: 1px solid #6c56e5;
     box-shadow: 0 !important;
   }
 
@@ -16,7 +16,7 @@ const StyledRadio = styled(Radio)`
   }
 
   .ant-radio-input:focus + .ant-radio-inner {
-    border: 1px solid #ddd7ff !important;
+    border-color: #6c56e5;
   }
 
   .ant-radio-checked:not(.ant-radio-disabled) .ant-radio-inner::after {

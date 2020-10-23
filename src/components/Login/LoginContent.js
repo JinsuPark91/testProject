@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Checkbox } from 'antd';
+import React, { useState } from 'react';
+import { Form } from 'antd';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
@@ -23,18 +23,60 @@ const tailLayout = {
     span: 16,
   },
 };
-const FlexCenter = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+const LoginForm = styled.div`
+  margin-bottom: 6px;
+  .ant-form {
+    font-size: 0.75rem; 
+    line-height: 1.88rem;
+    label {
+      vertical-align: middle;
+      font-size: 0.75rem;
+      &:hover {
+        .ant-checkbox-inner {
+          border-color: #6c56e5;
+        }
+      }
+    }
+  }
+  .ant-form-item {
+    font-size: 0.75rem; 
+    margin-bottom: 6px;;
+    & + .ant-form-item {
+      margin-bottom: 7px;
+    }
+  }
 `;
-const FlexLeft = styled.div`
+const FlexBox = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: left;
-  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+  .ant-form-item {
+    margin-bottom: 0;
+    line-height: 1rem;
+    & + .ant-form-item {
+      margin-left: 18px;
+      &:first-of-type {
+        margin-left: 0;
+      }
+    }
+    .ant-checkbox {
+      & + span {
+        padding-right: 0;
+      } 
+    }
+    input[type='checkbox'] {
+      width: 16px;
+      height: 16px;
+    }
+    & + .ant-form-item {
+      margin-bottom: 0;
+    }
+  }
+  .ant-form-item-control-input {
+    min-height: 1rem;
+  }
 `;
+
 const LoginContent = () => {
   const { authStore } = useCoreStores();
   const [form] = Form.useForm();
@@ -70,7 +112,7 @@ const LoginContent = () => {
   };
 
   return useObserver(() => (
-    <FlexCenter>
+    <LoginForm>
       <Form
         {...layout}
         name="basic"
@@ -84,14 +126,14 @@ const LoginContent = () => {
       >
         <LoginIdInput />
         <LoginPasswordInput />
-        <FlexLeft>
+        <FlexBox>
           <Form.Item
             {...tailLayout}
             name="saveId"
             valuePropName="checked"
             wrapperCol={{ span: 24 }}
           >
-            <CommonCheckbox shape="round">아이디저장</CommonCheckbox>
+            <CommonCheckbox shape="round">아이디 저장</CommonCheckbox>
           </Form.Item>
           <Form.Item
             {...tailLayout}
@@ -101,25 +143,23 @@ const LoginContent = () => {
           >
             <CommonCheckbox shape="round">로그인 상태 유지</CommonCheckbox>
           </Form.Item>
-        </FlexLeft>
-        {isLoading === true && <span>로그인 중</span>}
-        {isLoading === false && errorResult && (
-          <span>로그인 실패! 사유: {errorResult}</span>
-        )}
-        {isLoading === false && loginResult && <span>로그인 성공</span>}
-        <FlexCenter>
-          <Form.Item {...tailLayout} noStyle>
-            <CommonButton
-              type="solid"
-              htmlType="submit"
-              style={{ width: `100%` }}
-            >
-              로그인
-            </CommonButton>
-          </Form.Item>
-        </FlexCenter>
+        </FlexBox>
+          {isLoading === true && <span>로그인 중</span>}
+          {isLoading === false && errorResult && (
+            <span>로그인 실패! 사유: {errorResult}</span>
+          )}
+          {isLoading === false && loginResult && <span>로그인 성공</span>}
+        <Form.Item {...tailLayout} noStyle>
+          <CommonButton
+            type="solid"
+            htmlType="submit"
+            style={{ width: `100%` }}
+          >
+            로그인
+          </CommonButton>
+        </Form.Item>
       </Form>
-    </FlexCenter>
+    </LoginForm>
   ));
 };
 

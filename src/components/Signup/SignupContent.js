@@ -11,13 +11,29 @@ const CommonContent = styled.div`
   height: auto;
   width: 40.26rem;
   border-style: solid;
-  padding: 3.63rem 4.38rem;
-  border-width: 0.06rem;
-  border-radius: 0.94rem;
-  box-shadow: 0rem 0rem 0.75rem 0.06rem rgba(125, 138, 148, 0.1);
+  padding: 58px 70px;
+  border-width: 1px;
+  border-radius: 15px;
+  box-shadow: 0 0 12px 1px rgba(125, 138, 148, 0.1);
   border-color: #e3e7eb;
   display: flex;
   flex-direction: column;
+  .ant-col-24 {
+    padding: 22px 0 18px;
+  }
+`;
+
+const InfoList = styled.ul`
+  list-style: none;
+  padding: 12px 0 22px 23px;
+  border-bottom: 1px solid #e3e7eb;
+  margin: 0;
+`;
+
+const InfoItem = styled.li`
+  font-size: 0.75rem;
+  line-height: 1.13rem;
+  color: #888888;
 `;
 
 const CheckboxGroup = Checkbox.Group;
@@ -54,10 +70,6 @@ const SignupContent = () => {
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <CommonContent>
-        <div
-          className="site-checkbox-all-wrapper"
-          style={{ borderBottom: `1px solid` }}
-        >
           <CommonCheckbox
             shape="round"
             onChange={onCheckAllChange}
@@ -65,14 +77,10 @@ const SignupContent = () => {
           >
             전체 약관에 동의합니다.
           </CommonCheckbox>
-          <div>
-            전체 동의는 필수 및 선택 정보에 대한 동의를 포함하고 있습니다.
-          </div>
-          <div>
-            선택 항목에 대한 동의를 거부하시는 경우에도 서비스 이용이
-            가능합니다.
-          </div>
-        </div>
+          <InfoList>
+            <InfoItem>전체 동의는 필수 및 선택 정보에 대한 동의를 포함하고 있습니다.</InfoItem>
+            <InfoItem>선택 항목에 대한 동의를 거부하시는 경우에도 서비스 이용이 가능합니다.</InfoItem>
+          </InfoList>
         <CheckboxGroup
           value={checkedList}
           onChange={onChange}

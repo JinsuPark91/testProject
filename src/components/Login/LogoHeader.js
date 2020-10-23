@@ -1,11 +1,21 @@
 import React from 'react';
 import teeLogo from '../../assets/bi_teekitakka.svg';
+import styled from 'styled-components';
+
+const ImgBox = styled.h1`
+margin-bottom: 33px;
+text-align: center;
+& img {
+  width: 184px;
+  height: 35px;
+}
+`;
 
 const LogoHeader = () => {
   return (
-    <div style={{ display: `flex`, justifyContent: `center` }}>
-      <img style={{ width: `auto` }} alt="logo" src={teeLogo} />
-    </div>
+    <ImgBox>
+      <img alt="logo" src={teeLogo} />
+    </ImgBox>
   );
 };
 

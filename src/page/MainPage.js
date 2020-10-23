@@ -189,8 +189,8 @@ function MainPage() {
           <Title>{tab === 's' && <span>Room Header</span>}</Title>
           <AppIconContainer>
             <NoteIcon
-              width={50}
-              height={50}
+              width={24}
+              height={24}
               state={subApp === 'note' ? 'active' : 'default'}
               onClick={() => {
                 history.push({
@@ -200,8 +200,8 @@ function MainPage() {
               }}
             />
             <DriveIcon
-              width={50}
-              height={50}
+              width={24}
+              height={24}
               state={subApp === 'drive' ? 'active' : 'default'}
               onClick={() => {
                 history.push({
@@ -211,8 +211,8 @@ function MainPage() {
               }}
             />
             <CalendarIcon
-              width={50}
-              height={50}
+              width={24}
+              height={24}
               state={subApp === 'schedule' ? 'active' : 'default'}
               onClick={() => {
                 history.push({
@@ -222,8 +222,8 @@ function MainPage() {
               }}
             />
             <ViewFileIcon
-              width={50}
-              height={50}
+              width={24}
+              height={24}
               state={subApp === 'plus' ? 'active' : 'default'}
               onClick={() => {
                 history.push({

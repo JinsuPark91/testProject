@@ -2,49 +2,48 @@ import React, { useCallback, useState } from 'react';
 import { Button } from 'antd';
 import styled from 'styled-components';
 
+const CorpArea = styled.div`
+  margin: auto auto 20px;
+  display: flex;
+  flex-direction: column;
+`;
 const FlexRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  text-align: center;
+  .ant-btn {
+    font-size: 0.75rem;
+    color: #6C56E5;
+    padding: 0;
+    height: auto;
+  }
 `;
+const Copyright = styled.p`
+font-size: 0.6875rem;
+color: #7C7C7C;
+letter-spacing: 0;
+`;
+const LineBar = styled.span `
+  width: 1px;
+  height: 12px;
+  background-color: #7c7c7c;
+  margin: auto 8px;
+  display:inline-block;
+`
 
 const TermsFooter = ({ isService }) => {
   return (
-    <div
-      style={{
-        display: `flex`,
-        flexDirection: `column`,
-        justifyContent: `flex-end`,
-        alignItems: `center`,
-      }}
-    >
+    <CorpArea>
       <FlexRow>
         <Button type="text">이용약관</Button>
-        <div
-          style={{
-            width: '0.06rem',
-            height: '0.75rem',
-            border: '0.01rem solid',
-          }}
-        />
+        <LineBar/>
         <Button type="text">개인정보처리방침</Button>
-        {isService && (
-          <div
-            style={{
-              width: '0.06rem',
-              height: '0.75rem',
-              border: '0.01rem solid',
-            }}
-          />
-        )}
-        {isService && (
-          <Button id="serviceInfo" type="text">
-            서비스 소개
-          </Button>
-        )}
+        <LineBar/>
+        <Button id="serviceInfo" type="text">서비스 소개</Button>
       </FlexRow>
-      <div>Copyright 2020. Tmax A&C Corp. All Rights Reserved</div>
-    </div>
+      <Copyright>Copyright 2020. Tmax A&#38;C Corp. All Rights Reserved</Copyright>
+    </CorpArea>
   );
 };
 

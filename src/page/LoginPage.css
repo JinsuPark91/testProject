@@ -3,10 +3,6 @@ div#LoginBackgroundLayout{
     height: 100%;
     overflow: auto;
 }
-form#basic.ant-form{
-    width : 23.06rem;
-}
-
 form .ant-col-offset-8{
     margin-left: 0;
 }

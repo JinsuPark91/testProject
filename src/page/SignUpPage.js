@@ -1,19 +1,27 @@
 import React from 'react';
+import styled from 'styled-components';
 import LogoHeader from '../components/Login/LogoHeader';
 import TermsFooter from '../components/Login/TermsFooter';
 import SignupContent from '../components/Signup/SignupContent';
 
+const Container = styled.div`
+  display: flex;
+  height: 100%;
+  align-content: center;
+  justify-content: center;
+  flex-direction: column;
+  h1 {
+    margin: 4.75rem 0 2.5rem;
+  }
+`;
+
 function SignUpPage() {
   return (
-    <div>
-      <div style={{ display: `flex`, minHeight: `4.75rem` }} />
+    <Container>
       <LogoHeader />
-      <div style={{ height: `2.5rem` }} />
       <SignupContent />
-      <div style={{ height: `2.5rem` }} />
       <TermsFooter isService={false} />
-      <div style={{ display: `flex`, minHeight: `4.75rem` }} />
-    </div>
+    </Container>
   );
 }
 
