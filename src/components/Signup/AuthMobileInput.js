@@ -1,9 +1,8 @@
-import { Form, Input, Button, Row, Col } from 'antd';
+import { Button, Row, Col } from 'antd';
 import React, { useState } from 'react';
-import CommonInput from '../commons/Input';
+import { Form, Input, useCoreStores } from 'teespace-core';
 import { checkPhoneValid, checkAuthNumber } from '../../libs/Regex';
 import CommonButton from '../commons/Button';
-import { useCoreStores } from 'teespace-core';
 import CommonToast from '../commons/Toast';
 
 const AuthMobileInput = props => {
@@ -66,7 +65,7 @@ const AuthMobileInput = props => {
       >
         <Row>
           <Col span="18">
-            <CommonInput
+            <Input
               onChange={handleOnChangePhone}
               placement="topLeft"
               checked={checkDuplicationPhone === 'RST0001'}
@@ -108,7 +107,7 @@ const AuthMobileInput = props => {
             ]}
           >
             <Row>
-              <CommonInput
+              <Input
                 onChange={handleOnChangeAuthNumber}
                 placeholder="인증 번호를 입력해 주세요."
                 alert={(validAuthNumber => {

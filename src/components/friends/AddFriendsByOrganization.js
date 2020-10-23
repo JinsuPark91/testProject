@@ -18,9 +18,7 @@ function AddFriendsByOrganization() {
 
   const { orgStore, userStore } = useCoreStores();
 
-  useEffect(() => {
-    orgStore.getOrgTree();
-  }, [orgStore]);
+  useEffect(() => {}, [orgStore]);
 
   const handleInputChange = useCallback(
     async e => {
@@ -44,6 +42,7 @@ function AddFriendsByOrganization() {
     <NegativeMargin>
       <AddFriendsByOrganizationHeader
         orgList={orgStore.orgList}
+        orgUserSize={searchedUserList.length}
         onInputChange={handleInputChange}
         onDropdownChange={handleDropdownChange}
       />

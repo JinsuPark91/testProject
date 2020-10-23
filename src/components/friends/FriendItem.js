@@ -138,46 +138,55 @@ const Profile = React.memo(
 );
 
 const FriendAction = React.memo(
-  ({ mode, menu, handleDropdownVisible, handleTalkWindowOpen }) => (
-    <>
-      {mode === 'friend' && (
-        <>
-          <Dropdown
-            overlay={menu}
-            trigger={['click']}
-            onVisibleChange={handleDropdownVisible}
-          >
+  ({ mode, menu, handleDropdownVisible, handleTalkWindowOpen }) => {
+    const handleStopPropagation = useCallback(e => e.stopPropagation(), []);
+    const handleOpenTalk = useCallback(e => {
+      e.stopPropagation();
+      console.log(handleTalkWindowOpen());
+    }, []);
+    return (
+      <>
+        {mode === 'friend' && (
+          <>
+            <Dropdown
+              overlay={menu}
+              trigger={['click']}
+              onVisibleChange={handleDropdownVisible}
+            >
+              <Button
+                shape="circle"
+                icon={<EllipsisOutlined />}
+                onClick={handleStopPropagation}
+              />
+            </Dropdown>
             <Button
               shape="circle"
-              icon={<EllipsisOutlined />}
-              onClick={e => e.stopPropagation()}
+              icon={<ExportOutlined />}
+              onClick={handleOpenTalk}
             />
-          </Dropdown>
-          <Button
-            shape="circle"
-            icon={<ExportOutlined />}
-            onClick={e => {
-              e.stopPropagation();
-              console.log(handleTalkWindowOpen());
-            }}
-          />
-        </>
-      )}
-    </>
-  ),
+          </>
+        )}
+      </>
+    );
+  },
 );
 
-const MeAction = React.memo(({ mode, handleTalkWindowOpen }) => (
-  <>
-    {mode === 'me' && (
-      <Button
-        shape="circle"
-        icon={<ExportOutlined />}
-        onClick={() => console.log(handleTalkWindowOpen())}
-      />
-    )}
-  </>
-));
+const MeAction = React.memo(({ mode, handleTalkWindowOpen }) => {
+  const handleOpenTalk = useCallback(() => {
+    console.log(handleTalkWindowOpen());
+  }, []);
+  return (
+    <>
+      {mode === 'me' && (
+        <Button
+          shape="circle"
+          icon={<ExportOutlined />}
+          onClick={handleOpenTalk}
+        />
+      )}
+    </>
+  );
+});
 
 const AddFriendAction = React.memo(
   ({ mode, alreadyFriendFlag, handleAddFriend }) => (
@@ -192,16 +201,21 @@ const AddFriendAction = React.memo(
   ),
 );
 
-const RecommendedAction = React.memo(({ mode, alreadyFriendFlag }) => (
-  <>
-    {mode === 'recommended' && !alreadyFriendFlag && (
-      <>
-        <Button shape="circle" icon={<PlusOutlined />} />
-        <Button shape="circle" icon={<CloseOutlined />} />
-      </>
-    )}
-  </>
-));
+const RecommendedAction = React.memo(
+  ({ mode, alreadyFriendFlag, handleAddFriend }) => (
+    <>
+      {mode === 'recommended' && !alreadyFriendFlag && (
+        <>
+          <Button
+            shape="circle"
+            icon={<PlusOutlined onClick={handleAddFriend} />}
+          />
+          <Button shape="circle" icon={<CloseOutlined />} />
+        </>
+      )}
+    </>
+  ),
+);
 
 const Action = React.memo(
   ({
@@ -231,12 +245,16 @@ const Action = React.memo(
           <RecommendedAction
             mode={mode}
             alreadyFriendFlag={alreadyFriendFlag}
+            handleAddFriend={handleAddFriend}
           />
         </>
       )}
     </>
   ),
 );
+const TextComponent = React.memo(({ displayName }) => (
+  <TitleForName>{displayName}</TitleForName>
+));
 /**
  * A friend item component to use in the list view.
  * @param {Object} props
@@ -256,15 +274,17 @@ const FriendItem = React.memo(
     isActive = false,
     onClick,
     tooltipPopupContainer = () => document.body,
-    friendInfo: {
+    friendInfo,
+    style,
+  }) => {
+    const {
       displayName,
       friendFavorite = false,
       friendId = '',
       id: userId = '',
       profilePhoto = '',
       defaultPhotoUrl,
-    } = {},
-  }) => {
+    } = friendInfo;
     const history = useHistory();
     const { authStore, friendStore } = useCoreStores();
     const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -281,7 +301,7 @@ const FriendItem = React.memo(
 
     const [alreadyFriendFlag, setAlreadyFriendFlag] = useState(
       !!friendStore.friendInfoList
-        .map(friendInfo => friendInfo.friendId)
+        .map(__friendInfo => __friendInfo.friendId)
         .includes(friendId),
     );
 
@@ -301,7 +321,7 @@ const FriendItem = React.memo(
       if (mode === 'addFriend') {
         setAlreadyFriendFlag(
           !!friendStore.friendInfoList
-            .map(friendInfo => friendInfo.friendId)
+            .map(__friendInfo => __friendInfo.friendId)
             .includes(itemId),
         );
       }
@@ -384,13 +404,15 @@ const FriendItem = React.memo(
 
     const handleAddFriend = useCallback(() => {
       friendStore.addFriendInfo(authStore.user.id, itemId);
+      friendStore.addFriendInfoToFriendInfoList(friendInfo);
       setVisibleToast(true);
-    }, [authStore.user.id, itemId, friendStore]);
+    }, [friendStore, authStore.user.id, itemId, friendInfo]);
 
     const handleToastClose = useCallback(() => setVisibleToast(false), []);
 
     return (
       <FriendItemWrapper
+        style={style}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClick={handleItemClick}
@@ -441,7 +463,7 @@ const FriendItem = React.memo(
           />
         </ProfileWrapper>
         <TextWrapper>
-          <TitleForName>{displayName}</TitleForName>
+          <TextComponent displayName={displayName} />
         </TextWrapper>
         <ActionWrapper>
           <Action

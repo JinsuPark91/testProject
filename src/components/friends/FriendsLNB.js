@@ -1,5 +1,6 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useEffect, useCallback, useState, useRef } from 'react';
 import styled from 'styled-components';
+import { useCoreStores } from 'teespace-core';
 import { Layout } from 'antd';
 import FriendsLNBHeader from './FriendsLNBHeader';
 import FriendsLNBContent from './FriendsLNBContent';
@@ -18,6 +19,17 @@ const FriendsLNBWrapper = styled(Layout)`
 function FriendsLNB() {
   const [searchKeyword, setSearchKeyword] = useState('');
   const lnbRef = useRef(null);
+
+  const { friendStore, orgStore, userStore } = useCoreStores();
+  useEffect(() => {
+    friendStore.getFriendInfoList({ userId: userStore.myProfile.id });
+    friendStore.getInvitedFriendInfoList({ userId: userStore.myProfile.id });
+    friendStore.getRecommendedFriendInfoList({
+      userId: userStore.myProfile.id,
+    });
+    friendStore.getUserInviteLink({ userId: userStore.myProfile.id });
+    orgStore.getOrgTree();
+  }, [friendStore, orgStore, userStore.myProfile.id]);
   const handleSearchKeyword = useCallback(e => {
     setSearchKeyword(e.target.value);
   }, []);

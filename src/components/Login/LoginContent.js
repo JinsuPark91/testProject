@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Form } from 'antd';
+import { Button, Checkbox, Form, useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-import { useCoreStores } from 'teespace-core';
+
 import LoginPasswordInput from './LoginPasswordInput';
 import LoginIdInput from './LoginIdInput';
-import CommonButton from '../commons/Button';
-import CommonCheckbox from '../commons/Checkbox';
 
 const layout = {
   labelCol: {
@@ -133,7 +132,7 @@ const LoginContent = () => {
             valuePropName="checked"
             wrapperCol={{ span: 24 }}
           >
-            <CommonCheckbox shape="round">아이디 저장</CommonCheckbox>
+            <Checkbox shape="round">아이디저장</Checkbox>
           </Form.Item>
           <Form.Item
             {...tailLayout}
@@ -141,7 +140,7 @@ const LoginContent = () => {
             valuePropName="checked"
             wrapperCol={{ span: 24 }}
           >
-            <CommonCheckbox shape="round">로그인 상태 유지</CommonCheckbox>
+            <Checkbox shape="round">로그인 상태 유지</Checkbox>
           </Form.Item>
         </FlexBox>
           {isLoading === true && <span>로그인 중</span>}

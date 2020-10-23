@@ -83,12 +83,28 @@ function MainPage() {
       },
     );
 
+    const pushHistoryHandler = EventBus.on(
+      'pushHistory',
+      ({ pathname, search }) => {
+        history.push({
+          pathname,
+          search,
+        });
+      },
+    );
+
+    const goBackHandler = EventBus.on('goBack', () => {
+      history.goBack();
+    });
+
     return function cleanUp() {
       EventBus.off('onLayoutFull', fullHandleId);
       EventBus.off('onLayoutExpand', expandHandleId);
       EventBus.off('onLayoutCollapse', collapseHandleId);
       EventBus.off('onLayoutClose', closeHandleId);
       EventBus.off('onChangeQueryString', changeQueryStringHandler);
+      EventBus.off('pushHistroy', pushHistoryHandler);
+      EventBus.off('goBack', goBackHandler);
     };
   }, [history]);
 
@@ -97,7 +113,7 @@ function MainPage() {
     appName => {
       switch (appName) {
         case 'profile':
-          return <Profile userId={id} editMode={false} isVertical={false} />;
+          return <Profile userId={id} editMode={false} showSider />;
         case 'talk':
           return null;
         // return <Talk layoutState={layoutState} roomId={id} />;

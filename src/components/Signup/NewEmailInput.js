@@ -1,6 +1,6 @@
 import React from 'react';
-import { Form, Row } from 'antd';
-import CommonInput from '../commons/Input';
+import { Row } from 'antd';
+import { Input, Form } from 'teespace-core';
 
 const NewEmailInput = ({ msg }) => {
   return (
@@ -16,7 +16,7 @@ const NewEmailInput = ({ msg }) => {
           },
         ]}
       >
-        <CommonInput alert={msg} placement="topLeft" />
+        <Input alert={msg} placement="topLeft" />
       </Form.Item>
     </>
   );

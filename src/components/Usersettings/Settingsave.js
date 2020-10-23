@@ -1,49 +1,53 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Button } from 'antd';
-import CommonButton from '../commons/Button';
 import CommonDialog, { ContentWrapper } from '../commons/Dialog';
 import { useObserver } from 'mobx-react';
-import CommonMessage from '../commons/Message';
 import { useStore } from '../../stores';
 import { useCoreStores } from 'teespace-core';
-import CommonToast from '../commons/Toast';
-
+import { Toast, Message, Button } from 'teespace-core';
 
 function Settingsave(props) {
   const [canclevisible, setcanclevisible] = useState(false);
   const [savevisible, setsavevisible] = useState(false);
   const { authStore } = useCoreStores();
-
+  const { form } = props;
 
   return (
     <>
-      <CommonButton type="solid" onClick={() => {
-          setsavevisible(true);  
-        //   authStore.user.updateMyinfo({name:'tmax'})
-        }}>변경사항 저장</CommonButton>
+      <Button
+        type="solid"
+        onClick={() => {
+          setsavevisible(true);
+          form.current.submit();
+        }}
+      >
+        변경사항 저장
+      </Button>
 
-      <CommonToast
+      <Toast
         visible={savevisible}
         timeoutMs={1000}
         onClose={() => setsavevisible(false)}
-      > 변경사항이 저장되었습니다. </CommonToast>        
+      >
+        {' '}
+        변경사항이 저장되었습니다.{' '}
+      </Toast>
 
-      <CommonButton
+      <Button
         onClick={() => {
           setcanclevisible(true);
         }}
         type="solid"
       >
         취소{' '}
-      </CommonButton>
-      <CommonMessage
+      </Button>
+      <Message
         visible={canclevisible}
         btns={[
           {
-            onClick:  () => {
-                setcanclevisible(false);
-              },
+            onClick: () => {
+              setcanclevisible(false);
+            },
             text: '나가기',
             type: 'solid',
           },

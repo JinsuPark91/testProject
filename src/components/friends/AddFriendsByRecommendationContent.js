@@ -47,10 +47,7 @@ const BackgroundImage = styled.div`
   height: 200px;
 `;
 function AddFriendsByRecommendationContent() {
-  const { friendStore, authStore } = useCoreStores();
-  useEffect(() => {
-    friendStore.getRecommendedFriendInfoList({ userId: authStore.user.id });
-  }, [authStore.user.id, friendStore]);
+  const { friendStore } = useCoreStores();
   return useObserver(() => (
     <NegativeMarginWrapper>
       <RecommendRow>

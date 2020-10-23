@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import { Input, Button, Space, Image } from 'antd';
+import { Space, Image } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import SettingContentTitle from './SettingContentTitle';
 import { useCoreStores } from 'teespace-core';
-import CommonButton from '../commons/Button';
-import CommonInput from '../commons/Input';
+import { Button, Input } from 'teespace-core';
 import styled from 'styled-components';
-
 
 const AccountBordertop = styled.div`
   display: flex;
@@ -29,6 +27,7 @@ function onChange(e) {
 
 function SettingContentaccount(props) {
   const { authStore } = useCoreStores();
+
   return (
     <div>
       <SettingContentTitle
@@ -37,63 +36,59 @@ function SettingContentaccount(props) {
       ></SettingContentTitle>
       <div>
         {' '}
-        <Image width={125} height={125} src={authStore.user.thumbPhoto} /> <br/>
+        <Image width={125} height={125} src={authStore.user.thumbPhoto} />{' '}
+        <br />
         {authStore.user.name}, {authStore.user.nick} <br />, {authStore.user.id}
         {console.log(authStore.user)};
         <br />
         <br />
       </div>
-
-      <AccountBordertop>
-        프로필 정보         
-      </AccountBordertop>
+      <AccountBordertop>프로필 정보</AccountBordertop>
       <Accounttext>
-      <div>
-        국가
-        <br />
-        회사 <br/>
-        전화 <br/>
-        이메일{authStore.user.email}
-      </div>
+        <div>
+          국가 {authStore.user.nationalCode}
+          <br />
+          회사{authStore.user.companyName}<br />
+          전화 {authStore.user.phone} <br />
+          이메일{authStore.user.email}
+        </div>
       </Accounttext>
       <AccountBordertop>
-      <div>
-        개인정보 <br />
-       
-      </div>
+        <div>
+          개인정보 <br />
+        </div>
       </AccountBordertop>
       <Accounttext>
-      <div>     
-      
-        생년월일<br/>
-        소속회사/부서<br/>
-        직위/직책<br/>
-
-        {authStore.user.position}
-        {authStore.user.orgName}
-      </div>
+        <div>
+          생년월일 {authStore.user.birthDate}
+          <br />
+          소속회사/부서 
+          {authStore.user.orgName}
+          <br />
+          직위/직책
+          {authStore.user.position}
+          <br />
+        </div>
       </Accounttext>
-
       <AccountBordertop>
-      <div>     
-      
-        서비스 이용 동의 <br />
-      </div>
+        <div>
+          서비스 이용 동의 <br />
+        </div>
       </AccountBordertop>
       <div>뉴스레터, 프로모션 등 안내 메일 수신 동의 </div>
       <div>계정 정보를 변경하시려면 먼저 비밀번호를 입력해 주세요.</div>
       비밀번호
       <Space direction="vertical">
-        <CommonInput
+        <Input
           defaultValue="this is password"
           getPopupContainer={() => {}}
           onChange={function noRefCheck() {}}
           type="password"
         />
       </Space>
-      <CommonButton {...props} type="system">
+      <Button {...props} type="system">
         확인
-      </CommonButton>
+      </Button>
     </div>
   );
 }

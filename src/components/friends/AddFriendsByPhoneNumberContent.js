@@ -6,14 +6,18 @@ import { useStore } from '../../stores';
 
 const { Paragraph, Title } = Typography;
 
-function AddFriendsByPhoneNumberContent({ nationalCode, phone }) {
+function AddFriendsByPhoneNumberContent({ friendNick, nationalCode, phone }) {
   const { uiStore } = useStore();
   const { authStore, friendStore } = useCoreStores();
 
   const handleAddFriend = useCallback(() => {
-    console.log(phone, nationalCode);
-    friendStore.addFriendInfoByPhone(authStore.user.id, phone, nationalCode);
-  }, [authStore.user.id, friendStore, nationalCode, phone]);
+    friendStore.addFriendInfoByPhone(
+      authStore.user.id,
+      phone,
+      nationalCode,
+      friendNick,
+    );
+  }, [authStore.user.id, friendNick, friendStore, nationalCode, phone]);
   return useObserver(() => (
     <Row align="middle" style={{ flexGrow: 1 }} justify="center">
       <Col>

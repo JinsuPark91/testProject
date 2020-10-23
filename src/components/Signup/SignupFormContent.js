@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Form, Button, Row } from 'antd';
+import { Button, Row } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
+import { Input, Form, useCoreStores } from 'teespace-core';
+import { useHistory } from 'react-router-dom';
 import NewIdInput from './NewIDinput';
 import NewPasswordInput from './NewPasswordInput';
-import CommonInput from '../commons/Input';
 import CommonButton from '../commons/Button';
 import AuthMobileInput from './AuthMobileInput';
 import NewEmailInput from './NewEmailInput';
 import { checkNameValid, checkAuthNumber } from '../../libs/Regex';
-import { useCoreStores } from 'teespace-core';
-import { useHistory } from 'react-router-dom';
 
 const formItemLayout = {
   labelCol: {
@@ -58,30 +57,11 @@ const CommonContent = styled.div`
 const SignupFormContent = () => {
   const history = useHistory();
   const [form] = Form.useForm();
-  const [msg, setMsg] = useState({});
   const { authStore } = useCoreStores();
   const [nameValid, setNameValid] = useState('error');
   const [authNumber, setAuthNumber] = useState('');
   const [validAuthNumber, setValidAuthNumber] = useState('init');
   const [checkDuplicationId, setCheckDuplicationId] = useState('');
-
-  const handleFinishFailed = () => {
-    const errors = {};
-    form
-      .getFieldsError([
-        'loginId',
-        'password',
-        'passwordConfirm',
-        'name',
-        'email',
-        'phone',
-        'authNumber',
-      ])
-      .forEach(error => {
-        errors[error.name[0]] = error.errors[0];
-      });
-    setMsg(errors);
-  };
 
   const handleOncChangeName = e => {
     if (e.target.value.length) {
@@ -91,9 +71,9 @@ const SignupFormContent = () => {
       setNameValid('error');
     }
   };
-  //가입완료 누를시..
+  // 가입완료 누를시..
   const onFinish = async values => {
-    //first view Validation
+    // first view Validation
     if (checkDuplicationId !== 'RST0001') {
       return;
     }
@@ -131,11 +111,9 @@ const SignupFormContent = () => {
         }
       } else {
         setValidAuthNumber('error');
-        return;
       }
     } else {
       setValidAuthNumber('error');
-      return;
     }
   };
 
@@ -144,18 +122,25 @@ const SignupFormContent = () => {
       <Form
         {...formItemLayout}
         form={form}
+        initialValues={{
+          loginId: '',
+          name: '',
+          phone: '',
+          authNumber: '',
+          email: '',
+          password: '',
+          passwordConfirm: '',
+        }}
         name="register"
         onFinish={onFinish}
-        onFieldsChange={handleFinishFailed}
         scrollToFirstError
       >
         <NewIdInput
           checkDuplicationId={checkDuplicationId}
           setCheckDuplicationId={setCheckDuplicationId}
-          msg={msg.loginId}
         />
 
-        <NewPasswordInput msg={msg.password} msg2={msg.passwordConfirm} />
+        <NewPasswordInput />
         <div>이름</div>
         <Form.Item
           name="name"
@@ -174,11 +159,10 @@ const SignupFormContent = () => {
             },
           ]}
         >
-          <CommonInput
+          <Input
             onChange={handleOncChangeName}
             placeholder="이름을 입력해 주세요."
             placement="topLeft"
-            alert={msg.name}
           />
         </Form.Item>
         <Row>
@@ -192,13 +176,11 @@ const SignupFormContent = () => {
           />
           <div>특수기호 이외 모든 문자 입력 가능</div>
         </Row>
-        <NewEmailInput msg={msg.email} />
+        <NewEmailInput />
         <AuthMobileInput
           setAuthNumber={setAuthNumber}
           validAuthNumber={validAuthNumber}
           setValidAuthNumber={setValidAuthNumber}
-          msg={msg.phone}
-          msg2={msg.authNumber}
         />
 
         <Form.Item {...tailFormItemLayout}>

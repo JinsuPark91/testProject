@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import { useCoreStores, Button, Toast } from 'teespace-core';
 import styled from 'styled-components';
@@ -21,11 +21,12 @@ function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
   const [visibleToast, setVisibleToast] = useState(false);
   const [alreadyFriendFlag, setAlreadyFriendFlag] = useState(false);
 
-  const handleAddFriend = () => {
+  const handleAddFriend = useCallback(() => {
     setAlreadyFriendFlag(true);
     friendStore.addFriendInfo(authStore.user.id, searchedUser.id);
+    friendStore.addFriendInfoToFriendInfoList(searchedUser);
     setVisibleToast(true);
-  };
+  }, [authStore.user.id, friendStore, searchedUser]);
 
   useEffect(() => {
     const friendFlag =
