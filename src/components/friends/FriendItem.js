@@ -300,9 +300,7 @@ const FriendItem = React.memo(
     const itemId = friendId || userId;
 
     const [alreadyFriendFlag, setAlreadyFriendFlag] = useState(
-      !!friendStore.friendInfoList
-        .map(__friendInfo => __friendInfo.friendId)
-        .includes(friendId),
+      friendStore.checkAlreadyFriend({ userId: friendId }),
     );
 
     const [handleTalkWindowOpen, newTalkWindowHandler] = useOpenInWindow(
@@ -320,12 +318,10 @@ const FriendItem = React.memo(
     useEffect(() => {
       if (mode === 'addFriend') {
         setAlreadyFriendFlag(
-          !!friendStore.friendInfoList
-            .map(__friendInfo => __friendInfo.friendId)
-            .includes(itemId),
+          friendStore.checkAlreadyFriend({ userId: itemId }),
         );
       }
-    }, [itemId, friendStore.friendInfoList, mode]);
+    }, [itemId, friendStore.friendInfoList, mode, friendStore]);
 
     const handleDropdownVisible = useCallback(visible => {
       if (!visible) {
@@ -346,10 +342,18 @@ const FriendItem = React.memo(
     }, [dropdownVisible]);
 
     const handleAddBookmark = useCallback(
-      ({ domEvent: e }) => {
+      async ({ domEvent: e }) => {
         console.log(e);
         e.stopPropagation();
-        friendStore.setFriendFavorite(authStore.user.id, itemId, true);
+        try {
+          await friendStore.setFriendFavorite({
+            myUserId: authStore.user.id,
+            friendId: itemId,
+            isFav: true,
+          });
+        } catch (error) {
+          console.log(error);
+        }
         setIsHovering(false);
         setDropdownVisible(false);
       },
@@ -357,10 +361,14 @@ const FriendItem = React.memo(
     );
 
     const handleCancelBookmark = useCallback(
-      ({ domEvent: e }) => {
+      async ({ domEvent: e }) => {
         console.log(e);
         e.stopPropagation();
-        friendStore.setFriendFavorite(authStore.user.id, itemId, false);
+        await friendStore.setFriendFavorite({
+          myUserId: authStore.user.id,
+          friendId: itemId,
+          isFav: false,
+        });
         setIsHovering(false);
         setDropdownVisible(false);
       },
@@ -371,7 +379,10 @@ const FriendItem = React.memo(
     const handleRemoveFriend = useCallback(
       e => {
         e.stopPropagation();
-        friendStore.deleteFriendInfo(authStore.user.id, itemId);
+        friendStore.deleteFriend({
+          myUserId: authStore.user.id,
+          friendId: itemId,
+        });
         setIsHovering(false);
         setDropdownVisible(false);
         setVisibleRemoveFriendMessage(false);
@@ -403,10 +414,12 @@ const FriendItem = React.memo(
     }, []);
 
     const handleAddFriend = useCallback(() => {
-      friendStore.addFriendInfo(authStore.user.id, itemId);
-      friendStore.addFriendInfoToFriendInfoList(friendInfo);
+      friendStore.addFriend({
+        myUserId: authStore.user.id,
+        friendInfo,
+      });
       setVisibleToast(true);
-    }, [friendStore, authStore.user.id, itemId, friendInfo]);
+    }, [friendStore, authStore.user.id, friendInfo]);
 
     const handleToastClose = useCallback(() => setVisibleToast(false), []);
 

@@ -31,14 +31,14 @@ function AddFriendsByInvitationLinkCopy() {
         <Col span={24} style={{ display: 'flex' }}>
           <Input
             readOnly
-            value={friendStore.userInviteLink}
+            value={friendStore.userInvitationLink}
             style={{ width: '100%' }}
           />
           <Toast visible={visibleToast} onClose={() => setVisibleToast(false)}>
             초대 링크가 복사되었습니다.
           </Toast>
           <CopyToClipboard
-            text={friendStore.userInviteLink}
+            text={friendStore.userInvitationLink}
             onCopy={() => setVisibleToast(true)}
             style={{ width: 120 }}
           >

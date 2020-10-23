@@ -23,17 +23,17 @@ function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
 
   const handleAddFriend = useCallback(() => {
     setAlreadyFriendFlag(true);
-    friendStore.addFriendInfo(authStore.user.id, searchedUser.id);
-    friendStore.addFriendInfoToFriendInfoList(searchedUser);
+    friendStore.addFriend({
+      myUserId: authStore.user.id,
+      friendInfo: searchedUser,
+    });
     setVisibleToast(true);
   }, [authStore.user.id, friendStore, searchedUser]);
 
   useEffect(() => {
     const friendFlag =
       searchedUser &&
-      friendStore.friendInfoList
-        .map(friendInfo => friendInfo.friendId)
-        .includes(searchedUser.id);
+      friendStore.checkAlreadyFriend({ userId: searchedUser.id });
     setAlreadyFriendFlag(friendFlag);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [friendStore.friendInfoList, searchedUser]);

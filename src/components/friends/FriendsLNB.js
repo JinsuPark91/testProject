@@ -22,12 +22,14 @@ function FriendsLNB() {
 
   const { friendStore, orgStore, userStore } = useCoreStores();
   useEffect(() => {
-    friendStore.getFriendInfoList({ userId: userStore.myProfile.id });
-    friendStore.getInvitedFriendInfoList({ userId: userStore.myProfile.id });
-    friendStore.getRecommendedFriendInfoList({
-      userId: userStore.myProfile.id,
+    friendStore.fetchFriends({ myUserId: userStore.myProfile.id });
+    friendStore.fetchInvitedFriends({
+      myUserId: userStore.myProfile.id,
     });
-    friendStore.getUserInviteLink({ userId: userStore.myProfile.id });
+    friendStore.fetchRecommendedFriends({
+      myUserId: userStore.myProfile.id,
+    });
+    friendStore.fetchUserInvitationLink({ myUserId: userStore.myProfile.id });
     orgStore.getOrgTree();
   }, [friendStore, orgStore, userStore.myProfile.id]);
   const handleSearchKeyword = useCallback(e => {

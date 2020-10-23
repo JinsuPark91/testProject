@@ -11,12 +11,12 @@ function AddFriendsByPhoneNumberContent({ friendNick, nationalCode, phone }) {
   const { authStore, friendStore } = useCoreStores();
 
   const handleAddFriend = useCallback(() => {
-    friendStore.addFriendInfoByPhone(
-      authStore.user.id,
+    friendStore.addFriendByPhone({
+      myUserId: authStore.user.id,
       phone,
       nationalCode,
       friendNick,
-    );
+    });
   }, [authStore.user.id, friendNick, friendStore, nationalCode, phone]);
   return useObserver(() => (
     <Row align="middle" style={{ flexGrow: 1 }} justify="center">

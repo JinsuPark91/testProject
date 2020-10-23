@@ -66,7 +66,7 @@ function AddFriendsByInvitationLinkSend() {
 
   const handleEmailSend = useCallback(() => {
     friendStore.sendInviteMail({
-      userId: authStore.user.id,
+      myUserId: authStore.user.id,
       users: users.filter(user => checkEmailValid(user)),
     });
     setVisibleToast(true);

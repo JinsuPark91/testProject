@@ -35,9 +35,9 @@ const WelcomeBackgroundImage = styled.div`
 const FrinedListBox = styled.div`
   &:after {
     content: '';
-    display:block;
+    display: block;
     margin: 6px 10px 6px;
-    border-bottom: 1px solid #E3E7EB;
+    border-bottom: 1px solid #e3e7eb;
   }
   &:last-of-type {
     &:after {
@@ -45,7 +45,6 @@ const FrinedListBox = styled.div`
     }
   }
 `;
-
 
 const StyleTitle = styled.p`
   margin: 0 10px 6px;
@@ -81,10 +80,6 @@ const FriendsLNBContent = React.forwardRef(
 
     const [favFriendActiveId, setFavFriendActiveId] = useState('');
     const [friendActiveId, setFriendActiveId] = useState('');
-
-    const favFriendList = friendStore.friendInfoList.filter(
-      friendInfo => friendInfo.friendFavorite,
-    );
 
     const filteredFriendList = friendStore.friendInfoList.filter(friendInfo =>
       friendInfo.displayName.includes(searchKeyword),
@@ -136,15 +131,15 @@ const FriendsLNBContent = React.forwardRef(
             isActive={friendActiveId === userStore.myProfile.id}
           />
         </FrinedListBox>
-        <FrinedListBox style={{ display: searchKeyword ? 'block' : 'none' }}>
-            <StyleTitle>즐겨찾기</StyleTitle>
-            <FriendList
-              friendList={favFriendList}
-              onClick={handleFavFriendActive}
-              activeFriendId={favFriendActiveId}
+        <FrinedListBox style={{ display: searchKeyword ? 'none' : 'block' }}>
+          <StyleTitle>즐겨찾기</StyleTitle>
+          <FriendList
+            friendList={friendStore.favoriteFriendInfoList}
+            onClick={handleFavFriendActive}
+            activeFriendId={favFriendActiveId}
           />
         </FrinedListBox>
-        <FrinedListBox style={{ display: searchKeyword ? 'none' : 'block' }}>
+        <FrinedListBox style={{ display: searchKeyword ? 'block' : 'none' }}>
           <StyleTitle>
             프렌즈
             <Text>{filteredFriendList.length}</Text>
@@ -156,15 +151,15 @@ const FriendsLNBContent = React.forwardRef(
           />
         </FrinedListBox>
         <FrinedListBox style={{ display: searchKeyword ? 'none' : 'block' }}>
-            <StyleTitle>
-              프렌즈
-              <Text>{friendStore.friendInfoList.length}</Text>
-            </StyleTitle>
-            <FriendList
-              friendList={friendStore.friendInfoList}
-              onClick={handleFriendActive}
-              activeFriendId={friendActiveId}
-            />
+          <StyleTitle>
+            프렌즈
+            <Text>{friendStore.friendInfoList.length}</Text>
+          </StyleTitle>
+          <FriendList
+            friendList={friendStore.friendInfoList}
+            onClick={handleFriendActive}
+            activeFriendId={friendActiveId}
+          />
         </FrinedListBox>
       </>
     );
