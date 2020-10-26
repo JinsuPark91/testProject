@@ -11,7 +11,7 @@ const { Footer } = Layout;
 
 const FooterWrapper = styled(Footer)`
   background-color: transparent;
-  padding: 14px 20px;
+  padding: 0.875rem 1.25rem;
 `;
 const StyleIcon = styled.i`
   width: 18px;
@@ -30,7 +30,7 @@ const FriendButton = styled(Button)`
   font-size: 0.8125rem;
   color: #5a5fff;
   line-height: 1rem;
-  padding: 9px 0 8px;
+  padding: 0.5625rem 0 0.5rem;
   border-radius: 21px;
   border: 1px solid #5a5fff;
   span {

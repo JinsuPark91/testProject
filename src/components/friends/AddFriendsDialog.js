@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 const StyledTabPane = styled(TabPane)`
   height: 100%;
   overflow: auto;
-  padding: 16px;
+  padding: 1rem;
 `;
 
 /**

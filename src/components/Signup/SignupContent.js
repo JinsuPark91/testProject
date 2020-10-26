@@ -11,7 +11,7 @@ const CommonContent = styled.div`
   height: auto;
   width: 40.26rem;
   border-style: solid;
-  padding: 58px 70px;
+  padding: 3.625rem 4.375rem;
   border-width: 1px;
   border-radius: 15px;
   box-shadow: 0 0 12px 1px rgba(125, 138, 148, 0.1);
@@ -25,7 +25,7 @@ const CommonContent = styled.div`
 
 const InfoList = styled.ul`
   list-style: none;
-  padding: 12px 0 22px 23px;
+  padding: 1.375rem 0 1.375rem 1.438rem;
   border-bottom: 1px solid #e3e7eb;
   margin: 0;
 `;

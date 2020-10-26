@@ -5,7 +5,7 @@ import CommonButton from './Button';
 import './commons.scss';
 
 const StyledContentWrapper = styled.div`
-  padding: 16px 16px 0 16px;
+  padding: 1rem  1rem  0 1rem ;
 `;
 
 export const ContentWrapper = StyledContentWrapper;

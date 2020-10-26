@@ -28,7 +28,7 @@ const StyledInputChipsWrapper = styled.div`
       border: 1px solid #c6ced6;
       border-radius: 25px;
     `}
-  padding: 1px 12px;
+  padding: 0.0625rem 0.75rem;
   font-size: 0.75rem;
   color: #3b3b3b;
   align-items: center;

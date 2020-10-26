@@ -295,7 +295,7 @@ const Header = styled.div`
 const Title = styled.div`
   display: flex;
   align-items: center;
-  padding: 0 15px;
+  padding: 0 0.9375rem;
   flex: auto;
   height: 100%;
   border-right: 1px solid #dddddd;
@@ -306,11 +306,11 @@ const AppIconContainer = styled.div`
   align-items: center;
   border-right: 1px solid #dddddd;
   height: 40px;
-  padding: 0 15px;
+  padding: 0 0.9375rem;
 `;
 
 const UserMenu = styled.div`
-  padding: 0 10px;
+  padding: 0 0.625rem;
 `;
 
 const MainSide = styled.div`

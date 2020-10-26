@@ -47,7 +47,7 @@ function RoomItem({
 }
 
 const StyledItem = styled(Item)`
-  padding: 10px;
+  padding: 0.625rem;
   user-select: none;
   cursor: pointer;
 
@@ -82,7 +82,7 @@ const UnreadCount = styled.div`
   color: white;
   font-size: 0.8125rem;
   font-weight: 800;
-  padding: 0 5px;
+  padding: 0 0.3125rem;
   border-radius: 10px;
 `;
 

@@ -48,7 +48,7 @@ const FriendItemWrapper = styled.div`
       flex-direction: row;
       background-color: transparent;
       border-bottom: 1px solid #e3e7eb;
-      padding: 10px;
+      padding: 0.625rem;
 
       &:hover {
         box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
@@ -74,7 +74,7 @@ const FriendItemWrapper = styled.div`
       height: 54px;
       display: flex;
       flex-direction: row;
-      padding: 10px;
+      padding: 0.625rem;
 
       ${props.isActive
         ? css`

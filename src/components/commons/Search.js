@@ -15,7 +15,7 @@ const SearchWrapper = styled.div`
     `}
 `;
 const StyledSearch = styled(CommonInput)`
-  padding-left: 30px;
+  padding-left: 1.875rem;
   ${props =>
     props.shape === 'square' &&
     css`

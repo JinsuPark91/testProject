@@ -34,7 +34,7 @@ const Centered = styled.div`
 
 const RecommendRow = styled(Row)`
   background-color: #f5f5fb;
-  padding: 20px;
+  padding: 1.25rem;
 `;
 
 const BackgroundImage = styled.div`

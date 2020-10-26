@@ -14,7 +14,7 @@ const { Header } = Layout;
 const StyledHeader = styled(Header)`
   background-color: transparent;
   width: 100%;
-  padding: 0 13px;
+  padding: 0 0.8125rem;
 `;
 
 function FriendsLNBHeader({ handleInputChange, handleInputClear }) {

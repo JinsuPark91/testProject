@@ -22,7 +22,7 @@ const StyledParagraph = styled(Paragraph)`
     background-size: contain;
     position: absolute;
   }
-  padding: 9px 12px 15px 12px;
+  padding: 0.5625rem 0.75rem 0.9375rem 0.75rem;
   font-size: 0.75rem;
   color: #ffffff;
   background-color: #6c56e5;
@@ -32,7 +32,7 @@ const StyledParagraph = styled(Paragraph)`
 const NegativeMargin = styled.div`
   margin: 0 -1rem;
   background-color: #f5f5fb;
-  padding: 16px;
+  padding: 1rem ;
   overflow: auto;
   max-height: 154px;
 `;

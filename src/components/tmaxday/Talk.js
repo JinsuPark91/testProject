@@ -116,13 +116,13 @@ const Content = styled.div`
   flex-direction: column;
   width: 100%;
   overflow-y: auto;
-  padding: 0 20px;
+  padding: 0 1.25rem;
   height: calc(100% - 123px);
 `;
 
 const FileWrapper = styled.div`
   display: flex;
-  padding: 6px;
+  padding: 0.375rem;
   border: 1px solid #e0e5e9;
   border-radius: 8px;
   border-radius: 8px;
@@ -205,7 +205,7 @@ const MessageContent = styled.div`
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
   border-radius: ${({ isMyMessage }) =>
     isMyMessage ? '12px 0 12px 12px' : '0 12px 12px 12px'};
-  padding: 9px;
+  padding: 0.5625rem;
 `;
 
 const UnreadCount = styled.div`
@@ -251,7 +251,7 @@ const Newline = styled.div`
   font-size: 11px;
   color: #5c5c5c;
   letter-spacing: 0;
-  padding: 2px 0;
+  padding: 0.125rem 0;
   width: 100%;
 `;
 

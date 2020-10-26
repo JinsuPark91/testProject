@@ -59,13 +59,13 @@ const MessageContent = styled.div`
 
 const MessageTitle = styled(Title)`
   font-size: 0.9375rem !important;
-  line-height: 22px !important;
+  line-height: 1.375rem !important;
   margin-top: 0.8125rem !important;
 `;
 
 const MessageSubTitle = styled(Paragraph)`
   color: #777777;
-  line-height: 19px;
+  line-height: 1.188rem;
   size: 13px;
   margin-top: 0.5625rem !important;
 `;

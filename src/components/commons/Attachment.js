@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   border: 1px solid #e0e5e9;
   border-radius: 8px;
   height: 42px;
-  padding: 4px 4px 0 4px;
+  padding: 0.25rem 0.25rem 0 0.25rem;
   display: inline-flex;
   ${props =>
     props.closable
@@ -43,7 +43,7 @@ const TextWrapper = styled.div`
 const AttachmentTitle = styled.div`
   font-size: 0.6875rem;
   color: #45474a;
-  line-height: 15px;
+  line-height: 0.9375rem;
   height: 15px;
   overflow: hidden;
   text-overflow: ellipsis;

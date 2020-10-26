@@ -32,7 +32,7 @@ const Content = styled.div`
   width: 273px;
   margin: 0 auto;
   text-align: center;
-  padding-top: 140px;
+  padding-top: 8.75rem;
   display: flex;
   flex-direction: column;
 `;

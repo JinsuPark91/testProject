@@ -1,9 +1,9 @@
 $common-dialog-height: 43px;
-$common-dialog-padding-top: 9px;
-$common-dialog-line-height: 20px;
+$common-dialog-padding-top: 0.5625rem;
+$common-dialog-line-height: 1.25rem;
 $common-dialog-title-font-size: 14px;
 $common-dialog-border-radius: 4px;
-$common-dialog-footer-padding: 20px 0 20px 0;
+$common-dialog-footer-padding: 1.25rem 0 1.25rem 0;
 
 .teespace-common {
 
@@ -62,7 +62,7 @@ $common-dialog-footer-padding: 20px 0 20px 0;
 
         .ant-select-item, .ant-select-tree-treenode {
             font-size: 0.75rem;
-            line-height: 20px;
+            line-height: 1.25rem;
             color: #000000;
             border-radius: 13px;
 
@@ -82,7 +82,7 @@ $common-dialog-footer-padding: 20px 0 20px 0;
             &.ant-select-item-option-selected {
                 background-color: #BCBEFF;
                 color: #010101;
-                line-height: 20px;
+                line-height: 1.25rem;
             }
         }
     }

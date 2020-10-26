@@ -59,8 +59,8 @@ const ToastWrapper = styled.div`
 
 const ToastContent = styled.div`
   margin: 0.375rem;
-  line-height: 18px;
   font-size: 0.75rem;
+  line-height: 1.125rem;
   color: #ffffff;
 `;
 

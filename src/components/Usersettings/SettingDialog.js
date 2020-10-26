@@ -26,8 +26,8 @@ const StyledButton = styled(Button)`
   outline: 0;
   border-radius: 5px;
   font-size: 0.75rem;
-  line-height: 18px;
-  padding: 3px 23px 9px 23px;
+  line-height: 1.125rem;
+  padding: 0.1875rem 1.438rem 0.5625rem 1.438rem;
   border: 1px solid transparent;
   align-items: right;
 
