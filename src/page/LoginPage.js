@@ -29,7 +29,7 @@ const Container = styled.div`
 `;
 const Content = styled.div`
   height: 100%;
-  width: 273px;
+  width: 17.06rem;
   margin: 0 auto;
   text-align: center;
   padding-top: 8.75rem;
