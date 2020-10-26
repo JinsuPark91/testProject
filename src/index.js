@@ -2,8 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { CoreStoreProvider } from 'teespace-core';
+import { createGlobalStyle } from 'styled-components';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+const GlobalStyle = createGlobalStyle`
+  html {
+    font-size: ${global.screen.width / 13.66}%}
+  }
+`;
 
 ReactDOM.render(
   <CoreStoreProvider
@@ -12,6 +19,7 @@ ReactDOM.render(
       websocketURL: process.env.REACT_APP_WEBSOCKET_URL,
     }}
   >
+    <GlobalStyle />
     <App />
   </CoreStoreProvider>,
   document.getElementById('root'),
