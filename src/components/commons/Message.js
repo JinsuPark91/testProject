@@ -54,25 +54,25 @@ const MessageWrapper = styled.div`
 `;
 
 const MessageContent = styled.div`
-  margin: 34px 32px 20px 32px;
+  margin: 2.125rem 2rem 1.25rem 2rem;
 `;
 
 const MessageTitle = styled(Title)`
   font-size: 15px !important;
   line-height: 22px !important;
-  margin-top: 13px !important;
+  margin-top: 0.8125rem !important;
 `;
 
 const MessageSubTitle = styled(Paragraph)`
   color: #777777;
   line-height: 19px;
   size: 13px;
-  margin-top: 9px !important;
+  margin-top: 0.5625rem !important;
 `;
 const MessageActionContent = styled.div`
-  margin-top: 22px;
+  margin-top: 1.375rem;
   & > button:not(:first-child) {
-    margin-left: 9.8px;
+    margin-left: 0.5625rem;
   }
 `;
 

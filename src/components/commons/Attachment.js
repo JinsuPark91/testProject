@@ -23,15 +23,15 @@ const IconArea = styled.div`
   ${props =>
     props.deleted
       ? css`
-          margin: 0 2px 2px 2px;
+          margin: 0 0.125rem 0.125rem 0.125rem;
         `
       : css`
-          margin: 2px;
+          margin: 0.125rem;
         `}
   border-radius: 6px;
   width: 30px;
   height: 30px;
-  margin-right: 6px;
+  margin-right: 0.375rem;
 `;
 
 const TextWrapper = styled.div`
@@ -65,7 +65,7 @@ const AttachmentSubTitle = styled.div`
 
 const AttachmentClose = styled(CloseOutlined)`
   cursor: pointer;
-  margin: 4px 0;
+  margin: 0.25rem 0;
   font-size: 9px;
 `;
 

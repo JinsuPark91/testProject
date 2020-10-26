@@ -30,7 +30,7 @@ const MenuSearchWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 6px 11px;
+  margin: 0.375rem 0.6875rem;
 `;
 
 const { Item } = StyledMenu;

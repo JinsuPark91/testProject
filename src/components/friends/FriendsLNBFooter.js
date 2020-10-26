@@ -20,7 +20,7 @@ const StyleIcon = styled.i`
   background: url('${SpaceIconImg}') 0 0 no-repeat;
   vertical-align: middle;
   & + span {
-    margin-left: 3px;
+    margin-left: 0.1875rem;
   }
 `;
 const FriendButton = styled(Button)`

@@ -7,7 +7,7 @@ import AddFriendsByOrganizationHeader from './AddFriendsByOrganizationHeader';
 import AddFriendsByOrganizationContent from './AddFriendsByOrganizationContent';
 
 const NegativeMargin = styled.div`
-  margin: -16px;
+  margin: -1rem;
 `;
 
 const StyledDivider = styled(Divider)`

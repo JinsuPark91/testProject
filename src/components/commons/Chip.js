@@ -77,7 +77,7 @@ const ChipContent = styled.div`
 `;
 const ChipTextContent = styled(Row)`
   height: 100%;
-  margin: 0 12px;
+  margin: 0 0.75rem;
   font-size: 12px;
 `;
 
@@ -95,7 +95,7 @@ const ChipInfoIcon = styled(InfoCircleOutlined)`
 
 const ChipCloseButton = styled(CloseOutlined)`
   cursor: pointer;
-  margin-right: 5px;
+  margin-right: 0.3125rem;
 
   ${props =>
     props.alert &&
@@ -105,7 +105,7 @@ const ChipCloseButton = styled(CloseOutlined)`
 `;
 
 const ChipCheckedIcon = styled(CheckOutlined)`
-  margin-right: 5px;
+  margin-right: 0.3125rem;
   ${props =>
     props.alert &&
     css`

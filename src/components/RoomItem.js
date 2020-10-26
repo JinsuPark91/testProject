@@ -52,11 +52,11 @@ const StyledItem = styled(Item)`
   cursor: pointer;
 
   & .ant-list-item-meta-avatar {
-    margin-right: 5px;
+    margin-right: 0.3125rem;
   }
 
   & .ant-list-item-meta-content {
-    margin-right: 10px;
+    margin-right: 0.625rem;
   }
 
   & button {

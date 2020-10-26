@@ -32,7 +32,7 @@ const styles = {
     width: '100px',
     height: '50px',
     border: '1px dashed black',
-    margin: '10px',
+    margin: '0.625rem',
     color: 'black',
     fontWeight: '600',
   },

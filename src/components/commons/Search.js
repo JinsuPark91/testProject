@@ -40,16 +40,16 @@ const SearchIcon = styled(SearchOutlined)`
   ${props =>
     props.size === 'large'
       ? css`
-          margin-left: 16px;
+          margin-left: 1rem;
         `
       : css`
-          margin-left: 9px;
+          margin-left: 0.5625rem;
         `}
 `;
 
 const SearchCloseButton = styled(CloseOutlined)`
   z-index: 10;
-  margin-left: -26px;
+  margin-left: -1.625rem;
   cursor: pointer;
 `;
 

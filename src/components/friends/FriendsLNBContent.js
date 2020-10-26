@@ -36,7 +36,7 @@ const FrinedListBox = styled.div`
   &:after {
     content: '';
     display: block;
-    margin: 6px 10px 6px;
+    margin: 0.375rem 0.625rem 0.375rem;
     border-bottom: 1px solid #e3e7eb;
   }
   &:last-of-type {
@@ -47,7 +47,7 @@ const FrinedListBox = styled.div`
 `;
 
 const StyleTitle = styled.p`
-  margin: 0 10px 6px;
+  margin: 0 0.625rem 0.375rem;
   color: #000;
   font-weight: 500;
   line-height: 1.13rem;

@@ -22,7 +22,7 @@ const tailLayout = {
   },
 };
 const LoginForm = styled.div`
-  margin-bottom: 6px;
+  margin-bottom: 0.375rem;
   .ant-form {
     font-size: 0.75rem; 
     line-height: 1.88rem;
@@ -38,21 +38,21 @@ const LoginForm = styled.div`
   }
   .ant-form-item {
     font-size: 0.75rem; 
-    margin-bottom: 6px;;
+    margin-bottom: 0.375rem;;
     & + .ant-form-item {
-      margin-bottom: 7px;
+      margin-bottom: 0.4375rem;
     }
   }
 `;
 const FlexBox = styled.div`
   display: flex;
   justify-content: flex-start;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
   .ant-form-item {
     margin-bottom: 0;
     line-height: 1rem;
     & + .ant-form-item {
-      margin-left: 18px;
+      margin-left: 1.125rem;
       &:first-of-type {
         margin-left: 0;
       }

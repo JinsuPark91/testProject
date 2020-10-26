@@ -18,7 +18,7 @@ const RecommendSubTitle = styled(Text)`
 `;
 
 const NegativeMarginWrapper = styled.div`
-  margin: -16px;
+  margin: -1rem;
   height: 100%;
   display: flex;
   flex-direction: column;

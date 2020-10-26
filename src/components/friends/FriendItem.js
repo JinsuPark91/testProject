@@ -80,12 +80,12 @@ const FriendItemWrapper = styled.div`
 const ProfileWrapper = styled.div`
   /* me badge */
   .ant-badge-count {
-    margin-left: -34px;
+    margin-left: -2.125rem;
   }
 `;
 
 const TextWrapper = styled.div`
-  margin-left: 7px;
+  margin-left: 0.4375rem;
   flex-grow: 1;
   display: flex;
   align-items: center;

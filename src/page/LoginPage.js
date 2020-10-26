@@ -41,7 +41,7 @@ const FlexCenter = styled.div`
   flex-direction: row;
   justify-content: center;
   align-content: center;
-  margin-bottom: 18.2px;
+  margin-bottom: 1.125rem;
   .ant-btn {
     font-size: 0.75rem;
     padding: 0;
@@ -50,13 +50,13 @@ const FlexCenter = styled.div`
 `;
 const TitleText = styled.p`
   font-weight: 500;
-  margin-bottom: 18.2px;
+  margin-bottom: 1.125rem;
   color: #0B1D41;
   font-size: 0.9375rem;
   letter-spacing: 2.65px;
 `;
 const ImgBox = styled.div `
-  margin-bottom: 11px;
+  margin-bottom: 0.6875rem;
   & img {
     width: 50px;
     height: 50px;
@@ -66,7 +66,7 @@ const LineBar = styled.span `
   width: 1px;
   height: 13px;
   background-color: #9398ab;
-  margin: auto 12px;
+  margin: auto 0.75rem;
   display:inline-block;
 `
 const InfoText = styled.p`

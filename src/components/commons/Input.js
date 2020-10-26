@@ -70,8 +70,8 @@ const StyledInput = styled(Input)`
 
 const righticoncss = `
   position: absolute;
-  margin-top: 2px;
-  margin-left: -28px;
+  margin-top: 0.125rem;
+  margin-left: -1.75rem;
   font-size: 26px;
   cursor: pointer;
 `;
@@ -90,7 +90,7 @@ const PasswordVisibleIcon = styled(EyeOutlined)`
   ${props => css`
     margin-left: ${-props.numberofrighticons * 26}px;
   `}
-  margin-top: 6px;
+  margin-top: 0.375rem;
   cursor: pointer;
   color: #c6ced6;
 `;
@@ -101,7 +101,7 @@ const PasswordInvisibleIcon = styled(EyeInvisibleOutlined)`
   ${props => css`
     margin-left: ${-props.numberofrighticons * 26}px;
   `}
-  margin-top: 6px;
+  margin-top: 0.375rem;
   cursor: pointer;
   color: #c6ced6;
 `;

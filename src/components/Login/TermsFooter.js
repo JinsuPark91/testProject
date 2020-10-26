@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import styled from 'styled-components';
 
 const CorpArea = styled.div`
-  margin: auto auto 20px;
+  margin: auto auto 1.25rem;
   display: flex;
   flex-direction: column;
 `;
@@ -28,7 +28,7 @@ const LineBar = styled.span `
   width: 1px;
   height: 12px;
   background-color: #7c7c7c;
-  margin: auto 8px;
+  margin: auto 0.5rem;
   display:inline-block;
 `
 

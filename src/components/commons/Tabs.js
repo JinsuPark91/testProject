@@ -66,7 +66,7 @@ const TabsType2 = styled(Tabs)`
     }
     height: 27px;
     padding: 7px 15px;
-    margin: 4px;
+    margin: 0.25rem;
     border-radius: 27.5px;
     justify-content: center;
     background: transparent;

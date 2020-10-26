@@ -249,15 +249,15 @@ const Profile = ({
             </Dropdown>
           )}
         </UserImageWrapper>
-        <BigText style={{ marginTop: '20px' }}>{profile?.name}</BigText>
+        <BigText style={{ marginTop: '1.25rem' }}>{profile?.name}</BigText>
         <Text>{`(${profile?.loginId}@tmax.teepsace.net)`}</Text>
         <UserInfoList>
           <UserInfoItem>
-            <ContainerOutlined style={{ marginRight: '20px' }} />
+            <ContainerOutlined style={{ marginRight: '1.25rem' }} />
             {profile?.fullCompanyJob}
           </UserInfoItem>
           <UserInfoItem>
-            <MobileOutlined style={{ marginRight: '20px' }} />
+            <MobileOutlined style={{ marginRight: '1.25rem' }} />
             {isEditMode ? (
               <Input
                 onChange={e => {
@@ -271,7 +271,7 @@ const Profile = ({
             )}
           </UserInfoItem>
           <UserInfoItem>
-            <PhoneOutlined style={{ marginRight: '20px' }} />
+            <PhoneOutlined style={{ marginRight: '1.25rem' }} />
             {isEditMode ? (
               <Input
                 onChange={e => {
@@ -285,7 +285,7 @@ const Profile = ({
             )}
           </UserInfoItem>
           <UserInfoItem>
-            <MailOutlined style={{ marginRight: '20px' }} />
+            <MailOutlined style={{ marginRight: '1.25rem' }} />
             {profile?.email}
           </UserInfoItem>
         </UserInfoList>
@@ -293,7 +293,7 @@ const Profile = ({
           {isEditMode && (
             <>
               <Button
-                style={{ marginRight: '20px' }}
+                style={{ marginRight: '1.25rem' }}
                 disabled={!isChange}
                 onClick={handleConfirm}
               >
@@ -394,7 +394,7 @@ const StyledButton = styled(Text)`
   align-items: center;
   width: 200px;
   height: 200px;
-  margin-top: 20px;
+  margin-top: 1.25rem;
   border-radius: 10px;
 
   &:hover {
@@ -441,7 +441,7 @@ const UserInfoItem = styled.div`
   color: white;
   font-size: 20px;
   font-weight: 600;
-  margin-top: 20px;
+  margin-top: 1.25rem;
   height: 30px;
 `;
 const BigText = styled(Text)`
@@ -450,7 +450,7 @@ const BigText = styled(Text)`
 
 const ButtonContainer = styled.div`
   height: 50px;
-  margin-top: 20px;
+  margin-top: 1.25rem;
   display: flex;
 `;
 
