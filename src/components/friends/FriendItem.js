@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import styled, { css } from 'styled-components';
+import styled, { css, createGlobalStyle } from 'styled-components';
 import { Tooltip, Typography, Avatar, Button } from 'antd';
 import { useCoreStores, Dropdown, Menu, Message, Toast } from 'teespace-core';
 import { useOpenInWindow } from 'use-open-window';
@@ -13,6 +13,31 @@ import {
 
 const { Title } = Typography;
 
+const GlobalStyle = createGlobalStyle`
+  .teespace-common {
+    &.teespace-me-tooltip {
+      left: 10px !important;
+      top: 0px !important;
+      transform-origin: 50% 8.5938px !important;
+      margin-top: -8px;
+
+      .ant-tooltip-arrow {
+          top: 25px;
+          .ant-tooltip-arrow-content {
+              transform: translateY(-6.53553391px) rotate(45deg);
+          }
+      }
+      .ant-tooltip-inner {
+          font-size: 0.56rem;
+          padding: 0.05rem 0.25rem;
+          background-color: #523dc7;
+          border-radius: 0.28rem;
+          min-width: 0;
+          min-height: 0;
+      }
+    }
+  }
+`;
 const FriendItemWrapper = styled.div`
   /* 조직도 조회, 추천친구 스타일 */
   ${props =>
@@ -369,8 +394,9 @@ const FriendItem = React.memo(
           friendId: itemId,
           isFav: false,
         });
-        setIsHovering(false);
-        setDropdownVisible(false);
+        // component un-mount. below code does not required.
+        // setIsHovering(false);
+        // setDropdownVisible(false);
       },
       [friendStore, authStore, itemId],
     );
@@ -432,6 +458,7 @@ const FriendItem = React.memo(
         isActive={isActive}
         mode={mode}
       >
+        <GlobalStyle />
         <Toast
           visible={visibleToast}
           timeoutMs={1000}
