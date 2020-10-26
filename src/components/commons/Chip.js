@@ -78,11 +78,11 @@ const ChipContent = styled.div`
 const ChipTextContent = styled(Row)`
   height: 100%;
   margin: 0 0.75rem;
-  font-size: 12px;
+  font-size: 0.75rem;
 `;
 
 const ChipInfoIcon = styled(InfoCircleOutlined)`
-  font-size: 26px;
+  font-size: 1.625rem;
   & > svg {
     vertical-align: middle;
   }

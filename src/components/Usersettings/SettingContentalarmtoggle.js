@@ -9,7 +9,7 @@ const Bordertop = styled.div`
   display: flex;
   border-top: 1px solid;
   border-top-color: #d8d8d8;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: bold;
   font-color: #777777;
 `;

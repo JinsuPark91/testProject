@@ -58,7 +58,7 @@ const MessageContent = styled.div`
 `;
 
 const MessageTitle = styled(Title)`
-  font-size: 15px !important;
+  font-size: 0.9375rem !important;
   line-height: 22px !important;
   margin-top: 0.8125rem !important;
 `;

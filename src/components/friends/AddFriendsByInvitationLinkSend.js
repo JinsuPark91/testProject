@@ -23,7 +23,7 @@ const StyledParagraph = styled(Paragraph)`
     position: absolute;
   }
   padding: 9px 12px 15px 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #ffffff;
   background-color: #6c56e5;
   border-radius: 10px;

@@ -17,7 +17,7 @@ import { useObserver } from 'mobx-react';
 const Headerwords = styled.div`
   display: flex;
   align-items: center;
-  font-size: 30px;
+  font-size: 1.875rem;
   font-weight: bold;
   color: gray;
 `;
@@ -25,7 +25,7 @@ const Headerwords = styled.div`
 const StyledButton = styled(Button)`
   outline: 0;
   border-radius: 5px;
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 18px;
   padding: 3px 23px 9px 23px;
   border: 1px solid transparent;

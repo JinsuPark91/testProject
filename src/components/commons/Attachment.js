@@ -41,7 +41,7 @@ const TextWrapper = styled.div`
   white-space: nowrap;
 `;
 const AttachmentTitle = styled.div`
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #45474a;
   line-height: 15px;
   height: 15px;
@@ -57,7 +57,7 @@ const AttachmentTitle = styled.div`
 
 const AttachmentSubTitle = styled.div`
   color: #888d96;
-  font-size: 10px;
+  font-size: 0.625rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -66,7 +66,7 @@ const AttachmentSubTitle = styled.div`
 const AttachmentClose = styled(CloseOutlined)`
   cursor: pointer;
   margin: 0.25rem 0;
-  font-size: 9px;
+  font-size: 0.5625rem;
 `;
 
 const AttachmentBarProgress = styled(Progress)`

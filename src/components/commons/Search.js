@@ -34,7 +34,7 @@ const StyledSearch = styled(CommonInput)`
 
 const SearchIcon = styled(SearchOutlined)`
   color: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   position: absolute;
   z-index: 10;
   ${props =>

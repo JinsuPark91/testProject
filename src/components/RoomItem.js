@@ -80,7 +80,7 @@ const StyledItem = styled(Item)`
 const UnreadCount = styled.div`
   background: red;
   color: white;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   padding: 0 5px;
   border-radius: 10px;

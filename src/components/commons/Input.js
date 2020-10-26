@@ -12,7 +12,7 @@ const StyledInput = styled(Input)`
   width: 100%;
   border: 1px solid #c6ced6;
   border-radius: 25px;
-  font-size: 12px;
+  font-size: 0.75rem;
   height: 30px;
   color: #3b3b3b;
   box-shadow: none !important;
@@ -72,7 +72,7 @@ const righticoncss = `
   position: absolute;
   margin-top: 0.125rem;
   margin-left: -1.75rem;
-  font-size: 26px;
+  font-size: 1.625rem;
   cursor: pointer;
 `;
 const CheckedIcon = styled(CheckCircleOutlined)`
@@ -86,7 +86,7 @@ const AlertIcon = styled(ExclamationCircleOutlined)`
 
 const PasswordVisibleIcon = styled(EyeOutlined)`
   position: absolute;
-  font-size: 20px;
+  font-size: 1.25rem;
   ${props => css`
     margin-left: ${-props.numberofrighticons * 26}px;
   `}
@@ -97,7 +97,7 @@ const PasswordVisibleIcon = styled(EyeOutlined)`
 
 const PasswordInvisibleIcon = styled(EyeInvisibleOutlined)`
   position: absolute;
-  font-size: 20px;
+  font-size: 1.25rem;
   ${props => css`
     margin-left: ${-props.numberofrighticons * 26}px;
   `}

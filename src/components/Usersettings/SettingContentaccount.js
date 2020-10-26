@@ -10,14 +10,14 @@ const AccountBordertop = styled.div`
   display: flex;
   border-top: 1px solid;
   border-top-color: #d8d8d8;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: bold;
   font-color: #777777;
 `;
 
 const Accounttext = styled.div`
   display: flex;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-color: #000000;
 `;
 

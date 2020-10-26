@@ -340,7 +340,7 @@ const Text = styled.span`
   display: flex;
   align-items: center;
   color: white;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
 `;
 
@@ -439,13 +439,13 @@ const UserInfoItem = styled.div`
   display: flex;
   align-items: center;
   color: white;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
   margin-top: 1.25rem;
   height: 30px;
 `;
 const BigText = styled(Text)`
-  font-size: 30px;
+  font-size: 1.875rem;
 `;
 
 const ButtonContainer = styled.div`

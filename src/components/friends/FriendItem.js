@@ -117,7 +117,7 @@ const TextWrapper = styled.div`
 `;
 
 const TitleForName = styled(Title)`
-  font-size: 13px !important;
+  font-size: 0.8125rem !important;
   margin-bottom: 0 !important;
 `;
 

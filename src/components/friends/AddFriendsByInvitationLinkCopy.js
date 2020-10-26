@@ -10,7 +10,7 @@ const { Paragraph, Title, Text } = Typography;
 
 const InvitedFriendsText = styled(Text)`
   color: #6c56e5;
-  font-size: 13px;
+  font-size: 0.8125rem;
 `;
 
 function AddFriendsByInvitationLinkCopy() {

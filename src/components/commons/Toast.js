@@ -60,13 +60,13 @@ const ToastWrapper = styled.div`
 const ToastContent = styled.div`
   margin: 0.375rem;
   line-height: 18px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #ffffff;
 `;
 
 const ToastClose = styled(CloseOutlined)`
   cursor: pointer;
-  font-size: 10.9px;
+  font-size: 0.6875rem;
 `;
 
 /**

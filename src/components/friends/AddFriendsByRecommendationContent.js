@@ -9,11 +9,11 @@ import noneRecommendFriendImage from '../../assets/none_recommend_friend.svg';
 const { Title, Text } = Typography;
 
 const RecommendTitle = styled(Title)`
-  font-size: 13px !important;
+  font-size: 0.8125rem !important;
 `;
 
 const RecommendSubTitle = styled(Text)`
-  font-size: 12px !important;
+  font-size: 0.75rem !important;
   color: #8d8d8d;
 `;
 

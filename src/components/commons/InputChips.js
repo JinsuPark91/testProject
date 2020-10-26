@@ -29,7 +29,7 @@ const StyledInputChipsWrapper = styled.div`
       border-radius: 25px;
     `}
   padding: 1px 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3b3b3b;
   align-items: center;
   &::placeholder {

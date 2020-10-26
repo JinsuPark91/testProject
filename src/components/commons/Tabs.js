@@ -24,7 +24,7 @@ const TabsType1 = styled(Tabs)`
     justify-content: center;
     margin: 0;
     background: transparent;
-    font-size: 12px;
+    font-size: 0.75rem;
 
     .ant-tabs-tab-btn {
       color: #777777;
@@ -70,7 +70,7 @@ const TabsType2 = styled(Tabs)`
     border-radius: 27.5px;
     justify-content: center;
     background: transparent;
-    font-size: 12px;
+    font-size: 0.75rem;
 
     .ant-tabs-tab-btn {
       color: #777777;
