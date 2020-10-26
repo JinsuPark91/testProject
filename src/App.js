@@ -27,6 +27,9 @@ function App() {
         setIsHydrating(true);
       })
       .catch(e => console.error(e));
+
+    document.body.style.fontSize = `${global.screen.width / 13.66}%`;
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
