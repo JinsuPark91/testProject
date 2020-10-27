@@ -7,7 +7,7 @@ import FriendItem from './FriendItem';
 const { Text } = Typography;
 
 const Wrapper = styled.div`
-  margin: 0 0.75rem 4px 0.75rem;
+  margin: 0 0.75rem 0.25rem 0.75rem;
 `;
 
 const Centered = styled(Col)`

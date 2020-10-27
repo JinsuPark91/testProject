@@ -287,7 +287,7 @@ const LeftSide = styled.div`
 
 const Header = styled.div`
   display: flex;
-  height: 60px;
+  height: 3.188rem;
   align-items: center;
   border-bottom: 1px solid #dddddd;
 `;

@@ -6,7 +6,6 @@ import {
   MobileOutlined,
   PhoneOutlined,
   MailOutlined,
-  MessageOutlined,
   EditOutlined,
   CameraOutlined,
   PictureOutlined,
@@ -14,6 +13,13 @@ import {
 } from '@ant-design/icons';
 import { Button, Input, Dropdown, Menu, Modal } from 'antd';
 import { useCoreStores } from 'teespace-core';
+import friendsIcon from '../assets/ts_friends.svg'
+import profileEditIcon from '../assets/ts_profile_edit.svg'
+import teeMeetingIcon from '../assets/ts_TeeMeeting.svg'
+import tsOfficeIcon from '../assets/ts_office.svg'
+import tsCallIcon from '../assets/ts_call.svg'
+import tsPhoneIcon from '../assets/ts_phone.svg'
+import tsMailIcon from '../assets/ts_mail.svg'
 
 const IS_LOCAL = true;
 
@@ -176,17 +182,17 @@ const Profile = ({
       {showSider && (
         <Sidebar>
           <StyledButton>
-            <MessageOutlined style={{ fontSize: '30px' }} />
+            <FriendsIcon/>
             <Text>{isMyId() ? `나와의 Talk` : `1:1 Talk`}</Text>
           </StyledButton>
           {isMyId() ? (
             <StyledButton onClick={handleChangeMode}>
-              <EditOutlined style={{ fontSize: '30px' }} />
+              <StyleIcon iconimg="profile"/>
               <Text>프로필 편집</Text>
             </StyledButton>
           ) : (
             <StyledButton onClick={handleMeetingClick}>
-              <VideoCameraOutlined style={{ fontSize: '30px' }} />
+              <StyleIcon iconimg="meeting"/>
               <Text>1:1 Meeting</Text>
             </StyledButton>
           )}
@@ -249,15 +255,15 @@ const Profile = ({
             </Dropdown>
           )}
         </UserImageWrapper>
-        <BigText style={{ marginTop: '1.25rem' }}>{profile?.name}</BigText>
-        <Text>{`(${profile?.loginId}@tmax.teepsace.net)`}</Text>
+        <BigText>{profile?.name}</BigText>
+        <UserEmailText>{`(${profile?.loginId}@tmax.teepsace.net)`}</UserEmailText>
         <UserInfoList>
           <UserInfoItem>
-            <ContainerOutlined style={{ marginRight: '1.25rem' }} />
+            <StyleOfficeIcon iconimg="address"/>
             {profile?.fullCompanyJob}
           </UserInfoItem>
           <UserInfoItem>
-            <MobileOutlined style={{ marginRight: '1.25rem' }} />
+            <StyleOfficeIcon iconimg="company"/>
             {isEditMode ? (
               <Input
                 onChange={e => {
@@ -271,7 +277,7 @@ const Profile = ({
             )}
           </UserInfoItem>
           <UserInfoItem>
-            <PhoneOutlined style={{ marginRight: '1.25rem' }} />
+            <StyleOfficeIcon iconimg="phone"/>
             {isEditMode ? (
               <Input
                 onChange={e => {
@@ -285,7 +291,7 @@ const Profile = ({
             )}
           </UserInfoItem>
           <UserInfoItem>
-            <MailOutlined style={{ marginRight: '1.25rem' }} />
+            <StyleOfficeIcon iconimg="email"/>
             {profile?.email}
           </UserInfoItem>
         </UserInfoList>
@@ -325,7 +331,7 @@ const Sidebar = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: ${props => (props.isVertical ? '100%' : '250px')};
+  width: ${props => (props.isVertical ? '100%' : '9.38rem')};
   height: ${props => (props.isVertical ? '200px' : '100%')};
   background: rgba(0, 0, 0, 0.3);
 `;
@@ -339,8 +345,18 @@ const StyledUpload = styled(Upload)`
 const Text = styled.span`
   display: flex;
   align-items: center;
-  color: white;
-  font-size: 1.25rem;
+  color: #fff;
+  font-size: 0.81rem;
+  font-weight: 600;
+`;
+
+const UserEmailText = styled(Text)`
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+  line-height: 1.25rem;
+  color: rgba(255,255,255,0.7);
+  font-size: 0.875rem;
   font-weight: 600;
 `;
 
@@ -353,7 +369,7 @@ const ImageChangeButton = styled(Text)`
   background: black;
   border-radius: 50%;
   position: absolute;
-
+  
   &:hover {
     background: rgba(90, 95, 255);
     cursor: pointer;
@@ -392,13 +408,17 @@ const StyledButton = styled(Text)`
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  width: 200px;
-  height: 200px;
-  margin-top: 1.25rem;
-  border-radius: 10px;
-
+  width: 5.38rem;
+  height: 5.38rem;
+  margin-top: 3rem;
+  &:first-of-type {
+    margin-top: 0;
+  }
   &:hover {
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255,255,255,0.20);
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.40);
+    border-radius: 4px;
+    border-radius: 4px;
     cursor: pointer;
   }
 `;
@@ -418,14 +438,14 @@ const UserImageWrapper = styled.div`
   position: relative;
   align-items: center;
   justify-content: center;
-  width: 210px;
-  height: 210px;
-  background: white;
+  width: 7.5rem;
+  height: 7.5rem;
+  background: #fff;
   border-radius: 50%;
 `;
 const UserImage = styled.img`
-  width: 200px;
-  height: 200px;
+  width: 6.88rem;
+  height: 6.88rem;
   border-radius: 50%;
 `;
 
@@ -438,14 +458,19 @@ const UserInfoList = styled.div`
 const UserInfoItem = styled.div`
   display: flex;
   align-items: center;
-  color: white;
-  font-size: 1.25rem;
+  color: #fff;
+  line-height: 1.25rem;
+  font-size: 0.88rem;
   font-weight: 600;
-  margin-top: 1.25rem;
-  height: 30px;
+  margin-top: 0.88rem;
+  &:first-of-type {
+    margin-top: 4.38rem;
+  }
 `;
 const BigText = styled(Text)`
-  font-size: 1.875rem;
+  margin-top: 0.88rem;
+  line-height: 2.25rem;
+  font-size: 1.5rem;
 `;
 
 const ButtonContainer = styled.div`
@@ -454,4 +479,68 @@ const ButtonContainer = styled.div`
   display: flex;
 `;
 
+const FriendsIcon = styled.span`
+  display: inline-block;
+  width: 2.75rem;
+  height: 2.75rem;
+  background-image: url(${friendsIcon});
+  background-repeat: no-repeat;
+  background-size: 2.75rem 2.75rem;
+  
+`
+
+const StyleIcon = styled.span`
+  display: inline-block;
+  width: 2.13rem;
+  height: 2.13rem;
+  margin-bottom: 0.25rem;
+  background-repeat: no-repeat;
+  background-size: 2.13rem 2.13rem;
+  ${props => {
+    switch (props.iconimg) {
+      case 'profile':
+      default:
+        return css`
+          background-image: url(${profileEditIcon});
+        `;
+
+      case 'meeting':
+        return css`
+          background-image: url(${teeMeetingIcon});
+        `;
+    }
+  }}
+`
+const StyleOfficeIcon = styled.span`
+  display: inline-block;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.75rem;
+  background-repeat: no-repeat;
+  background-size: 1.25rem 1.25rem;
+  ${props => {
+    switch (props.iconimg) {
+      case 'address':
+      default:
+        return css`
+          background-image: url(${tsOfficeIcon});
+        `;
+
+      case 'company':
+        return css`
+          background-image: url(${tsCallIcon});
+        `;
+
+      case 'phone':
+      return css`
+          background-image: url(${tsPhoneIcon});
+      `;
+
+      case 'email':
+      return css`
+         background-image: url(${tsMailIcon});
+      `;
+    }
+  }}
+`
 export default Profile;

@@ -19,7 +19,7 @@ const GlobalStyle = createGlobalStyle`
       left: 10px !important;
       top: 0px !important;
       transform-origin: 50% 8.5938px !important;
-      margin-top: -8px;
+      margin-top: -0.5rem;
 
       .ant-tooltip-arrow {
           top: 25px;
