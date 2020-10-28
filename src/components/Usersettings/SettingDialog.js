@@ -1,6 +1,6 @@
 import React, { Component, useState, useEffect, useRef } from 'react';
-import { Layout, Menu, Button, Form } from 'antd';
-import { Dialog, ContentWrapper } from 'teespace-core';
+import { Layout, Menu } from 'antd';
+import { Dialog, ContentWrapper, Button, Form } from 'teespace-core';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import SettingContentcommon from './SettingContentcommon';
@@ -13,8 +13,6 @@ import Settingsave from './Settingsave';
 import { useStore } from '../../stores';
 // import SettingContent6 from './SettingContent6';
 import TermsFooter from '../Login/TermsFooter';
-import { Button, Form } from 'teespace-core';
-
 
 const Headerwords = styled.div`
   display: flex;
@@ -66,8 +64,9 @@ function SettingDialog(props) {
         <>
           {!buttonFooter && <TermsFooter />}
 
-          {buttonFooter && <Settingsave form={form} onClick={() => setSelectedKey('4')}
- ></Settingsave>}
+          {buttonFooter && (
+            <Settingsave form={form} onClick={() => setSelectedKey('4')} />
+          )}
         </>
       }
       title="설정"
@@ -143,7 +142,7 @@ function SettingDialog(props) {
                     form={form}
                     footonChange={() => setbuttonFooter(false)}
                     onClick={() => setSelectedKey('2')}
-                  ></SettingContentaccountedit>
+                  />
                 )}
                 {selectedKey === '4' && (
                   <SettingContentaccount onClick={() => setSelectedKey('3')} />
@@ -155,9 +154,7 @@ function SettingDialog(props) {
                 <SettingContent6></SettingContent6>
               )} */}
                 {selectedKey === '6' && (
-                  <SettingContentpasswordedit
-                  form={form}
-                  ></SettingContentpasswordedit>
+                  <SettingContentpasswordedit form={form} />
                 )}
               </div>
             </Content>
