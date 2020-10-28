@@ -102,7 +102,7 @@ const countries = [
   ['Guadeloupe', '+590'],
   ['Guam', '+1 671'],
   ['Guatemala', '+502'],
-  ['Guernsey', '+44'],
+  ['Guernsey', '+44 1481'],
   ['Guinea', '+224'],
   ['Guinea-Bissau', '+245'],
   ['Guyana', '+592'],
@@ -116,11 +116,12 @@ const countries = [
   ['Iran', '+98'],
   ['Iraq', '+964'],
   ['Ireland', '+353'],
+  ['Isle of Man', '+44 1624'],
   ['Israel', '+972'],
   ['Italy', '+39'],
   ['Jamaica', '+1 876'],
   ['Japan', '+81'],
-  ['Jersey', '+44'],
+  ['Jersey', '+44 1534'],
   ['Jordan', '+962'],
   ['Kazakhstan', '+7 6'],
   ['Kazakhstan', '+7 7'],
@@ -294,18 +295,16 @@ function AddFriendsByPhoneNumberHeader({
             style={{ width: 130 }}
             dropdownStyle={{ width: dropdownWidth }}
             optionLabelProp="title"
-          >
-            {countries.map(country => (
-              <Option
-                value={country[1].split(' ').join('')}
-                title={country[1]}
-                key={country[1]}
-              >
-                {country[1]} ({country[1].split(' ').join('').slice(1)}){' '}
-                {country[0]}
-              </Option>
-            ))}
-          </Select>
+            options={countries.map(country => ({
+              value: country[1].split(' ').join(''),
+              title: country[1],
+              key: country[0],
+              label: `${country[1]} (${country[1]
+                .split(' ')
+                .join('')
+                .slice(1)}) ${country[0]}`,
+            }))}
+          />
           <Input
             alert={
               phone && uiStore.addFriendByPhoneNumberButtonDisabled

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { Tabs } from 'antd';
 import styled from 'styled-components';
-import { EventBus, useCoreStores } from 'teespace-core';
+import { EventBus, useCoreStores, Button } from 'teespace-core';
 import { Talk } from 'teespace-talk-app';
 import { NoteApp, NoteIcon } from 'teespace-note-app';
 import { CalendarApp, CalendarIcon } from 'teespace-calendar-app';
@@ -17,7 +17,6 @@ import mailIcon from '../assets/icon_lnb_mail.svg';
 import chatIcon from '../assets/icon_lnb_chatting.svg';
 import friendIcon from '../assets/icon_lnb_friend.svg';
 import './mainPage.css';
-import CommonButton from '../components/commons/Button';
 import SettingDialog from '../components/Usersettings/SettingDialog';
 import { useStore } from '../stores';
 
@@ -250,9 +249,9 @@ function MainPage() {
             />
           </AppIconContainer>
           <UserMenu>
-            <CommonButton onClick={handleSettingDialogOpen}>
+            <Button onClick={handleSettingDialogOpen}>
               Profile 영역 (고정)
-            </CommonButton>
+            </Button>
             <SettingDialog />
           </UserMenu>
         </Header>

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'antd';
-import { Form, useCoreStores, Input } from 'teespace-core';
+import { Form, Button, useCoreStores, Input } from 'teespace-core';
 import { CheckOutlined } from '@ant-design/icons';
-
-import CommonButton from '../commons/Button';
 
 import { checkLoginIdLength, checkLoginIdValid } from '../../libs/Regex';
 
@@ -106,7 +104,7 @@ const NewIdInput = props => {
               }
             />
           </Col>
-          <CommonButton
+          <Button
             disabled={
               !(
                 lengthStatus === 'success' &&
@@ -118,7 +116,7 @@ const NewIdInput = props => {
             type="solid"
           >
             중복 확인
-          </CommonButton>
+          </Button>
         </Row>
       </Form.Item>
       <Row>

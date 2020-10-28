@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Button, Row } from 'antd';
+import { Row } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
-import { Input, Form, useCoreStores } from 'teespace-core';
+import { Input, Form, useCoreStores, Button } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import NewIdInput from './NewIDinput';
 import NewPasswordInput from './NewPasswordInput';
-import CommonButton from '../commons/Button';
 import AuthMobileInput from './AuthMobileInput';
 import NewEmailInput from './NewEmailInput';
 import { checkNameValid, checkAuthNumber } from '../../libs/Regex';
@@ -184,9 +183,9 @@ const SignupFormContent = () => {
         />
 
         <Form.Item {...tailFormItemLayout}>
-          <CommonButton type="solid" htmlType="submit">
+          <Button type="solid" htmlType="submit">
             가입 완료
-          </CommonButton>
+          </Button>
         </Form.Item>
       </Form>
     </CommonContent>

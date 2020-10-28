@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { List } from 'react-virtualized';
 import { Row, Col, Typography } from 'antd';
@@ -15,6 +15,17 @@ const Centered = styled(Col)`
 `;
 
 function AddFriendsByOrganizationContent({ orgUserList = [] }) {
+  const rowRender = useCallback(
+    ({ index, key, style }) => (
+      <FriendItem
+        style={style}
+        friendInfo={orgUserList[index]}
+        key={key}
+        mode="addFriend"
+      />
+    ),
+    [orgUserList],
+  );
   return (
     <Wrapper>
       <Row align="middle" style={{ flexGrow: 1 }} justify="center">
@@ -26,14 +37,8 @@ function AddFriendsByOrganizationContent({ orgUserList = [] }) {
             height={orgUserList.length === 0 ? 0 : 324}
             width={636}
             rowHeight={54}
-            rowRenderer={({ index, key, style }) => (
-              <FriendItem
-                style={style}
-                friendInfo={orgUserList[index]}
-                key={key}
-                mode="addFriend"
-              />
-            )}
+            rowRenderer={rowRender}
+            scrollToIndex={0}
           />
         </Col>
         <Centered>
@@ -46,4 +51,4 @@ function AddFriendsByOrganizationContent({ orgUserList = [] }) {
   );
 }
 
-export default AddFriendsByOrganizationContent;
+export default React.memo(AddFriendsByOrganizationContent);

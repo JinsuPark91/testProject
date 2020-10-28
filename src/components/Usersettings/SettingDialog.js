@@ -1,5 +1,8 @@
 import React, { Component, useState, useEffect, useRef } from 'react';
 import { Layout, Menu, Button, Form } from 'antd';
+import { Dialog, ContentWrapper } from 'teespace-core';
+import styled from 'styled-components';
+import { useObserver } from 'mobx-react';
 import SettingContentcommon from './SettingContentcommon';
 import SettingContentalarm from './SettingContentalarm';
 import SettingContentaccount from './SettingContentaccount';
@@ -7,12 +10,9 @@ import SettingContentaccountedit from './SettingContentaccountedit';
 import SettingContentpassword from './SettingContentpassword';
 import SettingContentpasswordedit from './SettingContentpasswordedit';
 import Settingsave from './Settingsave';
-import CommonDialog, { ContentWrapper } from '../commons/Dialog';
 import { useStore } from '../../stores';
 // import SettingContent6 from './SettingContent6';
 import TermsFooter from '../Login/TermsFooter';
-import styled from 'styled-components';
-import { useObserver } from 'mobx-react';
 
 const Headerwords = styled.div`
   display: flex;
@@ -40,7 +40,7 @@ const StyledButton = styled(Button)`
 const { Sider, Content } = Layout;
 
 function SettingDialog(props) {
-  const {selectedKeyA}=props
+  const { selectedKeyA } = props;
   const [selectedKey, setSelectedKey] = useState(selectedKeyA);
   const { uiStore } = useStore();
   const [settingform] = Form.useForm();
@@ -56,15 +56,15 @@ function SettingDialog(props) {
   };
 
   return useObserver(() => (
-    <CommonDialog
+    <Dialog
       onCancel={handleSettingDialogClose}
       size="large"
       visible={uiStore.visibleSettingDialog}
       footer={
         <>
-          {!buttonFooter && <TermsFooter></TermsFooter>}
+          {!buttonFooter && <TermsFooter />}
 
-          {buttonFooter && <Settingsave form={form}></Settingsave>}
+          {buttonFooter && <Settingsave form={form} />}
         </>
       }
       title="설정"
@@ -133,40 +133,30 @@ function SettingDialog(props) {
                 {/* {selectedKey === '1' && (
                     <SettingContentcommon></SettingContentcommon>
                   )} */}
-                {selectedKey === '2' && (
-                  <SettingContentalarm
-                  form={form}>
-                  </SettingContentalarm>
-                )}
+                {selectedKey === '2' && <SettingContentalarm form={form} />}
                 {selectedKey === '3' && (
                   <SettingContentaccountedit
                     onChange={() => setbuttonFooter(true)}
                     form={form}
                     footonChange={() => setbuttonFooter(false)}
-                  ></SettingContentaccountedit>
+                  />
                 )}
                 {selectedKey === '4' && (
-                  <SettingContentaccount
-                    onClick={() => setSelectedKey('3')}
-                  ></SettingContentaccount>
+                  <SettingContentaccount onClick={() => setSelectedKey('3')} />
                 )}
                 {selectedKey === '5' && (
-                  <SettingContentpassword
-                    onClick={() => setSelectedKey('6')}
-                  ></SettingContentpassword>
+                  <SettingContentpassword onClick={() => setSelectedKey('6')} />
                 )}
                 {/* {this.state.selectedKey === '6' && (
                 <SettingContent6></SettingContent6>
               )} */}
-                {selectedKey === '6' && (
-                  <SettingContentpasswordedit></SettingContentpasswordedit>
-                )}
+                {selectedKey === '6' && <SettingContentpasswordedit />}
               </div>
             </Content>
           </Layout>
         </div>
       </ContentWrapper>
-    </CommonDialog>
+    </Dialog>
   ));
 }
 

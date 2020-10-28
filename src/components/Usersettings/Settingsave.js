@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import CommonDialog, { ContentWrapper } from '../commons/Dialog';
 import { useObserver } from 'mobx-react';
+import { useCoreStores, Toast, Message, Button } from 'teespace-core';
+
 import { useStore } from '../../stores';
-import { useCoreStores } from 'teespace-core';
-import { Toast, Message, Button } from 'teespace-core';
 
 function Settingsave(props) {
   const [canclevisible, setcanclevisible] = useState(false);

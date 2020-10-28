@@ -40,7 +40,6 @@ function AddFriendsByInvitationLinkCopy() {
           <CopyToClipboard
             text={friendStore.userInvitationLink}
             onCopy={() => setVisibleToast(true)}
-            style={{ width: 120 }}
           >
             <Button type="solid">초대 링크 복사</Button>
           </CopyToClipboard>

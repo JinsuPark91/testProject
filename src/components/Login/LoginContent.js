@@ -24,7 +24,7 @@ const tailLayout = {
 const LoginForm = styled.div`
   margin-bottom: 0.375rem;
   .ant-form {
-    font-size: 0.75rem; 
+    font-size: 0.75rem;
     line-height: 1.88rem;
     label {
       vertical-align: middle;
@@ -37,8 +37,8 @@ const LoginForm = styled.div`
     }
   }
   .ant-form-item {
-    font-size: 0.75rem; 
-    margin-bottom: 0.375rem;;
+    font-size: 0.75rem;
+    margin-bottom: 0.375rem;
     & + .ant-form-item {
       margin-bottom: 0.4375rem;
     }
@@ -60,7 +60,7 @@ const FlexBox = styled.div`
     .ant-checkbox {
       & + span {
         padding-right: 0;
-      } 
+      }
     }
     input[type='checkbox'] {
       width: 16px;
@@ -143,16 +143,13 @@ const LoginContent = () => {
             <Checkbox shape="round">로그인 상태 유지</Checkbox>
           </Form.Item>
         </FlexBox>
-          {isLoading === true && <span>로그인 중</span>}
-          {isLoading === false && errorResult && (
-            <span>로그인 실패! 사유: {errorResult}</span>
-          )}
-          {isLoading === false && loginResult && <span>로그인 성공</span>}
+        {isLoading === true && <span>로그인 중</span>}
+        {isLoading === false && errorResult && (
+          <span>로그인 실패! 사유: {errorResult}</span>
+        )}
+        {isLoading === false && loginResult && <span>로그인 성공</span>}
         <Form.Item {...tailLayout} noStyle>
-          <Button
-            type="solid"
-            htmlType="submit"
-          >
+          <Button type="solid" htmlType="submit">
             로그인
           </Button>
         </Form.Item>

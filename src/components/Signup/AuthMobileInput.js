@@ -1,9 +1,7 @@
-import { Button, Row, Col } from 'antd';
+import { Row, Col } from 'antd';
 import React, { useState } from 'react';
-import { Form, Input, useCoreStores } from 'teespace-core';
+import { Form, Input, Button, Toast, useCoreStores } from 'teespace-core';
 import { checkPhoneValid, checkAuthNumber } from '../../libs/Regex';
-import CommonButton from '../commons/Button';
-import CommonToast from '../commons/Toast';
 
 const AuthMobileInput = props => {
   const [validStatus, setValidStatus] = useState('error');
@@ -77,22 +75,22 @@ const AuthMobileInput = props => {
               placeholder="'-'없이 숫자만 입력해 주세요."
             />
           </Col>
-          <CommonButton
+          <Button
             type="solid"
             disabled={validStatus !== 'success'}
             onClick={handleOnClickPhoneButton}
           >
             인증 요청
-          </CommonButton>
+          </Button>
         </Row>
       </Form.Item>
-      <CommonToast
+      <Toast
         visible={toastVisible}
         onClose={() => setToastVisible(false)}
         timeoutMs={timeoutMs}
       >
         인증번호가 발송되었습니다.
-      </CommonToast>
+      </Toast>
       {checkDuplicationPhone === 'RST0001' && (
         <>
           <Form.Item

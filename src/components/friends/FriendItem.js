@@ -16,13 +16,13 @@ const { Title } = Typography;
 const GlobalStyle = createGlobalStyle`
   .teespace-common {
     &.teespace-me-tooltip {
-      left: 10px !important;
-      top: 0px !important;
-      transform-origin: 50% 8.5938px !important;
+      left: 0.625rem !importantStyled;
+      top: 0.2rem !important;
+      transform-origin: 50% 0.5371rem !important;
       margin-top: -0.5rem;
 
       .ant-tooltip-arrow {
-          top: 25px;
+          top: 1.26rem;
           .ant-tooltip-arrow-content {
               transform: translateY(-6.53553391px) rotate(45deg);
           }
@@ -40,11 +40,14 @@ const GlobalStyle = createGlobalStyle`
 `;
 const FriendItemWrapper = styled.div`
   /* 조직도 조회, 추천친구 스타일 */
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   ${props =>
     (props.mode === 'addFriend' || props.mode === 'recommended') &&
     css`
       display: flex;
-      height: 54px;
+      height: 3.375rem;
       flex-direction: row;
       background-color: transparent;
       border-bottom: 1px solid #e3e7eb;
@@ -71,7 +74,7 @@ const FriendItemWrapper = styled.div`
   ${props =>
     (props.mode === 'me' || props.mode === 'friend') &&
     css`
-      height: 54px;
+      height: 3.375rem;
       display: flex;
       flex-direction: row;
       padding: 0.625rem;
@@ -79,13 +82,13 @@ const FriendItemWrapper = styled.div`
       ${props.isActive
         ? css`
             background-color: #eaeafb;
-            border-radius: 27.5px;
+            border-radius: 1.71875rem;
           `
         : ''}
 
       &:hover {
         background-color: #eaeafb;
-        border-radius: 27.5px;
+        border-radius: 1.71875rem;
       }
 
       /* icon */
@@ -103,6 +106,9 @@ const FriendItemWrapper = styled.div`
 `;
 
 const ProfileWrapper = styled.div`
+  align-items: center;
+  display: flex;
+
   /* me badge */
   .ant-badge-count {
     margin-left: -2.125rem;
@@ -114,14 +120,28 @@ const TextWrapper = styled.div`
   flex-grow: 1;
   display: flex;
   align-items: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 const TitleForName = styled(Title)`
   font-size: 0.8125rem !important;
   margin-bottom: 0 !important;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
-const ActionWrapper = styled.div``;
+const ActionWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const StyledAvatar = styled(Avatar)`
+  width: 2.5rem;
+  height: 2.5rem;
+`;
 
 const DropdownMenu = React.memo(
   ({
@@ -141,26 +161,24 @@ const DropdownMenu = React.memo(
     </Menu>
   ),
 );
-const Profile = React.memo(
-  ({ mode, imageSize, tooltipPopupContainer, profilePhoto }) => {
-    return (
-      <>
-        {mode === 'me' && (
-          <Tooltip
-            overlayClassName="teespace-common teespace-me-tooltip"
-            title="나"
-            getPopupContainer={tooltipPopupContainer}
-            placement="top"
-            visible
-          >
-            <Avatar size={imageSize} src={`/${profilePhoto}`} />
-          </Tooltip>
-        )}
-        {mode !== 'me' && <Avatar size={imageSize} src={`/${profilePhoto}`} />}
-      </>
-    );
-  },
-);
+const Profile = React.memo(({ mode, tooltipPopupContainer, profilePhoto }) => {
+  return (
+    <>
+      {mode === 'me' && (
+        <Tooltip
+          overlayClassName="teespace-common teespace-me-tooltip"
+          title="나"
+          getPopupContainer={tooltipPopupContainer}
+          placement="top"
+          visible
+        >
+          <StyledAvatar src={`/${profilePhoto}`} />
+        </Tooltip>
+      )}
+      {mode !== 'me' && <StyledAvatar src={`/${profilePhoto}`} />}
+    </>
+  );
+});
 
 const FriendAction = React.memo(
   ({ mode, menu, handleDropdownVisible, handleTalkWindowOpen }) => {
@@ -285,7 +303,6 @@ const TextComponent = React.memo(({ displayName }) => (
  * @param {Object} props
  * @param {('me'|'friend'|'readOnly'|'addFriend'|'recommended')} props.mode
  * @param {function} props.tooltipPopupContainer
- * @param {number} props.imageSize
  * @param {object} props.friendInfo
  * @param {string} props.friendInfo.friendId
  * @param {string} props.friendInfo.friendNick
@@ -295,7 +312,6 @@ const TextComponent = React.memo(({ displayName }) => (
 const FriendItem = React.memo(
   ({
     mode = 'friend', // 'me', 'friend', 'readOnly', 'addFriend', 'recommended'
-    imageSize = 34,
     isActive = false,
     onClick,
     tooltipPopupContainer = () => document.body,
@@ -497,7 +513,6 @@ const FriendItem = React.memo(
         <ProfileWrapper>
           <Profile
             mode={mode}
-            imageSize={imageSize}
             tooltipPopupContainer={tooltipPopupContainer}
             profilePhoto={profilePhoto || defaultPhotoUrl}
           />

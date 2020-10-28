@@ -32,7 +32,7 @@ const StyledParagraph = styled(Paragraph)`
 const NegativeMargin = styled.div`
   margin: 0 -1rem;
   background-color: #f5f5fb;
-  padding: 1rem ;
+  padding: 1rem;
   overflow: auto;
   max-height: 154px;
 `;

@@ -22,6 +22,7 @@ function AddFriendsByOrganizationHeader({
   orgUserSize,
   onInputChange,
   onDropdownChange,
+  overwrittenValue,
 }) {
   return (
     <>
@@ -36,7 +37,8 @@ function AddFriendsByOrganizationHeader({
       <Wrapper>
         <OrganizationDropdown
           orgList={orgList}
-          handleChange={onDropdownChange}
+          onChange={onDropdownChange}
+          overwrittenValue={overwrittenValue}
         />
         <UserCounter>{orgUserSize}명</UserCounter>
       </Wrapper>

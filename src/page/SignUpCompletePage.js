@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import signupCompleteImage from '../assets/sign_in_complete.png';
-import CommonButton from '../components/commons/Button';
+import { Button } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
+import signupCompleteImage from '../assets/sign_in_complete.png';
 
 const FormCotentWrapper = styled.div`
   display: flex;
@@ -35,9 +35,9 @@ function SignUpCompletePage() {
         <div>TeeSpace 회원이 되신 걸 축하합니다.</div>
         <div style={{ height: '2.5rem' }} />
         <div>아이디: {getCreateId}</div>
-        <CommonButton type="solid" onClick={handleOnClick}>
+        <Button type="solid" onClick={handleOnClick}>
           로그인하고 TeeSpace시작
-        </CommonButton>
+        </Button>
       </FormCotentWrapper>
     </div>
   );

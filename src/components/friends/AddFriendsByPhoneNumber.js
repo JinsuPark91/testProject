@@ -9,15 +9,18 @@ function AddFriendsByPhoneNumber() {
   const [friendNick, setFriendNick] = useState('');
 
   const { uiStore } = useStore();
-  const handlePhoneChange = e => {
-    const isNum = /^\d+$/.test(e.target.value) || e.target.value === '';
-    setPhoneNumber(e.target.value);
-    if (isNum) {
-      uiStore.setAddFriendByPhoneNumberButtonDisabled(false);
-    } else {
-      uiStore.setAddFriendByPhoneNumberButtonDisabled(true);
-    }
-  };
+  const handlePhoneChange = useCallback(
+    e => {
+      const isNum = /^\d+$/.test(e.target.value) || e.target.value === '';
+      setPhoneNumber(e.target.value);
+      if (isNum) {
+        uiStore.setAddFriendByPhoneNumberButtonDisabled(false);
+      } else {
+        uiStore.setAddFriendByPhoneNumberButtonDisabled(true);
+      }
+    },
+    [uiStore],
+  );
 
   const handleFriendNickChange = useCallback(
     e => setFriendNick(e.target.value),

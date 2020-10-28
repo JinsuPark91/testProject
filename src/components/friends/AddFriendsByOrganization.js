@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Divider } from 'antd';
 import AddFriendsByOrganizationHeader from './AddFriendsByOrganizationHeader';
 import AddFriendsByOrganizationContent from './AddFriendsByOrganizationContent';
+import OrganizationDropdown from './OrganizationDropdown';
 
 const NegativeMargin = styled.div`
   margin: -1rem;
@@ -14,28 +15,36 @@ const StyledDivider = styled(Divider)`
   margin: 0;
 `;
 function AddFriendsByOrganization() {
-  const [searchedUserList, setSearchedUserList] = useState([]);
-
   const { orgStore, userStore } = useCoreStores();
+  const [searchedUserList, setSearchedUserList] = useState([]);
+  const [dropdownDisplayValue, setDropdownDisplayValue] = useState('');
 
-  useEffect(() => {}, [orgStore]);
+  // dropdown의 item을 클릭했을 때
+  const handleDropdownChange = useCallback(async () => {
+    setSearchedUserList(orgStore.userOrgUserList);
+    setDropdownDisplayValue('');
+  }, [orgStore]);
 
+  // 입력창에 입력했을 때
   const handleInputChange = useCallback(
     async e => {
-      const userList = await userStore.searchUsersByKeyword({
-        keyword: e.target.value,
-      });
-      setSearchedUserList(userList);
+      if (e.target.value === '') {
+        setSearchedUserList(orgStore.userOrgUserList);
+        setDropdownDisplayValue('');
+      } else {
+        const userList = await userStore.searchUsersByKeyword({
+          keyword: e.target.value,
+        });
+        setSearchedUserList(userList);
+        if (userList.length) {
+          const { companyCode, departmentCode } = userList[0];
+          setDropdownDisplayValue(
+            OrganizationDropdown.valueCreator({ companyCode, departmentCode }),
+          );
+        }
+      }
     },
-    [userStore],
-  );
-
-  const handleDropdownChange = useCallback(
-    async value => {
-      const orgUserList = await orgStore.getOrgUserList(...JSON.parse(value));
-      setSearchedUserList(orgUserList);
-    },
-    [orgStore],
+    [orgStore, userStore],
   );
 
   return useObserver(() => (
@@ -45,6 +54,7 @@ function AddFriendsByOrganization() {
         orgUserSize={searchedUserList.length}
         onInputChange={handleInputChange}
         onDropdownChange={handleDropdownChange}
+        overwrittenValue={dropdownDisplayValue}
       />
       <StyledDivider />
       <AddFriendsByOrganizationContent orgUserList={searchedUserList} />

@@ -95,6 +95,7 @@ const FriendsLNBContent = React.forwardRef(
       setFriendActiveId(friendId);
     }, []);
 
+    console.log(userStore.myProfile);
     const renderEmptyContent = (
       <>
         <FrinedListBox>
