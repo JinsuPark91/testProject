@@ -16,7 +16,7 @@ const { Title } = Typography;
 const GlobalStyle = createGlobalStyle`
   .teespace-common {
     &.teespace-me-tooltip {
-      left: 0.625rem !importantStyled;
+      left: 0.625rem !important;
       top: 0.2rem !important;
       transform-origin: 50% 0.5371rem !important;
       margin-top: -0.5rem;
