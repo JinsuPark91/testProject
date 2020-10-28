@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Checkbox } from 'teespace-core';
-import { Form } from 'antd';
+import { Checkbox, Form } from 'teespace-core';
 
 
 function onChange(e) {

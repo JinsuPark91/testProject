@@ -13,6 +13,8 @@ import Settingsave from './Settingsave';
 import { useStore } from '../../stores';
 // import SettingContent6 from './SettingContent6';
 import TermsFooter from '../Login/TermsFooter';
+import { Button, Form } from 'teespace-core';
+
 
 const Headerwords = styled.div`
   display: flex;
@@ -64,7 +66,8 @@ function SettingDialog(props) {
         <>
           {!buttonFooter && <TermsFooter />}
 
-          {buttonFooter && <Settingsave form={form} />}
+          {buttonFooter && <Settingsave form={form} onClick={() => setSelectedKey('4')}
+ ></Settingsave>}
         </>
       }
       title="설정"
@@ -139,7 +142,8 @@ function SettingDialog(props) {
                     onChange={() => setbuttonFooter(true)}
                     form={form}
                     footonChange={() => setbuttonFooter(false)}
-                  />
+                    onClick={() => setSelectedKey('2')}
+                  ></SettingContentaccountedit>
                 )}
                 {selectedKey === '4' && (
                   <SettingContentaccount onClick={() => setSelectedKey('3')} />
@@ -150,7 +154,11 @@ function SettingDialog(props) {
                 {/* {this.state.selectedKey === '6' && (
                 <SettingContent6></SettingContent6>
               )} */}
-                {selectedKey === '6' && <SettingContentpasswordedit />}
+                {selectedKey === '6' && (
+                  <SettingContentpasswordedit
+                  form={form}
+                  ></SettingContentpasswordedit>
+                )}
               </div>
             </Content>
           </Layout>

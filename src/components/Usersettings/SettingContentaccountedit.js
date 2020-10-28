@@ -1,12 +1,12 @@
 import React, { Component, useState } from 'react';
-import { Image, Radio, Form, Upload, message } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { Image, Radio, Upload, message } from 'antd';
+import { CameraOutlined } from '@ant-design/icons';
 import SettingContentTitle from './SettingContentTitle';
 import Menudropdownnation from './Menudropdownnation';
 import Imageupload from './Imageupload';
 import { useCoreStores } from 'teespace-core';
-import { Dropdown, Menu, Input, Button } from 'teespace-core';
-import styled from 'styled-components';
+import { Dropdown, Menu, Input, Button, Form } from 'teespace-core';
+import styled, {css} from 'styled-components';
 
 const AccounteditBordertop = styled.div`
   display: flex;
@@ -15,6 +15,49 @@ const AccounteditBordertop = styled.div`
   font-size: 1.25rem;
   font-weight: bold;
   font-color: #777777;
+`;
+
+const ImageChangeButton = styled(Text)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background: black;
+  border-radius: 50%;
+  position: absolute;
+
+  &:hover {
+    background: rgba(90, 95, 255);
+    cursor: pointer;
+  }
+
+  ${props => {
+    switch (props.position) {
+      case 'tl':
+      default:
+        return css`
+          top: 10px;
+          left: 10px;
+        `;
+
+      case 'tr':
+        return css`
+          top: 10px;
+          right: 10px;
+        `;
+      case 'bl':
+        return css`
+          bottom: 10px;
+          left: 10px;
+        `;
+      case 'br':
+        return css`
+          bottom: 10px;
+          right: 10px;
+        `;
+    }
+  }}
 `;
 
 function onChange(e) {
@@ -45,6 +88,7 @@ function SettingContentaccountedit(props) {
 
   const handleFinish = values => {
     userStore.updateMyProfile({updatedInfo:values})
+
     // console.log(authStore.user);
     props.footonChange();
     console.log(values)
@@ -56,10 +100,18 @@ function SettingContentaccountedit(props) {
         title="계정정보변경"
         subTitle="TeeSpace 계정정보를 확인하고 최신 정보로 안전하게 관리하세요."
       ></SettingContentTitle>
-      <Image width={125} height={125} src={authStore.user.thumbPhoto} />
+      <Image width={125} height={125} src={"/"+userStore.getUserProfilePhoto({
+           userId: authStore.user.id,
+           size: 'medium',
+           isLocal: true,
+           thumbPhoto: null,
+         })} />
       <br />
+       {/* <ImageChangeButton position="br"> */}
+                
+              {/* </ImageChangeButton> */}
       <Dropdown overlay={menu}>
-        <Button type="solid">Click</Button>
+        <Button type="solid"><CameraOutlined /></Button>
       </Dropdown>
       {imageupload ? console.log('true') : console.log('false')}
       {authStore.user.name} , {authStore.user.nick} <br />, {authStore.user.id}
@@ -76,7 +128,7 @@ function SettingContentaccountedit(props) {
             국가 <Menudropdownnation onChange={onChange}></Menudropdownnation>
           </div>
         </Form.Item>
-        <Form.Item name="usercompanycall">
+        <Form.Item name="companyNum">
           <div>
             회사 번호{' '}
             <Input
@@ -115,7 +167,7 @@ function SettingContentaccountedit(props) {
         </Form.Item>
       </Form>
       <div>
-        소속회사/부서 {authStore.user.job}/{authStore.user.orgName}
+        소속회사/부서 {authStore.user.orgName}  / {authStore.user.departmentName}
       </div>
       <div>직위/직책 {authStore.user.position}</div>
       <div>

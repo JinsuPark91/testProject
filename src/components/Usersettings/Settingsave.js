@@ -9,7 +9,7 @@ function Settingsave(props) {
   const [canclevisible, setcanclevisible] = useState(false);
   const [savevisible, setsavevisible] = useState(false);
   const { authStore } = useCoreStores();
-  const { form } = props;
+  const { form, onClick } = props;
 
   return (
     <>
@@ -46,7 +46,9 @@ function Settingsave(props) {
           {
             onClick: () => {
               setcanclevisible(false);
-            },
+                onClick()
+            }
+            ,
             text: '나가기',
             type: 'solid',
           },

@@ -1,10 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { Space, Image } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import SettingContentTitle from './SettingContentTitle';
 import { useCoreStores } from 'teespace-core';
-import { Button, Input } from 'teespace-core';
+import { Button, Input, Form  } from 'teespace-core';
 import styled from 'styled-components';
+import SettingPasswordInput from './SettingPasswordInput';
+// import NewPasswordInput from '../Signup/NewPasswordInput';
 
 const AccountBordertop = styled.div`
   display: flex;
@@ -21,12 +23,46 @@ const Accounttext = styled.div`
   font-color: #000000;
 `;
 
+const formItemLayout = {
+  labelCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 8,
+    },
+  },
+  wrapperCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 16,
+    },
+  },
+};
+
 function onChange(e) {
   console.log('checked = ${e.target.checked}');
 }
 
 function SettingContentaccount(props) {
-  const { authStore } = useCoreStores();
+  const { authStore, userStore } = useCoreStores();
+  const [Checked, setChecked] = useState(false);
+  const [ CheckPassword, setCheckPassword ] = useState(true);
+
+  const handleCheckPassword = (values) => {
+    authStore
+      .checkAuth({loginId: userStore.myProfile.loginId, pw: values.password})
+      .then(x => {
+        x ? props.onClick() : setCheckPassword(false)
+      }       
+      );
+
+  };
+
+
+  console.log(authStore.checkAuth)
 
   return (
     <div>
@@ -34,12 +70,32 @@ function SettingContentaccount(props) {
         title="계정정보변경"
         subTitle="TeeSpace 계정정보를 확인하고 최신 정보로 안전하게 관리하세요."
       ></SettingContentTitle>
+
       <div>
-        {' '}
-        <Image width={125} height={125} src={authStore.user.thumbPhoto} />{' '}
+        {console.log(
+          userStore.getUserProfilePhoto({
+            userId: authStore.user.id,
+            size: 'medium',
+            isLocal: true,
+            thumbPhoto: null,
+          }),
+        )}
+        <Image
+          width={125}
+          height={125}
+          src={
+            '/' +
+            userStore.getUserProfilePhoto({
+              userId: authStore.user.id,
+              size: 'medium',
+              isLocal: true,
+              thumbPhoto: null,
+            })
+          }
+        />
         <br />
         {authStore.user.name}, {authStore.user.nick} <br />, {authStore.user.id}
-        {console.log(authStore.user)};
+        {/* {console.log(userStore.getUserProfilePhoto)}; */}
         <br />
         <br />
       </div>
@@ -48,7 +104,8 @@ function SettingContentaccount(props) {
         <div>
           국가 {authStore.user.nationalCode}
           <br />
-          회사{authStore.user.companyName}<br />
+          회사{authStore.user.companyNum}
+          <br />
           전화 {authStore.user.phone} <br />
           이메일{authStore.user.email}
         </div>
@@ -62,8 +119,8 @@ function SettingContentaccount(props) {
         <div>
           생년월일 {authStore.user.birthDate}
           <br />
-          소속회사/부서 
-          {authStore.user.orgName}
+          소속회사/부서
+          {authStore.user.orgName} / {authStore.user.departmentName}
           <br />
           직위/직책
           {authStore.user.position}
@@ -77,18 +134,42 @@ function SettingContentaccount(props) {
       </AccountBordertop>
       <div>뉴스레터, 프로모션 등 안내 메일 수신 동의 </div>
       <div>계정 정보를 변경하시려면 먼저 비밀번호를 입력해 주세요.</div>
-      비밀번호
+      {/* 비밀번호
       <Space direction="vertical">
         <Input
           defaultValue="this is password"
           getPopupContainer={() => {}}
-          onChange={function noRefCheck() {}}
+          onChange={(Checked) => {
+          setChecked(Checked);
+        }}
           type="password"
         />
-      </Space>
-      <Button {...props} type="system">
-        확인
-      </Button>
+      </Space> */}
+      <Form
+        {...formItemLayout}
+        initialValues={{
+          password: '',
+        }}
+        name="register"
+        scrollToFirstError
+        onFinish={handleCheckPassword}
+      >
+        <SettingPasswordInput
+          handleButtonDisabled={value => setChecked(value)}
+          alert={!CheckPassword && '비밀번호를 확인하세요'}
+        />
+
+        <Form.Item>
+        <Button
+          disabled={!Checked}
+          checked={CheckPassword}
+          htmlType="submit"
+          type="system"
+        >
+          확인
+        </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 }

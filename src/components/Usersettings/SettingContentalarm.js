@@ -1,8 +1,7 @@
 import React, { Component, useState, useRef } from 'react';
-import { Form } from 'antd';
 import SettingContentalarmtoggle from './SettingContentalarmtoggle';
 import SettingContentTitle from './SettingContentTitle';
-import { Switch } from 'teespace-core';
+import { Switch, Form } from 'teespace-core';
 import { useCoreStores } from 'teespace-core';
 
 function onChange(checked) {
@@ -36,23 +35,16 @@ function SettingContentalarm(props) {
         >
             <Switch defaultChecked onChange={(checked) => {
           setChecked(checked);
-          // form.submit();
-        }}                   />  
-               </Form.Item>
-               <br />
-            <br />
-            <br />    
-            {Checked ? (
+        }}/>  
+        </Form.Item>
+        {Checked ? (
               <SettingContentalarmtoggle 
-              // form={form}
               >
-
               </SettingContentalarmtoggle>
             ) : (
               '  '
             )}
-         
-      </Form>
+        </Form>
     </div>
   );
 }
