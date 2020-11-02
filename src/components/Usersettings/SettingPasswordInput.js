@@ -19,20 +19,15 @@ const SettingPasswordInput = ({ handleButtonDisabled, alert }) => {
   return (
     <>
       <div>비밀번호</div>
-      <Form.Item
-        noStyle
-        name="password"
-      >
+      <Form.Item noStyle name="password">
         <Input
           type="password"
           placement="topLeft"
           onChange={handleOnChangePw}
           value={password}
           alert={alert}
-                  />
+        />
       </Form.Item>
-     
-      
     </>
   );
 };

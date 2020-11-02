@@ -9,7 +9,19 @@ function Settingsave(props) {
   const [canclevisible, setcanclevisible] = useState(false);
   const [savevisible, setsavevisible] = useState(false);
   const { authStore } = useCoreStores();
-  const { form, onClick } = props;
+  const { form, onClick, selectedKey } = props;
+
+  const saveOut = props => {
+    if (selectedKey === '3') props.saveaccountOut();
+
+    if (selectedKey === '6') props.savepasswordOut();
+  };
+
+  const saveChange = props => {
+    if (selectedKey === '3') props.saveaccountChange();
+
+    if (selectedKey === '6') props.savepasswordChange();
+  };
 
   return (
     <>
@@ -18,14 +30,14 @@ function Settingsave(props) {
         onClick={() => {
           setsavevisible(true);
           form.current.submit();
+          saveChange(props);
         }}
       >
         변경사항 저장
       </Button>
-
       <Toast
         visible={savevisible}
-        timeoutMs={1000}
+        timeoutMs={3000}
         onClose={() => setsavevisible(false)}
       >
         {' '}
@@ -45,10 +57,8 @@ function Settingsave(props) {
         btns={[
           {
             onClick: () => {
-              setcanclevisible(false);
-                onClick()
-            }
-            ,
+              saveOut(props);
+            },
             text: '나가기',
             type: 'solid',
           },

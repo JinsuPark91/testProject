@@ -12,8 +12,7 @@ function SettingContentalarm(props) {
   const [Checked, setChecked] = useState(true);
   const { authStore } = useCoreStores();
   const { form } = props;
-  // const [alarmsettingform] = Form.useForm();
-  // const form = useRef(alarmsettingform);
+
 
   const handleFinish = values => {
     // ----Store.-------(values) ->toggle change store 참조

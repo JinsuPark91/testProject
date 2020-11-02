@@ -6,7 +6,7 @@ import Menudropdownnation from './Menudropdownnation';
 import Imageupload from './Imageupload';
 import { useCoreStores } from 'teespace-core';
 import { Dropdown, Menu, Input, Button, Form } from 'teespace-core';
-import styled, {css} from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const AccounteditBordertop = styled.div`
   display: flex;
@@ -68,6 +68,7 @@ function SettingContentaccountedit(props) {
   const { authStore, userStore } = useCoreStores();
   const { onChange, form } = props;
   const [imageupload, setimageupload] = useState(false);
+  const [savevisible, setsavevisible] = useState(true);
 
   function handleupload() {
     setimageupload(true);
@@ -86,12 +87,9 @@ function SettingContentaccountedit(props) {
     </Menu>
   );
 
-  const handleFinish = values => {
-    userStore.updateMyProfile({updatedInfo:values})
-
-    // console.log(authStore.user);
+  const handleFinish = async values => {
+    await userStore.updateMyProfile({ updatedInfo: values });
     props.footonChange();
-    console.log(values)
   };
 
   return (
@@ -100,18 +98,24 @@ function SettingContentaccountedit(props) {
         title="계정정보변경"
         subTitle="TeeSpace 계정정보를 확인하고 최신 정보로 안전하게 관리하세요."
       ></SettingContentTitle>
-      <Image width={125} height={125} src={"/"+userStore.getUserProfilePhoto({
-           userId: authStore.user.id,
-           size: 'medium',
-           isLocal: true,
-           thumbPhoto: null,
-         })} />
+      <Image
+        width={125}
+        height={125}
+        src={
+          '/' +
+          userStore.getUserProfilePhoto({
+            userId: authStore.user.id,
+            size: 'medium',
+            isLocal: true,
+            thumbPhoto: null,
+          })
+        }
+      />
       <br />
-       {/* <ImageChangeButton position="br"> */}
-                
-              {/* </ImageChangeButton> */}
       <Dropdown overlay={menu}>
-        <Button type="solid"><CameraOutlined /></Button>
+        <Button type="solid">
+          <CameraOutlined />
+        </Button>
       </Dropdown>
       {imageupload ? console.log('true') : console.log('false')}
       {authStore.user.name} , {authStore.user.nick} <br />, {authStore.user.id}
@@ -165,22 +169,25 @@ function SettingContentaccountedit(props) {
             />
           </div>
         </Form.Item>
+        <div>
+          소속회사/부서 {authStore.user.orgName} /{' '}
+          {authStore.user.departmentName}
+        </div>
+        <div>직위/직책 {authStore.user.position}</div>
+        <div>
+          서비스 이용 동의 <br />
+          <br />
+        </div>
+        <Form.Item name="agreement">
+          <div>
+            뉴스레터, 프로모션 등 안내 메일 수신 동의
+            <Radio.Group onChange={onChange}>
+              <Radio value={1}>동의함</Radio>
+              <Radio value={2}>동의하지 않음</Radio>{' '}
+            </Radio.Group>
+          </div>
+        </Form.Item>
       </Form>
-      <div>
-        소속회사/부서 {authStore.user.orgName}  / {authStore.user.departmentName}
-      </div>
-      <div>직위/직책 {authStore.user.position}</div>
-      <div>
-        서비스 이용 동의 <br />
-        <br />
-      </div>
-      <div>
-        뉴스레터, 프로모션 등 안내 메일 수신 동의
-        <Radio.Group onChange={onChange}>
-          <Radio value={1}>동의함</Radio>
-          <Radio value={2}>동의하지 않음</Radio>{' '}
-        </Radio.Group>
-      </div>
     </div>
   );
 }

@@ -1,12 +1,12 @@
 import React, { Component, useState } from 'react';
 import { Space, Image } from 'antd';
+import { useObserver } from 'mobx-react';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import SettingContentTitle from './SettingContentTitle';
 import { useCoreStores } from 'teespace-core';
-import { Button, Input, Form  } from 'teespace-core';
+import { Button, Input, Form } from 'teespace-core';
 import styled from 'styled-components';
 import SettingPasswordInput from './SettingPasswordInput';
-// import NewPasswordInput from '../Signup/NewPasswordInput';
 
 const AccountBordertop = styled.div`
   display: flex;
@@ -49,22 +49,19 @@ function onChange(e) {
 function SettingContentaccount(props) {
   const { authStore, userStore } = useCoreStores();
   const [Checked, setChecked] = useState(false);
-  const [ CheckPassword, setCheckPassword ] = useState(true);
+  const [CheckPassword, setCheckPassword] = useState(true);
 
-  const handleCheckPassword = (values) => {
+  const handleCheckPassword = values => {
     authStore
-      .checkAuth({loginId: userStore.myProfile.loginId, pw: values.password})
+      .checkAuth({ loginId: userStore.myProfile.loginId, pw: values.password })
       .then(x => {
-        x ? props.onClick() : setCheckPassword(false)
-      }       
-      );
-
+        x ? props.onClick() : setCheckPassword(false);
+      });
   };
 
+  console.log(authStore.checkAuth);
 
-  console.log(authStore.checkAuth)
-
-  return (
+  return useObserver(() => (
     <div>
       <SettingContentTitle
         title="계정정보변경"
@@ -72,14 +69,6 @@ function SettingContentaccount(props) {
       ></SettingContentTitle>
 
       <div>
-        {console.log(
-          userStore.getUserProfilePhoto({
-            userId: authStore.user.id,
-            size: 'medium',
-            isLocal: true,
-            thumbPhoto: null,
-          }),
-        )}
         <Image
           width={125}
           height={125}
@@ -134,17 +123,7 @@ function SettingContentaccount(props) {
       </AccountBordertop>
       <div>뉴스레터, 프로모션 등 안내 메일 수신 동의 </div>
       <div>계정 정보를 변경하시려면 먼저 비밀번호를 입력해 주세요.</div>
-      {/* 비밀번호
-      <Space direction="vertical">
-        <Input
-          defaultValue="this is password"
-          getPopupContainer={() => {}}
-          onChange={(Checked) => {
-          setChecked(Checked);
-        }}
-          type="password"
-        />
-      </Space> */}
+
       <Form
         {...formItemLayout}
         initialValues={{
@@ -156,21 +135,24 @@ function SettingContentaccount(props) {
       >
         <SettingPasswordInput
           handleButtonDisabled={value => setChecked(value)}
-          alert={!CheckPassword && '비밀번호를 확인하세요'}
+          alert={
+            !CheckPassword &&
+            '현재 비밀번호가 올바르지 않습니다. 다시 입력해 주세요.'
+          }
         />
 
         <Form.Item>
-        <Button
-          disabled={!Checked}
-          checked={CheckPassword}
-          htmlType="submit"
-          type="system"
-        >
-          확인
-        </Button>
+          <Button
+            disabled={!Checked}
+            checked={CheckPassword}
+            htmlType="submit"
+            type="system"
+          >
+            확인
+          </Button>
         </Form.Item>
       </Form>
     </div>
-  );
+  ));
 }
 export default SettingContentaccount;

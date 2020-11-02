@@ -11,7 +11,6 @@ import SettingContentpassword from './SettingContentpassword';
 import SettingContentpasswordedit from './SettingContentpasswordedit';
 import Settingsave from './Settingsave';
 import { useStore } from '../../stores';
-// import SettingContent6 from './SettingContent6';
 import TermsFooter from '../Login/TermsFooter';
 
 const Headerwords = styled.div`
@@ -65,7 +64,14 @@ function SettingDialog(props) {
           {!buttonFooter && <TermsFooter />}
 
           {buttonFooter && (
-            <Settingsave form={form} onClick={() => setSelectedKey('4')} />
+            <Settingsave
+              form={form}
+              selectedKey={selectedKey}
+              saveaccountOut={() => setSelectedKey('4')}
+              savepasswordOut={() => setSelectedKey('5')}
+              saveaccountChange={() => setSelectedKey('4')}
+              savepasswordChange={() => setSelectedKey('5')}
+            ></Settingsave>
           )}
         </>
       }
@@ -120,7 +126,6 @@ function SettingDialog(props) {
                 <Menu.Item style={{ color: '#000000', fontSize: 10 }} key="5">
                   비밀번호변경
                 </Menu.Item>
-                {/* <Menu.Item style={{color:"#000000", fontSize: 10}} key="6">서비스 탈퇴</Menu.Item> */}
               </Menu>
             </Sider>
             <Content
@@ -150,11 +155,11 @@ function SettingDialog(props) {
                 {selectedKey === '5' && (
                   <SettingContentpassword onClick={() => setSelectedKey('6')} />
                 )}
-                {/* {this.state.selectedKey === '6' && (
-                <SettingContent6></SettingContent6>
-              )} */}
                 {selectedKey === '6' && (
-                  <SettingContentpasswordedit form={form} />
+                  <SettingContentpasswordedit
+                    form={form}
+                    passwordChange={() => setSelectedKey('5')}
+                  ></SettingContentpasswordedit>
                 )}
               </div>
             </Content>
