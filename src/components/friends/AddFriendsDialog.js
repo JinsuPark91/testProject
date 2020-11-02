@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useObserver } from 'mobx-react';
 import styled from 'styled-components';
 import { Dialog, Tabs, TabPane } from 'teespace-core';
 import AddFriendsByOrganization from './AddFriendsByOrganization';
@@ -31,7 +32,7 @@ function AddFriendsDialog({ visible }) {
     uiStore.hideAddFriendsDialog();
   }, [uiStore]);
 
-  return (
+  return useObserver(() => (
     <Dialog
       title="프렌즈 추가"
       size="medium"
@@ -40,26 +41,30 @@ function AddFriendsDialog({ visible }) {
       footer={null}
     >
       <Wrapper>
-        <Tabs style={{ height: '100%' }}>
-          <StyledTabPane tab="조직도 조회" key="1">
+        <Tabs
+          style={{ height: '100%' }}
+          activeKey={uiStore.addFriendsDialogTabKey}
+          onChange={uiStore.changeAddFriendsDialogTabKey}
+        >
+          <StyledTabPane tab="조직도 조회" key="organization">
             <AddFriendsByOrganization />
           </StyledTabPane>
-          <StyledTabPane tab="연락처로 추가" key="2">
+          <StyledTabPane tab="연락처로 추가" key="phone">
             <AddFriendsByPhoneNumber />
           </StyledTabPane>
-          <StyledTabPane tab="아이디 검색" key="3">
+          <StyledTabPane tab="아이디 검색" key="id">
             <AddFriendsByEmail />
           </StyledTabPane>
-          <StyledTabPane tab="추천 프렌즈" key="4">
+          <StyledTabPane tab="추천 프렌즈" key="recommended">
             <AddFriendsByRecommendataion />
           </StyledTabPane>
-          <StyledTabPane tab="초대장 보내기" key="5">
+          <StyledTabPane tab="초대장 보내기" key="invitation">
             <AddFriendsByInvitation />
           </StyledTabPane>
         </Tabs>
       </Wrapper>
     </Dialog>
-  );
+  ));
 }
 
 export default AddFriendsDialog;
