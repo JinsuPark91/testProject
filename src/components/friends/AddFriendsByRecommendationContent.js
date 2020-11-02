@@ -24,9 +24,7 @@ const NegativeMarginWrapper = styled.div`
   flex-direction: column;
 `;
 
-const Wrapper = styled.div`
-  margin: 0 0.75rem 0.25rem 0.75rem;
-`;
+const Wrapper = styled.div``;
 
 const Centered = styled.div`
   text-align: center;

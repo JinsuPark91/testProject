@@ -17,10 +17,11 @@ function AddFriendsByEmail() {
 
   const handleSearchUser = useCallback(
     async e => {
-      setUserLoginId(e.target.value);
+      const searchedUserLoginId = e.target.value;
       const idSearchedUser = await userStore.searchUserById({
-        userLoginId: e.target.value,
+        userLoginId: searchedUserLoginId,
       });
+      setUserLoginId(searchedUserLoginId);
       setSearchedUser(idSearchedUser);
     },
     [userStore],

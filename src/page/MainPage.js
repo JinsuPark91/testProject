@@ -176,7 +176,7 @@ function MainPage() {
               <img src={friendIcon} alt="friends" style={{ width: '40px' }} />
             }
           >
-            <FriendLnb />
+            <FriendLnb userId={id} />
           </TabPane>
 
           <TabPane

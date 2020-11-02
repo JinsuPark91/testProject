@@ -46,12 +46,14 @@ const FriendItemWrapper = styled.div`
   ${props =>
     (props.mode === 'addFriend' || props.mode === 'recommended') &&
     css`
+      width: calc(100% - 1.5rem + 8px);
       display: flex;
-      height: 3.375rem;
       flex-direction: row;
       background-color: transparent;
       border-bottom: 1px solid #e3e7eb;
-      padding: 0.625rem;
+      padding: 0.44rem 0.63rem;
+      margin-left: 0.75rem;
+      margin-right: calc(0.75rem - 8px);
 
       &:hover {
         box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
@@ -74,10 +76,9 @@ const FriendItemWrapper = styled.div`
   ${props =>
     (props.mode === 'me' || props.mode === 'friend') &&
     css`
-      height: 3.375rem;
       display: flex;
       flex-direction: row;
-      padding: 0.625rem;
+      padding: 0.44rem 0.63rem;
 
       ${props.isActive
         ? css`
@@ -139,8 +140,26 @@ const ActionWrapper = styled.div`
 `;
 
 const StyledAvatar = styled(Avatar)`
-  width: 2.5rem;
-  height: 2.5rem;
+  ${props => {
+    switch (props.mode) {
+      case 'me':
+        return css`
+          width: 2.5rem;
+          height: 2.5rem;
+        `;
+      case 'addFriend':
+        return css`
+          width: 2rem;
+          height: 2rem;
+        `;
+      case 'friend':
+      default:
+        return css`
+          width: 2.13rem;
+          height: 2.13rem;
+        `;
+    }
+  }}
 `;
 
 const DropdownMenu = React.memo(
@@ -172,10 +191,10 @@ const Profile = React.memo(({ mode, tooltipPopupContainer, profilePhoto }) => {
           placement="top"
           visible
         >
-          <StyledAvatar src={`/${profilePhoto}`} />
+          <StyledAvatar src={`/${profilePhoto}`} mode="me" />
         </Tooltip>
       )}
-      {mode !== 'me' && <StyledAvatar src={`/${profilePhoto}`} />}
+      {mode !== 'me' && <StyledAvatar src={`/${profilePhoto}`} mode={mode} />}
     </>
   );
 });

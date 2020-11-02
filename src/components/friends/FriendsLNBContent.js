@@ -1,11 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { Layout, Typography } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import FriendItem from './FriendItem';
 
-const { Paragraph, Text, Title } = Typography;
+const { Paragraph, Text } = Typography;
 const { Content } = Layout;
 
 const ContentWrapper = styled(Content)`
@@ -75,15 +75,19 @@ const FriendList = React.memo(({ friendList, onClick, activeFriendId }) => (
  * @param {function} props.meTooltipPopupContainer - 프렌즈 아이템의 나일때 표시하는 tooltip
  */
 const FriendsLNBContent = React.forwardRef(
-  ({ searchKeyword, meTooltipPopupContainer }, ref) => {
+  ({ searchKeyword, meTooltipPopupContainer, activeUserId }, ref) => {
     const { userStore, friendStore } = useCoreStores();
 
     const [favFriendActiveId, setFavFriendActiveId] = useState('');
-    const [friendActiveId, setFriendActiveId] = useState('');
+    const [friendActiveId, setFriendActiveId] = useState(null);
 
     const filteredFriendList = friendStore.friendInfoList.filter(friendInfo =>
       friendInfo.displayName.includes(searchKeyword),
     );
+
+    useEffect(() => {
+      setFriendActiveId(activeUserId);
+    }, [activeUserId]);
 
     const handleFavFriendActive = useCallback(friendId => {
       setFavFriendActiveId(friendId);
@@ -95,7 +99,6 @@ const FriendsLNBContent = React.forwardRef(
       setFriendActiveId(friendId);
     }, []);
 
-    console.log(userStore.myProfile);
     const renderEmptyContent = (
       <>
         <FrinedListBox>

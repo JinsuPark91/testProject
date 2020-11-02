@@ -16,7 +16,7 @@ const FooterWrapper = styled(Footer)`
 const StyleIcon = styled.i`
   width: 18px;
   height: 18px;
-  display:inline-block;
+  display: inline-block;
   background: url('${SpaceIconImg}') 0 0 no-repeat;
   vertical-align: middle;
   & + span {
@@ -24,19 +24,19 @@ const StyleIcon = styled.i`
   }
 `;
 const FriendButton = styled(Button)`
-&.ant-btn-outlined {
-  width: 100%;
-  height: auto !important;
-  font-size: 0.8125rem;
-  color: #5a5fff;
-  line-height: 1rem;
-  padding: 0.5625rem 0 0.5rem;
-  border-radius: 21px;
-  border: 1px solid #5a5fff;
-  span {
-    vertical-align: middle;
+  &.ant-btn-outlined {
+    width: 100%;
+    height: auto !important;
+    font-size: 0.8125rem;
+    color: #5a5fff;
+    line-height: 1rem;
+    padding: 0.5625rem 0 0.5rem;
+    border-radius: 21px;
+    border: 1px solid #5a5fff;
+    span {
+      vertical-align: middle;
+    }
   }
-}
 `;
 
 function FriendsLNBFooter() {
@@ -50,11 +50,8 @@ function FriendsLNBFooter() {
     <FooterWrapper>
       <Row>
         <Col align="center" span={24}>
-          <FriendButton
-            type="outlined"
-            onClick={showAddFrieldsDialog}
-          >
-            <StyleIcon/>
+          <FriendButton type="outlined" onClick={showAddFrieldsDialog}>
+            <StyleIcon />
             프렌즈 추가
           </FriendButton>
           <AddFriendsDialog
