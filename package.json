@@ -47,7 +47,7 @@
     "react-virtualized": "^9.22.2",
     "styled-components": "^5.1.1",
     "suneditor-react": "^2.13.4",
-    "teespace-calendar-app": "git+http://192.168.158.12:9000/teespace/teespace-calendar-app#for-build",
+    "teespace-calendar-app": "git+http://192.168.158.12:9000/teespace/teespace-calendar-app#develop",
     "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#develop",
     "teespace-drive-app": "git+http://192.168.158.12:9000/teespace/teespace-drive-app#develop",
     "teespace-mail-app": "git+http://192.168.158.12:9000/teespace/teespace-mail-app#develop",
