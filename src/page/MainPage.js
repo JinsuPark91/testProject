@@ -280,7 +280,7 @@ const AppLayout = styled.div`
 const LeftSide = styled.div`
   display: flex;
   height: 100%;
-  width: 260px;
+  width: 16.19rem;
   border-right: 1px solid #dddddd;
 `;
 
@@ -315,7 +315,7 @@ const UserMenu = styled.div`
 const MainSide = styled.div`
   display: flex;
   flex-direction: column;
-  width: calc(100% - 260px);
+  width: calc(100% - 16.19rem);
   height: 100%;
 `;
 
