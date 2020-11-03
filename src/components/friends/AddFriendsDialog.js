@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { useObserver } from 'mobx-react';
 import styled from 'styled-components';
 import { Dialog, Tabs, TabPane } from 'teespace-core';
@@ -27,10 +27,21 @@ const StyledTabPane = styled(TabPane)`
  */
 function AddFriendsDialog({ visible }) {
   const { uiStore } = useStore();
+  const timestamp = useRef(Date.now());
 
   const handleCancelClick = useCallback(() => {
     uiStore.hideAddFriendsDialog();
   }, [uiStore]);
+
+  const handleTabKeyChange = useCallback(
+    tabKey => {
+      uiStore.changeAddFriendsDialogTabKey(tabKey);
+      if (tabKey === 'organization') {
+        timestamp.current = Date.now();
+      }
+    },
+    [uiStore],
+  );
 
   return useObserver(() => (
     <Dialog
@@ -44,10 +55,10 @@ function AddFriendsDialog({ visible }) {
         <Tabs
           style={{ height: '100%' }}
           activeKey={uiStore.addFriendsDialogTabKey}
-          onChange={uiStore.changeAddFriendsDialogTabKey}
+          onChange={handleTabKeyChange}
         >
           <StyledTabPane tab="조직도 조회" key="organization">
-            <AddFriendsByOrganization />
+            <AddFriendsByOrganization timestamp={timestamp.current} />
           </StyledTabPane>
           <StyledTabPane tab="연락처로 추가" key="phone">
             <AddFriendsByPhoneNumber />

@@ -24,18 +24,21 @@ function FriendsLNB({ userId }) {
   useEffect(() => {
     (async () => {
       loader.loading();
-      await friendStore.fetchFriends({ myUserId: userStore.myProfile.id });
-      await friendStore.fetchInvitedFriends({
-        myUserId: userStore.myProfile.id,
-      });
-      await friendStore.fetchRecommendedFriends({
-        myUserId: userStore.myProfile.id,
-      });
-      await friendStore.fetchUserInvitationLink({
-        myUserId: userStore.myProfile.id,
-      });
-      await orgStore.getOrgTree();
+      await Promise.all([
+        friendStore.fetchFriends({ myUserId: userStore.myProfile.id }),
+        friendStore.fetchInvitedFriends({
+          myUserId: userStore.myProfile.id,
+        }),
+        friendStore.fetchRecommendedFriends({
+          myUserId: userStore.myProfile.id,
+        }),
+        friendStore.fetchUserInvitationLink({
+          myUserId: userStore.myProfile.id,
+        }),
+        orgStore.getOrgTree(),
+      ]);
       loader.stop();
+      console.log(friendStore.friendInfoList);
     })();
   }, [friendStore, loader, orgStore, userStore.myProfile.id]);
 

@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
+import { AutoSizer, List } from 'react-virtualized';
 import { Row, Col, Typography } from 'antd';
 import styled from 'styled-components';
 import { useCoreStores, Switch } from 'teespace-core';
@@ -46,6 +47,21 @@ const BackgroundImage = styled.div`
 `;
 function AddFriendsByRecommendationContent() {
   const { friendStore } = useCoreStores();
+  const rowRender = useCallback(
+    ({ index, key, style }) => {
+      const itemStyle = { ...style };
+      delete itemStyle.width;
+      return (
+        <FriendItem
+          style={itemStyle}
+          friendInfo={friendStore.recommendedFriendInfoList[index]}
+          key={key}
+          mode="recommended"
+        />
+      );
+    },
+    [friendStore.recommendedFriendInfoList],
+  );
   return useObserver(() => (
     <NegativeMarginWrapper>
       <RecommendRow>
@@ -62,15 +78,22 @@ function AddFriendsByRecommendationContent() {
         </Col>
       </RecommendRow>
       <Wrapper>
-        <Row
-          align="middle"
-          style={{ flexGrow: 1, overflow: 'auto' }}
-          justify="center"
-        >
-          <Col span={24}>
-            {friendStore.recommendedFriendInfoList.map(item => (
-              <FriendItem friendInfo={item} key={item.id} mode="recommended" />
-            ))}
+        <Row align="middle" style={{ flexGrow: 1 }} justify="center">
+          <Col span={24} style={{ height: 300 }}>
+            <AutoSizer>
+              {({ width, height }) => (
+                <List
+                  overscanRowCount={10}
+                  style={{ outline: 'none' }}
+                  rowCount={friendStore.recommendedFriendInfoList.length}
+                  height={height}
+                  width={width}
+                  rowHeight={74}
+                  rowRenderer={rowRender}
+                  scrollToIndex={0}
+                />
+              )}
+            </AutoSizer>
             {friendStore.recommendedFriendInfoList.length === 0 && (
               <Centered>
                 <Title level={4}>추천 프렌즈가 없습니다.</Title>

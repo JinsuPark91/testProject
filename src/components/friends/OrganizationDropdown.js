@@ -10,9 +10,14 @@ const valueCreator = org => `${org.companyCode}_${org.departmentCode}`;
  * @param {Array<OrgModel>} props.orgList
  * @param {string} overWrittenValue - valueCreator를 이용해서 만든 값, 기존의 value를 내부적으로 유지한 채로 보여주는 값만 바꿀 때 사용
  */
-function OrganizationDropdown({ orgList, onChange, overwrittenValue }) {
+function OrganizationDropdown({
+  orgList,
+  onChange,
+  overwrittenValue,
+  defaultValue: dropdownDefaultValue,
+}) {
   const { orgStore, userStore } = useCoreStores();
-  const [defaultValue, setDefaultValue] = useState('');
+  const [dropdownValue, setDropdownValue] = useState('');
 
   // org 데이터는 실시간으로 바뀌지 않으므로 index를 id로 써도 무방
   const orgConverter = useCallback(
@@ -27,31 +32,32 @@ function OrganizationDropdown({ orgList, onChange, overwrittenValue }) {
 
   const handleDropdownChange = useCallback(
     async value => {
-      await orgStore.getUserOrgUserList(
-        ...value.split('_'),
-        userStore.myProfile.id,
-      );
       onChange(value);
-      setDefaultValue(value);
+      setDropdownValue(value);
     },
-    [onChange, orgStore, userStore.myProfile.id],
+    [onChange],
   );
 
   useEffect(() => {
     (async () => {
-      const { companyCode, departmentCode } =
-        (await orgStore.getOrgUserDept(userStore.myProfile.id)) || {};
-
-      setDefaultValue(valueCreator({ companyCode, departmentCode }));
-      handleDropdownChange(valueCreator({ companyCode, departmentCode }));
+      const { companyCode, departmentCode } = dropdownDefaultValue.split('_');
+      if (companyCode && departmentCode) {
+        handleDropdownChange(valueCreator({ companyCode, departmentCode }));
+      }
     })();
-  }, [handleDropdownChange, onChange, orgStore, userStore.myProfile.id]);
+  }, [
+    dropdownDefaultValue,
+    handleDropdownChange,
+    onChange,
+    orgStore,
+    userStore.myProfile.id,
+  ]);
 
   return useObserver(() => (
     <TreeSelect
       dropdownClassName="teespace-common"
-      treeDefaultExpandedKeys={[defaultValue]}
-      value={overwrittenValue || defaultValue}
+      treeDefaultExpandedKeys={[dropdownValue || dropdownDefaultValue]}
+      value={overwrittenValue || dropdownValue || dropdownDefaultValue}
       treeData={orgList.map(orgConverter)}
       treeNodeLabelProp="title"
       onChange={handleDropdownChange}

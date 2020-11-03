@@ -49,7 +49,7 @@ function FriendsLNBFooter() {
   return useObserver(() => (
     <FooterWrapper>
       <Row>
-        <Col align="center" span={24}>
+        <Col align="center" span={24} style={{ display: 'flex' }}>
           <FriendButton type="outlined" onClick={showAddFrieldsDialog}>
             <StyleIcon />
             프렌즈 추가

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useObserver } from 'mobx-react';
 import styled, { css, createGlobalStyle } from 'styled-components';
 import { Tooltip, Typography, Avatar, Button } from 'antd';
 import { useCoreStores, Dropdown, Menu, Message, Toast } from 'teespace-core';
@@ -127,7 +128,7 @@ const TextWrapper = styled.div`
 `;
 
 const TitleForName = styled(Title)`
-  font-size: 0.8125rem !important;
+  font-size: 0.81rem !important;
   margin-bottom: 0 !important;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -251,9 +252,9 @@ const MeAction = React.memo(({ mode, handleTalkWindowOpen }) => {
 });
 
 const AddFriendAction = React.memo(
-  ({ mode, alreadyFriendFlag, handleAddFriend }) => (
+  ({ mode, friendRelation, handleAddFriend, isMe }) => (
     <>
-      {mode === 'addFriend' && !alreadyFriendFlag && (
+      {mode === 'addFriend' && !friendRelation && !isMe && (
         <Button
           shape="circle"
           icon={<PlusOutlined onClick={handleAddFriend} />}
@@ -264,9 +265,9 @@ const AddFriendAction = React.memo(
 );
 
 const RecommendedAction = React.memo(
-  ({ mode, alreadyFriendFlag, handleAddFriend }) => (
+  ({ mode, friendRelation, handleAddFriend }) => (
     <>
-      {mode === 'recommended' && !alreadyFriendFlag && (
+      {mode === 'recommended' && !friendRelation && (
         <>
           <Button
             shape="circle"
@@ -286,8 +287,9 @@ const Action = React.memo(
     menu,
     handleDropdownVisible,
     handleTalkWindowOpen,
-    alreadyFriendFlag,
+    friendRelation,
     handleAddFriend,
+    isMe,
   }) => (
     <>
       {mode !== 'readOnly' && isHovering && (
@@ -301,12 +303,13 @@ const Action = React.memo(
           <MeAction mode={mode} handleTalkWindowOpen={handleTalkWindowOpen} />
           <AddFriendAction
             mode={mode}
-            alreadyFriendFlag={alreadyFriendFlag}
+            friendRelation={friendRelation}
             handleAddFriend={handleAddFriend}
+            isMe={isMe}
           />
           <RecommendedAction
             mode={mode}
-            alreadyFriendFlag={alreadyFriendFlag}
+            friendRelation={friendRelation}
             handleAddFriend={handleAddFriend}
           />
         </>
@@ -314,19 +317,39 @@ const Action = React.memo(
     </>
   ),
 );
-const TextComponent = React.memo(({ displayName }) => (
-  <TitleForName>{displayName}</TitleForName>
-));
+const TextComponent = React.memo(
+  ({ displayName, fullCompanyJob, mode, orgName, position }) => {
+    const fullDisplayName = (() => {
+      // friend는 Friend 목록에서 조회한 UserModel을 사용
+      // addFriend (organization)은 Org 목록에서 조회한 UserModel을 사용
+      // 둘이 fullCompanyJob 규칙이 살짝 다르다.
+      switch (mode) {
+        case 'friend': // friends LNB
+          if (fullCompanyJob) {
+            return `${displayName} (${fullCompanyJob
+              .split(', ')
+              .map(jobTitle => jobTitle.split(' ').join('-'))
+              .join(', ')})`;
+          }
+          return displayName;
+        case 'addFriend': // organization
+          if (orgName && position) {
+            return `${displayName} (${orgName}·${position})`;
+          }
+          return displayName;
+        default:
+          return displayName;
+      }
+    })();
+    return <TitleForName>{fullDisplayName}</TitleForName>;
+  },
+);
 /**
  * A friend item component to use in the list view.
  * @param {Object} props
  * @param {('me'|'friend'|'readOnly'|'addFriend'|'recommended')} props.mode
  * @param {function} props.tooltipPopupContainer
- * @param {object} props.friendInfo
- * @param {string} props.friendInfo.friendId
- * @param {string} props.friendInfo.friendNick
- * @param {string} props.friendInfo.userName
- * @param {boolean} props.friendInfo.friendFavorite
+ * @param {UserModel} props.friendInfo
  */
 const FriendItem = React.memo(
   ({
@@ -344,6 +367,10 @@ const FriendItem = React.memo(
       id: userId = '',
       profilePhoto = '',
       defaultPhotoUrl,
+      fullCompanyJob,
+      orgName,
+      position,
+      friendRelation,
     } = friendInfo;
     const history = useHistory();
     const { authStore, friendStore } = useCoreStores();
@@ -359,10 +386,6 @@ const FriendItem = React.memo(
     /* merged info of userInfo and friendInfo */
     const itemId = friendId || userId;
 
-    const [alreadyFriendFlag, setAlreadyFriendFlag] = useState(
-      friendStore.checkAlreadyFriend({ userId: friendId }),
-    );
-
     const [handleTalkWindowOpen, newTalkWindowHandler] = useOpenInWindow(
       `${window.location.origin}/s/1234/talk?mini=true`,
       {
@@ -374,14 +397,6 @@ const FriendItem = React.memo(
         },
       },
     );
-
-    useEffect(() => {
-      if (mode === 'addFriend') {
-        setAlreadyFriendFlag(
-          friendStore.checkAlreadyFriend({ userId: itemId }),
-        );
-      }
-    }, [itemId, friendStore.friendInfoList, mode, friendStore]);
 
     const handleDropdownVisible = useCallback(visible => {
       if (!visible) {
@@ -484,7 +499,9 @@ const FriendItem = React.memo(
 
     const handleToastClose = useCallback(() => setVisibleToast(false), []);
 
-    return (
+    const isMe = itemId === authStore.user.id;
+
+    return useObserver(() => (
       <FriendItemWrapper
         style={style}
         onMouseEnter={handleMouseEnter}
@@ -537,7 +554,13 @@ const FriendItem = React.memo(
           />
         </ProfileWrapper>
         <TextWrapper>
-          <TextComponent displayName={displayName} />
+          <TextComponent
+            displayName={displayName}
+            fullCompanyJob={fullCompanyJob}
+            mode={mode}
+            orgName={orgName}
+            position={position}
+          />
         </TextWrapper>
         <ActionWrapper>
           <Action
@@ -553,12 +576,14 @@ const FriendItem = React.memo(
             }
             handleDropdownVisible={handleDropdownVisible}
             handleTalkWindowOpen={handleTalkWindowOpen}
-            alreadyFriendFlag={alreadyFriendFlag}
+            friendRelation={friendStore.checkAlreadyFriend({ userId: itemId })}
             handleAddFriend={handleAddFriend}
+            isMe={isMe}
           />
+          {mode === 'addFriend' && isMe && <span>내 계정</span>}
         </ActionWrapper>
       </FriendItemWrapper>
-    );
+    ));
   },
 );
 
