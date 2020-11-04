@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import './App.less';
 import { create } from 'mobx-persist';
@@ -32,34 +34,39 @@ function App() {
 
   if (!isHydrating) return <></>;
   return (
-    <BrowserRouter>
-      <Switch>
-        <Route exact path="/" component={ServicePage} />
-        <Route exact path="/test" component={() => <TestPage />} />
-        <RedirectablePublicRoute
-          exact
-          path="/login"
-          component={<LoginPage />}
-        />
-        <RedirectablePublicRoute
-          exact
-          path="/register"
-          component={<SignUpPage />}
-        />
-        <RedirectablePublicRoute
-          exact
-          path="/registerForm"
-          component={<SignUpFormPage />}
-        />
-        <RedirectablePublicRoute
-          exact
-          path="/registerComplete"
-          component={<SignUpCompletePage />}
-        />
-        <PrivateRoute path="/:tab(s|f|m)/:id/:mainApp?" component={MainPage} />
-        <Route component={NotFoundPage} />
-      </Switch>
-    </BrowserRouter>
+    <DndProvider backend={HTML5Backend}>
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/" component={ServicePage} />
+          <Route exact path="/test" component={() => <TestPage />} />
+          <RedirectablePublicRoute
+            exact
+            path="/login"
+            component={<LoginPage />}
+          />
+          <RedirectablePublicRoute
+            exact
+            path="/register"
+            component={<SignUpPage />}
+          />
+          <RedirectablePublicRoute
+            exact
+            path="/registerForm"
+            component={<SignUpFormPage />}
+          />
+          <RedirectablePublicRoute
+            exact
+            path="/registerComplete"
+            component={<SignUpCompletePage />}
+          />
+          <PrivateRoute
+            path="/:tab(s|f|m)/:id/:mainApp?"
+            component={MainPage}
+          />
+          <Route component={NotFoundPage} />
+        </Switch>
+      </BrowserRouter>
+    </DndProvider>
   );
 }
 

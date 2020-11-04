@@ -11,6 +11,7 @@ module.exports = {
     alias: {
       react: require.resolve('react'),
       'teespace-core': require.resolve('teespace-core'),
+      'react-dnd': require.resolve('react-dnd'),
     },
   },
   plugins: [
