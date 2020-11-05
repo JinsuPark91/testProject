@@ -17,7 +17,7 @@ import mailIcon from '../assets/icon_lnb_mail.svg';
 import chatIcon from '../assets/icon_lnb_chatting.svg';
 import friendIcon from '../assets/icon_lnb_friend.svg';
 import './mainPage.css';
-import SettingDialog from '../components/Usersettings/SettingDialog';
+import SettingDialog from '../components/usersettings/SettingDialog';
 import { useStore } from '../stores';
 
 const { TabPane } = Tabs;
@@ -28,6 +28,7 @@ function MainPage() {
   const [tab, setTab] = useState(null);
   const [id, setId] = useState(null);
   const [mainApp, setMainApp] = useState(null);
+  const [settingVisible, setSettingVisible] = useState(false);
   const [subApp, setSubApp] = useState(null);
   const [layoutState, setLayoutState] = useState('close');
   const { uiStore } = useStore();
@@ -162,9 +163,11 @@ function MainPage() {
     return getAppComponent(subApp);
   }, [getAppComponent, subApp]);
 
-  const handleSettingDialogOpen = () => {
-    uiStore.showSettingDialog();
-  };
+  const handleSettingDialogOpen = () => 
+  setSettingVisible(true)
+
+  const handleSettingDialogClose = () =>
+  setSettingVisible(false)
 
   return (
     <AppLayout>
@@ -252,8 +255,11 @@ function MainPage() {
             <Button onClick={handleSettingDialogOpen}>
               Profile 영역 (고정)
             </Button>
-            <SettingDialog />
-          </UserMenu>
+            <SettingDialog 
+            visible={settingVisible}
+            onCancle={handleSettingDialogClose}
+            />         
+             </UserMenu>
         </Header>
         <AppContainer>
           <Splitter
