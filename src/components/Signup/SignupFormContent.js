@@ -79,8 +79,11 @@ const SignupFormContent = () => {
     // 인증번호  검사.
     if (checkAuthNumber(authNumber)) {
       setValidAuthNumber('success');
-      const res = await authStore.getAuthNumberPhone(authNumber, values.phone);
-      if (typeof res !== 'undefined' && res === 'RST0001') {
+      const res = await authStore.getAuthNumberPhone({
+        authNumber,
+        phone: values.phone,
+      });
+      if (typeof res !== 'undefined' && res) {
         // no nationalcode
         values.nationalCode = '+82';
         typeof values.email === 'undefined'
@@ -91,7 +94,7 @@ const SignupFormContent = () => {
           JSON.parse(localStorage.getItem('RegisterCheckedList')).length === 4
             ? 'Y'
             : 'N';
-        const registerInfo = {
+        const registerObj = {
           userId: values.loginId,
           pw: values.password,
           name: values.name,
@@ -103,8 +106,10 @@ const SignupFormContent = () => {
           advertise: agreeAd,
           path: 'Csp',
         };
-        const resRegi = await authStore.createUser(registerInfo);
-        if (resRegi.data.dto.RESULT_CD === 'RST0001') {
+        const resRegi = await authStore.createUser({
+          registerInfo: registerObj,
+        });
+        if (resRegi) {
           localStorage.setItem('CreateUser', values.loginId);
           history.push(`/registerComplete`);
         }

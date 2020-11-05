@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import LogoHeader from '../components/Login/LogoHeader';
-import TermsFooter from '../components/Login/TermsFooter';
-import SignupContent from '../components/Signup/SignupContent';
+import LogoHeader from '../components/login/LogoHeader';
+import TermsFooter from '../components/login/TermsFooter';
+import SignupContent from '../components/signup/SignupContent';
 
 const Container = styled.div`
   display: flex;

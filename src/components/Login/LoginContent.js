@@ -3,7 +3,6 @@ import { Button, Checkbox, Form, useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-
 import LoginPasswordInput from './LoginPasswordInput';
 import LoginIdInput from './LoginIdInput';
 
@@ -83,8 +82,8 @@ const LoginContent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loginResult, setLoginResult] = useState(null);
   const [errorResult, setErrorResult] = useState(null);
-  const [saveIdCheck, setSaveIdCheck] = useState(false);
-  const [loginStateCheck, setLoginStateCheck] = useState(false);
+  const [checkSaveLoginId, setCheckSaveLoginId] = useState(false);
+  const [checkAutoLogin, setCheckAutoLogin] = useState(false);
 
   localStorage.removeItem('RegisterCheckedList');
   localStorage.removeItem('CreateUser');
@@ -96,9 +95,10 @@ const LoginContent = () => {
         id: values.username,
         pw: values.password,
         isLocalLogin: process.env.REACT_APP_ENV === 'local',
+        deviceType: 'PC',
+        isAutoLogin: values.autoLogin,
       });
       setLoginResult(res);
-
       history.push(`/f/${authStore.user.loginId}`);
     } catch (e) {
       setErrorResult(e.message);
@@ -110,6 +110,13 @@ const LoginContent = () => {
     console.log('Failed:', errorInfo);
   };
 
+  const handleOnChangeSaveId = e => {
+    setCheckSaveLoginId(e.target.checked);
+  };
+  const handleOnChangeAutoLogin = e => {
+    setCheckAutoLogin(e.target.checked);
+  };
+
   return useObserver(() => (
     <LoginForm>
       <Form
@@ -117,7 +124,7 @@ const LoginContent = () => {
         name="basic"
         initialValues={{
           saveId: false,
-          loginState: false,
+          autoLogin: false,
         }}
         form={form}
         onFinish={onFinish}
@@ -132,15 +139,19 @@ const LoginContent = () => {
             valuePropName="checked"
             wrapperCol={{ span: 24 }}
           >
-            <Checkbox shape="round">아이디저장</Checkbox>
+            <Checkbox onChange={handleOnChangeSaveId} shape="round">
+              아이디저장
+            </Checkbox>
           </Form.Item>
           <Form.Item
             {...tailLayout}
-            name="loginState"
+            name="autoLogin"
             valuePropName="checked"
             wrapperCol={{ span: 24 }}
           >
-            <Checkbox shape="round">로그인 상태 유지</Checkbox>
+            <Checkbox onChange={handleOnChangeAutoLogin} shape="round">
+              로그인 상태 유지
+            </Checkbox>
           </Form.Item>
         </FlexBox>
         {isLoading === true && <span>로그인 중</span>}

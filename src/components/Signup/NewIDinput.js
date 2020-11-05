@@ -15,11 +15,9 @@ const NewIdInput = props => {
 
   const handleDuplicationID = () => {
     authStore
-      .duplicationCheckId(loginId)
+      .checkDuplicateLoginId({ loginId: loginId })
       .then(x =>
-        x === 'RST0001'
-          ? setCheckDuplicationId('RST0001')
-          : setCheckDuplicationId('RST0002'),
+        x ? setCheckDuplicationId('RST0001') : setCheckDuplicationId('RST0002'),
       );
   };
 

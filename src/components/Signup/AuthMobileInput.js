@@ -23,16 +23,21 @@ const AuthMobileInput = props => {
 
   const handleOnClickPhoneButton = () => {
     authStore
-      .duplicationCheckPhone(phone, '+82')
+      .checkDuplicatePhone({
+        phone,
+        ncode: '+82',
+      })
       .then(x => {
-        x === 'RST0001'
-          ? setCheckDuplicationPhone('RST0001')
-          : setCheckDuplicationPhone('RST0002');
+        setCheckDuplicationPhone(x ? 'RST0001' : 'RST0002');
         return x;
       })
       .then(res => {
-        if (res === 'RST0001') {
-          authStore.createAuthNumberPhone(phone).then(setToastVisible(true));
+        if (res) {
+          authStore
+            .createAuthNumberPhone({
+              phone,
+            })
+            .then(setToastVisible(true));
         }
       });
   };

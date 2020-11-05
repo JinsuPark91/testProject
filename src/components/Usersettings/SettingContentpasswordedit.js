@@ -4,7 +4,7 @@ import { Row } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
 import { Input, Form } from 'teespace-core';
 import { useCoreStores } from 'teespace-core';
-import NewPasswordInput from '../Signup/NewPasswordInput';
+import NewPasswordInput from '../signup/NewPasswordInput';
 
 const formItemLayout = {
   labelCol: {

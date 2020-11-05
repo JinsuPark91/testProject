@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from 'antd';
-
-import { useObserver } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-import { useCoreStores } from 'teespace-core';
+import { Button } from 'teespace-core';
 import styled from 'styled-components';
-import TermsFooter from '../components/Login/TermsFooter';
-import LogoHeader from '../components/Login/LogoHeader';
-import LoginContent from '../components/Login/LoginContent';
 import teeIcon from '../assets/teespace_favicon.png';
+import TermsFooter from '../components/login/TermsFooter';
+import LogoHeader from '../components/login/LogoHeader';
+import LoginContent from '../components/login/LoginContent';
 import loginBG from '../assets/login_background.png';
 import './LoginPage.css';
 
@@ -51,24 +48,24 @@ const FlexCenter = styled.div`
 const TitleText = styled.p`
   font-weight: 500;
   margin-bottom: 1.125rem;
-  color: #0B1D41;
+  color: #0b1d41;
   font-size: 0.9375rem;
   letter-spacing: 2.65px;
 `;
-const ImgBox = styled.div `
+const ImgBox = styled.div`
   margin-bottom: 0.6875rem;
   & img {
     width: 50px;
     height: 50px;
   }
-`
-const LineBar = styled.span `
+`;
+const LineBar = styled.span`
   width: 1px;
   height: 13px;
   background-color: #9398ab;
   margin: auto 0.75rem;
-  display:inline-block;
-`
+  display: inline-block;
+`;
 const InfoText = styled.p`
   font-size: 0.6875rem;
   font-weight: 400;
@@ -97,11 +94,11 @@ function LoginPage() {
             <Button name="goSearchID" htmlType="button" type="text">
               아이디 찾기
             </Button>
-            <LineBar/>
+            <LineBar />
             <Button name="goSearchPassword" htmlType="button" type="text">
               비밀번호 찾기
             </Button>
-            <LineBar/>
+            <LineBar />
             <Button
               name="goSignup"
               htmlType="button"
@@ -112,6 +109,7 @@ function LoginPage() {
             </Button>
           </FlexCenter>
           <InfoText>TeeSpace는 ToGate와 Chrome에 최적화되어 있습니다.</InfoText>
+
           <TermsFooter isService />
         </Content>
       </Container>

@@ -11,7 +11,7 @@ import SettingContentpassword from './SettingContentpassword';
 import SettingContentpasswordedit from './SettingContentpasswordedit';
 import Settingsave from './Settingsave';
 import { useStore } from '../../stores';
-import TermsFooter from '../Login/TermsFooter';
+import TermsFooter from '../login/TermsFooter';
 
 const Headerwords = styled.div`
   display: flex;
