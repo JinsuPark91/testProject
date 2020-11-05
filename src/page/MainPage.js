@@ -17,8 +17,9 @@ import mailIcon from '../assets/icon_lnb_mail.svg';
 import chatIcon from '../assets/icon_lnb_chatting.svg';
 import friendIcon from '../assets/icon_lnb_friend.svg';
 import './mainPage.css';
-import SettingDialog from '../components/usersettings/SettingDialog';
 import { useStore } from '../stores';
+import MyProfileInfo from '../components/profile/MyProfileInfo';
+import { ProfileContextProvider } from '../components/profile/ProfileContextProvider';
 
 const { TabPane } = Tabs;
 
@@ -163,12 +164,6 @@ function MainPage() {
     return getAppComponent(subApp);
   }, [getAppComponent, subApp]);
 
-  const handleSettingDialogOpen = () => 
-  setSettingVisible(true)
-
-  const handleSettingDialogClose = () =>
-  setSettingVisible(false)
-
   return (
     <AppLayout>
       <LeftSide>
@@ -252,14 +247,10 @@ function MainPage() {
             />
           </AppIconContainer>
           <UserMenu>
-            <Button onClick={handleSettingDialogOpen}>
-              Profile 영역 (고정)
-            </Button>
-            <SettingDialog 
-            visible={settingVisible}
-            onCancle={handleSettingDialogClose}
-            />         
-             </UserMenu>
+            <ProfileContextProvider>
+              <MyProfileInfo />
+            </ProfileContextProvider>
+          </UserMenu>
         </Header>
         <AppContainer>
           <Splitter
