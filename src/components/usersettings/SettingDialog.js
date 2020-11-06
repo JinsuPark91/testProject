@@ -12,6 +12,7 @@ import Settingsave from './Settingsave';
 import { useStore } from '../../stores';
 import TermsFooter from '../login/TermsFooter';
 import SettingSpaceSecession from './SettingSpaceSecession';
+import SettingSpaceSecessionConfirm from './SettingSpaceSecessionConfirm';
 
 const Headerwords = styled.div`
   display: flex;
@@ -39,20 +40,25 @@ const StyledButton = styled(Button)`
 const { Sider, Content } = Layout;
 
 function SettingDialog(props) {
-  const { selectedKeyA, visible, onCancle } = props;
+  const { selectedKeyA, visible, onCancel } = props;
   const [selectedKey, setSelectedKey] = useState(selectedKeyA);
   const [settingform] = Form.useForm();
   const form = useRef(settingform);
   const [buttonFooter, setbuttonFooter] = useState(
     selectedKey === '6' || selectedKey === true,
   );
+
   useEffect(() => {
     setbuttonFooter(selectedKey === '6' || selectedKey === true);
   }, [selectedKey]);
 
+  useEffect(() => {
+    setSelectedKey(selectedKeyA);
+  }, [selectedKeyA]); 
+  
   return useObserver(() => (
     <Dialog
-      onCancel={onCancle}
+      onCancel={onCancel}
       size="large"
       visible={visible}
       footer={
@@ -161,7 +167,10 @@ function SettingDialog(props) {
                   ></SettingContentpasswordedit>
                 )}
                 {selectedKey === '7' && (
-                  <SettingSpaceSecession></SettingSpaceSecession>
+                  <SettingSpaceSecession onClick={() => setSelectedKey('8')}/>
+                )}
+                {selectedKey === '8' && (
+                  <SettingSpaceSecessionConfirm></SettingSpaceSecessionConfirm>
                 )}
               </div>
             </Content>

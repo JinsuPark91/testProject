@@ -40,7 +40,7 @@ class SettingSpaceSecession extends Component {
         </div>
         <Checkbox onChange={this.handleChange} />
         유의 사항을 모두 확인하였으며, 이에 동의합니다.
-        <Button disabled={!this.state.checked}>탈퇴 계속</Button>
+        <Button disabled={!this.state.checked} onClick={this.props.onClick}>탈퇴 계속</Button>
       </div>
     );
   }

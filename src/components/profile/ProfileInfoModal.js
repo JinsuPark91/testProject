@@ -117,9 +117,7 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
         <SettingDialog
           selectedKeyA={itemKey}
           visible={settingDialogVisible}
-          onCancle={
-            handleSettingDialogClose
-          } /* 1-2팀 문의하여 워딩 수정 필요(cancle -> cancel) */
+          onCancel={handleSettingDialogClose} 
         />
       </Wrapper>
     </ProfilePopup>
