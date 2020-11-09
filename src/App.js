@@ -11,7 +11,7 @@ import NotFoundPage from './page/NotFoundPage';
 import SignUpPage from './page/SignUpPage';
 import SignUpFormPage from './page/SignUpFormPage';
 import SignUpCompletePage from './page/SignUpCompletePage';
-import TestPage from './local-test/TestPage';
+// import MainPage from './local-test/MainPage';
 import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
 import PrivateRoute from './libs/PrivateRoute';
@@ -38,7 +38,10 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route exact path="/" component={ServicePage} />
-          <Route exact path="/test" component={() => <TestPage />} />
+          <Route
+            path="/:resourceType(s|f|m)/:resourceId/:mainApp"
+            component={() => <MainPage />}
+          />
           <RedirectablePublicRoute
             exact
             path="/login"
@@ -59,11 +62,12 @@ function App() {
             path="/registerComplete"
             component={<SignUpCompletePage />}
           />
-          <PrivateRoute
-            path="/:tab(s|f|m)/:id/:mainApp?"
-            component={MainPage}
-          />
+
           <Route component={NotFoundPage} />
+          {/* <PrivateRoute
+            path="/users"
+            component={MainPage}
+          /> */}
         </Switch>
       </BrowserRouter>
     </DndProvider>
