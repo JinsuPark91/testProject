@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { EventBus } from 'teespace-core';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
 import { Wrapper } from './MainPageStyle';
@@ -16,12 +17,16 @@ const MainPage = () => {
   const { resourceType, resourceId, mainApp } = useParams();
   const { sub: subApp } = useQueryParams(history.location.search);
 
+  /*
+    Loading 체크
+  */
   useEffect(() => {
-    Promise.all([PlatformUIStore.getRooms(), PlatformUIStore.getUsers()]).then(
-      () => {
-        setIsLoading(false);
-      },
-    );
+    Promise.all([
+      PlatformUIStore.fetchRooms(),
+      PlatformUIStore.getUsers(),
+    ]).then(() => {
+      setIsLoading(false);
+    });
   }, []);
 
   // 묶어 놓으면, 하나 바뀔때도 다 바뀜
@@ -45,6 +50,34 @@ const MainPage = () => {
       PlatformUIStore.layout = 'collapse';
     }
   }, [subApp]);
+
+  /*
+    Layout Event 초기화
+  */
+  useEffect(() => {
+    const fullHandler = EventBus.on('onLayoutFull', () => {
+      PlatformUIStore.layout = 'full';
+    });
+    const expandHandler = EventBus.on('onLayoutExpand', () => {
+      PlatformUIStore.layout = 'expand';
+    });
+    const collapseHandler = EventBus.on('onLayoutCollapse', () => {
+      PlatformUIStore.layout = 'collapse';
+    });
+    const closeHandler = EventBus.on('onLayoutClose', () => {
+      history.push({
+        pathname: history.location.pathname,
+        search: null,
+      });
+    });
+
+    return () => {
+      EventBus.off('onLayoutFull', fullHandler);
+      EventBus.off('onLayoutExpand', expandHandler);
+      EventBus.off('onLayoutCollapse', collapseHandler);
+      EventBus.off('onLayoutClose', closeHandler);
+    };
+  }, []);
 
   const leftSide = useMemo(() => <LeftSide />, []);
   const mainSide = useMemo(() => <MainSide />, []);

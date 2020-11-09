@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { observable, values } from 'mobx';
 
 const PlatformUIStore = observable({
   resourceType: 'rooms',
@@ -36,14 +36,38 @@ const PlatformUIStore = observable({
     });
   },
 
-  getRooms() {
+  fetchRooms() {
     return new Promise(resolve => {
       setTimeout(() => {
         const rooms = [
-          { id: 'r01', name: 'room 01' },
-          { id: 'r02', name: 'room 02' },
-          { id: 'r03', name: 'room 03' },
-          { id: 'r04', name: 'room 04' },
+          {
+            id: 'r01',
+            users: [1, 2, 3],
+            lastMessage: '가나다1',
+            name: 'room 01',
+            unreadCount: 54,
+          },
+          {
+            id: 'r02',
+            users: [1, 2, 3],
+            lastMessage: '가나다222222',
+            name: 'room 02',
+            unreadCount: 1,
+          },
+          {
+            id: 'r03',
+            users: [1, 2, 3],
+            lastMessage: '가나다333333333',
+            name: 'room 03',
+            unreadCount: 0,
+          },
+          {
+            id: 'r04',
+            users: [1, 2, 3],
+            lastMessage: '가나다444444444444',
+            name: 'room 04',
+            unreadCount: 30,
+          },
         ];
 
         this.setRooms(rooms);

@@ -1,6 +1,9 @@
 import React from 'react';
 import { Observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
+import { NoteIcon } from 'teespace-note-app';
+import { DriveIcon, ViewFileIcon } from 'teespace-drive-app';
+import { CalendarIcon } from 'teespace-calendar-app';
 import { Wrapper, Title, AppIconContainer, UserMenu } from './HeaderStyle';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
@@ -16,55 +19,64 @@ const Header = () => {
       <Observer>
         {() => <Title>{`${PlatformUIStore.resourceId}`}</Title>}
       </Observer>
+
       <AppIconContainer>
-        <span
-          style={{
-            padding: '5px',
-            border: '1px solid black',
-            cursor: 'pointer',
-          }}
-          onClick={() => {
-            history.push({
-              // useRouteMatch url 써도 되지만, Header 컴포넌트가 re-render 된다.
-              // useParams 또한, re-render 되므로 주의
-              pathname: history.location.pathname,
-              search: '?sub=note',
-            });
-          }}
-        >
-          Note
-        </span>
-        <span
-          style={{
-            padding: '5px',
-            border: '1px solid black',
-            cursor: 'pointer',
-          }}
-          onClick={() => {
-            history.push({
-              pathname: history.location.pathname,
-              search: '?sub=drive',
-            });
-          }}
-        >
-          Drive
-        </span>
-        <span
-          style={{
-            padding: '5px',
-            border: '1px solid black',
-            cursor: 'pointer',
-          }}
-          onClick={() => {
-            history.push({
-              pathname: history.location.pathname,
-              search: '?sub=schedule',
-            });
-          }}
-        >
-          Calendar
-        </span>
+        <Observer>
+          {() => (
+            <NoteIcon
+              state={PlatformUIStore.subApp === 'note' ? 'active' : 'default'}
+              onClick={() => {
+                history.push({
+                  pathname: history.location.pathname,
+                  search: '?sub=note',
+                });
+              }}
+            />
+          )}
+        </Observer>
+        <Observer>
+          {() => (
+            <DriveIcon
+              state={PlatformUIStore.subApp === 'drive' ? 'active' : 'default'}
+              onClick={() => {
+                history.push({
+                  pathname: history.location.pathname,
+                  search: '?sub=drive',
+                });
+              }}
+            />
+          )}
+        </Observer>
+        <Observer>
+          {() => (
+            <CalendarIcon
+              state={
+                PlatformUIStore.subApp === 'calendar' ? 'active' : 'default'
+              }
+              onClick={() => {
+                history.push({
+                  pathname: history.location.pathname,
+                  search: '?sub=calendar',
+                });
+              }}
+            />
+          )}
+        </Observer>
+        <Observer>
+          {() => (
+            <ViewFileIcon
+              state={PlatformUIStore.subApp === 'files' ? 'active' : 'default'}
+              onClick={() => {
+                history.push({
+                  pathname: history.location.pathname,
+                  search: '?sub=files',
+                });
+              }}
+            />
+          )}
+        </Observer>
       </AppIconContainer>
+
       <UserMenu>
         <span>User</span>
       </UserMenu>

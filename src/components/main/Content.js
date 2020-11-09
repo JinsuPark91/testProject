@@ -15,15 +15,42 @@ const Content = () => {
   const getApplication = appName => {
     switch (appName) {
       case 'talk':
-        return <Talk />;
+        return (
+          <TalkApp
+            channelId={PlatformUIStore.resourceId}
+            layoutState={PlatformUIStore.layout}
+          />
+        );
       case 'note':
-        return <NoteApp layoutState={PlatformUIStore.layout} />;
+        return (
+          <NoteApp
+            channelId={PlatformUIStore.resourceId}
+            layoutState={PlatformUIStore.layout}
+          />
+        );
       case 'drive':
-        return <DriveApp />;
-      case 'schedule':
-        return <CalendarApp />;
+        return (
+          <DriveApp
+            channelId={PlatformUIStore.resourceId}
+            layoutState={PlatformUIStore.layout}
+          />
+        );
+      case 'files':
+        return (
+          <DriveApp
+            channelId={PlatformUIStore.resourceId}
+            layoutState={PlatformUIStore.layout}
+          />
+        );
+      case 'calendar':
+        return (
+          <CalendarApp
+            channelId={PlatformUIStore.resourceId}
+            layoutState={PlatformUIStore.layout}
+          />
+        );
       case 'profile':
-        return <ProfileApp />;
+        return <ProfileApp channelId={PlatformUIStore.resourceId} />;
       case 'mail':
         return <MailMainView />;
       case 'mailSub':
@@ -54,6 +81,10 @@ const Content = () => {
     </Wrapper>
   );
 };
+
+const TalkApp = React.memo(({ channelId }) => {
+  return <div>Talk App {channelId}</div>;
+});
 
 const ProfileApp = React.memo(() => {
   return <div>Profile!</div>;

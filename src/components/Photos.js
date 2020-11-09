@@ -1,21 +1,52 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-// TODO : 사진 배치 귀찮
+const DEFAULT_DIAMETER = 2.25;
+
+const getStyle = (index, count) => {
+  const diameter = count > 1 ? DEFAULT_DIAMETER / 2 : DEFAULT_DIAMETER;
+
+  switch (count) {
+    case 1:
+      return {
+        diameter,
+        left: 0,
+        top: 0,
+      };
+    case 2:
+      return {
+        diameter,
+        left: index * diameter,
+        top: diameter / 2,
+      };
+
+    case 3:
+      return {
+        diameter,
+        left: index === 0 ? diameter / 2 : index === 1 ? 0 : diameter,
+        top: index === 0 ? 0 : diameter,
+      };
+    case 4:
+      return {
+        diameter,
+        left: (index % 2) * diameter,
+        top: index === 0 || index === 1 ? 0 : diameter,
+      };
+    default:
+      return [];
+  }
+};
+
 function Photos({ srcList, maxCount }) {
   const srcs = srcList.slice(0, maxCount);
-  const width = 30;
 
   return (
     <Wrapper>
       {srcs.map((src, index) => (
-        //   TODO : key 바꿀것 (사진 ID)
         <UserPhoto
           key={index}
           src={src}
-          width={width}
-          left={index * 5}
-          top={index * 5}
+          styles={getStyle(index, srcs.length)}
         />
       ))}
     </Wrapper>
@@ -23,18 +54,28 @@ function Photos({ srcList, maxCount }) {
 }
 
 const Wrapper = styled.div`
-  width: 45px;
-  height: 45px;
+  display: flex;
+  flex-direction: column;
+  width: ${DEFAULT_DIAMETER}rem;
+  height: ${DEFAULT_DIAMETER}rem;
   position: relative;
 `;
 
 const UserPhoto = styled.img`
-  width: ${props => props.width}px;
-  left: ${props => props.left}px;
-  top: ${props => props.top}px;
+  display: flex;
+  ${({ styles: { diameter, left, top } }) => {
+    return css`
+      width: ${diameter}rem;
+      height: ${diameter}rem;
+      left: ${left}rem;
+      top: ${top}rem;
+    `;
+  }}
+
   position: absolute;
   background: white;
   border-radius: 50%;
+  border: 0.0625rem solid rgba(0, 0, 0, 0.05);
 `;
 
 export default Photos;

@@ -14,12 +14,7 @@ export const CustomTabs = styled(Tabs)`
   }
 
   & .ant-tabs-nav {
-    height: 3.188rem;
-    margin-bottom: 0 !important;
-  }
-
-  & .ant-tabs.ant-tabs-top {
-    width: 100%;
+    margin: 0;
   }
 
   & .ant-tabs-nav-list {
@@ -33,12 +28,12 @@ export const CustomTabs = styled(Tabs)`
     background: #0b1d41;
   }
 
-  & .ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar {
-    background: #ff486d;
-    height: 3px;
+  & .ant-tabs-tab:hover {
+    background: #07142d;
   }
 
-  & .ant-tabs-content.ant-tabs-content-top {
-    height: 100%;
+  & .ant-tabs-ink-bar {
+    background: #ff486d;
+    height: 3px !important;
   }
 `;
