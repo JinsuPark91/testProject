@@ -2,7 +2,7 @@ import React from 'react';
 
 const REM_UNIT = 16;
 
-export const ChattingIcon = ({ width = 2.625, height = 1.875 }) => {
+export const ChattingIcon = React.memo(({ width = 2.625, height = 1.875 }) => {
   const defaultWidth = 42;
   const defaultHeight = 30;
 
@@ -38,9 +38,9 @@ export const ChattingIcon = ({ width = 2.625, height = 1.875 }) => {
       </g>
     </svg>
   );
-};
+});
 
-export const MailIcon = ({ width = 1.812, height = 1.937 }) => {
+export const MailIcon = React.memo(({ width = 1.812, height = 1.937 }) => {
   const defaultWidth = 29;
   const defaultHeight = 31;
 
@@ -76,9 +76,9 @@ export const MailIcon = ({ width = 1.812, height = 1.937 }) => {
       </g>
     </svg>
   );
-};
+});
 
-export const PeopleIcon = ({ width = 2.062, height = 1.687 }) => {
+export const PeopleIcon = React.memo(({ width = 2.062, height = 1.687 }) => {
   const defaultWidth = 33;
   const defaultHeight = 27;
 
@@ -114,9 +114,9 @@ export const PeopleIcon = ({ width = 2.062, height = 1.687 }) => {
       </g>
     </svg>
   );
-};
+});
 
-export const SpaceIcon = ({ width = 1.25, height = 1.25 }) => {
+export const SpaceIcon = React.memo(({ width = 1.25, height = 1.25 }) => {
   const defaultWidth = 20;
   const defaultHeight = 20;
 
@@ -161,4 +161,4 @@ export const SpaceIcon = ({ width = 1.25, height = 1.25 }) => {
       </g>
     </svg>
   );
-};
+});
