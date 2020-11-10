@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { EventBus } from 'teespace-core';
+import { EventBus, useCoreStores } from 'teespace-core';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
 import { Wrapper } from './MainPageStyle';
@@ -11,6 +11,8 @@ const useQueryParams = (searchParams = window.location.search) => {
 };
 
 const MainPage = () => {
+  const { roomStore, userStore } = useCoreStores();
+
   const [isLoading, setIsLoading] = useState(true);
 
   const history = useHistory();
@@ -21,17 +23,21 @@ const MainPage = () => {
     Loading 체크
   */
   useEffect(() => {
-    Promise.all([
-      PlatformUIStore.fetchRooms(),
-      PlatformUIStore.getUsers(),
-    ]).then(() => {
-      setIsLoading(false);
-    });
+    const myUserId = userStore.myProfile.id;
+
+    Promise.all([roomStore.fetchRoomList({ myUserId })])
+      .then(() => {
+        setIsLoading(false);
+      })
+      .catch(err => {
+        history.push('/error', err);
+      });
   }, []);
 
   // 묶어 놓으면, 하나 바뀔때도 다 바뀜
   useEffect(() => {
     PlatformUIStore.resourceType = resourceType;
+    PlatformUIStore.tabType = resourceType;
   }, [resourceType]);
 
   useEffect(() => {

@@ -38,10 +38,6 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route exact path="/" component={ServicePage} />
-          <Route
-            path="/:resourceType(s|f|m)/:resourceId/:mainApp"
-            component={() => <MainPage />}
-          />
           <RedirectablePublicRoute
             exact
             path="/login"
@@ -62,7 +58,10 @@ function App() {
             path="/registerComplete"
             component={<SignUpCompletePage />}
           />
-
+          <PrivateRoute
+            path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
+            component={MainPage}
+          />
           <Route component={NotFoundPage} />
           {/* <PrivateRoute
             path="/users"

@@ -1,17 +1,22 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
+import { values } from 'mobx';
 import styled from 'styled-components';
+import { useCoreStores } from 'teespace-core';
 import { SpaceIcon } from './Icons';
 import RoomItem from './RoomItem';
 import PlatformUIStore from '../stores/PlatformUIStore';
 
 function RoomList() {
   const history = useHistory();
+  const { roomStore } = useCoreStores();
 
-  const handleRoomClick = roomId => {
+  const handleRoomClick = roomInfo => {
+    const { id } = roomInfo;
+    PlatformUIStore.selectedRoom = roomInfo;
     history.push({
-      pathname: `/s/${roomId}/talk`,
+      pathname: `/s/${id}/talk`,
       search: history.location.search,
     });
   };
@@ -21,14 +26,14 @@ function RoomList() {
       <Container>
         <Observer>
           {() =>
-            PlatformUIStore.rooms.map(room => (
+            values(roomStore.rooms).map(roomInfo => (
               <RoomItem
-                key={room.id}
+                key={roomInfo.id}
                 underLine={false}
-                room={room}
-                selected={false}
+                roomInfo={roomInfo}
+                selected={roomInfo.id === PlatformUIStore.selectedRoom?.id}
                 onClick={() => {
-                  handleRoomClick(room.id);
+                  handleRoomClick(roomInfo);
                 }}
               />
             ))

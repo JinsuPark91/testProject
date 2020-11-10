@@ -11,13 +11,13 @@ const { TabPane } = CustomTabs;
 
 const LeftSide = () => {
   const handleSelectTab = key => {
-    PlatformUIStore.resourceType = key;
+    PlatformUIStore.tabType = key;
   };
 
   return useObserver(() => (
     <Wrapper>
       <CustomTabs
-        activeKey={PlatformUIStore.resourceType}
+        activeKey={PlatformUIStore.tabType}
         onTabClick={handleSelectTab}
         animated={false}
       >
