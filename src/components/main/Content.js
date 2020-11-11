@@ -22,7 +22,7 @@ const Content = () => {
       return found?.id;
     }
     return null;
-  });
+  }, []);
 
   const getApplication = appName => {
     switch (appName) {
