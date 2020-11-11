@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import { values } from 'mobx';
@@ -9,6 +9,7 @@ import RoomItem from './RoomItem';
 import PlatformUIStore from '../stores/PlatformUIStore';
 
 function RoomList() {
+  const [keyword, setKeyword] = useState('');
   const history = useHistory();
   const { roomStore } = useCoreStores();
 
@@ -20,20 +21,32 @@ function RoomList() {
     });
   }, []);
 
+  const handleChange = useCallback(e => {
+    setKeyword(e.target.value);
+  }, []);
+
   return (
     <Wrapper>
+      <input
+        type="text"
+        value={keyword}
+        onChange={handleChange}
+        placeholder="룸 이름, 멤버 검색"
+      />
       <Container>
         <Observer>
           {() =>
-            values(roomStore.rooms).map(roomInfo => (
-              <RoomItem
-                key={roomInfo.id}
-                roomInfo={roomInfo}
-                underLine={false}
-                selected={PlatformUIStore.selectedRoom?.id === roomInfo.id}
-                onClick={handleSelectRoom}
-              />
-            ))
+            values(roomStore.rooms)
+              .filter(roomInfo => roomInfo.name.includes(keyword))
+              .map(roomInfo => (
+                <RoomItem
+                  key={roomInfo.id}
+                  roomInfo={roomInfo}
+                  underLine={false}
+                  selected={PlatformUIStore.selectedRoom?.id === roomInfo.id}
+                  onClick={handleSelectRoom}
+                />
+              ))
           }
         </Observer>
       </Container>
