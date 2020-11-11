@@ -1,80 +1,101 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import { useObserver, Observer } from 'mobx-react';
-import { List } from 'antd';
+import React, { useCallback, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { Observer } from 'mobx-react';
+import { values } from 'mobx';
 import styled from 'styled-components';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, Input } from 'teespace-core';
+import { SpaceIcon } from './Icons';
 import RoomItem from './RoomItem';
-
-const DEFAULT_MAIN_APP = 'talk';
+import PlatformUIStore from '../stores/PlatformUIStore';
 
 function RoomList() {
-  const [rooms, setRooms] = useState([]);
+  const [keyword, setKeyword] = useState('');
   const history = useHistory();
-  const params = useParams();
-  const { userStore, roomStore } = useCoreStores();
+  const { roomStore } = useCoreStores();
 
-  useEffect(() => {
-    try {
-      (async () => {
-        const response = await roomStore.updateRoomList({
-          userId: userStore.myProfile.id,
-        });
-        const roomList = Object.values(response)?.map(obj => obj.room);
-        setRooms(roomList);
-      })();
-    } catch (e) {
-      console.warn('GET ROOMLIST ERROR : ', e);
-      setRooms([]);
-    }
-  }, [roomStore]);
-
-  const handleRoomClick = roomId => {
+  const handleSelectRoom = useCallback(roomInfo => {
     history.push({
-      pathname: `/s/${roomId}/${DEFAULT_MAIN_APP}`,
+      pathname: `/s/${roomInfo.id}/talk`,
       search: history.location.search,
     });
-  };
+  }, []);
 
-  return useObserver(() => (
+  const handleChange = useCallback(e => {
+    setKeyword(e.target.value);
+  }, []);
+
+  return (
     <Wrapper>
-      <List
-        itemLayout="horizontal"
-        // rooms 그대로 넣으면 안터진다.
-        // https://github.com/mobxjs/mobx-react/issues/484
-        dataSource={rooms}
-        renderItem={roomInfo => (
-          // 그냥 값 바꾸면 안터진다.
-          // https://github.com/mobxjs/mobx-react/issues/484
-          <Observer>
-            {() => (
-              <RoomItem
-                id={roomInfo.roomId}
-                thumbs={[
-                  'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                  'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                  'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                  'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                ]}
-                maxThumbs={2}
-                unreadCount={roomInfo.unreadCount}
-                name={roomInfo.name}
-                lastMessage={roomInfo.lastMessage}
-                onClick={() => {
-                  handleRoomClick(roomInfo.id);
-                }}
-              />
-            )}
-          </Observer>
-        )}
+      <input
+        type="text"
+        value={keyword}
+        onChange={handleChange}
+        placeholder="룸 이름, 멤버 검색"
       />
+      <Container>
+        <Observer>
+          {() =>
+            values(roomStore.rooms)
+              .filter(roomInfo => roomInfo.name.includes(keyword))
+              .map(roomInfo => (
+                <RoomItem
+                  key={roomInfo.id}
+                  roomInfo={roomInfo}
+                  underLine={false}
+                  selected={
+                    PlatformUIStore.resourceType === 's' &&
+                    PlatformUIStore.resourceId === roomInfo.id
+                  }
+                  onClick={handleSelectRoom}
+                />
+              ))
+          }
+        </Observer>
+      </Container>
+
+      <CreateRoomButton>
+        <SpaceIcon />
+        <span style={{ marginLeft: '0.3125rem', fontWeight: '500' }}>
+          룸 만들기
+        </span>
+      </CreateRoomButton>
     </Wrapper>
-  ));
+  );
 }
 
 const Wrapper = styled.div`
   overflow-y: auto;
   height: 100%;
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  height: calc(100% - 2.5rem);
+`;
+
+const CreateRoomButton = styled.div`
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  align-items: center;
+  height: 2.5rem;
+  background: #ffffff;
+  border: 0.0625rem solid #5a5fff;
+  border-radius: 1.875rem;
+  color: #5a5fff;
+  font-size: 0.81rem;
+  margin: 0.625rem;
+  box-sizing: border-box;
+  width: fill-available;
+  z-index: 1;
+
+  &:hover {
+    background-color: #dcddff;
+    border: 0.0625rem solid #c6ced6;
+    cursor: pointer;
+  }
 `;
 
 export default RoomList;
