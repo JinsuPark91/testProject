@@ -11,20 +11,19 @@ const useQueryParams = (searchParams = window.location.search) => {
 };
 
 const MainPage = () => {
-  const { roomStore, userStore } = useCoreStores();
-
   const [isLoading, setIsLoading] = useState(true);
 
   const history = useHistory();
   const { resourceType, resourceId, mainApp } = useParams();
   const { sub: subApp } = useQueryParams(history.location.search);
 
+  const { roomStore, userStore } = useCoreStores();
+  const myUserId = userStore.myProfile.id;
+
   /*
     Loading 체크
   */
   useEffect(() => {
-    const myUserId = userStore.myProfile.id;
-
     Promise.all([roomStore.fetchRoomList({ myUserId })])
       .then(() => {
         setIsLoading(false);

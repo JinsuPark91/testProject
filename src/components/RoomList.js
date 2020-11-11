@@ -14,7 +14,6 @@ function RoomList() {
   const { roomStore } = useCoreStores();
 
   const handleSelectRoom = useCallback(roomInfo => {
-    PlatformUIStore.selectedRoom = roomInfo;
     history.push({
       pathname: `/s/${roomInfo.id}/talk`,
       search: history.location.search,
@@ -43,7 +42,10 @@ function RoomList() {
                   key={roomInfo.id}
                   roomInfo={roomInfo}
                   underLine={false}
-                  selected={PlatformUIStore.selectedRoom?.id === roomInfo.id}
+                  selected={
+                    PlatformUIStore.resourceType === 's' &&
+                    PlatformUIStore.resourceId === roomInfo.id
+                  }
                   onClick={handleSelectRoom}
                 />
               ))

@@ -1,56 +1,68 @@
-import React, { useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { Observer } from 'mobx-react';
 import { Talk } from 'teespace-talk-app';
 import { NoteApp } from 'teespace-note-app';
 import { CalendarApp } from 'teespace-calendar-app';
 import { MailMainView, MailSubView } from 'teespace-mail-app';
 import { DriveApp } from 'teespace-drive-app';
+import { useCoreStores } from 'teespace-core';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import { Wrapper, Splitter } from './ContentStyle';
 import { MainAppContainer, SubAppContainer } from './AppContainer';
 
 const Content = () => {
   const splitRef = useRef(null);
+  const { roomStore } = useCoreStores();
+
+  const getChannelId = useCallback(type => {
+    if (PlatformUIStore.resourceType === 's') {
+      const found = roomStore.rooms[
+        PlatformUIStore.resourceId
+      ].channelList.find(channel => channel.type === type);
+      return found?.id;
+    }
+    return null;
+  });
 
   const getApplication = appName => {
     switch (appName) {
       case 'talk':
         return (
           <TalkApp
-            channelId={PlatformUIStore.resourceId}
+            channelId={getChannelId('CHN0001')}
             layoutState={PlatformUIStore.layout}
           />
         );
       case 'note':
         return (
           <NoteApp
-            channelId={PlatformUIStore.resourceId}
+            channelId={getChannelId('CHN0003')}
             layoutState={PlatformUIStore.layout}
           />
         );
       case 'drive':
         return (
           <DriveApp
-            channelId={PlatformUIStore.resourceId}
+            channelId={getChannelId('CHN0006')}
             layoutState={PlatformUIStore.layout}
           />
         );
       case 'files':
         return (
           <DriveApp
-            channelId={PlatformUIStore.resourceId}
+            channelId={getChannelId('CHN0006')}
             layoutState={PlatformUIStore.layout}
           />
         );
       case 'calendar':
         return (
           <CalendarApp
-            channelId={PlatformUIStore.resourceId}
+            channelId={getChannelId('CHN0005')}
             layoutState={PlatformUIStore.layout}
           />
         );
       case 'profile':
-        return <ProfileApp channelId={PlatformUIStore.resourceId} />;
+        return <ProfileApp />;
       case 'mail':
         return <MailMainView />;
       case 'mailSub':

@@ -17,8 +17,6 @@ const PlatformUIStore = observable({
   subApp: null,
   layout: 'collapse',
 
-  selectedRoom: null,
-
   get roomName() {
     if (this.resourceType === 's') {
       if (this.selectedRoom?.name) return this.selectedRoom.name;
