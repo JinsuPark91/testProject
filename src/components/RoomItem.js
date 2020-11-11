@@ -6,7 +6,7 @@ import Photos from './Photos';
 
 const { Item } = List;
 
-const RoomItem = React.memo(({ roomInfo, underLine, selected, onClick }) => {
+const RoomItem = ({ roomInfo, underLine, selected, onClick }) => {
   const thumbs = [
     'https://w.namu.la/s/f5ebe7f90296e3147f623f79083cf4487d82549ada2b5c022fae52c794009a31bccc8972f5aebe70d95edf52cec56a9681e6b33764cf22d5cfb380bacfd1cc22526e6de9e8bf99f658c761da4ccc545dd942c0f38dd11d91fe98558c68335488',
     'https://w.namu.la/s/ac4e43dffb27074a0e00149053c9121d1f23da8865d58a4cf942f9227270664358ac17e2244d1e9f20f4fd57cddcbff4aaa5be427ce2db3640ae3736815338ca8ba7bf58f062446c05f205a3fcbc9ddc4771a3b046662b66138069d3804a9fb6',
@@ -19,7 +19,7 @@ const RoomItem = React.memo(({ roomInfo, underLine, selected, onClick }) => {
 
   const content = useMemo(() => {
     return (
-      <StyledItem>
+      <>
         <Item.Meta
           avatar={<Photos srcList={thumbs} maxCount={4} />}
           title={
@@ -38,20 +38,18 @@ const RoomItem = React.memo(({ roomInfo, underLine, selected, onClick }) => {
         />
 
         <UnreadCount>unread count</UnreadCount>
-      </StyledItem>
+      </>
     );
   }, []);
 
   return (
-    <Wrapper
-      underLine={underLine}
-      onClick={handleRoomClick}
-      selected={selected}
-    >
-      {content}
+    // selected 가 바뀌면 자식 전부를 새로그린다.
+    // content를 memo 해두고 쓰자
+    <Wrapper underLine={underLine} onClick={handleRoomClick}>
+      <StyledItem selected={selected}>{content}</StyledItem>
     </Wrapper>
   );
-});
+};
 
 const Title = styled.div`
   display: flex;
@@ -84,23 +82,19 @@ const Wrapper = styled.div`
     css`
       border-bottom: 0.0625rem solid #e3e7eb;
     `}
-  ${({ selected }) =>
-    selected &&
-    css`
-      background: #e2e3fb;
-    `}
-    
-  border-radius: 1.875rem;
-
-  &:hover {
-    background: #eaeafb;
-  }
 `;
 
 const StyledItem = styled(Item)`
   padding: 0.625rem;
   user-select: none;
   cursor: pointer;
+  border-radius: 1.875rem;
+
+  ${({ selected }) =>
+    selected &&
+    css`
+      background: #e2e3fb;
+    `}
 
   & .ant-list-item-meta-avatar {
     margin-right: 0.3125rem;
@@ -122,6 +116,10 @@ const StyledItem = styled(Item)`
     font-size: 0.6875rem;
     color: #47474d;
     line-height: 1.063rem;
+  }
+
+  &:hover {
+    background: #eaeafb;
   }
 `;
 
