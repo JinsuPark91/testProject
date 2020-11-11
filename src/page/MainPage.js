@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { EventBus, useCoreStores } from 'teespace-core';
+import { talkRoomStore } from 'teespace-talk-app';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
 import { Wrapper } from './MainPageStyle';
@@ -24,12 +25,22 @@ const MainPage = () => {
     Loading 체크
   */
   useEffect(() => {
-    Promise.all([roomStore.fetchRoomList({ myUserId })])
+    Promise.all([
+      // 룸을 불러오자
+      roomStore.fetchRoomList({ myUserId }),
+      // 유저 프로필을 불러오자
+      userStore.fetchRoomUserProfileList({}),
+    ])
+      .then(() => {
+        // Talk init 하자 (lastMessage, unread count ...)
+        return talkRoomStore.initialize(myUserId);
+      })
       .then(() => {
         setIsLoading(false);
+        console.log('USER PROFILES : ', userStore.userProfiles);
       })
       .catch(err => {
-        history.push('/error', err);
+        console.log(err);
       });
   }, []);
 
