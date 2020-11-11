@@ -37,16 +37,14 @@ const getStyle = (index, count) => {
   }
 };
 
-function Photos({ srcList, maxCount }) {
-  const srcs = srcList.slice(0, maxCount);
-
+function Photos({ srcList }) {
   return (
     <Wrapper>
-      {srcs.map((src, index) => (
+      {srcList.map((src, index) => (
         <UserPhoto
-          key={index}
+          key={src}
           src={src}
-          styles={getStyle(index, srcs.length)}
+          styles={getStyle(index, srcList.length)}
         />
       ))}
     </Wrapper>
