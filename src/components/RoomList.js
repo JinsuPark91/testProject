@@ -1,16 +1,16 @@
 import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
-import { values } from 'mobx';
+import { values, toJS } from 'mobx';
 import styled from 'styled-components';
-import { useCoreStores, Input } from 'teespace-core';
+import { useCoreStores } from 'teespace-core';
 import { SpaceIcon } from './Icons';
 import RoomItem from './RoomItem';
 import PlatformUIStore from '../stores/PlatformUIStore';
 
 function RoomList() {
-  const [keyword, setKeyword] = useState('');
   const history = useHistory();
+  const [keyword, setKeyword] = useState('');
   const { roomStore } = useCoreStores();
 
   const handleSelectRoom = useCallback(roomInfo => {
@@ -37,11 +37,11 @@ function RoomList() {
           {() =>
             values(roomStore.rooms)
               .filter(roomInfo => roomInfo.name.includes(keyword))
-              .map(roomInfo => (
+              .map((roomInfo, index) => (
                 <RoomItem
                   key={roomInfo.id}
                   roomInfo={roomInfo}
-                  underLine={false}
+                  underLine={index === 0}
                   selected={
                     PlatformUIStore.resourceType === 's' &&
                     PlatformUIStore.resourceId === roomInfo.id
@@ -55,7 +55,13 @@ function RoomList() {
 
       <CreateRoomButton>
         <SpaceIcon />
-        <span style={{ marginLeft: '0.3125rem', fontWeight: '500' }}>
+        <span
+          style={{ marginLeft: '0.3125rem', fontWeight: '500' }}
+          onClick={() => {
+            values(roomStore.rooms)[0].name = 'test!!';
+            values(roomStore.rooms)[0].userCount = 30;
+          }}
+        >
           룸 만들기
         </span>
       </CreateRoomButton>

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { List } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
@@ -17,26 +17,38 @@ const RoomItem = React.memo(({ roomInfo, underLine, selected, onClick }) => {
     onClick(roomInfo);
   }, []);
 
-  return (
-    <Wrapper underLine={underLine}>
-      <Observer>
-        {() => (
-          <StyledItem onClick={handleRoomClick} selected={selected}>
-            <Item.Meta
-              avatar={<Photos srcList={thumbs} maxCount={4} />}
-              title={
-                <Title>
-                  <RoomNameText>{roomInfo.name}</RoomNameText>
-                  <UserCountText>{roomInfo.userCount}</UserCountText>
-                </Title>
-              }
-              description={<StyleRoomMessage>last message</StyleRoomMessage>}
-            />
+  const content = useMemo(() => {
+    return (
+      <StyledItem>
+        <Item.Meta
+          avatar={<Photos srcList={thumbs} maxCount={4} />}
+          title={
+            <Title>
+              <Observer>
+                {() => <RoomNameText>{roomInfo.name}</RoomNameText>}
+              </Observer>
+              <Observer>
+                {() => <UserCountText>{roomInfo.userCount}</UserCountText>}
+              </Observer>
+            </Title>
+          }
+          description={
+            <StyleRoomMessage>{roomInfo.userCount}</StyleRoomMessage>
+          }
+        />
 
-            <UnreadCount>userCount</UnreadCount>
-          </StyledItem>
-        )}
-      </Observer>
+        <UnreadCount>unread count</UnreadCount>
+      </StyledItem>
+    );
+  }, []);
+
+  return (
+    <Wrapper
+      underLine={underLine}
+      onClick={handleRoomClick}
+      selected={selected}
+    >
+      {content}
     </Wrapper>
   );
 });
@@ -72,19 +84,23 @@ const Wrapper = styled.div`
     css`
       border-bottom: 0.0625rem solid #e3e7eb;
     `}
-  padding : 0.1875rem;
+  ${({ selected }) =>
+    selected &&
+    css`
+      background: #e2e3fb;
+    `}
+    
+  border-radius: 1.875rem;
+
+  &:hover {
+    background: #eaeafb;
+  }
 `;
 
 const StyledItem = styled(Item)`
   padding: 0.625rem;
   user-select: none;
   cursor: pointer;
-  border-radius: 1.875rem;
-  ${({ selected }) =>
-    selected &&
-    css`
-      background: #e2e3fb;
-    `}
 
   & .ant-list-item-meta-avatar {
     margin-right: 0.3125rem;
@@ -98,9 +114,6 @@ const StyledItem = styled(Item)`
     display: none;
   }
 
-  &:hover {
-    background: #eaeafb;
-  }
   & .ant-list-item-meta-title {
     margin: 0;
     line-height: 1.188rem;
