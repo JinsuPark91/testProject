@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import { values } from 'mobx';
 import styled from 'styled-components';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, Input } from 'teespace-core';
 import { SpaceIcon } from './Icons';
 import RoomItem from './RoomItem';
 import PlatformUIStore from '../stores/PlatformUIStore';
@@ -12,14 +12,13 @@ function RoomList() {
   const history = useHistory();
   const { roomStore } = useCoreStores();
 
-  const handleRoomClick = roomInfo => {
-    const { id } = roomInfo;
+  const handleSelectRoom = useCallback(roomInfo => {
     PlatformUIStore.selectedRoom = roomInfo;
     history.push({
-      pathname: `/s/${id}/talk`,
+      pathname: `/s/${roomInfo.id}/talk`,
       search: history.location.search,
     });
-  };
+  }, []);
 
   return (
     <Wrapper>
@@ -29,12 +28,10 @@ function RoomList() {
             values(roomStore.rooms).map(roomInfo => (
               <RoomItem
                 key={roomInfo.id}
-                underLine={false}
                 roomInfo={roomInfo}
-                selected={roomInfo.id === PlatformUIStore.selectedRoom?.id}
-                onClick={() => {
-                  handleRoomClick(roomInfo);
-                }}
+                underLine={false}
+                selected={PlatformUIStore.selectedRoom?.id === roomInfo.id}
+                onClick={handleSelectRoom}
               />
             ))
           }
