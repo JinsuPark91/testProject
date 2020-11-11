@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { NoteIcon } from 'teespace-note-app';
 import { DriveIcon, ViewFileIcon } from 'teespace-drive-app';
 import { CalendarIcon } from 'teespace-calendar-app';
+import { useCoreStores } from 'teespace-core';
 import { Wrapper, Title, AppIconContainer, UserMenu } from './HeaderStyle';
 import Photos from '../Photos';
 import PlatformUIStore from '../../stores/PlatformUIStore';
@@ -12,6 +13,16 @@ const apps = ['note', 'drive', 'calendar', 'files'];
 
 const Header = () => {
   const history = useHistory();
+  const { roomStore } = useCoreStores();
+
+  const getRoomName = () => {
+    if (PlatformUIStore.resourceType === 's') {
+      const roomInfo = roomStore.rooms[PlatformUIStore.resourceId];
+      if (roomInfo?.name) return roomInfo.name;
+      return '이름 없음';
+    }
+    return null;
+  };
 
   const thumbs = [
     'https://w.namu.la/s/f5ebe7f90296e3147f623f79083cf4487d82549ada2b5c022fae52c794009a31bccc8972f5aebe70d95edf52cec56a9681e6b33764cf22d5cfb380bacfd1cc22526e6de9e8bf99f658c761da4ccc545dd942c0f38dd11d91fe98558c68335488',
@@ -55,7 +66,7 @@ const Header = () => {
             return PlatformUIStore.resourceType === 's' ? (
               <>
                 <Photos srcList={thumbs} maxCount={4} />
-                <span>{PlatformUIStore.roomName}</span>
+                <span>{getRoomName()}</span>
               </>
             ) : null;
           }}

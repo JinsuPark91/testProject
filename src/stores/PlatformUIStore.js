@@ -16,14 +16,6 @@ const PlatformUIStore = observable({
   mainApp: 'talk',
   subApp: null,
   layout: 'collapse',
-
-  get roomName() {
-    if (this.resourceType === 's') {
-      if (this.selectedRoom?.name) return this.selectedRoom.name;
-      return '이름 없음';
-    }
-    return null;
-  },
 });
 
 export default PlatformUIStore;
