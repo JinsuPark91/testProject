@@ -93,20 +93,20 @@ const Title = styled.div`
 `;
 
 const StyleRoomMessage = styled.span`
-  font-size: 0.6875rem;
-  line-height: 1.063rem;
+  font-size: 0.69rem;
   color: #47474d;
-  letter-spacing: 0;
 `;
 
 const RoomNameText = styled.span`
-  font-weight: 500;
+  font-size: 0.81rem;
+  font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 `;
 
 const UserCountText = styled.span`
+  font-size: 0.81rem;
   opacity: 0.5;
   color: #000000;
   margin-left: 0.375rem;
@@ -186,6 +186,8 @@ const UnreadCount = styled.div`
 
 const IconWrapper = styled.div`
   display: none;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   padding: 0.25rem;
   border-radius: 50%;

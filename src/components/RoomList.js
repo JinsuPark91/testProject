@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
-import { values, toJS } from 'mobx';
+import { values } from 'mobx';
 import styled from 'styled-components';
 import { useCoreStores } from 'teespace-core';
-import { SpaceIcon } from './Icons';
+import { WaplLogo, AddRoomIcon, OpenChatIcon, SearchIcon } from './Icons';
 import RoomItem from './RoomItem';
 import PlatformUIStore from '../stores/PlatformUIStore';
 
@@ -12,6 +12,14 @@ function RoomList() {
   const history = useHistory();
   const [keyword, setKeyword] = useState('');
   const { roomStore } = useCoreStores();
+
+  const handleCreateRoom = () => {
+    console.log('handleCreateRoom');
+  };
+
+  const handleOpenChat = () => {
+    console.log('handleOpenChat');
+  };
 
   const handleSelectRoom = useCallback(roomInfo => {
     history.push({
@@ -27,12 +35,18 @@ function RoomList() {
   return (
     <Wrapper>
       <SearchWrapper>
-        <input
-          type="text"
-          value={keyword}
-          onChange={handleChange}
-          placeholder="룸 이름, 멤버 검색"
-        />
+        <InputWrapper>
+          <SearchIcon width={1} height={1} color="rgb(133, 133, 133)" />
+          <input
+            type="text"
+            value={keyword}
+            onChange={handleChange}
+            placeholder="룸 이름, 멤버 검색"
+          />
+        </InputWrapper>
+        <OpenChatIconWrapper onClick={handleOpenChat}>
+          <OpenChatIcon />
+        </OpenChatIconWrapper>
       </SearchWrapper>
       <Container>
         <Observer>
@@ -58,17 +72,12 @@ function RoomList() {
         </Observer>
       </Container>
 
-      <CreateRoomButton
-        onClick={() => {
-          values(roomStore.rooms)[0].name = 'test!!';
-          values(roomStore.rooms)[0].userCount = 30;
-        }}
-      >
-        <SpaceIcon />
-        <span style={{ marginLeft: '0.3125rem', fontWeight: '500' }}>
-          룸 만들기
-        </span>
-      </CreateRoomButton>
+      <ButtomWrapper>
+        <WaplLogo />
+        <AddRoomIconWrapper onClick={handleCreateRoom}>
+          <AddRoomIcon />
+        </AddRoomIconWrapper>
+      </ButtomWrapper>
     </Wrapper>
   );
 }
@@ -83,6 +92,7 @@ const Wrapper = styled.div`
 `;
 
 const SearchWrapper = styled.div`
+  display: flex;
   padding: 0.5rem;
   & input {
     width: 100%;
@@ -103,26 +113,56 @@ const Container = styled.ul`
   padding-inline-start: 0;
 `;
 
-const CreateRoomButton = styled.div`
+const InputWrapper = styled.div`
   display: flex;
-  align-self: center;
+  flex: 1;
+  align-items: center;
+  margin-right: 0.5rem;
+  padding: 0 0.63rem;
+  background: #fff;
+  border-radius: 25px;
+  border: 1px solid #e3e7eb;
+
+  & input {
+    margin-left: 0.44rem;
+    height: 1.13rem;
+    border: 0;
+
+    :focus {
+      outline: 0;
+    }
+  }
+`;
+
+const AddRoomIconWrapper = styled.div`
+  display: flex;
+  cursor: pointer;
+  width: 2.5rem;
+  height: 2.5rem;
   justify-content: center;
   align-items: center;
-  height: 2.5rem;
-  background: #ffffff;
-  border: 0.0625rem solid #5a5fff;
-  border-radius: 1.875rem;
-  color: #5a5fff;
-  font-size: 0.81rem;
-  margin: 0.625rem;
-  box-sizing: border-box;
-  width: fill-available;
+  border-radius: 50%;
+  background: #232d3b;
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+`;
 
-  &:hover {
-    background-color: #dcddff;
-    border: 0.0625rem solid #c6ced6;
-    cursor: pointer;
-  }
+const OpenChatIconWrapper = styled.div`
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 1.81rem;
+  height: 1.81rem;
+  border: 1px solid #e3e7eb;
+  border-radius: 50%;
+  background: #ffffff;
+`;
+
+const ButtomWrapper = styled.div`
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 0.69rem 0.75rem 0.94rem;
 `;
 
 export default RoomList;
