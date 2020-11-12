@@ -54,6 +54,7 @@ function Photos({ srcList }) {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  flex: 0 0 ${DEFAULT_DIAMETER}rem;
   width: ${DEFAULT_DIAMETER}rem;
   height: ${DEFAULT_DIAMETER}rem;
   position: relative;

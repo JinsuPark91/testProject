@@ -32,7 +32,7 @@ const MainPage = () => {
       userStore.fetchRoomUserProfileList({}),
     ])
       .then(() => {
-        // Talk init 하자 (lastMessage, unread count ...)
+        // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
         return talkRoomStore.initialize(myUserId);
       })
       .then(() => {
