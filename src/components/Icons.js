@@ -263,3 +263,34 @@ export const AddAcountIcon = React.memo(({ width = 1.25, height = 1.25 }) => {
     </svg>
   );
 });
+
+export const ViewMoreIcon = React.memo(({ width = 1, height = 1 }) => {
+  const defaultWidth = 20;
+  const defaultHeight = 20;
+
+  return (
+    <svg
+      width={`${width}rem`}
+      height={`${height}rem`}
+      viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
+      version="1.1"
+    >
+      <g
+        id="Icon/system/view_more"
+        stroke="none"
+        strokeWidth="1"
+        fill="none"
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
+          (height * REM_UNIT) / defaultHeight
+        })`}
+        fillRule="evenodd"
+      >
+        <path
+          d="M10,14 C10.6875,14 11.25,14.5625 11.25,15.25 C11.25,15.9375 10.6875,16.5 10,16.5 C9.3125,16.5 8.75,15.9375 8.75,15.25 C8.75,14.5625 9.3125,14 10,14 Z M10,9 C10.6875,9 11.25,9.5625 11.25,10.25 C11.25,10.9375 10.6875,11.5 10,11.5 C9.3125,11.5 8.75,10.9375 8.75,10.25 C8.75,9.5625 9.3125,9 10,9 Z M10,4 C10.6875,4 11.25,4.5625 11.25,5.25 C11.25,5.9375 10.6875,6.5 10,6.5 C9.3125,6.5 8.75,5.9375 8.75,5.25 C8.75,4.5625 9.3125,4 10,4 Z"
+          id="Combined-Shape"
+          fill="rgb(107, 107, 107)"
+        />
+      </g>
+    </svg>
+  );
+});

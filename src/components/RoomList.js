@@ -117,7 +117,6 @@ const CreateRoomButton = styled.div`
   margin: 0.625rem;
   box-sizing: border-box;
   width: fill-available;
-  z-index: 1;
 
   &:hover {
     background-color: #dcddff;
