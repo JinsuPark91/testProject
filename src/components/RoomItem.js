@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { List } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
@@ -25,7 +25,6 @@ const RoomItem = ({ roomInfo, selected, onClick }) => {
     );
 
   const handleRoomClick = useCallback(() => {
-    console.log(roomInfo.metadata);
     onClick(roomInfo);
   }, []);
 
@@ -54,8 +53,9 @@ const RoomItem = ({ roomInfo, selected, onClick }) => {
             </Observer>
           }
         />
-
-        <UnreadCount>99+</UnreadCount>
+        {roomInfo.metadata?.unreadCount ? (
+          <UnreadCount>{roomInfo.metadata?.unreadCount}</UnreadCount>
+        ) : null}
       </>
     );
   }, []);

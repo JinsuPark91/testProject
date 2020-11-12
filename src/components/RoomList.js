@@ -58,15 +58,14 @@ function RoomList() {
         </Observer>
       </Container>
 
-      <CreateRoomButton>
+      <CreateRoomButton
+        onClick={() => {
+          values(roomStore.rooms)[0].name = 'test!!';
+          values(roomStore.rooms)[0].userCount = 30;
+        }}
+      >
         <SpaceIcon />
-        <span
-          style={{ marginLeft: '0.3125rem', fontWeight: '500' }}
-          onClick={() => {
-            values(roomStore.rooms)[0].name = 'test!!';
-            values(roomStore.rooms)[0].userCount = 30;
-          }}
-        >
+        <span style={{ marginLeft: '0.3125rem', fontWeight: '500' }}>
           룸 만들기
         </span>
       </CreateRoomButton>
@@ -78,6 +77,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background: rgb(245, 245, 251);
   overflow-y: auto;
   height: 100%;
 `;

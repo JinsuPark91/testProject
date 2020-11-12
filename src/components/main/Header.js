@@ -5,9 +5,20 @@ import { NoteIcon } from 'teespace-note-app';
 import { DriveIcon, ViewFileIcon } from 'teespace-drive-app';
 import { CalendarIcon } from 'teespace-calendar-app';
 import { useCoreStores } from 'teespace-core';
-import { Wrapper, Title, AppIconContainer, UserMenu } from './HeaderStyle';
+import {
+  Wrapper,
+  TitleWrapper,
+  Title,
+  AppIconContainer,
+  UserMenu,
+  TitleText,
+  UserCountText,
+  IconWrapper,
+  SystemIconContainer,
+} from './HeaderStyle';
 import Photos from '../Photos';
 import PlatformUIStore from '../../stores/PlatformUIStore';
+import { ExportIcon, SearchIcon, AddAcountIcon } from '../Icons';
 
 const apps = ['note', 'drive', 'calendar', 'files'];
 
@@ -15,18 +26,33 @@ const Header = () => {
   const history = useHistory();
   const { roomStore, userStore } = useCoreStores();
 
-  const getRoomName = () => {
+  const findRoom = () => {
     if (PlatformUIStore.resourceType === 's') {
-      const roomInfo = roomStore.rooms[PlatformUIStore.resourceId];
-      if (roomInfo?.name) return roomInfo.name;
-      return '이름 없음';
+      return roomStore.rooms?.[PlatformUIStore.resourceId];
+    }
+    return null;
+  };
+
+  const getRoomName = () => {
+    const found = findRoom();
+    if (found && found?.name) {
+      return found.name;
+    }
+    return null;
+  };
+
+  const getUserCount = () => {
+    const found = findRoom();
+    if (found && found?.userCount) {
+      return found.userCount;
     }
     return null;
   };
 
   const getUserPhotos = () => {
-    if (PlatformUIStore.resourceType === 's') {
-      return roomStore.rooms[PlatformUIStore.resourceId].memberIdListString
+    const found = findRoom();
+    if (found && found?.memberIdListString) {
+      return found.memberIdListString
         .split(',')
         .splice(0, 4)
         .map(
@@ -38,7 +64,17 @@ const Header = () => {
             })}`,
         );
     }
-    return null;
+    return [];
+  };
+
+  const handleExport = () => {
+    console.log('handleExport');
+  };
+  const handleSearch = () => {
+    console.log('handleSearch');
+  };
+  const handleAddMember = () => {
+    console.log('handleAddMember');
   };
 
   const handleAppClick = appName => {
@@ -71,18 +107,32 @@ const Header = () => {
 
   return (
     <Wrapper>
-      <Title>
-        <Observer>
-          {() => {
-            return PlatformUIStore.resourceType === 's' ? (
-              <>
-                <Photos srcList={getUserPhotos()} maxCount={4} />
-                <span>{getRoomName()}</span>
-              </>
-            ) : null;
-          }}
-        </Observer>
-      </Title>
+      <TitleWrapper>
+        <Title>
+          <Observer>
+            {() => {
+              return PlatformUIStore.resourceType === 's' ? (
+                <>
+                  <Photos srcList={getUserPhotos()} />
+                  <TitleText>{getRoomName()}</TitleText>
+                  <UserCountText>{getUserCount()}</UserCountText>
+                </>
+              ) : null;
+            }}
+          </Observer>
+        </Title>
+        <SystemIconContainer>
+          <IconWrapper onClick={handleExport}>
+            <ExportIcon />
+          </IconWrapper>
+          <IconWrapper onClick={handleSearch}>
+            <SearchIcon />
+          </IconWrapper>
+          <IconWrapper onClick={handleAddMember}>
+            <AddAcountIcon />
+          </IconWrapper>
+        </SystemIconContainer>
+      </TitleWrapper>
 
       <AppIconContainer>
         <Observer>{() => apps.map(appName => getAppIcon(appName))}</Observer>
