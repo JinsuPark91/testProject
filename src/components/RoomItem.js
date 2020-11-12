@@ -64,16 +64,17 @@ const RoomItem = ({ roomInfo, selected, onClick }) => {
             </Observer>
           }
         />
-        <UnreadCount className="room-item__unread">99+</UnreadCount>
+        {roomInfo.metadata?.unreadCount ? (
+          <UnreadCount className="room-item__unread">
+            {roomInfo.metadata?.unreadCount}
+          </UnreadCount>
+        ) : null}
         <IconWrapper className="room-item__icon" onClick={handleViewMore}>
           <ViewMoreIcon />
         </IconWrapper>
         <IconWrapper className="room-item__icon" onClick={handleExport}>
           <ExportIcon width={1} height={1} />
         </IconWrapper>
-        {/* {roomInfo.metadata?.unreadCount ? (
-          <UnreadCount className="room-item__unread>{roomInfo.metadata?.unreadCount}</UnreadCount>
-        ) : null} */}
       </>
     );
   }, []);
