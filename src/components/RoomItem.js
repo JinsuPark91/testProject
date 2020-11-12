@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import Photos from './Photos';
+import { ViewMoreIcon, ExportIcon } from './Icons';
 
 const { Item } = List;
 
@@ -23,6 +24,16 @@ const RoomItem = ({ roomInfo, selected, onClick }) => {
           isLocal: true,
         })}`,
     );
+
+  const handleViewMore = e => {
+    e.stopPropagation();
+    console.log('handleViewMore');
+  };
+
+  const handleExport = e => {
+    e.stopPropagation();
+    console.log('handleExport');
+  };
 
   const handleRoomClick = useCallback(() => {
     onClick(roomInfo);
@@ -54,8 +65,16 @@ const RoomItem = ({ roomInfo, selected, onClick }) => {
           }
         />
         {roomInfo.metadata?.unreadCount ? (
-          <UnreadCount>{roomInfo.metadata?.unreadCount}</UnreadCount>
+          <UnreadCount className="room-item__unread">
+            {roomInfo.metadata?.unreadCount}
+          </UnreadCount>
         ) : null}
+        <IconWrapper className="room-item__icon" onClick={handleViewMore}>
+          <ViewMoreIcon />
+        </IconWrapper>
+        <IconWrapper className="room-item__icon" onClick={handleExport}>
+          <ExportIcon width={1} height={1} />
+        </IconWrapper>
       </>
     );
   }, []);
@@ -75,20 +94,20 @@ const Title = styled.div`
 `;
 
 const StyleRoomMessage = styled.span`
-  font-size: 0.6875rem;
-  line-height: 1.063rem;
+  font-size: 0.69rem;
   color: #47474d;
-  letter-spacing: 0;
 `;
 
 const RoomNameText = styled.span`
-  font-weight: 500;
+  font-size: 0.81rem;
+  font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 `;
 
 const UserCountText = styled.span`
+  font-size: 0.81rem;
   opacity: 0.5;
   color: #000000;
   margin-left: 0.375rem;
@@ -96,6 +115,7 @@ const UserCountText = styled.span`
 
 const ItemWrapper = styled.div`
   display: flex;
+  align-items: center;
   flex: 1;
   ${({ selected }) =>
     selected &&
@@ -107,6 +127,14 @@ const ItemWrapper = styled.div`
   padding: 0.625rem;
   &:hover {
     background: #eaeafb;
+
+    .room-item__unread {
+      display: none;
+    }
+
+    .room-item__icon {
+      display: flex;
+    }
   }
 `;
 
@@ -148,17 +176,25 @@ const StyledItem = styled(({ isMyRoom, children, ...rest }) => (
 `;
 
 const UnreadCount = styled.div`
-  width: 1.5rem;
   background-color: #ff486d;
   height: fit-content;
-  align-self: center;
   color: #fff;
-  text-align: center;
   font-weight: 400;
-  line-height: 0.9375rem;
   font-size: 0.63rem;
-  padding: 0 0.3125rem;
-  border-radius: 0.625rem;
+  padding: 0.06rem 0.19rem;
+  border-radius: 0.56rem;
+`;
+
+const IconWrapper = styled.div`
+  display: none;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  &:hover {
+    background: #dcddff;
+  }
 `;
 
 export default RoomItem;
