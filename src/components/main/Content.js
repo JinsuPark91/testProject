@@ -14,6 +14,13 @@ const Content = () => {
   const splitRef = useRef(null);
   const { roomStore } = useCoreStores();
 
+  const getRoomId = useCallback(() => {
+    if (PlatformUIStore.resourceType === 's') {
+      return PlatformUIStore.resourceId;
+    }
+    return null;
+  }, []);
+
   const getChannelId = useCallback(type => {
     if (PlatformUIStore.resourceType === 's') {
       const found = roomStore.rooms[
@@ -29,6 +36,7 @@ const Content = () => {
       case 'talk':
         return (
           <TalkApp
+            roomId={getRoomId()}
             channelId={getChannelId('CHN0001')}
             layoutState={PlatformUIStore.layout}
           />
@@ -36,6 +44,7 @@ const Content = () => {
       case 'note':
         return (
           <NoteApp
+            roomId={getRoomId()}
             channelId={getChannelId('CHN0003')}
             layoutState={PlatformUIStore.layout}
           />
@@ -43,6 +52,7 @@ const Content = () => {
       case 'drive':
         return (
           <DriveApp
+            roomId={getRoomId()}
             channelId={getChannelId('CHN0006')}
             layoutState={PlatformUIStore.layout}
           />
@@ -50,6 +60,7 @@ const Content = () => {
       case 'files':
         return (
           <DriveApp
+            roomId={getRoomId()}
             channelId={getChannelId('CHN0006')}
             layoutState={PlatformUIStore.layout}
           />
@@ -57,6 +68,7 @@ const Content = () => {
       case 'calendar':
         return (
           <CalendarApp
+            roomId={getRoomId()}
             channelId={getChannelId('CHN0005')}
             layoutState={PlatformUIStore.layout}
           />
@@ -94,8 +106,10 @@ const Content = () => {
   );
 };
 
-const TalkApp = React.memo(({ channelId }) => {
-  return <div>Talk App {channelId}</div>;
+const TalkApp = React.memo(({ channelId, roomId }) => {
+  return (
+    <div>{`Talk App (roomId : ${roomId} / channelId : ${channelId})`}</div>
+  );
 });
 
 const ProfileApp = React.memo(() => {
