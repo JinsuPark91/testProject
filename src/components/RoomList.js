@@ -130,6 +130,10 @@ const InputWrapper = styled.div`
   border-radius: 25px;
   border: 1px solid #e3e7eb;
 
+  &:focus-within {
+    border: 1px solid #6c56e5;
+  }
+
   & input {
     margin-left: 0.44rem;
     height: 1.13rem;
