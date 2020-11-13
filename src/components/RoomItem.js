@@ -1,18 +1,125 @@
-import React, { useCallback, useMemo } from 'react';
-import { List } from 'antd';
+import React, { useCallback, useMemo, useState } from 'react';
+import { List, Menu, Dropdown } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
+import { values } from 'mobx';
 import Photos from './Photos';
 import { ViewMoreIcon, ExportIcon, DisableAlarmIcon, PinIcon } from './Icons';
 
-const { Item } = List;
-
 const MAX_PROFILE_COUNT = 4;
 
-const RoomItem = ({ roomInfo, selected, onClick }) => {
+const RoomDropdown = React.memo(({ children, roomInfo }) => {
+  const [visible, setVisible] = useState(false);
+
+  const handleVisibleChange = flag => {
+    setVisible(flag);
+  };
+
+  const handleMenuClick = e => {
+    e.stopPropagation();
+  };
+
+  const handleSetting = e => {
+    e.domEvent.stopPropagation();
+    console.log('handleSetting');
+    setVisible(false);
+  };
+
+  const handleBookmarkDisable = e => {
+    e.domEvent.stopPropagation();
+    console.log('handleBookmarkDisable');
+    setVisible(false);
+  };
+  const handleBookmarkEnable = e => {
+    e.domEvent.stopPropagation();
+    console.log('handleBookmarkEnable');
+    setVisible(false);
+  };
+
+  const handleViewMember = e => {
+    e.domEvent.stopPropagation();
+    console.log('handleViewMember');
+    setVisible(false);
+  };
+
+  const handleNameChange = e => {
+    e.domEvent.stopPropagation();
+    console.log('handleNameChange');
+    setVisible(false);
+  };
+
+  const handleAlarmEnable = e => {
+    e.domEvent.stopPropagation();
+    console.log('handleAlarmEnable');
+    setVisible(false);
+  };
+
+  const handleAlarmDisable = e => {
+    e.domEvent.stopPropagation();
+    console.log('handleAlarmDisable');
+    setVisible(false);
+  };
+
+  const handleExit = e => {
+    e.domEvent.stopPropagation();
+    console.log('handleExit');
+    setVisible(false);
+  };
+
+  const roomMenu = useMemo(
+    () => (
+      <Menu>
+        <Menu.Item key="setting" onClick={handleSetting}>
+          룸 설정
+        </Menu.Item>
+        {roomInfo.isRoomBookmarked ? (
+          <Menu.Item key="disableBookmark" onClick={handleBookmarkDisable}>
+            룸 상단 고정 해제
+          </Menu.Item>
+        ) : (
+          <Menu.Item key="enableBookmark" onClick={handleBookmarkEnable}>
+            룸 상단 고정
+          </Menu.Item>
+        )}
+        <Menu.Item key="member" onClick={handleViewMember}>
+          멤버 보기
+        </Menu.Item>
+        <Menu.Item key="changeName" onClick={handleNameChange}>
+          이름 변경
+        </Menu.Item>
+        {roomInfo.isAlarmUsed ? (
+          <Menu.Item key="disableAlarm" onClick={handleAlarmDisable}>
+            알림 끄기
+          </Menu.Item>
+        ) : (
+          <Menu.Item key="enableAlarm" onClick={handleAlarmEnable}>
+            알림 켜기
+          </Menu.Item>
+        )}
+        <Menu.Item key="exit" onClick={handleExit}>
+          나가기
+        </Menu.Item>
+      </Menu>
+    ),
+    [roomInfo.isAlarmUsed],
+  );
+
+  return (
+    <Dropdown
+      overlay={roomMenu}
+      onClick={handleMenuClick}
+      visible={visible}
+      onVisibleChange={handleVisibleChange}
+      trigger={['click']}
+    >
+      {children}
+    </Dropdown>
+  );
+});
+
+const RoomItemContent = React.memo(({ roomInfo, isMyRoom }) => {
   const { userStore } = useCoreStores();
-  const isMyRoom = roomInfo.type === 'WKS0001';
   const userPhotos = roomInfo.memberIdListString
     .split(',')
     .splice(0, MAX_PROFILE_COUNT)
@@ -25,85 +132,87 @@ const RoomItem = ({ roomInfo, selected, onClick }) => {
         })}`,
     );
 
-  const handleViewMore = e => {
-    e.stopPropagation();
-    console.log('handleViewMore');
-  };
-
   const handleExport = e => {
     e.stopPropagation();
     console.log('handleExport');
   };
+
+  return (
+    <>
+      <List.Item.Meta
+        avatar={<Photos srcList={userPhotos} />}
+        title={
+          <Title>
+            <Observer>
+              {() => <RoomNameText>{roomInfo.name}</RoomNameText>}
+            </Observer>
+            <Observer>
+              {() => <UserCountText>{roomInfo.userCount}</UserCountText>}
+            </Observer>
+
+            <Observer>
+              {() =>
+                roomInfo.isAlarmUsed ? (
+                  <TitleIconWrapper>
+                    <DisableAlarmIcon width={0.8} height={0.8} />
+                  </TitleIconWrapper>
+                ) : null
+              }
+            </Observer>
+            <Observer>
+              {() =>
+                roomInfo.isRoomBookmarked ? (
+                  <TitleIconWrapper>
+                    <PinIcon width={0.8} height={0.8} />
+                  </TitleIconWrapper>
+                ) : null
+              }
+            </Observer>
+          </Title>
+        }
+        description={
+          <Observer>
+            {() => (
+              <StyleRoomMessage>
+                {roomInfo.metadata?.lastMessage}
+              </StyleRoomMessage>
+            )}
+          </Observer>
+        }
+      />
+      {roomInfo.metadata?.unreadCount ? (
+        <UnreadCount className="room-item__unread">
+          {roomInfo.metadata?.unreadCount}
+        </UnreadCount>
+      ) : null}
+      {!isMyRoom && (
+        <RoomDropdown roomInfo={roomInfo}>
+          <IconWrapper className="room-item__icon">
+            <ViewMoreIcon />
+          </IconWrapper>
+        </RoomDropdown>
+      )}
+      <IconWrapper className="room-item__icon" onClick={handleExport}>
+        <ExportIcon width={1} height={1} />
+      </IconWrapper>
+    </>
+  );
+});
+
+const RoomItem = ({ roomInfo, selected, onClick }) => {
+  const isMyRoom = roomInfo.type === 'WKS0001';
 
   const handleRoomClick = useCallback(() => {
     console.log(roomInfo);
     onClick(roomInfo);
   }, []);
 
-  const content = useMemo(() => {
-    return (
-      <>
-        <Item.Meta
-          avatar={<Photos srcList={userPhotos} />}
-          title={
-            <Title>
-              <Observer>
-                {() => <RoomNameText>{roomInfo.name}</RoomNameText>}
-              </Observer>
-              <Observer>
-                {() => <UserCountText>{roomInfo.userCount}</UserCountText>}
-              </Observer>
-
-              <Observer>
-                {() =>
-                  roomInfo.isAlarmUsed ? (
-                    <TitleIconWrapper>
-                      <DisableAlarmIcon width={0.8} height={0.8} />
-                    </TitleIconWrapper>
-                  ) : null
-                }
-              </Observer>
-              <Observer>
-                {() =>
-                  roomInfo.isRoomBookmarked ? (
-                    <TitleIconWrapper>
-                      <PinIcon width={0.8} height={0.8} />
-                    </TitleIconWrapper>
-                  ) : null
-                }
-              </Observer>
-            </Title>
-          }
-          description={
-            <Observer>
-              {() => (
-                <StyleRoomMessage>
-                  {roomInfo.metadata?.lastMessage}
-                </StyleRoomMessage>
-              )}
-            </Observer>
-          }
-        />
-        {roomInfo.metadata?.unreadCount ? (
-          <UnreadCount className="room-item__unread">
-            {roomInfo.metadata?.unreadCount}
-          </UnreadCount>
-        ) : null}
-        <IconWrapper className="room-item__icon" onClick={handleViewMore}>
-          <ViewMoreIcon />
-        </IconWrapper>
-        <IconWrapper className="room-item__icon" onClick={handleExport}>
-          <ExportIcon width={1} height={1} />
-        </IconWrapper>
-      </>
-    );
-  }, []);
-
   return (
-    // selected 가 바뀌면 자식 전부를 새로그린다.
-    // content를 memo 해두고 쓰자
     <StyledItem onClick={handleRoomClick} isMyRoom={isMyRoom}>
-      <ItemWrapper selected={selected}>{content}</ItemWrapper>
+      <ItemWrapper selected={selected}>
+        {/* selected 변경 시, 자식들까지 다시 그리기 때문에 하위 요소들을 분리하여 memoization 한다. */}
+        <RoomItemContent roomInfo={roomInfo} isMyRoom={isMyRoom} />
+      </ItemWrapper>
     </StyledItem>
   );
 };
@@ -161,7 +270,7 @@ const ItemWrapper = styled.div`
 
 /* https://milooy.wordpress.com/2019/09/19/react-external-component%EB%A5%BC-styledcomponent%EB%A1%9C-%EA%B0%90%EC%8C%8C%EC%9D%84-%EB%95%8C-warning-unknown-props-%EC%9B%8C%EB%8B%9D-%ED%95%B4%EA%B2%B0/ */
 const StyledItem = styled(({ isMyRoom, children, ...rest }) => (
-  <Item {...rest}>{children}</Item>
+  <List.Item {...rest}>{children}</List.Item>
 ))`
   user-select: none;
   cursor: pointer;
