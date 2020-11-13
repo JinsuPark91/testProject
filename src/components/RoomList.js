@@ -15,6 +15,9 @@ function RoomList() {
 
   const handleCreateRoom = () => {
     console.log('handleCreateRoom');
+    const thirdRoom = values(roomStore.rooms)[2];
+    thirdRoom.isAlarmUsed = !thirdRoom.isAlarmUsed;
+    thirdRoom.isRoomBookmarked = !thirdRoom.isRoomBookmarked;
   };
 
   const handleOpenChat = () => {
@@ -34,7 +37,7 @@ function RoomList() {
 
   return (
     <Wrapper>
-      <SearchWrapper>
+      <TopWrapper>
         <InputWrapper>
           <SearchIcon width={1} height={1} color="rgb(133, 133, 133)" />
           <input
@@ -47,11 +50,15 @@ function RoomList() {
         <OpenChatIconWrapper onClick={handleOpenChat}>
           <OpenChatIcon />
         </OpenChatIconWrapper>
-      </SearchWrapper>
-      <Container>
+      </TopWrapper>
+
+      <RoomContainer>
         <Observer>
           {() =>
             values(roomStore.rooms)
+              // .sort((a, b) => a.lastMessageTime - b.lastMessageTime)
+              .sort((a, b) => b.isRoomBookmarked - a.isRoomBookmarked)
+              .sort((a, b) => a.type - b.type)
               .filter(
                 roomInfo =>
                   roomInfo.name.includes(keyword) ||
@@ -70,7 +77,7 @@ function RoomList() {
               ))
           }
         </Observer>
-      </Container>
+      </RoomContainer>
 
       <ButtomWrapper>
         <WaplLogo />
@@ -91,7 +98,7 @@ const Wrapper = styled.div`
   height: 100%;
 `;
 
-const SearchWrapper = styled.div`
+const TopWrapper = styled.div`
   display: flex;
   padding: 0.5rem;
   & input {
@@ -99,7 +106,7 @@ const SearchWrapper = styled.div`
   }
 `;
 
-const Container = styled.ul`
+const RoomContainer = styled.ul`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
