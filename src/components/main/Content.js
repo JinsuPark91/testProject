@@ -14,22 +14,23 @@ const Content = () => {
   const splitRef = useRef(null);
   const { roomStore } = useCoreStores();
 
-  const getRoomId = useCallback(() => {
+  const getRoomId = () => {
     if (PlatformUIStore.resourceType === 's') {
+      console.log('GET ROOM ID : ', PlatformUIStore.resourceId);
       return PlatformUIStore.resourceId;
     }
     return null;
-  }, []);
+  };
 
-  const getChannelId = useCallback(type => {
+  const getChannelId = type => {
     if (PlatformUIStore.resourceType === 's') {
-      const found = roomStore.rooms[
-        PlatformUIStore.resourceId
-      ].channelList.find(channel => channel.type === type);
-      return found?.id;
+      const found = roomStore.getChannelIds({
+        roomId: PlatformUIStore.resourceId,
+      })?.[type];
+      return found;
     }
     return null;
-  }, []);
+  };
 
   const getApplication = appName => {
     switch (appName) {
