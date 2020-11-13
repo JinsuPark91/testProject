@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import Photos from './Photos';
-import { ViewMoreIcon, ExportIcon } from './Icons';
+import { ViewMoreIcon, ExportIcon, DisableAlarmIcon, PinIcon } from './Icons';
 
 const { Item } = List;
 
@@ -36,6 +36,7 @@ const RoomItem = ({ roomInfo, selected, onClick }) => {
   };
 
   const handleRoomClick = useCallback(() => {
+    console.log(roomInfo);
     onClick(roomInfo);
   }, []);
 
@@ -51,6 +52,25 @@ const RoomItem = ({ roomInfo, selected, onClick }) => {
               </Observer>
               <Observer>
                 {() => <UserCountText>{roomInfo.userCount}</UserCountText>}
+              </Observer>
+
+              <Observer>
+                {() =>
+                  roomInfo.isAlarmUsed ? (
+                    <TitleIconWrapper>
+                      <DisableAlarmIcon width={0.8} height={0.8} />
+                    </TitleIconWrapper>
+                  ) : null
+                }
+              </Observer>
+              <Observer>
+                {() =>
+                  roomInfo.isRoomBookmarked ? (
+                    <TitleIconWrapper>
+                      <PinIcon width={0.8} height={0.8} />
+                    </TitleIconWrapper>
+                  ) : null
+                }
               </Observer>
             </Title>
           }
@@ -90,6 +110,7 @@ const RoomItem = ({ roomInfo, selected, onClick }) => {
 
 const Title = styled.div`
   display: flex;
+  align-items: center;
   font-size: 0.8125rem;
 `;
 
@@ -157,7 +178,7 @@ const StyledItem = styled(({ isMyRoom, children, ...rest }) => (
   }
 
   & .ant-list-item-meta-content {
-    margin-right: 0.625rem;
+    margin-right: 0.3rem;
   }
 
   & button {
@@ -185,6 +206,11 @@ const UnreadCount = styled.div`
   border-radius: 0.56rem;
 `;
 
+const TitleIconWrapper = styled.div`
+  display: flex;
+  flex: 0 0 0.81rem;
+  padding: 0 0.15rem;
+`;
 const IconWrapper = styled.div`
   display: none;
   justify-content: center;
