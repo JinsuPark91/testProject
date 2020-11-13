@@ -24,10 +24,9 @@ const Content = () => {
 
   const getChannelId = type => {
     if (PlatformUIStore.resourceType === 's') {
-      const found = roomStore.getChannelIds({
-        roomId: PlatformUIStore.resourceId,
-      })?.[type];
-      return found;
+      return roomStore?.rooms?.[PlatformUIStore.resourceId]?.channelList?.find(
+        channel => channel.type === type,
+      )?.id;
     }
     return null;
   };
