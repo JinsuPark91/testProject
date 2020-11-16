@@ -35,7 +35,7 @@ const Content = () => {
     switch (appName) {
       case 'talk':
         return (
-          <TalkApp
+          <Talk
             roomId={getRoomId()}
             channelId={getChannelId('CHN0001')}
             layoutState={PlatformUIStore.layout}
@@ -105,12 +105,6 @@ const Content = () => {
     </Wrapper>
   );
 };
-
-const TalkApp = React.memo(({ channelId, roomId }) => {
-  return (
-    <div>{`Talk App (roomId : ${roomId} / channelId : ${channelId})`}</div>
-  );
-});
 
 const ProfileApp = React.memo(() => {
   return <div>Profile!</div>;
