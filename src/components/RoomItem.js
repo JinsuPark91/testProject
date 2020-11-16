@@ -3,7 +3,6 @@ import { List, Menu, Dropdown } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
-import { values } from 'mobx';
 import Photos from './Photos';
 import { ViewMoreIcon, ExportIcon, DisableAlarmIcon, PinIcon } from './Icons';
 
@@ -140,7 +139,12 @@ const RoomItemContent = React.memo(({ roomInfo, isMyRoom }) => {
   return (
     <>
       <List.Item.Meta
-        avatar={<Photos srcList={userPhotos} />}
+        avatar={
+          <>
+            {isMyRoom && <MyTooltip>나</MyTooltip>}
+            <Photos srcList={userPhotos} />
+          </>
+        }
         title={
           <Title>
             <Observer>
@@ -217,6 +221,29 @@ const RoomItem = ({ roomInfo, selected, onClick }) => {
   );
 };
 
+const MyTooltip = styled.div`
+  display: flex;
+  font-size: 0.56rem;
+  background-color: #523dc7;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  color: #fff;
+  top: -0.5rem;
+  padding: 0.06rem 0.25rem;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -0.2rem;
+    border-width: 0.2rem;
+    border-style: solid;
+    border-color: #523dc7 transparent transparent transparent;
+  }
+`;
+
 const Title = styled.div`
   display: flex;
   align-items: center;
@@ -284,6 +311,7 @@ const StyledItem = styled(({ isMyRoom, children, ...rest }) => (
 
   & .ant-list-item-meta-avatar {
     margin-right: 0.3125rem;
+    position: relative;
   }
 
   & .ant-list-item-meta-content {
@@ -302,6 +330,9 @@ const StyledItem = styled(({ isMyRoom, children, ...rest }) => (
     font-size: 0.6875rem;
     color: #47474d;
     line-height: 1.063rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 `;
 
