@@ -68,7 +68,7 @@ const RoomDropdown = React.memo(({ children, roomInfo }) => {
 
   const roomMenu = useMemo(
     () => (
-      <Menu>
+      <StyledMenu>
         <Menu.Item key="setting" onClick={handleSetting}>
           룸 설정
         </Menu.Item>
@@ -99,7 +99,7 @@ const RoomDropdown = React.memo(({ children, roomInfo }) => {
         <Menu.Item key="exit" onClick={handleExit}>
           나가기
         </Menu.Item>
-      </Menu>
+      </StyledMenu>
     ),
     [roomInfo.isAlarmUsed],
   );
@@ -220,6 +220,24 @@ const RoomItem = ({ roomInfo, selected, onClick }) => {
     </StyledItem>
   );
 };
+const StyledMenu = styled(Menu)`
+  & {
+    background: #ffffff;
+    border: 1px solid #c6ced6;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+
+  & .ant-dropdown-menu-item {
+    font-size: 0.75rem;
+    color: #000;
+
+    :hover {
+      background-color: #dcddff;
+      border-radius: 0.8125rem;
+    }
+  }
+`;
 
 const MyTooltip = styled.div`
   display: flex;

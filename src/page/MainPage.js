@@ -4,8 +4,9 @@ import { EventBus, useCoreStores } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
-import { Wrapper } from './MainPageStyle';
+import { Loader, Wrapper } from './MainPageStyle';
 import PlatformUIStore from '../stores/PlatformUIStore';
+import LoadingImg from '../assets/TeeSpace_loading.gif';
 
 const useQueryParams = (searchParams = window.location.search) => {
   return Object.fromEntries(new URLSearchParams(searchParams));
@@ -99,7 +100,9 @@ const MainPage = () => {
   const mainSide = useMemo(() => <MainSide />, []);
 
   return isLoading ? (
-    <div>Loading...</div>
+    <Loader>
+      <img src={LoadingImg} alt="loader" />
+    </Loader>
   ) : (
     <Wrapper>
       {leftSide}
