@@ -302,6 +302,9 @@ const StyledItem = styled(({ isMyRoom, children, ...rest }) => (
     font-size: 0.6875rem;
     color: #47474d;
     line-height: 1.063rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 `;
 
