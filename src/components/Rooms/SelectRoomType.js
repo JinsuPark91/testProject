@@ -60,7 +60,7 @@ const StyledModal = styled(Modal) `
 
 function SelectRoom() {
   return (
-    <StyledModal visible mask={false} footer={null}>
+    <StyledModal visible mask={false} footer={null} width="31.25rem">
       <SelectRoomType>
           <RoomInformation>
             <StyledInfoTitle level={4}>프라이빗 룸</StyledInfoTitle>
