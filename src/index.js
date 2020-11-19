@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { CoreStoreProvider } from 'teespace-core';
+import { CoreStoreProvider, GlobalCommonStyles } from 'teespace-core';
 import { createGlobalStyle } from 'styled-components';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -20,6 +20,7 @@ ReactDOM.render(
     }}
   >
     <GlobalStyle />
+    <GlobalCommonStyles />
     <App />
   </CoreStoreProvider>,
   document.getElementById('root'),

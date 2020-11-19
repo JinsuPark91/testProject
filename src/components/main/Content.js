@@ -5,6 +5,7 @@ import { NoteApp } from 'teespace-note-app';
 import { CalendarApp } from 'teespace-calendar-app';
 import { MailMainView, MailSubView } from 'teespace-mail-app';
 import { DriveApp } from 'teespace-drive-app';
+import { MeetingApp } from 'teespace-meeting-app';
 import { useCoreStores } from 'teespace-core';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import { Wrapper, Splitter } from './ContentStyle';
@@ -73,11 +74,20 @@ const Content = () => {
             layoutState={PlatformUIStore.layout}
           />
         );
+      case 'meeting':
+        return (
+          <MeetingApp
+            roomId={getRoomId()}
+            channelId={getChannelId('CHN0005')}
+            layoutState={PlatformUIStore.layout}
+          />
+        );
+      // return <div>Meeting</div>;
       case 'profile':
         return <ProfileApp />;
       case 'mail':
         return <MailMainView />;
-      case 'mailSub':
+      case 'mailsub':
         return <MailSubView />;
       default:
         return null;
