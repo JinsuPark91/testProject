@@ -47,6 +47,7 @@ const StyledButton = styled(Button) `
     width: 8.38rem;
     height: 1.88rem;
     font-size: 0.75rem;
+    background-color:
     color: #FFFFFF;
     letter-spacing: 0;
     text-align: center;
@@ -66,13 +67,13 @@ function SelectRoom() {
             <StyledInfoTitle level={4}>프라이빗 룸</StyledInfoTitle>
             <StyledInfoText>프라이빗 룸을 통해 간단한 대화를 나누어 보세요. 구성원들만의 개인적인 공간입니다.</StyledInfoText>
             <StyledInfoImg src= {privateRoomImg} alt=""/>
-            <StyledButton>프라이빗 룸 만들기</StyledButton>
+            <StyledButton type="solid" shape="round">프라이빗 룸 만들기</StyledButton>
           </RoomInformation>
           <RoomInformation>
             <Title level={4}>오픈 룸</Title>
             <StyledInfoText>오픈 룸을 통해 특정 주제, 프로젝트를 진행해보세요. 누구나 검색을 통하여 자유롭게 참여할 수 있는 공간입니다.</StyledInfoText>
             <StyledInfoImg src= {openRoomImg} alt=""/>
-            <StyledButton>오픈 룸 만들기</StyledButton>
+            <StyledButton type="solid" shape="round">오픈 룸 만들기</StyledButton>
           </RoomInformation>
       </SelectRoomType>
     </StyledModal>
