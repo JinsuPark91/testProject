@@ -34,6 +34,7 @@ const StyledInfoTitle = styled(Title) `
 const StyledInfoText = styled.p `
     margin-bottom: 0.13rem;
     font-size: 0.75rem;
+    word-break: break-all;
     color: #696969;
     letter-spacing: 0;
     text-align: center;
