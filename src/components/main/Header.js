@@ -20,7 +20,7 @@ import Photos from '../Photos';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import { ExportIcon, SearchIcon, AddAcountIcon } from '../Icons';
 
-const apps = ['note', 'drive', 'calendar', 'files'];
+const apps = ['note', 'drive', 'calendar', 'files', 'meeting'];
 
 const Header = () => {
   const history = useHistory();
@@ -100,6 +100,8 @@ const Header = () => {
         return <CalendarIcon {...props} />;
       case 'files':
         return <ViewFileIcon {...props} />;
+      case 'meeting':
+        return <span {...props}>meeting icon</span>;
       default:
         return null;
     }
