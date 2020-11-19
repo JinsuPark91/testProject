@@ -1,10 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-const DEFAULT_DIAMETER = 2.25;
-
-const getStyle = (index, count) => {
-  const diameter = count > 1 ? DEFAULT_DIAMETER / 2 : DEFAULT_DIAMETER;
+const getStyle = (index, count, defaultDiameter) => {
+  const diameter = count > 1 ? defaultDiameter / 2 : defaultDiameter;
 
   switch (count) {
     case 1:
@@ -37,14 +35,14 @@ const getStyle = (index, count) => {
   }
 };
 
-function Photos({ srcList }) {
+function Photos({ srcList, defaultDiameter = 2.25 }) {
   return (
-    <Wrapper>
+    <Wrapper defaultDiameter={defaultDiameter}>
       {srcList.map((src, index) => (
         <UserPhoto
           key={src}
           src={src}
-          styles={getStyle(index, srcList.length)}
+          styles={getStyle(index, srcList.length, defaultDiameter)}
         />
       ))}
     </Wrapper>
@@ -54,9 +52,9 @@ function Photos({ srcList }) {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 0 0 ${DEFAULT_DIAMETER}rem;
-  width: ${DEFAULT_DIAMETER}rem;
-  height: ${DEFAULT_DIAMETER}rem;
+  flex: 0 0 ${({ defaultDiameter }) => defaultDiameter}rem;
+  width: ${({ defaultDiameter }) => defaultDiameter}rem;
+  height: ${({ defaultDiameter }) => defaultDiameter}rem;
   position: relative;
 `;
 
