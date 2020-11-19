@@ -61,7 +61,8 @@
     "test": "craco test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "upgrade:all": "yarn upgrade teespace-core teespace-calendar-app teespace-drive-app teespace-mail-app teespace-note-app teespace-talk-app"
   },
   "eslintConfig": {
     "extends": "react-app"
