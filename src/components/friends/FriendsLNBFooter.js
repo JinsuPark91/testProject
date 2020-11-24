@@ -14,6 +14,7 @@ const FooterWrapper = styled(Footer)`
     align-items: flex-end;
     justify-content: space-between;
     padding: 0.75rem 0.69rem 0.75rem 0.94rem;
+    background-color: #f5f5fb;
 `;
 const FriendAddButton = styled(Button)`
   &.ant-btn.ant-btn-outlined {
