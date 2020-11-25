@@ -32,6 +32,18 @@ const WelcomeBackgroundImage = styled.div`
   padding-top: 96.1%;
 `;
 
+const MyFrinedListBox = styled.div`
+  &:after {
+    content: '';
+    display: block;
+    margin: 0.375rem 0.625rem 0.375rem;
+    border-bottom: 1px solid #e3e7eb;
+  }
+  & > div {
+    padding: 0.63rem 0.63rem 0.44rem;
+  }
+`;
+
 const FrinedListBox = styled.div`
   &:after {
     content: '';
@@ -53,6 +65,10 @@ const StyleTitle = styled.p`
   line-height: 1.13rem;
   font-size: 0.75rem;
 `;
+
+const StyleText = styled(Text)`
+  margin-left: 0.25rem;
+`
 
 const FriendList = React.memo(({ friendList, onClick, activeFriendId }) => (
   <>
@@ -126,7 +142,7 @@ const FriendsLNBContent = React.forwardRef(
 
     const renderContent = (
       <>
-        <FrinedListBox>
+        <MyFrinedListBox>
           <FriendItem
             mode="me"
             tooltipPopupContainer={meTooltipPopupContainer}
@@ -134,7 +150,7 @@ const FriendsLNBContent = React.forwardRef(
             onClick={handleFriendActive}
             isActive={friendActiveId === userStore.myProfile.id}
           />
-        </FrinedListBox>
+        </MyFrinedListBox>
         <FrinedListBox style={{ display: searchKeyword ? 'none' : 'block' }}>
           <StyleTitle>즐겨찾기</StyleTitle>
           <FriendList
@@ -146,7 +162,7 @@ const FriendsLNBContent = React.forwardRef(
         <FrinedListBox style={{ display: searchKeyword ? 'block' : 'none' }}>
           <StyleTitle>
             프렌즈
-            <Text>{filteredFriendList.length}</Text>
+            <StyleText>{filteredFriendList.length}</StyleText>
           </StyleTitle>
           <FriendList
             friendList={filteredFriendList}
@@ -157,7 +173,7 @@ const FriendsLNBContent = React.forwardRef(
         <FrinedListBox style={{ display: searchKeyword ? 'none' : 'block' }}>
           <StyleTitle>
             프렌즈
-            <Text>{friendStore.friendInfoList.length}</Text>
+            <StyleText>{friendStore.friendInfoList.length}</StyleText>
           </StyleTitle>
           <FriendList
             friendList={friendStore.friendInfoList}
