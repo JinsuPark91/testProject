@@ -18,6 +18,8 @@ import {
 } from './HeaderStyle';
 import Photos from '../Photos';
 import PlatformUIStore from '../../stores/PlatformUIStore';
+import { ProfileContextProvider } from '../profile/ProfileContextProvider';
+import MyProfileInfo from '../profile/MyProfileInfo';
 import { ExportIcon, SearchIcon, AddAcountIcon } from '../Icons';
 
 const apps = ['note', 'drive', 'calendar', 'files', 'meeting'];
@@ -141,7 +143,9 @@ const Header = () => {
       </AppIconContainer>
 
       <UserMenu>
-        <span>User</span>
+        <ProfileContextProvider>
+          <MyProfileInfo />
+        </ProfileContextProvider>
       </UserMenu>
     </Wrapper>
   );

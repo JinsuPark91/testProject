@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon/system/arrow_right_line</title>
+    <g id="Icon/system/arrow_right_line" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M6.76776695,16.2360075 C6.41074435,15.8840176 6.41074435,15.3133291 6.76776695,14.9613392 L11.2928932,10.5 L6.76776695,6.0386608 C6.41074435,5.68667086 6.41074435,5.1159824 6.76776695,4.76399246 C7.12478956,4.41200251 7.70363757,4.41200251 8.06066017,4.76399246 L13.232233,9.86266583 C13.5892557,10.2146558 13.5892557,10.7853442 13.232233,11.1373342 L8.06066017,16.2360075 C7.70363757,16.5879975 7.12478956,16.5879975 6.76776695,16.2360075 Z" id="Path" fill="currentColor"></path>
+    </g>
+</svg>
