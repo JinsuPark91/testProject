@@ -6,6 +6,11 @@ export const ProfileContextProvider = ({ children }) => {
   const [state, setState] = useState({
     infoMode: false,
     editMode: false,
+
+
+    // test용 state
+    isAdmin: false,
+    created: true,
   });
 
   const context = {

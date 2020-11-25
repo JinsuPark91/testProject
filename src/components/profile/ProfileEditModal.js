@@ -49,7 +49,6 @@ const Wrapper = styled.div`
   right: 20px;
   background: #fff;
   height: ${props => (props.isEditMode ? '22.94rem' : 'auto')};
-  max-height: 25.69rem;
   width: 17.06rem;
   flex-direction: column;
   border-radius: 4px;
