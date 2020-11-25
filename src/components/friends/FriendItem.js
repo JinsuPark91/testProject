@@ -1,49 +1,24 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useObserver } from 'mobx-react';
-import styled, { css, createGlobalStyle } from 'styled-components';
-import { Tooltip, Typography, Avatar, Button } from 'antd';
+import styled, { css } from 'styled-components';
+import { Typography, Avatar, Button } from 'antd';
 import { useCoreStores, Dropdown, Menu, Message, Toast } from 'teespace-core';
 import { useOpenInWindow } from 'use-open-window';
 import {
-  EllipsisOutlined,
   ExportOutlined,
   PlusOutlined,
   CloseOutlined,
 } from '@ant-design/icons';
 
+import { ViewMoreIcon, ExportIcon } from '../Icons';
+
 const { Title } = Typography;
 
-const GlobalStyle = createGlobalStyle`
-  .teespace-common {
-    &.teespace-me-tooltip {
-      left: 0.625rem !important;
-      top: 0.2rem !important;
-      transform-origin: 50% 0.5371rem !important;
-      margin-top: -0.5rem;
-
-      .ant-tooltip-arrow {
-          top: 1.26rem;
-          .ant-tooltip-arrow-content {
-              transform: translateY(-6.53553391px) rotate(45deg);
-          }
-      }
-      .ant-tooltip-inner {
-          font-size: 0.56rem;
-          padding: 0.05rem 0.25rem;
-          background-color: #523dc7;
-          border-radius: 0.28rem;
-          min-width: 0;
-          min-height: 0;
-      }
-    }
-  }
-`;
 const FriendItemWrapper = styled.div`
   /* 조직도 조회, 추천친구 스타일 */
   white-space: nowrap;
   text-overflow: ellipsis;
-  overflow: hidden;
   ${props =>
     (props.mode === 'addFriend' || props.mode === 'recommended') &&
     css`
@@ -95,11 +70,20 @@ const FriendItemWrapper = styled.div`
 
       /* icon */
       .ant-btn-circle {
+        width: 1.5rem;
+        height: 1.5rem;
+        display:flex;
+        justify-content: center;
+        align-items: center;
         background: transparent;
         box-shadow: 0;
         border: 0;
         color: #75757f;
         &:hover {
+          justify-content: center;
+          align-items: center;
+          width: 1.5rem;
+          height: 1.5rem;
           color: #75757f;
           background-color: #dcddff;
         }
@@ -139,6 +123,41 @@ const ActionWrapper = styled.div`
   display: flex;
   align-items: center;
 `;
+
+const StyledWrapper = styled.div `
+  position:relative;
+  
+`
+const ProfileBadge = styled.span`
+  position: absolute;
+  top: -0.56rem;
+  left: -0.13rem;
+  text-align: center;
+  background-color: #523dc7;
+  min-width: 1.06rem;
+  min-height: 0.94rem;
+  padding: 0.06rem 0.25rem;
+  border-radius: 0.28rem;
+  font-weight: 600;
+  font-size: 0.56rem;
+  color: #fff;
+  line-height: 0.81rem;
+  z-index: 100;
+  &:after {
+    display: block;
+    content: '';
+    top: 100%;
+    left: 50%;
+    border: 0.15rem solid transparent;
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: rgba(136, 183, 213, 0);
+    border-top-color: #523dc7;
+    margin-left: -0.15rem
+  }
+`
 
 const StyledAvatar = styled(Avatar)`
   ${props => {
@@ -185,15 +204,14 @@ const Profile = React.memo(({ mode, tooltipPopupContainer, profilePhoto }) => {
   return (
     <>
       {mode === 'me' && (
-        <Tooltip
-          overlayClassName="teespace-common teespace-me-tooltip"
-          title="나"
-          getPopupContainer={tooltipPopupContainer}
-          placement="top"
-          visible
-        >
+        <StyledWrapper>
+          <ProfileBadge
+            getPopupContainer={tooltipPopupContainer}
+            visible
+          >나
+          </ProfileBadge>
           <StyledAvatar src={`/${profilePhoto}`} mode="me" />
-        </Tooltip>
+        </StyledWrapper>
       )}
       {mode !== 'me' && <StyledAvatar src={`/${profilePhoto}`} mode={mode} />}
     </>
@@ -218,13 +236,13 @@ const FriendAction = React.memo(
             >
               <Button
                 shape="circle"
-                icon={<EllipsisOutlined />}
+                icon={<ViewMoreIcon />}
                 onClick={handleStopPropagation}
               />
             </Dropdown>
             <Button
               shape="circle"
-              icon={<ExportOutlined />}
+              icon={<ExportIcon />}
               onClick={handleOpenTalk}
             />
           </>
@@ -243,7 +261,7 @@ const MeAction = React.memo(({ mode, handleTalkWindowOpen }) => {
       {mode === 'me' && (
         <Button
           shape="circle"
-          icon={<ExportOutlined />}
+          icon={<ExportIcon />}
           onClick={handleOpenTalk}
         />
       )}
@@ -510,7 +528,6 @@ const FriendItem = React.memo(
         isActive={isActive}
         mode={mode}
       >
-        <GlobalStyle />
         <Toast
           visible={visibleToast}
           timeoutMs={1000}
