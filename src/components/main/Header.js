@@ -1,9 +1,9 @@
 import React from 'react';
 import { Observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-import { NoteIcon } from 'teespace-note-app';
-import { DriveIcon, ViewFileIcon } from 'teespace-drive-app';
-import { CalendarIcon } from 'teespace-calendar-app';
+// import { NoteIcon } from 'teespace-note-app';
+// import { DriveIcon, ViewFileIcon } from 'teespace-drive-app';
+// import { CalendarIcon } from 'teespace-calendar-app';
 import { useCoreStores } from 'teespace-core';
 import {
   Wrapper,
@@ -15,14 +15,29 @@ import {
   UserCountText,
   IconWrapper,
   SystemIconContainer,
+  AppIconWrapper,
 } from './HeaderStyle';
 import Photos from '../Photos';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import { ProfileContextProvider } from '../profile/ProfileContextProvider';
 import MyProfileInfo from '../profile/MyProfileInfo';
-import { ExportIcon, SearchIcon, AddAcountIcon } from '../Icons';
+import {
+  ExportIcon,
+  SearchIcon,
+  AddAcountIcon,
+  NoteIcon,
+  NoteActiveIcon,
+  DriveIcon,
+  DriveActiveIcon,
+  CalendarIcon,
+  CalendarActiveIcon,
+  ViewFileIcon,
+  ViewFileActiveIcon,
+  MeetingIcon,
+  MeetingActiveIcon,
+} from '../Icons';
 
-const apps = ['note', 'drive', 'calendar', 'files', 'meeting'];
+const apps = ['note', 'drive', 'calendar', 'meeting', 'files'];
 
 const Header = () => {
   const history = useHistory();
@@ -87,23 +102,83 @@ const Header = () => {
   };
 
   const getAppIcon = appName => {
-    const props = {
-      key: appName,
-      state: PlatformUIStore.subApp === appName ? 'active' : 'default',
-      onClick: () => handleAppClick(appName),
-    };
-
     switch (appName) {
       case 'note':
-        return <NoteIcon {...props} />;
+        return (
+          <AppIconWrapper
+            key={appName}
+            onClick={() => {
+              handleAppClick(appName);
+            }}
+          >
+            {PlatformUIStore.subApp === appName ? (
+              <NoteActiveIcon width={1.5} height={1.5} />
+            ) : (
+              <NoteIcon width={1.5} height={1.5} />
+            )}
+          </AppIconWrapper>
+        );
       case 'drive':
-        return <DriveIcon {...props} />;
+        return (
+          <AppIconWrapper
+            key={appName}
+            onClick={() => {
+              handleAppClick(appName);
+            }}
+          >
+            {PlatformUIStore.subApp === appName ? (
+              <DriveActiveIcon width={1.5} height={1.5} />
+            ) : (
+              <DriveIcon width={1.5} height={1.5} />
+            )}
+          </AppIconWrapper>
+        );
       case 'calendar':
-        return <CalendarIcon {...props} />;
+        return (
+          <AppIconWrapper
+            key={appName}
+            onClick={() => {
+              handleAppClick(appName);
+            }}
+          >
+            {PlatformUIStore.subApp === appName ? (
+              <CalendarActiveIcon width={1.5} height={1.5} />
+            ) : (
+              <CalendarIcon width={1.5} height={1.5} />
+            )}
+          </AppIconWrapper>
+        );
       case 'files':
-        return <ViewFileIcon {...props} />;
+        return (
+          <AppIconWrapper
+            key={appName}
+            style={{ marginRight: 0 }}
+            onClick={() => {
+              handleAppClick(appName);
+            }}
+          >
+            {PlatformUIStore.subApp === appName ? (
+              <ViewFileActiveIcon width={1.5} height={1.5} />
+            ) : (
+              <ViewFileIcon width={1.5} height={1.5} />
+            )}
+          </AppIconWrapper>
+        );
       case 'meeting':
-        return <span {...props}>meeting icon</span>;
+        return (
+          <AppIconWrapper
+            key={appName}
+            onClick={() => {
+              handleAppClick(appName);
+            }}
+          >
+            {PlatformUIStore.subApp === appName ? (
+              <MeetingActiveIcon width={1.5} height={1.5} />
+            ) : (
+              <MeetingIcon width={1.5} height={1.5} />
+            )}
+          </AppIconWrapper>
+        );
       default:
         return null;
     }
