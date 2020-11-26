@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import styled, { css } from 'styled-components';
-import { Button, Modal, Avatar, Dropdown, Menu } from 'antd';
+import { Button, Modal, Avatar, Dropdown, Menu, Checkbox } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import SettingDialog from '../usersettings/SettingDialog';
@@ -19,9 +19,13 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
   const history = useHistory();
   const [profile, setProfile] = useState(null);
   const [itemKey, setItemKey] = useState('2');
+  const [dropdownTop, setDropdownTop] = useState(null);
   const [settingDialogVisible, setSettingDialogVisible] = useState(false);
+  const [spaceListVisible, setSpaceListVisible] = useState(false);
   const [lngListVisible, setLngListVisible] = useState(false);
   const useProfile = useProfileContext();
+  const spaceRef = useRef();
+  const topRef = useRef();
   const { i18n } = useTranslation();
 
   const handleSettingDialogOpen = useCallback(
@@ -33,6 +37,7 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
         created: false,
       });
       setSettingDialogVisible(true);
+      setSpaceListVisible(false);
     },
     [useProfile],
   );
@@ -60,9 +65,20 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
           infoMode: false,
           editMode: true,
         });
+      setSpaceListVisible(false);
     },
     [useProfile],
   );
+
+  const handleSpaceList = useCallback(() => {
+    setSpaceListVisible(spaceListVisible => !spaceListVisible);
+    useProfile.setState({ ...useProfile.state, created: false });
+  }, [useProfile]);
+
+  const handleSwitchSpace = useCallback(() => {
+    console.log('select space');
+    setSpaceListVisible(false);
+  }, []);
 
   const handleLogout = async () => {
     await authStore.logout({});
@@ -73,21 +89,17 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
     URL.revokeObjectURL(thumbPhoto);
   }, [thumbPhoto]);
 
+  const handleToggleLngList = useCallback(() => {
+    setLngListVisible(l => !l);
+    useProfile.setState({ ...useProfile.state, created: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useProfile]);
+
   const handleLanguage = useCallback(lng => {
-    handleToggleLngList();
+    setLngListVisible(l => false);
     i18n.changeLanguage(lng);
-    useProfile.setState({ ...useProfile.state, isAdmin: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handleToggleLngList = useCallback(
-    e => {
-      setLngListVisible(!lngListVisible);
-      useProfile.setState({ ...useProfile.state, created: false });
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    },
-    [useProfile],
-  );
 
   const handleInviteDialog = useCallback(() => {
     console.log('InviteDialog');
@@ -114,6 +126,16 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
   }, [userStore]);
 
   useEffect(() => {
+    if (spaceRef.current && topRef.current) {
+      setDropdownTop(
+        spaceRef.current.getBoundingClientRect().top -
+        topRef.current.getBoundingClientRect().top,
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spaceRef.current, topRef.current]);
+
+  useEffect(() => {
     // ProfileContext의 state를 추가로 초기화(Dim 처리 및 추후 추가 될 값에 반응가능)
     if (useProfile.state.created)
       useProfile.setState({
@@ -121,6 +143,7 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
         infoMode: true,
         isAdmin: true,
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 이후 '현재 스페이스의 어드민'인지를 체크하도록 수정
@@ -137,6 +160,14 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
     </Menu>
   );
 
+  const ConvertLists = [
+    '다른 스페이스 이름',
+    '다른 스페이스 이름2',
+    '다른 스페이스 이름3',
+    '다른 스페이스 이름4',
+    '다른 스페이스 이름5',
+  ];
+
   return (
     <ProfileModal
       visible={useProfile.state.infoMode}
@@ -151,7 +182,7 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
       width={'17rem'}
       style={{ top: '2.875rem' }}
     >
-      <UserArea>
+      <UserArea ref={topRef}>
         <UserImage src={thumbPhoto} onLoad={revokeURL} />
         <UserName>{profile?.name}</UserName>
         <UserMail>{`(${profile?.email})`}</UserMail>
@@ -164,13 +195,13 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
             비밀번호 변경
           </Button>
         </UserButtonBox>
-        <Button shape="round" onClick={handleLogout} className={'btn-logout'}>
+        <LogoutButton shape="round" onClick={handleLogout}>
           로그아웃
-        </Button>
+        </LogoutButton>
       </UserArea>
       <UserSpaceArea>
         <DataName>현재 스페이스</DataName>
-        <DataBox>
+        <DataBox ref={spaceRef}>
           <Logo
             shape="square"
             style={{ color: '#fff', backgroundColor: '#75757F' }}
@@ -178,9 +209,14 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
             U
           </Logo>
           <Info>
-            <Title>UX팀</Title>s tmax-ux.wapl.ai
+            <Title>UX팀</Title>
+            tmax-ux.wapl.ai
           </Info>
-          <Button type="circle" className={'btn-convert'}>
+          <Button
+            type="circle"
+            className={'btn-convert'}
+            onClick={handleSpaceList}
+          >
             <Blind>스페이스 전환</Blind>
           </Button>
           <Dropdown overlay={moreMenu} placement="bottomRight">
@@ -198,8 +234,8 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
           스페이스 목록으로 이동
         </SubInfo>
       </UserSubArea>
-      <UserSubArea onClick={handleToggleLngList}>
-        <SubInfo tabIndex="-1">
+      <UserSubArea>
+        <SubInfo tabIndex="-1" onClick={handleToggleLngList}>
           <LinkIcon>
             <LangSpaceIcon />
           </LinkIcon>
@@ -238,6 +274,42 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
           고객지원
         </SettingButton>
       </UserSettingArea>
+      {spaceListVisible && (
+        <ConvertDropdown pos={dropdownTop}>
+          <ConvertNow>
+            <LogoSmall
+              shape="square"
+              checked
+              style={{ color: '#fff', backgroundColor: '#75757F' }}
+            >
+              U
+            </LogoSmall>
+            <NowInfo>
+              <NowTitle>UX팀</NowTitle>
+              현재 스페이스입니다.
+            </NowInfo>
+            <Checkbox checked className={'check-round'} />
+          </ConvertNow>
+          <ConvertList>
+            {ConvertLists.map(i => (
+              <ConvertItem onClick={handleSwitchSpace} key={i}>
+                <LogoSmall
+                  shape="square"
+                  style={{ color: '#fff', backgroundColor: '#75757F' }}
+                >
+                  U
+                </LogoSmall>
+                <ItemText>{i}</ItemText>
+              </ConvertItem>
+            ))}
+          </ConvertList>
+          <ConvertAdd>
+            <AddButton href="#">
+              <span>+</span> 새 스페이스 생성
+            </AddButton>
+          </ConvertAdd>
+        </ConvertDropdown>
+      )}
       {useProfile.state.created && (
         <ProfileSpaceModal
           oneButton={useProfile.state.isAdmin}
@@ -272,10 +344,13 @@ const UserArea = styled.div`
   color: #fff;
   text-align: center;
   z-index: 5;
-  .btn-logout {
+`;
+const LogoutButton = styled(Button)`
+  &.ant-btn {
     margin-top: 0.5rem;
-    width: 100%;
+    width: 13.94rem;
     color: #7b869a;
+    background-color: transparent;
     border-color: #7b869a;
     &:hover {
       background-color: rgba(255, 255, 255, 0.2);
@@ -353,6 +428,9 @@ const DataName = styled.p`
 const DataBox = styled.div`
   display: flex;
   align-items: center;
+  .ant-btn {
+    background-color: transparent;
+  }
   .ant-btn-circle {
     width: 1.5rem;
     height: 1.5rem;
@@ -368,6 +446,7 @@ const DataBox = styled.div`
   }
 `;
 const Logo = styled(Avatar)`
+  flex-shrink: 0;
   width: 2.375rem;
   height: 2.375rem;
   font-size: 1.125rem;
@@ -417,7 +496,7 @@ const SubInfo = styled.p`
   line-height: 1.875rem;
   cursor: pointer;
   svg {
-    color: #75757F;
+    color: #75757f;
   }
   &:hover {
     background-color: #dcddff;
@@ -467,6 +546,86 @@ const SettingBar = styled.span`
   background-color: #686868;
   border-radius: 50%;
 `;
+const ConvertDropdown = styled.div`
+  position: absolute;
+  left: -11.5rem;
+  width: 11rem;
+  top: ${props => (props.pos ? props.pos + 'px' : '0px')};
+  border: 1px solid #c6ced6;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 0.25rem;
+  background-color: #fff;
+  z-index: 1050;
+`;
+const ConvertNow = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 0 0.6875rem;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid #e3e7eb;
+  & + div {
+    border-top: 0;
+  }
+`;
+const LogoSmall = styled(Logo)`
+  width: 1.875rem;
+  height: 1.875rem;
+  font-size: 0.875rem;
+  line-height: 1.875rem;
+  ${props =>
+    props.checked &&
+    css`
+      line-height: 1.625rem;
+      border: 2px solid #5a5fff;
+    `}
+`;
+const NowInfo = styled(Info)`
+  margin: 0 0.375rem;
+  font-size: 0.625rem;
+  line-height: 0.9375rem;
+`;
+const NowTitle = styled(Title)`
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+`;
+const ConvertList = styled.ul`
+  overflow-y: auto;
+  max-height: 11.25rem;
+  padding: 0.625rem 0;
+`;
+const ConvertItem = styled.li`
+  display: flex;
+  align-items: center;
+  padding: 0.3125rem 0.6875rem;
+  color: #000;
+  cursor: pointer;
+  .ant-avatar {
+    margin-right: 0.375rem;
+  }
+`;
+const ItemText = styled.p`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.75rem;
+`;
+const ConvertAdd = styled.div`
+  margin: 0 0.6875rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid #e3e7eb;
+`;
+const AddButton = styled.a`
+  display: inline-block;
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  color: #000;
+  &:hover {
+    color: #000;
+  }
+  span {
+    color: #6c56e5 !important;
+  }
+`;
 const LngList = styled.ul`
   position: absolute;
   left: -5.25rem;
@@ -500,7 +659,7 @@ const LangItem = styled.li`
         background-image: url('${checkekIcon}');
         background-size: contain;
       }
-  `};
+    `};
   &:hover {
     background: #dcddff;
   }
