@@ -11,6 +11,9 @@ import tsOfficeIcon from '../assets/ts_office.svg';
 import tsCallIcon from '../assets/ts_call.svg';
 import tsPhoneIcon from '../assets/ts_phone.svg';
 import tsMailIcon from '../assets/ts_mail.svg';
+import EmailHoverIcon from '../assets/ts_export.svg';
+import tsBgImgIcon from '../assets/ts_photo.svg';
+import tsCameraImgIcon from '../assets/ts_camera.svg';
 
 const IS_LOCAL = true;
 
@@ -214,7 +217,7 @@ const Profile = ({
             }
           >
             <ImageChangeButton position="tl">
-              <PictureOutlined />
+              <StyleBgImgIcon />
             </ImageChangeButton>
           </Dropdown>
         )}
@@ -242,7 +245,7 @@ const Profile = ({
               }
             >
               <ImageChangeButton position="br">
-                <CameraOutlined />
+                <StyleCameraImgIcon />
               </ImageChangeButton>
             </Dropdown>
           )}
@@ -252,12 +255,12 @@ const Profile = ({
         <UserInfoList>
           <UserInfoItem>
             <StyleOfficeIcon iconimg="address" />
-            {profile?.fullCompanyJob}
+            <StylText>{profile?.fullCompanyJob}</StylText>
           </UserInfoItem>
           <UserInfoItem>
             <StyleOfficeIcon iconimg="company" />
             {isEditMode ? (
-              <Input
+              <StyleInput
                 onChange={e => {
                   setIsChange(true);
                   setMobile(e.target.value);
@@ -265,13 +268,13 @@ const Profile = ({
                 value={mobile}
               />
             ) : (
-              <Text>{mobile}</Text>
+              <StylText>{mobile}</StylText>
             )}
           </UserInfoItem>
           <UserInfoItem>
             <StyleOfficeIcon iconimg="phone" />
             {isEditMode ? (
-              <Input
+              <StyleInput
                 onChange={e => {
                   setIsChange(true);
                   setPhone(e.target.value);
@@ -279,12 +282,19 @@ const Profile = ({
                 value={phone}
               />
             ) : (
-              <Text>{phone}</Text>
+              <StylText>{phone}</StylText>
             )}
           </UserInfoItem>
-          <UserInfoItem>
+          {/* 프로필 편집 시 "email" class 삭제 */}
+          <UserInfoItem
+            className={'email'}
+            onClick={() => {
+              console.log('todo');
+            }}
+          >
             <StyleOfficeIcon iconimg="email" />
-            {profile?.email}
+            <StyleOfficeIcon iconimg="emailhover" />
+            <StylText>{profile?.email}</StylText>
           </UserInfoItem>
         </UserInfoList>
         <ButtonContainer>
@@ -365,8 +375,8 @@ const ImageChangeButton = styled(Text)`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 50px;
-  height: 50px;
+  width: 2rem;
+  height: 2rem;
   background: black;
   border-radius: 50%;
   position: absolute;
@@ -427,7 +437,7 @@ const StyledButton = styled(Text)`
 const Content = styled.div`
   display: flex;
   position: relative;
-  width: ${({ showSider }) => (showSider ? `calc(100% - 250px)` : `100%`)};
+  width: 100%;
   height: 100%;
   flex-direction: column;
   align-items: center;
@@ -459,13 +469,33 @@ const UserInfoList = styled.div`
 const UserInfoItem = styled.div`
   display: flex;
   align-items: center;
-  color: #fff;
-  line-height: 1.25rem;
-  font-size: 0.88rem;
-  font-weight: 600;
   margin-top: 0.88rem;
   &:first-of-type {
     margin-top: 4.38rem;
+  }
+  em + em {
+    display: none;
+  }
+  &.email {
+    em {
+      &:last-of-type {
+        display: none;
+      }
+    }
+    &:hover {
+      cursor: pointer;
+      span {
+        text-decoration: underline;
+      }
+      em {
+        &:first-of-type {
+          display: none;
+        }
+        &:last-of-type {
+          display: block;
+        }
+      }
+    }
   }
 `;
 const BigText = styled(Text)`
@@ -511,7 +541,21 @@ const StyleIcon = styled.span`
     }
   }}
 `;
-const StyleOfficeIcon = styled.span`
+
+const StylText = styled(Text)`
+  display: inline-block;
+  width: 12.19rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  align-items: center;
+  color: #fff;
+  line-height: 1.25rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+`;
+
+const StyleOfficeIcon = styled.em`
   display: inline-block;
   width: 1.25rem;
   height: 1.25rem;
@@ -540,7 +584,50 @@ const StyleOfficeIcon = styled.span`
         return css`
           background-image: url(${tsMailIcon});
         `;
+
+      case 'emailhover':
+        return css`
+          background-image: url(${EmailHoverIcon});
+        `;
     }
   }}
 `;
+
+const StyleInput = styled(Input)`
+  &.ant-input {
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px solid #fff;
+    border-radius: 0;
+    color: #fff;
+    font-size: 0.88rem;
+    &:hover:not(:disabled),
+    &:active:not(:disabled),
+    &:focus:not(:disabled) {
+      color: #fff;
+      background-color: transparent;
+    }
+    &::placeholder {
+      color: #fff;
+      opacity: 50%;
+    }
+  }
+`;
+
+const StyleBgImgIcon = styled.span`
+  width: 1rem;
+  height: 1rem;
+  background-image: url(${tsBgImgIcon});
+  background-repeat: no-repeat;
+  background-size: 1rem 1rem;
+`;
+
+const StyleCameraImgIcon = styled.span`
+  width: 1rem;
+  height: 1rem;
+  background-image: url(${tsCameraImgIcon});
+  background-repeat: no-repeat;
+  background-size: 1rem 1rem;
+`;
+
 export default Profile;
