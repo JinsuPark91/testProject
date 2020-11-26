@@ -3,15 +3,12 @@ import { Route, Redirect } from 'react-router-dom';
 import { useCoreStores, WWMS } from 'teespace-core';
 
 export default function PrivateRoute({ component, ...rest }) {
-  const { authStore } = useCoreStores();
+  const { authStore, userStore } = useCoreStores();
   const [hasWWMSConfig, setHasWWMSConfig] = useState(null);
-  // 테스트용 에코서버
-  const echoServer = 'wss://echo.websocket.org';
 
   if (hasWWMSConfig === null) {
     WWMS.setConfig({
-      // url: `${process.env.REACT_APP_WEBSOCKET_URL}?USER_ID=${authStore.myInfo.id}&action=&CONNECTION_ID=undefined`,
-      url: echoServer,
+      url: `${process.env.REACT_APP_WEBSOCKET_URL}?USER_ID=${userStore.myProfile.id}&action=&CONNECTION_ID=undefined`,
       isDebug: true,
 
       useInterval: false,
