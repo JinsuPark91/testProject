@@ -1,4 +1,4 @@
-import { Modal } from 'antd';
+import { Modal, Checkbox } from 'antd';
 import styled, { css } from 'styled-components';
 
 export const Wrapper = styled.div`
@@ -7,9 +7,7 @@ export const Wrapper = styled.div`
 
 export const ButtonContainer = styled.div`
   display: flex;
-  margin-top: 2.25rem;
-  border-top: 1px solid #e3e7eb;
-  height: 4.3rem;
+  height: 4rem;
   align-items: center;
   justify-content: center;
   & button:not(:last-child) {
@@ -39,6 +37,7 @@ export const StyledButton = styled.button`
 `;
 
 export const Input = styled.div`
+  margin-top: 0.63rem;
   width: 31.25rem;
   display: flex;
   align-items: center;
@@ -96,7 +95,6 @@ export const FlexModal = styled(Modal)`
 export const Title = styled.div`
   font-size: 0.94rem;
   font-weight: 600;
-  margin-bottom: 0.63rem;
 `;
 export const Description = styled.div`
   font-size: 0.75rem;
@@ -106,4 +104,34 @@ export const Description = styled.div`
 
 export const LengthCounter = styled.div`
   color: #bdc6d3;
+`;
+
+export const ConfigWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0.88rem 1.19rem 0 1.19rem;
+`;
+export const StyledCheckbox = styled(Checkbox)`
+  margin-right: 0.38rem;
+  & .ant-checkbox-inner {
+    border-radius: 50%;
+    width: 0.94rem;
+    height: 0.94rem;
+  }
+
+  & .ant-checkbox-checked .ant-checkbox-inner {
+    background-color: #6c56e5;
+  }
+
+  & .ant-checkbox-checked .ant-checkbox-inner::after {
+    transform: rotate(45deg) scale(1) translate(-50%, -70%);
+  }
+
+  & .ant-checkbox-disabled .ant-checkbox-inner {
+    background-color: #cccccc;
+  }
+
+  & .ant-checkbox-disabled .ant-checkbox-inner::after {
+    border-color: #fff;
+  }
 `;

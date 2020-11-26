@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { UserSelectDialog } from 'teespace-core';
 import {
   FlexModal,
   Input,
@@ -8,15 +9,37 @@ import {
   Wrapper,
   ButtonContainer,
   StyledButton,
+  StyledCheckbox,
+  ConfigWrapper,
 } from './CreatePublicRoomDialogStyle';
 
 const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
-  const initialRoomName = '';
-  const [roomName, setRoomName] = useState(initialRoomName);
+  const initialStates = {
+    step: 0,
+    roomName: '',
+    selectedUsers: [],
+    isStartMeeting: false,
+  };
+
+  const [step, setStep] = useState(initialStates.step);
+  const [roomName, setRoomName] = useState(initialStates.roomName);
+  const [isStartMeeting, setIsStartMeeting] = useState(
+    initialStates.isStartMeeting,
+  );
+  const [selectedUsers, setSelectedUsers] = useState(
+    initialStates.selectedUsers,
+  );
+
+  const clearState = () => {
+    setStep(initialStates.step);
+    setRoomName(initialStates.roomName);
+    setSelectedUsers(initialStates.selectedUsers);
+    setIsStartMeeting(initialStates.isStartMeeting);
+  };
 
   useEffect(() => {
     if (!visible) {
-      setRoomName(initialRoomName);
+      clearState();
     }
   }, [visible]);
 
@@ -26,14 +49,32 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
   };
 
   const handleOk = () => {
-    onOk();
+    const lastStep = 1;
+    if (step === lastStep)
+      onOk({
+        selectedUsers,
+        roomName,
+        isStartMeeting,
+      });
+    else setStep(step + 1);
   };
 
   const handleCancel = () => {
     onCancel();
   };
 
-  return (
+  const handleSelectedUserChange = useCallback(users => {
+    setSelectedUsers(users);
+  }, []);
+
+  const handleStartMeetingChange = e => {
+    setIsStartMeeting(e.target.checked);
+  };
+
+  const handleToggle = () => {
+    setIsStartMeeting(!isStartMeeting);
+  };
+  return step === 0 ? (
     <FlexModal
       title={
         <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>
@@ -41,7 +82,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
         </div>
       }
       visible={visible}
-      closable
+      closable={false}
       footer={null}
     >
       <Wrapper>
@@ -75,6 +116,49 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
         </ButtonContainer>
       </Wrapper>
     </FlexModal>
+  ) : (
+    <UserSelectDialog
+      visible={visible}
+      title={
+        <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>
+          룸 구성원 초대
+        </div>
+      }
+      onSelectedUserChange={handleSelectedUserChange}
+      bottom={
+        <>
+          <ConfigWrapper>
+            <StyledCheckbox
+              checked={isStartMeeting}
+              onChange={handleStartMeetingChange}
+            />
+            <Title onClick={handleToggle}>
+              초대 구성원과 바로 Meeting 시작하기
+            </Title>
+          </ConfigWrapper>
+          <ButtonContainer>
+            {selectedUsers.length ? (
+              <>
+                <StyledButton
+                  buttonType="ok"
+                  onClick={handleOk}
+                  disabled={!selectedUsers.length}
+                >
+                  확인
+                </StyledButton>
+                <StyledButton buttonType="cancel" onClick={handleCancel}>
+                  취소
+                </StyledButton>
+              </>
+            ) : (
+              <StyledButton buttonType="ok" onClick={handleOk}>
+                건너뛰기
+              </StyledButton>
+            )}
+          </ButtonContainer>
+        </>
+      }
+    />
   );
 };
 

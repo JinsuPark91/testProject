@@ -23,8 +23,8 @@ function RoomList() {
   // Private Room
 
   const handleCreateRoom = () => {
-    setVisible({ ...visible, createPrivateRoom: true });
-    // setVisible({ ...visible, createPublicRoom: true });
+    // setVisible({ ...visible, createPrivateRoom: true });
+    setVisible({ ...visible, createPublicRoom: true });
   };
 
   const handleOpenChat = () => {
@@ -43,8 +43,8 @@ function RoomList() {
   }, []);
 
   // Private Room
-  const handleCreatePrivateRoomOk = users => {
-    console.log('SELECTED USERS : ', users);
+  const handleCreatePrivateRoomOk = data => {
+    console.log('Data : ', data);
     setVisible({ ...visible, createPrivateRoom: false });
   };
 
@@ -54,8 +54,8 @@ function RoomList() {
   // Private Room
 
   // Public Room
-  const handleCreatePublicRoomOk = users => {
-    console.log('SELECTED USERS : ', users);
+  const handleCreatePublicRoomOk = data => {
+    console.log('data : ', data);
     setVisible({ ...visible, createPublicRoom: false });
   };
 
@@ -67,16 +67,16 @@ function RoomList() {
   return (
     <Wrapper>
       {/* Create Private Room */}
-      <CreatePrivateRoomDialog
+      {/* <CreatePrivateRoomDialog
         visible={visible.createPrivateRoom}
         onOk={handleCreatePrivateRoomOk}
         onCancel={handleCreatePrivateRoomCancel}
-      />
-      {/* <CreatePublicRoomDialog
+      /> */}
+      <CreatePublicRoomDialog
         visible={visible.createPublicRoom}
         onOk={handleCreatePublicRoomOk}
         onCancel={handleCreatePublicRoomCancel}
-      /> */}
+      />
       {/* Create Private Room */}
       <TopWrapper>
         <InputWrapper>
@@ -105,6 +105,8 @@ function RoomList() {
                   roomInfo.name.includes(keyword) ||
                   roomInfo.type === 'WKS0001',
               )
+              // roomStore
+              //   .getRoomArray()
               .map(roomInfo => (
                 <RoomItem
                   key={roomInfo.id}
