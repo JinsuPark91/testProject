@@ -1,25 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import Upload from 'rc-upload';
 import styled, { css } from 'styled-components';
-import {
-  ContainerOutlined,
-  MobileOutlined,
-  PhoneOutlined,
-  MailOutlined,
-  EditOutlined,
-  CameraOutlined,
-  PictureOutlined,
-  VideoCameraOutlined,
-} from '@ant-design/icons';
+import { CameraOutlined, PictureOutlined } from '@ant-design/icons';
 import { Button, Input, Dropdown, Menu, Modal } from 'antd';
 import { useCoreStores } from 'teespace-core';
-import friendsIcon from '../assets/ts_friends.svg'
-import profileEditIcon from '../assets/ts_profile_edit.svg'
-import teeMeetingIcon from '../assets/ts_TeeMeeting.svg'
-import tsOfficeIcon from '../assets/ts_office.svg'
-import tsCallIcon from '../assets/ts_call.svg'
-import tsPhoneIcon from '../assets/ts_phone.svg'
-import tsMailIcon from '../assets/ts_mail.svg'
+import friendsIcon from '../assets/ts_friends.svg';
+import profileEditIcon from '../assets/ts_profile_edit.svg';
+import teeMeetingIcon from '../assets/ts_TeeMeeting.svg';
+import tsOfficeIcon from '../assets/ts_office.svg';
+import tsCallIcon from '../assets/ts_call.svg';
+import tsPhoneIcon from '../assets/ts_phone.svg';
+import tsMailIcon from '../assets/ts_mail.svg';
 
 const IS_LOCAL = true;
 
@@ -159,6 +150,7 @@ const Profile = ({
     setMobile(updatedProfile?.phone);
 
     setEditMode(false);
+    setIsChange(false);
   };
 
   const handleCancel = () => {
@@ -182,17 +174,17 @@ const Profile = ({
       {showSider && (
         <Sidebar>
           <StyledButton>
-            <FriendsIcon/>
+            <FriendsIcon />
             <Text>{isMyId() ? `나와의 Talk` : `1:1 Talk`}</Text>
           </StyledButton>
           {isMyId() ? (
             <StyledButton onClick={handleChangeMode}>
-              <StyleIcon iconimg="profile"/>
+              <StyleIcon iconimg="profile" />
               <Text>프로필 편집</Text>
             </StyledButton>
           ) : (
             <StyledButton onClick={handleMeetingClick}>
-              <StyleIcon iconimg="meeting"/>
+              <StyleIcon iconimg="meeting" />
               <Text>1:1 Meeting</Text>
             </StyledButton>
           )}
@@ -259,11 +251,11 @@ const Profile = ({
         <UserEmailText>{`(${profile?.loginId}@tmax.teepsace.net)`}</UserEmailText>
         <UserInfoList>
           <UserInfoItem>
-            <StyleOfficeIcon iconimg="address"/>
+            <StyleOfficeIcon iconimg="address" />
             {profile?.fullCompanyJob}
           </UserInfoItem>
           <UserInfoItem>
-            <StyleOfficeIcon iconimg="company"/>
+            <StyleOfficeIcon iconimg="company" />
             {isEditMode ? (
               <Input
                 onChange={e => {
@@ -277,7 +269,7 @@ const Profile = ({
             )}
           </UserInfoItem>
           <UserInfoItem>
-            <StyleOfficeIcon iconimg="phone"/>
+            <StyleOfficeIcon iconimg="phone" />
             {isEditMode ? (
               <Input
                 onChange={e => {
@@ -291,7 +283,7 @@ const Profile = ({
             )}
           </UserInfoItem>
           <UserInfoItem>
-            <StyleOfficeIcon iconimg="email"/>
+            <StyleOfficeIcon iconimg="email" />
             {profile?.email}
           </UserInfoItem>
         </UserInfoList>
@@ -300,12 +292,21 @@ const Profile = ({
             <>
               <Button
                 style={{ marginRight: '1.25rem' }}
+                type="solid"
+                shape="round"
                 disabled={!isChange}
                 onClick={handleConfirm}
               >
                 저장
               </Button>
-              <Button onClick={handleCancel}>취소</Button>
+              <Button
+                type="outlined"
+                shape="round"
+                onClick={handleCancel}
+                style={{ backgroundColor: '#fff' }}
+              >
+                취소
+              </Button>
             </>
           )}
         </ButtonContainer>
@@ -355,7 +356,7 @@ const UserEmailText = styled(Text)`
   align-items: center;
   margin-top: 0.5rem;
   line-height: 1.25rem;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.875rem;
   font-weight: 600;
 `;
@@ -369,7 +370,7 @@ const ImageChangeButton = styled(Text)`
   background: black;
   border-radius: 50%;
   position: absolute;
-  
+
   &:hover {
     background: rgba(90, 95, 255);
     cursor: pointer;
@@ -415,8 +416,8 @@ const StyledButton = styled(Text)`
     margin-top: 0;
   }
   &:hover {
-    background: rgba(255,255,255,0.20);
-    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.40);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
     border-radius: 4px;
     border-radius: 4px;
     cursor: pointer;
@@ -486,8 +487,7 @@ const FriendsIcon = styled.span`
   background-image: url(${friendsIcon});
   background-repeat: no-repeat;
   background-size: 2.75rem 2.75rem;
-  
-`
+`;
 
 const StyleIcon = styled.span`
   display: inline-block;
@@ -510,7 +510,7 @@ const StyleIcon = styled.span`
         `;
     }
   }}
-`
+`;
 const StyleOfficeIcon = styled.span`
   display: inline-block;
   width: 1.25rem;
@@ -532,15 +532,15 @@ const StyleOfficeIcon = styled.span`
         `;
 
       case 'phone':
-      return css`
+        return css`
           background-image: url(${tsPhoneIcon});
-      `;
+        `;
 
       case 'email':
-      return css`
-         background-image: url(${tsMailIcon});
-      `;
+        return css`
+          background-image: url(${tsMailIcon});
+        `;
     }
   }}
-`
+`;
 export default Profile;

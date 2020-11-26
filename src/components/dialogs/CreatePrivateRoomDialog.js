@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { UserSelectDialog } from 'teespace-core';
+import { Checkbox } from 'antd';
 import {
   ConfigTitle,
   ConfigTitleText,
   ConfigDescriptionText,
-  StyledCheckbox,
   Input,
   ConfigWrapper,
   ButtonContainer,
@@ -65,7 +65,8 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
     <>
       <ConfigWrapper>
         <ConfigTitle>
-          <StyledCheckbox
+          <Checkbox
+            className="check-round"
             defaultChecked
             disabled={selectedUsers.length < 2}
             checked={options.isChangeName}
@@ -93,7 +94,8 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
         </Input>
 
         <ConfigTitle>
-          <StyledCheckbox
+          <Checkbox
+            className="check-round"
             checked={options.isStartMeeting}
             onChange={handleStartMeetingChange}
           />

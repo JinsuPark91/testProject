@@ -10,6 +10,7 @@ import { useCoreStores } from 'teespace-core';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import { Wrapper, Splitter } from './ContentStyle';
 import { MainAppContainer, SubAppContainer } from './AppContainer';
+import Profile from '../Profile';
 
 const Content = () => {
   const splitRef = useRef(null);
@@ -84,7 +85,7 @@ const Content = () => {
         );
       // return <div>Meeting</div>;
       case 'profile':
-        return <ProfileApp />;
+        return <Profile userId={PlatformUIStore.resourceId} />;
       case 'mail':
         return <MailMainView />;
       case 'mailsub':

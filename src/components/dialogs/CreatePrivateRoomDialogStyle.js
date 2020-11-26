@@ -22,29 +22,6 @@ export const ConfigDescriptionText = styled.div`
   margin-bottom: 0.88rem;
 `;
 
-export const StyledCheckbox = styled(Checkbox)`
-  & .ant-checkbox-inner {
-    border-radius: 50%;
-    width: 0.94rem;
-    height: 0.94rem;
-  }
-
-  & .ant-checkbox-checked .ant-checkbox-inner {
-    background-color: #6c56e5;
-  }
-
-  & .ant-checkbox-checked .ant-checkbox-inner::after {
-    transform: rotate(45deg) scale(1) translate(-50%, -70%);
-  }
-
-  & .ant-checkbox-disabled .ant-checkbox-inner {
-    background-color: #cccccc;
-  }
-
-  & .ant-checkbox-disabled .ant-checkbox-inner::after {
-    border-color: #fff;
-  }
-`;
 export const Input = styled.div`
   display: flex;
   align-items: center;

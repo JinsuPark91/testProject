@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { UserSelectDialog } from 'teespace-core';
+import { Checkbox } from 'antd';
 import {
   FlexModal,
   Input,
@@ -9,7 +10,6 @@ import {
   Wrapper,
   ButtonContainer,
   StyledButton,
-  StyledCheckbox,
   ConfigWrapper,
 } from './CreatePublicRoomDialogStyle';
 
@@ -128,11 +128,12 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
       bottom={
         <>
           <ConfigWrapper>
-            <StyledCheckbox
+            <Checkbox
+              className="check-round"
               checked={isStartMeeting}
               onChange={handleStartMeetingChange}
             />
-            <Title onClick={handleToggle}>
+            <Title onClick={handleToggle} style={{ marginLeft: '0.38rem' }}>
               초대 구성원과 바로 Meeting 시작하기
             </Title>
           </ConfigWrapper>
