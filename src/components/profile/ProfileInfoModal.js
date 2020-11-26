@@ -193,7 +193,7 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
       <UserSubArea>
         <SubInfo tabIndex="-1">
           <LinkIcon>
-            <LangSpaceIcon />
+            <SquareSpaceIcon />
           </LinkIcon>
           스페이스 목록으로 이동
         </SubInfo>
@@ -201,7 +201,7 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
       <UserSubArea onClick={handleToggleLngList}>
         <SubInfo tabIndex="-1">
           <LinkIcon>
-            <SquareSpaceIcon />
+            <LangSpaceIcon />
           </LinkIcon>
           Language : {i18n.language === 'ko' ? '한국어' : 'English'}
           <LangIcon>
@@ -295,10 +295,10 @@ const UserImage = styled.img`
   height: 3.75rem;
   border-radius: 50%;
 `;
-const UserName = styled.strong`
-  display: block;
+const UserName = styled.p`
   margin-top: 0.5rem;
   font-size: 0.88rem;
+  font-weight: 500;
   line-height: 1.25rem;
 `;
 const UserMail = styled.span`
@@ -313,7 +313,7 @@ const UserButtonBox = styled.div`
   margin-top: 0.875rem;
   font-size: 0.69rem;
   opacity: 0.8;
-  .ant-btn-link {
+  .ant-btn.ant-btn-link {
     padding: 0 0.375rem;
     font-size: 0.75rem;
     color: #cacdff;
@@ -416,6 +416,9 @@ const SubInfo = styled.p`
   font-weight: 500;
   line-height: 1.875rem;
   cursor: pointer;
+  svg {
+    color: #75757F;
+  }
   &:hover {
     background-color: #dcddff;
     text-decoration: none;

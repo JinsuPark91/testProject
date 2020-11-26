@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useObserver } from 'mobx-react';
 import styled, { css } from 'styled-components';
-import { Typography, Avatar, Button } from 'antd';
+import { Avatar, Button } from 'antd';
 import { useCoreStores, Dropdown, Menu, Message, Toast } from 'teespace-core';
 import { useOpenInWindow } from 'use-open-window';
 import {
@@ -12,8 +12,6 @@ import {
 } from '@ant-design/icons';
 
 import { ViewMoreIcon, ExportIcon } from '../Icons';
-
-const { Title } = Typography;
 
 const FriendItemWrapper = styled.div`
   /* 조직도 조회, 추천친구 스타일 */
@@ -111,7 +109,8 @@ const TextWrapper = styled.div`
   overflow: hidden;
 `;
 
-const TitleForName = styled(Title)`
+const TitleForName = styled.p`
+  font-weight: 600;
   font-size: 0.81rem !important;
   margin-bottom: 0 !important;
   white-space: nowrap;
