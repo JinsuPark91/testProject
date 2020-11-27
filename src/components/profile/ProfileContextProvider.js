@@ -7,7 +7,6 @@ export const ProfileContextProvider = ({ children }) => {
     infoMode: false,
     editMode: false,
 
-
     // test용 state
     isAdmin: false,
     created: true,
