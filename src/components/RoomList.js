@@ -7,17 +7,16 @@ import { useCoreStores } from 'teespace-core';
 import { WaplLogo, AddRoomIcon, OpenChatIcon, SearchIcon } from './Icons';
 import RoomItem from './RoomItem';
 import PlatformUIStore from '../stores/PlatformUIStore';
+import SelectRoomTypeDialog from './Rooms/SelectRoomTypeDialog';
 
 function RoomList() {
   const history = useHistory();
   const [keyword, setKeyword] = useState('');
   const { roomStore } = useCoreStores();
+  const [visible, setVisible] = useState(false);
 
   const handleCreateRoom = () => {
-    console.log('handleCreateRoom');
-    const thirdRoom = values(roomStore.rooms)[2];
-    thirdRoom.isAlarmUsed = !thirdRoom.isAlarmUsed;
-    thirdRoom.isRoomBookmarked = !thirdRoom.isRoomBookmarked;
+    setVisible(true);
   };
 
   const handleOpenChat = () => {
@@ -35,8 +34,13 @@ function RoomList() {
     setKeyword(e.target.value);
   }, []);
 
+  const handleCancel = () => {
+    setVisible(false);
+  };
+
   return (
     <Wrapper>
+      <SelectRoomTypeDialog visible={visible} onCancel={handleCancel} />
       <TopWrapper>
         <InputWrapper>
           <SearchIcon width={1} height={1} color="rgb(133, 133, 133)" />
@@ -51,7 +55,6 @@ function RoomList() {
           <OpenChatIcon />
         </OpenChatIconWrapper>
       </TopWrapper>
-
       <RoomContainer>
         <Observer>
           {() =>
@@ -78,7 +81,6 @@ function RoomList() {
           }
         </Observer>
       </RoomContainer>
-
       <ButtomWrapper>
         <WaplLogo />
         <AddRoomIconWrapper onClick={handleCreateRoom}>
