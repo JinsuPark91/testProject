@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Upload from 'rc-upload';
 import styled, { css } from 'styled-components';
-import { CameraOutlined, PictureOutlined } from '@ant-design/icons';
 import { Button, Input, Dropdown, Menu, Modal } from 'antd';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, profileStatusMsg } from 'teespace-core';
 import friendsIcon from '../assets/ts_friends.svg';
 import profileEditIcon from '../assets/ts_profile_edit.svg';
 import teeMeetingIcon from '../assets/ts_TeeMeeting.svg';
@@ -32,6 +31,8 @@ const Profile = ({
   const [phone, setPhone] = useState('');
   const [mobile, setMobile] = useState('');
   const [isChange, setIsChange] = useState(false);
+  const [name, setName] = useState('');
+  const [profileStatusMsg, setStatusMsg] = useState('');
 
   const isMyId = () => userId === userStore.myProfile.id;
 
@@ -60,6 +61,7 @@ const Profile = ({
       setProfile(userProfile);
       setPhone(userProfile?.companyNum);
       setMobile(userProfile?.phone);
+      setName(userProfile?.name);
 
       setThumb(`/${getThumbPhoto()}`);
       setBackground(`/${getBackPhoto()}`);
@@ -250,8 +252,35 @@ const Profile = ({
             </Dropdown>
           )}
         </UserImageWrapper>
-        <BigText>{profile?.name}</BigText>
+        <BigText>
+          {isEditMode ? (
+            <StyleInput
+              className={'type2'}
+              onChange={e => {
+                setIsChange(true);
+                setName(e.target.value);
+              }}
+              value={name}
+            />
+          ) : (
+            name
+          )}
+        </BigText>
         <UserEmailText>{`(${profile?.loginId}@tmax.teepsace.net)`}</UserEmailText>
+        <UserStatusMsg>
+          {isEditMode ? (
+            <StyleInput
+              className={'type2'}
+              onChange={e => {
+                setIsChange(true);
+                setStatusMsg(e.target.value);
+              }}
+              value={profileStatusMsg}
+            />
+          ) : (
+            profileStatusMsg
+          )}
+        </UserStatusMsg>
         <UserInfoList>
           <UserInfoItem>
             <StyleOfficeIcon iconimg="address" />
@@ -287,7 +316,7 @@ const Profile = ({
           </UserInfoItem>
           {/* 프로필 편집 시 "email" class 삭제 */}
           <UserInfoItem
-            className={'email'}
+            className={isEditMode ? '' : 'email'}
             onClick={() => {
               console.log('todo');
             }}
@@ -611,6 +640,9 @@ const StyleInput = styled(Input)`
       color: #fff;
       opacity: 50%;
     }
+    &.type2 {
+      text-align: center;
+    }
   }
 `;
 
@@ -628,6 +660,15 @@ const StyleCameraImgIcon = styled.span`
   background-image: url(${tsCameraImgIcon});
   background-repeat: no-repeat;
   background-size: 1rem 1rem;
+`;
+
+const UserStatusMsg = styled.p`
+  margin-top: 0.63rem;
+  font-size: 0.88rem;
+  line-height: 1.25rem;
+  color: #ffffff;
+  letter-spacing: 0;
+  text-align: center;
 `;
 
 export default Profile;
