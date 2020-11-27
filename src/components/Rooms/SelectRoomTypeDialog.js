@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { Typography, Button, Modal } from 'antd';
 import privateRoomImg from '../../assets/private_room.svg';
 import openRoomImg from '../../assets/open_room.svg';
+import CreatePrivateRoomDialog from '../dialogs/CreatePrivateRoomDialog';
+import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
 
 const { Title } = Typography;
 
@@ -61,43 +63,99 @@ const StyledModal = styled(Modal)`
 `;
 
 function SelectRoomTypeDialog({ visible, onCancel }) {
+  // Private Room
+  const [isVisible, setIsVisible] = useState({
+    createPrivateRoom: false,
+    createPublicRoom: false,
+  });
+
   const handleCancel = () => {
     onCancel();
   };
 
+  const handlePrivateRoomCreate = () => {
+    onCancel();
+    setIsVisible({ ...isVisible, createPrivateRoom: true });
+  };
+
+  const handleOpenRoomCreate = () => {
+    onCancel();
+    setIsVisible({ ...isVisible, createPublicRoom: true });
+  };
+
+  // Private Room
+  const handleCreatePrivateRoomOk = data => {
+    console.log('Create Private Room Data : ', data);
+    setIsVisible({ ...isVisible, createPrivateRoom: false });
+  };
+
+  const handleCreatePrivateRoomCancel = () => {
+    setIsVisible({ ...isVisible, createPrivateRoom: false });
+  };
+
+  // Public Room
+  const handleCreatePublicRoomOk = data => {
+    console.log('Create Public Room Data : ', data);
+    setIsVisible({ ...isVisible, createPublicRoom: false });
+  };
+
+  const handleCreatePublicRoomCancel = () => {
+    setIsVisible({ ...isVisible, createPublicRoom: false });
+  };
+
   return (
-    <StyledModal
-      visible={visible}
-      mask={false}
-      footer={null}
-      width="31.25rem"
-      onCancel={handleCancel}
-    >
-      <SelectRoomType>
-        <RoomInformation>
-          <StyledInfoTitle level={4}>프라이빗 룸</StyledInfoTitle>
-          <StyledInfoText>
-            프라이빗 룸을 통해 간단한 대화를 나누어 보세요. 구성원들만의
-            개인적인 공간입니다.
-          </StyledInfoText>
-          <StyledInfoImg src={privateRoomImg} alt="" />
-          <StyledButton type="solid" shape="round">
-            프라이빗 룸 만들기
-          </StyledButton>
-        </RoomInformation>
-        <RoomInformation>
-          <Title level={4}>오픈 룸</Title>
-          <StyledInfoText>
-            오픈 룸을 통해 특정 주제, 프로젝트를 진행해보세요. 누구나 검색을
-            통하여 자유롭게 참여할 수 있는 공간입니다.
-          </StyledInfoText>
-          <StyledInfoImg src={openRoomImg} alt="" />
-          <StyledButton type="solid" shape="round">
-            오픈 룸 만들기
-          </StyledButton>
-        </RoomInformation>
-      </SelectRoomType>
-    </StyledModal>
+    <>
+      <CreatePrivateRoomDialog
+        visible={isVisible.createPrivateRoom}
+        onOk={handleCreatePrivateRoomOk}
+        onCancel={handleCreatePrivateRoomCancel}
+      />
+      <CreatePublicRoomDialog
+        visible={isVisible.createPublicRoom}
+        onOk={handleCreatePublicRoomOk}
+        onCancel={handleCreatePublicRoomCancel}
+      />
+      <StyledModal
+        visible={visible}
+        mask={false}
+        footer={null}
+        width="31.25rem"
+        onCancel={handleCancel}
+      >
+        <SelectRoomType>
+          <RoomInformation>
+            <StyledInfoTitle level={4}>프라이빗 룸</StyledInfoTitle>
+            <StyledInfoText>
+              프라이빗 룸을 통해 간단한 대화를 나누어 보세요. 구성원들만의
+              개인적인 공간입니다.
+            </StyledInfoText>
+            <StyledInfoImg src={privateRoomImg} alt="" />
+            <StyledButton
+              type="solid"
+              shape="round"
+              onClick={handlePrivateRoomCreate}
+            >
+              프라이빗 룸 만들기
+            </StyledButton>
+          </RoomInformation>
+          <RoomInformation>
+            <Title level={4}>오픈 룸</Title>
+            <StyledInfoText>
+              오픈 룸을 통해 특정 주제, 프로젝트를 진행해보세요. 누구나 검색을
+              통하여 자유롭게 참여할 수 있는 공간입니다.
+            </StyledInfoText>
+            <StyledInfoImg src={openRoomImg} alt="" />
+            <StyledButton
+              type="solid"
+              shape="round"
+              onClick={handleOpenRoomCreate}
+            >
+              오픈 룸 만들기
+            </StyledButton>
+          </RoomInformation>
+        </SelectRoomType>
+      </StyledModal>
+    </>
   );
 }
 

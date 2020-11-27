@@ -33,7 +33,6 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
     };
     clearState();
     onOk(data);
-    console.log(data);
   };
 
   const handleCancel = () => {
