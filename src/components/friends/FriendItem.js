@@ -458,8 +458,8 @@ const FriendItem = React.memo(
         toggleToast();
 
         // component un-mount. below code does not required.
-        // setIsHovering(false);
-        // setDropdownVisible(false);
+        setIsHovering(false);
+        setDropdownVisible(false);
       },
       [friendStore, authStore, itemId],
     );
