@@ -1,9 +1,9 @@
 import React from 'react';
 import { Observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-import { NoteIcon } from 'teespace-note-app';
-import { DriveIcon, ViewFileIcon } from 'teespace-drive-app';
-import { CalendarIcon } from 'teespace-calendar-app';
+// import { NoteIcon } from 'teespace-note-app';
+// import { DriveIcon, ViewFileIcon } from 'teespace-drive-app';
+// import { CalendarIcon } from 'teespace-calendar-app';
 import { useCoreStores } from 'teespace-core';
 import {
   Wrapper,
@@ -15,12 +15,80 @@ import {
   UserCountText,
   IconWrapper,
   SystemIconContainer,
+  AppIconWrapper,
 } from './HeaderStyle';
 import Photos from '../Photos';
 import PlatformUIStore from '../../stores/PlatformUIStore';
-import { ExportIcon, SearchIcon, AddAcountIcon } from '../Icons';
+import { ProfileContextProvider } from '../profile/ProfileContextProvider';
+import MyProfileInfo from '../profile/MyProfileInfo';
+import {
+  ExportIcon,
+  SearchIcon,
+  AddAcountIcon,
+  NoteIcon,
+  NoteActiveIcon,
+  DriveIcon,
+  DriveActiveIcon,
+  CalendarIcon,
+  CalendarActiveIcon,
+  ViewFileIcon,
+  ViewFileActiveIcon,
+  MeetingIcon,
+  MeetingActiveIcon,
+} from '../Icons';
 
-const apps = ['note', 'drive', 'calendar', 'files', 'meeting'];
+const apps = [
+  {
+    name: 'drive',
+    icons: {
+      active: <DriveActiveIcon width={1.5} height={1.5} />,
+      default: <DriveIcon width={1.5} height={1.5} />,
+    },
+  },
+  {
+    name: 'calendar',
+    icons: {
+      active: <CalendarActiveIcon width={1.5} height={1.5} />,
+      default: <CalendarIcon width={1.5} height={1.5} />,
+    },
+  },
+  {
+    name: 'note',
+    icons: {
+      active: <NoteActiveIcon width={1.5} height={1.5} />,
+      default: <NoteIcon width={1.5} height={1.5} />,
+    },
+  },
+
+  {
+    name: 'meeting',
+    icons: {
+      active: <MeetingActiveIcon width={1.5} height={1.5} />,
+      default: <MeetingIcon width={1.5} height={1.5} />,
+    },
+  },
+  {
+    name: 'files',
+    icons: {
+      active: <ViewFileActiveIcon width={1.5} height={1.5} />,
+      default: <ViewFileIcon width={1.5} height={1.5} />,
+    },
+  },
+];
+
+const AppIcon = React.memo(
+  ({ subApp, appName, onClick, defaultIcon, activeIcon }) => {
+    const handleAppClick = () => {
+      onClick(appName);
+    };
+
+    return (
+      <AppIconWrapper key={appName} onClick={handleAppClick}>
+        {subApp === appName ? activeIcon : defaultIcon}
+      </AppIconWrapper>
+    );
+  },
+);
 
 const Header = () => {
   const history = useHistory();
@@ -84,29 +152,6 @@ const Header = () => {
     });
   };
 
-  const getAppIcon = appName => {
-    const props = {
-      key: appName,
-      state: PlatformUIStore.subApp === appName ? 'active' : 'default',
-      onClick: () => handleAppClick(appName),
-    };
-
-    switch (appName) {
-      case 'note':
-        return <NoteIcon {...props} />;
-      case 'drive':
-        return <DriveIcon {...props} />;
-      case 'calendar':
-        return <CalendarIcon {...props} />;
-      case 'files':
-        return <ViewFileIcon {...props} />;
-      case 'meeting':
-        return <span {...props}>meeting icon</span>;
-      default:
-        return null;
-    }
-  };
-
   return (
     <Wrapper>
       <TitleWrapper>
@@ -137,11 +182,25 @@ const Header = () => {
       </TitleWrapper>
 
       <AppIconContainer>
-        <Observer>{() => apps.map(appName => getAppIcon(appName))}</Observer>
+        <Observer>
+          {() =>
+            apps.map(({ name, icons }) => (
+              <AppIcon
+                subApp={PlatformUIStore.subApp}
+                appName={name}
+                onClick={handleAppClick}
+                defaultIcon={icons.default}
+                activeIcon={icons.active}
+              />
+            ))
+          }
+        </Observer>
       </AppIconContainer>
 
       <UserMenu>
-        <span>User</span>
+        <ProfileContextProvider>
+          <MyProfileInfo />
+        </ProfileContextProvider>
       </UserMenu>
     </Wrapper>
   );

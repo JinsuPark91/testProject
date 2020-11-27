@@ -6,11 +6,14 @@ import ProfileInfoModal from './ProfileInfoModal';
 import ProfileEditModal from './ProfileEditModal';
 import { useProfileContext } from './ProfileContextProvider';
 
+const IS_LOCAL = true;
+
 function MyProfileInfo() {
   const [thumbPhoto, setThumbPhoto] = useState(null);
   const { userStore, authStore } = useCoreStores();
   const userId = authStore.user.id;
   const useProfile = useProfileContext();
+
   const handleInfoOpen = useCallback(() => {
     useProfile.setState({ ...useProfile.state, infoMode: true });
   }, [useProfile]);
@@ -23,10 +26,11 @@ function MyProfileInfo() {
     const getThumbPhoto = userStore.getUserProfilePhoto({
       userId: userId,
       size: 'small',
-      isLocal: false,
+      isLocal: IS_LOCAL,
       thumbPhoto: userStore.myProfile.thumbPhoto || null,
     });
     setThumbPhoto(`/${getThumbPhoto}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userStore.myProfile.lastUpdatedTime]);
 
   return (
@@ -47,11 +51,9 @@ function MyProfileInfo() {
   );
 }
 const ProfileIcon = styled.div`
-  display: flex;
   overflow: visible !important;
-  align-items: flex-end;
-  overflow: visible;
   display: flex;
+  align-items: flex-end;
 `;
 const ThumbImage = styled.img`
   border-radius: 50%;
@@ -63,10 +65,7 @@ const ThumbImage = styled.img`
 const SettingImage = styled.div`
   width: 0.8rem;
   height: 0.8rem;
-  border-width: 0px;
-  border-style: solid;
   margin-left: -0.63rem;
-  text-align: left;
 `;
 
 export default MyProfileInfo;

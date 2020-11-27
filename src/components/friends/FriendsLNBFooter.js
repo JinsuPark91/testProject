@@ -1,42 +1,39 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
-import { Layout, Row, Col } from 'antd';
+import { Layout } from 'antd';
 import { Button } from 'teespace-core';
 import AddFriendsDialog from './AddFriendsDialog';
 import { useStore } from '../../stores';
-import SpaceIconImg from '../../assets/ts_space.svg';
+import { WaplLogo, FriendAddIcon} from '../Icons';
 
 const { Footer } = Layout;
 
 const FooterWrapper = styled(Footer)`
-  background-color: transparent;
-  padding: 0.875rem 1.25rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0.75rem 0.69rem 0.75rem 0.94rem;
+    background-color: #f5f5fb;
 `;
-const StyleIcon = styled.i`
-  width: 18px;
-  height: 18px;
-  display: inline-block;
-  background: url('${SpaceIconImg}') 0 0 no-repeat;
-  vertical-align: middle;
-  & + span {
-    margin-left: 0.1875rem;
-  }
-`;
-const FriendButton = styled(Button)`
-  &.ant-btn-outlined {
-    width: 100%;
-    height: auto !important;
-    font-size: 0.8125rem;
-    color: #5a5fff;
-    line-height: 1rem;
-    padding: 0.5625rem 0 0.5rem;
-    border-radius: 21px;
-    border: 1px solid #5a5fff;
-    span {
-      vertical-align: middle;
+const FriendAddButton = styled(Button)`
+  &.ant-btn.ant-btn-outlined {
+    display: flex;
+    cursor: pointer;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-left: auto;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #232d3b;
+    border: none;
+    padding: 0 0.38rem 0 0.63rem;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
     }
-  }
+`;
+
+const AddFriendWrapper = styled.div`
 `;
 
 function FriendsLNBFooter() {
@@ -48,19 +45,15 @@ function FriendsLNBFooter() {
 
   return useObserver(() => (
     <FooterWrapper>
-      <Row>
-        <Col align="center" span={24} style={{ display: 'flex' }}>
-          <FriendButton type="outlined" onClick={showAddFrieldsDialog}>
-            <StyleIcon />
-            프렌즈 추가
-          </FriendButton>
-          <AddFriendsDialog
-            visible={uiStore.visibleAddFriendsDialog}
-            width={uiStore.addFriendsDialogInfo.width}
-            height={uiStore.addFriendsDialogInfo.height}
-          />
-        </Col>
-      </Row>
+      <WaplLogo />
+      <FriendAddButton type="outlined" onClick={showAddFrieldsDialog}>
+          <FriendAddIcon />
+      </FriendAddButton>
+      <AddFriendsDialog
+          visible={uiStore.visibleAddFriendsDialog}
+          width={uiStore.addFriendsDialogInfo.width}
+          height={uiStore.addFriendsDialogInfo.height}
+        />
     </FooterWrapper>
   ));
 }

@@ -8,15 +8,24 @@ import { WaplLogo, AddRoomIcon, OpenChatIcon, SearchIcon } from './Icons';
 import RoomItem from './RoomItem';
 import PlatformUIStore from '../stores/PlatformUIStore';
 import SelectRoomTypeDialog from './Rooms/SelectRoomTypeDialog';
+import CreatePrivateRoomDialog from './dialogs/CreatePrivateRoomDialog';
+import CreatePublicRoomDialog from './dialogs/CreatePublicRoomDialog';
 
 function RoomList() {
   const history = useHistory();
   const [keyword, setKeyword] = useState('');
   const { roomStore } = useCoreStores();
-  const [visible, setVisible] = useState(false);
+
+  // Private Room
+  const [visible, setVisible] = useState({
+    createPrivateRoom: false,
+    createPublicRoom: false,
+    selectRoomType: false,
+  });
+  // Private Room
 
   const handleCreateRoom = () => {
-    setVisible(true);
+    setVisible({ ...visible, selectRoomType: true });
   };
 
   const handleOpenChat = () => {
@@ -34,13 +43,44 @@ function RoomList() {
     setKeyword(e.target.value);
   }, []);
 
-  const handleCancel = () => {
+  const handleSelectRoomTypeCancel = () => {
     setVisible(false);
+  };
+
+  // Private Room
+  const handleCreatePrivateRoomOk = data => {
+    setVisible({ ...visible, createPrivateRoom: false });
+  };
+
+  const handleCreatePrivateRoomCancel = () => {
+    setVisible({ ...visible, createPrivateRoom: false });
+  };
+
+  // Public Room
+  const handleCreatePublicRoomOk = data => {
+    setVisible({ ...visible, createPublicRoom: false });
+  };
+
+  const handleCreatePublicRoomCancel = () => {
+    setVisible({ ...visible, createPublicRoom: false });
   };
 
   return (
     <Wrapper>
-      <SelectRoomTypeDialog visible={visible} onCancel={handleCancel} />
+      <SelectRoomTypeDialog
+        visible={visible.selectRoomType}
+        onCancel={handleSelectRoomTypeCancel}
+      />
+      <CreatePrivateRoomDialog
+        visible={visible.createPrivateRoom}
+        onOk={handleCreatePrivateRoomOk}
+        onCancel={handleCreatePrivateRoomCancel}
+      />
+      <CreatePublicRoomDialog
+        visible={visible.createPublicRoom}
+        onOk={handleCreatePublicRoomOk}
+        onCancel={handleCreatePublicRoomCancel}
+      />
       <TopWrapper>
         <InputWrapper>
           <SearchIcon width={1} height={1} color="rgb(133, 133, 133)" />
@@ -67,6 +107,8 @@ function RoomList() {
                   roomInfo.name.includes(keyword) ||
                   roomInfo.type === 'WKS0001',
               )
+              // roomStore
+              //   .getRoomArray()
               .map(roomInfo => (
                 <RoomItem
                   key={roomInfo.id}
@@ -83,6 +125,7 @@ function RoomList() {
       </RoomContainer>
       <ButtomWrapper>
         <WaplLogo />
+
         <AddRoomIconWrapper onClick={handleCreateRoom}>
           <AddRoomIcon />
         </AddRoomIconWrapper>

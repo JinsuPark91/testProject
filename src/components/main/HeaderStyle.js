@@ -10,11 +10,10 @@ export const Wrapper = styled.div`
 export const TitleWrapper = styled.div`
   display: flex;
   align-items: center;
-  padding: 0 0.9375rem;
+  padding: 0 0 0 0.9375rem;
   min-width: 0;
   flex: auto;
   height: 100%;
-  border-right: 1px solid #dddddd;
 `;
 
 export const Title = styled.div`
@@ -28,6 +27,8 @@ export const Title = styled.div`
 export const SystemIconContainer = styled.div`
   display: flex;
   align-items: center;
+  border-right: 1px solid #dddddd;
+  padding-right: 0.9375rem;
 `;
 
 export const AppIconContainer = styled.div`
@@ -65,4 +66,12 @@ export const IconWrapper = styled.div`
   &:hover {
     background: #dcddff;
   }
+`;
+
+export const AppIconWrapper = styled.div`
+  width 1.5rem;
+  height:1.5rem;
+  overflow:hidden;
+  margin-right:0.75rem;
+  cursor:pointer;
 `;
