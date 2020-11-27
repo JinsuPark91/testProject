@@ -7,6 +7,7 @@ import { useCoreStores } from 'teespace-core';
 import { WaplLogo, AddRoomIcon, OpenChatIcon, SearchIcon } from './Icons';
 import RoomItem from './RoomItem';
 import PlatformUIStore from '../stores/PlatformUIStore';
+import SelectRoomTypeDialog from './Rooms/SelectRoomTypeDialog';
 import CreatePrivateRoomDialog from './dialogs/CreatePrivateRoomDialog';
 import CreatePublicRoomDialog from './dialogs/CreatePublicRoomDialog';
 
@@ -19,12 +20,12 @@ function RoomList() {
   const [visible, setVisible] = useState({
     createPrivateRoom: false,
     createPublicRoom: false,
+    selectRoomType: false,
   });
   // Private Room
 
   const handleCreateRoom = () => {
-    // setVisible({ ...visible, createPrivateRoom: true });
-    setVisible({ ...visible, createPublicRoom: true });
+    setVisible({ ...visible, selectRoomType: true });
   };
 
   const handleOpenChat = () => {
@@ -42,42 +43,44 @@ function RoomList() {
     setKeyword(e.target.value);
   }, []);
 
+  const handleSelectRoomTypeCancel = () => {
+    setVisible(false);
+  };
+
   // Private Room
   const handleCreatePrivateRoomOk = data => {
-    console.log('Data : ', data);
     setVisible({ ...visible, createPrivateRoom: false });
   };
 
   const handleCreatePrivateRoomCancel = () => {
     setVisible({ ...visible, createPrivateRoom: false });
   };
-  // Private Room
 
   // Public Room
   const handleCreatePublicRoomOk = data => {
-    console.log('data : ', data);
     setVisible({ ...visible, createPublicRoom: false });
   };
 
   const handleCreatePublicRoomCancel = () => {
     setVisible({ ...visible, createPublicRoom: false });
   };
-  // Public Room
 
   return (
     <Wrapper>
-      {/* Create Private Room */}
-      {/* <CreatePrivateRoomDialog
+      <SelectRoomTypeDialog
+        visible={visible.selectRoomType}
+        onCancel={handleSelectRoomTypeCancel}
+      />
+      <CreatePrivateRoomDialog
         visible={visible.createPrivateRoom}
         onOk={handleCreatePrivateRoomOk}
         onCancel={handleCreatePrivateRoomCancel}
-      /> */}
+      />
       <CreatePublicRoomDialog
         visible={visible.createPublicRoom}
         onOk={handleCreatePublicRoomOk}
         onCancel={handleCreatePublicRoomCancel}
       />
-      {/* Create Private Room */}
       <TopWrapper>
         <InputWrapper>
           <SearchIcon width={1} height={1} color="rgb(133, 133, 133)" />
@@ -92,7 +95,6 @@ function RoomList() {
           <OpenChatIcon />
         </OpenChatIconWrapper>
       </TopWrapper>
-
       <RoomContainer>
         <Observer>
           {() =>
@@ -121,7 +123,6 @@ function RoomList() {
           }
         </Observer>
       </RoomContainer>
-
       <ButtomWrapper>
         <WaplLogo />
 
