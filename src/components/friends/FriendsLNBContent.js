@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { Layout, Typography } from 'antd';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, Toast } from 'teespace-core';
 import FriendItem from './FriendItem';
 
 const { Paragraph, Text } = Typography;
@@ -68,21 +68,25 @@ const StyleTitle = styled.p`
 
 const StyleText = styled(Text)`
   margin-left: 0.25rem;
-`
+`;
 
-const FriendList = React.memo(({ friendList, onClick, activeFriendId }) => (
-  <>
-    {friendList.map(friendInfo => (
-      <FriendItem
-        friendInfo={friendInfo}
-        key={friendInfo.friendId}
-        mode="friend"
-        onClick={onClick}
-        isActive={activeFriendId === friendInfo.friendId}
-      />
-    ))}
-  </>
-));
+const FriendList = React.memo(
+  ({ friendList, onClick, activeFriendId, toggleToast, setToastText }) => (
+    <>
+      {friendList.map(friendInfo => (
+        <FriendItem
+          friendInfo={friendInfo}
+          key={friendInfo.friendId}
+          mode="friend"
+          onClick={onClick}
+          isActive={activeFriendId === friendInfo.friendId}
+          toggleToast={toggleToast}
+          setToastText={setToastText}
+        />
+      ))}
+    </>
+  ),
+);
 
 /**
  * Friends LNB Content
@@ -96,6 +100,16 @@ const FriendsLNBContent = React.forwardRef(
 
     const [favFriendActiveId, setFavFriendActiveId] = useState('');
     const [friendActiveId, setFriendActiveId] = useState(null);
+    const [isToastVisible, setIsToastVisible] = useState(false);
+    const [toastText, setToastText] = useState('');
+
+    const toggleToast = () => {
+      setIsToastVisible(!isToastVisible);
+    };
+
+    const setText = text => {
+      setToastText(text);
+    };
 
     const filteredFriendList = friendStore.friendInfoList.filter(friendInfo =>
       friendInfo.displayName.includes(searchKeyword),
@@ -143,12 +157,21 @@ const FriendsLNBContent = React.forwardRef(
     const renderContent = (
       <>
         <MyFrinedListBox>
+          <Toast
+            visible={isToastVisible}
+            timeoutMs={1000}
+            onClose={() => setIsToastVisible(false)}
+          >
+            {toastText}
+          </Toast>
           <FriendItem
             mode="me"
             tooltipPopupContainer={meTooltipPopupContainer}
             friendInfo={userStore.myProfile}
             onClick={handleFriendActive}
             isActive={friendActiveId === userStore.myProfile.id}
+            toggleToast={toggleToast}
+            setToastText={setToastText}
           />
         </MyFrinedListBox>
         <FrinedListBox style={{ display: searchKeyword ? 'none' : 'block' }}>
@@ -157,6 +180,8 @@ const FriendsLNBContent = React.forwardRef(
             friendList={friendStore.favoriteFriendInfoList}
             onClick={handleFavFriendActive}
             activeFriendId={favFriendActiveId}
+            toggleToast={toggleToast}
+            setToastText={setText}
           />
         </FrinedListBox>
         <FrinedListBox style={{ display: searchKeyword ? 'block' : 'none' }}>
@@ -168,6 +193,8 @@ const FriendsLNBContent = React.forwardRef(
             friendList={filteredFriendList}
             onClick={handleFriendActive}
             activeFriendId={friendActiveId}
+            toggleToast={toggleToast}
+            setToastText={setText}
           />
         </FrinedListBox>
         <FrinedListBox style={{ display: searchKeyword ? 'none' : 'block' }}>
@@ -179,6 +206,8 @@ const FriendsLNBContent = React.forwardRef(
             friendList={friendStore.friendInfoList}
             onClick={handleFriendActive}
             activeFriendId={friendActiveId}
+            toggleToast={toggleToast}
+            setToastText={setText}
           />
         </FrinedListBox>
       </>
