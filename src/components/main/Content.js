@@ -54,6 +54,7 @@ const Content = () => {
       case 'drive':
         return (
           <DriveApp
+            isDrive
             roomId={getRoomId()}
             channelId={getChannelId('CHN0006')}
             layoutState={PlatformUIStore.layout}
@@ -62,6 +63,7 @@ const Content = () => {
       case 'files':
         return (
           <DriveApp
+            isDrive={false}
             roomId={getRoomId()}
             channelId={getChannelId('CHN0006')}
             layoutState={PlatformUIStore.layout}

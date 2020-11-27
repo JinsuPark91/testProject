@@ -46,6 +46,7 @@ export const Input = styled.div`
     margin-right: 0.5rem;
     height: 1.13rem;
     border: 0;
+    font-size: 0.75rem;
     width: 100%;
 
     ::placeholder {

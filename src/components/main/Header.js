@@ -37,7 +37,58 @@ import {
   MeetingActiveIcon,
 } from '../Icons';
 
-const apps = ['note', 'drive', 'calendar', 'meeting', 'files'];
+const apps = [
+  {
+    name: 'drive',
+    icons: {
+      active: <DriveActiveIcon width={1.5} height={1.5} />,
+      default: <DriveIcon width={1.5} height={1.5} />,
+    },
+  },
+  {
+    name: 'calendar',
+    icons: {
+      active: <CalendarActiveIcon width={1.5} height={1.5} />,
+      default: <CalendarIcon width={1.5} height={1.5} />,
+    },
+  },
+  {
+    name: 'note',
+    icons: {
+      active: <NoteActiveIcon width={1.5} height={1.5} />,
+      default: <NoteIcon width={1.5} height={1.5} />,
+    },
+  },
+
+  {
+    name: 'meeting',
+    icons: {
+      active: <MeetingActiveIcon width={1.5} height={1.5} />,
+      default: <MeetingIcon width={1.5} height={1.5} />,
+    },
+  },
+  {
+    name: 'files',
+    icons: {
+      active: <ViewFileActiveIcon width={1.5} height={1.5} />,
+      default: <ViewFileIcon width={1.5} height={1.5} />,
+    },
+  },
+];
+
+const AppIcon = React.memo(
+  ({ subApp, appName, onClick, defaultIcon, activeIcon }) => {
+    const handleAppClick = () => {
+      onClick(appName);
+    };
+
+    return (
+      <AppIconWrapper key={appName} onClick={handleAppClick}>
+        {subApp === appName ? activeIcon : defaultIcon}
+      </AppIconWrapper>
+    );
+  },
+);
 
 const Header = () => {
   const history = useHistory();
@@ -101,89 +152,6 @@ const Header = () => {
     });
   };
 
-  const getAppIcon = appName => {
-    switch (appName) {
-      case 'note':
-        return (
-          <AppIconWrapper
-            key={appName}
-            onClick={() => {
-              handleAppClick(appName);
-            }}
-          >
-            {PlatformUIStore.subApp === appName ? (
-              <NoteActiveIcon width={1.5} height={1.5} />
-            ) : (
-              <NoteIcon width={1.5} height={1.5} />
-            )}
-          </AppIconWrapper>
-        );
-      case 'drive':
-        return (
-          <AppIconWrapper
-            key={appName}
-            onClick={() => {
-              handleAppClick(appName);
-            }}
-          >
-            {PlatformUIStore.subApp === appName ? (
-              <DriveActiveIcon width={1.5} height={1.5} />
-            ) : (
-              <DriveIcon width={1.5} height={1.5} />
-            )}
-          </AppIconWrapper>
-        );
-      case 'calendar':
-        return (
-          <AppIconWrapper
-            key={appName}
-            onClick={() => {
-              handleAppClick(appName);
-            }}
-          >
-            {PlatformUIStore.subApp === appName ? (
-              <CalendarActiveIcon width={1.5} height={1.5} />
-            ) : (
-              <CalendarIcon width={1.5} height={1.5} />
-            )}
-          </AppIconWrapper>
-        );
-      case 'files':
-        return (
-          <AppIconWrapper
-            key={appName}
-            style={{ marginRight: 0 }}
-            onClick={() => {
-              handleAppClick(appName);
-            }}
-          >
-            {PlatformUIStore.subApp === appName ? (
-              <ViewFileActiveIcon width={1.5} height={1.5} />
-            ) : (
-              <ViewFileIcon width={1.5} height={1.5} />
-            )}
-          </AppIconWrapper>
-        );
-      case 'meeting':
-        return (
-          <AppIconWrapper
-            key={appName}
-            onClick={() => {
-              handleAppClick(appName);
-            }}
-          >
-            {PlatformUIStore.subApp === appName ? (
-              <MeetingActiveIcon width={1.5} height={1.5} />
-            ) : (
-              <MeetingIcon width={1.5} height={1.5} />
-            )}
-          </AppIconWrapper>
-        );
-      default:
-        return null;
-    }
-  };
-
   return (
     <Wrapper>
       <TitleWrapper>
@@ -214,7 +182,19 @@ const Header = () => {
       </TitleWrapper>
 
       <AppIconContainer>
-        <Observer>{() => apps.map(appName => getAppIcon(appName))}</Observer>
+        <Observer>
+          {() =>
+            apps.map(({ name, icons }) => (
+              <AppIcon
+                subApp={PlatformUIStore.subApp}
+                appName={name}
+                onClick={handleAppClick}
+                defaultIcon={icons.default}
+                activeIcon={icons.active}
+              />
+            ))
+          }
+        </Observer>
       </AppIconContainer>
 
       <UserMenu>
