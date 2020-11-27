@@ -365,7 +365,7 @@ const FriendItem = React.memo(
     tooltipPopupContainer = () => document.body,
     friendInfo,
     style,
-    toggleToast,
+    openToast,
     setToastText,
   }) => {
     const {
@@ -389,6 +389,7 @@ const FriendItem = React.memo(
       visibleRemoveFriendMessage,
       setVisibleRemoveFriendMessage,
     ] = useState(false);
+    const [visibleToast, setVisibleToast] = useState(false);
 
     /* merged info of userInfo and friendInfo */
     const itemId = friendId || userId;
@@ -440,7 +441,7 @@ const FriendItem = React.memo(
         setIsHovering(false);
         setDropdownVisible(false);
         setToastText('즐겨찾기가 설정되었습니다.');
-        toggleToast();
+        openToast();
       },
       [friendStore, authStore, itemId],
     );
@@ -455,7 +456,7 @@ const FriendItem = React.memo(
           isFav: false,
         });
         setToastText('즐겨찾기가 해제되었습니다.');
-        toggleToast();
+        openToast();
 
         // component un-mount. below code does not required.
         setIsHovering(false);
@@ -507,11 +508,10 @@ const FriendItem = React.memo(
         myUserId: authStore.user.id,
         friendInfo,
       });
-      setToastText(`${displayName}님이 프렌즈로 추가되었습니다`);
-      toggleToast();
+      setVisibleToast(true);
     }, [friendStore, authStore.user.id, friendInfo]);
 
-    // const handleToastClose = useCallback(() => setVisibleToast(false), []);
+    const handleToastClose = useCallback(() => setVisibleToast(false), []);
     const isMe = itemId === authStore.user.id;
 
     return useObserver(() => (
@@ -523,6 +523,13 @@ const FriendItem = React.memo(
         isActive={isActive}
         mode={mode}
       >
+        <Toast
+          visible={visibleToast}
+          timeoutMs={1000}
+          onClose={handleToastClose}
+        >
+          {`${displayName}님이 프렌즈로 추가되었습니다`}
+        </Toast>
         <Message
           visible={visibleRemoveFriendMessage}
           title={`${displayName}님을 프렌즈 목록에서 삭제하시겠습니까?`}

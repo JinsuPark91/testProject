@@ -71,7 +71,7 @@ const StyleText = styled(Text)`
 `;
 
 const FriendList = React.memo(
-  ({ friendList, onClick, activeFriendId, toggleToast, setToastText }) => (
+  ({ friendList, onClick, activeFriendId, openToast, setToastText }) => (
     <>
       {friendList.map(friendInfo => (
         <FriendItem
@@ -80,7 +80,7 @@ const FriendList = React.memo(
           mode="friend"
           onClick={onClick}
           isActive={activeFriendId === friendInfo.friendId}
-          toggleToast={toggleToast}
+          openToast={openToast}
           setToastText={setToastText}
         />
       ))}
@@ -103,8 +103,8 @@ const FriendsLNBContent = React.forwardRef(
     const [isToastVisible, setIsToastVisible] = useState(false);
     const [toastText, setToastText] = useState('');
 
-    const toggleToast = () => {
-      setIsToastVisible(!isToastVisible);
+    const openToast = () => {
+      setIsToastVisible(true);
     };
 
     const setText = text => {
@@ -170,7 +170,7 @@ const FriendsLNBContent = React.forwardRef(
             friendInfo={userStore.myProfile}
             onClick={handleFriendActive}
             isActive={friendActiveId === userStore.myProfile.id}
-            toggleToast={toggleToast}
+            openToast={openToast}
             setToastText={setToastText}
           />
         </MyFrinedListBox>
@@ -180,7 +180,7 @@ const FriendsLNBContent = React.forwardRef(
             friendList={friendStore.favoriteFriendInfoList}
             onClick={handleFavFriendActive}
             activeFriendId={favFriendActiveId}
-            toggleToast={toggleToast}
+            openToast={openToast}
             setToastText={setText}
           />
         </FrinedListBox>
@@ -193,7 +193,7 @@ const FriendsLNBContent = React.forwardRef(
             friendList={filteredFriendList}
             onClick={handleFriendActive}
             activeFriendId={friendActiveId}
-            toggleToast={toggleToast}
+            openToast={openToast}
             setToastText={setText}
           />
         </FrinedListBox>
@@ -206,7 +206,7 @@ const FriendsLNBContent = React.forwardRef(
             friendList={friendStore.friendInfoList}
             onClick={handleFriendActive}
             activeFriendId={friendActiveId}
-            toggleToast={toggleToast}
+            openToast={openToast}
             setToastText={setText}
           />
         </FrinedListBox>
