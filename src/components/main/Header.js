@@ -139,11 +139,17 @@ const Header = () => {
   const handleExport = () => {
     console.log('handleExport');
   };
+
   const handleSearch = () => {
     console.log('handleSearch');
   };
+
   const handleAddMember = () => {
     console.log('handleAddMember');
+  };
+
+  const toggleMessageVisible = () => {
+    setIsMessageVisible(!isMessageVisible);
   };
 
   const addHistory = appName => {
@@ -151,10 +157,6 @@ const Header = () => {
       pathname: history.location.pathname,
       search: `?sub=${appName}`,
     });
-  };
-
-  const toggleMessageVisible = () => {
-    setIsMessageVisible(!isMessageVisible);
   };
 
   const handleAppClick = appName => {
