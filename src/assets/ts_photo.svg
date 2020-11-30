@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="21px" height="21px" viewBox="0 0 21 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
+    <title>Icon/system/photo</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icon/system/photo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M18,3 L18,18 L3,18 L3,3 L18,3 M17.8888889,1 L3.11111111,1 C1.95,1 1,1.95 1,3.11111111 L1,17.8888889 C1,19.05 1.95,20 3.11111111,20 L17.8888889,20 C19.05,20 20,19.05 20,17.8888889 L20,3.11111111 C20,1.95 19.05,1 17.8888889,1 Z M12.8183333,11 L9.56833333,14.7645914 L7.25,12.2451362 L4,16 L17,16 L12.8183333,11 Z" id="Shape" fill="#fff"></path>
+    </g>
+</svg>
