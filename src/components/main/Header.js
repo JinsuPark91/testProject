@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 // import { NoteIcon } from 'teespace-note-app';
 // import { DriveIcon, ViewFileIcon } from 'teespace-drive-app';
 // import { CalendarIcon } from 'teespace-calendar-app';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, Message } from 'teespace-core';
 import {
   Wrapper,
   TitleWrapper,
@@ -93,6 +93,7 @@ const AppIcon = React.memo(
 const Header = () => {
   const history = useHistory();
   const { roomStore, userStore } = useCoreStores();
+  const [isMessageVisible, setIsMessageVisible] = useState(false);
 
   const findRoom = () => {
     if (PlatformUIStore.resourceType === 's') {
@@ -138,18 +139,32 @@ const Header = () => {
   const handleExport = () => {
     console.log('handleExport');
   };
+
   const handleSearch = () => {
     console.log('handleSearch');
   };
+
   const handleAddMember = () => {
     console.log('handleAddMember');
   };
 
-  const handleAppClick = appName => {
+  const toggleMessageVisible = () => {
+    setIsMessageVisible(!isMessageVisible);
+  };
+
+  const addHistory = appName => {
     history.push({
       pathname: history.location.pathname,
       search: `?sub=${appName}`,
     });
+  };
+
+  const handleAppClick = appName => {
+    if (appName === 'meeting') {
+      toggleMessageVisible();
+    } else {
+      addHistory(appName);
+    }
   };
 
   return (
@@ -182,10 +197,33 @@ const Header = () => {
       </TitleWrapper>
 
       <AppIconContainer>
+        <Message
+          visible={isMessageVisible}
+          title="Meeting을 시작하시겠습니까?"
+          subtitle="미팅을 시작하면 멤버들에게 참여 알림이 전송됩니다."
+          btns={[
+            {
+              text: '미팅 시작',
+              type: 'solid',
+              onClick: () => {
+                toggleMessageVisible();
+                addHistory('meeting');
+              },
+            },
+            {
+              text: '취소',
+              type: 'outlined',
+              onClick: () => {
+                toggleMessageVisible();
+              },
+            },
+          ]}
+        />
         <Observer>
           {() =>
             apps.map(({ name, icons }) => (
               <AppIcon
+                key={name}
                 subApp={PlatformUIStore.subApp}
                 appName={name}
                 onClick={handleAppClick}
