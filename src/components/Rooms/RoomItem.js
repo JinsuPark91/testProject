@@ -1,15 +1,17 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { List, Menu, Dropdown } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
-import Photos from './Photos';
-import { ViewMoreIcon, ExportIcon, DisableAlarmIcon, PinIcon } from './Icons';
+import Photos from '../Photos';
+import { ViewMoreIcon, ExportIcon, DisableAlarmIcon, PinIcon } from '../Icons';
 
 const MAX_PROFILE_COUNT = 4;
 
 const RoomDropdown = React.memo(({ children, roomInfo }) => {
   const [visible, setVisible] = useState(false);
+  const history = useHistory();
 
   const handleVisibleChange = flag => {
     setVisible(flag);
@@ -21,8 +23,8 @@ const RoomDropdown = React.memo(({ children, roomInfo }) => {
 
   const handleSetting = e => {
     e.domEvent.stopPropagation();
-    console.log('handleSetting');
     setVisible(false);
+    history.push(`/s/${roomInfo.id}/setting`);
   };
 
   const handleBookmarkDisable = e => {
