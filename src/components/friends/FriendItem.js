@@ -5,11 +5,7 @@ import styled, { css } from 'styled-components';
 import { Avatar, Button } from 'antd';
 import { useCoreStores, Dropdown, Menu, Message, Toast } from 'teespace-core';
 import { useOpenInWindow } from 'use-open-window';
-import {
-  ExportOutlined,
-  PlusOutlined,
-  CloseOutlined,
-} from '@ant-design/icons';
+import { ExportOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
 
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 
@@ -70,7 +66,7 @@ const FriendItemWrapper = styled.div`
       .ant-btn-circle {
         width: 1.5rem;
         height: 1.5rem;
-        display:flex;
+        display: flex;
         justify-content: center;
         align-items: center;
         background: transparent;
@@ -123,10 +119,9 @@ const ActionWrapper = styled.div`
   align-items: center;
 `;
 
-const StyledWrapper = styled.div `
-  position:relative;
-  
-`
+const StyledWrapper = styled.div`
+  position: relative;
+`;
 const ProfileBadge = styled.span`
   position: absolute;
   top: -0.56rem;
@@ -154,9 +149,9 @@ const ProfileBadge = styled.span`
     pointer-events: none;
     border-color: rgba(136, 183, 213, 0);
     border-top-color: #523dc7;
-    margin-left: -0.15rem
+    margin-left: -0.15rem;
   }
-`
+`;
 
 const StyledAvatar = styled(Avatar)`
   ${props => {
@@ -204,10 +199,8 @@ const Profile = React.memo(({ mode, tooltipPopupContainer, profilePhoto }) => {
     <>
       {mode === 'me' && (
         <StyledWrapper>
-          <ProfileBadge
-            getPopupContainer={tooltipPopupContainer}
-            visible
-          >나
+          <ProfileBadge getPopupContainer={tooltipPopupContainer} visible>
+            나
           </ProfileBadge>
           <StyledAvatar src={`/${profilePhoto}`} mode="me" />
         </StyledWrapper>
@@ -258,11 +251,7 @@ const MeAction = React.memo(({ mode, handleTalkWindowOpen }) => {
   return (
     <>
       {mode === 'me' && (
-        <Button
-          shape="circle"
-          icon={<ExportIcon />}
-          onClick={handleOpenTalk}
-        />
+        <Button shape="circle" icon={<ExportIcon />} onClick={handleOpenTalk} />
       )}
     </>
   );
@@ -376,6 +365,8 @@ const FriendItem = React.memo(
     tooltipPopupContainer = () => document.body,
     friendInfo,
     style,
+    openToast,
+    setToastText,
   }) => {
     const {
       displayName,
@@ -394,11 +385,11 @@ const FriendItem = React.memo(
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
     const [visibleMessage, setVisibleMessage] = useState(false);
-    const [visibleToast, setVisibleToast] = useState(false);
     const [
       visibleRemoveFriendMessage,
       setVisibleRemoveFriendMessage,
     ] = useState(false);
+    const [visibleToast, setVisibleToast] = useState(false);
 
     /* merged info of userInfo and friendInfo */
     const itemId = friendId || userId;
@@ -421,6 +412,7 @@ const FriendItem = React.memo(
       }
       setDropdownVisible(visible);
     }, []);
+
     const handleMouseEnter = useCallback(() => {
       if (!dropdownVisible) {
         setIsHovering(true);
@@ -448,6 +440,8 @@ const FriendItem = React.memo(
         }
         setIsHovering(false);
         setDropdownVisible(false);
+        setToastText('즐겨찾기가 설정되었습니다.');
+        openToast();
       },
       [friendStore, authStore, itemId],
     );
@@ -461,9 +455,12 @@ const FriendItem = React.memo(
           friendId: itemId,
           isFav: false,
         });
+        setToastText('즐겨찾기가 해제되었습니다.');
+        openToast();
+
         // component un-mount. below code does not required.
-        // setIsHovering(false);
-        // setDropdownVisible(false);
+        setIsHovering(false);
+        setDropdownVisible(false);
       },
       [friendStore, authStore, itemId],
     );
@@ -515,7 +512,6 @@ const FriendItem = React.memo(
     }, [friendStore, authStore.user.id, friendInfo]);
 
     const handleToastClose = useCallback(() => setVisibleToast(false), []);
-
     const isMe = itemId === authStore.user.id;
 
     return useObserver(() => (
