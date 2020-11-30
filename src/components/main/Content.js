@@ -101,27 +101,29 @@ const Content = () => {
 
   return (
     <Wrapper>
-      <Splitter sizes={[75, 25]} minSize={400} gutterSize={10} ref={splitRef}>
-        <MainAppContainer>
-          <Observer>{() => getApplication(PlatformUIStore.mainApp)}</Observer>
-        </MainAppContainer>
+      <Observer>
+        {() => (
+          <Splitter
+            sizes={PlatformUIStore.resourceType === 'm' ? [38, 62] : [75, 25]}
+            minSize={500}
+            gutterSize={10}
+            ref={splitRef}
+          >
+            <MainAppContainer>
+              {getApplication(PlatformUIStore.mainApp)}
+            </MainAppContainer>
 
-        <Observer>
-          {() => (
             <SubAppContainer
               layoutState={PlatformUIStore.layout}
               splitRef={splitRef}
             >
               {getApplication(PlatformUIStore.subApp)}
             </SubAppContainer>
-          )}
-        </Observer>
-      </Splitter>
+          </Splitter>
+        )}
+      </Observer>
     </Wrapper>
   );
 };
 
-const ProfileApp = React.memo(() => {
-  return <div>Profile!</div>;
-});
 export default Content;
