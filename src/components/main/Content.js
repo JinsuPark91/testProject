@@ -7,6 +7,7 @@ import { MailMainView, MailSubView } from 'teespace-mail-app';
 import { DriveApp } from 'teespace-drive-app';
 import { MeetingApp } from 'teespace-meeting-app';
 import { useCoreStores } from 'teespace-core';
+import RoomSetting from '../Rooms/RoomSetting';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import { Wrapper, Splitter } from './ContentStyle';
 import { MainAppContainer, SubAppContainer } from './AppContainer';
@@ -85,13 +86,14 @@ const Content = () => {
             layoutState={PlatformUIStore.layout}
           />
         );
-      // return <div>Meeting</div>;
-      case 'profile':
-        return <Profile userId={PlatformUIStore.resourceId} />;
       case 'mail':
         return <MailMainView />;
       case 'mailsub':
         return <MailSubView />;
+      case 'profile':
+        return <Profile userId={PlatformUIStore.resourceId} />;
+      case 'setting':
+        return <RoomSetting />;
       default:
         return null;
     }
