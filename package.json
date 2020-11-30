@@ -61,7 +61,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "NODE_OPTIONS=—max_old_space_size=6144 craco build",
+    "build": "NODE_OPTIONS=—max_old_space_size=7168 craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
