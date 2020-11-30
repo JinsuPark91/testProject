@@ -3,8 +3,8 @@ import { List, Menu, Dropdown } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
-import Photos from './Photos';
-import { ViewMoreIcon, ExportIcon, DisableAlarmIcon, PinIcon } from './Icons';
+import Photos from '../Photos';
+import { ViewMoreIcon, ExportIcon, DisableAlarmIcon, PinIcon } from '../Icons';
 
 const MAX_PROFILE_COUNT = 4;
 

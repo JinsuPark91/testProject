@@ -3,7 +3,7 @@ import { useObserver } from 'mobx-react';
 import { MailSideView } from 'teespace-mail-app';
 import { ChattingIcon, MailIcon, PeopleIcon } from '../Icons';
 import FriendLnb from '../friends/FriendsLNB';
-import RoomList from '../RoomList';
+import RoomList from '../Rooms/RoomList';
 import { Wrapper, CustomTabs } from './LeftSideStyle';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
