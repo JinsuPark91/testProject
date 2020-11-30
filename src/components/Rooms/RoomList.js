@@ -6,12 +6,14 @@ import styled from 'styled-components';
 import { useCoreStores } from 'teespace-core';
 import { WaplLogo, AddRoomIcon, OpenChatIcon, SearchIcon } from '../Icons';
 import RoomItem from './RoomItem';
+import OpenRoomHome from './OpenRoomHome';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 
 function RoomList() {
   const history = useHistory();
   const [keyword, setKeyword] = useState('');
+  const [openRoomVisible, setOpenRoomVisible] = useState(false);
   const { roomStore } = useCoreStores();
 
   const [visible, setVisible] = useState({
@@ -22,15 +24,19 @@ function RoomList() {
     setVisible({ ...visible, selectRoomType: true });
   };
 
-  const handleOpenChat = () => {
-    console.log('handleOpenChat');
-  };
+  const handleOpenChat = useCallback(() => {
+    setOpenRoomVisible(r => !r);
+  }, []);
 
   const handleSelectRoom = useCallback(roomInfo => {
     history.push({
       pathname: `/s/${roomInfo.id}/talk`,
       search: history.location.search,
     });
+  }, []);
+
+  const handleSearchUser = useCallback(() => {
+    console.log('search user');
   }, []);
 
   const handleChange = useCallback(e => {
@@ -61,6 +67,12 @@ function RoomList() {
         <OpenChatIconWrapper onClick={handleOpenChat}>
           <OpenChatIcon />
         </OpenChatIconWrapper>
+        {openRoomVisible && (
+          <OpenRoomHome
+            handleOpenChat={handleOpenChat}
+            handleSearchUser={handleSearchUser}
+          />
+        )}
       </TopWrapper>
       <RoomContainer>
         <Observer>
