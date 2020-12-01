@@ -19,7 +19,6 @@ const Content = () => {
 
   const getRoomId = () => {
     if (PlatformUIStore.resourceType === 's') {
-      console.log('GET ROOM ID : ', PlatformUIStore.resourceId);
       return PlatformUIStore.resourceId;
     }
     return null;
@@ -27,9 +26,10 @@ const Content = () => {
 
   const getChannelId = type => {
     if (PlatformUIStore.resourceType === 's') {
-      return roomStore?.rooms?.[PlatformUIStore.resourceId]?.channelList?.find(
-        channel => channel.type === type,
-      )?.id;
+      return roomStore
+        .getRoomMap()
+        .get(PlatformUIStore.resourceId)
+        ?.channelList?.find(channel => channel.type === type)?.id;
     }
     return null;
   };
@@ -93,7 +93,9 @@ const Content = () => {
       case 'profile':
         return <Profile userId={PlatformUIStore.resourceId} />;
       case 'setting':
-        return <RoomSetting roomInfo={roomStore.rooms[getRoomId()]} />;
+        return (
+          <RoomSetting roomInfo={roomStore.getRoomMap().get(getRoomId())} />
+        );
       default:
         return null;
     }

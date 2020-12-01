@@ -15,14 +15,15 @@ const MemberSettingPage = () => {
   );
 };
 
-const CommonSettingPage = ({ roomInfo }) => {
+const CommonSettingPage = ({ roomInfo = null }) => {
   const [value, setValue] = useState('');
   const [isChanged, setIsChanged] = useState(false);
   const [isPrivateRoom, setIsPrivateRoom] = useState(false);
 
   useEffect(() => {
-    setValue(roomInfo?.name?.substring(0, 20));
-  }, [roomInfo.name]);
+    const name = roomInfo?.customName || roomInfo?.name;
+    setValue(name.substring(0, 20) || '');
+  }, [roomInfo]);
 
   useEffect(() => {
     setIsPrivateRoom(true);

@@ -13,7 +13,7 @@ import {
   ConfigWrapper,
 } from './CreatePublicRoomDialogStyle';
 
-const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
+const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
   const initialStates = {
     step: 0,
     roomName: '',
@@ -163,4 +163,4 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
   );
 };
 
-export default CreatePrivateRoomDialog;
+export default CreatePublicRoomDialog;

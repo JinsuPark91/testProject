@@ -97,15 +97,15 @@ const Header = () => {
 
   const findRoom = () => {
     if (PlatformUIStore.resourceType === 's') {
-      return roomStore.rooms?.[PlatformUIStore.resourceId];
+      return roomStore.getRoomMap().get(PlatformUIStore.resourceId);
     }
     return null;
   };
 
   const getRoomName = () => {
     const found = findRoom();
-    if (found && found?.name) {
-      return found.name;
+    if (found && (found?.customName || found?.name)) {
+      return found?.customName || found?.name;
     }
     return null;
   };
