@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Typography, Button, Modal } from 'antd';
+import { useCoreStores } from 'teespace-core';
 import privateRoomImg from '../../assets/private_room.svg';
 import openRoomImg from '../../assets/open_room.svg';
 import CreatePrivateRoomDialog from '../dialogs/CreatePrivateRoomDialog';
@@ -63,6 +64,7 @@ const StyledModal = styled(Modal)`
 `;
 
 function SelectRoomTypeDialog({ visible, onCancel }) {
+  const { userStore, roomStore } = useCoreStores();
   // Private Room
   const [isVisible, setIsVisible] = useState({
     createPrivateRoom: false,
@@ -84,8 +86,24 @@ function SelectRoomTypeDialog({ visible, onCancel }) {
   };
 
   // Private Room
-  const handleCreatePrivateRoomOk = data => {
-    console.log('Create Private Room Data : ', data);
+  const handleCreatePrivateRoomOk = ({
+    isChangeName,
+    isStartMeeting,
+    roomName,
+    selectedUsers,
+  }) => {
+    const data = {
+      creatorId: userStore.myProfile.id,
+      userList: selectedUsers.map(user => ({
+        userId: user.friendId || user.id,
+      })),
+    };
+
+    if (selectedUsers.length > 1 && isChangeName && !!roomName) {
+      Object.defineProperty(data, 'name', { value: roomName });
+    }
+
+    roomStore.createRoom(data);
     setIsVisible({ ...isVisible, createPrivateRoom: false });
   };
 
@@ -94,8 +112,21 @@ function SelectRoomTypeDialog({ visible, onCancel }) {
   };
 
   // Public Room
-  const handleCreatePublicRoomOk = data => {
-    console.log('Create Public Room Data : ', data);
+  const handleCreatePublicRoomOk = ({
+    roomName,
+    selectedUsers,
+    isStartMeeting,
+  }) => {
+    const data = {
+      name: roomName,
+      creatorId: userStore.myProfile.id,
+      userList: selectedUsers.map(user => ({
+        userId: user.friendId || user.id,
+      })),
+      type: 'open',
+    };
+
+    roomStore.createRoom(data);
     setIsVisible({ ...isVisible, createPublicRoom: false });
   };
 

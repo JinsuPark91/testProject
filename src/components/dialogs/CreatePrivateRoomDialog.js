@@ -12,7 +12,7 @@ import {
   LengthCounter,
 } from './CreatePrivateRoomDialogStyle';
 
-const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
+const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
   const [selectedUsers, setSelectedUsers] = useState([]);
 
   const initialOptions = {
@@ -31,13 +31,14 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
       selectedUsers,
       ...options,
     };
-    clearState();
+
     onOk(data);
+    clearState();
   };
 
   const handleCancel = () => {
-    clearState();
     onCancel();
+    clearState();
   };
 
   const handleSelectedUserChange = useCallback(users => {
@@ -46,12 +47,12 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
 
   const handleChangeName = e => {
     const name = e.target.value;
+
     if (name.length < 51) setOptions({ ...options, roomName: name });
   };
 
   const handleChangeNameChange = e => {
     const isChecked = e.target.checked;
-    console.log(options);
     setOptions({ ...options, isChangeName: isChecked });
   };
 
@@ -131,4 +132,4 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
   );
 };
 
-export default CreatePublicRoomDialog;
+export default CreatePrivateRoomDialog;

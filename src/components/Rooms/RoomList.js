@@ -77,17 +77,8 @@ function RoomList() {
       <RoomContainer>
         <Observer>
           {() =>
-            values(roomStore.rooms)
-              // .sort((a, b) => a.lastMessageTime - b.lastMessageTime)
-              .sort((a, b) => b.isRoomBookmarked - a.isRoomBookmarked)
-              .sort((a, b) => a.type - b.type)
-              .filter(
-                roomInfo =>
-                  roomInfo.name.includes(keyword) ||
-                  roomInfo.type === 'WKS0001',
-              )
-              // roomStore
-              //   .getRoomArray()
+            roomStore
+              .getRoomArray()
               .map(roomInfo => (
                 <RoomItem
                   key={roomInfo.id}

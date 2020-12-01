@@ -10,6 +10,10 @@ import { ViewMoreIcon, ExportIcon, DisableAlarmIcon, PinIcon } from '../Icons';
 const MAX_PROFILE_COUNT = 4;
 
 const RoomDropdown = React.memo(({ children, roomInfo }) => {
+  console.table(`Room Info (${roomInfo.id}) : `, roomInfo);
+  const { roomStore, userStore } = useCoreStores();
+  const { id: roomId } = roomInfo;
+  const myUserId = userStore.myProfile.id;
   const [visible, setVisible] = useState(false);
   const history = useHistory();
 
@@ -27,15 +31,30 @@ const RoomDropdown = React.memo(({ children, roomInfo }) => {
     history.push(`/s/${roomInfo.id}/setting`);
   };
 
+  const updateRoomSetting = async options => {
+    try {
+      const result = await roomStore.updateRoomMemberSetting({
+        roomId,
+        myUserId,
+        ...options,
+      });
+      return result;
+    } catch (e) {
+      console.log('ROOM UPDATE FAILED : ', e);
+    }
+  };
+
   const handleBookmarkDisable = e => {
     e.domEvent.stopPropagation();
-    console.log('handleBookmarkDisable');
     setVisible(false);
+
+    updateRoomSetting({ newIsRoomBookmarked: false });
   };
   const handleBookmarkEnable = e => {
     e.domEvent.stopPropagation();
-    console.log('handleBookmarkEnable');
     setVisible(false);
+
+    updateRoomSetting({ newIsRoomBookmarked: true });
   };
 
   const handleViewMember = e => {
@@ -52,14 +71,16 @@ const RoomDropdown = React.memo(({ children, roomInfo }) => {
 
   const handleAlarmEnable = e => {
     e.domEvent.stopPropagation();
-    console.log('handleAlarmEnable');
     setVisible(false);
+
+    updateRoomSetting({ newIsAlarmUsed: true });
   };
 
   const handleAlarmDisable = e => {
     e.domEvent.stopPropagation();
-    console.log('handleAlarmDisable');
     setVisible(false);
+
+    updateRoomSetting({ newIsAlarmUsed: false });
   };
 
   const handleExit = e => {
@@ -68,42 +89,39 @@ const RoomDropdown = React.memo(({ children, roomInfo }) => {
     setVisible(false);
   };
 
-  const roomMenu = useMemo(
-    () => (
-      <StyledMenu>
-        <Menu.Item key="setting" onClick={handleSetting}>
-          룸 설정
+  const roomMenu = () => (
+    <StyledMenu>
+      <Menu.Item key="setting" onClick={handleSetting}>
+        룸 설정
+      </Menu.Item>
+      {roomInfo.isRoomBookmarked ? (
+        <Menu.Item key="disableBookmark" onClick={handleBookmarkDisable}>
+          룸 상단 고정 해제
         </Menu.Item>
-        {roomInfo.isRoomBookmarked ? (
-          <Menu.Item key="disableBookmark" onClick={handleBookmarkDisable}>
-            룸 상단 고정 해제
-          </Menu.Item>
-        ) : (
-          <Menu.Item key="enableBookmark" onClick={handleBookmarkEnable}>
-            룸 상단 고정
-          </Menu.Item>
-        )}
-        <Menu.Item key="member" onClick={handleViewMember}>
-          멤버 보기
+      ) : (
+        <Menu.Item key="enableBookmark" onClick={handleBookmarkEnable}>
+          룸 상단 고정
         </Menu.Item>
-        <Menu.Item key="changeName" onClick={handleNameChange}>
-          이름 변경
+      )}
+      <Menu.Item key="member" onClick={handleViewMember}>
+        멤버 보기
+      </Menu.Item>
+      <Menu.Item key="changeName" onClick={handleNameChange}>
+        이름 변경
+      </Menu.Item>
+      {roomInfo.isAlarmUsed ? (
+        <Menu.Item key="disableAlarm" onClick={handleAlarmDisable}>
+          알림 끄기
         </Menu.Item>
-        {roomInfo.isAlarmUsed ? (
-          <Menu.Item key="disableAlarm" onClick={handleAlarmDisable}>
-            알림 끄기
-          </Menu.Item>
-        ) : (
-          <Menu.Item key="enableAlarm" onClick={handleAlarmEnable}>
-            알림 켜기
-          </Menu.Item>
-        )}
-        <Menu.Item key="exit" onClick={handleExit}>
-          나가기
+      ) : (
+        <Menu.Item key="enableAlarm" onClick={handleAlarmEnable}>
+          알림 켜기
         </Menu.Item>
-      </StyledMenu>
-    ),
-    [roomInfo.isAlarmUsed],
+      )}
+      <Menu.Item key="exit" onClick={handleExit}>
+        나가기
+      </Menu.Item>
+    </StyledMenu>
   );
 
   return (
@@ -150,7 +168,13 @@ const RoomItemContent = React.memo(({ roomInfo, isMyRoom }) => {
         title={
           <Title>
             <Observer>
-              {() => <RoomNameText>{roomInfo.name}</RoomNameText>}
+              {() => (
+                <RoomNameText>
+                  {isMyRoom
+                    ? userStore.myProfile.name
+                    : roomInfo.customName || roomInfo.name}
+                </RoomNameText>
+              )}
             </Observer>
             <Observer>
               {() => <UserCountText>{roomInfo.userCount}</UserCountText>}
@@ -158,11 +182,11 @@ const RoomItemContent = React.memo(({ roomInfo, isMyRoom }) => {
 
             <Observer>
               {() =>
-                roomInfo.isAlarmUsed ? (
+                roomInfo.isAlarmUsed ? null : (
                   <TitleIconWrapper>
                     <DisableAlarmIcon width={0.8} height={0.8} />
                   </TitleIconWrapper>
-                ) : null
+                )
               }
             </Observer>
             <Observer>
@@ -216,7 +240,6 @@ const RoomItem = ({ roomInfo, selected, onClick }) => {
   return (
     <StyledItem onClick={handleRoomClick} isMyRoom={isMyRoom}>
       <ItemWrapper selected={selected}>
-        {/* selected 변경 시, 자식들까지 다시 그리기 때문에 하위 요소들을 분리하여 memoization 한다. */}
         <RoomItemContent roomInfo={roomInfo} isMyRoom={isMyRoom} />
       </ItemWrapper>
     </StyledItem>
