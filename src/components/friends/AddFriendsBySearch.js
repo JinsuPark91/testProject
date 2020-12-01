@@ -314,22 +314,4 @@ function AddFriendsBySearch({
   );
 }
 
-const TestPage = () => {
-  const [visible, setVisible] = useState(false);
-  const handleCancel = () => {
-    setVisible(false);
-  };
-  const handleClick = () => {
-    setVisible(true);
-  };
-  return (
-    <Button onClick={handleClick}>
-      asdasd
-      <AddFriendsBySearch
-        visible={visible}
-        onCancel={handleCancel}
-      ></AddFriendsBySearch>
-    </Button>
-  );
-};
-export default TestPage;
+export default AddFriendsBySearch;
