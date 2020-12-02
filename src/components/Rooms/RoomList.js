@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
-import { values } from 'mobx';
 import styled from 'styled-components';
 import { useCoreStores } from 'teespace-core';
 import { WaplLogo, AddRoomIcon, OpenChatIcon, SearchIcon } from '../Icons';
@@ -79,6 +78,7 @@ function RoomList() {
           {() =>
             roomStore
               .getRoomArray()
+              .filter(roomInfo => roomInfo.isVisible)
               .map(roomInfo => (
                 <RoomItem
                   key={roomInfo.id}

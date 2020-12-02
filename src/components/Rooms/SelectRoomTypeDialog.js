@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography, Button, Modal } from 'antd';
 import { useCoreStores } from 'teespace-core';
@@ -65,6 +66,7 @@ const StyledModal = styled(Modal)`
 
 function SelectRoomTypeDialog({ visible, onCancel }) {
   const { userStore, roomStore } = useCoreStores();
+  const history = useHistory();
   // Private Room
   const [isVisible, setIsVisible] = useState({
     createPrivateRoom: false,
@@ -86,7 +88,7 @@ function SelectRoomTypeDialog({ visible, onCancel }) {
   };
 
   // Private Room
-  const handleCreatePrivateRoomOk = ({
+  const handleCreatePrivateRoomOk = async ({
     isChangeName,
     isStartMeeting,
     roomName,
@@ -103,8 +105,20 @@ function SelectRoomTypeDialog({ visible, onCancel }) {
       Object.defineProperty(data, 'name', { value: roomName });
     }
 
-    roomStore.createRoom(data);
     setIsVisible({ ...isVisible, createPrivateRoom: false });
+    const { roomId } = await roomStore.createRoom(data);
+
+    const existRoom = roomStore.getRoomMap().get(roomId);
+    if (existRoom) {
+      const myUserId = userStore.myProfile.id;
+      await roomStore.updateRoomMemberSetting({
+        roomId,
+        myUserId,
+        newIsVisible: true,
+      });
+    }
+
+    history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
   };
 
   const handleCreatePrivateRoomCancel = () => {
@@ -112,7 +126,7 @@ function SelectRoomTypeDialog({ visible, onCancel }) {
   };
 
   // Public Room
-  const handleCreatePublicRoomOk = ({
+  const handleCreatePublicRoomOk = async ({
     roomName,
     selectedUsers,
     isStartMeeting,
@@ -126,8 +140,10 @@ function SelectRoomTypeDialog({ visible, onCancel }) {
       type: 'open',
     };
 
-    roomStore.createRoom(data);
     setIsVisible({ ...isVisible, createPublicRoom: false });
+    const { roomId } = await roomStore.createRoom(data);
+
+    history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
   };
 
   const handleCreatePublicRoomCancel = () => {

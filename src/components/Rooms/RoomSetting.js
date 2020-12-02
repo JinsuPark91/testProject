@@ -58,7 +58,6 @@ const CommonSettingPage = ({ roomInfo = null }) => {
         <Input maxLength={20} value={value} onChange={handleChange} />
         <StyledButton
           type="solid"
-          size="small"
           shape="round"
           disabled={!value.length || !isChanged}
           style={{ marginTop: '0.63rem' }}
@@ -85,7 +84,6 @@ const CommonSettingPage = ({ roomInfo = null }) => {
         {!isPrivateRoom && (
           <StyledButton
             type="solid"
-            size="small"
             shape="round"
             style={{ marginTop: '0.81rem' }}
             onClick={handleUpdate}
@@ -103,7 +101,6 @@ const CommonSettingPage = ({ roomInfo = null }) => {
         </SettingDescriptionText>
         <StyledButton
           type="outlined"
-          size="small"
           shape="round"
           style={{ marginTop: '0.81rem' }}
           onClick={handleDelete}
