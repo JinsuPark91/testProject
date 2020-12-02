@@ -12,6 +12,8 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+console.log('process.env : ', process.env);
+
 ReactDOM.render(
   <CoreStoreProvider
     config={{
