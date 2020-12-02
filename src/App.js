@@ -12,6 +12,7 @@ import NotFoundPage from './page/NotFoundPage';
 import SignUpPage from './page/SignUpPage';
 import SignUpFormPage from './page/SignUpFormPage';
 import SignUpCompletePage from './page/SignUpCompletePage';
+import DriveSharedFilePage from './page/DriveSharedFilePage';
 // import MainPage from './local-test/MainPage';
 import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
@@ -42,6 +43,9 @@ function App() {
           <Switch>
             <Route exact path="/">
               <Redirect to="/login" />
+            </Route>
+            <Route exact path="/drive/files/:fileId">
+              <DriveSharedFilePage />
             </Route>
             <RedirectablePublicRoute
               exact
