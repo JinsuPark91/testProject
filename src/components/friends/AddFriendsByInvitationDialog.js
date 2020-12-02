@@ -73,6 +73,11 @@ function AddFriendsBySearch({ visible, onCancel }) {
   const handleCancel = () => {
     onCancel();
   };
+
+  const handleSendInviteMail = () => {
+    console.log('inv test');
+  };
+
   return (
     <>
       <StyledModal
@@ -92,7 +97,9 @@ function AddFriendsBySearch({ visible, onCancel }) {
           </StyledInfoText>
           <StyledInputBox>
             <StyledInput placeholder="이메일 주소 추가" />
-            <StyledButton shape="round">보내기</StyledButton>
+            <StyledButton shape="round" onClick={handleSendInviteMail}>
+              보내기
+            </StyledButton>
           </StyledInputBox>
 
           <StyledLinkButton type="link">초대 링크 복사</StyledLinkButton>

@@ -3,7 +3,9 @@ import styled, { css } from 'styled-components';
 import { Button, Modal, Avatar, Dropdown, Menu, Checkbox } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import SettingDialog from '../usersettings/SettingDialog';
+import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
 import { useProfileContext } from './ProfileContextProvider';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import convertSpaceIcon from '../../assets/convert space.svg';
@@ -12,7 +14,6 @@ import checkekIcon from '../../assets/ts_check.svg';
 import { ReactComponent as ArrowRightIcon } from '../../assets/arrow_right_line.svg';
 import { ReactComponent as LangSpaceIcon } from '../../assets/plan_standard.svg';
 import { ReactComponent as SquareSpaceIcon } from '../../assets/thumbnail.svg';
-import { useTranslation } from 'react-i18next';
 
 const ProfileInfoModal = ({ userId, thumbPhoto }) => {
   const { userStore, authStore } = useCoreStores();
@@ -23,6 +24,7 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
   const [settingDialogVisible, setSettingDialogVisible] = useState(false);
   const [spaceListVisible, setSpaceListVisible] = useState(false);
   const [lngListVisible, setLngListVisible] = useState(false);
+  const [isInviteDialogVisible, setIsInviteDialogVisible] = useState(false);
   const useProfile = useProfileContext();
   const spaceRef = useRef();
   const topRef = useRef();
@@ -69,6 +71,11 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
     },
     [useProfile],
   );
+
+  const handleToggleDialog = useCallback(() => {
+    setIsInviteDialogVisible(!isInviteDialogVisible);
+    console.log('Toggle Dialog');
+  }, [isInviteDialogVisible]);
 
   const handleSpaceList = useCallback(() => {
     setSpaceListVisible(spaceListVisible => !spaceListVisible);
@@ -129,7 +136,7 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
     if (spaceRef.current && topRef.current) {
       setDropdownTop(
         spaceRef.current.getBoundingClientRect().top -
-        topRef.current.getBoundingClientRect().top,
+          topRef.current.getBoundingClientRect().top,
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -172,14 +179,14 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
     <ProfileModal
       visible={useProfile.state.infoMode}
       mask={useProfile.state.created}
-      maskClosable={true}
+      maskClosable
       onCancel={handleInfoClose}
       title={null}
       closable={false}
       footer={null}
       transitionName=""
       maskTransitionName=""
-      width={'17rem'}
+      width="17rem"
       style={{ top: '2.875rem' }}
     >
       <UserArea ref={topRef}>
@@ -214,13 +221,13 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
           </Info>
           <Button
             type="circle"
-            className={'btn-convert'}
+            className="btn-convert"
             onClick={handleSpaceList}
           >
             <Blind>스페이스 전환</Blind>
           </Button>
           <Dropdown overlay={moreMenu} placement="bottomRight">
-            <Button type="circle" className={'btn-more'}>
+            <Button type="circle" className="btn-more">
               <Blind>설정</Blind>
             </Button>
           </Dropdown>
@@ -288,7 +295,7 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
               <NowTitle>UX팀</NowTitle>
               현재 스페이스입니다.
             </NowInfo>
-            <Checkbox checked className={'check-round'} />
+            <Checkbox checked className="check-round" />
           </ConvertNow>
           <ConvertList>
             {ConvertLists.map(i => (
@@ -314,12 +321,17 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
         <ProfileSpaceModal
           oneButton={useProfile.state.isAdmin}
           userName={profile?.name}
+          onInvite={handleToggleDialog}
         />
       )}
       <SettingDialog
         selectedKeyA={itemKey}
         visible={settingDialogVisible}
         onCancel={handleSettingDialogClose}
+      />
+      <AddFriendsByInvitationDialog
+        visible={isInviteDialogVisible}
+        onCancel={handleToggleDialog}
       />
     </ProfileModal>
   );
@@ -550,7 +562,7 @@ const ConvertDropdown = styled.div`
   position: absolute;
   left: -11.5rem;
   width: 11rem;
-  top: ${props => (props.pos ? props.pos + 'px' : '0px')};
+  top: ${props => (props.pos ? `${props.pos}px` : '0px')};
   border: 1px solid #c6ced6;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
   border-radius: 0.25rem;
