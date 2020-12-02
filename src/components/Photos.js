@@ -35,9 +35,9 @@ const getStyle = (index, count, defaultDiameter) => {
   }
 };
 
-function Photos({ srcList, defaultDiameter = 2.25 }) {
+function Photos({ srcList, defaultDiameter = 2.25, center = false }) {
   return (
-    <Wrapper defaultDiameter={defaultDiameter}>
+    <Wrapper defaultDiameter={defaultDiameter} center={center}>
       {srcList.map((src, index) => (
         <UserPhoto
           key={src}
@@ -56,6 +56,11 @@ const Wrapper = styled.div`
   width: ${({ defaultDiameter }) => defaultDiameter}rem;
   height: ${({ defaultDiameter }) => defaultDiameter}rem;
   position: relative;
+  ${props => props.center &&
+    css`
+      margin: 0 auto;
+  `};
+
 `;
 
 const UserPhoto = styled.img`

@@ -6,6 +6,7 @@ const Input = ({
   disabled = false,
   value = '',
   onChange = null,
+  className
 }) => {
   const handleChange = e => {
     const inputValue = e.target.value;
@@ -13,7 +14,7 @@ const Input = ({
   };
 
   return (
-    <Wrapper disabled={disabled}>
+    <Wrapper disabled={disabled} className={className}>
       <input disabled={disabled} value={value} onChange={handleChange} />
       {maxLength ? (
         <div className="input-counter">{`${value.length}/${maxLength}`}</div>
@@ -47,8 +48,8 @@ const Wrapper = styled.div`
     border: 0;
 
     ${({ disabled }) =>
-      disabled &&
-      css`
+    disabled &&
+    css`
         cursor: not-allowed;
       `}
 
