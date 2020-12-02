@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCoreStores, Toast } from 'teespace-core';
 import styled from 'styled-components';
 import { Button, Input, Modal } from 'antd';
 
@@ -70,12 +71,54 @@ const StyledLinkButton = styled(Button)`
 `;
 
 function AddFriendsBySearch({ visible, onCancel }) {
+  const { friendStore, userStore } = useCoreStores();
+  const [mailAddress, setMailAddress] = useState('');
+  const [isToastVisible, setIsToastVisible] = useState(false);
+  const [toastText, setToastText] = useState('');
+  const myUserId = userStore.myProfile.id;
+
   const handleCancel = () => {
     onCancel();
   };
 
-  const handleSendInviteMail = () => {
-    console.log('inv test');
+  const handleToggleToast = () => {
+    setIsToastVisible(!isToastVisible);
+  };
+
+  const handleSendInviteMail = async () => {
+    try {
+      // 서비스 완성 후 구현
+      // const response = await friendStore.sendInvitationMail({
+      //   myUserId,
+      //   users: [mailAddress],
+      // });
+      // console.log(response);
+
+      setToastText('발송한 초대장은 24시간 이후 만료됩니다.');
+      handleToggleToast();
+      onCancel();
+    } catch (e) {
+      console.log('Mail Send Error...');
+    }
+  };
+
+  const handleCopyInviteLink = async () => {
+    try {
+      const response = await friendStore.fetchUserInvitationLink({
+        myUserId,
+      });
+      const el = document.createElement('textarea');
+      el.value = response;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+
+      setToastText('복사한 초대 링크는 24시간 이후 만료됩니다.');
+      handleToggleToast();
+    } catch (e) {
+      console.log('Copy Error...');
+    }
   };
 
   return (
@@ -95,15 +138,26 @@ function AddFriendsBySearch({ visible, onCancel }) {
             <br />
             초대받은 구성원의 참여 완료 시, 나의 프렌즈 목록에 추가됩니다.
           </StyledInfoText>
-          <StyledInputBox>
+          <StyledInputBox onInput={e => setMailAddress(e.target.value)}>
             <StyledInput placeholder="이메일 주소 추가" />
             <StyledButton shape="round" onClick={handleSendInviteMail}>
               보내기
             </StyledButton>
           </StyledInputBox>
 
-          <StyledLinkButton type="link">초대 링크 복사</StyledLinkButton>
+          <StyledLinkButton type="link" onClick={handleCopyInviteLink}>
+            초대 링크 복사
+          </StyledLinkButton>
         </StyledContent>
+        <Toast
+          visible={isToastVisible}
+          timeoutMs={1000}
+          onClose={() => {
+            setIsToastVisible(false);
+          }}
+        >
+          {toastText}
+        </Toast>
       </StyledModal>
     </>
   );

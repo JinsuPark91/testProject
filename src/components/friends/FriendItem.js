@@ -183,16 +183,16 @@ const DropdownMenu = React.memo(
     handleAddBookmark,
     handleRemoveFriendMessageOpen,
   }) => (
-      <Menu>
-        {friendFavorite && (
-          <Menu.Item onClick={handleCancelBookmark}>즐겨찾기 해제</Menu.Item>
-        )}
-        {!friendFavorite && (
-          <Menu.Item onClick={handleAddBookmark}>즐겨찾기</Menu.Item>
-        )}
-        <Menu.Item onClick={handleRemoveFriendMessageOpen}>프렌즈 삭제</Menu.Item>
-      </Menu>
-    ),
+    <Menu>
+      {friendFavorite && (
+        <Menu.Item onClick={handleCancelBookmark}>즐겨찾기 해제</Menu.Item>
+      )}
+      {!friendFavorite && (
+        <Menu.Item onClick={handleAddBookmark}>즐겨찾기</Menu.Item>
+      )}
+      <Menu.Item onClick={handleRemoveFriendMessageOpen}>프렌즈 삭제</Menu.Item>
+    </Menu>
+  ),
 );
 const Profile = React.memo(({ mode, tooltipPopupContainer, profilePhoto }) => {
   return (
@@ -297,31 +297,31 @@ const Action = React.memo(
     handleAddFriend,
     isMe,
   }) => (
-      <>
-        {mode !== 'readOnly' && isHovering && (
-          <>
-            <FriendAction
-              mode={mode}
-              menu={menu}
-              handleDropdownVisible={handleDropdownVisible}
-              handleTalkWindowOpen={handleTalkWindowOpen}
-            />
-            <MeAction mode={mode} handleTalkWindowOpen={handleTalkWindowOpen} />
-            <AddFriendAction
-              mode={mode}
-              friendRelation={friendRelation}
-              handleAddFriend={handleAddFriend}
-              isMe={isMe}
-            />
-            <RecommendedAction
-              mode={mode}
-              friendRelation={friendRelation}
-              handleAddFriend={handleAddFriend}
-            />
-          </>
-        )}
-      </>
-    ),
+    <>
+      {mode !== 'readOnly' && isHovering && (
+        <>
+          <FriendAction
+            mode={mode}
+            menu={menu}
+            handleDropdownVisible={handleDropdownVisible}
+            handleTalkWindowOpen={handleTalkWindowOpen}
+          />
+          <MeAction mode={mode} handleTalkWindowOpen={handleTalkWindowOpen} />
+          <AddFriendAction
+            mode={mode}
+            friendRelation={friendRelation}
+            handleAddFriend={handleAddFriend}
+            isMe={isMe}
+          />
+          <RecommendedAction
+            mode={mode}
+            friendRelation={friendRelation}
+            handleAddFriend={handleAddFriend}
+          />
+        </>
+      )}
+    </>
+  ),
 );
 const TextComponent = React.memo(
   ({ displayName, fullCompanyJob, mode, orgName, position }) => {
@@ -443,7 +443,7 @@ const FriendItem = React.memo(
         setToastText('즐겨찾기가 설정되었습니다.');
         openToast();
       },
-      [friendStore, authStore, itemId],
+      [friendStore, authStore, itemId, setToastText, openToast],
     );
 
     const handleCancelBookmark = useCallback(
@@ -462,7 +462,7 @@ const FriendItem = React.memo(
         setIsHovering(false);
         setDropdownVisible(false);
       },
-      [friendStore, authStore, itemId],
+      [friendStore, authStore, itemId, setToastText, openToast],
     );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -533,9 +533,14 @@ const FriendItem = React.memo(
         <Message
           visible={visibleRemoveFriendMessage}
           title={`${displayName}님을 프렌즈 목록에서 삭제하시겠습니까?`}
-          type={'error'}
+          type="error"
           btns={[
-            { text: '삭제', type: 'solid', shape: 'round', onClick: handleRemoveFriend },
+            {
+              text: '삭제',
+              type: 'solid',
+              shape: 'round',
+              onClick: handleRemoveFriend,
+            },
             {
               text: '취소',
               type: 'outlined',

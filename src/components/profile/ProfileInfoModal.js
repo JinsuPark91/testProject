@@ -74,7 +74,6 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
 
   const handleToggleDialog = useCallback(() => {
     setIsInviteDialogVisible(!isInviteDialogVisible);
-    console.log('Toggle Dialog');
   }, [isInviteDialogVisible]);
 
   const handleSpaceList = useCallback(() => {
