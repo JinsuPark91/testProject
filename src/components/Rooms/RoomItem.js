@@ -6,11 +6,11 @@ import { Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import Photos from '../Photos';
 import { ViewMoreIcon, ExportIcon, DisableAlarmIcon, PinIcon } from '../Icons';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const MAX_PROFILE_COUNT = 4;
 
 const RoomDropdown = React.memo(({ children, roomInfo }) => {
-  console.table(`Room Info (${roomInfo.id}) : `, roomInfo);
   const { roomStore, userStore } = useCoreStores();
   const { id: roomId } = roomInfo;
   const myUserId = userStore.myProfile.id;
@@ -83,10 +83,28 @@ const RoomDropdown = React.memo(({ children, roomInfo }) => {
     updateRoomSetting({ newIsAlarmUsed: false });
   };
 
-  const handleExit = e => {
+  const handleExit = async e => {
     e.domEvent.stopPropagation();
-    console.log('handleExit');
     setVisible(false);
+
+    try {
+      const result = await roomStore.deleteRoomMember({
+        userId: userStore.myProfile.id,
+        roomId: roomInfo.id,
+      });
+
+      if (result) {
+        if (
+          PlatformUIStore.resourceType === 's' &&
+          PlatformUIStore.resourceId === roomInfo.id
+        ) {
+          const firstRoomId = roomStore.getRoomArray()?.[0].id;
+          if (firstRoomId) history.push(`/s/${firstRoomId}/talk`);
+        }
+      }
+    } catch (e) {
+      console.log('DELETE ROOM MEMBER ERROR : ', e);
+    }
   };
 
   const roomMenu = () => (
@@ -139,6 +157,7 @@ const RoomDropdown = React.memo(({ children, roomInfo }) => {
 
 const RoomItemContent = React.memo(({ roomInfo, isMyRoom }) => {
   const { userStore } = useCoreStores();
+
   const userPhotos = roomInfo.memberIdListString
     .split(',')
     .splice(0, MAX_PROFILE_COUNT)
@@ -229,7 +248,7 @@ const RoomItemContent = React.memo(({ roomInfo, isMyRoom }) => {
   );
 });
 
-const RoomItem = ({ roomInfo, selected, onClick }) => {
+const RoomItem = React.memo(({ roomInfo, selected, onClick }) => {
   const isMyRoom = roomInfo.type === 'WKS0001';
 
   const handleRoomClick = useCallback(() => {
@@ -244,7 +263,8 @@ const RoomItem = ({ roomInfo, selected, onClick }) => {
       </ItemWrapper>
     </StyledItem>
   );
-};
+});
+
 const StyledMenu = styled(Menu)`
   & {
     background: #ffffff;
