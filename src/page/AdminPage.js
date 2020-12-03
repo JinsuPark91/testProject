@@ -1,11 +1,8 @@
 import React from 'react';
+import { AdminPage as AdminPageComponent } from 'teespace-admin';
 
 function AdminPage() {
-  return (
-    <div>
-      <h1>Admin Page</h1>
-    </div>
-  );
+  return <AdminPageComponent />;
 }
 
 export default AdminPage;
