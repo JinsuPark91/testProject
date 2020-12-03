@@ -295,12 +295,11 @@ function RoomInquiryModal({
 
   const handleInviteOk = () => {
     setUserSelectDialogVisible(false);
-    console.log(selectedUsers);
     const myUserId = userStore.myProfile.id;
     roomStore.inviteNewMembers({
       myUserId,
-      userId: myUserId,
       roomId,
+      newMemberList: selectedUsers.map(user => ({ userId: user.id })),
     });
   };
 
