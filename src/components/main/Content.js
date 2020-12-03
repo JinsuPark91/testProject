@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Observer } from 'mobx-react';
 import { Talk } from 'teespace-talk-app';
 import { NoteApp } from 'teespace-note-app';
@@ -15,7 +15,14 @@ import Profile from '../Profile';
 
 const Content = () => {
   const splitRef = useRef(null);
+  const contentRef = useRef(null);
   const { roomStore } = useCoreStores();
+
+  useEffect(() => {
+    if (contentRef) {
+      PlatformUIStore.content.rect = contentRef.current.getBoundingClientRect();
+    }
+  });
 
   const getRoomId = () => {
     if (PlatformUIStore.resourceType === 's') {
@@ -102,7 +109,7 @@ const Content = () => {
   };
 
   return (
-    <Wrapper>
+    <Wrapper ref={contentRef}>
       <Observer>
         {() => (
           <Splitter

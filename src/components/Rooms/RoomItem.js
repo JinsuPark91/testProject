@@ -10,11 +10,12 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const MAX_PROFILE_COUNT = 4;
 
-const RoomDropdown = React.memo(({ children, roomInfo }) => {
+const RoomDropdown = React.memo(({ children, roomInfo, onMenuClick }) => {
   const { roomStore, userStore } = useCoreStores();
   const { id: roomId } = roomInfo;
   const myUserId = userStore.myProfile.id;
   const [visible, setVisible] = useState(false);
+
   const history = useHistory();
 
   const handleVisibleChange = flag => {
@@ -23,6 +24,7 @@ const RoomDropdown = React.memo(({ children, roomInfo }) => {
 
   const handleMenuClick = e => {
     e.stopPropagation();
+    onMenuClick(roomInfo);
   };
 
   const handleSetting = e => {
@@ -59,8 +61,12 @@ const RoomDropdown = React.memo(({ children, roomInfo }) => {
 
   const handleViewMember = e => {
     e.domEvent.stopPropagation();
-    console.log('handleViewMember');
     setVisible(false);
+
+    PlatformUIStore.roomMemberModal.open({
+      top: `${PlatformUIStore.content.rect.top}px`,
+      left: `${PlatformUIStore.content.rect.left}px`,
+    });
   };
 
   const handleNameChange = e => {
@@ -155,7 +161,7 @@ const RoomDropdown = React.memo(({ children, roomInfo }) => {
   );
 });
 
-const RoomItemContent = React.memo(({ roomInfo, isMyRoom }) => {
+const RoomItemContent = React.memo(({ roomInfo, isMyRoom, onMenuClick }) => {
   const { userStore } = useCoreStores();
 
   const userPhotos = roomInfo.memberIdListString
@@ -173,6 +179,10 @@ const RoomItemContent = React.memo(({ roomInfo, isMyRoom }) => {
   const handleExport = e => {
     e.stopPropagation();
     console.log('handleExport');
+  };
+
+  const handleMenuClick = _roomInfo => {
+    onMenuClick(_roomInfo);
   };
 
   return (
@@ -235,7 +245,7 @@ const RoomItemContent = React.memo(({ roomInfo, isMyRoom }) => {
         </UnreadCount>
       ) : null}
       {!isMyRoom && (
-        <RoomDropdown roomInfo={roomInfo}>
+        <RoomDropdown roomInfo={roomInfo} onMenuClick={handleMenuClick}>
           <IconWrapper className="room-item__icon">
             <ViewMoreIcon />
           </IconWrapper>
@@ -248,18 +258,25 @@ const RoomItemContent = React.memo(({ roomInfo, isMyRoom }) => {
   );
 });
 
-const RoomItem = React.memo(({ roomInfo, selected, onClick }) => {
+const RoomItem = React.memo(({ roomInfo, selected, onClick, onMenuClick }) => {
   const isMyRoom = roomInfo.type === 'WKS0001';
 
   const handleRoomClick = useCallback(() => {
-    console.log(roomInfo);
     onClick(roomInfo);
   }, []);
+
+  const handleMenuClick = _roomInfo => {
+    onMenuClick(_roomInfo);
+  };
 
   return (
     <StyledItem onClick={handleRoomClick} isMyRoom={isMyRoom}>
       <ItemWrapper selected={selected}>
-        <RoomItemContent roomInfo={roomInfo} isMyRoom={isMyRoom} />
+        <RoomItemContent
+          roomInfo={roomInfo}
+          isMyRoom={isMyRoom}
+          onMenuClick={handleMenuClick}
+        />
       </ItemWrapper>
     </StyledItem>
   );
