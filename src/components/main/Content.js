@@ -4,7 +4,7 @@ import { Talk } from 'teespace-talk-app';
 import { NoteApp } from 'teespace-note-app';
 import { CalendarApp } from 'teespace-calendar-app';
 import { MailMainView, MailSubView } from 'teespace-mail-app';
-import { DriveApp } from 'teespace-drive-app';
+import { DriveApp, DriveAllApp } from 'teespace-drive-app';
 import { MeetingApp } from 'teespace-meeting-app';
 import { useCoreStores } from 'teespace-core';
 import RoomSetting from '../Rooms/RoomSetting';
@@ -14,6 +14,7 @@ import { MainAppContainer, SubAppContainer } from './AppContainer';
 import Profile from '../Profile';
 
 const Content = () => {
+  const { userStore } = useCoreStores();
   const splitRef = useRef(null);
   const { roomStore } = useCoreStores();
 
@@ -55,7 +56,7 @@ const Content = () => {
       case 'drive':
         return (
           <DriveApp
-            isDrive
+            userId={userStore.myProfile.id}
             roomId={getRoomId()}
             channelId={getChannelId('CHN0006')}
             layoutState={PlatformUIStore.layout}
@@ -63,8 +64,8 @@ const Content = () => {
         );
       case 'files':
         return (
-          <DriveApp
-            isDrive={false}
+          <DriveAllApp
+            userId={userStore.myProfile.id}
             roomId={getRoomId()}
             channelId={getChannelId('CHN0006')}
             layoutState={PlatformUIStore.layout}

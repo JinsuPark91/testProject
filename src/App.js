@@ -6,6 +6,7 @@ import './App.less';
 import { create } from 'mobx-persist';
 import { useCoreStores } from 'teespace-core';
 import { I18nextProvider } from 'react-i18next';
+import AdminPage from './page/AdminPage';
 import ServicePage from './page/ServicePage';
 import LoginPage from './page/LoginPage';
 import NotFoundPage from './page/NotFoundPage';
@@ -52,6 +53,7 @@ function App() {
               path="/login"
               component={<LoginPage />}
             />
+
             <RedirectablePublicRoute
               exact
               path="/register"
@@ -71,6 +73,8 @@ function App() {
               path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
               component={MainPage}
             />
+            <PrivateRoute exact path="/admin" component={AdminPage} />
+
             <Route component={NotFoundPage} />
             {/* <PrivateRoute
             path="/users"
