@@ -19,7 +19,6 @@ import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
 import PrivateRoute from './libs/PrivateRoute';
 import i18next from './i18n';
-
 const hydrate = create();
 
 function App() {
@@ -73,7 +72,9 @@ function App() {
               path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
               component={MainPage}
             />
-            <PrivateRoute exact path="/admin" component={AdminPage} />
+            <Route path="/admin">
+              <AdminPage/>
+            </Route>
 
             <Route component={NotFoundPage} />
             {/* <PrivateRoute
