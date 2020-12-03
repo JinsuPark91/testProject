@@ -63,8 +63,8 @@ const Profile = ({
       setMobile(userProfile?.phone);
       setName(userProfile?.name);
 
-      setThumb(`/${getThumbPhoto()}`);
-      setBackground(`/${getBackPhoto()}`);
+      setThumb(`${getThumbPhoto()}`);
+      setBackground(`${getBackPhoto()}`);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
@@ -110,12 +110,12 @@ const Profile = ({
 
   const handleChangeDefaultBackground = () => {
     setIsChange(true);
-    setBackground(`/${getBackPhoto()}`);
+    setBackground(`${getBackPhoto()}`);
   };
 
   const handleChangeDefaultPhoto = () => {
     setIsChange(true);
-    setThumb(`/${getThumbPhoto()}`);
+    setThumb(`${getThumbPhoto()}`);
   };
 
   const handleConfirm = async () => {
@@ -168,8 +168,8 @@ const Profile = ({
 
         setMobile(profile?.phone);
         setPhone(profile?.companyNum);
-        setBackground(`/${getBackPhoto()}`);
-        setThumb(`/${getThumbPhoto()}`);
+        setBackground(`${getBackPhoto()}`);
+        setThumb(`${getThumbPhoto()}`);
       },
     });
   };
@@ -255,7 +255,7 @@ const Profile = ({
         <BigText>
           {isEditMode ? (
             <StyleInput
-              className={'type2'}
+              className="type2"
               onChange={e => {
                 setIsChange(true);
                 setName(e.target.value);
@@ -270,7 +270,7 @@ const Profile = ({
         <UserStatusMsg>
           {isEditMode ? (
             <StyleInput
-              className={'type2'}
+              className="type2"
               onChange={e => {
                 setIsChange(true);
                 setStatusMsg(e.target.value);

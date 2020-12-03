@@ -42,7 +42,7 @@ function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
     if (!searchedUser) {
       return null;
     }
-    return `/${user.profilePhoto || user.defaultPhotoUrl}`;
+    return `${user.profilePhoto || user.defaultPhotoUrl}`;
   })(searchedUser);
 
   return useObserver(() => (

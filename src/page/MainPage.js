@@ -19,7 +19,7 @@ const MainPage = () => {
   const { resourceType, resourceId, mainApp } = useParams();
   const { sub: subApp } = useQueryParams(history.location.search);
 
-  const { roomStore, userStore } = useCoreStores();
+  const { roomStore, userStore, friendStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
 
   /*
@@ -31,6 +31,8 @@ const MainPage = () => {
       roomStore.fetchRoomList({ myUserId }),
       // 유저 프로필을 불러오자
       userStore.fetchRoomUserProfileList({}),
+      // 프렌드 리스트를 불러오자
+      friendStore.fetchFriends({ myUserId }),
     ])
       .then(() => {
         // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)

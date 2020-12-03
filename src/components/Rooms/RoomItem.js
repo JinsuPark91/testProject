@@ -163,7 +163,7 @@ const RoomItemContent = React.memo(({ roomInfo, isMyRoom }) => {
     .splice(0, MAX_PROFILE_COUNT)
     .map(
       userId =>
-        `/${userStore.getUserProfilePhoto({
+        `${userStore.getUserProfilePhoto({
           userId,
           size: 'small',
           isLocal: true,

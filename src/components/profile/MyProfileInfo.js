@@ -24,12 +24,12 @@ function MyProfileInfo() {
 
   useEffect(() => {
     const getThumbPhoto = userStore.getUserProfilePhoto({
-      userId: userId,
+      userId,
       size: 'small',
       isLocal: IS_LOCAL,
       thumbPhoto: userStore.myProfile.thumbPhoto || null,
     });
-    setThumbPhoto(`/${getThumbPhoto}`);
+    setThumbPhoto(`${getThumbPhoto}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userStore.myProfile.lastUpdatedTime]);
 

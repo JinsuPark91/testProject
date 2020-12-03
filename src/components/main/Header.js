@@ -126,7 +126,7 @@ const Header = () => {
         .splice(0, 4)
         .map(
           userId =>
-            `/${userStore.getUserProfilePhoto({
+            `${userStore.getUserProfilePhoto({
               userId,
               size: 'small',
               isLocal: true,
