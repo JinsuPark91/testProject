@@ -199,7 +199,7 @@ function RoomInquiryModal({
         .splice(0, 4)
         .map(
           userId =>
-            `/${userStore.getUserProfilePhoto({
+            `${userStore.getUserProfilePhoto({
               userId,
               size: 'small',
               isLocal: true,
@@ -371,7 +371,7 @@ function RoomInquiryModal({
         <UserItem key={memberInfo.id}>
           <UserImag>
             <img
-              src={`/${userStore.getUserProfilePhoto({
+              src={`${userStore.getUserProfilePhoto({
                 userId: memberInfo.id,
                 size: 'small',
                 isLocal: true,
