@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Loader, useCoreStores, Search } from 'teespace-core';
+import { Loader, useCoreStores, Search, Toast } from 'teespace-core';
 import styled from 'styled-components';
 import { Button, Modal } from 'antd';
 
@@ -211,6 +211,11 @@ const FriendName = styled.p`
   margin-left: 0.63rem;
 `;
 
+const MyAccountText = styled.span`
+  font-size: 0.69rem;
+  color: #8d8d8d;
+`;
+
 const FriendAddBtn = styled.button`
   height: 1rem;
   background-color: transparent;
@@ -239,24 +244,32 @@ function AddFriendsBySearch({
   overwrittenValue,
   defaultValue,
 }) {
-  const { userStore, authStore, friendStore } = useCoreStores();
+  const { orgStore, userStore } = useCoreStores();
   const [isInviteDialogVisible, setIsInviteDialogVisible] = useState(false);
+  const [isToastVisible, setIsToastVisible] = useState(false);
+  const [userName, setUserName] = useState('');
 
   const toggleInviteDialog = useCallback(() => {
     setIsInviteDialogVisible(!isInviteDialogVisible);
   }, [isInviteDialogVisible]);
 
-  const handleInviteMember = () => {
+  const toggleToast = useCallback(() => {
+    setIsToastVisible(!isToastVisible);
+  }, [isToastVisible]);
+
+  const handleInviteMember = async () => {
     console.log('Invite Member');
     onCancel();
     toggleInviteDialog();
   };
+
   // <AddFriendsByInvitationDialog
   //   visible={isInviteDialogVisible}
   //   onCancel={toggleInviteDialog}
   // />;
 
-  const handleAddFriends = () => {
+  const handleAddFriends = async name => {
+    setUserName(name);
     console.log('Add Friends');
     // friendStore.addFriend({
     //   myUserId: authStore.user.id,
@@ -271,9 +284,9 @@ function AddFriendsBySearch({
           <Photos srcList={['a1']} defaultDiameter="2.13" />
           <FriendName>{name}</FriendName>
           {isMe ? (
-            '내 계정'
+            <MyAccountText>내 계정</MyAccountText>
           ) : (
-            <FriendAddBtn onClick={handleAddFriends}>
+            <FriendAddBtn onClick={handleAddFriends(name)}>
               <span>프렌즈 추가</span>
             </FriendAddBtn>
           )}
@@ -338,6 +351,13 @@ function AddFriendsBySearch({
             <FriendAddList friendAddList={TestData} />
           </FriendList>
         </AddFriendSearchForm>
+        <Toast
+          visible={isToastVisible}
+          timeoutMs={1000}
+          onClose={() => setIsToastVisible(false)}
+        >
+          {userName}님이 프렌즈로 추가되었습니다.
+        </Toast>
       </StyledModal>
     </>
   );
