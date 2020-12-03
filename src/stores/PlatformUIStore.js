@@ -16,6 +16,31 @@ const PlatformUIStore = observable({
   mainApp: 'talk',
   subApp: null,
   layout: 'collapse',
+
+  // modal
+  roomMemberModal: {
+    visible: false,
+    rect: null,
+
+    open({ top, left }) {
+      this.visible = true;
+      if (top) {
+        this.top = top;
+      }
+      if (left) {
+        this.left = left;
+      }
+    },
+
+    close() {
+      this.visible = false;
+    },
+  },
+
+  // ref
+  content: {
+    rect: null,
+  },
 });
 
 export default PlatformUIStore;
