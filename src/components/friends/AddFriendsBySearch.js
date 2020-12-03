@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
+import { Loader, useCoreStores, Search } from 'teespace-core';
 import styled from 'styled-components';
 import { Button, Modal } from 'antd';
-import { Search } from 'teespace-core';
-import Photos from '../components/Photos';
-import FriendModalImg from '../assets/none_friends.svg';
-import AddFriendImg from '../assets/ts_friend_add.svg';
+
+import Photos from '../Photos';
+// import AddFriendsByInvitationDialog from '../AddFriendsByInvitationDialog';
+import FriendModalImg from '../../assets/none_friends.svg';
+import AddFriendImg from '../../assets/ts_friend_add.svg';
 // import OrganizationDropdown from '../components/friends/OrganizationDropdown';
+import AddFriendsByOrganizationContent from './AddFriendsByOrganizationContent';
+
 const StyledModal = styled(Modal)`
   .ant-modal-body {
     padding: 0;
@@ -211,6 +215,7 @@ const FriendAddBtn = styled.button`
   height: 1rem;
   background-color: transparent;
   border: none;
+  cursor: pointer;
 
   span {
     display: inline-block;
@@ -234,9 +239,60 @@ function AddFriendsBySearch({
   overwrittenValue,
   defaultValue,
 }) {
-  const handleCancel = () => {
+  const { userStore, authStore, friendStore } = useCoreStores();
+  const [isInviteDialogVisible, setIsInviteDialogVisible] = useState(false);
+
+  const toggleInviteDialog = useCallback(() => {
+    setIsInviteDialogVisible(!isInviteDialogVisible);
+  }, [isInviteDialogVisible]);
+
+  const handleInviteMember = () => {
+    console.log('Invite Member');
     onCancel();
+    toggleInviteDialog();
   };
+  // <AddFriendsByInvitationDialog
+  //   visible={isInviteDialogVisible}
+  //   onCancel={toggleInviteDialog}
+  // />;
+
+  const handleAddFriends = () => {
+    console.log('Add Friends');
+    // friendStore.addFriend({
+    //   myUserId: authStore.user.id,
+    //   friendInfo,
+    // });
+  };
+
+  const FriendAddItem = ({ name, isMe }) => {
+    return (
+      <>
+        <FriendItem>
+          <Photos srcList={['a1']} defaultDiameter="2.13" />
+          <FriendName>{name}</FriendName>
+          {isMe ? (
+            '내 계정'
+          ) : (
+            <FriendAddBtn onClick={handleAddFriends}>
+              <span>프렌즈 추가</span>
+            </FriendAddBtn>
+          )}
+        </FriendItem>
+      </>
+    );
+  };
+
+  const FriendAddList = ({ friendAddList }) => (
+    <>
+      {friendAddList.map(elem => (
+        <FriendAddItem key={elem} name="123" isMe={false} />
+      ))}
+    </>
+  );
+
+  // TODO: SPACE 멤버 얻어오는 서비스 붙이기
+  const TestData = ['1', '2', '3', '4', '5'];
+
   return (
     <>
       <StyledModal
@@ -245,13 +301,13 @@ function AddFriendsBySearch({
         footer={null}
         width="24.38rem"
         title="프렌즈 추가"
-        onCancel={handleCancel}
+        onCancel={onCancel}
       >
         <InvitationForm>
           <StyledInfoImg src={FriendModalImg} alt="" />
           <StyledInfoText>프렌즈가 없습니다.</StyledInfoText>
           <StyledSubInfoText>초대할 구성원을 찾아보세요</StyledSubInfoText>
-          <StyledButton type="solid" shape="round">
+          <StyledButton type="solid" shape="round" onClick={handleInviteMember}>
             구성원 초대
           </StyledButton>
         </InvitationForm>
@@ -279,34 +335,7 @@ function AddFriendsBySearch({
             /> */}
           </GroupBox>
           <FriendList>
-            <FriendItem>
-              <Photos srcList={['a1']} defaultDiameter="2.13" />
-              <FriendName>장윤지</FriendName>
-              <FriendAddBtn>
-                <span>프렌즈 추가</span>
-              </FriendAddBtn>
-            </FriendItem>
-            <FriendItem>
-              <Photos srcList={['a1']} defaultDiameter="2.13" />
-              <FriendName>장윤지</FriendName>
-              <FriendAddBtn>
-                <span>프렌즈 추가</span>
-              </FriendAddBtn>
-            </FriendItem>
-            <FriendItem>
-              <Photos srcList={['a1']} defaultDiameter="2.13" />
-              <FriendName>장윤지</FriendName>
-              <FriendAddBtn>
-                <span>프렌즈 추가</span>
-              </FriendAddBtn>
-            </FriendItem>
-            <FriendItem>
-              <Photos srcList={['a1']} defaultDiameter="2.13" />
-              <FriendName>장윤지</FriendName>
-              <FriendAddBtn>
-                <span>프렌즈 추가</span>
-              </FriendAddBtn>
-            </FriendItem>
+            <FriendAddList friendAddList={TestData} />
           </FriendList>
         </AddFriendSearchForm>
       </StyledModal>
