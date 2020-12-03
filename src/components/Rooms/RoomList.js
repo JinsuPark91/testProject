@@ -8,11 +8,13 @@ import RoomItem from './RoomItem';
 import OpenRoomHome from './OpenRoomHome';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
+import RoomInquiryModal from './RoomInquiryModal';
 
 function RoomList() {
   const history = useHistory();
   const [keyword, setKeyword] = useState('');
   const [openRoomVisible, setOpenRoomVisible] = useState(false);
+  const [targetRoom, setTargetRoom] = useState(null);
   const { roomStore } = useCoreStores();
 
   const [visible, setVisible] = useState({
@@ -46,8 +48,33 @@ function RoomList() {
     setVisible(false);
   };
 
+  const handleRoomMemeberModalCancel = () => {
+    PlatformUIStore.roomMemberModal.close();
+  };
+
+  const handleMenuClick = roomInfo => {
+    setTargetRoom(roomInfo);
+  };
+
   return (
     <Wrapper>
+      <Observer>
+        {() => {
+          const modal = PlatformUIStore.roomMemberModal;
+
+          return (
+            <RoomInquiryModal
+              roomId={targetRoom?.id}
+              visible={modal.visible}
+              onCancel={handleRoomMemeberModalCancel}
+              width="17.5rem"
+              top={modal.top}
+              left={modal.left}
+            />
+          );
+        }}
+      </Observer>
+
       <SelectRoomTypeDialog
         visible={visible.selectRoomType}
         onCancel={handleSelectRoomTypeCancel}
@@ -88,6 +115,7 @@ function RoomList() {
                     PlatformUIStore.resourceId === roomInfo.id
                   }
                   onClick={handleSelectRoom}
+                  onMenuClick={handleMenuClick}
                 />
               ))
           }

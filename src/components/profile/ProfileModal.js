@@ -3,13 +3,27 @@ import styled, { css } from 'styled-components';
 import { Modal } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
-function ProfileModal({ visible, onCancel, outLine, topButton, userContent, subContent, footer, width, style }) {
+function ProfileModal({
+  visible,
+  onCancel,
+  outLine,
+  topButton,
+  userContent,
+  subContent,
+  footer,
+  width,
+  style,
+}) {
   const [isEditMode, setIsEditMode] = useState(false);
+
+  const handleClose = e => {
+    onCancel(e);
+  };
 
   return (
     <ModalWrap
       visible={visible}
-      maskClosable={true}
+      maskClosable
       mask={isEditMode}
       onCancel={onCancel}
       width={width}
@@ -37,7 +51,10 @@ function ProfileModal({ visible, onCancel, outLine, topButton, userContent, subC
                 </DropBox>
                 : null)}
             */}
-            <TopButton type="close"><Blind>닫기</Blind><CloseOutlined /></TopButton>
+            <TopButton type="close" onClick={handleClose}>
+              <Blind>닫기</Blind>
+              <CloseOutlined />
+            </TopButton>
           </TopButtonBox>
         )}
         {userContent}
@@ -45,19 +62,20 @@ function ProfileModal({ visible, onCancel, outLine, topButton, userContent, subC
       {subContent}
     </ModalWrap>
   );
-};
+}
 
 const ModalWrap = styled(Modal)`
   .ant-modal-content {
     box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.3);
-    ${props => props.outLine ?
-    css`
-      border: 1px solid #c6ced6;
-      border-radius: 0.25rem;
-      ` :
-    css`
-      border-radius: 0.35rem 0.35rem 0.25rem 0.25rem;
-      `};
+    ${props =>
+      props.outLine
+        ? css`
+            border: 1px solid #c6ced6;
+            border-radius: 0.25rem;
+          `
+        : css`
+            border-radius: 0.35rem 0.35rem 0.25rem 0.25rem;
+          `};
   }
   .ant-modal-body {
     padding: 0;
@@ -72,16 +90,17 @@ const UserArea = styled.div`
   font-size: 0.75rem;
   color: #fff;
   text-align: center;
-  ${props => props.outLine ?
-    css`
-      position: relative;
-      padding: 1.25rem 1.5rem 0.9375rem;
-      border-radius: 0.1875rem 0.1875rem 1.875rem 1.875rem;
-      z-index: 5;
-      ` :
-    css`
-      border-radius: 0.25rem 0.25rem 1.875rem 1.875rem;
-    `};
+  ${props =>
+    props.outLine
+      ? css`
+          position: relative;
+          padding: 1.25rem 1.5rem 0.9375rem;
+          border-radius: 0.1875rem 0.1875rem 1.875rem 1.875rem;
+          z-index: 5;
+        `
+      : css`
+          border-radius: 0.25rem 0.25rem 1.875rem 1.875rem;
+        `};
 `;
 const Blind = styled.span`
   position: absolute;
@@ -96,7 +115,8 @@ const TopButtonBox = styled.div`
   align-items: center;
   padding: 0.25rem 0.25rem 0;
 `;
-{/* 
+{
+  /* 
 const DropBox = styled.div`
   position: relative;
 `;
@@ -126,7 +146,8 @@ const DropItem = styled.li`
     background-color: #bcbeff;
   }
 `;
-*/}
+*/
+}
 const TopButton = styled.button`
   width: 2rem;
   height: 2rem;
@@ -142,7 +163,8 @@ const TopButton = styled.button`
           font-size: 0.875rem;
         `;
 
-        {/* 
+        {
+          /* 
       case 'bookMark':
         return css`
           background: url(${starLineIcon}) no-repeat 50% 50%;
@@ -176,7 +198,8 @@ const TopButton = styled.button`
             background-color: rgba(90,95,255,0.8);
           }
         `;
-        */}
+        */
+        }
     }
   }}
 `;

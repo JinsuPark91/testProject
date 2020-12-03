@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Upload from 'rc-upload';
 import styled, { css } from 'styled-components';
 import { Button, Input, Dropdown, Menu, Modal } from 'antd';
-import { useCoreStores, profileStatusMsg } from 'teespace-core';
+import { useCoreStores, profileStatusMsg, Message } from 'teespace-core';
 import friendsIcon from '../assets/ts_friends.svg';
 import profileEditIcon from '../assets/ts_profile_edit.svg';
 import teeMeetingIcon from '../assets/ts_TeeMeeting.svg';
@@ -33,6 +33,7 @@ const Profile = ({
   const [isChange, setIsChange] = useState(false);
   const [name, setName] = useState('');
   const [profileStatusMsg, setStatusMsg] = useState('');
+  const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
 
   const isMyId = () => userId === userStore.myProfile.id;
 
@@ -158,74 +159,67 @@ const Profile = ({
     setIsChange(false);
   };
 
-  const handleCancel = () => {
-    Modal.confirm({
-      centered: true,
-      content: '변경 사항을 저장하지 않고 나가시겠습니까?',
-      onOk: () => {
-        setIsChange(false);
-        setEditMode(false);
+  const handleExit = () => {
+    setIsChange(false);
+    setEditMode(false);
 
-        setMobile(profile?.phone);
-        setPhone(profile?.companyNum);
-        setBackground(`/${getBackPhoto()}`);
-        setThumb(`/${getThumbPhoto()}`);
-      },
-    });
+    setMobile(profile?.phone);
+    setPhone(profile?.companyNum);
+    setBackground(`/${getBackPhoto()}`);
+    setThumb(`/${getThumbPhoto()}`);
+    setCancelDialogVisible(false);
+  };
+  const handleExitCancel = () => {
+    setCancelDialogVisible(false);
+  };
+
+  const handleCancel = () => {
+    setCancelDialogVisible(true);
   };
 
   return (
-    <Wrapper imageSrc={background}>
-      {showSider && (
-        <Sidebar>
-          <StyledButton>
-            <FriendsIcon />
-            <Text>{isMyId() ? `나와의 Talk` : `1:1 Talk`}</Text>
-          </StyledButton>
-          {isMyId() ? (
-            <StyledButton onClick={handleChangeMode}>
-              <StyleIcon iconimg="profile" />
-              <Text>프로필 편집</Text>
+    <>
+      <Message
+        visible={cancelDialogVisible}
+        title="변경 사항을 저장하지 않고 나가시겠습니까?"
+        type="error"
+        btns={[
+          {
+            type: 'solid',
+            shape: 'round',
+            text: '나가기',
+            onClick: handleExit,
+          },
+          {
+            type: 'outlined',
+            shape: 'round',
+            text: '취소',
+            onClick: handleExitCancel,
+          },
+        ]}
+      />
+      <Wrapper imageSrc={background}>
+        {showSider && (
+          <Sidebar>
+            <StyledButton>
+              <FriendsIcon />
+              <Text>{isMyId() ? `나와의 Talk` : `1:1 Talk`}</Text>
             </StyledButton>
-          ) : (
-            <StyledButton onClick={handleMeetingClick}>
-              <StyleIcon iconimg="meeting" />
-              <Text>1:1 Meeting</Text>
-            </StyledButton>
-          )}
-        </Sidebar>
-      )}
-      <Content showSider={showSider}>
-        {isEditMode && (
-          <Dropdown
-            trigger={['click']}
-            overlay={
-              <Menu>
-                <Menu.Item>
-                  <StyledUpload
-                    component="div"
-                    accept={['image/*']}
-                    multiple={false}
-                    customRequest={({ file }) => handleChangeBackground(file)}
-                  >
-                    배경 변경
-                  </StyledUpload>
-                </Menu.Item>
-
-                <Menu.Item onClick={handleChangeDefaultBackground}>
-                  기본 이미지로 변경
-                </Menu.Item>
-              </Menu>
-            }
-          >
-            <ImageChangeButton position="tl">
-              <StyleBgImgIcon />
-            </ImageChangeButton>
-          </Dropdown>
+            {isMyId() ? (
+              <StyledButton onClick={handleChangeMode}>
+                <StyleIcon iconimg="profile" />
+                <Text>프로필 편집</Text>
+              </StyledButton>
+            ) : (
+              <StyledButton onClick={handleMeetingClick}>
+                <StyleIcon iconimg="meeting" />
+                <Text>1:1 Meeting</Text>
+              </StyledButton>
+            )}
+          </Sidebar>
         )}
-        <UserImageWrapper position="br">
-          <UserImage src={thumb} />
-          {isMyId() && isEditMode && (
+        <Content showSider={showSider}>
+          {isEditMode && (
             <Dropdown
               trigger={['click']}
               overlay={
@@ -233,124 +227,154 @@ const Profile = ({
                   <Menu.Item>
                     <StyledUpload
                       component="div"
-                      multiple={false}
                       accept={['image/*']}
-                      customRequest={({ file }) => handleChangePhoto(file)}
+                      multiple={false}
+                      customRequest={({ file }) => handleChangeBackground(file)}
                     >
-                      프로필 사진 변경
+                      배경 변경
                     </StyledUpload>
                   </Menu.Item>
-                  <Menu.Item onClick={handleChangeDefaultPhoto}>
+
+                  <Menu.Item onClick={handleChangeDefaultBackground}>
                     기본 이미지로 변경
                   </Menu.Item>
                 </Menu>
               }
             >
-              <ImageChangeButton position="br">
-                <StyleCameraImgIcon />
+              <ImageChangeButton position="tl">
+                <StyleBgImgIcon />
               </ImageChangeButton>
             </Dropdown>
           )}
-        </UserImageWrapper>
-        <BigText>
-          {isEditMode ? (
-            <StyleInput
-              className={'type2'}
-              onChange={e => {
-                setIsChange(true);
-                setName(e.target.value);
-              }}
-              value={name}
-            />
-          ) : (
-            name
-          )}
-        </BigText>
-        <UserEmailText>{`(${profile?.loginId}@tmax.teepsace.net)`}</UserEmailText>
-        <UserStatusMsg>
-          {isEditMode ? (
-            <StyleInput
-              className={'type2'}
-              onChange={e => {
-                setIsChange(true);
-                setStatusMsg(e.target.value);
-              }}
-              value={profileStatusMsg}
-            />
-          ) : (
-            profileStatusMsg
-          )}
-        </UserStatusMsg>
-        <UserInfoList>
-          <UserInfoItem>
-            <StyleOfficeIcon iconimg="address" />
-            <StylText>{profile?.fullCompanyJob}</StylText>
-          </UserInfoItem>
-          <UserInfoItem>
-            <StyleOfficeIcon iconimg="company" />
+          <UserImageWrapper position="br">
+            <UserImage src={thumb} />
+            {isMyId() && isEditMode && (
+              <Dropdown
+                trigger={['click']}
+                overlay={
+                  <Menu>
+                    <Menu.Item>
+                      <StyledUpload
+                        component="div"
+                        multiple={false}
+                        accept={['image/*']}
+                        customRequest={({ file }) => handleChangePhoto(file)}
+                      >
+                        프로필 사진 변경
+                      </StyledUpload>
+                    </Menu.Item>
+                    <Menu.Item onClick={handleChangeDefaultPhoto}>
+                      기본 이미지로 변경
+                    </Menu.Item>
+                  </Menu>
+                }
+              >
+                <ImageChangeButton position="br">
+                  <StyleCameraImgIcon />
+                </ImageChangeButton>
+              </Dropdown>
+            )}
+          </UserImageWrapper>
+          <BigText>
             {isEditMode ? (
               <StyleInput
+                className="type2"
                 onChange={e => {
                   setIsChange(true);
-                  setMobile(e.target.value);
+                  setName(e.target.value);
                 }}
-                value={mobile}
+                value={name}
               />
             ) : (
-              <StylText>{mobile}</StylText>
+              name
             )}
-          </UserInfoItem>
-          <UserInfoItem>
-            <StyleOfficeIcon iconimg="phone" />
+          </BigText>
+          <UserEmailText>{`(${profile?.loginId}@tmax.teepsace.net)`}</UserEmailText>
+          <UserStatusMsg>
             {isEditMode ? (
               <StyleInput
+                className="type2"
                 onChange={e => {
                   setIsChange(true);
-                  setPhone(e.target.value);
+                  setStatusMsg(e.target.value);
                 }}
-                value={phone}
+                value={profileStatusMsg}
               />
             ) : (
-              <StylText>{phone}</StylText>
+              profileStatusMsg
             )}
-          </UserInfoItem>
-          {/* 프로필 편집 시 "email" class 삭제 */}
-          <UserInfoItem
-            className={isEditMode ? '' : 'email'}
-            onClick={() => {
-              console.log('todo');
-            }}
-          >
-            <StyleOfficeIcon iconimg="email" />
-            <StyleOfficeIcon iconimg="emailhover" />
-            <StylText>{profile?.email}</StylText>
-          </UserInfoItem>
-        </UserInfoList>
-        <ButtonContainer>
-          {isEditMode && (
-            <>
-              <Button
-                style={{ marginRight: '1.25rem' }}
-                type="solid"
-                shape="round"
-                disabled={!isChange}
-                onClick={handleConfirm}
-              >
-                저장
-              </Button>
-              <Button
-                type="outlined"
-                shape="round"
-                onClick={handleCancel}
-                style={{ backgroundColor: '#fff' }}
-              >
-                취소
-              </Button>
-            </>
-          )}
-        </ButtonContainer>
-      </Content>
-    </Wrapper>
+          </UserStatusMsg>
+          <UserInfoList>
+            <UserInfoItem>
+              <StyleOfficeIcon iconimg="address" />
+              <StylText>{profile?.fullCompanyJob}</StylText>
+            </UserInfoItem>
+            <UserInfoItem>
+              <StyleOfficeIcon iconimg="company" />
+              {isEditMode ? (
+                <StyleInput
+                  onChange={e => {
+                    setIsChange(true);
+                    setMobile(e.target.value);
+                  }}
+                  value={mobile}
+                />
+              ) : (
+                <StylText>{mobile}</StylText>
+              )}
+            </UserInfoItem>
+            <UserInfoItem>
+              <StyleOfficeIcon iconimg="phone" />
+              {isEditMode ? (
+                <StyleInput
+                  onChange={e => {
+                    setIsChange(true);
+                    setPhone(e.target.value);
+                  }}
+                  value={phone}
+                />
+              ) : (
+                <StylText>{phone}</StylText>
+              )}
+            </UserInfoItem>
+            {/* 프로필 편집 시 "email" class 삭제 */}
+            <UserInfoItem
+              className={isEditMode ? '' : 'email'}
+              onClick={() => {
+                console.log('todo');
+              }}
+            >
+              <StyleOfficeIcon iconimg="email" />
+              <StyleOfficeIcon iconimg="emailhover" />
+              <StylText>{profile?.email}</StylText>
+            </UserInfoItem>
+          </UserInfoList>
+          <ButtonContainer>
+            {isEditMode && (
+              <>
+                <Button
+                  style={{ marginRight: '1.25rem' }}
+                  type="solid"
+                  shape="round"
+                  disabled={!isChange}
+                  onClick={handleConfirm}
+                >
+                  저장
+                </Button>
+                <Button
+                  type="outlined"
+                  shape="round"
+                  onClick={handleCancel}
+                  style={{ backgroundColor: '#fff' }}
+                >
+                  취소
+                </Button>
+              </>
+            )}
+          </ButtonContainer>
+        </Content>
+      </Wrapper>
+    </>
   );
 };
 

@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import ProfileModal from '../profile/ProfileModal';
 import { Button } from 'antd';
+import { useCoreStores, UserSelectDialog } from 'teespace-core';
+import { Observer } from 'mobx-react';
+import ProfileModal from '../profile/ProfileModal';
 import Photos from '../Photos';
 import Input from '../Input';
 import AddIcon from '../../assets/ts_friends_add.svg';
@@ -16,7 +19,7 @@ const AddButton = styled.button`
   width: 100%;
   height: 3.13rem;
   background-color: transparent;
-  border: solid #E3E7EB;
+  border: solid #e3e7eb;
   border-width: 1px 0 0;
   font-size: 0.81rem;
   color: #3b3b3b;
@@ -31,19 +34,19 @@ const AddButton = styled.button`
     background: url(${AddIcon}) no-repeat 50% 50%;
     background-size: contain;
   }
-`
+`;
 const UserList = styled.div`
   overflow-y: auto;
   height: 13.5rem;
   padding: 0.94rem;
-`
+`;
 const UserItem = styled.div`
   display: flex;
   align-items: center;
-  &+&{
+  & + & {
     margin-top: 0.63rem;
   }
-`
+`;
 const UserImag = styled.div`
   width: 1.5rem;
   height: 1.5rem;
@@ -54,13 +57,13 @@ const UserImag = styled.div`
     height: 100%;
     border-radius: 50%;
   }
-`
+`;
 const UserName = styled.p`
   padding-left: 0.5rem;
   font-size: 0.75rem;
   line-height: 1.13rem;
   color: #000;
-`
+`;
 const GroupTitle = styled.div`
   padding: 0.44rem 1.25rem 0;
   p {
@@ -70,12 +73,12 @@ const GroupTitle = styled.div`
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-`
+`;
 const GroupNumber = styled.span`
   font-size: 0.81rem;
   line-height: 1.19rem;
   opacity: 0.5;
-`
+`;
 const SettingBox = styled.div`
   display: flex;
   align-items: center;
@@ -85,7 +88,7 @@ const SettingBox = styled.div`
   .ant-btn + .ant-btn {
     margin-left: 0.44rem;
   }
-`
+`;
 const SettingButton = styled.button`
   width: 4.75rem;
   height: 4.13rem;
@@ -102,10 +105,10 @@ const SettingButton = styled.button`
   &:focus {
     background-color: #081734;
   }
-  &+& {
+  & + & {
     margin-left: 0.5625rem;
   }
-`
+`;
 const ButtonIcon = styled.span`
   display: block;
   width: 1.5rem;
@@ -130,7 +133,7 @@ const ButtonIcon = styled.span`
     }
   }}
 `;
-const StypedInput = styled(Input)`
+const StyledInput = styled(Input)`
   height: auto;
   padding: 0;
   background-color: transparent;
@@ -148,81 +151,285 @@ const StypedInput = styled(Input)`
     font-size: 0.69rem;
     color: #bdc6d3;
   }
-`
+`;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  height: 4.13rem;
+  align-items: center;
+  justify-content: center;
+`;
 
-function RoomInquiryModal({ isEdit }) {
+function RoomInquiryModal({
+  roomId = null,
+  visible = false,
+  onCancel = null,
+  width = '10rem',
+  top = '0',
+  left = '0',
+}) {
+  const history = useHistory();
 
-  const [value, setValue] = useState('');
-  const [isChanged, setIsChanged] = useState(false);
+  const initialStates = {
+    userSelectDialogVisible: false,
+    isEditMode: false,
+    isChanged: false,
+    roomName: '',
+    roomInfo: null,
+    members: [],
+    memberPhotos: [],
+  };
+
+  const [userSelectDialogVisible, setUserSelectDialogVisible] = useState(
+    initialStates.userSelectDialogVisible,
+  );
+  const [isEditMode, setIsEditMode] = useState(initialStates.isEditMode);
+  const [roomName, setRoomName] = useState(initialStates.roomName);
+  const [roomInfo, setRoomInfo] = useState(initialStates.roomInfo);
+  const [isChanged, setIsChanged] = useState(initialStates.isChanged);
+  const [members, setMembers] = useState(initialStates.members);
+  const [memberPhotos, setMemberPhotos] = useState(initialStates.memberPhotos);
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const { roomStore, userStore } = useCoreStores();
+
+  const getUserPhotos = _roomInfo => {
+    if (_roomInfo && _roomInfo?.memberIdListString) {
+      return _roomInfo.memberIdListString
+        .split(',')
+        .splice(0, 4)
+        .map(
+          userId =>
+            `/${userStore.getUserProfilePhoto({
+              userId,
+              size: 'small',
+              isLocal: true,
+            })}`,
+        );
+    }
+    return [];
+  };
+
+  const clearState = () => {
+    setIsEditMode(initialStates.isEditMode);
+    setIsChanged(initialStates.isChanged);
+    setRoomName(initialStates.roomName);
+    setRoomInfo(initialStates.roomInfo);
+    setMembers(initialStates.members);
+    setMemberPhotos(initialStates.memberPhotos);
+  };
+
+  useEffect(() => {
+    if (roomId && visible) {
+      const foundRoom = roomStore.getRoomMap().get(roomId);
+      setRoomInfo(foundRoom);
+
+      setRoomName(foundRoom.customName || foundRoom.name);
+      setMemberPhotos(getUserPhotos(foundRoom));
+    } else if (!visible) {
+      clearState();
+    }
+  }, [roomId, visible, isEditMode]);
+
+  useEffect(() => {
+    if (roomId && visible) {
+      const myUserId = userStore.myProfile.id;
+      roomStore
+        .fetchRoomMemberList({ myUserId, roomId })
+        .then(roomMembers => setMembers(roomMembers));
+    }
+  }, [roomId, visible]);
+
+  const updateRoomSetting = async options => {
+    try {
+      const myUserId = userStore.myProfile.id;
+      const result = await roomStore.updateRoomMemberSetting({
+        roomId,
+        myUserId,
+        ...options,
+      });
+      return result;
+    } catch (e) {
+      console.log('ROOM UPDATE FAILED : ', e);
+    }
+  };
 
   const handleChange = text => {
-    setValue(text);
+    setRoomName(text);
     setIsChanged(true);
+  };
+
+  const handleCancel = e => {
+    onCancel(e);
+  };
+
+  const handleTalk = e => {
+    history.push(`/s/${roomInfo.id}/talk`);
+    onCancel(e);
+  };
+  const handleMeeting = e => {
+    history.push(`/s/${roomInfo.id}/talk?sub=meeting`);
+    onCancel(e);
+  };
+
+  const handleEdit = () => {
+    setIsEditMode(true);
+  };
+
+  const handleChangeNameOK = async () => {
+    setIsEditMode(false);
+    const res = await updateRoomSetting({ newRoomCustomName: roomName });
+    console.log('RES : ', res);
+  };
+
+  const handleChangeNameCancel = () => {
+    setIsEditMode(false);
+  };
+
+  const handleInvite = e => {
+    setUserSelectDialogVisible(true);
+  };
+
+  const handleSelectedUserChange = useCallback(users => {
+    setSelectedUsers(users);
+  }, []);
+
+  const handleInviteOk = () => {
+    setUserSelectDialogVisible(false);
+    console.log(selectedUsers);
+    const myUserId = userStore.myProfile.id;
+    roomStore.inviteNewMembers({
+      myUserId,
+      userId: myUserId,
+      roomId,
+    });
+  };
+
+  const handleInviteCancel = () => {
+    setUserSelectDialogVisible(false);
   };
 
   const userContent = (
     <>
-      <Photos srcList={['a1', 'a2', 'a3', 'a4']} defaultDiameter="3.75" center />
-      <GroupTitle>
-        {isEdit ? (
-          <StypedInput maxLength={20} value={value} onChange={handleChange} />
-        ) : (
-            <p>디자인방</p>
-          )}
-      </GroupTitle>
-      <GroupNumber>4명</GroupNumber>
+      <Photos srcList={memberPhotos} defaultDiameter="3.75" center />
+      <Observer>
+        {() => (
+          <GroupTitle>
+            {isEditMode ? (
+              <StyledInput
+                maxLength={20}
+                value={roomName}
+                onChange={handleChange}
+              />
+            ) : (
+              <p>{roomInfo?.customName || roomInfo?.name}</p>
+            )}
+          </GroupTitle>
+        )}
+      </Observer>
+      <GroupNumber>{roomInfo?.userCount}</GroupNumber>
       <SettingBox>
-        {isEdit ? (
+        {isEditMode ? (
           <>
-            <Button type="solid" shape="round">저장</Button>
-            <Button type="outlined" shape="round">취소</Button>
+            <Button
+              type="solid"
+              shape="round"
+              onClick={handleChangeNameOK}
+              disabled={!isChanged}
+            >
+              저장
+            </Button>
+            <Button
+              type="outlined"
+              shape="round"
+              onClick={handleChangeNameCancel}
+            >
+              취소
+            </Button>
           </>
         ) : (
-            <>
-              <SettingButton>
-                <ButtonIcon iconimg="name" />
-                이름 변경
-              </SettingButton>
-              <SettingButton>
-                <ButtonIcon iconimg="talk" />
-                Talk
-              </SettingButton>
-              <SettingButton>
-                <ButtonIcon iconimg="Meeting" />
-                Meeting
-              </SettingButton>
-            </>
-          )}
+          <>
+            <SettingButton onClick={handleEdit}>
+              <ButtonIcon iconimg="name" />
+              이름 변경
+            </SettingButton>
+            <SettingButton onClick={handleTalk}>
+              <ButtonIcon iconimg="talk" />
+              Talk
+            </SettingButton>
+            <SettingButton onClick={handleMeeting}>
+              <ButtonIcon iconimg="Meeting" />
+              Meeting
+            </SettingButton>
+          </>
+        )}
       </SettingBox>
     </>
   );
   const subContent = (
     <UserList>
-      <UserItem>
-        <UserImag><img src="" /></UserImag>
-        <UserName>이름</UserName>
-      </UserItem>
-      <UserItem>
-        <UserImag><img src="" /></UserImag>
-        <UserName>이름</UserName>
-      </UserItem>
+      {members.map(memberInfo => (
+        <UserItem key={memberInfo.id}>
+          <UserImag>
+            <img
+              src={`/${userStore.getUserProfilePhoto({
+                userId: memberInfo.id,
+                size: 'small',
+                isLocal: true,
+              })}`}
+            />
+          </UserImag>
+          <UserName>{memberInfo.name}</UserName>
+        </UserItem>
+      ))}
     </UserList>
   );
 
   return (
-    <ProfileModal
-      visible={'visible'}
-      footer={null}
-      width={'17.5rem'}
-      topButton
-      userContent={userContent}
-      subContent={subContent}
-      footer={
-        <AddButton>룸 구성원 초대</AddButton>
-      }
-    />
+    <>
+      <UserSelectDialog
+        visible={userSelectDialogVisible}
+        title={
+          <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>
+            룸 구성원 초대
+          </div>
+        }
+        onSelectedUserChange={handleSelectedUserChange}
+        bottom={
+          <ButtonContainer>
+            <Button
+              type="solid"
+              size="default"
+              shape="round"
+              onClick={handleInviteOk}
+              style={{ marginRight: '0.38rem' }}
+              disabled={!selectedUsers.length}
+            >
+              {`초대 ${selectedUsers.length}`}
+            </Button>
+            <Button
+              type="outlined"
+              size="default"
+              shape="round"
+              onClick={handleInviteCancel}
+            >
+              취소
+            </Button>
+          </ButtonContainer>
+        }
+      />
+      <ProfileModal
+        style={{ top, left, margin: 'unset' }}
+        visible={visible}
+        width={width}
+        footer={null}
+        onCancel={handleCancel}
+        topButton
+        userContent={userContent}
+        subContent={subContent}
+        footer={<AddButton onClick={handleInvite}>룸 구성원 초대</AddButton>}
+      />
+    </>
   );
-};
+}
 
 export default RoomInquiryModal;
