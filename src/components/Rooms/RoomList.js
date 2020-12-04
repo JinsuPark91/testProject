@@ -69,6 +69,7 @@ function RoomList() {
               onCancel={handleRoomMemeberModalCancel}
               width="17.5rem"
               top={modal.top}
+              isEdit={modal.isEdit}
               left={modal.left}
             />
           );

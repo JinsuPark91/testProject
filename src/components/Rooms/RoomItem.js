@@ -66,13 +66,21 @@ const RoomDropdown = React.memo(({ children, roomInfo, onMenuClick }) => {
     PlatformUIStore.roomMemberModal.open({
       top: `${PlatformUIStore.content.rect.top}px`,
       left: `${PlatformUIStore.content.rect.left}px`,
+      isEdit: false,
     });
   };
 
   const handleNameChange = e => {
     e.domEvent.stopPropagation();
-    console.log('handleNameChange');
     setVisible(false);
+
+    PlatformUIStore.roomMemberModal.open({
+      top: `${PlatformUIStore.content.rect.top}px`,
+      left: `${PlatformUIStore.content.rect.left}px`,
+      isEdit: true,
+    });
+
+    console.log('IS EDIT : ', PlatformUIStore.roomMemberModal.isEdit);
   };
 
   const handleAlarmEnable = e => {

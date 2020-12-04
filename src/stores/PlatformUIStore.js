@@ -19,10 +19,12 @@ const PlatformUIStore = observable({
 
   // modal
   roomMemberModal: {
+    isEdit: false,
     visible: false,
     rect: null,
 
-    open({ top, left }) {
+    open({ top, left, isEdit = false }) {
+      this.isEdit = isEdit;
       this.visible = true;
       if (top) {
         this.top = top;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
+import { Observer } from 'mobx-react';
 import styled, { css } from 'styled-components';
 import { Button } from 'antd';
 import { useCoreStores, UserSelectDialog } from 'teespace-core';
@@ -163,6 +164,7 @@ function RoomInquiryModal({
   roomId = null,
   visible = false,
   onCancel = null,
+  isEdit = false,
   width = '10rem',
   top = '0',
   left = '0',
@@ -238,6 +240,10 @@ function RoomInquiryModal({
     }
   }, [roomId, visible]);
 
+  useEffect(() => {
+    setIsEditMode(isEdit);
+  }, [isEdit]);
+
   const updateRoomSetting = async options => {
     try {
       const myUserId = userStore.myProfile.id;
@@ -311,17 +317,21 @@ function RoomInquiryModal({
     <>
       <Photos srcList={memberPhotos} defaultDiameter="3.75" center />
 
-      <GroupTitle>
-        {isEditMode ? (
-          <StyledInput
-            maxLength={20}
-            value={roomName}
-            onChange={handleChange}
-          />
-        ) : (
-          <p>{roomInfo?.customName || roomInfo?.name}</p>
+      <Observer>
+        {() => (
+          <GroupTitle>
+            {isEditMode ? (
+              <StyledInput
+                maxLength={20}
+                value={roomName}
+                onChange={handleChange}
+              />
+            ) : (
+              <p>{roomInfo?.customName || roomInfo?.name}</p>
+            )}
+          </GroupTitle>
         )}
-      </GroupTitle>
+      </Observer>
 
       <GroupNumber>{roomInfo?.userCount}</GroupNumber>
       <SettingBox>
