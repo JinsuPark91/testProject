@@ -5,6 +5,7 @@ import { useCoreStores } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import SettingDialog from '../usersettings/SettingDialog';
+import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
 import { useProfileContext } from './ProfileContextProvider';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import convertSpaceIcon from '../../assets/convert space.svg';
@@ -23,6 +24,7 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
   const [settingDialogVisible, setSettingDialogVisible] = useState(false);
   const [spaceListVisible, setSpaceListVisible] = useState(false);
   const [lngListVisible, setLngListVisible] = useState(false);
+  const [isInviteDialogVisible, setIsInviteDialogVisible] = useState(false);
   const useProfile = useProfileContext();
   const spaceRef = useRef();
   const topRef = useRef();
@@ -69,6 +71,10 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
     },
     [useProfile],
   );
+
+  const handleToggleDialog = useCallback(() => {
+    setIsInviteDialogVisible(!isInviteDialogVisible);
+  }, [isInviteDialogVisible]);
 
   const handleSpaceList = useCallback(() => {
     setSpaceListVisible(spaceListVisible => !spaceListVisible);
@@ -314,12 +320,17 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
         <ProfileSpaceModal
           oneButton={useProfile.state.isAdmin}
           userName={profile?.name}
+          onInvite={handleToggleDialog}
         />
       )}
       <SettingDialog
         selectedKeyA={itemKey}
         visible={settingDialogVisible}
         onCancel={handleSettingDialogClose}
+      />
+      <AddFriendsByInvitationDialog
+        visible={isInviteDialogVisible}
+        onCancel={handleToggleDialog}
       />
     </ProfileModal>
   );

@@ -53,9 +53,8 @@ const ButtonContainer = styled.div`
   }
 `;
 
-function ProfileSpaceModal({ oneButton, userName }) {
+function ProfileSpaceModal({ oneButton, userName, onInvite }) {
   const useProfile = useProfileContext();
-
   const title = oneButton
     ? '스페이스를 생성했습니다!'
     : '스페이스에 참여했습니다!';
@@ -71,7 +70,8 @@ function ProfileSpaceModal({ oneButton, userName }) {
   const handleAddMember = useCallback(() => {
     handleCloseSpaceModal();
     console.log('Add Member');
-  }, [handleCloseSpaceModal]);
+    onInvite();
+  }, [handleCloseSpaceModal, onInvite]);
 
   const handleCreateRoom = useCallback(() => {
     handleCloseSpaceModal();

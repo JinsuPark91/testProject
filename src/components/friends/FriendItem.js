@@ -443,7 +443,7 @@ const FriendItem = React.memo(
         setToastText('즐겨찾기가 설정되었습니다.');
         openToast();
       },
-      [friendStore, authStore, itemId],
+      [friendStore, authStore, itemId, setToastText, openToast],
     );
 
     const handleCancelBookmark = useCallback(
@@ -462,7 +462,7 @@ const FriendItem = React.memo(
         setIsHovering(false);
         setDropdownVisible(false);
       },
-      [friendStore, authStore, itemId],
+      [friendStore, authStore, itemId, setToastText, openToast],
     );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
