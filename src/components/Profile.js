@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import Upload from 'rc-upload';
 import styled, { css } from 'styled-components';
 import { Button, Input, Dropdown, Menu, Modal } from 'antd';
@@ -23,8 +22,7 @@ const Profile = ({
   showSider = true,
   onModeChange = null,
 }) => {
-  const history = useHistory();
-  const { roomStore, userStore } = useCoreStores();
+  const { userStore } = useCoreStores();
   const [isEditMode, setEditMode] = useState(editMode);
   const [profile, setProfile] = useState(null);
   // 유저 정보들
@@ -179,22 +177,6 @@ const Profile = ({
     setCancelDialogVisible(true);
   };
 
-  const handleTalk = async () => {
-    try {
-      const response = await roomStore.getDMRoom(
-        userStore.myProfile.id,
-        userId,
-      );
-      console.table(response);
-      if (!response.result) {
-        throw Error('DM ROOM GET FAILED');
-      }
-      history.push(`/s/${response.roomId}/talk`);
-    } catch (e) {
-      console.error(`Error is${e}`);
-    }
-  };
-
   return (
     <>
       <Message
@@ -219,7 +201,7 @@ const Profile = ({
       <Wrapper imageSrc={background}>
         {showSider && (
           <Sidebar>
-            <StyledButton onClick={handleTalk}>
+            <StyledButton>
               <FriendsIcon />
               <Text>{isMyId() ? `나와의 Talk` : `1:1 Talk`}</Text>
             </StyledButton>
