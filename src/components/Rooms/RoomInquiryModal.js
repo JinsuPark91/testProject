@@ -254,7 +254,7 @@ function RoomInquiryModal({
       });
       return result;
     } catch (e) {
-      console.log('ROOM UPDATE FAILED : ', e);
+      console.log('[Platform] Room Setting failed : ', e);
     }
   };
 
@@ -298,15 +298,29 @@ function RoomInquiryModal({
     setSelectedUsers(users);
   }, []);
 
-  const handleInviteOk = () => {
-    setUserSelectDialogVisible(false);
-    onCancel();
+  const handleInviteOk = async () => {
     const myUserId = userStore.myProfile.id;
-    roomStore.inviteNewMembers({
-      myUserId,
-      roomId,
-      newMemberList: selectedUsers.map(user => ({ userId: user.id })),
-    });
+
+    try {
+      const { result, roomId: resultRoomId } = await roomStore.inviteNewMembers(
+        {
+          myUserId,
+          roomId,
+          newMemberList: selectedUsers.map(user => ({
+            userId: user.friendId || user.id,
+          })),
+        },
+      );
+
+      if (!result) {
+        throw Error('[Platform] Invite Member failed.');
+      }
+    } catch (e) {
+      console.error('[Platform] Invite Member Error : ', e);
+    } finally {
+      setUserSelectDialogVisible(false);
+      onCancel();
+    }
   };
 
   const handleInviteCancel = () => {
