@@ -5,6 +5,7 @@ import { CoreStoreProvider, GlobalCommonStyles } from 'teespace-core';
 import { createGlobalStyle } from 'styled-components';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { setEnv, getEnv } from './env';
 
 const GlobalStyle = createGlobalStyle`
   html {
@@ -12,15 +13,13 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-console.log('process.env : ', process.env);
+setEnv({
+  serviceURL: process.env.REACT_APP_DEV_SERVICE_URL,
+  websocketURL: process.env.REACT_APP_DEV_WEBSOCKET_URL,
+});
 
 ReactDOM.render(
-  <CoreStoreProvider
-    config={{
-      serviceURL: process.env.REACT_APP_DEV_SERVICE_URL,
-      websocketURL: process.env.REACT_APP_DEV_WEBSOCKET_URL,
-    }}
-  >
+  <CoreStoreProvider config={getEnv()}>
     <GlobalStyle />
     <GlobalCommonStyles />
     <App />
