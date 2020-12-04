@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { Button } from 'antd';
 import { useCoreStores, UserSelectDialog } from 'teespace-core';
-import { Observer } from 'mobx-react';
 import ProfileModal from '../profile/ProfileModal';
 import Photos from '../Photos';
 import Input from '../Input';
@@ -295,6 +294,7 @@ function RoomInquiryModal({
 
   const handleInviteOk = () => {
     setUserSelectDialogVisible(false);
+    onCancel();
     const myUserId = userStore.myProfile.id;
     roomStore.inviteNewMembers({
       myUserId,
@@ -310,21 +310,19 @@ function RoomInquiryModal({
   const userContent = (
     <>
       <Photos srcList={memberPhotos} defaultDiameter="3.75" center />
-      <Observer>
-        {() => (
-          <GroupTitle>
-            {isEditMode ? (
-              <StyledInput
-                maxLength={20}
-                value={roomName}
-                onChange={handleChange}
-              />
-            ) : (
-              <p>{roomInfo?.customName || roomInfo?.name}</p>
-            )}
-          </GroupTitle>
+
+      <GroupTitle>
+        {isEditMode ? (
+          <StyledInput
+            maxLength={20}
+            value={roomName}
+            onChange={handleChange}
+          />
+        ) : (
+          <p>{roomInfo?.customName || roomInfo?.name}</p>
         )}
-      </Observer>
+      </GroupTitle>
+
       <GroupNumber>{roomInfo?.userCount}</GroupNumber>
       <SettingBox>
         {isEditMode ? (
