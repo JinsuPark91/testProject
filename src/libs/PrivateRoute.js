@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { useCoreStores, WWMS } from 'teespace-core';
+import { getEnv } from '../env';
 
 export default function PrivateRoute({ component, ...rest }) {
   const { authStore, userStore } = useCoreStores();
   const [hasWWMSConfig, setHasWWMSConfig] = useState(null);
 
+  const { websocketURL } = getEnv();
+
   if (hasWWMSConfig === null) {
     WWMS.setConfig({
-      url: `${process.env.REACT_APP_WEBSOCKET_URL}?USER_ID=${userStore.myProfile.id}&action=&CONNECTION_ID=undefined`,
+      url: `${websocketURL}?USER_ID=${userStore.myProfile.id}&action=&CONNECTION_ID=undefined`,
       isDebug: true,
 
       useInterval: false,
