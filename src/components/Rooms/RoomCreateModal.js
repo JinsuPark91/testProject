@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { Button, Modal, Input } from 'antd';
 import styled from 'styled-components';
 
@@ -38,26 +38,35 @@ const Count = styled.span`
   color: #bdc6d3;
 `;
 
-function RoomCreateModal({ visible, onCancel }) {
-  const [roomName, setRoomName] = useState('');
+function RoomCreateModal({ visible, onCancel, onOk }) {
+  const initialStates = {
+    roomName: '',
+  };
+  const [roomName, setRoomName] = useState(initialStates.roomName);
+
+  const clearStates = () => {
+    setRoomName(initialStates.roomName);
+  };
+
+  useEffect(() => {
+    if (!visible) {
+      clearStates();
+    }
+  }, [visible]);
 
   const createOpenRoom = useCallback(() => {
-    console.log('create open room ', roomName, 'history.push(roomid/talk)');
-    cancelCreateRoom();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    onOk(roomName);
   }, [roomName]);
 
   const cancelCreateRoom = useCallback(() => {
-    setRoomName('');
     onCancel();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <StyledModal
       visible={visible}
       title="오픈 룸 만들기"
-      width={'24.38rem'}
+      width="24.38rem"
       onCancel={onCancel}
       footer={[
         <Button

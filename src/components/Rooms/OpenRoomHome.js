@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { Typography, Modal, Badge } from 'antd';
-import { Search } from 'teespace-core';
+import { Search, useCoreStores } from 'teespace-core';
+import { Observer } from 'mobx-react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -15,24 +16,68 @@ import RoomCreateModal from './RoomCreateModal';
 
 const { Title } = Typography;
 
-function OpenRoomHome({ handleSearchUser, handleOpenChat }) {
-  const [showCreateModal, setShowCreateModal] = useState(false);
+function OpenRoomHome({ visible, onCancel }) {
+  const initialStates = {
+    createModalVisible: false,
+  };
+  const [createModalVisible, setCreateModalVisibie] = useState(
+    initialStates.createModalVisible,
+  );
+
+  const { roomStore, userStore } = useCoreStores();
+
+  useEffect(() => {
+    if (visible) {
+      const fetchOpenRoomList = async () => {
+        const res = await roomStore.fetchOpenRoomList(userStore.myProfile.id);
+        return res;
+      };
+
+      // const fetchRecommandOpenRoomList = async () => {
+      //   const res = await roomStore.fetchRecommandOpenRoomList(
+      //     userStore.myProfile.id,
+      //   );
+      //   return res;
+      // };
+
+      fetchOpenRoomList();
+      // fetchRecommandOpenRoomList();
+    }
+  }, [visible]);
+
   const handleCreateRoom = useCallback(() => {
-    setShowCreateModal(c => !c);
+    setCreateModalVisibie(true);
   }, []);
+
+  const handleCreateModalOk = roomName => {
+    console.log('ROOM NAME : ', roomName);
+    setCreateModalVisibie(false);
+  };
+  const handleCreateModalCancel = () => {
+    setCreateModalVisibie(false);
+  };
+
+  const handleCancel = () => {
+    onCancel();
+  };
+
+  const handleSearchUser = () => {
+    console.log('press enter');
+  };
 
   return (
     <StyledModal
       title="오픈 룸 홈"
-      visible
-      mask={false}
+      visible={visible}
       footer={null}
-      closable={true}
-      maskClosable={false}
-      onCancel={handleOpenChat}
+      onCancel={handleCancel}
       width="22.5rem"
     >
-      <RoomCreateModal visible={showCreateModal} onCancel={handleCreateRoom} />
+      <RoomCreateModal
+        visible={createModalVisible}
+        onOk={handleCreateModalOk}
+        onCancel={handleCreateModalCancel}
+      />
       <OpenHomeForm>
         <SearchBox>
           <StyledSearch
@@ -45,20 +90,49 @@ function OpenRoomHome({ handleSearchUser, handleOpenChat }) {
         <RoomListBox>
           <RoomTitle level={5}>
             내 오픈 룸 목록
-            <StyledBadge count={'N'} className="site-badge-count-4" />
+            <StyledBadge count="N" className="site-badge-count-4" />
           </RoomTitle>
-          <StyledSlider arrows={true} slidesToShow={4} slidesToScroll={4}>
-            <ItemAddBtn onClick={handleCreateRoom}>
-              <span>오픈룸 생성</span>
-            </ItemAddBtn>
-            <Photos srcList={['a1', 'a2', 'a3', 'a4']} defaultDiameter="3.75" />
-            <Photos srcList={['a1', 'a2', 'a3', 'a4']} defaultDiameter="3.75" />
-            <Photos srcList={['a1', 'a2', 'a3', 'a4']} defaultDiameter="3.75" />
-            <Photos srcList={['a1', 'a2', 'a3', 'a4']} defaultDiameter="3.75" />
-            <Photos srcList={['a1', 'a2', 'a3', 'a4']} defaultDiameter="3.75" />
-            <Photos srcList={['a1', 'a2', 'a3', 'a4']} defaultDiameter="3.75" />
-            <Photos srcList={['a1', 'a2', 'a3', 'a4']} defaultDiameter="3.75" />
-          </StyledSlider>
+          <Observer>
+            {() => {
+              const openRooms = roomStore.getOpenRoomArray();
+              const remain = (openRooms.length + 1) % 4;
+              const dummyArray = Array.from(
+                Array(remain ? 4 - remain : 0).keys(),
+              );
+
+              return (
+                <StyledSlider arrows slidesToShow={4} slidesToScroll={4}>
+                  <ItemAddBtn onClick={handleCreateRoom}>
+                    <span>오픈룸 생성</span>
+                  </ItemAddBtn>
+                  {openRooms.map(openRoom => {
+                    const photos = openRoom.memberIdListString
+                      .split(',')
+                      .splice(0, 4)
+                      .map(
+                        userId =>
+                          `${userStore.getUserProfilePhoto({
+                            userId,
+                            size: 'small',
+                            isLocal: true,
+                          })}`,
+                      );
+                    return (
+                      <OpenRoomItem key={openRoom.id}>
+                        <Photos srcList={photos} defaultDiameter="3.75" />
+                        <OpenRoomName style={{ width: '3.75rem' }}>
+                          {openRoom.name}
+                        </OpenRoomName>
+                      </OpenRoomItem>
+                    );
+                  })}
+                  {dummyArray.map(key => {
+                    return <div key={key} />;
+                  })}
+                </StyledSlider>
+              );
+            }}
+          </Observer>
         </RoomListBox>
         <RecommendRoomListBox>
           <RoomTitle level={5}>추천 오픈 룸</RoomTitle>
@@ -166,6 +240,18 @@ const StyledSearch = styled(Search)`
     }
   }
 `;
+
+const OpenRoomItem = styled.div`
+  cursor: pointer;
+`;
+
+const OpenRoomName = styled.div`
+  width: 3.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
 const RoomListBox = styled.div`
   padding: 0.75rem 0 1.25rem;
   margin: 0 0.69rem 0 0.31rem;
@@ -306,7 +392,6 @@ const StyledSlider = styled(Slider)`
   margin-top: 1.06rem;
   .slick-slide {
     width: 3.75rem;
-    height: 3.75rem;
     img {
       border: none;
     }

@@ -19,7 +19,7 @@ import RoomInquiryModal from './RoomInquiryModal';
 function RoomList() {
   const history = useHistory();
   const [keyword, setKeyword] = useState('');
-  const [openRoomVisible, setOpenRoomVisible] = useState(false);
+  const [openRoomDialogVisible, setOpenRoomDialogVisible] = useState(false);
   const [targetRoom, setTargetRoom] = useState(null);
   const { roomStore, userStore } = useCoreStores();
 
@@ -32,7 +32,7 @@ function RoomList() {
   };
 
   const handleOpenChat = useCallback(() => {
-    setOpenRoomVisible(r => !r);
+    setOpenRoomDialogVisible(true);
   }, []);
 
   const handleSelectRoom = useCallback(roomInfo => {
@@ -40,10 +40,6 @@ function RoomList() {
       pathname: `/s/${roomInfo.id}/talk`,
       search: history.location.search,
     });
-  }, []);
-
-  const handleSearchUser = useCallback(() => {
-    console.log('search user');
   }, []);
 
   const handleChange = useCallback(e => {
@@ -60,6 +56,10 @@ function RoomList() {
 
   const handleMenuClick = roomInfo => {
     setTargetRoom(roomInfo);
+  };
+
+  const handleOpenRoomModalCancel = () => {
+    setOpenRoomDialogVisible(false);
   };
 
   const isOnlyMyRoom = () => {
@@ -107,12 +107,11 @@ function RoomList() {
         <OpenChatIconWrapper onClick={handleOpenChat}>
           <OpenChatIcon />
         </OpenChatIconWrapper>
-        {openRoomVisible && (
-          <OpenRoomHome
-            handleOpenChat={handleOpenChat}
-            handleSearchUser={handleSearchUser}
-          />
-        )}
+
+        <OpenRoomHome
+          visible={openRoomDialogVisible}
+          onCancel={handleOpenRoomModalCancel}
+        />
       </TopWrapper>
       <RoomContainer>
         <Observer>
