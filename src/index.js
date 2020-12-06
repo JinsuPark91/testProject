@@ -14,8 +14,12 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 setEnv({
-  serviceURL: process.env.REACT_APP_DEV_SERVICE_URL,
-  websocketURL: process.env.REACT_APP_DEV_WEBSOCKET_URL,
+  serviceURL: `http://${
+    process.env.REACT_APP_DEV_SERVICE_DOMAIN || window.location.hostname
+  }/${process.env.REACT_APP_DEV_PATH}`,
+  websocketURL: `ws://${
+    process.env.REACT_APP_DEV_WEBSOCKET_DOMAIN || window.location.hostname
+  }/${process.env.REACT_APP_DEV_WEBSOCKET_PATH}`,
 });
 
 ReactDOM.render(
