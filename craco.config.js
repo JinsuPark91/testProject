@@ -1,3 +1,4 @@
+const path = require('path');
 const CracoLessPlugin = require('craco-less');
 
 module.exports = {
@@ -10,8 +11,9 @@ module.exports = {
   webpack: {
     alias: {
       react: require.resolve('react'),
-      'teespace-core': require.resolve('teespace-core'),
       'react-dnd': require.resolve('react-dnd'),
+      'react-router-dom': require.resolve('react-router-dom'),
+      'teespace-core': path.resolve(__dirname, 'node_modules/teespace-core'),
     },
   },
   plugins: [

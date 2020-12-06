@@ -5,9 +5,9 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import './App.less';
 import { create } from 'mobx-persist';
 import { useCoreStores } from 'teespace-core';
+import { initApp as initDriveApp } from 'teespace-drive-app';
 import { I18nextProvider } from 'react-i18next';
 import AdminPage from './page/AdminPage';
-import ServicePage from './page/ServicePage';
 import LoginPage from './page/LoginPage';
 import NotFoundPage from './page/NotFoundPage';
 import SignUpPage from './page/SignUpPage';
@@ -19,12 +19,19 @@ import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
 import PrivateRoute from './libs/PrivateRoute';
 import i18next from './i18n';
+
 const hydrate = create();
 
 function App() {
   const [isHydrating, setIsHydrating] = useState(false);
   const { authStore, userStore } = useCoreStores();
 
+  // initialize apps
+  useEffect(() => {
+    initDriveApp();
+  }, []);
+
+  // hydrate mobx stores
   useEffect(() => {
     Promise.all([hydrate('auth', authStore), hydrate('user', userStore)])
       .then(() => {
@@ -73,7 +80,7 @@ function App() {
               component={MainPage}
             />
             <Route path="/admin">
-              <AdminPage/>
+              <AdminPage />
             </Route>
 
             <Route component={NotFoundPage} />
