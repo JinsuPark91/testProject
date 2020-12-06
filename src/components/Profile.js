@@ -179,13 +179,21 @@ const Profile = ({
     setCancelDialogVisible(true);
   };
 
-  const handleTalk = async () => {
+  const handleTalkClick = async () => {
     try {
-      const response = await roomStore.getDMRoom(
-        userStore.myProfile.id,
-        userId,
-      );
-      console.table(response);
+      const myUserId = userStore.myProfile.id;
+      const response = await roomStore.getDMRoom(myUserId, userId);
+
+      // DM 룸이 이미 있으면, visible 상태로 만들어 준다.
+      const dmRoom = roomStore.getRoomMap().get(response.roomId);
+      if (!dmRoom.isVisible) {
+        await roomStore.updateRoomMemberSetting({
+          roomId: dmRoom.id,
+          myUserId,
+          newIsVisible: true,
+        });
+      }
+
       if (!response.result) {
         throw Error('DM ROOM GET FAILED');
       }
@@ -219,7 +227,7 @@ const Profile = ({
       <Wrapper imageSrc={background}>
         {showSider && (
           <Sidebar>
-            <StyledButton onClick={handleTalk}>
+            <StyledButton onClick={handleTalkClick}>
               <FriendsIcon />
               <Text>{isMyId() ? `나와의 Talk` : `1:1 Talk`}</Text>
             </StyledButton>
