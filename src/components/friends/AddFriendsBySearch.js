@@ -207,7 +207,7 @@ function AddFriendsBySearch({
   overwrittenValue,
   defaultValue,
 }) {
-  const { orgStore, userStore } = useCoreStores();
+  const { orgStore, userStore, friendStore } = useCoreStores();
   const [isInviteDialogVisible, setIsInviteDialogVisible] = useState(false);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [userName, setUserName] = useState('');
@@ -235,6 +235,7 @@ function AddFriendsBySearch({
   // TODO: SPACE 멤버 얻어오는 서비스 붙이기
   const TestData = ['1', '2', '3', '4', '5'];
   const isOrg = true;
+  const noFriends = friendStore.friendInfoList.length !== 0;
 
   return (
     <>
@@ -246,45 +247,52 @@ function AddFriendsBySearch({
         title="프렌즈 추가"
         onCancel={onCancelAddFriends}
       >
-        <InvitationForm>
-          <StyledInfoImg src={FriendModalImg} alt="" />
-          <StyledInfoText>프렌즈가 없습니다.</StyledInfoText>
-          <StyledSubInfoText>초대할 구성원을 찾아보세요</StyledSubInfoText>
-          <StyledButton type="solid" shape="round" onClick={handleInviteMember}>
-            구성원 초대
-          </StyledButton>
-        </InvitationForm>
-        <AddFriendSearchForm>
-          <SearchBox>
-            <StyledSearch
-              placeholder="구성원 전체 검색"
-              style={{ width: '100%' }}
-            />
-          </SearchBox>
-          {isOrg ? (
-            <AddFriendsByOrganization timestamp={timestamp.current} />
-          ) : (
-            <GroupBox>
-              <OrganizationTitle>TmaxGroup</OrganizationTitle>
-              <StyleCheckLabel>
-                <StyleNum>1000명</StyleNum>
-                <StyleCheckBox>
-                  <StyleInput type="checkbox" />
-                  <StyleIcon />
-                </StyleCheckBox>
-              </StyleCheckLabel>
-              {/* <OrganizationDropdown
-              orgList={orgList}
-              onChange={onDropdownChange}
-              overwrittenValue={overwrittenValue}
-              defaultValue={defaultValue}
-            /> */}
-            </GroupBox>
-          )}
-          <FriendList>
-            <AddFriendsItem friendAddList={TestData} />
-          </FriendList>
-        </AddFriendSearchForm>
+        {noFriends ? (
+          <InvitationForm>
+            <StyledInfoImg src={FriendModalImg} alt="" />
+            <StyledInfoText>프렌즈가 없습니다.</StyledInfoText>
+            <StyledSubInfoText>초대할 구성원을 찾아보세요</StyledSubInfoText>
+            <StyledButton
+              type="solid"
+              shape="round"
+              onClick={handleInviteMember}
+            >
+              구성원 초대
+            </StyledButton>
+          </InvitationForm>
+        ) : (
+          <AddFriendSearchForm>
+            <SearchBox>
+              <StyledSearch
+                placeholder="구성원 전체 검색"
+                style={{ width: '100%' }}
+              />
+            </SearchBox>
+            {isOrg ? (
+              <AddFriendsByOrganization timestamp={timestamp.current} />
+            ) : (
+              //   <GroupBox>
+              //     <OrganizationTitle>TmaxGroup</OrganizationTitle>
+              //     <StyleCheckLabel>
+              //       <StyleNum>1000명</StyleNum>
+              //       <StyleCheckBox>
+              //         <StyleInput type="checkbox" />
+              //         <StyleIcon />
+              //       </StyleCheckBox>
+              //     </StyleCheckLabel>
+              //     {/<OrganizationDropdown
+              //   orgList={orgList}
+              //   onChange={onDropdownChange}
+              //   overwrittenValue={overwrittenValue}
+              //   defaultValue={defaultValue}
+              // /> }
+              //   </GroupBox>
+              <FriendList>
+                <AddFriendsItem friendAddList={TestData} />
+              </FriendList>
+            )}
+          </AddFriendSearchForm>
+        )}
         <Toast
           visible={isToastVisible}
           timeoutMs={1000}

@@ -50,27 +50,36 @@ const FriendAddBtn = styled.button`
 `;
 
 const AddFriendsItem = ({ friendAddList }) => {
-  const { userStore } = useCoreStores();
+  const { userStore, friendStore } = useCoreStores();
 
   const handleAddFriend = userId => {
-    console.log(friendAddList);
     console.log('Add Friend Test');
+  };
+
+  const renderMenu = (isMe, isFriend, userId) => {
+    if (isMe) {
+      return <MyAccountText>내 계정</MyAccountText>;
+    }
+
+    if (!isFriend) {
+      return (
+        <FriendAddBtn onClick={handleAddFriend(userId)}>
+          <span>프렌즈 추가</span>
+        </FriendAddBtn>
+      );
+    }
+    return null;
   };
 
   const FriendAddItem = ({ name, userId }) => {
     const isMe = userId === userStore.myProfile.id;
+    const isFriend = friendStore.checkAlreadyFriend({ userId });
     return (
       <>
         <FriendItem>
           <Photos srcList={['a1']} defaultDiameter="2.13" />
           <FriendName>{name}</FriendName>
-          {isMe ? (
-            <MyAccountText>내 계정</MyAccountText>
-          ) : (
-            <FriendAddBtn onClick={handleAddFriend(userId)}>
-              <span>프렌즈 추가</span>
-            </FriendAddBtn>
-          )}
+          {renderMenu(isMe, isFriend, userId)}
         </FriendItem>
       </>
     );

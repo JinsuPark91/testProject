@@ -87,10 +87,13 @@ function AddFriendsBySearch({ visible, onCancel }) {
 
   const handleSendInviteMail = async () => {
     try {
-      // 서비스 완성 후 구현
+      // 서비스 완성 후 테스트
+      // const mailArr = mailAddress.split(' ');
       // const response = await friendStore.sendInvitationMail({
       //   myUserId,
-      //   users: [mailAddress],
+      //   userEmailList: mailArr,
+      //   domainName: ,
+      //   userCount: ,
       // });
       // console.log(response);
 
@@ -98,7 +101,7 @@ function AddFriendsBySearch({ visible, onCancel }) {
       handleToggleToast();
       onCancel();
     } catch (e) {
-      console.log('Mail Send Error...');
+      console.log(`Just Error is ${e}`);
     }
   };
 

@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
+import { Loader, useCoreStores, Button } from 'teespace-core';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { Layout } from 'antd';
-import { Button } from 'teespace-core';
+
 import AddFriendsDialog from './AddFriendsDialog';
 import AddFriendsBySearch from './AddFriendsBySearch';
 import { useStore } from '../../stores';
@@ -34,13 +35,17 @@ const FriendAddButton = styled(Button)`
   }
 `;
 
-const AddFriendWrapper = styled.div``;
-
 function FriendsLNBFooter() {
   const { uiStore } = useStore();
+  const { orgStore } = useCoreStores();
   const [isDialogVisible, setIsDialogVisible] = useState(false);
 
-  const toggleAddFriendsDialog = useCallback(() => {
+  const handleOpenAddFriendsDialog = useCallback(async () => {
+    await orgStore.getOrgTree();
+    setIsDialogVisible(!isDialogVisible);
+  }, [orgStore, isDialogVisible]);
+
+  const handleCloseAddFriendsDialog = useCallback(async () => {
     setIsDialogVisible(!isDialogVisible);
   }, [isDialogVisible]);
 
@@ -56,12 +61,12 @@ function FriendsLNBFooter() {
   return useObserver(() => (
     <FooterWrapper>
       <WaplLogo />
-      <FriendAddButton type="outlined" onClick={toggleAddFriendsDialog}>
+      <FriendAddButton type="outlined" onClick={handleOpenAddFriendsDialog}>
         <FriendAddIcon />
       </FriendAddButton>
       <AddFriendsBySearch
         visible={isDialogVisible}
-        onCancelAddFriends={toggleAddFriendsDialog}
+        onCancelAddFriends={handleCloseAddFriendsDialog}
       />
     </FooterWrapper>
   ));
