@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { fromPairs } from 'lodash';
 import { EventBus, useCoreStores } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import LeftSide from '../components/main/LeftSide';
@@ -10,7 +9,7 @@ import PlatformUIStore from '../stores/PlatformUIStore';
 import LoadingImg from '../assets/TeeSpace_loading.gif';
 
 const useQueryParams = (searchParams = window.location.search) => {
-  return fromPairs(new URLSearchParams(searchParams));
+  return Object.fromEntries(new URLSearchParams(searchParams));
 };
 
 const MainPage = () => {
