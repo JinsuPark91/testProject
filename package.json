@@ -31,6 +31,7 @@
     "jodit-react": "^1.0.65",
     "js-cookie": "^2.2.1",
     "js-sha512": "^0.8.0",
+    "lodash": "^4.17.20",
     "luxon": "^1.25.0",
     "mobx": "^5.15.6",
     "mobx-persist": "^0.4.1",
