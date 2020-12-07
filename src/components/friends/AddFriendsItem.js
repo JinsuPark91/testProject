@@ -1,14 +1,23 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import Photos from '../Photos';
 import AddFriendImg from '../../assets/ts_friend_add.svg';
+
+const Wrapper = styled.div`
+  max-height: 25.81rem;
+`;
 
 const FriendItem = styled.li`
     display:flex;
     justify-content: space-between;
     align-items: center;
     padding 0.44rem 0;
+
+    & > img {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
 `;
 
 const FriendName = styled.p`
@@ -50,20 +59,26 @@ const FriendAddBtn = styled.button`
 `;
 
 const AddFriendsItem = ({ friendAddList }) => {
-  const { userStore, friendStore } = useCoreStores();
+  const { authStore, userStore, friendStore } = useCoreStores();
 
-  const handleAddFriend = userId => {
-    console.log('Add Friend Test');
-  };
+  const handleAddFriend = useCallback(async friendInfo => {
+    // friendStore.addFriend({
+    //   myUserId: userStore.myProfile.id,
+    //   friendInfo,
+    // });
+  }, []);
 
-  const renderMenu = (isMe, isFriend, userId) => {
+  const renderMenu = friendInfo => {
+    const userId = friendInfo?.id;
+    const isMe = userId === userStore.myProfile.id;
+    const isFriend = friendStore.checkAlreadyFriend({ userId });
     if (isMe) {
       return <MyAccountText>내 계정</MyAccountText>;
     }
 
     if (!isFriend) {
       return (
-        <FriendAddBtn onClick={handleAddFriend(userId)}>
+        <FriendAddBtn onClick={() => handleAddFriend(friendInfo)}>
           <span>프렌즈 추가</span>
         </FriendAddBtn>
       );
@@ -71,15 +86,23 @@ const AddFriendsItem = ({ friendAddList }) => {
     return null;
   };
 
-  const FriendAddItem = ({ name, userId }) => {
-    const isMe = userId === userStore.myProfile.id;
-    const isFriend = friendStore.checkAlreadyFriend({ userId });
+  // <Photos srcList={['a1']} defaultDiameter="2.13" />
+  const FriendAddItem = ({ friendInfo }) => {
+    const userName = friendInfo?.name;
     return (
       <>
         <FriendItem>
-          <Photos srcList={['a1']} defaultDiameter="2.13" />
-          <FriendName>{name}</FriendName>
-          {renderMenu(isMe, isFriend, userId)}
+          <img
+            alt="profile"
+            src={`${userStore.getUserProfilePhoto({
+              userId: friendInfo?.id,
+              size: 'small',
+              isLocal: true,
+              thumbPhoto: null,
+            })}`}
+          />
+          <FriendName>{userName}</FriendName>
+          {renderMenu(friendInfo)}
         </FriendItem>
       </>
     );
@@ -87,11 +110,11 @@ const AddFriendsItem = ({ friendAddList }) => {
 
   // TODO: id로 key 교체
   return (
-    <>
+    <Wrapper>
       {friendAddList.map((elem, index) => (
-        <FriendAddItem key={index} name={elem?.name} userId={elem?.id} />
+        <FriendAddItem key={index} friendInfo={elem} />
       ))}
-    </>
+    </Wrapper>
   );
 };
 

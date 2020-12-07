@@ -234,8 +234,8 @@ function AddFriendsBySearch({
 
   // TODO: SPACE 멤버 얻어오는 서비스 붙이기
   const TestData = ['1', '2', '3', '4', '5'];
-  const isOrg = true;
-  const noFriends = friendStore.friendInfoList.length !== 0;
+  const isOrg = true; // 조직이 있으면
+  const noFriends = friendStore.friendInfoList.length !== 0; // 스페이스 구성원이 있으면
 
   return (
     <>
