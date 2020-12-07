@@ -61,7 +61,7 @@ function FriendsLNBFooter() {
       </FriendAddButton>
       <AddFriendsBySearch
         visible={isDialogVisible}
-        onCancel={toggleAddFriendsDialog}
+        onCancelAddFriends={toggleAddFriendsDialog}
       />
     </FooterWrapper>
   ));

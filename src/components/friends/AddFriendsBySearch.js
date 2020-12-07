@@ -1,14 +1,13 @@
-import React, { useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { Loader, useCoreStores, Search, Toast } from 'teespace-core';
 import styled from 'styled-components';
 import { Button, Modal } from 'antd';
-
 import Photos from '../Photos';
-// import AddFriendsByInvitationDialog from '../AddFriendsByInvitationDialog';
+import AddFriendsByInvitationDialog from './AddFriendsByInvitationDialog';
 import FriendModalImg from '../../assets/none_friends.svg';
-import AddFriendImg from '../../assets/ts_friend_add.svg';
 // import OrganizationDropdown from '../components/friends/OrganizationDropdown';
-import AddFriendsByOrganizationContent from './AddFriendsByOrganizationContent';
+import AddFriendsByOrganization from './AddFriendsByOrganization';
+import AddFriendsItem from './AddFriendsItem';
 
 const StyledModal = styled(Modal)`
   .ant-modal-body {
@@ -24,6 +23,7 @@ const StyledModal = styled(Modal)`
     letter-spacing: 0;
   }
 `;
+
 const AddFriendSearchForm = styled.div`
   width: 100%;
   padding: 0.63rem 0.75rem;
@@ -64,6 +64,7 @@ const StyledSearch = styled(Search)`
     }
   }
 `;
+
 const GroupBox = styled.div`
     width: 100%;
     display:flex;
@@ -124,6 +125,7 @@ const StyleInput = styled.input`
     }
   }
 `;
+
 const StyleIcon = styled.span`
   position: relative;
   display: inline-block;
@@ -134,12 +136,14 @@ const StyleIcon = styled.span`
   border: 1px solid #c6ced6;
   z-index: 100;
 `;
+
 const StyleNum = styled.span`
   font-size: 0.75rem;
   line-height: 1.13rem;
   color: #6c56e5;
   letter-spacing: 0;
 `;
+
 const InvitationForm = styled.div`
   width: 100%;
   padding: 2.5rem 0 3.69rem;
@@ -154,6 +158,7 @@ const OrganizationTitle = styled.p`
   color: #3b3b3b;
   letter-spacing: 0;
 `;
+
 const StyledInfoText = styled.p`
   margin-bottom: 0.63rem;
   font-size: 0.94rem;
@@ -163,6 +168,7 @@ const StyledInfoText = styled.p`
   text-align: center;
   line-height: 1.38rem;
 `;
+
 const StyledSubInfoText = styled.p`
   margin-bottom: 1.19rem;
   font-size: 0.75rem;
@@ -172,10 +178,12 @@ const StyledSubInfoText = styled.p`
   text-align: center;
   line-height: 1.13rem;
 `;
+
 const StyledInfoImg = styled.img`
   width: 12.5rem;
   margin-bottom: 1.38rem;
 `;
+
 const StyledButton = styled(Button)`
     width: 9.04rem;
     height: 1.88rem;
@@ -191,54 +199,9 @@ const FriendList = styled.ul`
   padding: 0.63rem 0.81rem 0.63rem 0.63rem;
 `;
 
-const FriendItem = styled.li`
-    display:flex;
-    justify-content: space-between;
-    align-items: center;
-    padding 0.44rem 0;
-`;
-
-const FriendName = styled.p`
-  display: inline-block;
-  width: 13.56rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 0.81rem;
-  color: #000000;
-  letter-spacing: 0;
-  margin-right: auto;
-  margin-left: 0.63rem;
-`;
-
-const MyAccountText = styled.span`
-  font-size: 0.69rem;
-  color: #8d8d8d;
-`;
-
-const FriendAddBtn = styled.button`
-  height: 1rem;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-
-  span {
-    display: inline-block;
-    width: 1rem;
-    height: 1rem;
-    background: url(${AddFriendImg}) 50% 50% no-repeat;
-    background-size: 1rem 1rem;
-    cursor: pointer;
-    font-size: 0;
-    line-height: 0;
-    text-indent: -9999px;
-    vertical-align: top;
-  }
-`;
-
 function AddFriendsBySearch({
   visible,
-  onCancel,
+  onCancelAddFriends,
   orgList,
   onDropdownChange,
   overwrittenValue,
@@ -248,25 +211,17 @@ function AddFriendsBySearch({
   const [isInviteDialogVisible, setIsInviteDialogVisible] = useState(false);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [userName, setUserName] = useState('');
+  const timestamp = useRef(Date.now());
 
   const toggleInviteDialog = useCallback(() => {
     setIsInviteDialogVisible(!isInviteDialogVisible);
   }, [isInviteDialogVisible]);
 
-  const toggleToast = useCallback(() => {
-    setIsToastVisible(!isToastVisible);
-  }, [isToastVisible]);
-
   const handleInviteMember = async () => {
     console.log('Invite Member');
-    onCancel();
+    onCancelAddFriends();
     toggleInviteDialog();
   };
-
-  // <AddFriendsByInvitationDialog
-  //   visible={isInviteDialogVisible}
-  //   onCancel={toggleInviteDialog}
-  // />;
 
   const handleAddFriends = async name => {
     setUserName(name);
@@ -277,34 +232,9 @@ function AddFriendsBySearch({
     // });
   };
 
-  const FriendAddItem = ({ name, isMe }) => {
-    return (
-      <>
-        <FriendItem>
-          <Photos srcList={['a1']} defaultDiameter="2.13" />
-          <FriendName>{name}</FriendName>
-          {isMe ? (
-            <MyAccountText>내 계정</MyAccountText>
-          ) : (
-            <FriendAddBtn onClick={handleAddFriends(name)}>
-              <span>프렌즈 추가</span>
-            </FriendAddBtn>
-          )}
-        </FriendItem>
-      </>
-    );
-  };
-
-  const FriendAddList = ({ friendAddList }) => (
-    <>
-      {friendAddList.map(elem => (
-        <FriendAddItem key={elem} name="123" isMe={false} />
-      ))}
-    </>
-  );
-
   // TODO: SPACE 멤버 얻어오는 서비스 붙이기
   const TestData = ['1', '2', '3', '4', '5'];
+  const isOrg = true;
 
   return (
     <>
@@ -314,7 +244,7 @@ function AddFriendsBySearch({
         footer={null}
         width="24.38rem"
         title="프렌즈 추가"
-        onCancel={onCancel}
+        onCancel={onCancelAddFriends}
       >
         <InvitationForm>
           <StyledInfoImg src={FriendModalImg} alt="" />
@@ -331,24 +261,28 @@ function AddFriendsBySearch({
               style={{ width: '100%' }}
             />
           </SearchBox>
-          <GroupBox>
-            <OrganizationTitle>TmaxGroup</OrganizationTitle>
-            <StyleCheckLabel>
-              <StyleNum>1000명</StyleNum>
-              <StyleCheckBox>
-                <StyleInput type="checkbox" />
-                <StyleIcon />
-              </StyleCheckBox>
-            </StyleCheckLabel>
-            {/* <OrganizationDropdown
+          {isOrg ? (
+            <AddFriendsByOrganization timestamp={timestamp.current} />
+          ) : (
+            <GroupBox>
+              <OrganizationTitle>TmaxGroup</OrganizationTitle>
+              <StyleCheckLabel>
+                <StyleNum>1000명</StyleNum>
+                <StyleCheckBox>
+                  <StyleInput type="checkbox" />
+                  <StyleIcon />
+                </StyleCheckBox>
+              </StyleCheckLabel>
+              {/* <OrganizationDropdown
               orgList={orgList}
               onChange={onDropdownChange}
               overwrittenValue={overwrittenValue}
               defaultValue={defaultValue}
             /> */}
-          </GroupBox>
+            </GroupBox>
+          )}
           <FriendList>
-            <FriendAddList friendAddList={TestData} />
+            <AddFriendsItem friendAddList={TestData} />
           </FriendList>
         </AddFriendSearchForm>
         <Toast
@@ -359,6 +293,10 @@ function AddFriendsBySearch({
           {userName}님이 프렌즈로 추가되었습니다.
         </Toast>
       </StyledModal>
+      <AddFriendsByInvitationDialog
+        visible={isInviteDialogVisible}
+        onCancel={toggleInviteDialog}
+      />
     </>
   );
 }

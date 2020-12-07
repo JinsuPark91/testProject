@@ -5,15 +5,18 @@ import styled from 'styled-components';
 import { Divider } from 'antd';
 import AddFriendsByOrganizationHeader from './AddFriendsByOrganizationHeader';
 import AddFriendsByOrganizationContent from './AddFriendsByOrganizationContent';
+import AddFriendsItem from './AddFriendsItem';
 import OrganizationDropdown from './OrganizationDropdown';
 
-const NegativeMargin = styled.div`
-  margin: -1rem;
+const Wrapper = styled.div`
+  width: 100%;
+  padding: 0.63rem 0.81rem 0.63rem 0.63rem;
 `;
 
 const StyledDivider = styled(Divider)`
   margin: 0;
 `;
+
 function AddFriendsByOrganization({ timestamp }) {
   const { orgStore, userStore } = useCoreStores();
   const [searchedUserList, setSearchedUserList] = useState([]);
@@ -30,6 +33,7 @@ function AddFriendsByOrganization({ timestamp }) {
         userStore.myProfile.id,
       );
       setSearchedUserList(orgStore.userOrgUserList);
+      console.log(orgStore.userOrgUserList);
       setDropdownDisplayValue('');
     },
     [orgStore, userStore.myProfile.id],
@@ -80,7 +84,7 @@ function AddFriendsByOrganization({ timestamp }) {
 
   return useObserver(() => (
     <Loader loader={loader}>
-      <NegativeMargin>
+      <Wrapper>
         <AddFriendsByOrganizationHeader
           orgList={orgStore.orgList}
           orgUserSize={searchedUserList.length}
@@ -91,8 +95,8 @@ function AddFriendsByOrganization({ timestamp }) {
           timestamp={timestamp}
         />
         <StyledDivider />
-        <AddFriendsByOrganizationContent orgUserList={searchedUserList} />
-      </NegativeMargin>
+        <AddFriendsItem friendAddList={searchedUserList} />
+      </Wrapper>
     </Loader>
   ));
 }
