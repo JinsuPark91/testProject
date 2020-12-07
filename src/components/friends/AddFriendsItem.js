@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useObserver } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import Photos from '../Photos';
@@ -61,11 +62,12 @@ const FriendAddBtn = styled.button`
 const AddFriendsItem = ({ friendAddList }) => {
   const { authStore, userStore, friendStore } = useCoreStores();
 
-  const handleAddFriend = useCallback(async friendInfo => {
-    // friendStore.addFriend({
-    //   myUserId: userStore.myProfile.id,
-    //   friendInfo,
-    // });
+  const handleAddFriend = useCallback(friendInfo => {
+    console.log(`info is${friendInfo}`);
+    friendStore.addFriend({
+      myUserId: userStore.myProfile.id,
+      friendInfo,
+    });
   }, []);
 
   const renderMenu = friendInfo => {
@@ -109,13 +111,14 @@ const AddFriendsItem = ({ friendAddList }) => {
   };
 
   // TODO: id로 key 교체
-  return (
+  return useObserver(() => (
     <Wrapper>
-      {friendAddList.map((elem, index) => (
-        <FriendAddItem key={index} friendInfo={elem} />
-      ))}
+      {friendStore.friendInfoList.length &&
+        friendAddList.map((elem, index) => (
+          <FriendAddItem key={index} friendInfo={elem} />
+        ))}
     </Wrapper>
-  );
+  ));
 };
 
 export default AddFriendsItem;

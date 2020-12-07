@@ -17,8 +17,9 @@ const StyledDivider = styled(Divider)`
   margin: 0;
 `;
 
-function AddFriendsByOrganization({ timestamp }) {
+function AddFriendsByOrganization({ timestamp, searchText }) {
   const { orgStore, userStore } = useCoreStores();
+  const [isOpen, setIsOpen] = useState(false);
   const [searchedUserList, setSearchedUserList] = useState([]);
   const [dropdownDisplayValue, setDropdownDisplayValue] = useState('');
   const [dropdownDefaultValue, setDropdownDefaultValue] = useState('');
@@ -39,18 +40,39 @@ function AddFriendsByOrganization({ timestamp }) {
     [orgStore, userStore.myProfile.id],
   );
 
+  const handleSearch = useCallback(async () => {
+    const userList = await userStore.searchUsersByKeyword({
+      keyword: searchText,
+    });
+    setSearchedUserList(userList);
+    if (userList.length) {
+      const { companyCode, departmentCode } = userList[0];
+      setDropdownDisplayValue(
+        OrganizationDropdown.valueCreator({ companyCode, departmentCode }),
+      );
+    }
+  }, [searchText, userStore]);
+
   useEffect(() => {
     (async () => {
-      loader.loading();
-      const { companyCode, departmentCode } =
-        (await orgStore.getOrgUserDept(userStore.myProfile.id)) || {};
-      const parsedValue = OrganizationDropdown.valueCreator({
-        companyCode,
-        departmentCode,
-      });
-      setDropdownDefaultValue(parsedValue);
-      handleDropdownChange(parsedValue);
-      loader.stop();
+      if (!isOpen) {
+        loader.loading();
+        const { companyCode, departmentCode } =
+          (await orgStore.getOrgUserDept(userStore.myProfile.id)) || {};
+        const parsedValue = OrganizationDropdown.valueCreator({
+          companyCode,
+          departmentCode,
+        });
+        setDropdownDefaultValue(parsedValue);
+        handleDropdownChange(parsedValue);
+        loader.stop();
+        setIsOpen(true);
+      } else if (searchText === '') {
+        setSearchedUserList(orgStore.userOrgUserList);
+        setDropdownDisplayValue('');
+      } else {
+        handleSearch();
+      }
     })();
   }, [
     handleDropdownChange,
@@ -58,29 +80,10 @@ function AddFriendsByOrganization({ timestamp }) {
     userStore.myProfile.id,
     timestamp,
     loader,
+    isOpen,
+    searchText,
+    handleSearch,
   ]);
-
-  // 입력창에 입력했을 때
-  const handleInputChange = useCallback(
-    async e => {
-      if (e.target.value === '') {
-        setSearchedUserList(orgStore.userOrgUserList);
-        setDropdownDisplayValue('');
-      } else {
-        const userList = await userStore.searchUsersByKeyword({
-          keyword: e.target.value,
-        });
-        setSearchedUserList(userList);
-        if (userList.length) {
-          const { companyCode, departmentCode } = userList[0];
-          setDropdownDisplayValue(
-            OrganizationDropdown.valueCreator({ companyCode, departmentCode }),
-          );
-        }
-      }
-    },
-    [orgStore, userStore],
-  );
 
   return useObserver(() => (
     <Loader loader={loader}>
@@ -88,7 +91,6 @@ function AddFriendsByOrganization({ timestamp }) {
         <AddFriendsByOrganizationHeader
           orgList={orgStore.orgList}
           orgUserSize={searchedUserList.length}
-          onInputChange={handleInputChange}
           onDropdownChange={handleDropdownChange}
           overwrittenValue={dropdownDisplayValue}
           defaultValue={dropdownDefaultValue}

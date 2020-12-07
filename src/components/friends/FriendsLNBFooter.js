@@ -39,9 +39,13 @@ function FriendsLNBFooter() {
   const { uiStore } = useStore();
   const { orgStore } = useCoreStores();
   const [isDialogVisible, setIsDialogVisible] = useState(false);
+  const [isOrgExist, setIsOrgExist] = useState(false);
 
   const handleOpenAddFriendsDialog = useCallback(async () => {
-    await orgStore.getOrgTree();
+    const response = await orgStore.getOrgTree();
+    if (response.length) {
+      setIsOrgExist(true);
+    }
     setIsDialogVisible(!isDialogVisible);
   }, [orgStore, isDialogVisible]);
 
@@ -67,6 +71,7 @@ function FriendsLNBFooter() {
       <AddFriendsBySearch
         visible={isDialogVisible}
         onCancelAddFriends={handleCloseAddFriendsDialog}
+        isOrgExist={isOrgExist}
       />
     </FooterWrapper>
   ));

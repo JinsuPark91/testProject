@@ -20,7 +20,6 @@ const UserCounter = styled.div`
 function AddFriendsByOrganizationHeader({
   orgList,
   orgUserSize,
-  onInputChange,
   onDropdownChange,
   overwrittenValue,
   defaultValue,

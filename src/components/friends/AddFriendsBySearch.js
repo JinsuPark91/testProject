@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback } from 'react';
-import { Loader, useCoreStores, Search, Toast } from 'teespace-core';
+import { useCoreStores, Search, Toast } from 'teespace-core';
 import styled from 'styled-components';
 import { Button, Modal } from 'antd';
 import Photos from '../Photos';
@@ -30,6 +30,7 @@ const AddFriendSearchForm = styled.div`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
+  overflow-y: auto;
 `;
 
 const SearchBox = styled.div`
@@ -202,6 +203,7 @@ const FriendList = styled.ul`
 function AddFriendsBySearch({
   visible,
   onCancelAddFriends,
+  isOrgExist,
   orgList,
   onDropdownChange,
   overwrittenValue,
@@ -211,6 +213,7 @@ function AddFriendsBySearch({
   const [isInviteDialogVisible, setIsInviteDialogVisible] = useState(false);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [userName, setUserName] = useState('');
+  const [searchText, setSearchText] = useState('');
   const timestamp = useRef(Date.now());
 
   const toggleInviteDialog = useCallback(() => {
@@ -218,24 +221,18 @@ function AddFriendsBySearch({
   }, [isInviteDialogVisible]);
 
   const handleInviteMember = async () => {
-    console.log('Invite Member');
     onCancelAddFriends();
     toggleInviteDialog();
   };
 
-  const handleAddFriends = async name => {
-    setUserName(name);
-    console.log('Add Friends');
-    // friendStore.addFriend({
-    //   myUserId: authStore.user.id,
-    //   friendInfo,
-    // });
+  const handleSearch = event => {
+    const targetText = event.target.value;
+    setSearchText(targetText);
   };
 
   // TODO: SPACE 멤버 얻어오는 서비스 붙이기
   const TestData = ['1', '2', '3', '4', '5'];
-  const isOrg = true; // 조직이 있으면
-  const noFriends = friendStore.friendInfoList.length !== 0; // 스페이스 구성원이 있으면
+  const noFriends = friendStore.friendInfoList.length === 0; // 스페이스 구성원이 있으면
 
   return (
     <>
@@ -266,10 +263,14 @@ function AddFriendsBySearch({
               <StyledSearch
                 placeholder="구성원 전체 검색"
                 style={{ width: '100%' }}
+                onPressEnter={handleSearch}
               />
             </SearchBox>
-            {isOrg ? (
-              <AddFriendsByOrganization timestamp={timestamp.current} />
+            {isOrgExist ? (
+              <AddFriendsByOrganization
+                timestamp={timestamp.current}
+                searchText={searchText}
+              />
             ) : (
               //   <GroupBox>
               //     <OrganizationTitle>TmaxGroup</OrganizationTitle>
