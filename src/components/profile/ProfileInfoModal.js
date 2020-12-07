@@ -175,164 +175,169 @@ const ProfileInfoModal = ({ userId, thumbPhoto }) => {
   ];
 
   return (
-    <ProfileModal
-      visible={useProfile.state.infoMode}
-      mask={useProfile.state.created}
-      maskClosable
-      onCancel={handleInfoClose}
-      title={null}
-      closable={false}
-      footer={null}
-      transitionName=""
-      maskTransitionName=""
-      width="17rem"
-      style={{ top: '2.875rem' }}
-    >
-      <UserArea ref={topRef}>
-        <UserImage src={thumbPhoto} onLoad={revokeURL} />
-        <UserName>{profile?.name}</UserName>
-        <UserMail>{`(${profile?.email})`}</UserMail>
-        <UserButtonBox>
-          <Button type="link" onClick={toggleEditMode}>
-            프로필 편집
-          </Button>
-          <UserBar />
-          <Button type="link" onClick={handleSettingDialogOpen.bind(this, '6')}>
-            비밀번호 변경
-          </Button>
-        </UserButtonBox>
-        <LogoutButton shape="round" onClick={handleLogout}>
-          로그아웃
-        </LogoutButton>
-      </UserArea>
-      <UserSpaceArea>
-        <DataName>현재 스페이스</DataName>
-        <DataBox ref={spaceRef}>
-          <Logo
-            shape="square"
-            style={{ color: '#fff', backgroundColor: '#75757F' }}
-          >
-            U
-          </Logo>
-          <Info>
-            <Title>UX팀</Title>
-            tmax-ux.wapl.ai
-          </Info>
-          <Button
-            type="circle"
-            className="btn-convert"
-            onClick={handleSpaceList}
-          >
-            <Blind>스페이스 전환</Blind>
-          </Button>
-          <Dropdown overlay={moreMenu} placement="bottomRight">
-            <Button type="circle" className="btn-more">
-              <Blind>설정</Blind>
+    <>
+      <ProfileModal
+        visible={useProfile.state.infoMode}
+        mask={useProfile.state.created}
+        maskClosable
+        onCancel={handleInfoClose}
+        title={null}
+        closable={false}
+        footer={null}
+        transitionName=""
+        maskTransitionName=""
+        width="17rem"
+        style={{ top: '2.875rem' }}
+      >
+        <UserArea ref={topRef}>
+          <UserImage src={thumbPhoto} onLoad={revokeURL} />
+          <UserName>{profile?.name}</UserName>
+          <UserMail>{`(${profile?.email})`}</UserMail>
+          <UserButtonBox>
+            <Button type="link" onClick={toggleEditMode}>
+              프로필 편집
             </Button>
-          </Dropdown>
-        </DataBox>
-      </UserSpaceArea>
-      <UserSubArea>
-        <SubInfo tabIndex="-1">
-          <LinkIcon>
-            <SquareSpaceIcon />
-          </LinkIcon>
-          스페이스 목록으로 이동
-        </SubInfo>
-      </UserSubArea>
-      <UserSubArea>
-        <SubInfo tabIndex="-1" onClick={handleToggleLngList}>
-          <LinkIcon>
-            <LangSpaceIcon />
-          </LinkIcon>
-          Language : {i18n.language === 'ko' ? '한국어' : 'English'}
-          <LangIcon>
-            <ArrowRightIcon />
-          </LangIcon>
-        </SubInfo>
-        {lngListVisible && (
-          <LngList>
-            <LangItem
-              checked={i18n.language === 'ko'}
-              onClick={handleLanguage.bind(this, 'ko')}
+            <UserBar />
+            <Button
+              type="link"
+              onClick={handleSettingDialogOpen.bind(this, '6')}
             >
-              한국어
-            </LangItem>
-            <LangItem
-              checked={i18n.language === 'en'}
-              onClick={handleLanguage.bind(this, 'en')}
-            >
-              English
-            </LangItem>
-          </LngList>
-        )}
-      </UserSubArea>
-      <UserSettingArea>
-        <SettingButton
-          type="text"
-          shape="round"
-          onClick={handleSettingDialogOpen.bind(this, '2')}
-        >
-          설정
-        </SettingButton>
-        <SettingBar />
-        <SettingButton type="text" shape="round">
-          고객지원
-        </SettingButton>
-      </UserSettingArea>
-      {spaceListVisible && (
-        <ConvertDropdown pos={dropdownTop}>
-          <ConvertNow>
-            <LogoSmall
+              비밀번호 변경
+            </Button>
+          </UserButtonBox>
+          <LogoutButton shape="round" onClick={handleLogout}>
+            로그아웃
+          </LogoutButton>
+        </UserArea>
+        <UserSpaceArea>
+          <DataName>현재 스페이스</DataName>
+          <DataBox ref={spaceRef}>
+            <Logo
               shape="square"
-              checked
               style={{ color: '#fff', backgroundColor: '#75757F' }}
             >
               U
-            </LogoSmall>
-            <NowInfo>
-              <NowTitle>UX팀</NowTitle>
-              현재 스페이스입니다.
-            </NowInfo>
-            <Checkbox checked className="check-round" />
-          </ConvertNow>
-          <ConvertList>
-            {ConvertLists.map(i => (
-              <ConvertItem onClick={handleSwitchSpace} key={i}>
-                <LogoSmall
-                  shape="square"
-                  style={{ color: '#fff', backgroundColor: '#75757F' }}
-                >
-                  U
-                </LogoSmall>
-                <ItemText>{i}</ItemText>
-              </ConvertItem>
-            ))}
-          </ConvertList>
-          <ConvertAdd>
-            <AddButton href="#">
-              <span>+</span> 새 스페이스 생성
-            </AddButton>
-          </ConvertAdd>
-        </ConvertDropdown>
-      )}
-      {useProfile.state.created && (
-        <ProfileSpaceModal
-          oneButton={useProfile.state.isAdmin}
-          userName={profile?.name}
-          onInvite={handleToggleDialog}
+            </Logo>
+            <Info>
+              <Title>UX팀</Title>
+              tmax-ux.wapl.ai
+            </Info>
+            <Button
+              type="circle"
+              className="btn-convert"
+              onClick={handleSpaceList}
+            >
+              <Blind>스페이스 전환</Blind>
+            </Button>
+            <Dropdown overlay={moreMenu} placement="bottomRight">
+              <Button type="circle" className="btn-more">
+                <Blind>설정</Blind>
+              </Button>
+            </Dropdown>
+          </DataBox>
+        </UserSpaceArea>
+        <UserSubArea>
+          <SubInfo tabIndex="-1">
+            <LinkIcon>
+              <SquareSpaceIcon />
+            </LinkIcon>
+            스페이스 목록으로 이동
+          </SubInfo>
+        </UserSubArea>
+        <UserSubArea>
+          <SubInfo tabIndex="-1" onClick={handleToggleLngList}>
+            <LinkIcon>
+              <LangSpaceIcon />
+            </LinkIcon>
+            Language : {i18n.language === 'ko' ? '한국어' : 'English'}
+            <LangIcon>
+              <ArrowRightIcon />
+            </LangIcon>
+          </SubInfo>
+          {lngListVisible && (
+            <LngList>
+              <LangItem
+                checked={i18n.language === 'ko'}
+                onClick={handleLanguage.bind(this, 'ko')}
+              >
+                한국어
+              </LangItem>
+              <LangItem
+                checked={i18n.language === 'en'}
+                onClick={handleLanguage.bind(this, 'en')}
+              >
+                English
+              </LangItem>
+            </LngList>
+          )}
+        </UserSubArea>
+        <UserSettingArea>
+          <SettingButton
+            type="text"
+            shape="round"
+            onClick={handleSettingDialogOpen.bind(this, '2')}
+          >
+            설정
+          </SettingButton>
+          <SettingBar />
+          <SettingButton type="text" shape="round">
+            고객지원
+          </SettingButton>
+        </UserSettingArea>
+        {spaceListVisible && (
+          <ConvertDropdown pos={dropdownTop}>
+            <ConvertNow>
+              <LogoSmall
+                shape="square"
+                checked
+                style={{ color: '#fff', backgroundColor: '#75757F' }}
+              >
+                U
+              </LogoSmall>
+              <NowInfo>
+                <NowTitle>UX팀</NowTitle>
+                현재 스페이스입니다.
+              </NowInfo>
+              <Checkbox checked className="check-round" />
+            </ConvertNow>
+            <ConvertList>
+              {ConvertLists.map(i => (
+                <ConvertItem onClick={handleSwitchSpace} key={i}>
+                  <LogoSmall
+                    shape="square"
+                    style={{ color: '#fff', backgroundColor: '#75757F' }}
+                  >
+                    U
+                  </LogoSmall>
+                  <ItemText>{i}</ItemText>
+                </ConvertItem>
+              ))}
+            </ConvertList>
+            <ConvertAdd>
+              <AddButton href="#">
+                <span>+</span> 새 스페이스 생성
+              </AddButton>
+            </ConvertAdd>
+          </ConvertDropdown>
+        )}
+        {useProfile.state.created && (
+          <ProfileSpaceModal
+            oneButton={useProfile.state.isAdmin}
+            userName={profile?.name}
+            onInvite={handleToggleDialog}
+          />
+        )}
+        <SettingDialog
+          selectedKeyA={itemKey}
+          visible={settingDialogVisible}
+          onCancel={handleSettingDialogClose}
         />
-      )}
-      <SettingDialog
-        selectedKeyA={itemKey}
-        visible={settingDialogVisible}
-        onCancel={handleSettingDialogClose}
-      />
+      </ProfileModal>
       <AddFriendsByInvitationDialog
         visible={isInviteDialogVisible}
         onCancel={handleToggleDialog}
       />
-    </ProfileModal>
+    </>
   );
 };
 const ProfileModal = styled(Modal)`
