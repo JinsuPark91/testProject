@@ -211,8 +211,6 @@ function AddFriendsBySearch({
 }) {
   const { orgStore, userStore, friendStore } = useCoreStores();
   const [isInviteDialogVisible, setIsInviteDialogVisible] = useState(false);
-  const [isToastVisible, setIsToastVisible] = useState(false);
-  const [userName, setUserName] = useState('');
   const [searchText, setSearchText] = useState('');
   const timestamp = useRef(Date.now());
 
@@ -228,6 +226,10 @@ function AddFriendsBySearch({
   const handleSearch = event => {
     const targetText = event.target.value;
     setSearchText(targetText);
+  };
+
+  const handleCancelIconClick = () => {
+    setSearchText('');
   };
 
   // TODO: SPACE 멤버 얻어오는 서비스 붙이기
@@ -264,6 +266,7 @@ function AddFriendsBySearch({
                 placeholder="구성원 전체 검색"
                 style={{ width: '100%' }}
                 onPressEnter={handleSearch}
+                onClear={handleCancelIconClick}
               />
             </SearchBox>
             {isOrgExist ? (
@@ -294,13 +297,6 @@ function AddFriendsBySearch({
             )}
           </AddFriendSearchForm>
         )}
-        <Toast
-          visible={isToastVisible}
-          timeoutMs={1000}
-          onClose={() => setIsToastVisible(false)}
-        >
-          {userName}님이 프렌즈로 추가되었습니다.
-        </Toast>
       </StyledModal>
       <AddFriendsByInvitationDialog
         visible={isInviteDialogVisible}

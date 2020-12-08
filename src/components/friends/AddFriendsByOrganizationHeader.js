@@ -28,7 +28,6 @@ function AddFriendsByOrganizationHeader({
   const inputRef = useRef(null);
 
   useEffect(() => {
-    console.log(inputRef.current);
     if (inputRef.current) {
       inputRef.current.state.value = '';
     }

@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useObserver } from 'mobx-react';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, Toast } from 'teespace-core';
 import styled from 'styled-components';
 import Photos from '../Photos';
 import AddFriendImg from '../../assets/ts_friend_add.svg';
@@ -61,14 +61,21 @@ const FriendAddBtn = styled.button`
 
 const AddFriendsItem = ({ friendAddList }) => {
   const { authStore, userStore, friendStore } = useCoreStores();
+  const [isToastVisible, setIsToastVisible] = useState(false);
+  const [friendUserName, setFriendUserName] = useState('');
 
-  const handleAddFriend = useCallback(friendInfo => {
-    console.log(`info is${friendInfo}`);
-    friendStore.addFriend({
-      myUserId: userStore.myProfile.id,
-      friendInfo,
-    });
-  }, []);
+  const handleAddFriend = useCallback(
+    async friendInfo => {
+      console.log(`info is${friendInfo}`);
+      await friendStore.addFriend({
+        myUserId: userStore.myProfile.id,
+        friendInfo,
+      });
+      setFriendUserName(friendInfo?.name);
+      setIsToastVisible(true);
+    },
+    [friendStore, userStore.myProfile.id],
+  );
 
   const renderMenu = friendInfo => {
     const userId = friendInfo?.id;
@@ -112,12 +119,21 @@ const AddFriendsItem = ({ friendAddList }) => {
 
   // TODO: id로 key 교체
   return useObserver(() => (
-    <Wrapper>
-      {friendStore.friendInfoList.length &&
-        friendAddList.map((elem, index) => (
-          <FriendAddItem key={index} friendInfo={elem} />
-        ))}
-    </Wrapper>
+    <>
+      <Wrapper>
+        {friendStore.friendInfoList.length &&
+          friendAddList.map((elem, index) => (
+            <FriendAddItem key={index} friendInfo={elem} />
+          ))}
+      </Wrapper>
+      <Toast
+        visible={isToastVisible}
+        timeoutMs={1000}
+        onClose={() => setIsToastVisible(false)}
+      >
+        {friendUserName}님이 프렌즈로 추가되었습니다.
+      </Toast>
+    </>
   ));
 };
 
