@@ -6,7 +6,7 @@ const Input = ({
   disabled = false,
   value = '',
   onChange = null,
-  className
+  className,
 }) => {
   const handleChange = e => {
     const inputValue = e.target.value;
@@ -48,8 +48,8 @@ const Wrapper = styled.div`
     border: 0;
 
     ${({ disabled }) =>
-    disabled &&
-    css`
+      disabled &&
+      css`
         cursor: not-allowed;
       `}
 

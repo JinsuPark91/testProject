@@ -1,12 +1,18 @@
 import React, { Component, useState } from 'react';
 import { Image, Radio, Upload, message } from 'antd';
 import { CameraOutlined } from '@ant-design/icons';
+import {
+  useCoreStores,
+  Dropdown,
+  Menu,
+  Input,
+  Button,
+  Form,
+} from 'teespace-core';
+import styled, { css } from 'styled-components';
 import SettingContentTitle from './SettingContentTitle';
 import Menudropdownnation from './Menudropdownnation';
 import Imageupload from './Imageupload';
-import { useCoreStores } from 'teespace-core';
-import { Dropdown, Menu, Input, Button, Form } from 'teespace-core';
-import styled, { css } from 'styled-components';
 
 const AccounteditBordertop = styled.div`
   display: flex;
@@ -97,19 +103,16 @@ function SettingContentaccountedit(props) {
       <SettingContentTitle
         title="계정정보변경"
         subTitle="TeeSpace 계정정보를 확인하고 최신 정보로 안전하게 관리하세요."
-      ></SettingContentTitle>
+      />
       <Image
         width={125}
         height={125}
-        src={
-          '/' +
-          userStore.getUserProfilePhoto({
-            userId: authStore.user.id,
-            size: 'medium',
-            isLocal: true,
-            thumbPhoto: null,
-          })
-        }
+        src={`/${userStore.getUserProfilePhoto({
+          userId: authStore.user.id,
+          size: 'medium',
+          isLocal: true,
+          thumbPhoto: null,
+        })}`}
       />
       <br />
       <Dropdown overlay={menu}>
@@ -129,7 +132,7 @@ function SettingContentaccountedit(props) {
       <Form form={form.current} onFinish={handleFinish}>
         <Form.Item name="nationalcode">
           <div>
-            국가 <Menudropdownnation onChange={onChange}></Menudropdownnation>
+            국가 <Menudropdownnation onChange={onChange} />
           </div>
         </Form.Item>
         <Form.Item name="companyNum">

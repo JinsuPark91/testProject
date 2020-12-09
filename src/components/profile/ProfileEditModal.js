@@ -17,7 +17,7 @@ const ProfileEditMode = ({ userId, isEditMode }) => {
   return (
     <ProfilePopup
       visible={useProfile.state.editMode}
-      mask={true}
+      mask
       maskClosable={false}
       title={null}
       closable={false}
@@ -31,12 +31,12 @@ const ProfileEditMode = ({ userId, isEditMode }) => {
         {useProfile.state.editMode && (
           <Profile
             userId={userId}
-            editMode={true}
+            editMode
             showSider={false}
             onModeChange={toggleEditMode}
           />
         )}
-        <ProfileBottom></ProfileBottom>
+        <ProfileBottom />
       </Wrapper>
     </ProfilePopup>
   );

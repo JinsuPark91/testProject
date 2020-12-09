@@ -1,4 +1,5 @@
 import React, { useState, createContext, useContext } from 'react';
+
 const ProfileContext = createContext(null);
 
 export const useProfileContext = () => useContext(ProfileContext);
