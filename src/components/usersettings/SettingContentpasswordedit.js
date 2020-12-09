@@ -1,9 +1,9 @@
 import React, { Component, useState } from 'react';
-import SettingContentTitle from './SettingContentTitle';
 import { Row } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
-import { Input, Form } from 'teespace-core';
-import { useCoreStores } from 'teespace-core';
+import { Input, Form, useCoreStores } from 'teespace-core';
+
+import SettingContentTitle from './SettingContentTitle';
 import NewPasswordInput from '../signup/NewPasswordInput';
 
 const formItemLayout = {
@@ -71,7 +71,7 @@ function SettingContentpasswordedit(props) {
       <SettingContentTitle
         title="비밀번호 변경"
         subTitle="보안을 위해 비밀번호를 항상 최신 상태로 업데이트하세요."
-      ></SettingContentTitle>
+      />
       현재 비밀번호{' '}
       <Form
         {...formItemLayout}
@@ -93,10 +93,7 @@ function SettingContentpasswordedit(props) {
           />
         </Form.Item>
 
-        <NewPasswordInput
-          msg={msg.password}
-          msg2={msg.passwordConfirm}
-        ></NewPasswordInput>
+        <NewPasswordInput msg={msg.password} msg2={msg.passwordConfirm} />
       </Form>
     </>
   );

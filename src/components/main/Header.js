@@ -104,12 +104,15 @@ const Header = () => {
 
   const getRoomName = () => {
     const found = findRoom();
-    if (found && (found?.customName || found?.name)) {
-      const isMyRoom = found.type === 'WKS0001';
-      return isMyRoom
-        ? userStore.myProfile.name
-        : found?.customName || found?.name;
+    if (found) {
+      if (found?.type === 'WKS0001') {
+        return userStore.myProfile.name;
+      }
+      if (found?.customName || found?.name) {
+        return found?.customName || found?.name;
+      }
     }
+
     return null;
   };
 

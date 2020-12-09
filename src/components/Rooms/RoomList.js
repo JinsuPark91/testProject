@@ -3,7 +3,13 @@ import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled from 'styled-components';
 import { useCoreStores } from 'teespace-core';
-import { WaplLogo, AddRoomIcon, OpenChatIcon, SearchIcon } from '../Icons';
+import {
+  WaplLogo,
+  AddRoomIcon,
+  OpenChatIcon,
+  SearchIcon,
+  EmptyRoomIllust,
+} from '../Icons';
 import RoomItem from './RoomItem';
 import OpenRoomHome from './OpenRoomHome';
 import PlatformUIStore from '../../stores/PlatformUIStore';
@@ -13,9 +19,9 @@ import RoomInquiryModal from './RoomInquiryModal';
 function RoomList() {
   const history = useHistory();
   const [keyword, setKeyword] = useState('');
-  const [openRoomVisible, setOpenRoomVisible] = useState(false);
+  const [openRoomDialogVisible, setOpenRoomDialogVisible] = useState(false);
   const [targetRoom, setTargetRoom] = useState(null);
-  const { roomStore } = useCoreStores();
+  const { roomStore, userStore } = useCoreStores();
 
   const [visible, setVisible] = useState({
     selectRoomType: false,
@@ -26,7 +32,7 @@ function RoomList() {
   };
 
   const handleOpenChat = useCallback(() => {
-    setOpenRoomVisible(r => !r);
+    setOpenRoomDialogVisible(true);
   }, []);
 
   const handleSelectRoom = useCallback(roomInfo => {
@@ -34,10 +40,6 @@ function RoomList() {
       pathname: `/s/${roomInfo.id}/talk`,
       search: history.location.search,
     });
-  }, []);
-
-  const handleSearchUser = useCallback(() => {
-    console.log('search user');
   }, []);
 
   const handleChange = useCallback(e => {
@@ -54,6 +56,17 @@ function RoomList() {
 
   const handleMenuClick = roomInfo => {
     setTargetRoom(roomInfo);
+  };
+
+  const handleOpenRoomModalCancel = () => {
+    setOpenRoomDialogVisible(false);
+  };
+
+  const isOnlyMyRoom = () => {
+    const rooms = roomStore
+      .getRoomArray()
+      .filter(roomInfo => roomInfo.isVisible);
+    return rooms.length === 1 && rooms[0].type === 'WKS0001';
   };
 
   return (
@@ -94,17 +107,16 @@ function RoomList() {
         <OpenChatIconWrapper onClick={handleOpenChat}>
           <OpenChatIcon />
         </OpenChatIconWrapper>
-        {openRoomVisible && (
-          <OpenRoomHome
-            handleOpenChat={handleOpenChat}
-            handleSearchUser={handleSearchUser}
-          />
-        )}
+
+        <OpenRoomHome
+          visible={openRoomDialogVisible}
+          onCancel={handleOpenRoomModalCancel}
+        />
       </TopWrapper>
       <RoomContainer>
         <Observer>
-          {() =>
-            roomStore
+          {() => {
+            return roomStore
               .getRoomArray()
               .filter(roomInfo => roomInfo.isVisible)
               .map(roomInfo => (
@@ -118,13 +130,42 @@ function RoomList() {
                   onClick={handleSelectRoom}
                   onMenuClick={handleMenuClick}
                 />
-              ))
-          }
+              ));
+          }}
         </Observer>
       </RoomContainer>
+      <Observer>
+        {() =>
+          isOnlyMyRoom() ? (
+            <div>
+              <EmptyText
+                style={{ fontSize: '0.94rem', marginBottom: '0.94rem' }}
+              >
+                <span> {`${userStore.myProfile.name}님, 환영합니다.`}</span>
+                <span>룸을 만들어 보세요!</span>
+              </EmptyText>
+              <EmptyText
+                style={{ fontSize: '0.75rem', marginBottom: '1.24rem' }}
+              >
+                <span>구성원들과 Talk 중심의</span>
+                <span>다양한 앱을 경험 할 수 있습니다.</span>
+              </EmptyText>
+
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  marginBottom: '1rem',
+                }}
+              >
+                <EmptyRoomIllust width={12.5} height={12.5} />
+              </div>
+            </div>
+          ) : null
+        }
+      </Observer>
       <ButtomWrapper>
         <WaplLogo />
-
         <AddRoomIconWrapper onClick={handleCreateRoom}>
           <AddRoomIcon />
         </AddRoomIconWrapper>
@@ -186,6 +227,17 @@ const InputWrapper = styled.div`
     :focus {
       outline: 0;
     }
+  }
+`;
+
+const EmptyText = styled.div`
+  display: flex;
+  flex-flow: wrap;
+  justify-content: center;
+  color: #523dc7;
+
+  $ span {
+    display: flex;
   }
 `;
 

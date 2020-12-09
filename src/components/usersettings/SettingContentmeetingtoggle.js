@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Checkbox, Form } from 'teespace-core';
 
-
 function onChange(e) {
   // console.log(`checked = ${e.target.checked}`);
 }
@@ -9,19 +8,20 @@ function onChange(e) {
 function SettingContentmeetingtoggle(props) {
   const { form } = props;
 
-
-    return (
-      <div>
-        <Form.Item name="Meetingstartcheckbox" valuePropName="checked">
+  return (
+    <div>
+      <Form.Item name="Meetingstartcheckbox" valuePropName="checked">
         <Checkbox onChange={onChange} shape="round">
           회의 시작
-        </Checkbox></Form.Item>
-        <Form.Item name="Meetingendcheckbox" valuePropName="checked">
+        </Checkbox>
+      </Form.Item>
+      <Form.Item name="Meetingendcheckbox" valuePropName="checked">
         <Checkbox onChange={onChange} shape="round">
           회의 종료
-        </Checkbox></Form.Item>
-      </div>
-    );
-  }
+        </Checkbox>
+      </Form.Item>
+    </div>
+  );
+}
 
 export default SettingContentmeetingtoggle;

@@ -9,7 +9,12 @@ import PlatformUIStore from '../stores/PlatformUIStore';
 import LoadingImg from '../assets/TeeSpace_loading.gif';
 
 const useQueryParams = (searchParams = window.location.search) => {
-  return Object.fromEntries(new URLSearchParams(searchParams));
+  let result = {};
+  const params = new URLSearchParams(searchParams);
+  params.forEach((value, key) => {
+    result = { ...result, [key]: value };
+  });
+  return result;
 };
 
 const MainPage = () => {

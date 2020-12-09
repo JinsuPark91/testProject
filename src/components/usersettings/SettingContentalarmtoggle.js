@@ -1,9 +1,9 @@
 import React, { Component, useState, useEffect } from 'react';
 import { SoundOutlined } from '@ant-design/icons';
-import SettingContentmessagetoggle from './SettingContentmessagetoggle';
-import SettingContentmeetingtoggle from './SettingContentmeetingtoggle';
 import { Switch, Form } from 'teespace-core';
 import styled from 'styled-components';
+import SettingContentmessagetoggle from './SettingContentmessagetoggle';
+import SettingContentmeetingtoggle from './SettingContentmeetingtoggle';
 
 const Bordertop = styled.div`
   display: flex;
@@ -24,11 +24,10 @@ function SettingContentalarmtoggle(props) {
   const [meetingChecked, setmeetingChecked] = useState(true);
   const { form } = props;
 
-
   return (
     <>
       <div>
-      <Bordertop>
+        <Bordertop>
           <div>
             알림 소리 - 티키타카
             <Form.Item name="alarmsound" valuePropName="checked">
@@ -36,12 +35,13 @@ function SettingContentalarmtoggle(props) {
                 defaultChecked
                 // onChange={soundChecked => setsoundChecked(soundChecked)}
               />
-            </Form.Item> <SoundOutlined/>
+            </Form.Item>{' '}
+            <SoundOutlined />
             {/* {Checked ? (
               <SettingContentmessagetoggle></SettingContentmessagetoggle>
             ) : null} */}
           </div>{' '}
-          </Bordertop>
+        </Bordertop>
 
         <Bordertop>
           <div>
@@ -52,9 +52,7 @@ function SettingContentalarmtoggle(props) {
                 onChange={messageChecked => setmessageChecked(messageChecked)}
               />
             </Form.Item>
-            {messageChecked ? (
-              <SettingContentmessagetoggle></SettingContentmessagetoggle>
-            ) : null}
+            {messageChecked ? <SettingContentmessagetoggle /> : null}
           </div>{' '}
         </Bordertop>
         <Bordertop>
@@ -66,9 +64,7 @@ function SettingContentalarmtoggle(props) {
                 onChange={meetingChecked => setmeetingChecked(meetingChecked)}
               />
             </Form.Item>
-            {meetingChecked ? (
-              <SettingContentmeetingtoggle></SettingContentmeetingtoggle>
-            ) : null}         
+            {meetingChecked ? <SettingContentmeetingtoggle /> : null}
           </div>{' '}
         </Bordertop>
         <Bordertop>
@@ -76,7 +72,7 @@ function SettingContentalarmtoggle(props) {
             TeeMail 새 편지 수신
             <Form.Item name="Newlettertoggle" valuePropName="checked">
               <Switch defaultChecked onChange={onChange} />
-            </Form.Item>{' '}           
+            </Form.Item>{' '}
           </div>
         </Bordertop>
         <Bordertop>
@@ -84,7 +80,7 @@ function SettingContentalarmtoggle(props) {
             TeeCalendar 일정 미리 알림{' '}
             <Form.Item name="TeeCalenderscheduletoggle" valuePropName="checked">
               <Switch defaultChecked onChange={onChange} />
-            </Form.Item>{' '}      
+            </Form.Item>{' '}
           </div>{' '}
         </Bordertop>
         <Bordertop>
@@ -92,7 +88,7 @@ function SettingContentalarmtoggle(props) {
             그룹 스페이스 초대 알림{' '}
             <Form.Item name="Teespaceinvitetoggle" valuePropName="checked">
               <Switch defaultChecked onChange={onChange} />
-            </Form.Item>{' '}     
+            </Form.Item>{' '}
           </div>{' '}
         </Bordertop>
       </div>{' '}

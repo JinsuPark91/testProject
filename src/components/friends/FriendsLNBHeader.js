@@ -19,37 +19,37 @@ const StyledHeader = styled(Header)`
   line-height: 1.82rem;
   padding: 0.63rem 0.75rem 0.38rem;
 `;
-const SearchBox = styled.div `
-    .anticon {
-        color: #BDC6D3;
-    }
-    .anticon-search {
-        margin-left: 0.63rem;
-    }
-    &:hover,
-    &:focus {
-        .anticon {
-            color: #000;
-        }
-    }
-    .ant-input {
-      padding: 0.38rem 1.88rem;
-      &::placeholder {
-        color: #929AA4;
-      }
+const SearchBox = styled.div`
+  .anticon {
+    color: #bdc6d3;
   }
-`
-
-const StyledSearch = styled(Search) `
-    &.openhomeinput {
-        height: 1.81rem;
-        &:hover:not(:disabled),
-        &:focus:not(:disabled) {
-            background-color: #fff;
-            border: 1px solid #6C56E5;
-        }
+  .anticon-search {
+    margin-left: 0.63rem;
+  }
+  &:hover,
+  &:focus {
+    .anticon {
+      color: #000;
     }
-`
+  }
+  .ant-input {
+    padding: 0.38rem 1.88rem;
+    &::placeholder {
+      color: #929aa4;
+    }
+  }
+`;
+
+const StyledSearch = styled(Search)`
+  &.openhomeinput {
+    height: 1.81rem;
+    &:hover:not(:disabled),
+    &:focus:not(:disabled) {
+      background-color: #fff;
+      border: 1px solid #6c56e5;
+    }
+  }
+`;
 function FriendsLNBHeader({ handleInputChange, handleInputClear }) {
   return (
     <StyledHeader>

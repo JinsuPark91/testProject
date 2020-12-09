@@ -15,21 +15,22 @@ class Menudropdownnation extends Component {
       ],
     };
   }
+
   handleChange = event => {
     this.setState({ value: event.target.value });
   };
+
   render() {
     return (
-      <Form.Item
-        name="nationalcode" valuePropName="checked"
-        >
-      <Select onChange={this.props.onChange}>
-        {this.state.lists.map(list => (
-          <Option key={list} value={list}>
-            {list}
-          </Option>
-        ))}
-      </Select> </Form.Item>
+      <Form.Item name="nationalcode" valuePropName="checked">
+        <Select onChange={this.props.onChange}>
+          {this.state.lists.map(list => (
+            <Option key={list} value={list}>
+              {list}
+            </Option>
+          ))}
+        </Select>{' '}
+      </Form.Item>
     );
   }
 }

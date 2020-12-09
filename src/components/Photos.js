@@ -56,11 +56,11 @@ const Wrapper = styled.div`
   width: ${({ defaultDiameter }) => defaultDiameter}rem;
   height: ${({ defaultDiameter }) => defaultDiameter}rem;
   position: relative;
-  ${props => props.center &&
+  ${props =>
+    props.center &&
     css`
       margin: 0 auto;
-  `};
-
+    `};
 `;
 
 const UserPhoto = styled.img`

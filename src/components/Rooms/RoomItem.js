@@ -247,11 +247,15 @@ const RoomItemContent = React.memo(({ roomInfo, isMyRoom, onMenuClick }) => {
           </Observer>
         }
       />
-      {roomInfo.metadata?.unreadCount ? (
-        <UnreadCount className="room-item__unread">
-          {roomInfo.metadata?.unreadCount}
-        </UnreadCount>
-      ) : null}
+      <Observer>
+        {() => {
+          return roomInfo.metadata?.count ? (
+            <UnreadCount className="room-item__unread">
+              {roomInfo.metadata?.count}
+            </UnreadCount>
+          ) : null;
+        }}
+      </Observer>
       {!isMyRoom && (
         <RoomDropdown roomInfo={roomInfo} onMenuClick={handleMenuClick}>
           <IconWrapper className="room-item__icon">

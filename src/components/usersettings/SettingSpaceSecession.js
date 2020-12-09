@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Radio, Checkbox } from 'antd';
-import { PageHeader } from 'antd';
+import { Button, Radio, Checkbox, PageHeader } from 'antd';
+
 import SettingContentTitle from './SettingContentTitle';
 
 function onChange(e) {
@@ -14,6 +14,7 @@ class SettingSpaceSecession extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
   }
+
   handleChange(checked) {
     this.setState({ checked });
   }
@@ -24,7 +25,7 @@ class SettingSpaceSecession extends Component {
         <SettingContentTitle
           title="스페이스 탈퇴"
           subTitle="스페이스 탈퇴에 대한 유의사항을 꼭 확인해 주세요."
-        ></SettingContentTitle>
+        />
         <div style={{ fontSize: 30, color: '#8d8d8d' }}>현재 스페이스 </div>
         <div style={{ fontSize: 30 }}>탈퇴 전 유의사항</div>
         <div style={{ fontSize: 15 }}>
@@ -40,7 +41,9 @@ class SettingSpaceSecession extends Component {
         </div>
         <Checkbox onChange={this.handleChange} />
         유의 사항을 모두 확인하였으며, 이에 동의합니다.
-        <Button disabled={!this.state.checked} onClick={this.props.onClick}>탈퇴 계속</Button>
+        <Button disabled={!this.state.checked} onClick={this.props.onClick}>
+          탈퇴 계속
+        </Button>
       </div>
     );
   }

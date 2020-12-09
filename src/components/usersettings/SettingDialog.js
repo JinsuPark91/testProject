@@ -54,8 +54,8 @@ function SettingDialog(props) {
 
   useEffect(() => {
     setSelectedKey(selectedKeyA);
-  }, [selectedKeyA]); 
-  
+  }, [selectedKeyA]);
+
   return useObserver(() => (
     <Dialog
       onCancel={onCancel}
@@ -73,7 +73,7 @@ function SettingDialog(props) {
               savepasswordOut={() => setSelectedKey('5')}
               saveaccountChange={() => setSelectedKey('4')}
               savepasswordChange={() => setSelectedKey('5')}
-            ></Settingsave>
+            />
           )}
         </>
       }
@@ -164,14 +164,12 @@ function SettingDialog(props) {
                   <SettingContentpasswordedit
                     form={form}
                     passwordChange={() => setSelectedKey('5')}
-                  ></SettingContentpasswordedit>
+                  />
                 )}
                 {selectedKey === '7' && (
-                  <SettingSpaceSecession onClick={() => setSelectedKey('8')}/>
+                  <SettingSpaceSecession onClick={() => setSelectedKey('8')} />
                 )}
-                {selectedKey === '8' && (
-                  <SettingSpaceSecessionConfirm></SettingSpaceSecessionConfirm>
-                )}
+                {selectedKey === '8' && <SettingSpaceSecessionConfirm />}
               </div>
             </Content>
           </Layout>

@@ -2,10 +2,10 @@ import React, { Component, useState } from 'react';
 import { Space, Image } from 'antd';
 import { useObserver } from 'mobx-react';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import SettingContentTitle from './SettingContentTitle';
-import { useCoreStores } from 'teespace-core';
-import { Button, Input, Form } from 'teespace-core';
+import { useCoreStores, Button, Input, Form } from 'teespace-core';
+
 import styled from 'styled-components';
+import SettingContentTitle from './SettingContentTitle';
 import SettingPasswordInput from './SettingPasswordInput';
 
 const AccountBordertop = styled.div`
@@ -66,21 +66,18 @@ function SettingContentaccount(props) {
       <SettingContentTitle
         title="계정정보변경"
         subTitle="TeeSpace 계정정보를 확인하고 최신 정보로 안전하게 관리하세요."
-      ></SettingContentTitle>
+      />
 
       <div>
         <Image
           width={125}
           height={125}
-          src={
-            '/' +
-            userStore.getUserProfilePhoto({
-              userId: authStore.user.id,
-              size: 'medium',
-              isLocal: true,
-              thumbPhoto: null,
-            })
-          }
+          src={`/${userStore.getUserProfilePhoto({
+            userId: authStore.user.id,
+            size: 'medium',
+            isLocal: true,
+            thumbPhoto: null,
+          })}`}
         />
         <br />
         {authStore.user.name}, {authStore.user.nick} <br />, {authStore.user.id}
