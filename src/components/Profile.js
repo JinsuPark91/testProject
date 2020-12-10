@@ -182,22 +182,26 @@ const Profile = ({
   const handleTalkClick = async () => {
     try {
       const myUserId = userStore.myProfile.id;
-      const response = await roomStore.getDMRoom(myUserId, userId);
+      const { roomInfo } = roomStore.getDMRoom(myUserId, userId);
 
-      // DM 룸이 이미 있으면, visible 상태로 만들어 준다.
-      const dmRoom = roomStore.getRoomMap().get(response.roomId);
-      if (!dmRoom.isVisible) {
-        await roomStore.updateRoomMemberSetting({
-          roomId: dmRoom.id,
-          myUserId,
-          newIsVisible: true,
+      if (roomInfo) {
+        if (roomInfo.isVislble) {
+          history.push(`/s/${roomInfo.id}/talk`);
+        } else {
+          await roomStore.updateRoomMemberSetting({
+            roomId: roomInfo.id,
+            myUserId,
+            newIsVisible: true,
+          });
+        }
+        history.push(`/s/${roomInfo.id}/talk`);
+      } else {
+        const { roomId } = await roomStore.createRoom({
+          creatorId: userStore.myProfile.id,
+          userList: [{ userId }],
         });
+        history.push(`/s/${roomId}/talk`);
       }
-
-      if (!response.result) {
-        throw Error('DM ROOM GET FAILED');
-      }
-      history.push(`/s/${response.roomId}/talk`);
     } catch (e) {
       console.error(`Error is${e}`);
     }
