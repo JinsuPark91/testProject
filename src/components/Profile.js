@@ -316,7 +316,7 @@ const Profile = observer(
                 name
               )}
             </BigText>
-            <UserEmailText>{`(${profile?.loginId}@tmax.teepsace.net)`}</UserEmailText>
+            <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
             <UserStatusMsg>
               {isEditMode ? (
                 <StyleInput
