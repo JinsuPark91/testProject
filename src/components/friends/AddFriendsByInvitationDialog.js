@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useCoreStores, Toast } from 'teespace-core';
+import { useCoreStores, Toast, Chip, Message } from 'teespace-core';
 import styled from 'styled-components';
 import { Button, Input, Modal } from 'antd';
+import { checkEmailValid } from '../../libs/Regex';
 
 const StyledModal = styled(Modal)`
   .ant-modal-body {
@@ -26,12 +27,24 @@ const StyledInputBox = styled.div`
   aligin-item: center;
   margin-top: 0.69rem;
 `;
+const StyledChipBox = styled.div`
+  display: inline-block;
+  padding: 0.5rem;
+  margin-top: 0.69rem;
+  width: 100%;
+  height: 9.3rem;
+  border: 1px solid #c6ced6;
+  overflow-y: auto;
+`;
 const StyledInfoTitle = styled.h3`
   font-size: 0.81rem;
   line-height: 1.19rem;
   color: #000000;
   letter-spacing: 0;
   margin-bottom: 0.19rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 const StyledInfoText = styled.p`
   font-size: 0.69rem;
@@ -50,11 +63,15 @@ const StyledButton = styled(Button)`
   background-color: #6c56e5;
   color: #fff;
   border-color: #6c56e5;
+  & > span {
+    display: flex;
+    justify-content: center;
+  }
 `;
 
 const StyledLinkButton = styled(Button)`
   margin-top: 0.19rem;
-  padding: 0;
+  padding: 0 !important;
   border: 0;
   height: 1.06rem;
   font-size: 0.69rem;
@@ -73,33 +90,56 @@ const StyledLinkButton = styled(Button)`
 function AddFriendsBySearch({ visible, onCancel }) {
   const { friendStore, userStore } = useCoreStores();
   const [mailAddress, setMailAddress] = useState('');
+  const [chipList, setChipList] = useState([]);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [toastText, setToastText] = useState('');
+  const [isMessageVisible, setIsMessageVisible] = useState(false);
   const myUserId = userStore.myProfile.id;
 
   const handleCancel = () => {
     onCancel();
+    setMailAddress('');
+    setChipList([]);
   };
 
   const handleToggleToast = () => {
     setIsToastVisible(!isToastVisible);
   };
 
+  const handleToggleMessage = () => {
+    setIsMessageVisible(!isMessageVisible);
+  };
+
   const handleSendInviteMail = async () => {
+    if (!chipList.length) {
+      setToastText('초대할 이메일 주소를 1개 이상 입력해 주세요.');
+      handleToggleToast();
+      return;
+    }
+
+    // 급한대로 추가 - 추후 refactoring
+    const mailArr = [];
+    for (let i = 0; i < chipList.length; i += 1) {
+      mailArr.push(chipList[i].text);
+      if (!chipList[i].valid) {
+        handleToggleMessage();
+        return;
+      }
+    }
+
     try {
-      // 서비스 완성 후 구현
       // const response = await friendStore.sendInvitationMail({
       //   myUserId,
-      //   users: [mailAddress],
+      //   userEmailList: mailArr,
+      //   domainName: ,
+      //   userCount: ,
       // });
       // console.log(response);
-
-      setToastText('발송한 초대장은 24시간 이후 만료됩니다.');
-      handleToggleToast();
       onCancel();
     } catch (e) {
-      console.log('Mail Send Error...');
+      console.log(`Just Error is ${e}`);
     }
+    // 급한대로 추가 - 추후 refactoring
   };
 
   const handleCopyInviteLink = async () => {
@@ -113,7 +153,6 @@ function AddFriendsBySearch({ visible, onCancel }) {
       el.select();
       document.execCommand('copy');
       document.body.removeChild(el);
-
       setToastText('복사한 초대 링크는 24시간 이후 만료됩니다.');
       handleToggleToast();
     } catch (e) {
@@ -121,30 +160,81 @@ function AddFriendsBySearch({ visible, onCancel }) {
     }
   };
 
+  const handleInput = inputText => {
+    let indexNum = 0;
+    if (inputText.includes(',') || inputText.includes(';')) {
+      indexNum =
+        inputText.indexOf(',') !== -1
+          ? inputText.indexOf(',')
+          : inputText.indexOf(';');
+      const addText = inputText.substring(0, indexNum);
+      const remainText = inputText.substring(indexNum + 1, inputText.length);
+      setMailAddress(remainText);
+
+      const chipsSet = new Set(chipList);
+      chipsSet.add({ text: addText, valid: checkEmailValid(addText) });
+      setChipList(Array.from(chipsSet));
+    } else {
+      setMailAddress(inputText);
+    }
+  };
+
+  const handlePressEnter = () => {
+    const chipsSet = new Set(chipList);
+    chipsSet.add({ text: mailAddress, valid: checkEmailValid(mailAddress) });
+    setChipList(Array.from(chipsSet));
+    setMailAddress('');
+  };
+
+  const handleCloseChip = elem => {
+    const chipsSet = new Set(chipList);
+    chipsSet.delete(elem);
+    setChipList(Array.from(chipsSet));
+  };
+
   return (
     <>
       <StyledModal
         visible={visible}
-        mask={false}
+        mask
+        maskClosable={false}
         footer={null}
         width="24.38rem"
         title="초대 메일 보내기"
         onCancel={handleCancel}
       >
         <StyledContent>
-          <StyledInfoTitle>UX팀(으)로 구성원 초대</StyledInfoTitle>
+          <StyledInfoTitle>현재 스페이스로 구성원 초대</StyledInfoTitle>
           <StyledInfoText>
-            입력한 이메일 주소로 초대장이 방송됩니다.
+            입력한 이메일 주소로 초대장이 발송됩니다.
             <br />
             초대받은 구성원의 참여 완료 시, 나의 프렌즈 목록에 추가됩니다.
           </StyledInfoText>
-          <StyledInputBox onInput={e => setMailAddress(e.target.value)}>
-            <StyledInput placeholder="이메일 주소 추가" />
+          <StyledInputBox onInput={e => handleInput(e.target.value)}>
+            <StyledInput
+              onPressEnter={handlePressEnter}
+              placeholder="이메일 주소 추가"
+              maxLength="200"
+              value={mailAddress}
+              autoFocus
+            />
             <StyledButton shape="round" onClick={handleSendInviteMail}>
               보내기
             </StyledButton>
           </StyledInputBox>
-
+          {chipList.length ? (
+            <StyledChipBox>
+              {chipList.map(elem => (
+                <Chip
+                  size="small"
+                  text={elem.text}
+                  key={elem.text}
+                  onClose={() => handleCloseChip(elem)}
+                  alert={!elem.valid}
+                />
+              ))}
+            </StyledChipBox>
+          ) : null}
           <StyledLinkButton type="link" onClick={handleCopyInviteLink}>
             초대 링크 복사
           </StyledLinkButton>
@@ -158,6 +248,20 @@ function AddFriendsBySearch({ visible, onCancel }) {
         >
           {toastText}
         </Toast>
+        <Message
+          visible={isMessageVisible}
+          title="올바르지 않은 이메일 주소 형식이 포함되어 있습니다."
+          subtitle="오류 표시된 주소를 수정하거나 삭제 후 초대 메일을 보내주세요."
+          type="error"
+          btns={[
+            {
+              type: 'solid',
+              shape: 'round',
+              text: '확인',
+              onClick: handleToggleMessage,
+            },
+          ]}
+        />
       </StyledModal>
     </>
   );
