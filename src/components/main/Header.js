@@ -130,14 +130,7 @@ const Header = () => {
       return found.memberIdListString
         .split(',')
         .splice(0, 4)
-        .map(
-          userId =>
-            `${userStore.getUserProfilePhoto({
-              userId,
-              size: 'small',
-              isLocal: true,
-            })}`,
-        );
+        .map(userId => `${userStore.getProfilePhotoURL(userId, 'small')}`);
     }
     return [];
   };

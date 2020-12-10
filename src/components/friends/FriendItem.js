@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useObserver } from 'mobx-react';
+import { observer } from 'mobx-react';
 import styled, { css } from 'styled-components';
 import { Avatar, Button } from 'antd';
 import { useCoreStores, Dropdown, Menu, Message, Toast } from 'teespace-core';
 import { useOpenInWindow } from 'use-open-window';
-import { ExportOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
+import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
 
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 
@@ -194,7 +194,7 @@ const DropdownMenu = React.memo(
     </Menu>
   ),
 );
-const Profile = React.memo(({ mode, tooltipPopupContainer, profilePhoto }) => {
+const Profile = ({ mode, tooltipPopupContainer, profilePhoto }) => {
   return (
     <>
       {mode === 'me' && (
@@ -208,7 +208,7 @@ const Profile = React.memo(({ mode, tooltipPopupContainer, profilePhoto }) => {
       {mode !== 'me' && <StyledAvatar src={`${profilePhoto}`} mode={mode} />}
     </>
   );
-});
+};
 
 const FriendAction = React.memo(
   ({ mode, menu, handleDropdownVisible, handleTalkWindowOpen }) => {
@@ -357,7 +357,7 @@ const TextComponent = React.memo(
  * @param {function} props.tooltipPopupContainer
  * @param {UserModel} props.friendInfo
  */
-const FriendItem = React.memo(
+const FriendItem = observer(
   ({
     mode = 'friend', // 'me', 'friend', 'readOnly', 'addFriend', 'recommended'
     isActive = false,
@@ -373,15 +373,12 @@ const FriendItem = React.memo(
       friendFavorite = false,
       friendId = '',
       id: userId = '',
-      profilePhoto = '',
-      defaultPhotoUrl,
       fullCompanyJob,
       orgName,
       position,
-      friendRelation,
     } = friendInfo;
     const history = useHistory();
-    const { authStore, friendStore } = useCoreStores();
+    const { authStore, friendStore, userStore } = useCoreStores();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
     const [visibleMessage, setVisibleMessage] = useState(false);
@@ -514,7 +511,7 @@ const FriendItem = React.memo(
     const handleToastClose = useCallback(() => setVisibleToast(false), []);
     const isMe = itemId === authStore.user.id;
 
-    return useObserver(() => (
+    return (
       <FriendItemWrapper
         style={style}
         onMouseEnter={handleMouseEnter}
@@ -568,7 +565,7 @@ const FriendItem = React.memo(
           <Profile
             mode={mode}
             tooltipPopupContainer={tooltipPopupContainer}
-            profilePhoto={profilePhoto || defaultPhotoUrl}
+            profilePhoto={userStore.getProfilePhotoURL(itemId, 'small')}
           />
         </ProfileWrapper>
         <TextWrapper>
@@ -601,7 +598,7 @@ const FriendItem = React.memo(
           {mode === 'addFriend' && isMe && <span>내 계정</span>}
         </ActionWrapper>
       </FriendItemWrapper>
-    ));
+    );
   },
 );
 

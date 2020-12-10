@@ -70,22 +70,26 @@ const StyleText = styled(Text)`
   margin-left: 0.25rem;
 `;
 
-const FriendList = React.memo(
-  ({ friendList, onClick, activeFriendId, openToast, setToastText }) => (
-    <>
-      {friendList.map(friendInfo => (
-        <FriendItem
-          friendInfo={friendInfo}
-          key={friendInfo.friendId}
-          mode="friend"
-          onClick={onClick}
-          isActive={activeFriendId === friendInfo.friendId}
-          openToast={openToast}
-          setToastText={setToastText}
-        />
-      ))}
-    </>
-  ),
+const FriendList = ({
+  friendList,
+  onClick,
+  activeFriendId,
+  openToast,
+  setToastText,
+}) => (
+  <>
+    {friendList.map(friendInfo => (
+      <FriendItem
+        friendInfo={friendInfo}
+        key={friendInfo.friendId}
+        mode="friend"
+        onClick={onClick}
+        isActive={activeFriendId === friendInfo.friendId}
+        openToast={openToast}
+        setToastText={setToastText}
+      />
+    ))}
+  </>
 );
 
 /**
@@ -129,97 +133,99 @@ const FriendsLNBContent = React.forwardRef(
       setFriendActiveId(friendId);
     }, []);
 
-    const renderEmptyContent = (
-      <>
-        <FrinedListBox>
-          <FriendItem
-            mode="me"
-            tooltipPopupContainer={meTooltipPopupContainer}
-            friendInfo={userStore.myProfile}
-            onClick={handleFriendActive}
-            isActive={friendActiveId === userStore.myProfile.id}
-          />
-        </FrinedListBox>
-        <WelcomeWrapper>
-          <StyleTitle level={4}>
-            {userStore.myProfile.displayName} 님, 환영합니다. <br />
-            프렌즈 추가 버튼을 눌러 <br />내 동료를 찾아보세요!
-          </StyleTitle>
-          <Paragraph>
-            프렌즈가 되고 싶은 동료를 검색하거나 <br />
-            조직도에서 간편하게 추가할 수 있습니다.
-          </Paragraph>
-          <WelcomeBackgroundImage />
-        </WelcomeWrapper>
-      </>
-    );
+    return useObserver(() => {
+      const renderEmptyContent = (
+        <>
+          <FrinedListBox>
+            <FriendItem
+              mode="me"
+              tooltipPopupContainer={meTooltipPopupContainer}
+              friendInfo={userStore.myProfile}
+              onClick={handleFriendActive}
+              isActive={friendActiveId === userStore.myProfile.id}
+            />
+          </FrinedListBox>
+          <WelcomeWrapper>
+            <StyleTitle level={4}>
+              {userStore.myProfile.displayName} 님, 환영합니다. <br />
+              프렌즈 추가 버튼을 눌러 <br />내 동료를 찾아보세요!
+            </StyleTitle>
+            <Paragraph>
+              프렌즈가 되고 싶은 동료를 검색하거나 <br />
+              조직도에서 간편하게 추가할 수 있습니다.
+            </Paragraph>
+            <WelcomeBackgroundImage />
+          </WelcomeWrapper>
+        </>
+      );
 
-    const renderContent = (
-      <>
-        <MyFrinedListBox>
-          <Toast
-            visible={isToastVisible}
-            timeoutMs={1000}
-            onClose={() => setIsToastVisible(false)}
-          >
-            {toastText}
-          </Toast>
-          <FriendItem
-            mode="me"
-            tooltipPopupContainer={meTooltipPopupContainer}
-            friendInfo={userStore.myProfile}
-            onClick={handleFriendActive}
-            isActive={friendActiveId === userStore.myProfile.id}
-            openToast={openToast}
-            setToastText={setToastText}
-          />
-        </MyFrinedListBox>
-        <FrinedListBox style={{ display: searchKeyword ? 'none' : 'block' }}>
-          <StyleTitle>즐겨찾기</StyleTitle>
-          <FriendList
-            friendList={friendStore.favoriteFriendInfoList}
-            onClick={handleFavFriendActive}
-            activeFriendId={favFriendActiveId}
-            openToast={openToast}
-            setToastText={setText}
-          />
-        </FrinedListBox>
-        <FrinedListBox style={{ display: searchKeyword ? 'block' : 'none' }}>
-          <StyleTitle>
-            프렌즈
-            <StyleText>{filteredFriendList.length}</StyleText>
-          </StyleTitle>
-          <FriendList
-            friendList={filteredFriendList}
-            onClick={handleFriendActive}
-            activeFriendId={friendActiveId}
-            openToast={openToast}
-            setToastText={setText}
-          />
-        </FrinedListBox>
-        <FrinedListBox style={{ display: searchKeyword ? 'none' : 'block' }}>
-          <StyleTitle>
-            프렌즈
-            <StyleText>{friendStore.friendInfoList.length}</StyleText>
-          </StyleTitle>
-          <FriendList
-            friendList={friendStore.friendInfoList}
-            onClick={handleFriendActive}
-            activeFriendId={friendActiveId}
-            openToast={openToast}
-            setToastText={setText}
-          />
-        </FrinedListBox>
-      </>
-    );
+      const renderContent = (
+        <>
+          <MyFrinedListBox>
+            <Toast
+              visible={isToastVisible}
+              timeoutMs={1000}
+              onClose={() => setIsToastVisible(false)}
+            >
+              {toastText}
+            </Toast>
+            <FriendItem
+              mode="me"
+              tooltipPopupContainer={meTooltipPopupContainer}
+              friendInfo={userStore.myProfile}
+              onClick={handleFriendActive}
+              isActive={friendActiveId === userStore.myProfile.id}
+              openToast={openToast}
+              setToastText={setToastText}
+            />
+          </MyFrinedListBox>
+          <FrinedListBox style={{ display: searchKeyword ? 'none' : 'block' }}>
+            <StyleTitle>즐겨찾기</StyleTitle>
+            <FriendList
+              friendList={friendStore.favoriteFriendInfoList}
+              onClick={handleFavFriendActive}
+              activeFriendId={favFriendActiveId}
+              openToast={openToast}
+              setToastText={setText}
+            />
+          </FrinedListBox>
+          <FrinedListBox style={{ display: searchKeyword ? 'block' : 'none' }}>
+            <StyleTitle>
+              프렌즈
+              <StyleText>{filteredFriendList.length}</StyleText>
+            </StyleTitle>
+            <FriendList
+              friendList={filteredFriendList}
+              onClick={handleFriendActive}
+              activeFriendId={friendActiveId}
+              openToast={openToast}
+              setToastText={setText}
+            />
+          </FrinedListBox>
+          <FrinedListBox style={{ display: searchKeyword ? 'none' : 'block' }}>
+            <StyleTitle>
+              프렌즈
+              <StyleText>{friendStore.friendInfoList.length}</StyleText>
+            </StyleTitle>
+            <FriendList
+              friendList={friendStore.friendInfoList}
+              onClick={handleFriendActive}
+              activeFriendId={friendActiveId}
+              openToast={openToast}
+              setToastText={setText}
+            />
+          </FrinedListBox>
+        </>
+      );
 
-    return useObserver(() => (
-      <ContentWrapper>
-        <div ref={ref} />
-        {!friendStore.friendInfoList.length && renderEmptyContent}
-        {!!friendStore.friendInfoList.length && renderContent}
-      </ContentWrapper>
-    ));
+      return (
+        <ContentWrapper>
+          <div ref={ref} />
+          {!friendStore.friendInfoList.length && renderEmptyContent}
+          {!!friendStore.friendInfoList.length && renderContent}
+        </ContentWrapper>
+      );
+    });
   },
 );
 

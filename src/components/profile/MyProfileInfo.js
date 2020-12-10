@@ -23,12 +23,7 @@ function MyProfileInfo() {
   }, [thumbPhoto]);
 
   useEffect(() => {
-    const getThumbPhoto = userStore.getUserProfilePhoto({
-      userId,
-      size: 'small',
-      isLocal: IS_LOCAL,
-      thumbPhoto: userStore.myProfile.thumbPhoto || null,
-    });
+    const getThumbPhoto = userStore.getProfilePhotoURL(userId, 'small');
     setThumbPhoto(`${getThumbPhoto}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userStore.myProfile.lastUpdatedTime]);
@@ -37,7 +32,7 @@ function MyProfileInfo() {
     <>
       <ProfileIcon>
         <ThumbImage
-          src={thumbPhoto}
+          src={userStore.getProfilePhotoURL(userStore.myProfile.id, 'small')}
           onLoad={revokeURL}
           onClick={handleInfoOpen}
         />
@@ -45,7 +40,13 @@ function MyProfileInfo() {
           <img alt="settingIcon" src={settingIcon} />
         </SettingImage>
       </ProfileIcon>
-      <ProfileInfoModal userId={userId} thumbPhoto={thumbPhoto} />
+      <ProfileInfoModal
+        userId={userId}
+        thumbPhoto={userStore.getProfilePhotoURL(
+          userStore.myProfile.id,
+          'small',
+        )}
+      />
       <ProfileEditModal userId={userId} />
     </>
   );
