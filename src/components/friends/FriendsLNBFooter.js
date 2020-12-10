@@ -3,7 +3,6 @@ import { Loader, useCoreStores, Button } from 'teespace-core';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { Layout } from 'antd';
-
 import AddFriendsDialog from './AddFriendsDialog';
 import AddFriendsBySearch from './AddFriendsBySearch';
 import { useStore } from '../../stores';

@@ -66,7 +66,6 @@ const AddFriendsItem = ({ friendAddList }) => {
 
   const handleAddFriend = useCallback(
     async friendInfo => {
-      console.log(`info is${friendInfo}`);
       await friendStore.addFriend({
         myUserId: userStore.myProfile.id,
         friendInfo,

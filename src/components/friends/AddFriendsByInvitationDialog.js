@@ -32,6 +32,9 @@ const StyledInfoTitle = styled.h3`
   color: #000000;
   letter-spacing: 0;
   margin-bottom: 0.19rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 const StyledInfoText = styled.p`
   font-size: 0.69rem;
@@ -50,11 +53,15 @@ const StyledButton = styled(Button)`
   background-color: #6c56e5;
   color: #fff;
   border-color: #6c56e5;
+  & > span {
+    display: flex;
+    justify-content: center;
+  }
 `;
 
 const StyledLinkButton = styled(Button)`
   margin-top: 0.19rem;
-  padding: 0;
+  padding: 0 !important;
   border: 0;
   height: 1.06rem;
   font-size: 0.69rem;
@@ -128,26 +135,25 @@ function AddFriendsBySearch({ visible, onCancel }) {
     <>
       <StyledModal
         visible={visible}
-        mask={false}
+        mask
         footer={null}
         width="24.38rem"
         title="초대 메일 보내기"
         onCancel={handleCancel}
       >
         <StyledContent>
-          <StyledInfoTitle>UX팀(으)로 구성원 초대</StyledInfoTitle>
+          <StyledInfoTitle>현재 스페이스로 구성원 초대</StyledInfoTitle>
           <StyledInfoText>
-            입력한 이메일 주소로 초대장이 방송됩니다.
+            입력한 이메일 주소로 초대장이 발송됩니다.
             <br />
             초대받은 구성원의 참여 완료 시, 나의 프렌즈 목록에 추가됩니다.
           </StyledInfoText>
           <StyledInputBox onInput={e => setMailAddress(e.target.value)}>
-            <StyledInput placeholder="이메일 주소 추가" />
+            <StyledInput placeholder="이메일 주소 추가" autoFocus />
             <StyledButton shape="round" onClick={handleSendInviteMail}>
               보내기
             </StyledButton>
           </StyledInputBox>
-
           <StyledLinkButton type="link" onClick={handleCopyInviteLink}>
             초대 링크 복사
           </StyledLinkButton>
