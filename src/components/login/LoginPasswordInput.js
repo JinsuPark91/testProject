@@ -4,16 +4,16 @@ import React from 'react';
 const LoginPasswordInput = () => {
   return (
     <Form.Item
-      name="password"
+      name="domain"
       rules={[
         {
           required: true,
-          message: '비밀번호 입력 해주세요',
+          message: '도메인을 입력 해주세요',
         },
       ]}
       wrapperCol={{ span: 24 }}
     >
-      <Input type="password" placeholder="비밀번호" />
+      <Input placeholder="도메인" />
     </Form.Item>
   );
 };

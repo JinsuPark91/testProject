@@ -19,12 +19,15 @@ import DriveSharedFilePage from './page/DriveSharedFilePage';
 import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
 import PrivateRoute from './libs/PrivateRoute';
+import KeycloakRedirectRoute from './libs/KeycloakRedirectRoute';
+import { useKeycloak } from '@react-keycloak/web';
 import i18next from './i18n';
 
 const hydrate = create();
 
 function App() {
   const [isHydrating, setIsHydrating] = useState(false);
+  const { initialized } = useKeycloak();
   const { authStore, userStore } = useCoreStores();
 
   // initialize apps
@@ -33,8 +36,12 @@ function App() {
     initCalendarApp();
   }, []);
 
+ 
   // hydrate mobx stores
   useEffect(() => {
+    if (!initialized) {
+      return;
+    }
     Promise.all([hydrate('auth', authStore), hydrate('user', userStore)])
       .then(() => {
         userStore.initHydratedMyProfile({});
@@ -42,26 +49,21 @@ function App() {
       })
       .catch(e => console.error(e));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [initialized]);
 
-  if (!isHydrating) return <></>;
+  if (!isHydrating || !initialized ) return <></>;
   return (
     <DndProvider backend={HTML5Backend}>
       <I18nextProvider i18n={i18next}>
         <BrowserRouter>
           <Switch>
             <Route exact path="/">
-              <Redirect to="/login" />
+                <Redirect to="/login" />
             </Route>
             <Route exact path="/drive/files/:fileId">
               <DriveSharedFilePage />
             </Route>
-            <RedirectablePublicRoute
-              exact
-              path="/login"
-              component={<LoginPage />}
-            />
-
+            <KeycloakRedirectRoute exact path="/login" component={LoginPage} />
             <RedirectablePublicRoute
               exact
               path="/register"

@@ -80,7 +80,6 @@ const LoginContent = () => {
   const [form] = Form.useForm();
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
-  const [loginResult, setLoginResult] = useState(null);
   const [errorResult, setErrorResult] = useState(null);
   const [checkSaveLoginId, setCheckSaveLoginId] = useState(false);
   const [checkAutoLogin, setCheckAutoLogin] = useState(false);
@@ -92,14 +91,16 @@ const LoginContent = () => {
     setIsLoading(true);
     try {
       const res = await authStore.login({
-        id: values.username,
-        pw: values.password,
-        isLocalLogin: process.env.REACT_APP_ENV === 'local',
+        id: values.username,  // localhost용 id= "seonhyeok_kim2@tmax.co.kr"
+        domainUrl: values.domain, //  localhost용 domain= "test-8sh1"
+        isLocal: process.env.REACT_APP_ENV,
         deviceType: 'PC',
-        isAutoLogin: values.autoLogin,
       });
-      setLoginResult(res);
-      history.push(`/f/${authStore.user.loginId}`);
+      if(res.id){
+        history.push(`/f/${authStore.user.loginId}`);
+      }else{
+        setIsLoading(false)
+      }
     } catch (e) {
       setErrorResult(e.message);
       setIsLoading(false);
@@ -158,7 +159,7 @@ const LoginContent = () => {
         {isLoading === false && errorResult && (
           <span>로그인 실패! 사유: {errorResult}</span>
         )}
-        {isLoading === false && loginResult && <span>로그인 성공</span>}
+        {isLoading === false && <span>로그인 성공</span>}
         <Form.Item {...tailLayout} noStyle>
           <Button type="solid" htmlType="submit">
             로그인
