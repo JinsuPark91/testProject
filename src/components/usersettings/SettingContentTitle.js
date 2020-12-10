@@ -16,7 +16,7 @@ class SettingContentTitle extends Component {
         className="site-page-header"
         title={this.props.title}
         subTitle={this.props.subTitle}
-      ></StyledPageHeader>
+      />
     );
   }
 }

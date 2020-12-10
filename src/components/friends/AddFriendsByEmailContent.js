@@ -17,7 +17,7 @@ const StyledAvatar = styled(Avatar)`
 `;
 
 function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
-  const { friendStore, authStore } = useCoreStores();
+  const { friendStore, authStore, userStore } = useCoreStores();
   const [visibleToast, setVisibleToast] = useState(false);
   const [alreadyFriendFlag, setAlreadyFriendFlag] = useState(false);
 
@@ -42,7 +42,7 @@ function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
     if (!searchedUser) {
       return null;
     }
-    return `${user.profilePhoto || user.defaultPhotoUrl}`;
+    return `${userStore.getProfilePhotoURL(user.id)}`;
   })(searchedUser);
 
   return useObserver(() => (

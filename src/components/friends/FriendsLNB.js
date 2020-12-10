@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
+import { observer } from 'mobx-react';
 import styled from 'styled-components';
 import { useCoreStores, Loader } from 'teespace-core';
 import { Layout } from 'antd';
@@ -16,7 +17,7 @@ const FriendsLNBWrapper = styled(Layout)`
  * 프렌즈 LNB
  * @param {Object} props
  */
-function FriendsLNB({ userId }) {
+const FriendsLNB = observer(({ userId }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const lnbRef = useRef(null);
   const [loader] = Loader.useLoader();
@@ -69,6 +70,6 @@ function FriendsLNB({ userId }) {
       </Loader>
     </FriendsLNBWrapper>
   );
-}
+});
 
 export default FriendsLNB;

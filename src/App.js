@@ -6,6 +6,7 @@ import './App.less';
 import { create } from 'mobx-persist';
 import { useCoreStores } from 'teespace-core';
 import { initApp as initDriveApp } from 'teespace-drive-app';
+import { initApp as initCalendarApp } from 'teespace-calendar-app';
 import { I18nextProvider } from 'react-i18next';
 import AdminPage from './page/AdminPage';
 import LoginPage from './page/LoginPage';
@@ -29,6 +30,7 @@ function App() {
   // initialize apps
   useEffect(() => {
     initDriveApp();
+    initCalendarApp();
   }, []);
 
   // hydrate mobx stores

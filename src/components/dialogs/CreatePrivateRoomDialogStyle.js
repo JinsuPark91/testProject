@@ -1,4 +1,4 @@
-import { Checkbox } from 'antd';
+import { Modal } from 'antd';
 import styled, { css } from 'styled-components';
 
 export const ConfigTitle = styled.div`
@@ -63,16 +63,29 @@ export const Input = styled.div`
   }
 `;
 
+export const FlexModal = styled(Modal)`
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+
+  & .ant-modal-header {
+    border-bottom: 1px solid #e3e7eb;
+  }
+
+  & .ant-modal-body {
+    padding: 0;
+  }
+`;
+
 export const ConfigWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0 1.19rem 1.31rem; 1.19rem;
+  padding: 0 1.19rem 1.31rem 1.19rem;
   border-bottom: 1px solid #e3e7eb;
 `;
 
 export const ButtonContainer = styled.div`
   display: flex;
-  border-top: 1px solid #e3e7eb;
   height: 4.3rem;
   align-items: center;
   justify-content: center;
