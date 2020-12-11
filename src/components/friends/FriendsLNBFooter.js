@@ -42,19 +42,18 @@ function FriendsLNBFooter() {
   const [isSpaceEmpty, setIsSpaceEmpty] = useState(false);
 
   const handleOpenAddFriendsDialog = useCallback(async () => {
-    console.log(spaceStore.spaceList);
     const currentSpace = spaceStore.spaceList.find(
       elem => elem.fullDomain === 'dev',
     );
 
-    if (currentSpace && currentSpace.userCount === 1) {
-      setIsSpaceEmpty(true);
-    } else {
-      const response = await orgStore.getOrgTree();
-      if (response.length) {
-        setIsOrgExist(true);
-      }
+    // if (currentSpace && currentSpace.userCount === 1) {
+    // setIsSpaceEmpty(true);
+    // } else {
+    const response = await orgStore.getOrgTree();
+    if (response.length) {
+      setIsOrgExist(true);
     }
+    // }
     setIsDialogVisible(!isDialogVisible);
   }, [spaceStore, orgStore, isDialogVisible]);
 

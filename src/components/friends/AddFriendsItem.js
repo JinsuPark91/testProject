@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useObserver } from 'mobx-react';
 import { useCoreStores, Toast } from 'teespace-core';
+import { FixedSizeList as List } from 'react-window';
 import styled from 'styled-components';
 import Photos from '../Photos';
 import AddFriendImg from '../../assets/ts_friend_add.svg';
@@ -37,6 +38,7 @@ const FriendName = styled.p`
 const MyAccountText = styled.span`
   font-size: 0.69rem;
   color: #8d8d8d;
+  margin-right: 1rem;
 `;
 
 const FriendAddBtn = styled.button`
@@ -44,6 +46,7 @@ const FriendAddBtn = styled.button`
   background-color: transparent;
   border: none;
   cursor: pointer;
+  margin-right: 1rem;
 
   span {
     display: inline-block;
@@ -94,12 +97,11 @@ const AddFriendsItem = ({ friendAddList }) => {
     return null;
   };
 
-  // <Photos srcList={['a1']} defaultDiameter="2.13" />
-  const FriendAddItem = ({ friendInfo }) => {
+  const FriendAddItem = ({ friendInfo, style }) => {
     const userName = friendInfo?.name;
     return (
       <>
-        <FriendItem>
+        <FriendItem style={style}>
           <img
             alt="profile"
             src={`${userStore.getUserProfilePhoto({
@@ -120,10 +122,28 @@ const AddFriendsItem = ({ friendAddList }) => {
   return useObserver(() => (
     <>
       <Wrapper>
-        {friendStore.friendInfoList.length &&
+        {/* {friendStore.friendInfoList.length &&
           friendAddList.map((elem, index) => (
             <FriendAddItem key={index} friendInfo={elem} />
-          ))}
+          ))} */}
+        {friendStore.friendInfoList.length && (
+          <List
+            height={500}
+            itemCount={friendAddList.length}
+            itemSize={80}
+            width="100%"
+          >
+            {({ index, style }) => {
+              return (
+                <FriendAddItem
+                  key={index}
+                  friendInfo={friendAddList[index]}
+                  style={style}
+                />
+              );
+            }}
+          </List>
+        )}
       </Wrapper>
       <Toast
         visible={isToastVisible}
