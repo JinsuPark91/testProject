@@ -308,14 +308,15 @@ const Profile = observer(
                           handleChangeBackground(file)
                         }
                       >
-                        배경 변경
+                        내 PC에서 배경 변경
                       </StyledUpload>
                     </Menu.Item>
-                    {!isDefaultBackgroundPhotoUsed && (
-                      <Menu.Item onClick={handleChangeDefaultBackground}>
-                        기본 이미지로 변경
-                      </Menu.Item>
-                    )}
+                    <Menu.Item
+                      disabled={isDefaultBackgroundPhotoUsed}
+                      onClick={handleChangeDefaultBackground}
+                    >
+                      기본 이미지로 변경
+                    </Menu.Item>
                   </Menu>
                 }
               >
@@ -341,11 +342,12 @@ const Profile = observer(
                           프로필 사진 변경
                         </StyledUpload>
                       </Menu.Item>
-                      {!isDefaultProfilePhotoUsed && (
-                        <Menu.Item onClick={handleChangeDefaultPhoto}>
-                          기본 이미지로 변경
-                        </Menu.Item>
-                      )}
+                      <Menu.Item
+                        disabled={isDefaultProfilePhotoUsed}
+                        onClick={handleChangeDefaultPhoto}
+                      >
+                        기본 이미지로 변경
+                      </Menu.Item>
                     </Menu>
                   }
                 >

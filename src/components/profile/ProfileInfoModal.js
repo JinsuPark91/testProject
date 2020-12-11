@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { Input, Button, Dropdown, Modal } from 'antd';
+import { Input, Button, Dropdown, Modal, Menu } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useCoreStores } from 'teespace-core';
 import Upload from 'rc-upload';
@@ -284,8 +284,8 @@ function ProfileInfoModal({
   };
 
   const imageChangeMenu = (
-    <ButtonDrop>
-      <DropItem>
+    <Menu>
+      <Menu.Item>
         <StyledUpload
           component="div"
           accept={['image/*']}
@@ -294,18 +294,19 @@ function ProfileInfoModal({
         >
           프로필 사진 변경
         </StyledUpload>
-      </DropItem>
-      {!isDefaultProfilePhotoUsed && (
-        <DropItem disabled onClick={handleChangeDefaultPhoto}>
-          기본 이미지로 변경
-        </DropItem>
-      )}
-    </ButtonDrop>
+      </Menu.Item>
+      <Menu.Item
+        disabled={isDefaultProfilePhotoUsed}
+        onClick={handleChangeDefaultPhoto}
+      >
+        기본 이미지로 변경
+      </Menu.Item>
+    </Menu>
   );
 
   const backgroundMenu = (
-    <ButtonDrop>
-      <DropItem>
+    <Menu>
+      <Menu.Item>
         <StyledUpload
           component="div"
           accept={['image/*']}
@@ -314,14 +315,15 @@ function ProfileInfoModal({
         >
           내 PC에서 배경 변경
         </StyledUpload>
-      </DropItem>
+      </Menu.Item>
       {/* <DropItem>테마 이미지에서 변경</DropItem>  1월 업데이트 */}
-      {!isDefaultBackgroundPhotoUsed && (
-        <DropItem onClick={handleChangeDefaultBackground}>
-          기본 이미지로 변경
-        </DropItem>
-      )}
-    </ButtonDrop>
+      <Menu.Item
+        disabled={isDefaultBackgroundPhotoUsed}
+        onClick={handleChangeDefaultBackground}
+      >
+        기본 이미지로 변경
+      </Menu.Item>
+    </Menu>
   );
 
   const handleToggleFavorite = useCallback(
@@ -585,35 +587,13 @@ const ImageChangeBox = styled.div`
   border: 0.25rem solid #0b1d41;
   border-radius: 50%;
 `;
-const ButtonDrop = styled.ul`
-  padding: 0.25rem 0;
-  background-color: #fff;
-  border: 1px solid #c6ced6;
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 0.25rem;
-  z-index: 5;
-`;
-const DropItem = styled.li`
-  padding: 0 0.75rem;
-  font-size: 0.75rem;
-  color: #000;
-  line-height: 1.63rem;
-  white-space: nowrap;
-  border-radius: 0.81rem;
-  cursor: pointer;
-  &:hover {
-    background-color: #dcddff;
-  }
-  &:active,
-  &:focus {
-    background-color: #bcbeff;
-  }
-`;
+
 const StyledUpload = styled(Upload)`
   &:focus {
     outline: 0;
   }
 `;
+
 const ImageChangeButton = styled.button`
   width: 2rem;
   height: 2rem;
