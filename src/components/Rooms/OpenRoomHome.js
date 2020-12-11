@@ -14,31 +14,30 @@ import AddIcon from '../../assets/add1.svg';
 import Openchat from '../../assets/openchat.svg';
 import EnterIcon from '../../assets/enter.svg';
 import RoomCreateModal from './RoomCreateModal';
-import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const { Title } = Typography;
 
-const RoomButton = ({ roomInfo, type, onClick }) => {
-  const handleJoin = () => {
+const RoomButton = ({ roomInfo, onClick, disabled }) => {
+  const handleClick = () => {
     onClick(roomInfo);
   };
-
-  const handleExit = () => {
-    onClick(roomInfo);
-  };
-
-  if (type === 'join') {
-    return (
-      <RoomJoinBtn onClick={handleJoin}>
-        <span>방 참여하기</span>
-      </RoomJoinBtn>
-    );
-  }
 
   return (
-    <RoomEnterBtn onClick={handleExit}>
-      <span>방 나가기</span>
-    </RoomEnterBtn>
+    <RoomJoinBtn onClick={handleClick} disabled={disabled}>
+      <span>방 참여하기</span>
+    </RoomJoinBtn>
+  );
+};
+
+const OpenRoomItem = ({ roomInfo, photo, onClick }) => {
+  const handleClick = () => {
+    onClick(roomInfo);
+  };
+  return (
+    <div onClick={handleClick} style={{ cursor: 'pointer' }}>
+      <Photos srcList={photo} defaultDiameter="3.75" />
+      <OpenRoomName style={{ width: '3.75rem' }}>{roomInfo.name}</OpenRoomName>
+    </div>
   );
 };
 
@@ -47,6 +46,7 @@ function OpenRoomHome({ visible, onCancel }) {
     createModalVisible: false,
     keyword: '',
   };
+
   const [createModalVisible, setCreateModalVisibie] = useState(
     initialStates.createModalVisible,
   );
@@ -82,7 +82,6 @@ function OpenRoomHome({ visible, onCancel }) {
   }, []);
 
   const handleCreateModalOk = roomName => {
-    console.log('ROOM NAME : ', roomName);
     setCreateModalVisibie(false);
   };
   const handleCreateModalCancel = () => {
@@ -101,32 +100,16 @@ function OpenRoomHome({ visible, onCancel }) {
     setKeyword(initialStates.keyword);
   };
 
-  const handleJoin = async roomInfo => {
-    console.log('ENTER OPEN ROOM : ', roomInfo.id);
+  const handleJoin = roomInfo => {
+    handleCancel();
+    history.push(`/s/${roomInfo.id}/talk`);
   };
 
-  const handleExit = async roomInfo => {
-    console.log('EXIT OPEN ROOM : ', roomInfo.id);
-    // try {
-    //   console.log('RESULT : ', roomInfo.id);
-    //   const result = await roomStore.deleteRoomMember({
-    //     userId: userStore.myProfile.id,
-    //     roomId: roomInfo.id,
-    //   });
-
-    //   if (result) {
-    //     if (
-    //       PlatformUIStore.resourceType === 's' &&
-    //       PlatformUIStore.resourceId === roomInfo.id
-    //     ) {
-    //       const firstRoomId = roomStore.getRoomArray()?.[0].id;
-    //       if (firstRoomId) history.push(`/s/${firstRoomId}/talk`);
-    //     }
-    //   }
-    // } catch (e) {
-    //   console.log('DELETE ROOM MEMBER ERROR : ', e);
-    // }
+  const handleRoomClick = roomInfo => {
+    handleCancel();
+    history.push(`/s/${roomInfo.id}/talk`);
   };
+
   const getUserPhotos = memberString => {
     return memberString
       .split(',')
@@ -162,7 +145,12 @@ function OpenRoomHome({ visible, onCancel }) {
           <RoomListBox>
             <Observer>
               {() => {
-                const openRooms = roomStore.getOpenRoomArray();
+                const openRooms = roomStore
+                  .getOpenRoomArray()
+                  .filter(
+                    roomInfo => roomInfo.adminId === userStore.myProfile.id,
+                  );
+
                 const remain = (openRooms.length + 1) % 4;
                 const dummyArray = Array.from(
                   Array(remain ? 4 - remain : 0).keys(),
@@ -180,17 +168,12 @@ function OpenRoomHome({ visible, onCancel }) {
                       </ItemAddBtn>
                       {openRooms.map(openRoom => {
                         return (
-                          <OpenRoomItem key={openRoom.id}>
-                            <Photos
-                              srcList={getUserPhotos(
-                                openRoom.memberIdListString,
-                              )}
-                              defaultDiameter="3.75"
-                            />
-                            <OpenRoomName style={{ width: '3.75rem' }}>
-                              {openRoom.name}
-                            </OpenRoomName>
-                          </OpenRoomItem>
+                          <OpenRoomItem
+                            key={openRoom.id}
+                            roomInfo={openRoom}
+                            photo={getUserPhotos(openRoom.memberIdListString)}
+                            onClick={handleRoomClick}
+                          />
                         );
                       })}
                       {dummyArray.map(key => {
@@ -222,19 +205,15 @@ function OpenRoomHome({ visible, onCancel }) {
                           defaultDiameter="2.26"
                         />
                         <RecomRoomTitle>{roomInfo.name}</RecomRoomTitle>
-                        {roomInfo.isJoinable ? (
-                          <RoomButton
-                            roomInfo={roomInfo}
-                            type="join"
-                            onClick={handleJoin}
-                          />
-                        ) : (
-                          <RoomButton
-                            roomInfo={roomInfo}
-                            type="exit"
-                            onClick={handleExit}
-                          />
-                        )}
+
+                        <JoinedText>
+                          {roomInfo.isJoinable ? '' : '(참여 중)'}
+                        </JoinedText>
+                        <RoomButton
+                          roomInfo={roomInfo}
+                          onClick={handleJoin}
+                          disabled={!roomInfo.isJoinable}
+                        />
                       </RoomListItem>
                     ))}
                   </RoomList>
@@ -292,8 +271,11 @@ const StyledSearch = styled(Search)`
   }
 `;
 
-const OpenRoomItem = styled.div`
-  cursor: pointer;
+const JoinedText = styled.div`
+  color: #696969;
+  white-space: nowrap;
+  padding: 0 0.5rem;
+  font-size: 0.69rem;
 `;
 
 const OpenRoomName = styled.div`
@@ -404,6 +386,8 @@ const SearchSubText = styled.p`
 `;
 
 const RoomJoinBtn = styled.button`
+  opacity: ${({ disabled }) => (disabled ? '0.4' : '1')};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   height: 1rem;
   background-color: transparent;
   border: none;
@@ -414,7 +398,6 @@ const RoomJoinBtn = styled.button`
     height: 1rem;
     background: url(${Openchat}) 50% 50% no-repeat;
     background-size: 1rem 1rem;
-    cursor: pointer;
     font-size: 0;
     line-height: 0;
     text-indent: -9999px;
