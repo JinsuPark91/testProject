@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
-import ProfileModal from './ProfileModal';
 import styled, { css } from 'styled-components';
 import { Input, Button, Dropdown, Modal } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { default as InputCounter } from '../Input';
 import { useCoreStores } from 'teespace-core';
 import Upload from 'rc-upload';
 import { useObserver } from 'mobx-react';
+import { default as InputCounter } from '../Input';
+import ProfileModal from './ProfileModal';
 import tsOfficeIcon from '../../assets/ts_office.svg';
 import tsCallIcon from '../../assets/ts_call.svg';
 import tsPhoneIcon from '../../assets/ts_phone.svg';
@@ -153,7 +153,7 @@ function ProfileInfoModal({
     try {
       const newFriendInfo = await friendStore.addFriend({
         myUserId: userStore.myProfile.id,
-        friendInfo: friendInfo,
+        friendInfo,
       });
     } catch (e) {
       console.log(e);
@@ -179,7 +179,7 @@ function ProfileInfoModal({
       } else {
         const { roomId } = await roomStore.createRoom({
           creatorId: userStore.myProfile.id,
-          userList: [{ userId: userId }],
+          userList: [{ userId }],
         });
         history.push(`/s/${roomId}/talk`);
       }
@@ -191,7 +191,7 @@ function ProfileInfoModal({
 
   const handleConfirm = async () => {
     const updatedInfo = {
-      name: name,
+      name,
       companyNum: phone,
       phone: mobile,
       profileStatusMsg: statusMsg,
@@ -277,7 +277,7 @@ function ProfileInfoModal({
           내 PC에서 배경 변경
         </StyledUpload>
       </DropItem>
-      {/* <DropItem>테마 이미지에서 변경</DropItem>  1월 업데이트*/}
+      {/* <DropItem>테마 이미지에서 변경</DropItem>  1월 업데이트 */}
       <DropItem onClick={handleChangeDefaultBackground}>
         기본 이미지로 변경
       </DropItem>
@@ -421,7 +421,7 @@ function ProfileInfoModal({
       visible={visible}
       width={editMode ? '17rem' : '17.5rem'}
       userContent={userContent}
-      topButton={true}
+      topButton
       outLine={editMode}
       isMyId={isMyId}
       isEditMode={isEditMode}

@@ -1,10 +1,45 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
+import { Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import settingIcon from '../../assets/setting.svg';
 import ProfileMyModal from './ProfileMyModal';
 
 const IS_LOCAL = true;
+
+// const [infoModalVisible, setInfoModalVisible] = useState(false);
+// const [editModalVisible, setEditModalVisible] = useState(false);
+
+// const handleInfoOpen = useCallback(() => {
+//   setInfoModalVisible(true);
+// }, []);
+
+// const handleInfoClose = useCallback(() => {
+//   setInfoModalVisible(false);
+// }, []);
+
+// const handleClickEditProfile = useCallback(() => {
+//   setEditModalVisible(true);
+// }, []);
+
+// const handleEditClose = useCallback(() => {
+//   setEditModalVisible(false);
+
+//   <ProfileInfoModal
+//   visible={infoModalVisible}
+//   userId={userId}
+//   thumbPhoto={userStore.getProfilePhotoURL(
+//     userStore.myProfile.id,
+//     'small',
+//   )}
+//   onClose={handleInfoClose}
+//   onClickEditProfile={handleClickEditProfile}
+// />
+// <ProfileEditModal
+//   visible={editModalVisible}
+//   userId={userId}
+//   onClose={handleEditClose}
+// />
 
 function MyProfileInfo() {
   const [thumbPhoto, setThumbPhoto] = useState(null);
@@ -29,23 +64,29 @@ function MyProfileInfo() {
   return (
     <>
       <ProfileIcon>
-        <ThumbImage
-          src={userStore.getProfilePhotoURL(userStore.myProfile.id, 'small')}
-          onLoad={revokeURL}
-          onClick={toggleMyModal}
-        />
+        <Observer>
+          {() => (
+            <ThumbImage
+              src={userStore.getProfilePhotoURL(
+                userStore.myProfile.id,
+                'small',
+              )}
+              onLoad={revokeURL}
+              onClick={toggleMyModal}
+            />
+          )}
+        </Observer>
         <SettingImage>
           <img alt="settingIcon" src={settingIcon} />
         </SettingImage>
       </ProfileIcon>
-      {myModalVisible && (
-        <ProfileMyModal
-          userId={userId}
-          onCancel={toggleMyModal}
-          visible={myModalVisible}
-          thumbPhoto={thumbPhoto}
-          created={false}
-        />
+      <ProfileMyModal
+        userId={userId}
+        onCancel={toggleMyModal}
+        visible={myModalVisible}
+        thumbPhoto={thumbPhoto}
+        created={false}
+      />
       )}
     </>
   );

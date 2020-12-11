@@ -21,17 +21,19 @@ const IS_LOCAL = true;
 const Profile = observer(
   ({
     userId = null,
-    editMode = false,
+    editOnlyMode = false,
     showSider = true,
     onModeChange = null,
+    onClickSaveBtn = () => {},
+    onClickCancelBtn = () => {},
   }) => {
     const history = useHistory();
     const { roomStore, userStore } = useCoreStores();
-    const [isEditMode, setEditMode] = useState(editMode);
+    const [isEditMode, setEditMode] = useState(editOnlyMode);
     const [profile, setProfile] = useState(null);
     // 유저 정보들
     const [background, setBackground] = useState(null);
-    const [thumb, setThumb] = useState(null);
+    const [localPhoto, setLocalPhoto] = useState(null);
     const [phone, setPhone] = useState('');
     const [mobile, setMobile] = useState('');
     const [isChange, setIsChange] = useState(false);
@@ -50,12 +52,8 @@ const Profile = observer(
       });
     };
 
-    const getThumbPhoto = () => {
-      return userStore.getProfilePhotoURL(userId, 'small');
-    };
-
     useEffect(() => {
-      setEditMode(editMode);
+      setEditMode(editOnlyMode);
       (async () => {
         const userProfile = await userStore.getProfile({ userId });
         setProfile(userProfile);
@@ -63,7 +61,6 @@ const Profile = observer(
         setMobile(userProfile?.phone);
         setName(userProfile?.name);
 
-        setThumb(`${getThumbPhoto()}`);
         setBackground(`${getBackPhoto()}`);
       })();
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -103,9 +100,7 @@ const Profile = observer(
 
     const handleChangePhoto = file => {
       setIsChange(true);
-      // const thumbPhoto = ;
-      // console.log('CHANGE PHOTO : ', thumbPhoto);
-      setThumb(URL.createObjectURL(file));
+      setLocalPhoto(URL.createObjectURL(file));
     };
 
     const handleChangeDefaultBackground = () => {
@@ -115,28 +110,24 @@ const Profile = observer(
 
     const handleChangeDefaultPhoto = () => {
       setIsChange(true);
-      setThumb(`${getThumbPhoto()}`);
+      setLocalPhoto(null);
     };
 
     const handleConfirm = async () => {
-      // const blobImages = await Promise.all([toBlob(background), toBlob(thumb)]);
-      // const base64Images = await Promise.all(
-      //   blobImages.map(blobImage => toBase64(blobImage)),
-      // );
       console.log('BACK PHOTO : ', background);
-      console.log('THUMB PHOTO : ', thumb);
+      console.log('THUMB PHOTO : ', localPhoto);
 
       const updatedInfo = {
         companyNum: phone,
         phone: mobile,
       };
 
-      if (thumb.includes('blob:')) {
-        const blobImage = await toBlob(thumb);
+      if (localPhoto.includes('blob:')) {
+        const blobImage = await toBlob(localPhoto);
         const base64Image = await toBase64(blobImage);
         updatedInfo.profilePhoto = base64Image;
 
-        URL.revokeObjectURL(thumb);
+        URL.revokeObjectURL(localPhoto);
       }
 
       if (background.includes('blob:')) {
@@ -154,20 +145,31 @@ const Profile = observer(
       setPhone(updatedProfile?.companyNum);
       setMobile(updatedProfile?.phone);
 
-      setEditMode(false);
       setIsChange(false);
+      setEditMode(false);
+
+      // Show server side photo after 'confirm'
+      setLocalPhoto(null);
+
+      onClickSaveBtn();
     };
 
     const handleExit = () => {
       setIsChange(false);
       setEditMode(false);
-
       setMobile(profile?.phone);
       setPhone(profile?.companyNum);
       setBackground(getBackPhoto());
-      setThumb(getThumbPhoto());
+
+      // hide confirm dialog
       setCancelDialogVisible(false);
+
+      // Show previous photo after exit
+      setLocalPhoto(null);
+
+      onClickCancelBtn();
     };
+
     const handleExitCancel = () => {
       setCancelDialogVisible(false);
     };
@@ -203,6 +205,9 @@ const Profile = observer(
         console.error(`Error is${e}`);
       }
     };
+
+    // check edit mode
+    const editEnabled = editOnlyMode || isEditMode;
 
     return (
       <>
@@ -246,7 +251,7 @@ const Profile = observer(
             </Sidebar>
           )}
           <Content showSider={showSider}>
-            {isEditMode && (
+            {editEnabled && (
               <Dropdown
                 trigger={['click']}
                 overlay={
@@ -277,9 +282,11 @@ const Profile = observer(
             )}
             <UserImageWrapper position="br">
               <UserImage
-                src={thumb || userStore.getProfilePhotoURL(userId, 'medium')}
+                src={
+                  localPhoto || userStore.getProfilePhotoURL(userId, 'medium')
+                }
               />
-              {isMyId() && isEditMode && (
+              {isMyId() && editEnabled && (
                 <Dropdown
                   trigger={['click']}
                   overlay={
@@ -307,7 +314,7 @@ const Profile = observer(
               )}
             </UserImageWrapper>
             <BigText>
-              {isEditMode ? (
+              {editEnabled ? (
                 <StyleInput
                   className="type2"
                   onChange={e => {
@@ -322,7 +329,7 @@ const Profile = observer(
             </BigText>
             <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
             <UserStatusMsg>
-              {isEditMode ? (
+              {editEnabled ? (
                 <StyleInput
                   className="type2"
                   onChange={e => {
@@ -342,7 +349,7 @@ const Profile = observer(
               </UserInfoItem>
               <UserInfoItem>
                 <StyleOfficeIcon iconimg="company" />
-                {isEditMode ? (
+                {editEnabled ? (
                   <StyleInput
                     onChange={e => {
                       setIsChange(true);
@@ -356,7 +363,7 @@ const Profile = observer(
               </UserInfoItem>
               <UserInfoItem>
                 <StyleOfficeIcon iconimg="phone" />
-                {isEditMode ? (
+                {editEnabled ? (
                   <StyleInput
                     onChange={e => {
                       setIsChange(true);
@@ -370,7 +377,7 @@ const Profile = observer(
               </UserInfoItem>
               {/* 프로필 편집 시 "email" class 삭제 */}
               <UserInfoItem
-                className={isEditMode ? '' : 'email'}
+                className={editEnabled ? '' : 'email'}
                 onClick={() => {
                   console.log('todo');
                 }}
@@ -381,7 +388,7 @@ const Profile = observer(
               </UserInfoItem>
             </UserInfoList>
             <ButtonContainer>
-              {isEditMode && (
+              {editEnabled && (
                 <>
                   <Button
                     style={{ marginRight: '1.25rem' }}
