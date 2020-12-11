@@ -15,6 +15,7 @@ import SignUpPage from './page/SignUpPage';
 import SignUpFormPage from './page/SignUpFormPage';
 import SignUpCompletePage from './page/SignUpCompletePage';
 import DriveSharedFilePage from './page/DriveSharedFilePage';
+import OfficeFilePage from './page/OffiveFilePage';
 // import MainPage from './local-test/MainPage';
 import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
@@ -57,6 +58,7 @@ function App() {
             <Route exact path="/drive/files/:fileId">
               <DriveSharedFilePage />
             </Route>
+            <PrivateRoute path="/office/:fileId" component={OfficeFilePage} />
             <RedirectablePublicRoute
               exact
               path="/login"
