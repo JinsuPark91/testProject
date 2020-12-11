@@ -22,7 +22,7 @@ setEnv({
   resourceURL: `http://${
     process.env.REACT_APP_DEV_SERVICE_DOMAIN || window.location.hostname
   }`,
-  comURL: `http://${
+  comURL: global.env.REACT_APP_COMMON_URL ||`http://${
     process.env.REACT_APP_DEV_COM_DOMAIN || window.location.hostname
   }`,
   websocketURL: `ws://${
@@ -31,9 +31,9 @@ setEnv({
   meetingURL: `http://${process.env.REACT_APP_DEV_COM_DOMAIN}`,
 });
 const url = window.location.origin; //  http://xxx.dev.teespace.net
-const sub_url = url.split('//')[1].split('.')[0]; //  xxx
-const con_url = url.split(sub_url);
-const mail_url = con_url[1].slice(1, con_url[1].length); //  dev.teespace.net
+const con_url = url.split(`//`)[1]; // xxx.dev.teespace.net
+const sub_url = url.split(`//`)[1].split(`.`)[0]; //  xxx
+const main_url = con_url.slice(con_url.indexOf('.') + 1, con_url.length); //dev.teespace.net
 
 ReactDOM.render(
   <CoreStoreProvider config={getEnv()}>
@@ -41,10 +41,11 @@ ReactDOM.render(
       authClient={keycloak}
       initOptions={{
         checkLoginIframe: false,
+
         redirectUri:
           process.env.REACT_APP_ENV === 'local'
             ? `http://localhost:3000`
-            : `http://${mail_url}?domain=${sub_url}`,
+            : `http://${main_url}?domain=${sub_url}`,
       }}
     >
       <GlobalStyle />
