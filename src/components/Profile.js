@@ -302,7 +302,7 @@ const Profile = observer(
                     <Menu.Item>
                       <StyledUpload
                         component="div"
-                        accept={['image/*']}
+                        accept={['.jpg,.jpeg,.png']}
                         multiple={false}
                         customRequest={({ file }) =>
                           handleChangeBackground(file)
@@ -336,7 +336,7 @@ const Profile = observer(
                         <StyledUpload
                           component="div"
                           multiple={false}
-                          accept={['image/*']}
+                          accept={['.jpg,.jpeg,.png']}
                           customRequest={({ file }) => handleChangePhoto(file)}
                         >
                           프로필 사진 변경

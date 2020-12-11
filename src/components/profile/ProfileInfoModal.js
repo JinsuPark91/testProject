@@ -288,7 +288,7 @@ function ProfileInfoModal({
       <Menu.Item>
         <StyledUpload
           component="div"
-          accept={['image/*']}
+          accept={['.jpg,.jpeg,.png']}
           multiple={false}
           customRequest={({ file }) => handleChangePhoto(file)}
         >
@@ -309,7 +309,7 @@ function ProfileInfoModal({
       <Menu.Item>
         <StyledUpload
           component="div"
-          accept={['image/*']}
+          accept={['.jpg,.jpeg,.png']}
           multiple={false}
           customRequest={({ file }) => handleChangeBackground(file)}
         >
