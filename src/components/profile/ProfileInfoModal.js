@@ -208,6 +208,10 @@ function ProfileInfoModal({
     setPhone(updatedProfile?.companyNum);
     setMobile(updatedProfile?.phone);
 
+    // clean local cached image
+    setLocalProfilePhoto(null);
+    setLocalBackgroundPhoto(null);
+
     setIsEditMode(false);
     setIsChange(false);
     if (editMode === true) onToggle();
@@ -219,8 +223,11 @@ function ProfileInfoModal({
 
     setMobile(profile?.phone);
     setPhone(profile?.companyNum);
-    setLocalBackgroundPhoto(getBackPhoto());
+
+    // clean local cached image
     setLocalProfilePhoto(null);
+    setLocalBackgroundPhoto(null);
+
     if (editMode === true) onToggle();
   };
 

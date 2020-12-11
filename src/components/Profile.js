@@ -56,8 +56,6 @@ const Profile = observer(
         setPhone(userProfile?.companyNum);
         setMobile(userProfile?.phone);
         setName(userProfile?.name);
-
-        setLocalBackgroundPhoto(`${getBackPhoto()}`);
       })();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId]);
@@ -101,7 +99,7 @@ const Profile = observer(
 
     const handleChangeDefaultBackground = () => {
       setIsChange(true);
-      setLocalBackgroundPhoto(`${getBackPhoto()}`);
+      setLocalBackgroundPhoto(null);
     };
 
     const handleChangeDefaultPhoto = () => {
@@ -150,6 +148,7 @@ const Profile = observer(
 
       // Show server side photo after 'confirm'
       setLocalProfilePhoto(null);
+      setLocalBackgroundPhoto(null);
 
       onClickSaveBtn();
     };
@@ -166,6 +165,7 @@ const Profile = observer(
 
       // Show previous photo after exit
       setLocalProfilePhoto(null);
+      setLocalBackgroundPhoto(null);
 
       onClickCancelBtn();
     };
@@ -234,7 +234,7 @@ const Profile = observer(
             },
           ]}
         />
-        <Wrapper imageSrc={localBackgroundPhoto}>
+        <Wrapper imageSrc={localBackgroundPhoto || getBackPhoto()}>
           {showSider && (
             <Sidebar>
               <StyledButton onClick={handleTalkClick}>
