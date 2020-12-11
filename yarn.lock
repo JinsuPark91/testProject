@@ -2988,9 +2988,9 @@
     form-data "^3.0.0"
 
 "@types/node@*":
-  version "14.14.11"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.11.tgz#fc25a4248a5e8d0837019b1d170146d07334abe0"
-  integrity sha512-BJ97wAUuU3NUiUCp44xzUFquQEvnk1wu7q4CMEUYKJWjdkr0YWYDsm4RFtAvxYsNjLsKcrFt6RvK8r+mnzMbEQ==
+  version "14.14.12"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.12.tgz#0b1d86f8c40141091285dea02e4940df73bba43f"
+  integrity sha512-ASH8OPHMNlkdjrEdmoILmzFfsJICvhBsFfAum4aKZ/9U4B6M6tTmTPh+f3ttWdD74CEGV5XvXWkbyfSdXaTd7g==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -4905,13 +4905,13 @@ browserslist@4.10.0:
     pkg-up "^3.1.0"
 
 browserslist@^4.0.0, browserslist@^4.12.0, browserslist@^4.14.5, browserslist@^4.15.0, browserslist@^4.6.2, browserslist@^4.6.4, browserslist@^4.9.1:
-  version "4.15.0"
-  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.15.0.tgz#3d48bbca6a3f378e86102ffd017d9a03f122bdb0"
-  integrity sha512-IJ1iysdMkGmjjYeRlDU8PQejVwxvVO5QOfXH7ylW31GO6LwNRSmm/SgRXtNsEXqMLl2e+2H5eEJ7sfynF8TCaQ==
+  version "4.16.0"
+  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.16.0.tgz#410277627500be3cb28a1bfe037586fbedf9488b"
+  integrity sha512-/j6k8R0p3nxOC6kx5JGAxsnhc9ixaWJfYc+TNTzxg6+ARaESAvQGV7h0uNOB4t+pLQJZWzcrMxXOxjgsCj3dqQ==
   dependencies:
-    caniuse-lite "^1.0.30001164"
+    caniuse-lite "^1.0.30001165"
     colorette "^1.2.1"
-    electron-to-chromium "^1.3.612"
+    electron-to-chromium "^1.3.621"
     escalade "^3.1.1"
     node-releases "^1.1.67"
 
@@ -5162,7 +5162,7 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001035, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001164:
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001035, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001165:
   version "1.0.30001165"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001165.tgz#32955490d2f60290bb186bb754f2981917fa744f"
   integrity sha512-8cEsSMwXfx7lWSUMA2s08z9dIgsnR5NAqjXP23stdsU3AUWkCr/rr4s4OFtHXn5XXr6+7kam3QFVoYyXNPdJPA==
@@ -6942,10 +6942,10 @@ ejs@^3.1.2:
   dependencies:
     jake "^10.6.1"
 
-electron-to-chromium@^1.3.378, electron-to-chromium@^1.3.612:
-  version "1.3.621"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.621.tgz#0bbe2100ef0b28f88d0b1101fbdf433312f69be0"
-  integrity sha512-FeIuBzArONbAmKmZIsZIFGu/Gc9AVGlVeVbhCq+G2YIl6QkT0TDn2HKN/FMf1btXEB9kEmIuQf3/lBTVAbmFOg==
+electron-to-chromium@^1.3.378, electron-to-chromium@^1.3.621:
+  version "1.3.622"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.622.tgz#9726bd2e67a5462154750ce9701ca6af07d07877"
+  integrity sha512-AJT0Fm1W0uZlMVVkkJrcCVvczDuF8tPm3bwzQf5WO8AaASB2hwTRP7B8pU5rqjireH+ib6am8+hH5/QkXzzYKw==
 
 element-resize-detector@^1.2.1:
   version "1.2.1"
@@ -7887,7 +7887,7 @@ file-loader@^6.0.0:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
 
-"file-saver@github:eligrey/FileSaver.js#1.3.8":
+file-saver@eligrey/FileSaver.js#1.3.8:
   version "1.3.8"
   resolved "https://codeload.github.com/eligrey/FileSaver.js/tar.gz/e865e37af9f9947ddcced76b549e27dc45c1cb2e"
 
@@ -16943,7 +16943,7 @@ tar@^6.0.2:
 
 "teespace-admin@git+http://192.168.158.12:9000/teespace/teespace-admin#develop":
   version "0.1.0"
-  resolved "git+http://192.168.158.12:9000/teespace/teespace-admin#ab578d510515f36126e5da0a0a6292765332d7d0"
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-admin#b495ac6ef193636912dda1eb7197e5902130a60e"
   dependencies:
     "@ant-design/icons" "^4.2.2"
     "@craco/craco" "^5.6.4"
@@ -16984,8 +16984,8 @@ tar@^6.0.2:
     teespace-support-app "git+http://192.168.158.12:9000/teespace/teespace-support-app#develop"
 
 "teespace-calendar-app@git+http://192.168.158.12:9000/teespace/teespace-calendar-app#develop":
-  version "0.1.22"
-  resolved "git+http://192.168.158.12:9000/teespace/teespace-calendar-app#ec7cbdf6bf225761f58538109e5c7413993c9613"
+  version "0.1.23"
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-calendar-app#f09d2f452519b9665a2feefb122a7fa3e937144c"
   dependencies:
     "@ant-design/icons" "^4.2.2"
     "@craco/craco" "^5.6.4"
@@ -17025,9 +17025,9 @@ tar@^6.0.2:
     teespace-drive-app "git+http://192.168.158.12:9000/teespace/teespace-drive-app#develop"
 
 "teespace-calendar-app@git+http://192.168.158.12:9000/teespace/teespace-calendar-app.git#develop":
-  version "0.1.22"
-  uid ec7cbdf6bf225761f58538109e5c7413993c9613
-  resolved "git+http://192.168.158.12:9000/teespace/teespace-calendar-app.git#ec7cbdf6bf225761f58538109e5c7413993c9613"
+  version "0.1.23"
+  uid f09d2f452519b9665a2feefb122a7fa3e937144c
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-calendar-app.git#f09d2f452519b9665a2feefb122a7fa3e937144c"
   dependencies:
     "@ant-design/icons" "^4.2.2"
     "@craco/craco" "^5.6.4"
@@ -17068,7 +17068,7 @@ tar@^6.0.2:
 
 "teespace-core@git+http://192.168.158.12:9000/teespace/teespace-core#develop":
   version "0.1.35"
-  resolved "git+http://192.168.158.12:9000/teespace/teespace-core#56c82b0045eb40931a91ce2e6ff951b9f2116dcf"
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-core#c96c5a184b98e8bb81eab58b0e9f8ecccee47822"
   dependencies:
     "@craco/craco" "^5.6.4"
     "@testing-library/jest-dom" "^4.2.4"
@@ -17095,8 +17095,8 @@ tar@^6.0.2:
 
 "teespace-core@git+http://192.168.158.12:9000/teespace/teespace-core.git#develop":
   version "0.1.35"
-  uid "56c82b0045eb40931a91ce2e6ff951b9f2116dcf"
-  resolved "git+http://192.168.158.12:9000/teespace/teespace-core.git#56c82b0045eb40931a91ce2e6ff951b9f2116dcf"
+  uid c96c5a184b98e8bb81eab58b0e9f8ecccee47822
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-core.git#c96c5a184b98e8bb81eab58b0e9f8ecccee47822"
   dependencies:
     "@craco/craco" "^5.6.4"
     "@testing-library/jest-dom" "^4.2.4"
@@ -17123,8 +17123,8 @@ tar@^6.0.2:
 
 "teespace-core@git+ssh://git@192.168.158.12:teespace/teespace-core#develop":
   version "0.1.35"
-  uid "56c82b0045eb40931a91ce2e6ff951b9f2116dcf"
-  resolved "git+ssh://git@192.168.158.12:teespace/teespace-core#56c82b0045eb40931a91ce2e6ff951b9f2116dcf"
+  uid c96c5a184b98e8bb81eab58b0e9f8ecccee47822
+  resolved "git+ssh://git@192.168.158.12:teespace/teespace-core#c96c5a184b98e8bb81eab58b0e9f8ecccee47822"
   dependencies:
     "@craco/craco" "^5.6.4"
     "@testing-library/jest-dom" "^4.2.4"
@@ -17151,7 +17151,7 @@ tar@^6.0.2:
 
 "teespace-drive-app@git+http://192.168.158.12:9000/teespace/teespace-drive-app#develop":
   version "0.1.0"
-  resolved "git+http://192.168.158.12:9000/teespace/teespace-drive-app#13431ae7e42b2a334bdb0e15e1ffe06468402c64"
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-drive-app#0c7e37d7f113b34eee110ac102aeda76b8345154"
   dependencies:
     "@ant-design/icons" "^4.2.2"
     "@craco/craco" "^5.6.4"
@@ -17173,6 +17173,7 @@ tar@^6.0.2:
     react-dnd-html5-backend "^11.1.3"
     react-dom "^16.13.1"
     react-infinite-scroll-component "^5.1.0"
+    react-infinite-scroller "^1.2.4"
     react-lazy-load-image-component "^1.5.0"
     react-player "^2.6.2"
     react-resizable "^1.11.0"
@@ -17184,10 +17185,11 @@ tar@^6.0.2:
     styled-components "^5.1.1"
     styled-tools "^1.7.2"
     teespace-core "git+http://192.168.158.12:9000/teespace/teespace-core#develop"
+    teespace-mail-app "git+http://192.168.158.12:9000/teespace/teespace-mail-app#develop"
 
 "teespace-mail-app@git+http://192.168.158.12:9000/teespace/teespace-mail-app#develop":
   version "0.1.0"
-  resolved "git+http://192.168.158.12:9000/teespace/teespace-mail-app#e30e29d191efe0b4b211bed126299662400c01d1"
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-mail-app#42083a4bf708b6a621cbf0734b6951f8233bda1a"
   dependencies:
     "@craco/craco" "^5.6.4"
     "@testing-library/jest-dom" "^4.2.4"
@@ -17235,7 +17237,7 @@ tar@^6.0.2:
 
 "teespace-note-app@git+http://192.168.158.12:9000/teespace/teespace-note-app#develop":
   version "0.1.1"
-  resolved "git+http://192.168.158.12:9000/teespace/teespace-note-app#b73c1d105ee4971407830304ef5c9659a41d0705"
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-note-app#5f09e4dff24e372235dc380ba7cda110a5648f40"
   dependencies:
     "@craco/craco" "^5.6.4"
     "@fortawesome/fontawesome-svg-core" "^1.2.30"
@@ -17269,7 +17271,7 @@ tar@^6.0.2:
 
 "teespace-support-app@git+http://192.168.158.12:9000/teespace/teespace-support-app#develop":
   version "0.1.0"
-  resolved "git+http://192.168.158.12:9000/teespace/teespace-support-app#d832655c6d17f5dbc3df3435a087ba6ec7fd4feb"
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-support-app#ccbe832a7ecb6b014c6ae4e76d4c873be381013a"
   dependencies:
     "@ant-design/icons" "^4.3.0"
     "@craco/craco" "^5.6.4"
@@ -17296,7 +17298,7 @@ tar@^6.0.2:
 
 "teespace-talk-app@git+http://192.168.158.12:9000/teespace/teespace-talk-app#develop":
   version "0.1.0"
-  resolved "git+http://192.168.158.12:9000/teespace/teespace-talk-app#cef6c063cb5664d34943f0d864f5b328f30fed22"
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-talk-app#31df51a307a81fe484b5032f769904b1df3bf29a"
   dependencies:
     "@craco/craco" "^5.6.4"
     "@testing-library/jest-dom" "^4.2.4"

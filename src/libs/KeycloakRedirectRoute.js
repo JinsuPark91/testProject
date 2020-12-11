@@ -21,21 +21,11 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
           console.log(process.env.REACT_APP_ENV);
           if (process.env.REACT_APP_ENV !== 'local') {
             authStore
-              .login({
-                id: '123',
-              })
+              .login()
               .then(() => {
                 history.push(`/f/${authStore.user.loginId}/profile`);
               })
               .catch(e => console.error(e));
-            // (async () => {
-            //   const res = await authStore.login({
-            //     id: '123',
-            //   });
-            //   if (res) {
-            //       history.push(`/f/${authStore.user.loginId}`);
-            //   }
-            // })();
           }
           return <Component {...props} />;
         } else {
