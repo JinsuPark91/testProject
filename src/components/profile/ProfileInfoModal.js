@@ -35,14 +35,15 @@ function ProfileInfoModal({
   const [userType, setUserType] = useState('');
   const [isChange, setIsChange] = useState(false);
 
-  // NOTE. Setting state to null means the state is not changed
-  //  This null is different from empty('')
-  const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(null);
-  const [localProfilePhoto, setLocalProfilePhoto] = useState(null);
-  const [phone, setPhone] = useState(null);
-  const [mobile, setMobile] = useState(null);
-  const [name, setName] = useState(null);
-  const [statusMsg, setStatusMsg] = useState(null);
+  // NOTE. Setting state to undefined means the state is not changed
+  //  This undefined is different from empty('')
+  const [name, setName] = useState(undefined);
+  const [statusMsg, setStatusMsg] = useState(undefined);
+  const [phone, setPhone] = useState(undefined);
+  const [mobile, setMobile] = useState(undefined);
+  // NOTE. Setting null to photo means default image is used
+  const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(undefined);
+  const [localProfilePhoto, setLocalProfilePhoto] = useState(undefined);
 
   // get profile from store
   const profile = userStore.userProfiles[userId];
@@ -51,22 +52,28 @@ function ProfileInfoModal({
     return userStore.getBackgroudPhotoURL(userId);
   };
 
+  // calculate photo
+  const renderProfilePhoto =
+    localProfilePhoto === null
+      ? profile.defaultPhotoUrl
+      : localProfilePhoto || profilePhoto;
+
   const setLocalInputData = () => {
     setPhone(profile?.companyNum);
     setMobile(profile?.phone);
     setName(profile?.nick || profile?.name);
     setStatusMsg(profile?.profileStatusMsg);
-    setLocalProfilePhoto(null);
-    setLocalBackgroundPhoto(null);
+    setLocalProfilePhoto(undefined);
+    setLocalBackgroundPhoto(undefined);
   };
 
   const resetLocalInputData = () => {
-    setPhone(null);
-    setMobile(null);
-    setName(null);
-    setStatusMsg(null);
-    setLocalProfilePhoto(null);
-    setLocalBackgroundPhoto(null);
+    setPhone(undefined);
+    setMobile(undefined);
+    setName(undefined);
+    setStatusMsg(undefined);
+    setLocalProfilePhoto(undefined);
+    setLocalBackgroundPhoto(undefined);
   };
 
   const isValidInputData = () => !!name;
@@ -147,7 +154,7 @@ function ProfileInfoModal({
 
   const handleChangeDefaultBackground = () => {
     setIsChange(true);
-    setLocalBackgroundPhoto(`${getBackPhoto()}`);
+    setLocalBackgroundPhoto(null);
   };
 
   const handleChangeDefaultPhoto = () => {
@@ -212,7 +219,9 @@ function ProfileInfoModal({
 
       URL.revokeObjectURL(localProfilePhoto);
     } else {
-      updatedInfo.profilePhoto = profilePhoto;
+      // The null value means default photo
+      updatedInfo.profilePhoto =
+        localProfilePhoto === null ? localProfilePhoto : profilePhoto;
     }
 
     if (localBackgroundPhoto?.includes('blob:')) {
@@ -222,7 +231,9 @@ function ProfileInfoModal({
 
       URL.revokeObjectURL(localBackgroundPhoto);
     } else {
-      updatedInfo.backPhoto = getBackPhoto();
+      // The null value means default photo
+      updatedInfo.backPhoto =
+        localBackgroundPhoto === null ? localBackgroundPhoto : getBackPhoto();
     }
 
     // Update my profile information
@@ -320,7 +331,7 @@ function ProfileInfoModal({
     <UserBox>
       {imageModal && (
         <ProfileImageModal
-          profilePhoto={localProfilePhoto || profilePhoto}
+          profilePhoto={renderProfilePhoto}
           onCancel={handleImageModal}
         />
       )}
@@ -336,11 +347,7 @@ function ProfileInfoModal({
         </Dropdown>
       )}
       <UserImage>
-        <img
-          alt=""
-          src={localProfilePhoto || profilePhoto}
-          onClick={handleImageModal}
-        />
+        <img alt="" src={renderProfilePhoto} onClick={handleImageModal} />
         {isEditMode && (
           <ImageChangeBox>
             <Dropdown
@@ -362,7 +369,7 @@ function ProfileInfoModal({
             <EditNameInput
               maxLength={20}
               placeholder="별명을 입력해주세요."
-              value={name !== null ? name : profile?.nick || profile?.name}
+              value={name !== undefined ? name : profile?.nick || profile?.name}
               onChange={e => {
                 setName(e);
                 setIsChange(true);
@@ -377,7 +384,9 @@ function ProfileInfoModal({
           {isEditMode ? (
             <EditStatusInput
               maxLength={50}
-              value={statusMsg !== null ? statusMsg : profile?.profileStatusMsg}
+              value={
+                statusMsg !== undefined ? statusMsg : profile?.profileStatusMsg
+              }
               onChange={e => {
                 setStatusMsg(e);
                 setIsChange(true);
@@ -402,7 +411,9 @@ function ProfileInfoModal({
             <>
               <EditNumInputBox>
                 <Input
-                  value={phone !== null ? phone : profile?.companyNum || `-`}
+                  value={
+                    phone !== undefined ? phone : profile?.companyNum || `-`
+                  }
                   onChange={e => {
                     setPhone(e.target.value);
                     setIsChange(true);

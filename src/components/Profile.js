@@ -31,14 +31,15 @@ const Profile = observer(
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [isChange, setIsChange] = useState(false);
 
-    // NOTE. Setting state to null means the state is not changed
-    //  This null is different from empty('')
-    const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(null);
-    const [localProfilePhoto, setLocalProfilePhoto] = useState(null);
-    const [phone, setPhone] = useState(null);
-    const [mobile, setMobile] = useState(null);
-    const [name, setName] = useState(null);
-    const [statusMsg, setStatusMsg] = useState(null);
+    // NOTE. Setting state to undefined means the state is not changed
+    //  This undefined is different from empty('')
+    const [name, setName] = useState(undefined);
+    const [statusMsg, setStatusMsg] = useState(undefined);
+    const [phone, setPhone] = useState(undefined);
+    const [mobile, setMobile] = useState(undefined);
+    // NOTE. Setting null to photo means default image is used
+    const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(undefined);
+    const [localProfilePhoto, setLocalProfilePhoto] = useState(undefined);
 
     // get profile from store
     const profile = userStore.userProfiles[userId];
@@ -52,22 +53,32 @@ const Profile = observer(
       return userStore.getProfilePhotoURL(userId, 'medium');
     };
 
+    // calculate photo
+    const renderProfilePhoto =
+      localProfilePhoto === null
+        ? profile.defaultPhotoUrl
+        : localProfilePhoto || getProfilePhoto();
+    const renderBackgroundPhoto =
+      localBackgroundPhoto === null
+        ? profile.defaultBackgroundUrl
+        : localBackgroundPhoto || getBackPhoto();
+
     const setLocalInputData = () => {
       setPhone(profile?.companyNum);
       setMobile(profile?.phone);
       setName(profile?.nick || profile?.name);
       setStatusMsg(profile?.profileStatusMsg);
-      setLocalProfilePhoto(null);
-      setLocalBackgroundPhoto(null);
+      setLocalProfilePhoto(undefined);
+      setLocalBackgroundPhoto(undefined);
     };
 
     const resetLocalInputData = () => {
-      setPhone(null);
-      setMobile(null);
-      setName(null);
-      setStatusMsg(null);
-      setLocalProfilePhoto(null);
-      setLocalBackgroundPhoto(null);
+      setPhone(undefined);
+      setMobile(undefined);
+      setName(undefined);
+      setStatusMsg(undefined);
+      setLocalProfilePhoto(undefined);
+      setLocalBackgroundPhoto(undefined);
     };
 
     const isValidInputData = () => !!name;
@@ -133,9 +144,6 @@ const Profile = observer(
     };
 
     const handleConfirm = async () => {
-      console.log('BACK PHOTO : ', localBackgroundPhoto);
-      console.log('THUMB PHOTO : ', localProfilePhoto);
-
       // set update data from user input
       const updatedInfo = {
         nick: name,
@@ -151,7 +159,9 @@ const Profile = observer(
 
         URL.revokeObjectURL(localProfilePhoto);
       } else {
-        updatedInfo.profilePhoto = getProfilePhoto();
+        // The null value means default photo
+        updatedInfo.profilePhoto =
+          localProfilePhoto === null ? localProfilePhoto : getProfilePhoto();
       }
 
       if (localBackgroundPhoto?.includes('blob:')) {
@@ -161,7 +171,9 @@ const Profile = observer(
 
         URL.revokeObjectURL(localBackgroundPhoto);
       } else {
-        updatedInfo.backPhoto = getBackPhoto();
+        // The null value means default photo
+        updatedInfo.backPhoto =
+          localBackgroundPhoto === null ? localBackgroundPhoto : getBackPhoto();
       }
 
       // Update my profile information
@@ -253,7 +265,7 @@ const Profile = observer(
             },
           ]}
         />
-        <Wrapper imageSrc={localBackgroundPhoto || getBackPhoto()}>
+        <Wrapper imageSrc={renderBackgroundPhoto}>
           {showSider && (
             <Sidebar>
               <StyledButton onClick={handleTalkClick}>
@@ -304,7 +316,7 @@ const Profile = observer(
               </Dropdown>
             )}
             <UserImageWrapper position="br">
-              <UserImage src={localProfilePhoto || getProfilePhoto()} />
+              <UserImage src={renderProfilePhoto} />
               {isMyId() && editEnabled && (
                 <Dropdown
                   trigger={['click']}
@@ -342,7 +354,9 @@ const Profile = observer(
                     setIsChange(true);
                     setName(e.target.value);
                   }}
-                  value={name !== null ? name : profile?.nick || profile?.name}
+                  value={
+                    name !== undefined ? name : profile?.nick || profile?.name
+                  }
                 />
               ) : (
                 profile?.nick || profile?.name
@@ -358,7 +372,9 @@ const Profile = observer(
                     setStatusMsg(e.target.value);
                   }}
                   value={
-                    statusMsg !== null ? statusMsg : profile?.profileStatusMsg
+                    statusMsg !== undefined
+                      ? statusMsg
+                      : profile?.profileStatusMsg
                   }
                 />
               ) : (
@@ -378,7 +394,7 @@ const Profile = observer(
                       setIsChange(true);
                       setMobile(e.target.value);
                     }}
-                    value={phone !== null ? phone : profile?.companyNum}
+                    value={phone !== undefined ? phone : profile?.companyNum}
                   />
                 ) : (
                   <StylText>{profile?.companyNum}</StylText>
@@ -392,7 +408,7 @@ const Profile = observer(
                       setIsChange(true);
                       setPhone(e.target.value);
                     }}
-                    value={mobile !== null ? mobile : profile?.phone}
+                    value={mobile !== undefined ? mobile : profile?.phone}
                   />
                 ) : (
                   <StylText>{profile?.phone}</StylText>
