@@ -22,7 +22,10 @@ setEnv({
   }/${process.env.REACT_APP_DEV_PATH}`,
   resourceURL: `http://${
     process.env.REACT_APP_DEV_SERVICE_DOMAIN || window.location.hostname
-  }`,
+    }`,
+  comURL : `http://${
+    process.env.REACT_APP_DEV_COM_DOMAIN || window.location.hostname
+    }`,
   websocketURL: `ws://${
     process.env.REACT_APP_DEV_WEBSOCKET_DOMAIN || window.location.hostname
   }/${process.env.REACT_APP_DEV_WEBSOCKET_PATH}`,
