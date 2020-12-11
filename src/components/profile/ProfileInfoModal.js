@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { Input, Button, Dropdown, Modal } from 'antd';
@@ -6,7 +6,7 @@ import { InfoCircleOutlined } from '@ant-design/icons';
 import { useCoreStores } from 'teespace-core';
 import Upload from 'rc-upload';
 import { useObserver } from 'mobx-react';
-import { default as InputCounter } from '../Input';
+import InputCounter from '../Input';
 import ProfileModal from './ProfileModal';
 import tsOfficeIcon from '../../assets/ts_office.svg';
 import tsCallIcon from '../../assets/ts_call.svg';
@@ -31,7 +31,6 @@ function ProfileInfoModal({
   editMode = false,
 }) {
   const history = useHistory();
-  const ref = useRef();
   const { userStore, friendStore, roomStore, authStore } = useCoreStores();
   const [profile, setProfile] = useState(null);
   const [isEditMode, setIsEditMode] = useState(editMode);
@@ -39,7 +38,7 @@ function ProfileInfoModal({
   const [userType, setUserType] = useState('');
 
   const [background, setBackground] = useState('');
-  const [thumb, setThumb] = useState(profilePhoto);
+  const [localProfilePhoto, setLocalProfilePhoto] = useState(null);
   const [phone, setPhone] = useState('');
   const [mobile, setMobile] = useState('');
   const [isChange, setIsChange] = useState(false);
@@ -135,7 +134,7 @@ function ProfileInfoModal({
 
   const handleChangePhoto = file => {
     setIsChange(true);
-    setThumb(URL.createObjectURL(file));
+    setLocalProfilePhoto(URL.createObjectURL(file));
   };
 
   const handleChangeDefaultBackground = () => {
@@ -145,13 +144,13 @@ function ProfileInfoModal({
 
   const handleChangeDefaultPhoto = () => {
     setIsChange(true);
-    setThumb(`${getThumbPhoto()}`);
+    setLocalProfilePhoto(null);
   };
 
   const handleAddFriend = async () => {
     const friendInfo = await userStore.getProfile(userId);
     try {
-      const newFriendInfo = await friendStore.addFriend({
+      await friendStore.addFriend({
         myUserId: userStore.myProfile.id,
         friendInfo,
       });
@@ -197,12 +196,12 @@ function ProfileInfoModal({
       profileStatusMsg: statusMsg,
     };
 
-    if (thumb.includes('blob:')) {
-      const blobImage = await toBlob(thumb);
+    if (localProfilePhoto.includes('blob:')) {
+      const blobImage = await toBlob(localProfilePhoto);
       const base64Image = await toBase64(blobImage);
       updatedInfo.profilePhoto = base64Image;
 
-      URL.revokeObjectURL(thumb);
+      URL.revokeObjectURL(localProfilePhoto);
     }
 
     if (background.includes('blob:')) {
@@ -231,22 +230,26 @@ function ProfileInfoModal({
     setMobile(profile?.phone);
     setPhone(profile?.companyNum);
     setBackground(getBackPhoto());
-    setThumb(getThumbPhoto());
+    setLocalProfilePhoto(null);
     if (editMode === true) onToggle();
   };
 
   const handleCancel = () => {
-    Modal.confirm({
-      transitionName: '',
-      maskTransitionName: '',
-      className: 'type-error',
-      width: '22.5rem',
-      icon: <InfoCircleOutlined />,
-      title: '변경 사항을 저장하지 않고 나가시겠습니까?',
-      okText: '나가기',
-      cancelText: '취소',
-      onOk: handleExit,
-    });
+    if (isChange) {
+      Modal.confirm({
+        transitionName: '',
+        maskTransitionName: '',
+        className: 'type-error',
+        width: '22.5rem',
+        icon: <InfoCircleOutlined />,
+        title: '변경 사항을 저장하지 않고 나가시겠습니까?',
+        okText: '나가기',
+        cancelText: '취소',
+        onOk: handleExit,
+      });
+    } else {
+      handleExit();
+    }
   };
 
   const imageChangeMenu = (
@@ -288,7 +291,7 @@ function ProfileInfoModal({
     async event => {
       if (event) event.stopPropagation();
       try {
-        const favFriendInfo = await friendStore.setFriendFavorite({
+        await friendStore.setFriendFavorite({
           myUserId: userStore.myProfile.id,
           friendId: userId,
           isFav: !isFav(),
@@ -321,7 +324,11 @@ function ProfileInfoModal({
         </Dropdown>
       )}
       <UserImage>
-        <img alt="" src={thumb} onClick={handleImageModal} />
+        <img
+          alt=""
+          src={localProfilePhoto || profilePhoto}
+          onClick={handleImageModal}
+        />
         {isEditMode && (
           <ImageChangeBox>
             <Dropdown

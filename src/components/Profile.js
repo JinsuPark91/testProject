@@ -33,7 +33,7 @@ const Profile = observer(
     const [profile, setProfile] = useState(null);
     // 유저 정보들
     const [background, setBackground] = useState(null);
-    const [localPhoto, setLocalPhoto] = useState(null);
+    const [localProfilePhoto, setLocalProfilePhoto] = useState(null);
     const [phone, setPhone] = useState('');
     const [mobile, setMobile] = useState('');
     const [isChange, setIsChange] = useState(false);
@@ -100,7 +100,7 @@ const Profile = observer(
 
     const handleChangePhoto = file => {
       setIsChange(true);
-      setLocalPhoto(URL.createObjectURL(file));
+      setLocalProfilePhoto(URL.createObjectURL(file));
     };
 
     const handleChangeDefaultBackground = () => {
@@ -110,24 +110,24 @@ const Profile = observer(
 
     const handleChangeDefaultPhoto = () => {
       setIsChange(true);
-      setLocalPhoto(null);
+      setLocalProfilePhoto(null);
     };
 
     const handleConfirm = async () => {
       console.log('BACK PHOTO : ', background);
-      console.log('THUMB PHOTO : ', localPhoto);
+      console.log('THUMB PHOTO : ', localProfilePhoto);
 
       const updatedInfo = {
         companyNum: phone,
         phone: mobile,
       };
 
-      if (localPhoto.includes('blob:')) {
-        const blobImage = await toBlob(localPhoto);
+      if (localProfilePhoto.includes('blob:')) {
+        const blobImage = await toBlob(localProfilePhoto);
         const base64Image = await toBase64(blobImage);
         updatedInfo.profilePhoto = base64Image;
 
-        URL.revokeObjectURL(localPhoto);
+        URL.revokeObjectURL(localProfilePhoto);
       }
 
       if (background.includes('blob:')) {
@@ -149,7 +149,7 @@ const Profile = observer(
       setEditMode(false);
 
       // Show server side photo after 'confirm'
-      setLocalPhoto(null);
+      setLocalProfilePhoto(null);
 
       onClickSaveBtn();
     };
@@ -165,7 +165,7 @@ const Profile = observer(
       setCancelDialogVisible(false);
 
       // Show previous photo after exit
-      setLocalPhoto(null);
+      setLocalProfilePhoto(null);
 
       onClickCancelBtn();
     };
@@ -175,7 +175,11 @@ const Profile = observer(
     };
 
     const handleCancel = () => {
-      setCancelDialogVisible(true);
+      if (isChange) {
+        setCancelDialogVisible(true);
+      } else {
+        handleExit();
+      }
     };
 
     const handleTalkClick = async () => {
@@ -283,7 +287,8 @@ const Profile = observer(
             <UserImageWrapper position="br">
               <UserImage
                 src={
-                  localPhoto || userStore.getProfilePhotoURL(userId, 'medium')
+                  localProfilePhoto ||
+                  userStore.getProfilePhotoURL(userId, 'medium')
                 }
               />
               {isMyId() && editEnabled && (

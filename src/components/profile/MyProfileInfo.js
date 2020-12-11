@@ -18,6 +18,10 @@ const MyProfileInfo = observer(() => {
     userStore.myProfile.id,
     'small',
   );
+  const thumbPhotoMedium = userStore.getProfilePhotoURL(
+    userStore.myProfile.id,
+    'medium',
+  );
   return (
     <>
       <ProfileIcon>
@@ -30,7 +34,7 @@ const MyProfileInfo = observer(() => {
         userId={userId}
         onCancel={toggleMyModal}
         visible={myModalVisible}
-        thumbPhoto={thumbPhoto}
+        thumbPhoto={thumbPhotoMedium}
         created={false}
       />
     </>
