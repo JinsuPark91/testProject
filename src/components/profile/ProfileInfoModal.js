@@ -20,8 +20,6 @@ import addIcon from '../../assets/ts_friends_add.svg';
 import photoIcon from '../../assets/ts_photo.svg';
 import ProfileImageModal from './ProfileImageModal';
 
-const IS_LOCAL = true;
-
 function ProfileInfoModal({
   userId = '',
   visible,
@@ -37,13 +35,17 @@ function ProfileInfoModal({
   const [imageModal, setImageModal] = useState(false);
   const [userType, setUserType] = useState('');
 
-  const [background, setBackground] = useState('');
+  const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState('');
   const [localProfilePhoto, setLocalProfilePhoto] = useState('');
   const [phone, setPhone] = useState('');
   const [mobile, setMobile] = useState('');
   const [isChange, setIsChange] = useState(false);
   const [name, setName] = useState('');
   const [statusMsg, setStatusMsg] = useState('');
+
+  const getBackPhoto = () => {
+    return userStore.getBackgroudPhotoURL(userId);
+  };
 
   useEffect(() => {
     if (visible === false) return;
@@ -57,7 +59,7 @@ function ProfileInfoModal({
       setMobile(userProfile?.phone);
       setName(nickName);
       setStatusMsg(userProfile?.profileStatusMsg);
-      setBackground(`${getBackPhoto()}`);
+      setLocalBackgroundPhoto(`${getBackPhoto()}`);
       setUserType(userAuthInfo.type);
     })();
 
@@ -111,22 +113,9 @@ function ProfileInfoModal({
     return result;
   };
 
-  const getBackPhoto = backPhoto => {
-    return userStore.getUserBackPhoto({
-      userId,
-      size: 'medium',
-      isLocal: IS_LOCAL,
-      backPhoto: backPhoto || null,
-    });
-  };
-
-  const getThumbPhoto = thumbPhoto => {
-    return userStore.getProfilePhotoURL(userId, 'medium');
-  };
-
   const handleChangeBackground = file => {
     setIsChange(true);
-    setBackground(URL.createObjectURL(file));
+    setLocalBackgroundPhoto(URL.createObjectURL(file));
   };
 
   const handleChangePhoto = file => {
@@ -136,7 +125,7 @@ function ProfileInfoModal({
 
   const handleChangeDefaultBackground = () => {
     setIsChange(true);
-    setBackground(`${getBackPhoto()}`);
+    setLocalBackgroundPhoto(`${getBackPhoto()}`);
   };
 
   const handleChangeDefaultPhoto = () => {
@@ -199,14 +188,18 @@ function ProfileInfoModal({
       updatedInfo.profilePhoto = base64Image;
 
       URL.revokeObjectURL(localProfilePhoto);
+    } else {
+      updatedInfo.profilePhoto = profilePhoto;
     }
 
-    if (background.includes('blob:')) {
-      const blobImage = await toBlob(background);
+    if (localBackgroundPhoto?.includes('blob:')) {
+      const blobImage = await toBlob(localBackgroundPhoto);
       const base64Image = await toBase64(blobImage);
       updatedInfo.backPhoto = base64Image;
 
-      URL.revokeObjectURL(background);
+      URL.revokeObjectURL(localBackgroundPhoto);
+    } else {
+      updatedInfo.backPhoto = getBackPhoto();
     }
 
     const updatedProfile = await userStore.updateMyProfile({ updatedInfo });
@@ -226,7 +219,7 @@ function ProfileInfoModal({
 
     setMobile(profile?.phone);
     setPhone(profile?.companyNum);
-    setBackground(getBackPhoto());
+    setLocalBackgroundPhoto(getBackPhoto());
     setLocalProfilePhoto(null);
     if (editMode === true) onToggle();
   };
@@ -305,7 +298,7 @@ function ProfileInfoModal({
     <UserBox>
       {imageModal && (
         <ProfileImageModal
-          profilePhoto={getThumbPhoto() || localProfilePhoto || profilePhoto}
+          profilePhoto={localProfilePhoto || profilePhoto}
           onCancel={handleImageModal}
         />
       )}
@@ -323,7 +316,7 @@ function ProfileInfoModal({
       <UserImage>
         <img
           alt=""
-          src={getThumbPhoto() || localProfilePhoto || profilePhoto}
+          src={localProfilePhoto || profilePhoto}
           onClick={handleImageModal}
         />
         {isEditMode && (
