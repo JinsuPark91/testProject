@@ -16,6 +16,8 @@ import EmailHoverIcon from '../assets/ts_export.svg';
 import tsBgImgIcon from '../assets/ts_photo.svg';
 import tsCameraImgIcon from '../assets/ts_camera.svg';
 
+const MAX_NICK_LENGTH = 20;
+
 const Profile = observer(
   ({
     userId = null,
@@ -319,7 +321,12 @@ const Profile = observer(
                   className="type2"
                   onChange={e => {
                     setIsChange(true);
-                    setName(e.target.value);
+                    const inputNick = e.target.value;
+                    const newNick =
+                      inputNick.length <= MAX_NICK_LENGTH
+                        ? inputNick
+                        : inputNick.slice(0, MAX_NICK_LENGTH);
+                    setName(newNick);
                   }}
                   value={name}
                 />

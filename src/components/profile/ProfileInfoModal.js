@@ -20,6 +20,8 @@ import addIcon from '../../assets/ts_friends_add.svg';
 import photoIcon from '../../assets/ts_photo.svg';
 import ProfileImageModal from './ProfileImageModal';
 
+const MAX_NICK_LENGTH = 20;
+
 function ProfileInfoModal({
   userId = '',
   visible,
@@ -348,7 +350,9 @@ function ProfileInfoModal({
               maxLength={20}
               value={name}
               onChange={e => {
-                setName(e);
+                const newNick =
+                  e.length <= MAX_NICK_LENGTH ? e : e.slice(0, MAX_NICK_LENGTH);
+                setName(newNick);
                 setIsChange(true);
               }}
             />
