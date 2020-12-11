@@ -114,8 +114,10 @@ const Profile = observer(
       console.log('THUMB PHOTO : ', localProfilePhoto);
 
       const updatedInfo = {
+        nick: name,
         companyNum: phone,
         phone: mobile,
+        profileStatusMsg,
       };
 
       if (localProfilePhoto?.includes('blob:')) {
