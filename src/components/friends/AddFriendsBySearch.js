@@ -204,6 +204,7 @@ function AddFriendsBySearch({
   visible,
   onCancelAddFriends,
   isOrgExist,
+  isSpaceEmpty,
   orgList,
   onDropdownChange,
   overwrittenValue,
@@ -234,9 +235,6 @@ function AddFriendsBySearch({
 
   // TODO: SPACE 멤버 얻어오는 서비스 붙이기
   const TestData = ['1', '2', '3', '4', '5'];
-  // 일단 조직도 나와야 하므로
-  const noFriends = false;
-  // const noFriends = friendStore.friendInfoList.length === 0; 스페이스 구성원이 있으면
 
   return (
     <>
@@ -248,7 +246,7 @@ function AddFriendsBySearch({
         title="프렌즈 추가"
         onCancel={onCancelAddFriends}
       >
-        {noFriends ? (
+        {isSpaceEmpty ? (
           <InvitationForm>
             <StyledInfoImg src={FriendModalImg} alt="" />
             <StyledInfoText>프렌즈가 없습니다.</StyledInfoText>

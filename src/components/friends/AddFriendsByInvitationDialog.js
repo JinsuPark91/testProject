@@ -88,7 +88,7 @@ const StyledLinkButton = styled(Button)`
 `;
 
 function AddFriendsBySearch({ visible, onCancel }) {
-  const { friendStore, userStore } = useCoreStores();
+  const { friendStore, userStore, spaceStore } = useCoreStores();
   const [mailAddress, setMailAddress] = useState('');
   const [chipList, setChipList] = useState([]);
   const [isToastVisible, setIsToastVisible] = useState(false);
@@ -117,7 +117,7 @@ function AddFriendsBySearch({ visible, onCancel }) {
       return;
     }
 
-    // 급한대로 추가 - 추후 refactoring
+    // 추후 refactoring
     for (let i = 0; i < chipList.length; i += 1) {
       if (!checkEmailValid(chipList[i])) {
         handleToggleMessage();
@@ -126,18 +126,19 @@ function AddFriendsBySearch({ visible, onCancel }) {
     }
 
     try {
-      // const response = await friendStore.sendInvitationMail({
-      //   myUserId,
-      //   userEmailList: mailArr,
-      //   domainName: ,
-      //   userCount: ,
-      // });
-      // console.log(response);
+      const currentSpace = spaceStore.spaceList.find(
+        elem => elem.fullDomain === 'dev',
+      );
+      friendStore.sendInvitationMail({
+        myUserId,
+        userEmailList: chipList,
+        domainName: currentSpace.fullDomain,
+        userCount: currentSpace.userCount,
+      });
       onCancel();
     } catch (e) {
       console.log(`Just Error is ${e}`);
     }
-    // 급한대로 추가 - 추후 refactoring
   };
 
   const handleCopyInviteLink = async () => {

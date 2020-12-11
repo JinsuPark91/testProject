@@ -36,17 +36,27 @@ const FriendAddButton = styled(Button)`
 
 function FriendsLNBFooter() {
   const { uiStore } = useStore();
-  const { orgStore } = useCoreStores();
+  const { userStore, orgStore, spaceStore } = useCoreStores();
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isOrgExist, setIsOrgExist] = useState(false);
+  const [isSpaceEmpty, setIsSpaceEmpty] = useState(false);
 
   const handleOpenAddFriendsDialog = useCallback(async () => {
-    const response = await orgStore.getOrgTree();
-    if (response.length) {
-      setIsOrgExist(true);
+    console.log(spaceStore.spaceList);
+    const currentSpace = spaceStore.spaceList.find(
+      elem => elem.fullDomain === 'dev',
+    );
+
+    if (currentSpace && currentSpace.userCount === 1) {
+      setIsSpaceEmpty(true);
+    } else {
+      const response = await orgStore.getOrgTree();
+      if (response.length) {
+        setIsOrgExist(true);
+      }
     }
     setIsDialogVisible(!isDialogVisible);
-  }, [orgStore, isDialogVisible]);
+  }, [spaceStore, orgStore, isDialogVisible]);
 
   const handleCloseAddFriendsDialog = useCallback(async () => {
     setIsDialogVisible(!isDialogVisible);
@@ -71,6 +81,7 @@ function FriendsLNBFooter() {
         visible={isDialogVisible}
         onCancelAddFriends={handleCloseAddFriendsDialog}
         isOrgExist={isOrgExist}
+        isSpaceEmpty={isSpaceEmpty}
       />
     </FooterWrapper>
   ));

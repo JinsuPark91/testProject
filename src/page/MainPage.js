@@ -32,7 +32,9 @@ const MainPage = () => {
   */
   useEffect(() => {
     Promise.all([
-      spaceStore.fetchSpaces({ userId: myUserId }),
+      spaceStore.fetchSpaces({
+        userId: '59da00fc-c4cd-4433-8e78-9387075b9877',
+      }),
       // 룸을 불러오자
       roomStore.fetchRoomList({ myUserId }),
       // 유저 프로필을 불러오자
