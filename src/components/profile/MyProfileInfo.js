@@ -1,71 +1,63 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
+import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import settingIcon from '../../assets/setting.svg';
-import ProfileInfoModal from './ProfileInfoModal';
-import ProfileEditModal from './ProfileEditModal';
-import { useProfileContext } from './ProfileContextProvider';
+import ProfileMyModal from './ProfileMyModal';
 
-const IS_LOCAL = true;
-
-function MyProfileInfo() {
-  const [thumbPhoto, setThumbPhoto] = useState(null);
+const MyProfileInfo = observer(() => {
+  const [myModalVisible, setMyModalVisible] = useState(false);
   const { userStore, authStore } = useCoreStores();
   const userId = authStore.user.id;
-  const useProfile = useProfileContext();
 
-  const handleInfoOpen = useCallback(() => {
-    useProfile.setState({ ...useProfile.state, infoMode: true });
-  }, [useProfile]);
+  const toggleMyModal = useCallback(() => {
+    setMyModalVisible(v => !v);
+  }, []);
 
-  const revokeURL = useCallback(() => {
-    URL.revokeObjectURL(thumbPhoto);
-  }, [thumbPhoto]);
-
-  useEffect(() => {
-    const getThumbPhoto = userStore.getUserProfilePhoto({
-      userId,
-      size: 'small',
-      isLocal: IS_LOCAL,
-      thumbPhoto: userStore.myProfile.thumbPhoto || null,
-    });
-    setThumbPhoto(`${getThumbPhoto}`);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userStore.myProfile.lastUpdatedTime]);
-
+  const thumbPhoto = userStore.getProfilePhotoURL(
+    userStore.myProfile.id,
+    'small',
+  );
+  const thumbPhotoMedium = userStore.getProfilePhotoURL(
+    userStore.myProfile.id,
+    'medium',
+  );
   return (
     <>
       <ProfileIcon>
-        <ThumbImage
-          src={thumbPhoto}
-          onLoad={revokeURL}
-          onClick={handleInfoOpen}
-        />
+        <ThumbImage src={thumbPhoto} onClick={toggleMyModal} />
         <SettingImage>
           <img alt="settingIcon" src={settingIcon} />
         </SettingImage>
       </ProfileIcon>
-      <ProfileInfoModal userId={userId} thumbPhoto={thumbPhoto} />
-      <ProfileEditModal userId={userId} />
+      <ProfileMyModal
+        userId={userId}
+        onCancel={toggleMyModal}
+        visible={myModalVisible}
+        thumbPhoto={thumbPhotoMedium}
+        created={false}
+      />
     </>
   );
-}
+});
+
 const ProfileIcon = styled.div`
-  overflow: visible !important;
-  display: flex;
-  align-items: flex-end;
+  position: relative;
 `;
 const ThumbImage = styled.img`
+  width: 1.88rem;
+  height: 1.88rem;
   border-radius: 50%;
   cursor: pointer;
-  width: 30px;
-  height: 30px;
   border: 1px solid rgba(0, 0, 0, 0.05);
 `;
 const SettingImage = styled.div`
-  width: 0.8rem;
-  height: 0.8rem;
-  margin-left: -0.63rem;
+  position: absolute;
+  right: -0.125rem;
+  bottom: -0.125rem;
+  line-height: 0;
+  width: 0.9375rem;
+  height: 0.9375rem;
 `;
 
 export default MyProfileInfo;

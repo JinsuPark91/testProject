@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import { Button } from 'antd';
 import styled from 'styled-components';
-import { useProfileContext } from './ProfileContextProvider';
 
 const SpaceInformation = styled.div`
   position: absolute;
@@ -53,35 +52,26 @@ const ButtonContainer = styled.div`
   }
 `;
 
-function ProfileSpaceModal({ oneButton, userName, onInvite }) {
-  const useProfile = useProfileContext();
+function ProfileSpaceModal({ oneButton, userName, onInvite, onClose }) {
   const title = oneButton
     ? '스페이스를 생성했습니다!'
     : '스페이스에 참여했습니다!';
 
-  const handleCloseSpaceModal = useCallback(() => {
-    useProfile.setState({
-      ...useProfile.state,
-      infoMode: false,
-      created: false,
-    });
-  }, [useProfile]);
-
   const handleAddMember = useCallback(() => {
-    handleCloseSpaceModal();
+    onClose();
     console.log('Add Member');
     onInvite();
-  }, [handleCloseSpaceModal, onInvite]);
+  }, [onClose, onInvite]);
 
   const handleCreateRoom = useCallback(() => {
-    handleCloseSpaceModal();
+    onClose();
     console.log('Create Room');
-  }, [handleCloseSpaceModal]);
+  }, [onClose]);
 
   const handleAddFriend = useCallback(() => {
-    handleCloseSpaceModal();
+    onClose();
     console.log('Add Friend');
-  }, [handleCloseSpaceModal]);
+  }, [onClose]);
 
   return (
     <SpaceInformation>
@@ -107,7 +97,7 @@ function ProfileSpaceModal({ oneButton, userName, onInvite }) {
           </>
         )}
       </ButtonContainer>
-      <Button type="link" onClick={handleCloseSpaceModal}>
+      <Button type="link" onClick={onClose}>
         다음에 하기
       </Button>
     </SpaceInformation>

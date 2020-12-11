@@ -19,7 +19,6 @@ import {
 } from './HeaderStyle';
 import Photos from '../Photos';
 import PlatformUIStore from '../../stores/PlatformUIStore';
-import { ProfileContextProvider } from '../profile/ProfileContextProvider';
 import MyProfileInfo from '../profile/MyProfileInfo';
 import {
   ExportIcon,
@@ -130,14 +129,7 @@ const Header = () => {
       return found.memberIdListString
         .split(',')
         .splice(0, 4)
-        .map(
-          userId =>
-            `${userStore.getUserProfilePhoto({
-              userId,
-              size: 'small',
-              isLocal: true,
-            })}`,
-        );
+        .map(userId => `${userStore.getProfilePhotoURL(userId, 'small')}`);
     }
     return [];
   };
@@ -158,11 +150,29 @@ const Header = () => {
     setIsMessageVisible(!isMessageVisible);
   };
 
-  const addHistory = appName => {
-    history.push({
-      pathname: history.location.pathname,
-      search: `?sub=${appName}`,
-    });
+  const addHistory = async appName => {
+    if (PlatformUIStore.resourceType === 'f') {
+      try {
+        const response = await roomStore.getDMRoom(
+          userStore.myProfile.id,
+          userStore.myProfile.id,
+        );
+        if (!response.result) {
+          throw Error('DM ROOM GET FAILED');
+        }
+        history.push({
+          pathname: `/s/${response.roomId}/talk`,
+          search: `?sub=${appName}`,
+        });
+      } catch (e) {
+        console.error(`Error is${e}`);
+      }
+    } else {
+      history.push({
+        pathname: history.location.pathname,
+        search: `?sub=${appName}`,
+      });
+    }
   };
 
   const handleAppClick = appName => {
@@ -242,9 +252,7 @@ const Header = () => {
       </AppIconContainer>
 
       <UserMenu>
-        <ProfileContextProvider>
-          <MyProfileInfo />
-        </ProfileContextProvider>
+        <MyProfileInfo />
       </UserMenu>
     </Wrapper>
   );

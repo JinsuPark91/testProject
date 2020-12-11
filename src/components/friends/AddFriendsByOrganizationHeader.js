@@ -20,7 +20,6 @@ const UserCounter = styled.div`
 function AddFriendsByOrganizationHeader({
   orgList,
   orgUserSize,
-  onInputChange,
   onDropdownChange,
   overwrittenValue,
   defaultValue,
@@ -29,22 +28,20 @@ function AddFriendsByOrganizationHeader({
   const inputRef = useRef(null);
 
   useEffect(() => {
-    console.log(timestamp);
-    console.log(inputRef.current);
     if (inputRef.current) {
       inputRef.current.state.value = '';
     }
   }, [timestamp]);
   return (
     <>
-      <Wrapper>
+      {/* <Wrapper>
         <Input
           ref={inputRef}
           placeholder="팀 이름, 조직원 이름 검색"
           style={{ width: '100%' }}
           onPressEnter={onInputChange}
         />
-      </Wrapper>
+      </Wrapper> */}
       <StyledDivider />
       <Wrapper>
         <OrganizationDropdown

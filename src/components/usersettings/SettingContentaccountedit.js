@@ -100,7 +100,7 @@ function SettingContentaccountedit(props) {
 
   return (
     <div>
-      <SettingContentTitle
+      <ContentTitle
         title="계정정보변경"
         subTitle="TeeSpace 계정정보를 확인하고 최신 정보로 안전하게 관리하세요."
       />

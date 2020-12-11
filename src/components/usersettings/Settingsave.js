@@ -28,12 +28,15 @@ function Settingsave(props) {
       <Button
         type="solid"
         onClick={() => {
-          setsavevisible(true);
-          form.current.submit();
-          saveChange(props);
+          props.toggleContinue();
+          props.toggleFooter();
+          props.toggleCheck();
+          // setsavevisible(true);
+          // form.current.submit();
+          // saveChange(props);
         }}
       >
-        변경사항 저장
+        이전
       </Button>
       <Toast
         visible={savevisible}
@@ -41,19 +44,20 @@ function Settingsave(props) {
         onClose={() => setsavevisible(false)}
       >
         {' '}
-        변경사항이 저장되었습니다.{' '}
+        변경사항이 저장되었습니다.
       </Toast>
 
       <Button
         onClick={() => {
-          setcanclevisible(true);
+          // setcanclevisible(true);
         }}
-        type="solid"
+        type="outlined"
       >
-        취소{' '}
+        확인
       </Button>
       <Message
         visible={canclevisible}
+        type="error"
         btns={[
           {
             onClick: () => {
@@ -61,6 +65,7 @@ function Settingsave(props) {
             },
             text: '나가기',
             type: 'solid',
+            shape: 'round',
           },
           {
             onClick: () => {
@@ -68,6 +73,7 @@ function Settingsave(props) {
             },
             text: '취소',
             type: 'outlined',
+            shape: 'round',
           },
         ]}
         title="변경 사항을 저장하지 않고 나가시겠습니까?"

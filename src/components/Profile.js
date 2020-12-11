@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Upload from 'rc-upload';
 import styled, { css } from 'styled-components';
-import { Button, Input, Dropdown, Menu, Modal } from 'antd';
-import { useCoreStores, profileStatusMsg, Message } from 'teespace-core';
+import { Button, Input, Dropdown, Menu } from 'antd';
+import { observer } from 'mobx-react';
+import { useCoreStores, Message } from 'teespace-core';
 import friendsIcon from '../assets/ts_friends.svg';
 import profileEditIcon from '../assets/ts_profile_edit.svg';
 import teeMeetingIcon from '../assets/ts_TeeMeeting.svg';
@@ -17,264 +18,244 @@ import tsCameraImgIcon from '../assets/ts_camera.svg';
 
 const IS_LOCAL = true;
 
-const Profile = ({
-  userId = null,
-  editMode = false,
-  showSider = true,
-  onModeChange = null,
-}) => {
-  const history = useHistory();
-  const { roomStore, userStore } = useCoreStores();
-  const [isEditMode, setEditMode] = useState(editMode);
-  const [profile, setProfile] = useState(null);
-  // 유저 정보들
-  const [background, setBackground] = useState(null);
-  const [thumb, setThumb] = useState(null);
-  const [phone, setPhone] = useState('');
-  const [mobile, setMobile] = useState('');
-  const [isChange, setIsChange] = useState(false);
-  const [name, setName] = useState('');
-  const [profileStatusMsg, setStatusMsg] = useState('');
-  const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
+const Profile = observer(
+  ({
+    userId = null,
+    editOnlyMode = false,
+    showSider = true,
+    onModeChange = null,
+    onClickSaveBtn = () => {},
+    onClickCancelBtn = () => {},
+  }) => {
+    const history = useHistory();
+    const { roomStore, userStore } = useCoreStores();
+    const [isEditMode, setEditMode] = useState(editOnlyMode);
+    const [profile, setProfile] = useState(null);
+    // 유저 정보들
+    const [background, setBackground] = useState(null);
+    const [localProfilePhoto, setLocalProfilePhoto] = useState(null);
+    const [phone, setPhone] = useState('');
+    const [mobile, setMobile] = useState('');
+    const [isChange, setIsChange] = useState(false);
+    const [name, setName] = useState('');
+    const [profileStatusMsg, setStatusMsg] = useState('');
+    const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
 
-  const isMyId = () => userId === userStore.myProfile.id;
+    const isMyId = () => userId === userStore.myProfile.id;
 
-  const getBackPhoto = backPhoto => {
-    return userStore.getUserBackPhoto({
-      userId,
-      size: 'medium',
-      isLocal: IS_LOCAL,
-      backPhoto: backPhoto || null,
-    });
-  };
-
-  const getThumbPhoto = thumbPhoto => {
-    return userStore.getUserProfilePhoto({
-      userId,
-      size: 'medium',
-      isLocal: IS_LOCAL,
-      thumbPhoto: thumbPhoto || null,
-    });
-  };
-
-  useEffect(() => {
-    setEditMode(editMode);
-    (async () => {
-      const userProfile = await userStore.getProfile({ userId });
-      setProfile(userProfile);
-      setPhone(userProfile?.companyNum);
-      setMobile(userProfile?.phone);
-      setName(userProfile?.name);
-
-      setThumb(`${getThumbPhoto()}`);
-      setBackground(`${getBackPhoto()}`);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
-
-  useEffect(() => {
-    if (onModeChange && typeof onModeChange === 'function')
-      onModeChange(isEditMode);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEditMode]);
-
-  const toBase64 = async blobImage =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(blobImage);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = err => reject(err);
-    });
-
-  const toBlob = async file => {
-    const result = await fetch(file).then(r => r.blob());
-    return result;
-  };
-
-  const handleChangeMode = () => {
-    setEditMode(true);
-  };
-
-  const handleMeetingClick = () => {
-    console.log('1 : 1 미팅');
-  };
-
-  const handleChangeBackground = file => {
-    setIsChange(true);
-    setBackground(URL.createObjectURL(file));
-  };
-
-  const handleChangePhoto = file => {
-    setIsChange(true);
-    // const thumbPhoto = ;
-    // console.log('CHANGE PHOTO : ', thumbPhoto);
-    setThumb(URL.createObjectURL(file));
-  };
-
-  const handleChangeDefaultBackground = () => {
-    setIsChange(true);
-    setBackground(`${getBackPhoto()}`);
-  };
-
-  const handleChangeDefaultPhoto = () => {
-    setIsChange(true);
-    setThumb(`${getThumbPhoto()}`);
-  };
-
-  const handleConfirm = async () => {
-    // const blobImages = await Promise.all([toBlob(background), toBlob(thumb)]);
-    // const base64Images = await Promise.all(
-    //   blobImages.map(blobImage => toBase64(blobImage)),
-    // );
-    console.log('BACK PHOTO : ', background);
-    console.log('THUMB PHOTO : ', thumb);
-
-    const updatedInfo = {
-      companyNum: phone,
-      phone: mobile,
+    const getBackPhoto = backPhoto => {
+      return userStore.getUserBackPhoto({
+        userId,
+        size: 'medium',
+        isLocal: IS_LOCAL,
+        backPhoto: backPhoto || null,
+      });
     };
 
-    if (thumb.includes('blob:')) {
-      const blobImage = await toBlob(thumb);
-      const base64Image = await toBase64(blobImage);
-      updatedInfo.profilePhoto = base64Image;
+    useEffect(() => {
+      setEditMode(editOnlyMode);
+      (async () => {
+        const userProfile = await userStore.getProfile({ userId });
+        setProfile(userProfile);
+        setPhone(userProfile?.companyNum);
+        setMobile(userProfile?.phone);
+        setName(userProfile?.name);
 
-      URL.revokeObjectURL(thumb);
-    }
+        setBackground(`${getBackPhoto()}`);
+      })();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userId]);
 
-    if (background.includes('blob:')) {
-      const blobImage = await toBlob(background);
-      const base64Image = await toBase64(blobImage);
-      updatedInfo.backPhoto = base64Image;
+    useEffect(() => {
+      if (onModeChange && typeof onModeChange === 'function')
+        onModeChange(isEditMode);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isEditMode]);
 
-      URL.revokeObjectURL(background);
-    }
+    const toBase64 = async blobImage =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blobImage);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = err => reject(err);
+      });
 
-    console.log('updated Info : ', updatedInfo);
-    const updatedProfile = await userStore.updateMyProfile({ updatedInfo });
+    const toBlob = async file => {
+      const result = await fetch(file).then(r => r.blob());
+      return result;
+    };
 
-    console.log('UPDATED!!!!!!!!!!!!! : ', updatedProfile);
-    setPhone(updatedProfile?.companyNum);
-    setMobile(updatedProfile?.phone);
+    const handleChangeMode = () => {
+      setEditMode(true);
+    };
 
-    setEditMode(false);
-    setIsChange(false);
-  };
+    const handleMeetingClick = () => {
+      console.log('1 : 1 미팅');
+    };
 
-  const handleExit = () => {
-    setIsChange(false);
-    setEditMode(false);
+    const handleChangeBackground = file => {
+      setIsChange(true);
+      setBackground(URL.createObjectURL(file));
+    };
 
-    setMobile(profile?.phone);
-    setPhone(profile?.companyNum);
-    setBackground(getBackPhoto());
-    setThumb(getThumbPhoto());
-    setCancelDialogVisible(false);
-  };
-  const handleExitCancel = () => {
-    setCancelDialogVisible(false);
-  };
+    const handleChangePhoto = file => {
+      setIsChange(true);
+      setLocalProfilePhoto(URL.createObjectURL(file));
+    };
 
-  const handleCancel = () => {
-    setCancelDialogVisible(true);
-  };
+    const handleChangeDefaultBackground = () => {
+      setIsChange(true);
+      setBackground(`${getBackPhoto()}`);
+    };
 
-  const handleTalkClick = async () => {
-    try {
-      const myUserId = userStore.myProfile.id;
-      const response = await roomStore.getDMRoom(myUserId, userId);
+    const handleChangeDefaultPhoto = () => {
+      setIsChange(true);
+      setLocalProfilePhoto(null);
+    };
 
-      // DM 룸이 이미 있으면, visible 상태로 만들어 준다.
-      const dmRoom = roomStore.getRoomMap().get(response.roomId);
-      if (!dmRoom.isVisible) {
-        await roomStore.updateRoomMemberSetting({
-          roomId: dmRoom.id,
-          myUserId,
-          newIsVisible: true,
-        });
+    const handleConfirm = async () => {
+      console.log('BACK PHOTO : ', background);
+      console.log('THUMB PHOTO : ', localProfilePhoto);
+
+      const updatedInfo = {
+        companyNum: phone,
+        phone: mobile,
+      };
+
+      if (localProfilePhoto.includes('blob:')) {
+        const blobImage = await toBlob(localProfilePhoto);
+        const base64Image = await toBase64(blobImage);
+        updatedInfo.profilePhoto = base64Image;
+
+        URL.revokeObjectURL(localProfilePhoto);
       }
 
-      if (!response.result) {
-        throw Error('DM ROOM GET FAILED');
+      if (background.includes('blob:')) {
+        const blobImage = await toBlob(background);
+        const base64Image = await toBase64(blobImage);
+        updatedInfo.backPhoto = base64Image;
+
+        URL.revokeObjectURL(background);
       }
-      history.push(`/s/${response.roomId}/talk`);
-    } catch (e) {
-      console.error(`Error is${e}`);
-    }
-  };
 
-  return (
-    <>
-      <Message
-        visible={cancelDialogVisible}
-        title="변경 사항을 저장하지 않고 나가시겠습니까?"
-        type="error"
-        btns={[
-          {
-            type: 'solid',
-            shape: 'round',
-            text: '나가기',
-            onClick: handleExit,
-          },
-          {
-            type: 'outlined',
-            shape: 'round',
-            text: '취소',
-            onClick: handleExitCancel,
-          },
-        ]}
-      />
-      <Wrapper imageSrc={background}>
-        {showSider && (
-          <Sidebar>
-            <StyledButton onClick={handleTalkClick}>
-              <FriendsIcon />
-              <Text>{isMyId() ? `나와의 Talk` : `1:1 Talk`}</Text>
-            </StyledButton>
-            {isMyId() ? (
-              <StyledButton onClick={handleChangeMode}>
-                <StyleIcon iconimg="profile" />
-                <Text>프로필 편집</Text>
-              </StyledButton>
-            ) : (
-              <StyledButton onClick={handleMeetingClick}>
-                <StyleIcon iconimg="meeting" />
-                <Text>1:1 Meeting</Text>
-              </StyledButton>
-            )}
-          </Sidebar>
-        )}
-        <Content showSider={showSider}>
-          {isEditMode && (
-            <Dropdown
-              trigger={['click']}
-              overlay={
-                <Menu>
-                  <Menu.Item>
-                    <StyledUpload
-                      component="div"
-                      accept={['image/*']}
-                      multiple={false}
-                      customRequest={({ file }) => handleChangeBackground(file)}
-                    >
-                      배경 변경
-                    </StyledUpload>
-                  </Menu.Item>
+      console.log('updated Info : ', updatedInfo);
+      const updatedProfile = await userStore.updateMyProfile({ updatedInfo });
 
-                  <Menu.Item onClick={handleChangeDefaultBackground}>
-                    기본 이미지로 변경
-                  </Menu.Item>
-                </Menu>
-              }
-            >
-              <ImageChangeButton position="tl">
-                <StyleBgImgIcon />
-              </ImageChangeButton>
-            </Dropdown>
+      console.log('UPDATED!!!!!!!!!!!!! : ', updatedProfile);
+      setPhone(updatedProfile?.companyNum);
+      setMobile(updatedProfile?.phone);
+
+      setIsChange(false);
+      setEditMode(false);
+
+      // Show server side photo after 'confirm'
+      setLocalProfilePhoto(null);
+
+      onClickSaveBtn();
+    };
+
+    const handleExit = () => {
+      setIsChange(false);
+      setEditMode(false);
+      setMobile(profile?.phone);
+      setPhone(profile?.companyNum);
+      setBackground(getBackPhoto());
+
+      // hide confirm dialog
+      setCancelDialogVisible(false);
+
+      // Show previous photo after exit
+      setLocalProfilePhoto(null);
+
+      onClickCancelBtn();
+    };
+
+    const handleExitCancel = () => {
+      setCancelDialogVisible(false);
+    };
+
+    const handleCancel = () => {
+      if (isChange) {
+        setCancelDialogVisible(true);
+      } else {
+        handleExit();
+      }
+    };
+
+    const handleTalkClick = async () => {
+      try {
+        const myUserId = userStore.myProfile.id;
+        const { roomInfo } = roomStore.getDMRoom(myUserId, userId);
+
+        if (roomInfo) {
+          if (roomInfo.isVislble) {
+            history.push(`/s/${roomInfo.id}/talk`);
+          } else {
+            await roomStore.updateRoomMemberSetting({
+              roomId: roomInfo.id,
+              myUserId,
+              newIsVisible: true,
+            });
+          }
+          history.push(`/s/${roomInfo.id}/talk`);
+        } else {
+          const { roomId } = await roomStore.createRoom({
+            creatorId: userStore.myProfile.id,
+            userList: [{ userId }],
+          });
+          history.push(`/s/${roomId}/talk`);
+        }
+      } catch (e) {
+        console.error(`Error is${e}`);
+      }
+    };
+
+    // check edit mode
+    const editEnabled = editOnlyMode || isEditMode;
+
+    return (
+      <>
+        <Message
+          visible={cancelDialogVisible}
+          title="변경 사항을 저장하지 않고 나가시겠습니까?"
+          type="error"
+          btns={[
+            {
+              type: 'solid',
+              shape: 'round',
+              text: '나가기',
+              onClick: handleExit,
+            },
+            {
+              type: 'outlined',
+              shape: 'round',
+              text: '취소',
+              onClick: handleExitCancel,
+            },
+          ]}
+        />
+        <Wrapper imageSrc={background}>
+          {showSider && (
+            <Sidebar>
+              <StyledButton onClick={handleTalkClick}>
+                <FriendsIcon />
+                <Text>{isMyId() ? `나와의 Talk` : `1:1 Talk`}</Text>
+              </StyledButton>
+              {isMyId() ? (
+                <StyledButton onClick={handleChangeMode}>
+                  <StyleIcon iconimg="profile" />
+                  <Text>프로필 편집</Text>
+                </StyledButton>
+              ) : (
+                <StyledButton onClick={handleMeetingClick}>
+                  <StyleIcon iconimg="meeting" />
+                  <Text>1:1 Meeting</Text>
+                </StyledButton>
+              )}
+            </Sidebar>
           )}
-          <UserImageWrapper position="br">
-            <UserImage src={thumb} />
-            {isMyId() && isEditMode && (
+          <Content showSider={showSider}>
+            {editEnabled && (
               <Dropdown
                 trigger={['click']}
                 overlay={
@@ -282,127 +263,164 @@ const Profile = ({
                     <Menu.Item>
                       <StyledUpload
                         component="div"
-                        multiple={false}
                         accept={['image/*']}
-                        customRequest={({ file }) => handleChangePhoto(file)}
+                        multiple={false}
+                        customRequest={({ file }) =>
+                          handleChangeBackground(file)
+                        }
                       >
-                        프로필 사진 변경
+                        배경 변경
                       </StyledUpload>
                     </Menu.Item>
-                    <Menu.Item onClick={handleChangeDefaultPhoto}>
+
+                    <Menu.Item onClick={handleChangeDefaultBackground}>
                       기본 이미지로 변경
                     </Menu.Item>
                   </Menu>
                 }
               >
-                <ImageChangeButton position="br">
-                  <StyleCameraImgIcon />
+                <ImageChangeButton position="tl">
+                  <StyleBgImgIcon />
                 </ImageChangeButton>
               </Dropdown>
             )}
-          </UserImageWrapper>
-          <BigText>
-            {isEditMode ? (
-              <StyleInput
-                className="type2"
-                onChange={e => {
-                  setIsChange(true);
-                  setName(e.target.value);
-                }}
-                value={name}
+            <UserImageWrapper position="br">
+              <UserImage
+                src={
+                  localProfilePhoto ||
+                  userStore.getProfilePhotoURL(userId, 'medium')
+                }
               />
-            ) : (
-              name
-            )}
-          </BigText>
-          <UserEmailText>{`(${profile?.loginId}@tmax.teepsace.net)`}</UserEmailText>
-          <UserStatusMsg>
-            {isEditMode ? (
-              <StyleInput
-                className="type2"
-                onChange={e => {
-                  setIsChange(true);
-                  setStatusMsg(e.target.value);
-                }}
-                value={profileStatusMsg}
-              />
-            ) : (
-              profileStatusMsg
-            )}
-          </UserStatusMsg>
-          <UserInfoList>
-            <UserInfoItem>
-              <StyleOfficeIcon iconimg="address" />
-              <StylText>{profile?.fullCompanyJob}</StylText>
-            </UserInfoItem>
-            <UserInfoItem>
-              <StyleOfficeIcon iconimg="company" />
-              {isEditMode ? (
+              {isMyId() && editEnabled && (
+                <Dropdown
+                  trigger={['click']}
+                  overlay={
+                    <Menu>
+                      <Menu.Item>
+                        <StyledUpload
+                          component="div"
+                          multiple={false}
+                          accept={['image/*']}
+                          customRequest={({ file }) => handleChangePhoto(file)}
+                        >
+                          프로필 사진 변경
+                        </StyledUpload>
+                      </Menu.Item>
+                      <Menu.Item onClick={handleChangeDefaultPhoto}>
+                        기본 이미지로 변경
+                      </Menu.Item>
+                    </Menu>
+                  }
+                >
+                  <ImageChangeButton position="br">
+                    <StyleCameraImgIcon />
+                  </ImageChangeButton>
+                </Dropdown>
+              )}
+            </UserImageWrapper>
+            <BigText>
+              {editEnabled ? (
                 <StyleInput
+                  className="type2"
                   onChange={e => {
                     setIsChange(true);
-                    setMobile(e.target.value);
+                    setName(e.target.value);
                   }}
-                  value={mobile}
+                  value={name}
                 />
               ) : (
-                <StylText>{mobile}</StylText>
+                name
               )}
-            </UserInfoItem>
-            <UserInfoItem>
-              <StyleOfficeIcon iconimg="phone" />
-              {isEditMode ? (
+            </BigText>
+            <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
+            <UserStatusMsg>
+              {editEnabled ? (
                 <StyleInput
+                  className="type2"
                   onChange={e => {
                     setIsChange(true);
-                    setPhone(e.target.value);
+                    setStatusMsg(e.target.value);
                   }}
-                  value={phone}
+                  value={profileStatusMsg}
                 />
               ) : (
-                <StylText>{phone}</StylText>
+                profileStatusMsg
               )}
-            </UserInfoItem>
-            {/* 프로필 편집 시 "email" class 삭제 */}
-            <UserInfoItem
-              className={isEditMode ? '' : 'email'}
-              onClick={() => {
-                console.log('todo');
-              }}
-            >
-              <StyleOfficeIcon iconimg="email" />
-              <StyleOfficeIcon iconimg="emailhover" />
-              <StylText>{profile?.email}</StylText>
-            </UserInfoItem>
-          </UserInfoList>
-          <ButtonContainer>
-            {isEditMode && (
-              <>
-                <Button
-                  style={{ marginRight: '1.25rem' }}
-                  type="solid"
-                  shape="round"
-                  disabled={!isChange}
-                  onClick={handleConfirm}
-                >
-                  저장
-                </Button>
-                <Button
-                  type="outlined"
-                  shape="round"
-                  onClick={handleCancel}
-                  style={{ backgroundColor: '#fff' }}
-                >
-                  취소
-                </Button>
-              </>
-            )}
-          </ButtonContainer>
-        </Content>
-      </Wrapper>
-    </>
-  );
-};
+            </UserStatusMsg>
+            <UserInfoList>
+              <UserInfoItem>
+                <StyleOfficeIcon iconimg="address" />
+                <StylText>{profile?.fullCompanyJob}</StylText>
+              </UserInfoItem>
+              <UserInfoItem>
+                <StyleOfficeIcon iconimg="company" />
+                {editEnabled ? (
+                  <StyleInput
+                    onChange={e => {
+                      setIsChange(true);
+                      setMobile(e.target.value);
+                    }}
+                    value={mobile}
+                  />
+                ) : (
+                  <StylText>{mobile}</StylText>
+                )}
+              </UserInfoItem>
+              <UserInfoItem>
+                <StyleOfficeIcon iconimg="phone" />
+                {editEnabled ? (
+                  <StyleInput
+                    onChange={e => {
+                      setIsChange(true);
+                      setPhone(e.target.value);
+                    }}
+                    value={phone}
+                  />
+                ) : (
+                  <StylText>{phone}</StylText>
+                )}
+              </UserInfoItem>
+              {/* 프로필 편집 시 "email" class 삭제 */}
+              <UserInfoItem
+                className={editEnabled ? '' : 'email'}
+                onClick={() => {
+                  console.log('todo');
+                }}
+              >
+                <StyleOfficeIcon iconimg="email" />
+                <StyleOfficeIcon iconimg="emailhover" />
+                <StylText>{profile?.email}</StylText>
+              </UserInfoItem>
+            </UserInfoList>
+            <ButtonContainer>
+              {editEnabled && (
+                <>
+                  <Button
+                    style={{ marginRight: '1.25rem' }}
+                    type="solid"
+                    shape="round"
+                    disabled={!isChange}
+                    onClick={handleConfirm}
+                  >
+                    저장
+                  </Button>
+                  <Button
+                    type="outlined"
+                    shape="round"
+                    onClick={handleCancel}
+                    style={{ backgroundColor: '#fff' }}
+                  >
+                    취소
+                  </Button>
+                </>
+              )}
+            </ButtonContainer>
+          </Content>
+        </Wrapper>
+      </>
+    );
+  },
+);
 
 const Wrapper = styled.div`
   display: flex;

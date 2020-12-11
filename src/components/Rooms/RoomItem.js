@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { List, Menu, Dropdown } from 'antd';
 import styled, { css } from 'styled-components';
@@ -116,8 +116,8 @@ const RoomDropdown = React.memo(({ children, roomInfo, onMenuClick }) => {
           if (firstRoomId) history.push(`/s/${firstRoomId}/talk`);
         }
       }
-    } catch (e) {
-      console.log('DELETE ROOM MEMBER ERROR : ', e);
+    } catch (e1) {
+      console.log('DELETE ROOM MEMBER ERROR : ', e1);
     }
   };
 
@@ -169,20 +169,8 @@ const RoomDropdown = React.memo(({ children, roomInfo, onMenuClick }) => {
   );
 });
 
-const RoomItemContent = React.memo(({ roomInfo, isMyRoom, onMenuClick }) => {
+const RoomItemContent = ({ roomInfo, isMyRoom, onMenuClick }) => {
   const { userStore } = useCoreStores();
-
-  const userPhotos = roomInfo.memberIdListString
-    .split(',')
-    .splice(0, MAX_PROFILE_COUNT)
-    .map(
-      userId =>
-        `${userStore.getUserProfilePhoto({
-          userId,
-          size: 'small',
-          isLocal: true,
-        })}`,
-    );
 
   const handleExport = e => {
     e.stopPropagation();
@@ -197,10 +185,28 @@ const RoomItemContent = React.memo(({ roomInfo, isMyRoom, onMenuClick }) => {
     <>
       <List.Item.Meta
         avatar={
-          <>
-            {isMyRoom && <MyTooltip>나</MyTooltip>}
-            <Photos srcList={userPhotos} />
-          </>
+          <Observer>
+            {() => {
+              let userPhotos = null;
+              if (isMyRoom) {
+                console.log(userStore.myProfile);
+                userPhotos = [
+                  userStore.getProfilePhotoURL(userStore.myProfile.id, 'small'),
+                ];
+              } else {
+                userPhotos = roomInfo.memberIdListString
+                  .split(',')
+                  .splice(0, MAX_PROFILE_COUNT)
+                  .map(userId => userStore.getProfilePhotoURL(userId, 'small'));
+              }
+              return (
+                <>
+                  {isMyRoom && <MyTooltip>나</MyTooltip>}
+                  <Photos srcList={userPhotos} />
+                </>
+              );
+            }}
+          </Observer>
         }
         title={
           <Title>
@@ -268,9 +274,9 @@ const RoomItemContent = React.memo(({ roomInfo, isMyRoom, onMenuClick }) => {
       </IconWrapper>
     </>
   );
-});
+};
 
-const RoomItem = React.memo(({ roomInfo, selected, onClick, onMenuClick }) => {
+const RoomItem = ({ roomInfo, selected, onClick, onMenuClick }) => {
   const isMyRoom = roomInfo.type === 'WKS0001';
 
   const handleRoomClick = useCallback(() => {
@@ -292,7 +298,7 @@ const RoomItem = React.memo(({ roomInfo, selected, onClick, onMenuClick }) => {
       </ItemWrapper>
     </StyledItem>
   );
-});
+};
 
 const StyledMenu = styled(Menu)`
   & {

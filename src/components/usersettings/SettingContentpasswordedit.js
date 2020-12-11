@@ -2,6 +2,7 @@ import React, { Component, useState } from 'react';
 import { Row } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
 import { Input, Form, useCoreStores } from 'teespace-core';
+import ContentTitle from './ContentTitle';
 
 import SettingContentTitle from './SettingContentTitle';
 import NewPasswordInput from '../signup/NewPasswordInput';
@@ -68,11 +69,11 @@ function SettingContentpasswordedit(props) {
   return (
     <>
       {/* validateTrigger = {['onChange', 'onBlur']} */}
-      <SettingContentTitle
+      <ContentTitle
         title="비밀번호 변경"
         subTitle="보안을 위해 비밀번호를 항상 최신 상태로 업데이트하세요."
       />
-      현재 비밀번호{' '}
+      현재 비밀번호
       <Form
         {...formItemLayout}
         form={form.current}

@@ -79,6 +79,7 @@
     "teespace-mail-app": "git+http://192.168.158.12:9000/teespace/teespace-mail-app#develop",
     "teespace-meeting-app": "git+http://192.168.158.12:9000/teespace/teespace-meeting-app#develop",
     "teespace-note-app": "git+http://192.168.158.12:9000/teespace/teespace-note-app#develop",
+    "teespace-office-app": "git+http://192.168.158.12:9000/teespace/teespace-office-app#develop",
     "teespace-talk-app": "git+http://192.168.158.12:9000/teespace/teespace-talk-app#develop",
     "use-open-window": "^1.2.5"
   },

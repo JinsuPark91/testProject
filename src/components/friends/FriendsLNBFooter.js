@@ -1,9 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
+import { Loader, useCoreStores, Button } from 'teespace-core';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { Layout } from 'antd';
-import { Button } from 'teespace-core';
 import AddFriendsDialog from './AddFriendsDialog';
+import AddFriendsBySearch from './AddFriendsBySearch';
 import { useStore } from '../../stores';
 import { WaplLogo, FriendAddIcon } from '../Icons';
 
@@ -33,25 +34,43 @@ const FriendAddButton = styled(Button)`
   }
 `;
 
-const AddFriendWrapper = styled.div``;
-
 function FriendsLNBFooter() {
   const { uiStore } = useStore();
+  const { orgStore } = useCoreStores();
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+  const [isOrgExist, setIsOrgExist] = useState(false);
 
-  const showAddFrieldsDialog = useCallback(() => {
-    uiStore.showAddFriendsDialog();
-  }, [uiStore]);
+  const handleOpenAddFriendsDialog = useCallback(async () => {
+    const response = await orgStore.getOrgTree();
+    if (response.length) {
+      setIsOrgExist(true);
+    }
+    setIsDialogVisible(!isDialogVisible);
+  }, [orgStore, isDialogVisible]);
+
+  const handleCloseAddFriendsDialog = useCallback(async () => {
+    setIsDialogVisible(!isDialogVisible);
+  }, [isDialogVisible]);
+
+  //   uiStore.showAddFriendsDialog();
+  // }, [uiStore]);
+
+  // <AddFriendsDialog
+  //   visible={uiStore.visibleAddFriendsDialog}
+  //   width={uiStore.addFriendsDialogInfo.width}
+  //   height={uiStore.addFriendsDialogInfo.height}
+  // />
 
   return useObserver(() => (
     <FooterWrapper>
       <WaplLogo />
-      <FriendAddButton type="outlined" onClick={showAddFrieldsDialog}>
+      <FriendAddButton type="outlined" onClick={handleOpenAddFriendsDialog}>
         <FriendAddIcon />
       </FriendAddButton>
-      <AddFriendsDialog
-        visible={uiStore.visibleAddFriendsDialog}
-        width={uiStore.addFriendsDialogInfo.width}
-        height={uiStore.addFriendsDialogInfo.height}
+      <AddFriendsBySearch
+        visible={isDialogVisible}
+        onCancelAddFriends={handleCloseAddFriendsDialog}
+        isOrgExist={isOrgExist}
       />
     </FooterWrapper>
   ));
