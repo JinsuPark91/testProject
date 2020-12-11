@@ -38,7 +38,7 @@ function ProfileInfoModal({
   const [userType, setUserType] = useState('');
 
   const [background, setBackground] = useState('');
-  const [localProfilePhoto, setLocalProfilePhoto] = useState(null);
+  const [localProfilePhoto, setLocalProfilePhoto] = useState('');
   const [phone, setPhone] = useState('');
   const [mobile, setMobile] = useState('');
   const [isChange, setIsChange] = useState(false);
@@ -50,10 +50,12 @@ function ProfileInfoModal({
     (async () => {
       const userProfile = await userStore.getProfile({ userId });
       const userAuthInfo = await authStore.user;
+      const nickName = userProfile?.nick || userProfile?.name;
+
       setProfile(userProfile);
       setPhone(userProfile?.companyNum);
       setMobile(userProfile?.phone);
-      setName(userProfile?.name);
+      setName(nickName);
       setStatusMsg(userProfile?.profileStatusMsg);
       setBackground(`${getBackPhoto()}`);
       setUserType(userAuthInfo.type);
@@ -119,12 +121,7 @@ function ProfileInfoModal({
   };
 
   const getThumbPhoto = thumbPhoto => {
-    return userStore.getUserProfilePhoto({
-      userId,
-      size: 'medium',
-      isLocal: IS_LOCAL,
-      thumbPhoto: thumbPhoto || null,
-    });
+    return userStore.getProfilePhotoURL(userId, 'medium');
   };
 
   const handleChangeBackground = file => {
@@ -190,13 +187,13 @@ function ProfileInfoModal({
 
   const handleConfirm = async () => {
     const updatedInfo = {
-      name,
+      nick: name,
       companyNum: phone,
       phone: mobile,
       profileStatusMsg: statusMsg,
     };
 
-    if (localProfilePhoto.includes('blob:')) {
+    if (localProfilePhoto?.includes('blob:')) {
       const blobImage = await toBlob(localProfilePhoto);
       const base64Image = await toBase64(blobImage);
       updatedInfo.profilePhoto = base64Image;
@@ -308,7 +305,7 @@ function ProfileInfoModal({
     <UserBox>
       {imageModal && (
         <ProfileImageModal
-          profilePhoto={getThumbPhoto()}
+          profilePhoto={getThumbPhoto() || localProfilePhoto || profilePhoto}
           onCancel={handleImageModal}
         />
       )}
@@ -326,7 +323,7 @@ function ProfileInfoModal({
       <UserImage>
         <img
           alt=""
-          src={localProfilePhoto || profilePhoto}
+          src={getThumbPhoto() || localProfilePhoto || profilePhoto}
           onClick={handleImageModal}
         />
         {isEditMode && (
@@ -356,7 +353,7 @@ function ProfileInfoModal({
               }}
             />
           ) : (
-            <p>{profile?.name}</p>
+            <p>{profile?.nick || profile?.name}</p>
           )}
         </UserName>
         <UserMail>{profile?.email}</UserMail>
