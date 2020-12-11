@@ -30,7 +30,6 @@ const Profile = observer(
     const history = useHistory();
     const { roomStore, userStore } = useCoreStores();
     const [isEditMode, setEditMode] = useState(editOnlyMode);
-    const [profile, setProfile] = useState(null);
     // 유저 정보들
     const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(null);
     const [localProfilePhoto, setLocalProfilePhoto] = useState(null);
@@ -38,8 +37,11 @@ const Profile = observer(
     const [mobile, setMobile] = useState('');
     const [isChange, setIsChange] = useState(false);
     const [name, setName] = useState('');
-    const [profileStatusMsg, setStatusMsg] = useState('');
+    const [statusMsg, setStatusMsg] = useState('');
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
+
+    // get profile from store
+    const profile = userStore.userProfiles[userId];
 
     const isMyId = () => userId === userStore.myProfile.id;
 
@@ -50,14 +52,31 @@ const Profile = observer(
       return userStore.getProfilePhotoURL(userId, 'medium');
     };
 
+    const setLocalInputData = () => {
+      setPhone(profile?.companyNum);
+      setMobile(profile?.phone);
+      setName(profile?.nick || profile?.name);
+      setStatusMsg(profile?.profileStatusMsg);
+      setLocalProfilePhoto(null);
+      setLocalBackgroundPhoto(null);
+    };
+
+    const resetLocalInputData = () => {
+      setPhone(null);
+      setMobile(null);
+      setName(null);
+      setStatusMsg(null);
+      setLocalProfilePhoto(null);
+      setLocalBackgroundPhoto(null);
+    };
+
     useEffect(() => {
       setEditMode(editOnlyMode);
       (async () => {
-        const userProfile = await userStore.getProfile({ userId });
-        setProfile(userProfile);
-        setPhone(userProfile?.companyNum);
-        setMobile(userProfile?.phone);
-        setName(userProfile?.name);
+        const userProfile = userStore.userProfiles[userId];
+        if (!userProfile) {
+          await userStore.getProfile({ userId });
+        }
       })();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId]);
@@ -83,6 +102,8 @@ const Profile = observer(
 
     const handleChangeMode = () => {
       setEditMode(true);
+      // set initial local input data
+      setLocalInputData();
     };
 
     const handleMeetingClick = () => {
@@ -113,11 +134,12 @@ const Profile = observer(
       console.log('BACK PHOTO : ', localBackgroundPhoto);
       console.log('THUMB PHOTO : ', localProfilePhoto);
 
+      // set update data from user input
       const updatedInfo = {
         nick: name,
         companyNum: phone,
         phone: mobile,
-        profileStatusMsg,
+        profileStatusMsg: statusMsg,
       };
 
       if (localProfilePhoto?.includes('blob:')) {
@@ -140,19 +162,14 @@ const Profile = observer(
         updatedInfo.backPhoto = getBackPhoto();
       }
 
-      console.log('updated Info : ', updatedInfo);
-      const updatedProfile = await userStore.updateMyProfile({ updatedInfo });
+      // Update my profile information
+      await userStore.updateMyProfile({ updatedInfo });
 
-      setProfile(updatedProfile);
-      setPhone(updatedProfile?.companyNum);
-      setMobile(updatedProfile?.phone);
+      // Reset local input date
+      resetLocalInputData();
 
       setIsChange(false);
       setEditMode(false);
-
-      // Show server side photo after 'confirm'
-      setLocalProfilePhoto(null);
-      setLocalBackgroundPhoto(null);
 
       onClickSaveBtn();
     };
@@ -160,16 +177,12 @@ const Profile = observer(
     const handleExit = () => {
       setIsChange(false);
       setEditMode(false);
-      setMobile(profile?.phone);
-      setPhone(profile?.companyNum);
-      setLocalBackgroundPhoto(getBackPhoto());
+
+      // Reset local input date
+      resetLocalInputData();
 
       // hide confirm dialog
       setCancelDialogVisible(false);
-
-      // Show previous photo after exit
-      setLocalProfilePhoto(null);
-      setLocalBackgroundPhoto(null);
 
       onClickCancelBtn();
     };
@@ -330,10 +343,10 @@ const Profile = observer(
                         : inputNick.slice(0, MAX_NICK_LENGTH);
                     setName(newNick);
                   }}
-                  value={name}
+                  value={name || profile?.nick || profile?.name}
                 />
               ) : (
-                name
+                profile?.nick || profile?.name
               )}
             </BigText>
             <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
@@ -345,10 +358,10 @@ const Profile = observer(
                     setIsChange(true);
                     setStatusMsg(e.target.value);
                   }}
-                  value={profileStatusMsg}
+                  value={statusMsg || profile?.profileStatusMsg}
                 />
               ) : (
-                profileStatusMsg
+                profile?.profileStatusMsg
               )}
             </UserStatusMsg>
             <UserInfoList>
@@ -364,10 +377,10 @@ const Profile = observer(
                       setIsChange(true);
                       setMobile(e.target.value);
                     }}
-                    value={mobile}
+                    value={phone || profile?.companyNum}
                   />
                 ) : (
-                  <StylText>{mobile}</StylText>
+                  <StylText>{profile?.companyNum}</StylText>
                 )}
               </UserInfoItem>
               <UserInfoItem>
@@ -378,10 +391,10 @@ const Profile = observer(
                       setIsChange(true);
                       setPhone(e.target.value);
                     }}
-                    value={phone}
+                    value={mobile || profile?.phone}
                   />
                 ) : (
-                  <StylText>{phone}</StylText>
+                  <StylText>{profile?.phone}</StylText>
                 )}
               </UserInfoItem>
               {/* 프로필 편집 시 "email" class 삭제 */}

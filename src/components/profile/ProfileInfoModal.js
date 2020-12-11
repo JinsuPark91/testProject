@@ -32,7 +32,6 @@ function ProfileInfoModal({
 }) {
   const history = useHistory();
   const { userStore, friendStore, roomStore, authStore } = useCoreStores();
-  const [profile, setProfile] = useState(null);
   const [isEditMode, setIsEditMode] = useState(editMode);
   const [imageModal, setImageModal] = useState(false);
   const [userType, setUserType] = useState('');
@@ -45,23 +44,42 @@ function ProfileInfoModal({
   const [name, setName] = useState('');
   const [statusMsg, setStatusMsg] = useState('');
 
+  // get profile from store
+  const profile = userStore.userProfiles[userId];
+
   const getBackPhoto = () => {
     return userStore.getBackgroudPhotoURL(userId);
+  };
+
+  const setLocalInputData = () => {
+    setPhone(profile?.companyNum);
+    setMobile(profile?.phone);
+    setName(profile?.nick || profile?.name);
+    setStatusMsg(profile?.profileStatusMsg);
+    setLocalProfilePhoto(null);
+    setLocalBackgroundPhoto(null);
+  };
+
+  const resetLocalInputData = () => {
+    setPhone(null);
+    setMobile(null);
+    setName(null);
+    setStatusMsg(null);
+    setLocalProfilePhoto(null);
+    setLocalBackgroundPhoto(null);
   };
 
   useEffect(() => {
     if (visible === false) return;
     (async () => {
-      const userProfile = await userStore.getProfile({ userId });
-      const userAuthInfo = await authStore.user;
-      const nickName = userProfile?.nick || userProfile?.name;
+      let userProfile = userStore.userProfiles[userId];
+      if (!userProfile) {
+        userProfile = await userStore.getProfile({ userId });
+      }
+      // set initial local input data
+      setLocalInputData();
 
-      setProfile(userProfile);
-      setPhone(userProfile?.companyNum);
-      setMobile(userProfile?.phone);
-      setName(nickName);
-      setStatusMsg(userProfile?.profileStatusMsg);
-      setLocalBackgroundPhoto(`${getBackPhoto()}`);
+      const userAuthInfo = await authStore.user;
       setUserType(userAuthInfo.type);
     })();
 
@@ -177,6 +195,7 @@ function ProfileInfoModal({
   };
 
   const handleConfirm = async () => {
+    // set update data from user input
     const updatedInfo = {
       nick: name,
       companyNum: phone,
@@ -204,15 +223,11 @@ function ProfileInfoModal({
       updatedInfo.backPhoto = getBackPhoto();
     }
 
-    const updatedProfile = await userStore.updateMyProfile({ updatedInfo });
+    // Update my profile information
+    await userStore.updateMyProfile({ updatedInfo });
 
-    setName(updatedProfile?.name);
-    setPhone(updatedProfile?.companyNum);
-    setMobile(updatedProfile?.phone);
-
-    // clean local cached image
-    setLocalProfilePhoto(null);
-    setLocalBackgroundPhoto(null);
+    // Reset local input date
+    resetLocalInputData();
 
     setIsEditMode(false);
     setIsChange(false);
@@ -223,12 +238,8 @@ function ProfileInfoModal({
     setIsChange(false);
     setIsEditMode(false);
 
-    setMobile(profile?.phone);
-    setPhone(profile?.companyNum);
-
-    // clean local cached image
-    setLocalProfilePhoto(null);
-    setLocalBackgroundPhoto(null);
+    // Reset local input date
+    resetLocalInputData();
 
     if (editMode === true) onToggle();
   };
@@ -348,7 +359,7 @@ function ProfileInfoModal({
           {isEditMode ? (
             <EditNameInput
               maxLength={20}
-              value={name}
+              value={name || profile?.nick || profile?.name}
               onChange={e => {
                 const newNick =
                   e.length <= MAX_NICK_LENGTH ? e : e.slice(0, MAX_NICK_LENGTH);
@@ -360,12 +371,12 @@ function ProfileInfoModal({
             <p>{profile?.nick || profile?.name}</p>
           )}
         </UserName>
-        <UserMail>{profile?.email}</UserMail>
+        <UserMail>{`(${profile?.loginId})`}</UserMail>
         <UserStatus>
           {isEditMode ? (
             <EditStatusInput
               maxLength={50}
-              value={statusMsg}
+              value={statusMsg || profile?.profileStatusMsg}
               onChange={e => {
                 setStatusMsg(e);
                 setIsChange(true);
