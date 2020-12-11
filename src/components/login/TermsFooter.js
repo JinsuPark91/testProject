@@ -9,38 +9,33 @@ const CorpArea = styled.div`
 `;
 const FlexRow = styled.div`
   display: flex;
-  flex-direction: row;
   align-items: center;
-  text-align: center;
+  justify-content: center;
   .ant-btn {
-    font-size: 0.75rem;
-    color: #6c56e5;
-    padding: 0;
     height: auto;
+    padding: 0;
   }
 `;
 const Copyright = styled.p`
   font-size: 0.6875rem;
   color: #7c7c7c;
-  letter-spacing: 0;
 `;
 const LineBar = styled.span`
   width: 1px;
   height: 12px;
-  background-color: #7c7c7c;
   margin: auto 0.5rem;
-  display: inline-block;
+  background-color: #7c7c7c;
 `;
 
 const TermsFooter = ({ isService }) => {
   return (
     <CorpArea>
       <FlexRow>
-        <Button type="text">이용약관</Button>
+        <Button type="link">이용약관</Button>
         <LineBar />
-        <Button type="text">개인정보처리방침</Button>
+        <Button type="link">개인정보처리방침</Button>
         <LineBar />
-        <Button id="serviceInfo" type="text">
+        <Button id="serviceInfo" type="link">
           서비스 소개
         </Button>
       </FlexRow>

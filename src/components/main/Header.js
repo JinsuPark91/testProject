@@ -150,11 +150,29 @@ const Header = () => {
     setIsMessageVisible(!isMessageVisible);
   };
 
-  const addHistory = appName => {
-    history.push({
-      pathname: history.location.pathname,
-      search: `?sub=${appName}`,
-    });
+  const addHistory = async appName => {
+    if (PlatformUIStore.resourceType === 'f') {
+      try {
+        const response = await roomStore.getDMRoom(
+          userStore.myProfile.id,
+          userStore.myProfile.id,
+        );
+        if (!response.result) {
+          throw Error('DM ROOM GET FAILED');
+        }
+        history.push({
+          pathname: `/s/${response.roomId}/talk`,
+          search: `?sub=${appName}`,
+        });
+      } catch (e) {
+        console.error(`Error is${e}`);
+      }
+    } else {
+      history.push({
+        pathname: history.location.pathname,
+        search: `?sub=${appName}`,
+      });
+    }
   };
 
   const handleAppClick = appName => {

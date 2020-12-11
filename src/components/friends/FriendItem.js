@@ -11,11 +11,11 @@ import {
   Toast,
   usePortalWindow,
 } from 'teespace-core';
-import PlatformUIStore from '../../stores/PlatformUIStore';
 import { useOpenInWindow } from 'use-open-window';
 import { ExportOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
-import ProfileInfoModal from '../profile/ProfileInfoModal';
 import { Talk } from 'teespace-talk-app';
+import ProfileInfoModal from '../profile/ProfileInfoModal';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 
@@ -168,8 +168,8 @@ const StyledAvatar = styled(Avatar)`
     switch (props.mode) {
       case 'me':
         return css`
-          width: 2.5rem;
-          height: 2.5rem;
+          width: 2.38rem;
+          height: 2.38rem;
         `;
       case 'addFriend':
         return css`

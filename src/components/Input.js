@@ -7,15 +7,24 @@ const Input = ({
   value = '',
   onChange = null,
   className,
+  placeholder,
 }) => {
   const handleChange = e => {
     const inputValue = e.target.value;
-    if (maxLength >= inputValue.length) onChange(e.target.value);
+    if (maxLength >= inputValue.length) {
+      onChange(e.target.value);
+      e.stopPropagation();
+    }
   };
 
   return (
     <Wrapper disabled={disabled} className={className}>
-      <input disabled={disabled} value={value} onChange={handleChange} />
+      <input
+        disabled={disabled}
+        value={value}
+        onChange={handleChange}
+        placeholder={placeholder}
+      />
       {maxLength ? (
         <div className="input-counter">{`${value.length}/${maxLength}`}</div>
       ) : null}

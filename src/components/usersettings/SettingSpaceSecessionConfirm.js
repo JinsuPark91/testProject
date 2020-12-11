@@ -3,6 +3,7 @@ import { useCoreStores, Button, Input, Form } from 'teespace-core';
 
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
+import ContentTitle from './ContentTitle';
 import SettingPasswordInput from './SettingPasswordInput';
 import SettingContentTitle from './SettingContentTitle';
 
@@ -40,7 +41,7 @@ function SettingSpaceSecessionConfirm(props) {
 
   return useObserver(() => (
     <>
-      <SettingContentTitle
+      <ContentTitle
         title="스페이스 탈퇴"
         subTitle="스페이스 탈퇴에 대한 유의사항을 꼭 확인해 주세요."
       />
