@@ -20,8 +20,6 @@ import addIcon from '../../assets/ts_friends_add.svg';
 import photoIcon from '../../assets/ts_photo.svg';
 import ProfileImageModal from './ProfileImageModal';
 
-const MAX_NICK_LENGTH = 20;
-
 function ProfileInfoModal({
   userId = '',
   visible,
@@ -35,14 +33,16 @@ function ProfileInfoModal({
   const [isEditMode, setIsEditMode] = useState(editMode);
   const [imageModal, setImageModal] = useState(false);
   const [userType, setUserType] = useState('');
-
-  const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState('');
-  const [localProfilePhoto, setLocalProfilePhoto] = useState('');
-  const [phone, setPhone] = useState('');
-  const [mobile, setMobile] = useState('');
   const [isChange, setIsChange] = useState(false);
-  const [name, setName] = useState('');
-  const [statusMsg, setStatusMsg] = useState('');
+
+  // NOTE. Setting state to null means the state is not changed
+  //  This null is different from empty('')
+  const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(null);
+  const [localProfilePhoto, setLocalProfilePhoto] = useState(null);
+  const [phone, setPhone] = useState(null);
+  const [mobile, setMobile] = useState(null);
+  const [name, setName] = useState(null);
+  const [statusMsg, setStatusMsg] = useState(null);
 
   // get profile from store
   const profile = userStore.userProfiles[userId];
@@ -68,6 +68,8 @@ function ProfileInfoModal({
     setLocalProfilePhoto(null);
     setLocalBackgroundPhoto(null);
   };
+
+  const isValidInputData = () => !!name;
 
   useEffect(() => {
     if (visible === false) return;
@@ -359,11 +361,10 @@ function ProfileInfoModal({
           {isEditMode ? (
             <EditNameInput
               maxLength={20}
-              value={name || profile?.nick || profile?.name}
+              placeholder="별명을 입력해주세요."
+              value={name !== null ? name : profile?.nick || profile?.name}
               onChange={e => {
-                const newNick =
-                  e.length <= MAX_NICK_LENGTH ? e : e.slice(0, MAX_NICK_LENGTH);
-                setName(newNick);
+                setName(e);
                 setIsChange(true);
               }}
             />
@@ -376,7 +377,7 @@ function ProfileInfoModal({
           {isEditMode ? (
             <EditStatusInput
               maxLength={50}
-              value={statusMsg || profile?.profileStatusMsg}
+              value={statusMsg !== null ? statusMsg : profile?.profileStatusMsg}
               onChange={e => {
                 setStatusMsg(e);
                 setIsChange(true);
@@ -401,7 +402,7 @@ function ProfileInfoModal({
             <>
               <EditNumInputBox>
                 <Input
-                  value={phone}
+                  value={phone !== null ? phone : profile?.companyNum || `-`}
                   onChange={e => {
                     setPhone(e.target.value);
                     setIsChange(true);
@@ -456,7 +457,7 @@ function ProfileInfoModal({
               <EditButton
                 type="solid"
                 shape="round"
-                disabled={!isChange}
+                disabled={!isChange || !isValidInputData()}
                 onClick={handleConfirm}
               >
                 저장

@@ -16,8 +16,6 @@ import EmailHoverIcon from '../assets/ts_export.svg';
 import tsBgImgIcon from '../assets/ts_photo.svg';
 import tsCameraImgIcon from '../assets/ts_camera.svg';
 
-const MAX_NICK_LENGTH = 20;
-
 const Profile = observer(
   ({
     userId = null,
@@ -30,15 +28,17 @@ const Profile = observer(
     const history = useHistory();
     const { roomStore, userStore } = useCoreStores();
     const [isEditMode, setEditMode] = useState(editOnlyMode);
-    // 유저 정보들
+    const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
+    const [isChange, setIsChange] = useState(false);
+
+    // NOTE. Setting state to null means the state is not changed
+    //  This null is different from empty('')
     const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(null);
     const [localProfilePhoto, setLocalProfilePhoto] = useState(null);
-    const [phone, setPhone] = useState('');
-    const [mobile, setMobile] = useState('');
-    const [isChange, setIsChange] = useState(false);
-    const [name, setName] = useState('');
-    const [statusMsg, setStatusMsg] = useState('');
-    const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
+    const [phone, setPhone] = useState(null);
+    const [mobile, setMobile] = useState(null);
+    const [name, setName] = useState(null);
+    const [statusMsg, setStatusMsg] = useState(null);
 
     // get profile from store
     const profile = userStore.userProfiles[userId];
@@ -69,6 +69,8 @@ const Profile = observer(
       setLocalProfilePhoto(null);
       setLocalBackgroundPhoto(null);
     };
+
+    const isValidInputData = () => !!name;
 
     useEffect(() => {
       setEditMode(editOnlyMode);
@@ -334,16 +336,13 @@ const Profile = observer(
               {editEnabled ? (
                 <StyleInput
                   className="type2"
+                  maxLength={20}
+                  placeholder="별명을 입력해주세요."
                   onChange={e => {
                     setIsChange(true);
-                    const inputNick = e.target.value;
-                    const newNick =
-                      inputNick.length <= MAX_NICK_LENGTH
-                        ? inputNick
-                        : inputNick.slice(0, MAX_NICK_LENGTH);
-                    setName(newNick);
+                    setName(e.target.value);
                   }}
-                  value={name || profile?.nick || profile?.name}
+                  value={name !== null ? name : profile?.nick || profile?.name}
                 />
               ) : (
                 profile?.nick || profile?.name
@@ -358,7 +357,9 @@ const Profile = observer(
                     setIsChange(true);
                     setStatusMsg(e.target.value);
                   }}
-                  value={statusMsg || profile?.profileStatusMsg}
+                  value={
+                    statusMsg !== null ? statusMsg : profile?.profileStatusMsg
+                  }
                 />
               ) : (
                 profile?.profileStatusMsg
@@ -377,7 +378,7 @@ const Profile = observer(
                       setIsChange(true);
                       setMobile(e.target.value);
                     }}
-                    value={phone || profile?.companyNum}
+                    value={phone !== null ? phone : profile?.companyNum}
                   />
                 ) : (
                   <StylText>{profile?.companyNum}</StylText>
@@ -391,7 +392,7 @@ const Profile = observer(
                       setIsChange(true);
                       setPhone(e.target.value);
                     }}
-                    value={mobile || profile?.phone}
+                    value={mobile !== null ? mobile : profile?.phone}
                   />
                 ) : (
                   <StylText>{profile?.phone}</StylText>
@@ -416,7 +417,7 @@ const Profile = observer(
                     style={{ marginRight: '1.25rem' }}
                     type="solid"
                     shape="round"
-                    disabled={!isChange}
+                    disabled={!isChange || !isValidInputData()}
                     onClick={handleConfirm}
                   >
                     저장
