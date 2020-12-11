@@ -35,6 +35,7 @@ const ProfileMyModal = ({
   // const [lngListVisible, setLngListVisible] = useState(false);
   // const { i18n } = useTranslation();
 
+  // eslint-disable-next-line no-unused-vars
   const handleSettingDialogOpen = useCallback(e => {
     setItemKey(e);
     setIsCreated(false);
@@ -135,7 +136,7 @@ const ProfileMyModal = ({
   const userContent = !isEditMode ? (
     <>
       <UserImage src={thumbPhoto} onLoad={revokeURL} />
-      <UserName>{profile?.name}</UserName>
+      <UserName>{profile?.nick || profile?.name}</UserName>
       <UserMail>{`(${profile?.email})`}</UserMail>
       <UserButtonBox>
         <Button type="link" onClick={toggleEditMode}>
@@ -353,6 +354,7 @@ const UserButtonBox = styled.div`
     }
   }
 `;
+// eslint-disable-next-line no-unused-vars
 const UserBar = styled.span`
   display: inline-block;
   width: 1px;
@@ -643,6 +645,7 @@ const SettingButton = styled(Button)`
   width: 4.375rem;
   padding: 0 !important;
 `;
+// eslint-disable-next-line no-unused-vars
 const SettingBar = styled.span`
   display: inline-block;
   width: 0.1875rem;

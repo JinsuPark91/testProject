@@ -139,7 +139,7 @@ const Profile = observer(
       console.log('updated Info : ', updatedInfo);
       const updatedProfile = await userStore.updateMyProfile({ updatedInfo });
 
-      console.log('UPDATED!!!!!!!!!!!!! : ', updatedProfile);
+      setProfile(updatedProfile);
       setPhone(updatedProfile?.companyNum);
       setMobile(updatedProfile?.phone);
 
