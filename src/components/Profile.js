@@ -16,8 +16,6 @@ import EmailHoverIcon from '../assets/ts_export.svg';
 import tsBgImgIcon from '../assets/ts_photo.svg';
 import tsCameraImgIcon from '../assets/ts_camera.svg';
 
-const IS_LOCAL = true;
-
 const Profile = observer(
   ({
     userId = null,
@@ -32,7 +30,7 @@ const Profile = observer(
     const [isEditMode, setEditMode] = useState(editOnlyMode);
     const [profile, setProfile] = useState(null);
     // 유저 정보들
-    const [background, setBackground] = useState(null);
+    const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(null);
     const [localProfilePhoto, setLocalProfilePhoto] = useState(null);
     const [phone, setPhone] = useState('');
     const [mobile, setMobile] = useState('');
@@ -43,13 +41,11 @@ const Profile = observer(
 
     const isMyId = () => userId === userStore.myProfile.id;
 
-    const getBackPhoto = backPhoto => {
-      return userStore.getUserBackPhoto({
-        userId,
-        size: 'medium',
-        isLocal: IS_LOCAL,
-        backPhoto: backPhoto || null,
-      });
+    const getBackPhoto = () => {
+      return userStore.getBackgroudPhotoURL(userId);
+    };
+    const getProfilePhoto = () => {
+      return userStore.getProfilePhotoURL(userId, 'medium');
     };
 
     useEffect(() => {
@@ -61,7 +57,7 @@ const Profile = observer(
         setMobile(userProfile?.phone);
         setName(userProfile?.name);
 
-        setBackground(`${getBackPhoto()}`);
+        setLocalBackgroundPhoto(`${getBackPhoto()}`);
       })();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId]);
@@ -95,7 +91,7 @@ const Profile = observer(
 
     const handleChangeBackground = file => {
       setIsChange(true);
-      setBackground(URL.createObjectURL(file));
+      setLocalBackgroundPhoto(URL.createObjectURL(file));
     };
 
     const handleChangePhoto = file => {
@@ -105,7 +101,7 @@ const Profile = observer(
 
     const handleChangeDefaultBackground = () => {
       setIsChange(true);
-      setBackground(`${getBackPhoto()}`);
+      setLocalBackgroundPhoto(`${getBackPhoto()}`);
     };
 
     const handleChangeDefaultPhoto = () => {
@@ -114,7 +110,7 @@ const Profile = observer(
     };
 
     const handleConfirm = async () => {
-      console.log('BACK PHOTO : ', background);
+      console.log('BACK PHOTO : ', localBackgroundPhoto);
       console.log('THUMB PHOTO : ', localProfilePhoto);
 
       const updatedInfo = {
@@ -122,20 +118,24 @@ const Profile = observer(
         phone: mobile,
       };
 
-      if (localProfilePhoto.includes('blob:')) {
+      if (localProfilePhoto?.includes('blob:')) {
         const blobImage = await toBlob(localProfilePhoto);
         const base64Image = await toBase64(blobImage);
         updatedInfo.profilePhoto = base64Image;
 
         URL.revokeObjectURL(localProfilePhoto);
+      } else {
+        updatedInfo.profilePhoto = getProfilePhoto();
       }
 
-      if (background.includes('blob:')) {
-        const blobImage = await toBlob(background);
+      if (localBackgroundPhoto?.includes('blob:')) {
+        const blobImage = await toBlob(localBackgroundPhoto);
         const base64Image = await toBase64(blobImage);
         updatedInfo.backPhoto = base64Image;
 
-        URL.revokeObjectURL(background);
+        URL.revokeObjectURL(localBackgroundPhoto);
+      } else {
+        updatedInfo.backPhoto = getBackPhoto();
       }
 
       console.log('updated Info : ', updatedInfo);
@@ -159,7 +159,7 @@ const Profile = observer(
       setEditMode(false);
       setMobile(profile?.phone);
       setPhone(profile?.companyNum);
-      setBackground(getBackPhoto());
+      setLocalBackgroundPhoto(getBackPhoto());
 
       // hide confirm dialog
       setCancelDialogVisible(false);
@@ -234,7 +234,7 @@ const Profile = observer(
             },
           ]}
         />
-        <Wrapper imageSrc={background}>
+        <Wrapper imageSrc={localBackgroundPhoto}>
           {showSider && (
             <Sidebar>
               <StyledButton onClick={handleTalkClick}>
@@ -285,12 +285,7 @@ const Profile = observer(
               </Dropdown>
             )}
             <UserImageWrapper position="br">
-              <UserImage
-                src={
-                  localProfilePhoto ||
-                  userStore.getProfilePhotoURL(userId, 'medium')
-                }
-              />
+              <UserImage src={localProfilePhoto || getProfilePhoto()} />
               {isMyId() && editEnabled && (
                 <Dropdown
                   trigger={['click']}

@@ -25,6 +25,16 @@ function ProfileModal({
   style,
 }) {
   const { userStore } = useCoreStores();
+  const [isFav, setIsFav] = useState(checkFav());
+  const handleToggleFav = async () => {
+    setIsFav(f => !f);
+    try {
+      await toggleFav();
+    } catch (e) {
+      console.log(`Error ${e}`);
+      setIsFav(checkFav());
+    }
+  };
 
   return useObserver(() => (
     <ModalWrap
@@ -49,8 +59,8 @@ function ProfileModal({
               {!(userId === userStore.myProfile.id) && !isNotMyFriend() && (
                 <TopButton
                   type="bookMark"
-                  isFav={checkFav()}
-                  onClick={toggleFav}
+                  isFav={isFav}
+                  onClick={handleToggleFav}
                 >
                   <Blind>즐겨찾기</Blind>
                 </TopButton>
@@ -136,15 +146,19 @@ const TopButton = styled.button`
           &:hover {
             background-color: rgba(255, 255, 255, 0.3);
           }
-          &:active,
-          &:focus {
+          &:active {
             background-image: url(${starIcon});
             background-color: rgba(90, 95, 255, 0.8);
           }
           ${props =>
-            (props.click || props.isFav) &&
+            props.isFav &&
             css`
               background-image: url(${starIcon});
+            `}
+          ${props =>
+            !props.isFav &&
+            css`
+              background-image: url(${starLineIcon});
             `}
         `;
       case 'close':
