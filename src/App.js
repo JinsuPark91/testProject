@@ -4,10 +4,10 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import './App.less';
 import { create } from 'mobx-persist';
-import { useCoreStores } from 'teespace-core';
+import { PortalProvider, useCoreStores } from 'teespace-core';
 import { initApp as initDriveApp } from 'teespace-drive-app';
 import { initApp as initCalendarApp } from 'teespace-calendar-app';
-import { I18nextProvider } from 'react-i18next';
+// import { I18nextProvider } from 'react-i18next';
 import AdminPage from './page/AdminPage';
 import LoginPage from './page/LoginPage';
 import NotFoundPage from './page/NotFoundPage';
@@ -19,7 +19,7 @@ import DriveSharedFilePage from './page/DriveSharedFilePage';
 import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
 import PrivateRoute from './libs/PrivateRoute';
-import i18next from './i18n';
+// import i18next from './i18n';
 
 const hydrate = create();
 
@@ -47,7 +47,8 @@ function App() {
   if (!isHydrating) return <></>;
   return (
     <DndProvider backend={HTML5Backend}>
-      <I18nextProvider i18n={i18next}>
+      <PortalProvider>
+        {/* <I18nextProvider i18n={i18next}> */}
         <BrowserRouter>
           <Switch>
             <Route exact path="/">
@@ -92,7 +93,8 @@ function App() {
           /> */}
           </Switch>
         </BrowserRouter>
-      </I18nextProvider>
+        {/* </I18nextProvider> */}
+      </PortalProvider>
     </DndProvider>
   );
 }

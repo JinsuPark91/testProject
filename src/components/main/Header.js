@@ -19,7 +19,6 @@ import {
 } from './HeaderStyle';
 import Photos from '../Photos';
 import PlatformUIStore from '../../stores/PlatformUIStore';
-import { ProfileContextProvider } from '../profile/ProfileContextProvider';
 import MyProfileInfo from '../profile/MyProfileInfo';
 import {
   ExportIcon,
@@ -235,9 +234,7 @@ const Header = () => {
       </AppIconContainer>
 
       <UserMenu>
-        <ProfileContextProvider>
-          <MyProfileInfo />
-        </ProfileContextProvider>
+        <MyProfileInfo />
       </UserMenu>
     </Wrapper>
   );

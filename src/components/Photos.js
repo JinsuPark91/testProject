@@ -40,7 +40,7 @@ function Photos({ srcList, defaultDiameter = 2.25, center = false }) {
     <Wrapper defaultDiameter={defaultDiameter} center={center}>
       {srcList.map((src, index) => (
         <UserPhoto
-          key={src}
+          key={index}
           src={src}
           styles={getStyle(index, srcList.length, defaultDiameter)}
         />
