@@ -1,11 +1,21 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import styled, { css } from 'styled-components';
 import { Avatar, Button } from 'antd';
-import { useCoreStores, Dropdown, Menu, Message, Toast } from 'teespace-core';
+import {
+  useCoreStores,
+  Dropdown,
+  Menu,
+  Message,
+  Toast,
+  usePortalWindow,
+} from 'teespace-core';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 import { useOpenInWindow } from 'use-open-window';
-import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
+import { ExportOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
+import ProfileInfoModal from '../profile/ProfileInfoModal';
+import { Talk } from 'teespace-talk-app';
 
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 
@@ -194,21 +204,49 @@ const DropdownMenu = React.memo(
     </Menu>
   ),
 );
-const Profile = ({ mode, tooltipPopupContainer, profilePhoto }) => {
-  return (
-    <>
-      {mode === 'me' && (
-        <StyledWrapper>
-          <ProfileBadge getPopupContainer={tooltipPopupContainer} visible>
-            나
-          </ProfileBadge>
-          <StyledAvatar src={`${profilePhoto}`} mode="me" />
-        </StyledWrapper>
-      )}
-      {mode !== 'me' && <StyledAvatar src={`${profilePhoto}`} mode={mode} />}
-    </>
-  );
-};
+
+const Profile = React.memo(
+  ({ mode, tooltipPopupContainer, profilePhoto, itemId }) => {
+    const [infoVisible, setInfoVisible] = useState(false);
+    const toggleProfilePopup = useCallback(e => {
+      if (e) e.stopPropagation();
+      setInfoVisible(v => !v);
+    }, []);
+
+    return (
+      <>
+        {mode === 'me' && (
+          <StyledWrapper>
+            <ProfileBadge getPopupContainer={tooltipPopupContainer} visible>
+              나
+            </ProfileBadge>
+            <StyledAvatar
+              src={`${profilePhoto}`}
+              mode="me"
+              onClick={toggleProfilePopup}
+            />
+          </StyledWrapper>
+        )}
+        {mode !== 'me' && (
+          <StyledAvatar
+            src={`${profilePhoto}`}
+            mode={mode}
+            onClick={toggleProfilePopup}
+          />
+        )}
+        {infoVisible && (
+          <ProfileInfoModal
+            userId={itemId}
+            visible={infoVisible}
+            onToggle={toggleProfilePopup}
+            position={{ left: '17rem' }}
+            profilePhoto={`${profilePhoto}`}
+          />
+        )}
+      </>
+    );
+  },
+);
 
 const FriendAction = React.memo(
   ({ mode, menu, handleDropdownVisible, handleTalkWindowOpen }) => {
@@ -378,7 +416,7 @@ const FriendItem = observer(
       position,
     } = friendInfo;
     const history = useHistory();
-    const { authStore, friendStore, userStore } = useCoreStores();
+    const { authStore, friendStore, userStore, roomStore } = useCoreStores();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
     const [visibleMessage, setVisibleMessage] = useState(false);
@@ -391,17 +429,67 @@ const FriendItem = observer(
     /* merged info of userInfo and friendInfo */
     const itemId = friendId || userId;
 
-    const [handleTalkWindowOpen, newTalkWindowHandler] = useOpenInWindow(
-      `${window.location.origin}/s/1234/talk?mini=true`,
-      {
-        name: '_blank',
-        centered: true,
-        specs: {
-          width: 600,
-          height: 900,
-        },
-      },
-    );
+    const talkWindowOpen = usePortalWindow();
+
+    const handleTalkWindowOpen = async () => {
+      try {
+        const myUserId = userStore.myProfile.id;
+        const targetId = friendInfo.friendId || myUserId;
+        const { roomInfo } = await roomStore.getDMRoom(myUserId, targetId);
+
+        if (roomInfo) {
+          if (!roomInfo.isVisible) {
+            await roomStore.updateRoomMemberSetting({
+              roomId: roomInfo.id,
+              myUserId,
+              newIsVisible: true,
+            });
+          }
+          talkWindowOpen({
+            element: (
+              <Talk
+                roomId={roomInfo.id}
+                channelId={
+                  roomStore
+                    .getRoomMap()
+                    .get(roomInfo.id)
+                    ?.channelList?.find(channel => channel.type === 'CHN0001')
+                    ?.id
+                }
+              />
+            ),
+            opts: 'width=600, height=900',
+            title: 'mini-talk',
+          });
+        } else {
+          const { dmRoomId } = await roomStore.createRoom({
+            creatorId: myUserId,
+            userList:
+              myUserId === targetId
+                ? [{ userId: myUserId }]
+                : [{ userId: myUserId }, { userId: targetId }],
+          });
+          talkWindowOpen({
+            element: (
+              <Talk
+                roomId={dmRoomId}
+                channelId={
+                  roomStore
+                    .getRoomMap()
+                    .get(dmRoomId)
+                    ?.channelList?.find(channel => channel.type === 'CHN0001')
+                    ?.id
+                }
+              />
+            ),
+            opts: 'width=600, height=900',
+            title: 'mini-talk',
+          });
+        }
+      } catch (e) {
+        console.error(`Error is${e}`);
+      }
+    };
 
     const handleDropdownVisible = useCallback(visible => {
       if (!visible) {
@@ -477,18 +565,22 @@ const FriendItem = observer(
       [friendStore, authStore, itemId],
     );
 
-    const handleItemClick = useCallback(() => {
-      if (onClick) {
-        onClick(itemId);
-      }
-      if (mode === 'me' || mode === 'friend') {
-        history.push({
-          pathname: `/f/${itemId}/profile`,
-          search: null,
-        });
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [itemId, history, mode, onClick]);
+    const handleItemClick = useCallback(
+      e => {
+        if (e) e.stopPropagation();
+        if (onClick) {
+          onClick(itemId);
+        }
+        if (mode === 'me' || mode === 'friend') {
+          history.push({
+            pathname: `/f/${itemId}/profile`,
+            search: null,
+          });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      },
+      [itemId, history, mode, onClick],
+    );
 
     const handleRemoveFriendMessageClose = useCallback(() => {
       setVisibleRemoveFriendMessage(false);
@@ -566,6 +658,7 @@ const FriendItem = observer(
             mode={mode}
             tooltipPopupContainer={tooltipPopupContainer}
             profilePhoto={userStore.getProfilePhotoURL(itemId, 'small')}
+            itemId={itemId}
           />
         </ProfileWrapper>
         <TextWrapper>
