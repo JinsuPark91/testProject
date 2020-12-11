@@ -1,17 +1,15 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import ProfileModal from './ProfileModal';
 import styled, { css } from 'styled-components';
 import { Button, Avatar, Dropdown, Menu, Checkbox } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 // import { useTranslation } from 'react-i18next';
+import ProfileModal from './ProfileModal';
 import SettingDialog from '../usersettings/SettingDialog';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import convertSpaceIcon from '../../assets/convert space.svg';
 import moreSpaceIcon from '../../assets/view_more.svg';
 import checkekIcon from '../../assets/ts_check.svg';
-import { ReactComponent as ArrowRightIcon } from '../../assets/arrow_right_line.svg';
-import { ReactComponent as LangSpaceIcon } from '../../assets/plan_standard.svg';
 import { ReactComponent as SquareSpaceIcon } from '../../assets/thumbnail.svg';
 import ProfileInfoModal from './ProfileInfoModal';
 
@@ -53,7 +51,7 @@ const ProfileMyModal = ({
   }, []);
 
   const handleSpaceList = useCallback(() => {
-    setSpaceListVisible(spaceListVisible => !spaceListVisible);
+    setSpaceListVisible(prevVisible => !prevVisible);
     setIsCreated(false);
   }, []);
 
@@ -98,7 +96,7 @@ const ProfileMyModal = ({
 
   const handleAdminPage = useCallback(() => {
     history.push('/admin');
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     (async () => {
@@ -144,7 +142,7 @@ const ProfileMyModal = ({
           프로필 편집
         </Button>
         <UserBar />
-        <Button type="link" onClick={handleSettingDialogOpen.bind(this, '6')}>
+        <Button type="link" onClick={() => handleSettingDialogOpen('6')}>
           비밀번호 변경
         </Button>
       </UserButtonBox>
@@ -158,7 +156,7 @@ const ProfileMyModal = ({
       visible={isEditMode}
       onToggle={toggleEditMode}
       profilePhoto={thumbPhoto}
-      editMode={true}
+      editMode
     />
   );
 
@@ -299,7 +297,7 @@ const ProfileMyModal = ({
           <SettingButton
             type="text"
             shape="round"
-            onClick={handleSettingDialogOpen.bind(this, '2')}
+            onClick={() => handleSettingDialogOpen('2')}
           >
             설정
           </SettingButton>
@@ -501,6 +499,7 @@ const LinkIcon = styled.span`
     height: 1.25rem;
   }
 `;
+// eslint-disable-next-line no-unused-vars
 const LangIcon = styled.span`
   margin-left: auto;
   line-height: 0;
@@ -509,6 +508,7 @@ const LangIcon = styled.span`
     height: 1rem;
   }
 `;
+// eslint-disable-next-line no-unused-vars
 const LngList = styled.ul`
   position: absolute;
   left: -5.27rem;
@@ -520,6 +520,7 @@ const LngList = styled.ul`
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
   border-radius: 0.25rem;
 `;
+// eslint-disable-next-line no-unused-vars
 const LangItem = styled.li`
   position: relative;
   padding-left: 1.63rem;

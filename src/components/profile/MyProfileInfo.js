@@ -1,48 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { Observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import settingIcon from '../../assets/setting.svg';
 import ProfileMyModal from './ProfileMyModal';
 
-const IS_LOCAL = true;
-
-// const [infoModalVisible, setInfoModalVisible] = useState(false);
-// const [editModalVisible, setEditModalVisible] = useState(false);
-
-// const handleInfoOpen = useCallback(() => {
-//   setInfoModalVisible(true);
-// }, []);
-
-// const handleInfoClose = useCallback(() => {
-//   setInfoModalVisible(false);
-// }, []);
-
-// const handleClickEditProfile = useCallback(() => {
-//   setEditModalVisible(true);
-// }, []);
-
-// const handleEditClose = useCallback(() => {
-//   setEditModalVisible(false);
-
-//   <ProfileInfoModal
-//   visible={infoModalVisible}
-//   userId={userId}
-//   thumbPhoto={userStore.getProfilePhotoURL(
-//     userStore.myProfile.id,
-//     'small',
-//   )}
-//   onClose={handleInfoClose}
-//   onClickEditProfile={handleClickEditProfile}
-// />
-// <ProfileEditModal
-//   visible={editModalVisible}
-//   userId={userId}
-//   onClose={handleEditClose}
-// />
-
-function MyProfileInfo() {
-  const [thumbPhoto, setThumbPhoto] = useState(null);
+const MyProfileInfo = observer(() => {
   const [myModalVisible, setMyModalVisible] = useState(false);
   const { userStore, authStore } = useCoreStores();
   const userId = authStore.user.id;
@@ -51,31 +14,14 @@ function MyProfileInfo() {
     setMyModalVisible(v => !v);
   }, []);
 
-  const revokeURL = useCallback(() => {
-    URL.revokeObjectURL(thumbPhoto);
-  }, [thumbPhoto]);
-
-  useEffect(() => {
-    const getThumbPhoto = userStore.getProfilePhotoURL(userId, 'small');
-    setThumbPhoto(`${getThumbPhoto}`);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userStore.myProfile.lastUpdatedTime]);
-
+  const thumbPhoto = userStore.getProfilePhotoURL(
+    userStore.myProfile.id,
+    'small',
+  );
   return (
     <>
       <ProfileIcon>
-        <Observer>
-          {() => (
-            <ThumbImage
-              src={userStore.getProfilePhotoURL(
-                userStore.myProfile.id,
-                'small',
-              )}
-              onLoad={revokeURL}
-              onClick={toggleMyModal}
-            />
-          )}
-        </Observer>
+        <ThumbImage src={thumbPhoto} onClick={toggleMyModal} />
         <SettingImage>
           <img alt="settingIcon" src={settingIcon} />
         </SettingImage>
@@ -87,10 +33,10 @@ function MyProfileInfo() {
         thumbPhoto={thumbPhoto}
         created={false}
       />
-      )}
     </>
   );
-}
+});
+
 const ProfileIcon = styled.div`
   position: relative;
 `;
