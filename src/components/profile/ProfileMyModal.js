@@ -141,10 +141,10 @@ const ProfileMyModal = ({
         <Button type="link" onClick={toggleEditMode}>
           프로필 편집
         </Button>
-        <UserBar />
-        <Button type="link" onClick={() => handleSettingDialogOpen('6')}>
+        {/* <UserBar />
+        <Button type="link" onClick={handleSettingDialogOpen.bind(this, '6')}>
           비밀번호 변경
-        </Button>
+        </Button> */}
       </UserButtonBox>
       <LogoutButton shape="round" onClick={handleLogout}>
         로그아웃
@@ -294,14 +294,14 @@ const ProfileMyModal = ({
       subContent={subContent}
       footer={
         <UserSettingArea>
-          <SettingButton
+          {/* <SettingButton
             type="text"
             shape="round"
             onClick={() => handleSettingDialogOpen('2')}
           >
             설정
           </SettingButton>
-          <SettingBar />
+          <SettingBar /> */}
           <SettingButton type="text" shape="round">
             고객지원
           </SettingButton>

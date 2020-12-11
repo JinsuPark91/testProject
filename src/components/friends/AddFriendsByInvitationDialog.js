@@ -118,10 +118,8 @@ function AddFriendsBySearch({ visible, onCancel }) {
     }
 
     // 급한대로 추가 - 추후 refactoring
-    const mailArr = [];
     for (let i = 0; i < chipList.length; i += 1) {
-      mailArr.push(chipList[i].text);
-      if (!chipList[i].valid) {
+      if (!checkEmailValid(chipList[i])) {
         handleToggleMessage();
         return;
       }
@@ -172,7 +170,7 @@ function AddFriendsBySearch({ visible, onCancel }) {
       setMailAddress(remainText);
 
       const chipsSet = new Set(chipList);
-      chipsSet.add({ text: addText, valid: checkEmailValid(addText) });
+      chipsSet.add(addText);
       setChipList(Array.from(chipsSet));
     } else {
       setMailAddress(inputText);
@@ -181,7 +179,7 @@ function AddFriendsBySearch({ visible, onCancel }) {
 
   const handlePressEnter = () => {
     const chipsSet = new Set(chipList);
-    chipsSet.add({ text: mailAddress, valid: checkEmailValid(mailAddress) });
+    chipsSet.add(mailAddress);
     setChipList(Array.from(chipsSet));
     setMailAddress('');
   };
@@ -227,10 +225,10 @@ function AddFriendsBySearch({ visible, onCancel }) {
               {chipList.map(elem => (
                 <Chip
                   size="small"
-                  text={elem.text}
-                  key={elem.text}
+                  text={elem}
+                  key={elem}
                   onClose={() => handleCloseChip(elem)}
-                  alert={!elem.valid}
+                  alert={!checkEmailValid(elem)}
                 />
               ))}
             </StyledChipBox>

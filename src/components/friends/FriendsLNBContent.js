@@ -179,16 +179,20 @@ const FriendsLNBContent = React.forwardRef(
               setToastText={setToastText}
             />
           </MyFrinedListBox>
-          <FrinedListBox style={{ display: searchKeyword ? 'none' : 'block' }}>
-            <StyleTitle>즐겨찾기</StyleTitle>
-            <FriendList
-              friendList={friendStore.favoriteFriendInfoList}
-              onClick={handleFavFriendActive}
-              activeFriendId={favFriendActiveId}
-              openToast={openToast}
-              setToastText={setText}
-            />
-          </FrinedListBox>
+          {friendStore.favoriteFriendInfoList.length ? (
+            <FrinedListBox
+              style={{ display: searchKeyword ? 'none' : 'block' }}
+            >
+              <StyleTitle>즐겨찾기</StyleTitle>
+              <FriendList
+                friendList={friendStore.favoriteFriendInfoList}
+                onClick={handleFavFriendActive}
+                activeFriendId={favFriendActiveId}
+                openToast={openToast}
+                setToastText={setText}
+              />
+            </FrinedListBox>
+          ) : null}
           <FrinedListBox style={{ display: searchKeyword ? 'block' : 'none' }}>
             <StyleTitle>
               프렌즈
