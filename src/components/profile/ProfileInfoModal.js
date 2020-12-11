@@ -58,6 +58,14 @@ function ProfileInfoModal({
       ? profile.defaultPhotoUrl
       : localProfilePhoto || profilePhoto;
 
+  // calculate whether default url be shown
+  const isDefaultProfilePhotoUsed =
+    localProfilePhoto === null ||
+    (localProfilePhoto === undefined && !profile?.thumbPhoto);
+  const isDefaultBackgroundPhotoUsed =
+    localBackgroundPhoto === null ||
+    (localBackgroundPhoto === undefined && !profile?.thumbBack);
+
   const setLocalInputData = () => {
     setPhone(profile?.companyNum);
     setMobile(profile?.phone);
@@ -287,7 +295,11 @@ function ProfileInfoModal({
           프로필 사진 변경
         </StyledUpload>
       </DropItem>
-      <DropItem onClick={handleChangeDefaultPhoto}>기본 이미지로 변경</DropItem>
+      {!isDefaultProfilePhotoUsed && (
+        <DropItem disabled onClick={handleChangeDefaultPhoto}>
+          기본 이미지로 변경
+        </DropItem>
+      )}
     </ButtonDrop>
   );
 
@@ -304,9 +316,11 @@ function ProfileInfoModal({
         </StyledUpload>
       </DropItem>
       {/* <DropItem>테마 이미지에서 변경</DropItem>  1월 업데이트 */}
-      <DropItem onClick={handleChangeDefaultBackground}>
-        기본 이미지로 변경
-      </DropItem>
+      {!isDefaultBackgroundPhotoUsed && (
+        <DropItem onClick={handleChangeDefaultBackground}>
+          기본 이미지로 변경
+        </DropItem>
+      )}
     </ButtonDrop>
   );
 

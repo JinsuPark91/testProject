@@ -63,6 +63,14 @@ const Profile = observer(
         ? profile.defaultBackgroundUrl
         : localBackgroundPhoto || getBackPhoto();
 
+    // calculate whether default url be shown
+    const isDefaultProfilePhotoUsed =
+      localProfilePhoto === null ||
+      (localProfilePhoto === undefined && !profile?.thumbPhoto);
+    const isDefaultBackgroundPhotoUsed =
+      localBackgroundPhoto === null ||
+      (localBackgroundPhoto === undefined && !profile?.thumbBack);
+
     const setLocalInputData = () => {
       setPhone(profile?.companyNum);
       setMobile(profile?.phone);
@@ -303,10 +311,11 @@ const Profile = observer(
                         배경 변경
                       </StyledUpload>
                     </Menu.Item>
-
-                    <Menu.Item onClick={handleChangeDefaultBackground}>
-                      기본 이미지로 변경
-                    </Menu.Item>
+                    {!isDefaultBackgroundPhotoUsed && (
+                      <Menu.Item onClick={handleChangeDefaultBackground}>
+                        기본 이미지로 변경
+                      </Menu.Item>
+                    )}
                   </Menu>
                 }
               >
@@ -332,9 +341,11 @@ const Profile = observer(
                           프로필 사진 변경
                         </StyledUpload>
                       </Menu.Item>
-                      <Menu.Item onClick={handleChangeDefaultPhoto}>
-                        기본 이미지로 변경
-                      </Menu.Item>
+                      {!isDefaultProfilePhotoUsed && (
+                        <Menu.Item onClick={handleChangeDefaultPhoto}>
+                          기본 이미지로 변경
+                        </Menu.Item>
+                      )}
                     </Menu>
                   }
                 >
