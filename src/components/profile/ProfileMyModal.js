@@ -29,7 +29,7 @@ const ProfileMyModal = ({
   const [spaceListVisible, setSpaceListVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
-  const isAdmin = true;
+  const isAdmin = userStore.myProfile.grade === 'admin';
 
   // 1월 업데이트
   // const [lngListVisible, setLngListVisible] = useState(false);
