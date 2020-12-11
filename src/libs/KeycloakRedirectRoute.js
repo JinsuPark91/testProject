@@ -9,9 +9,9 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
   const history = useHistory();
 
   const url = window.location.origin; //  http://xxx.dev.teespace.net
-  const sub_url = url.split('//')[1].split('.')[0]; //  xxx
-  const con_url = url.split(sub_url);
-  const mail_url = con_url[1].slice(1, con_url[1].length); //dev.teespace.net
+  const con_url = url.split(`//`)[1]; // xxx.dev.teespace.net
+  const sub_url = url.split(`//`)[1].split(`.`)[0]; //  xxx
+  const main_url = con_url.slice(con_url.indexOf('.')+1 , con_url.length); //dev.teespace.net
 
   return (
     <Route
@@ -21,9 +21,12 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
           console.log(process.env.REACT_APP_ENV);
           if (process.env.REACT_APP_ENV !== 'local') {
             authStore
-              .login()
+              .login({
+                deviceType: "PC",
+                domainUrl:"",
+              })
               .then(() => {
-                history.push(`/f/${authStore.user.loginId}/profile`);
+                history.push(`/f/${authStore.user.id}/profile`);
               })
               .catch(e => console.error(e));
           }
@@ -33,7 +36,7 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
             return <Component {...props} />;
           } else {
             keycloak.login({
-              redirectUri: `http://${mail_url}?domain=${sub_url}`,
+              redirectUri: `http://${main_url}?domain=${sub_url}`,
               locale: 'ko', // login page locale 설정. 'en' or 'ko' 설정.
             }); // keycloak login page로 redirect
           }
