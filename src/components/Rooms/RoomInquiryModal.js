@@ -414,6 +414,7 @@ function RoomInquiryModal({
             룸 구성원 초대
           </div>
         }
+        initialMembers={members}
         onSelectedUserChange={handleSelectedUserChange}
         bottom={
           <ButtonContainer>
@@ -423,7 +424,7 @@ function RoomInquiryModal({
               shape="round"
               onClick={handleInviteOk}
               style={{ marginRight: '0.38rem' }}
-              disabled={!selectedUsers.length}
+              disabled={selectedUsers.length <= 0}
             >
               {`초대 ${selectedUsers.length}`}
             </Button>
