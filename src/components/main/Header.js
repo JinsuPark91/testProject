@@ -147,7 +147,7 @@ const Header = () => {
   };
 
   const handleAddMember = () => {
-    console.log('handleAddMember');
+    setIsRoomMemberModalVisible(true);
   };
 
   const toggleMessageVisible = () => {
