@@ -3,6 +3,7 @@ import { Button, Checkbox, Avatar } from 'antd';
 import { Input } from 'teespace-core';
 import styled from 'styled-components';
 import ContentTitle from './ContentTitle';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const ContentGroup = styled.div`
   padding: 0.25rem 0 1.25rem;
@@ -147,7 +148,7 @@ function ContentSpaceSecession({
             U
           </SpaceLogo>
           <SpaceInfo>
-            <SpaceTitle>UX팀</SpaceTitle>
+            <SpaceTitle>{PlatformUIStore.space?.name}</SpaceTitle>
             tmax-ux.wapl.ai
           </SpaceInfo>
         </SpaceBox>

@@ -23,7 +23,7 @@ const ProfileMyModal = ({
   visible = false,
   created = false,
 }) => {
-  const { userStore, authStore } = useCoreStores();
+  const { userStore, authStore, spaceStore } = useCoreStores();
   const history = useHistory();
   const [isCreated, setIsCreated] = useState(created);
   const [profile, setProfile] = useState(null);
@@ -188,7 +188,7 @@ const ProfileMyModal = ({
             U
           </Logo>
           <Info>
-            <Title>UX팀</Title>
+            <Title>{PlatformUIStore.space?.name}</Title>
             tmax-ux.wapl.ai
           </Info>
           <Button
@@ -256,21 +256,21 @@ const ProfileMyModal = ({
               U
             </LogoSmall>
             <NowInfo>
-              <NowTitle>UX팀</NowTitle>
+              <NowTitle>{PlatformUIStore.space?.name}</NowTitle>
               현재 스페이스입니다.
             </NowInfo>
             <Checkbox checked className="check-round" />
           </ConvertNow>
           <ConvertList>
-            {ConvertLists.map(i => (
-              <ConvertItem onClick={handleSwitchSpace} key={i}>
+            {spaceStore.spaceList.map(elem => (
+              <ConvertItem onClick={handleSwitchSpace} key={elem}>
                 <LogoSmall
                   shape="square"
                   style={{ color: '#fff', backgroundColor: '#75757F' }}
                 >
                   U
                 </LogoSmall>
-                <ItemText>{i}</ItemText>
+                <ItemText>{elem.name}</ItemText>
               </ConvertItem>
             ))}
           </ConvertList>
@@ -303,7 +303,7 @@ const ProfileMyModal = ({
         onCancelAddFriends={toggleSpaceMemViewDialog}
         isOrgExist={false}
         isSpaceEmpty={isSpaceEmpty}
-        title="UX팀"
+        title={PlatformUIStore.space?.name}
         isViewMode
       />
       <Toast
