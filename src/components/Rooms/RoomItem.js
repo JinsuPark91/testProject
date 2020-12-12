@@ -169,7 +169,12 @@ const RoomDropdown = React.memo(({ children, roomInfo, onMenuClick }) => {
   );
 });
 
-const RoomItemContent = ({ roomInfo, isMyRoom, onMenuClick }) => {
+const RoomItemContent = ({
+  roomInfo,
+  isMyRoom,
+  onMenuClick,
+  onClickRoomPhoto = () => {},
+}) => {
   const { userStore } = useCoreStores();
 
   const handleExport = e => {
@@ -179,6 +184,10 @@ const RoomItemContent = ({ roomInfo, isMyRoom, onMenuClick }) => {
 
   const handleMenuClick = _roomInfo => {
     onMenuClick(_roomInfo);
+  };
+
+  const handleClickRootPhoto = e => {
+    onClickRoomPhoto(e);
   };
 
   return (
@@ -202,7 +211,7 @@ const RoomItemContent = ({ roomInfo, isMyRoom, onMenuClick }) => {
               return (
                 <>
                   {isMyRoom && <MyTooltip>나</MyTooltip>}
-                  <Photos srcList={userPhotos} />
+                  <Photos srcList={userPhotos} onClick={handleClickRootPhoto} />
                 </>
               );
             }}
@@ -276,16 +285,32 @@ const RoomItemContent = ({ roomInfo, isMyRoom, onMenuClick }) => {
   );
 };
 
-const RoomItem = ({ roomInfo, selected, onClick, onMenuClick }) => {
+const RoomItem = ({
+  roomInfo,
+  selected,
+  onClick,
+  onMenuClick,
+  onClickRoomPhoto = () => {},
+}) => {
   const isMyRoom = roomInfo.type === 'WKS0001';
 
   const handleRoomClick = useCallback(() => {
     onClick(roomInfo);
-  }, []);
+  }, [onClick, roomInfo]);
 
   const handleMenuClick = _roomInfo => {
     onMenuClick(_roomInfo);
   };
+
+  const handleClickRoomPhoto = useCallback(
+    e => {
+      // 룸 사진 클릭 시 룸 선택 안 되게 이벤트 전파 방지 처리
+      e.stopPropagation();
+
+      onClickRoomPhoto(roomInfo);
+    },
+    [onClickRoomPhoto, roomInfo],
+  );
 
   return (
     <StyledItem onClick={handleRoomClick} isMyRoom={isMyRoom}>
@@ -294,6 +319,7 @@ const RoomItem = ({ roomInfo, selected, onClick, onMenuClick }) => {
           roomInfo={roomInfo}
           isMyRoom={isMyRoom}
           onMenuClick={handleMenuClick}
+          onClickRoomPhoto={handleClickRoomPhoto}
         />
       </ItemWrapper>
     </StyledItem>

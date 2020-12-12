@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 // import { NoteIcon } from 'teespace-note-app';
@@ -20,6 +20,7 @@ import {
 import Photos from '../Photos';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import MyProfileInfo from '../profile/MyProfileInfo';
+import RoomInquiryModal from '../Rooms/RoomInquiryModal';
 import {
   ExportIcon,
   SearchIcon,
@@ -93,6 +94,9 @@ const Header = () => {
   const history = useHistory();
   const { roomStore, userStore } = useCoreStores();
   const [isMessageVisible, setIsMessageVisible] = useState(false);
+  const [isRoomMemberModalVisible, setIsRoomMemberModalVisible] = useState(
+    false,
+  );
 
   const findRoom = () => {
     if (PlatformUIStore.resourceType === 's') {
@@ -183,6 +187,14 @@ const Header = () => {
     }
   };
 
+  const handleClickRoomPhoto = useCallback(() => {
+    setIsRoomMemberModalVisible(true);
+  }, []);
+
+  const handleCancelRoomMemeberModal = useCallback(() => {
+    setIsRoomMemberModalVisible(false);
+  }, []);
+
   return (
     <Wrapper>
       <TitleWrapper>
@@ -191,9 +203,18 @@ const Header = () => {
             {() => {
               return PlatformUIStore.resourceType === 's' ? (
                 <>
-                  <Photos srcList={getUserPhotos()} />
+                  <Photos
+                    srcList={getUserPhotos()}
+                    onClick={handleClickRoomPhoto}
+                  />
                   <TitleText>{getRoomName()}</TitleText>
                   <UserCountText>{getUserCount()}</UserCountText>
+                  <RoomInquiryModal
+                    roomId={findRoom()?.id}
+                    visible={isRoomMemberModalVisible}
+                    onCancel={handleCancelRoomMemeberModal}
+                    width="17.5rem"
+                  />
                 </>
               ) : null;
             }}

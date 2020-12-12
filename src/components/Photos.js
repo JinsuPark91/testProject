@@ -35,9 +35,18 @@ const getStyle = (index, count, defaultDiameter) => {
   }
 };
 
-function Photos({ srcList, defaultDiameter = 2.25, center = false }) {
+function Photos({
+  srcList,
+  onClick = () => {},
+  defaultDiameter = 2.25,
+  center = false,
+}) {
   return (
-    <Wrapper defaultDiameter={defaultDiameter} center={center}>
+    <Wrapper
+      onClick={e => onClick(e)}
+      defaultDiameter={defaultDiameter}
+      center={center}
+    >
       {srcList.map((src, index) => (
         <UserPhoto
           key={index}
