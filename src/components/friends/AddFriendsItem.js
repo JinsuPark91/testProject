@@ -128,9 +128,9 @@ const AddFriendsItem = ({ friendAddList }) => {
           ))} */}
         {friendStore.friendInfoList.length && (
           <List
-            height={500}
+            height={400}
             itemCount={friendAddList.length}
-            itemSize={80}
+            itemSize={70}
             width="100%"
           >
             {({ index, style }) => {
