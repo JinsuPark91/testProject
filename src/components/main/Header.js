@@ -214,6 +214,8 @@ const Header = () => {
                     visible={isRoomMemberModalVisible}
                     onCancel={handleCancelRoomMemeberModal}
                     width="17.5rem"
+                    top="calc(50% - 15rem)"
+                    left="calc(50% - 9rem)"
                   />
                 </>
               ) : null;
