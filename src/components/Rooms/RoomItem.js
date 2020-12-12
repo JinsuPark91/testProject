@@ -10,166 +10,184 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const MAX_PROFILE_COUNT = 4;
 
-const RoomDropdown = React.memo(({ children, roomInfo, onMenuClick }) => {
-  const { roomStore, userStore } = useCoreStores();
-  const { id: roomId } = roomInfo;
-  const myUserId = userStore.myProfile.id;
-  const [visible, setVisible] = useState(false);
+const RoomDropdown = React.memo(
+  ({ children, roomInfo, onMenuClick, onClickMenuItem }) => {
+    const { roomStore, userStore } = useCoreStores();
+    const { id: roomId } = roomInfo;
+    const myUserId = userStore.myProfile.id;
+    const [visible, setVisible] = useState(false);
 
-  const history = useHistory();
+    const history = useHistory();
 
-  const handleVisibleChange = flag => {
-    setVisible(flag);
-  };
+    const handleVisibleChange = flag => {
+      setVisible(flag);
+    };
 
-  const handleMenuClick = e => {
-    e.stopPropagation();
-    onMenuClick(roomInfo);
-  };
+    const handleMenuClick = e => {
+      e.stopPropagation();
+      onMenuClick(roomInfo);
+    };
 
-  const handleSetting = e => {
-    e.domEvent.stopPropagation();
-    setVisible(false);
-    history.push(`/s/${roomInfo.id}/setting`);
-  };
+    const handleSetting = e => {
+      e.domEvent.stopPropagation();
+      setVisible(false);
+      onClickMenuItem({ key: 'setting' });
 
-  const updateRoomSetting = async options => {
-    try {
-      const result = await roomStore.updateRoomMemberSetting({
-        roomId,
-        myUserId,
-        ...options,
-      });
-      return result;
-    } catch (e) {
-      console.log('ROOM UPDATE FAILED : ', e);
-    }
-  };
+      history.push(`/s/${roomInfo.id}/setting`);
+    };
 
-  const handleBookmarkDisable = e => {
-    e.domEvent.stopPropagation();
-    setVisible(false);
-
-    updateRoomSetting({ newIsRoomBookmarked: false });
-  };
-  const handleBookmarkEnable = e => {
-    e.domEvent.stopPropagation();
-    setVisible(false);
-
-    updateRoomSetting({ newIsRoomBookmarked: true });
-  };
-
-  const handleViewMember = e => {
-    e.domEvent.stopPropagation();
-    setVisible(false);
-
-    PlatformUIStore.roomMemberModal.open({
-      top: `${PlatformUIStore.content.rect.top}px`,
-      left: `${PlatformUIStore.content.rect.left}px`,
-      isEdit: false,
-    });
-  };
-
-  const handleNameChange = e => {
-    e.domEvent.stopPropagation();
-    setVisible(false);
-
-    PlatformUIStore.roomMemberModal.open({
-      top: `${PlatformUIStore.content.rect.top}px`,
-      left: `${PlatformUIStore.content.rect.left}px`,
-      isEdit: true,
-    });
-
-    console.log('IS EDIT : ', PlatformUIStore.roomMemberModal.isEdit);
-  };
-
-  const handleAlarmEnable = e => {
-    e.domEvent.stopPropagation();
-    setVisible(false);
-
-    updateRoomSetting({ newIsAlarmUsed: true });
-  };
-
-  const handleAlarmDisable = e => {
-    e.domEvent.stopPropagation();
-    setVisible(false);
-
-    updateRoomSetting({ newIsAlarmUsed: false });
-  };
-
-  const handleExit = async e => {
-    e.domEvent.stopPropagation();
-    setVisible(false);
-
-    try {
-      const result = await roomStore.deleteRoomMember({
-        userId: userStore.myProfile.id,
-        roomId: roomInfo.id,
-      });
-
-      if (result) {
-        if (
-          PlatformUIStore.resourceType === 's' &&
-          PlatformUIStore.resourceId === roomInfo.id
-        ) {
-          const firstRoomId = roomStore.getRoomArray()?.[0].id;
-          if (firstRoomId) history.push(`/s/${firstRoomId}/talk`);
-        }
+    const updateRoomSetting = async options => {
+      try {
+        const result = await roomStore.updateRoomMemberSetting({
+          roomId,
+          myUserId,
+          ...options,
+        });
+        return result;
+      } catch (e) {
+        console.log('ROOM UPDATE FAILED : ', e);
       }
-    } catch (e1) {
-      console.log('DELETE ROOM MEMBER ERROR : ', e1);
-    }
-  };
+    };
 
-  const roomMenu = () => (
-    <StyledMenu>
-      <Menu.Item key="setting" onClick={handleSetting}>
-        룸 설정
-      </Menu.Item>
-      {roomInfo.isRoomBookmarked ? (
-        <Menu.Item key="disableBookmark" onClick={handleBookmarkDisable}>
-          룸 상단 고정 해제
-        </Menu.Item>
-      ) : (
-        <Menu.Item key="enableBookmark" onClick={handleBookmarkEnable}>
-          룸 상단 고정
-        </Menu.Item>
-      )}
-      <Menu.Item key="member" onClick={handleViewMember}>
-        멤버 보기
-      </Menu.Item>
-      <Menu.Item key="changeName" onClick={handleNameChange}>
-        이름 변경
-      </Menu.Item>
-      {roomInfo.isAlarmUsed ? (
-        <Menu.Item key="disableAlarm" onClick={handleAlarmDisable}>
-          알림 끄기
-        </Menu.Item>
-      ) : (
-        <Menu.Item key="enableAlarm" onClick={handleAlarmEnable}>
-          알림 켜기
-        </Menu.Item>
-      )}
-      <Menu.Item key="exit" onClick={handleExit}>
-        나가기
-      </Menu.Item>
-    </StyledMenu>
-  );
+    const handleBookmarkDisable = e => {
+      e.domEvent.stopPropagation();
+      setVisible(false);
 
-  return (
-    <Dropdown
-      overlay={roomMenu}
-      onClick={handleMenuClick}
-      visible={visible}
-      onVisibleChange={handleVisibleChange}
-      trigger={['click']}
-    >
-      {children}
-    </Dropdown>
-  );
-});
+      updateRoomSetting({ newIsRoomBookmarked: false });
+      onClickMenuItem({ key: 'disableBookmark' });
+    };
+    const handleBookmarkEnable = e => {
+      e.domEvent.stopPropagation();
+      setVisible(false);
 
-const RoomItemContent = ({ roomInfo, isMyRoom, onMenuClick }) => {
+      updateRoomSetting({ newIsRoomBookmarked: true });
+
+      onClickMenuItem({ key: 'enableBookmark' });
+    };
+
+    const handleViewMember = e => {
+      e.domEvent.stopPropagation();
+      setVisible(false);
+
+      onClickMenuItem({
+        key: 'member',
+        item: roomInfo,
+        value: {
+          isEdit: false,
+        },
+      });
+    };
+
+    const handleNameChange = e => {
+      e.domEvent.stopPropagation();
+      setVisible(false);
+      onClickMenuItem({
+        key: 'changeName',
+        item: roomInfo,
+        value: {
+          isEdit: true,
+        },
+      });
+    };
+
+    const handleAlarmEnable = e => {
+      e.domEvent.stopPropagation();
+      setVisible(false);
+
+      updateRoomSetting({ newIsAlarmUsed: true });
+      onClickMenuItem({ key: 'enableAlarm' });
+    };
+
+    const handleAlarmDisable = e => {
+      e.domEvent.stopPropagation();
+      setVisible(false);
+
+      updateRoomSetting({ newIsAlarmUsed: false });
+      onClickMenuItem({ key: 'disableAlarm' });
+    };
+
+    const handleExit = async e => {
+      e.domEvent.stopPropagation();
+      setVisible(false);
+
+      try {
+        const result = await roomStore.deleteRoomMember({
+          userId: userStore.myProfile.id,
+          roomId: roomInfo.id,
+        });
+
+        if (result) {
+          if (
+            PlatformUIStore.resourceType === 's' &&
+            PlatformUIStore.resourceId === roomInfo.id
+          ) {
+            const firstRoomId = roomStore.getRoomArray()?.[0].id;
+            if (firstRoomId) history.push(`/s/${firstRoomId}/talk`);
+          }
+        }
+      } catch (e1) {
+        console.log('DELETE ROOM MEMBER ERROR : ', e1);
+      } finally {
+        onClickMenuItem({ key: 'exit' });
+      }
+    };
+
+    const roomMenu = () => (
+      <StyledMenu>
+        <Menu.Item key="setting" onClick={handleSetting}>
+          룸 설정
+        </Menu.Item>
+        {roomInfo.isRoomBookmarked ? (
+          <Menu.Item key="disableBookmark" onClick={handleBookmarkDisable}>
+            룸 상단 고정 해제
+          </Menu.Item>
+        ) : (
+          <Menu.Item key="enableBookmark" onClick={handleBookmarkEnable}>
+            룸 상단 고정
+          </Menu.Item>
+        )}
+        <Menu.Item key="member" onClick={handleViewMember}>
+          멤버 보기
+        </Menu.Item>
+        <Menu.Item key="changeName" onClick={handleNameChange}>
+          이름 변경
+        </Menu.Item>
+        {roomInfo.isAlarmUsed ? (
+          <Menu.Item key="disableAlarm" onClick={handleAlarmDisable}>
+            알림 끄기
+          </Menu.Item>
+        ) : (
+          <Menu.Item key="enableAlarm" onClick={handleAlarmEnable}>
+            알림 켜기
+          </Menu.Item>
+        )}
+        <Menu.Item key="exit" onClick={handleExit}>
+          나가기
+        </Menu.Item>
+      </StyledMenu>
+    );
+
+    return (
+      <Dropdown
+        overlay={roomMenu}
+        onClick={handleMenuClick}
+        visible={visible}
+        onVisibleChange={handleVisibleChange}
+        trigger={['click']}
+      >
+        {children}
+      </Dropdown>
+    );
+  },
+);
+
+const RoomItemContent = ({
+  roomInfo,
+  isMyRoom,
+  onMenuClick,
+  onClickMenuItem,
+  onClickRoomPhoto,
+}) => {
   const { userStore } = useCoreStores();
 
   const handleExport = e => {
@@ -181,6 +199,13 @@ const RoomItemContent = ({ roomInfo, isMyRoom, onMenuClick }) => {
     onMenuClick(_roomInfo);
   };
 
+  const handleClickRootPhoto = e => {
+    // 룸 사진 클릭 시 룸 선택 안 되게 이벤트 전파 방지 처리
+    e.stopPropagation();
+
+    onClickRoomPhoto(roomInfo);
+  };
+
   return (
     <>
       <List.Item.Meta
@@ -189,7 +214,6 @@ const RoomItemContent = ({ roomInfo, isMyRoom, onMenuClick }) => {
             {() => {
               let userPhotos = null;
               if (isMyRoom) {
-                console.log(userStore.myProfile);
                 userPhotos = [
                   userStore.getProfilePhotoURL(userStore.myProfile.id, 'small'),
                 ];
@@ -202,7 +226,7 @@ const RoomItemContent = ({ roomInfo, isMyRoom, onMenuClick }) => {
               return (
                 <>
                   {isMyRoom && <MyTooltip>나</MyTooltip>}
-                  <Photos srcList={userPhotos} />
+                  <Photos srcList={userPhotos} onClick={handleClickRootPhoto} />
                 </>
               );
             }}
@@ -263,7 +287,11 @@ const RoomItemContent = ({ roomInfo, isMyRoom, onMenuClick }) => {
         }}
       </Observer>
       {!isMyRoom && (
-        <RoomDropdown roomInfo={roomInfo} onMenuClick={handleMenuClick}>
+        <RoomDropdown
+          roomInfo={roomInfo}
+          onMenuClick={handleMenuClick}
+          onClickMenuItem={onClickMenuItem}
+        >
           <IconWrapper className="room-item__icon">
             <ViewMoreIcon />
           </IconWrapper>
@@ -276,12 +304,19 @@ const RoomItemContent = ({ roomInfo, isMyRoom, onMenuClick }) => {
   );
 };
 
-const RoomItem = ({ roomInfo, selected, onClick, onMenuClick }) => {
+const RoomItem = ({
+  roomInfo,
+  selected,
+  onClick,
+  onMenuClick,
+  onClickMenuItem = () => {},
+  onClickRoomPhoto = () => {},
+}) => {
   const isMyRoom = roomInfo.type === 'WKS0001';
 
   const handleRoomClick = useCallback(() => {
     onClick(roomInfo);
-  }, []);
+  }, [onClick, roomInfo]);
 
   const handleMenuClick = _roomInfo => {
     onMenuClick(_roomInfo);
@@ -294,6 +329,8 @@ const RoomItem = ({ roomInfo, selected, onClick, onMenuClick }) => {
           roomInfo={roomInfo}
           isMyRoom={isMyRoom}
           onMenuClick={handleMenuClick}
+          onClickMenuItem={onClickMenuItem}
+          onClickRoomPhoto={onClickRoomPhoto}
         />
       </ItemWrapper>
     </StyledItem>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { UserSelectDialog } from 'teespace-core';
+import { ItemSelector, useCoreStores } from 'teespace-core';
 import { Checkbox } from 'antd';
 import {
   FlexModal,
@@ -14,6 +14,7 @@ import {
 } from './CreatePublicRoomDialogStyle';
 
 const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
+  const { userStore } = useCoreStores();
   const initialStates = {
     step: 0,
     roomName: '',
@@ -29,6 +30,7 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
   const [selectedUsers, setSelectedUsers] = useState(
     initialStates.selectedUsers,
   );
+  const disabledIds = [userStore.myProfile.id];
 
   const clearState = () => {
     setStep(initialStates.step);
@@ -63,8 +65,11 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
     onCancel();
   };
 
-  const handleSelectedUserChange = useCallback(users => {
-    setSelectedUsers(users);
+  const handleSelectedUserChange = useCallback(({ userArray }) => {
+    const filteredUsers = userArray.filter(
+      user => !disabledIds.includes(user.friendId || user.id),
+    );
+    setSelectedUsers(filteredUsers);
   }, []);
 
   const handleStartMeetingChange = e => {
@@ -74,7 +79,7 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
   const handleToggle = () => {
     setIsStartMeeting(!isStartMeeting);
   };
-  return step === 0 ? (
+  return (
     <FlexModal
       title={
         <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>
@@ -84,49 +89,48 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
       visible={visible}
       closable={false}
       footer={null}
+      destroyOnClose
     >
-      <Wrapper>
-        <Title>룸 이름 설정하기</Title>
+      {step === 0 ? (
+        <Wrapper>
+          <Title>룸 이름 설정하기</Title>
 
-        <Input>
-          <input
-            type="text"
-            value={roomName}
-            onChange={handleChangeName}
-            placeholder="목적, 토픽 등이 있다면 입력해 주세요."
-          />
-          <LengthCounter>{`${roomName.length}/50`}</LengthCounter>
-        </Input>
+          <Input>
+            <input
+              type="text"
+              value={roomName}
+              onChange={handleChangeName}
+              placeholder="목적, 토픽 등이 있다면 입력해 주세요."
+            />
+            <LengthCounter>{`${roomName.length}/50`}</LengthCounter>
+          </Input>
 
-        <Description>
-          누구나 검색을 통하여 자유롭게 참여할 수 있는 공간입니다.
-        </Description>
+          <Description>
+            누구나 검색을 통하여 자유롭게 참여할 수 있는 공간입니다.
+          </Description>
 
-        <ButtonContainer>
-          <StyledButton
-            buttonType="ok"
-            onClick={handleOk}
-            disabled={!roomName.length}
-          >
-            생성
-          </StyledButton>
-          <StyledButton buttonType="cancel" onClick={handleCancel}>
-            취소
-          </StyledButton>
-        </ButtonContainer>
-      </Wrapper>
-    </FlexModal>
-  ) : (
-    <UserSelectDialog
-      visible={visible}
-      title={
-        <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>
-          룸 구성원 초대
-        </div>
-      }
-      onSelectedUserChange={handleSelectedUserChange}
-      bottom={
+          <ButtonContainer>
+            <StyledButton
+              buttonType="ok"
+              onClick={handleOk}
+              disabled={!roomName.length}
+            >
+              생성
+            </StyledButton>
+            <StyledButton buttonType="cancel" onClick={handleCancel}>
+              취소
+            </StyledButton>
+          </ButtonContainer>
+        </Wrapper>
+      ) : (
         <>
+          <ItemSelector
+            isVisibleRoom={false}
+            onSelectChange={handleSelectedUserChange}
+            disabledIds={disabledIds}
+            defaultSelectedUsers={[userStore.myProfile]}
+            height={20} // rem
+          />
           <ConfigWrapper>
             <Checkbox
               className="check-round"
@@ -158,8 +162,8 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
             )}
           </ButtonContainer>
         </>
-      }
-    />
+      )}
+    </FlexModal>
   );
 };
 

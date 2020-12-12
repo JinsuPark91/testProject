@@ -21,6 +21,10 @@ function RoomList() {
   const [keyword, setKeyword] = useState('');
   const [openRoomDialogVisible, setOpenRoomDialogVisible] = useState(false);
   const [targetRoom, setTargetRoom] = useState(null);
+  const [isRoomMemberModalVisible, setIsRoomMemberModalVisible] = useState(
+    false,
+  );
+  const [roomMemberAttr, setRoomMemberAttr] = useState({});
   const { roomStore, userStore } = useCoreStores();
 
   const [visible, setVisible] = useState({
@@ -51,16 +55,33 @@ function RoomList() {
   };
 
   const handleRoomMemeberModalCancel = () => {
-    PlatformUIStore.roomMemberModal.close();
+    setIsRoomMemberModalVisible(false);
   };
 
   const handleMenuClick = roomInfo => {
     setTargetRoom(roomInfo);
   };
 
+  const handleClickMenuItem = ({ key, item, value }) => {
+    switch (key) {
+      case 'member':
+      case 'changeName':
+        setRoomMemberAttr(value);
+        setTargetRoom(item);
+        setIsRoomMemberModalVisible(true);
+        break;
+      default:
+    }
+  };
+
   const handleOpenRoomModalCancel = () => {
     setOpenRoomDialogVisible(false);
   };
+
+  const handleClickRoomPhoto = useCallback(roomInfo => {
+    setTargetRoom(roomInfo);
+    setIsRoomMemberModalVisible(true);
+  }, []);
 
   const isOnlyMyRoom = () => {
     const rooms = roomStore
@@ -69,21 +90,32 @@ function RoomList() {
     return rooms.length === 1 && rooms[0].type === 'WKS0001';
   };
 
+  const getRoomName = roomInfo => {
+    const isMyRoom = roomInfo.type === 'WKS0001';
+    return isMyRoom
+      ? userStore.myProfile.name
+      : roomInfo.customName || roomInfo.name;
+  };
+
+  // 이름과 표시 여부로 필터
+  // TODO 멤버 이름으로 검색은 아직 안 됨. 이를 위해서는 모든 룸에 대한 멤버 목록을 가져와야함.
+  const roomFilter = roomInfo =>
+    roomInfo.isVisible &&
+    (!keyword || getRoomName(roomInfo)?.includes(keyword));
+
   return (
     <Wrapper>
       <Observer>
         {() => {
-          const modal = PlatformUIStore.roomMemberModal;
-
           return (
             <RoomInquiryModal
               roomId={targetRoom?.id}
-              visible={modal.visible}
+              visible={isRoomMemberModalVisible}
               onCancel={handleRoomMemeberModalCancel}
               width="17.5rem"
-              top={modal.top}
-              isEdit={modal.isEdit}
-              left={modal.left}
+              top="calc(50% - 15rem)"
+              left="calc(50% - 9rem)"
+              isEdit={roomMemberAttr.isEdit}
             />
           );
         }}
@@ -118,7 +150,7 @@ function RoomList() {
           {() => {
             return roomStore
               .getRoomArray()
-              .filter(roomInfo => roomInfo.isVisible)
+              .filter(roomFilter)
               .map(roomInfo => (
                 <RoomItem
                   key={roomInfo.id}
@@ -129,6 +161,8 @@ function RoomList() {
                   }
                   onClick={handleSelectRoom}
                   onMenuClick={handleMenuClick}
+                  onClickMenuItem={handleClickMenuItem}
+                  onClickRoomPhoto={handleClickRoomPhoto}
                 />
               ));
           }}

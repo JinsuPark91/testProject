@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Observer } from 'mobx-react';
+import React, { useState, useCallback } from 'react';
+import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 // import { NoteIcon } from 'teespace-note-app';
 // import { DriveIcon, ViewFileIcon } from 'teespace-drive-app';
@@ -20,6 +20,7 @@ import {
 import Photos from '../Photos';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import MyProfileInfo from '../profile/MyProfileInfo';
+import RoomInquiryModal from '../Rooms/RoomInquiryModal';
 import {
   ExportIcon,
   SearchIcon,
@@ -89,10 +90,13 @@ const AppIcon = React.memo(
   },
 );
 
-const Header = () => {
+const Header = observer(() => {
   const history = useHistory();
   const { roomStore, userStore } = useCoreStores();
   const [isMessageVisible, setIsMessageVisible] = useState(false);
+  const [isRoomMemberModalVisible, setIsRoomMemberModalVisible] = useState(
+    false,
+  );
 
   const findRoom = () => {
     if (PlatformUIStore.resourceType === 's') {
@@ -143,7 +147,7 @@ const Header = () => {
   };
 
   const handleAddMember = () => {
-    console.log('handleAddMember');
+    setIsRoomMemberModalVisible(true);
   };
 
   const toggleMessageVisible = () => {
@@ -183,22 +187,38 @@ const Header = () => {
     }
   };
 
+  const handleClickRoomPhoto = useCallback(() => {
+    setIsRoomMemberModalVisible(true);
+  }, []);
+
+  const handleCancelRoomMemeberModal = useCallback(() => {
+    setIsRoomMemberModalVisible(false);
+  }, []);
+
   return (
     <Wrapper>
       <TitleWrapper>
         <Title>
-          <Observer>
-            {() => {
-              return PlatformUIStore.resourceType === 's' ? (
-                <>
-                  <Photos srcList={getUserPhotos()} />
-                  <TitleText>{getRoomName()}</TitleText>
-                  <UserCountText>{getUserCount()}</UserCountText>
-                </>
-              ) : null;
-            }}
-          </Observer>
+          {PlatformUIStore.resourceType === 's' && (
+            <>
+              <Photos
+                srcList={getUserPhotos()}
+                onClick={handleClickRoomPhoto}
+              />
+              <TitleText>{getRoomName()}</TitleText>
+              <UserCountText>{getUserCount()}</UserCountText>
+              <RoomInquiryModal
+                roomId={findRoom()?.id}
+                visible={isRoomMemberModalVisible}
+                onCancel={handleCancelRoomMemeberModal}
+                width="17.5rem"
+                top="calc(50% - 15rem)"
+                left="calc(50% - 9rem)"
+              />
+            </>
+          )}
         </Title>
+
         <SystemIconContainer>
           <IconWrapper onClick={handleExport}>
             <ExportIcon />
@@ -206,9 +226,11 @@ const Header = () => {
           <IconWrapper onClick={handleSearch}>
             <SearchIcon />
           </IconWrapper>
-          <IconWrapper onClick={handleAddMember}>
-            <AddAcountIcon />
-          </IconWrapper>
+          {!findRoom()?.isMyRoom && (
+            <IconWrapper onClick={handleAddMember}>
+              <AddAcountIcon />
+            </IconWrapper>
+          )}
         </SystemIconContainer>
       </TitleWrapper>
 
@@ -235,20 +257,16 @@ const Header = () => {
             },
           ]}
         />
-        <Observer>
-          {() =>
-            apps.map(({ name, icons }) => (
-              <AppIcon
-                key={name}
-                subApp={PlatformUIStore.subApp}
-                appName={name}
-                onClick={handleAppClick}
-                defaultIcon={icons.default}
-                activeIcon={icons.active}
-              />
-            ))
-          }
-        </Observer>
+        {apps.map(({ name, icons }) => (
+          <AppIcon
+            key={name}
+            subApp={PlatformUIStore.subApp}
+            appName={name}
+            onClick={handleAppClick}
+            defaultIcon={icons.default}
+            activeIcon={icons.active}
+          />
+        ))}
       </AppIconContainer>
 
       <UserMenu>
@@ -256,6 +274,6 @@ const Header = () => {
       </UserMenu>
     </Wrapper>
   );
-};
+});
 
 export default Header;

@@ -16,8 +16,6 @@ import EmailHoverIcon from '../assets/ts_export.svg';
 import tsBgImgIcon from '../assets/ts_photo.svg';
 import tsCameraImgIcon from '../assets/ts_camera.svg';
 
-const MAX_NICK_LENGTH = 20;
-
 const Profile = observer(
   ({
     userId = null,
@@ -30,16 +28,21 @@ const Profile = observer(
     const history = useHistory();
     const { roomStore, userStore } = useCoreStores();
     const [isEditMode, setEditMode] = useState(editOnlyMode);
-    const [profile, setProfile] = useState(null);
-    // 유저 정보들
-    const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(null);
-    const [localProfilePhoto, setLocalProfilePhoto] = useState(null);
-    const [phone, setPhone] = useState('');
-    const [mobile, setMobile] = useState('');
-    const [isChange, setIsChange] = useState(false);
-    const [name, setName] = useState('');
-    const [profileStatusMsg, setStatusMsg] = useState('');
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
+    const [isChange, setIsChange] = useState(false);
+
+    // NOTE. Setting state to undefined means the state is not changed
+    //  This undefined is different from empty('')
+    const [name, setName] = useState(undefined);
+    const [statusMsg, setStatusMsg] = useState(undefined);
+    const [phone, setPhone] = useState(undefined);
+    const [mobile, setMobile] = useState(undefined);
+    // NOTE. Setting null to photo means default image is used
+    const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(undefined);
+    const [localProfilePhoto, setLocalProfilePhoto] = useState(undefined);
+
+    // get profile from store
+    const profile = userStore.userProfiles[userId];
 
     const isMyId = () => userId === userStore.myProfile.id;
 
@@ -50,14 +53,51 @@ const Profile = observer(
       return userStore.getProfilePhotoURL(userId, 'medium');
     };
 
+    // calculate photo
+    const renderProfilePhoto =
+      localProfilePhoto === null
+        ? profile.defaultPhotoUrl
+        : localProfilePhoto || getProfilePhoto();
+    const renderBackgroundPhoto =
+      localBackgroundPhoto === null
+        ? profile.defaultBackgroundUrl
+        : localBackgroundPhoto || getBackPhoto();
+
+    // calculate whether default url be shown
+    const isDefaultProfilePhotoUsed =
+      localProfilePhoto === null ||
+      (localProfilePhoto === undefined && !profile?.thumbPhoto);
+    const isDefaultBackgroundPhotoUsed =
+      localBackgroundPhoto === null ||
+      (localBackgroundPhoto === undefined && !profile?.thumbBack);
+
+    const setLocalInputData = () => {
+      setPhone(profile?.companyNum);
+      setMobile(profile?.phone);
+      setName(profile?.nick || profile?.name);
+      setStatusMsg(profile?.profileStatusMsg);
+      setLocalProfilePhoto(undefined);
+      setLocalBackgroundPhoto(undefined);
+    };
+
+    const resetLocalInputData = () => {
+      setPhone(undefined);
+      setMobile(undefined);
+      setName(undefined);
+      setStatusMsg(undefined);
+      setLocalProfilePhoto(undefined);
+      setLocalBackgroundPhoto(undefined);
+    };
+
+    const isValidInputData = () => !!name;
+
     useEffect(() => {
       setEditMode(editOnlyMode);
       (async () => {
-        const userProfile = await userStore.getProfile({ userId });
-        setProfile(userProfile);
-        setPhone(userProfile?.companyNum);
-        setMobile(userProfile?.phone);
-        setName(userProfile?.name);
+        const userProfile = userStore.userProfiles[userId];
+        if (!userProfile) {
+          await userStore.getProfile({ userId });
+        }
       })();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId]);
@@ -83,6 +123,8 @@ const Profile = observer(
 
     const handleChangeMode = () => {
       setEditMode(true);
+      // set initial local input data
+      setLocalInputData();
     };
 
     const handleMeetingClick = () => {
@@ -110,14 +152,12 @@ const Profile = observer(
     };
 
     const handleConfirm = async () => {
-      console.log('BACK PHOTO : ', localBackgroundPhoto);
-      console.log('THUMB PHOTO : ', localProfilePhoto);
-
+      // set update data from user input
       const updatedInfo = {
         nick: name,
         companyNum: phone,
         phone: mobile,
-        profileStatusMsg,
+        profileStatusMsg: statusMsg,
       };
 
       if (localProfilePhoto?.includes('blob:')) {
@@ -127,7 +167,9 @@ const Profile = observer(
 
         URL.revokeObjectURL(localProfilePhoto);
       } else {
-        updatedInfo.profilePhoto = getProfilePhoto();
+        // The null value means default photo
+        updatedInfo.profilePhoto =
+          localProfilePhoto === null ? localProfilePhoto : getProfilePhoto();
       }
 
       if (localBackgroundPhoto?.includes('blob:')) {
@@ -137,22 +179,19 @@ const Profile = observer(
 
         URL.revokeObjectURL(localBackgroundPhoto);
       } else {
-        updatedInfo.backPhoto = getBackPhoto();
+        // The null value means default photo
+        updatedInfo.backPhoto =
+          localBackgroundPhoto === null ? localBackgroundPhoto : getBackPhoto();
       }
 
-      console.log('updated Info : ', updatedInfo);
-      const updatedProfile = await userStore.updateMyProfile({ updatedInfo });
+      // Update my profile information
+      await userStore.updateMyProfile({ updatedInfo });
 
-      setProfile(updatedProfile);
-      setPhone(updatedProfile?.companyNum);
-      setMobile(updatedProfile?.phone);
+      // Reset local input date
+      resetLocalInputData();
 
       setIsChange(false);
       setEditMode(false);
-
-      // Show server side photo after 'confirm'
-      setLocalProfilePhoto(null);
-      setLocalBackgroundPhoto(null);
 
       onClickSaveBtn();
     };
@@ -160,16 +199,12 @@ const Profile = observer(
     const handleExit = () => {
       setIsChange(false);
       setEditMode(false);
-      setMobile(profile?.phone);
-      setPhone(profile?.companyNum);
-      setLocalBackgroundPhoto(getBackPhoto());
+
+      // Reset local input date
+      resetLocalInputData();
 
       // hide confirm dialog
       setCancelDialogVisible(false);
-
-      // Show previous photo after exit
-      setLocalProfilePhoto(null);
-      setLocalBackgroundPhoto(null);
 
       onClickCancelBtn();
     };
@@ -238,7 +273,7 @@ const Profile = observer(
             },
           ]}
         />
-        <Wrapper imageSrc={localBackgroundPhoto || getBackPhoto()}>
+        <Wrapper imageSrc={renderBackgroundPhoto}>
           {showSider && (
             <Sidebar>
               <StyledButton onClick={handleTalkClick}>
@@ -267,17 +302,19 @@ const Profile = observer(
                     <Menu.Item>
                       <StyledUpload
                         component="div"
-                        accept={['image/*']}
+                        accept={['.jpg,.jpeg,.png']}
                         multiple={false}
                         customRequest={({ file }) =>
                           handleChangeBackground(file)
                         }
                       >
-                        배경 변경
+                        내 PC에서 배경 변경
                       </StyledUpload>
                     </Menu.Item>
-
-                    <Menu.Item onClick={handleChangeDefaultBackground}>
+                    <Menu.Item
+                      disabled={isDefaultBackgroundPhotoUsed}
+                      onClick={handleChangeDefaultBackground}
+                    >
                       기본 이미지로 변경
                     </Menu.Item>
                   </Menu>
@@ -289,7 +326,7 @@ const Profile = observer(
               </Dropdown>
             )}
             <UserImageWrapper position="br">
-              <UserImage src={localProfilePhoto || getProfilePhoto()} />
+              <UserImage src={renderProfilePhoto} />
               {isMyId() && editEnabled && (
                 <Dropdown
                   trigger={['click']}
@@ -299,13 +336,16 @@ const Profile = observer(
                         <StyledUpload
                           component="div"
                           multiple={false}
-                          accept={['image/*']}
+                          accept={['.jpg,.jpeg,.png']}
                           customRequest={({ file }) => handleChangePhoto(file)}
                         >
                           프로필 사진 변경
                         </StyledUpload>
                       </Menu.Item>
-                      <Menu.Item onClick={handleChangeDefaultPhoto}>
+                      <Menu.Item
+                        disabled={isDefaultProfilePhotoUsed}
+                        onClick={handleChangeDefaultPhoto}
+                      >
                         기본 이미지로 변경
                       </Menu.Item>
                     </Menu>
@@ -321,19 +361,18 @@ const Profile = observer(
               {editEnabled ? (
                 <StyleInput
                   className="type2"
+                  maxLength={20}
+                  placeholder="별명을 입력해주세요."
                   onChange={e => {
                     setIsChange(true);
-                    const inputNick = e.target.value;
-                    const newNick =
-                      inputNick.length <= MAX_NICK_LENGTH
-                        ? inputNick
-                        : inputNick.slice(0, MAX_NICK_LENGTH);
-                    setName(newNick);
+                    setName(e.target.value);
                   }}
-                  value={name}
+                  value={
+                    name !== undefined ? name : profile?.nick || profile?.name
+                  }
                 />
               ) : (
-                name
+                profile?.nick || profile?.name
               )}
             </BigText>
             <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
@@ -345,10 +384,14 @@ const Profile = observer(
                     setIsChange(true);
                     setStatusMsg(e.target.value);
                   }}
-                  value={profileStatusMsg}
+                  value={
+                    statusMsg !== undefined
+                      ? statusMsg
+                      : profile?.profileStatusMsg
+                  }
                 />
               ) : (
-                profileStatusMsg
+                profile?.profileStatusMsg
               )}
             </UserStatusMsg>
             <UserInfoList>
@@ -364,10 +407,10 @@ const Profile = observer(
                       setIsChange(true);
                       setMobile(e.target.value);
                     }}
-                    value={mobile}
+                    value={phone !== undefined ? phone : profile?.companyNum}
                   />
                 ) : (
-                  <StylText>{mobile}</StylText>
+                  <StylText>{profile?.companyNum}</StylText>
                 )}
               </UserInfoItem>
               <UserInfoItem>
@@ -378,10 +421,10 @@ const Profile = observer(
                       setIsChange(true);
                       setPhone(e.target.value);
                     }}
-                    value={phone}
+                    value={mobile !== undefined ? mobile : profile?.phone}
                   />
                 ) : (
-                  <StylText>{phone}</StylText>
+                  <StylText>{profile?.phone}</StylText>
                 )}
               </UserInfoItem>
               {/* 프로필 편집 시 "email" class 삭제 */}
@@ -403,7 +446,7 @@ const Profile = observer(
                     style={{ marginRight: '1.25rem' }}
                     type="solid"
                     shape="round"
-                    disabled={!isChange}
+                    disabled={!isChange || !isValidInputData()}
                     onClick={handleConfirm}
                   >
                     저장
