@@ -110,37 +110,6 @@ function AddFriendsBySearch({ visible, onCancel }) {
     setIsMessageVisible(!isMessageVisible);
   };
 
-  const handleSendInviteMail = async () => {
-    if (!chipList.length) {
-      setToastText('초대할 이메일 주소를 1개 이상 입력해 주세요.');
-      handleToggleToast();
-      return;
-    }
-
-    // 추후 refactoring
-    for (let i = 0; i < chipList.length; i += 1) {
-      if (!checkEmailValid(chipList[i])) {
-        handleToggleMessage();
-        return;
-      }
-    }
-
-    try {
-      const currentSpace = spaceStore.spaceList.find(
-        elem => elem.fullDomain === 'dev',
-      );
-      friendStore.sendInvitationMail({
-        myUserId,
-        userEmailList: chipList,
-        domainName: currentSpace.fullDomain,
-        userCount: currentSpace.userCount,
-      });
-      onCancel();
-    } catch (e) {
-      console.log(`Just Error is ${e}`);
-    }
-  };
-
   const handleCopyInviteLink = async () => {
     try {
       const response = await friendStore.fetchUserInvitationLink({
@@ -189,6 +158,42 @@ function AddFriendsBySearch({ visible, onCancel }) {
     const chipsSet = new Set(chipList);
     chipsSet.delete(elem);
     setChipList(Array.from(chipsSet));
+  };
+
+  const handleSendInviteMail = async () => {
+    if (mailAddress.length) {
+      handlePressEnter();
+      return;
+    }
+
+    if (!chipList.length) {
+      setToastText('초대할 이메일 주소를 1개 이상 입력해 주세요.');
+      handleToggleToast();
+      return;
+    }
+
+    // 추후 refactoring
+    for (let i = 0; i < chipList.length; i += 1) {
+      if (!checkEmailValid(chipList[i])) {
+        handleToggleMessage();
+        return;
+      }
+    }
+
+    try {
+      const currentSpace = spaceStore.spaceList.find(
+        elem => elem.fullDomain === 'dev',
+      );
+      friendStore.sendInvitationMail({
+        myUserId,
+        userEmailList: chipList,
+        domainName: currentSpace.fullDomain,
+        userCount: currentSpace.userCount,
+      });
+      onCancel();
+    } catch (e) {
+      console.log(`Just Error is ${e}`);
+    }
   };
 
   return (

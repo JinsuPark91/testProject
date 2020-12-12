@@ -254,8 +254,8 @@ function ContentAccount({ isEdit }) {
                     thumbPhoto: null,
                   })}`}
                 />
-                <ImageIcon />
-                {/* <Dropdown
+                {/* <ImageIcon />
+                <Dropdown
                   trigger={['click']}
                   placement="bottomLeft"
                   overlay={

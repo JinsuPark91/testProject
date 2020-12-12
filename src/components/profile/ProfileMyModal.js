@@ -12,6 +12,7 @@ import moreSpaceIcon from '../../assets/view_more.svg';
 import checkekIcon from '../../assets/ts_check.svg';
 import { ReactComponent as SquareSpaceIcon } from '../../assets/thumbnail.svg';
 import ProfileInfoModal from './ProfileInfoModal';
+import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
 
 const ProfileMyModal = ({
   userId,
@@ -28,6 +29,7 @@ const ProfileMyModal = ({
   const [settingDialogVisible, setSettingDialogVisible] = useState(false);
   const [spaceListVisible, setSpaceListVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
 
   const isAdmin = userStore.myProfile.grade === 'admin';
 
@@ -82,9 +84,12 @@ const ProfileMyModal = ({
   //   i18n.changeLanguage(lng);
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
+  const toggleInviteDialog = () => {
+    setIsInviteDialogOpen(!isInviteDialogOpen);
+  };
 
   const handleInviteDialog = useCallback(() => {
-    console.log('InviteDialog');
+    toggleInviteDialog();
   }, []);
 
   const handleMemberList = useCallback(() => {
@@ -278,6 +283,10 @@ const ProfileMyModal = ({
         selectedKeyA={itemKey}
         visible={settingDialogVisible}
         onCancel={handleSettingDialogClose}
+      />
+      <AddFriendsByInvitationDialog
+        visible={isInviteDialogOpen}
+        onCancel={toggleInviteDialog}
       />
     </>
   );
