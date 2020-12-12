@@ -393,7 +393,11 @@ function RoomInquiryModal({
                 onChange={handleChange}
               />
             ) : (
-              <p>{roomInfo?.customName || roomInfo?.name}</p>
+              <p>
+                {roomInfo?.isMyRoom
+                  ? userStore.myProfile.name
+                  : roomInfo?.customName || roomInfo?.name}
+              </p>
             )}
           </GroupTitle>
         )}
