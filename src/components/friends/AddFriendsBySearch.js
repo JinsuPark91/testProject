@@ -293,6 +293,7 @@ function AddFriendsBySearch({
                 <AddFriendsItem
                   friendAddList={friendStore.friendInfoList}
                   isViewMode={isViewMode}
+                  searchText={searchText}
                 />
               </FriendList>
             )}

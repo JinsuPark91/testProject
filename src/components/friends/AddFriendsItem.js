@@ -62,10 +62,15 @@ const FriendAddBtn = styled.button`
   }
 `;
 
-const AddFriendsItem = ({ friendAddList, isViewMode }) => {
+const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
   const { authStore, userStore, friendStore } = useCoreStores();
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [friendUserName, setFriendUserName] = useState('');
+
+  let memberList = friendAddList;
+  if (searchText) {
+    memberList = memberList.filter(elem => elem.name.includes(searchText));
+  }
 
   const handleAddFriend = useCallback(
     async friendInfo => {
@@ -129,7 +134,7 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
         {friendStore.friendInfoList.length && (
           <List
             height={400}
-            itemCount={friendAddList.length}
+            itemCount={memberList.length}
             itemSize={70}
             width="100%"
           >
@@ -137,7 +142,7 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
               return (
                 <FriendAddItem
                   key={index}
-                  friendInfo={friendAddList[index]}
+                  friendInfo={memberList[index]}
                   style={style}
                 />
               );
