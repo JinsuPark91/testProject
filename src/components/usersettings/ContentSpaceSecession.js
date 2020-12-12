@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Checkbox, Avatar } from 'antd';
-import { Input, Message } from 'teespace-core';
+import { Input } from 'teespace-core';
 import styled from 'styled-components';
 import ContentTitle from './ContentTitle';
 
@@ -114,6 +114,7 @@ function ContentSpaceSecession({
   toggleContinue,
   isCheck,
   toggleCheck,
+  handleInputPassword,
 }) {
   // constructor() {
   //   super();
@@ -125,15 +126,9 @@ function ContentSpaceSecession({
   // handleChange(checked) {
   //   this.setState({ checked });
   // }
-  const [inputPassword, setInputPassword] = useState('');
-  const [isMessageOpen, setIsMessageOpen] = useState(false);
-
-  const handleToggleMessage = () => {
-    setIsMessageOpen(!isMessageOpen);
-  };
 
   const handlePasswordInput = inputText => {
-    setInputPassword(inputText);
+    handleInputPassword(inputText);
   };
 
   return (
@@ -211,19 +206,6 @@ function ContentSpaceSecession({
           </>
         )}
       </ContentGroup>
-      <Message
-        visible={isMessageOpen}
-        title="입력하신 비밀번호가 올바르지 않습니다. 다시 확인해 주세요."
-        type="error"
-        btns={[
-          {
-            type: 'solid',
-            shape: 'round',
-            text: '확인',
-            onClick: handleToggleMessage,
-          },
-        ]}
-      />
     </>
   );
 }

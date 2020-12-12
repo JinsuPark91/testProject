@@ -82,6 +82,7 @@ function SettingDialog(props) {
   );
   const [isSecessionContinue, setIsSecessionContinue] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [inputPassword, setInputPassword] = useState('');
 
   const handleToggleContinue = () => {
     setIsSecessionContinue(!isSecessionContinue);
@@ -90,6 +91,10 @@ function SettingDialog(props) {
 
   const handleToggleCheck = () => {
     setChecked(!checked);
+  };
+
+  const handleInputPassword = input => {
+    setInputPassword(input);
   };
 
   useEffect(() => {
@@ -124,6 +129,7 @@ function SettingDialog(props) {
             toggleContinue={handleToggleContinue}
             toggleFooter={handleSecessionButton}
             toggleCheck={handleToggleCheck}
+            inputPassword={inputPassword}
           />
         ) : (
           <TermsFooter />
@@ -136,8 +142,11 @@ function SettingDialog(props) {
             defaultSelectedKeys={['3']}
             onClick={({ item, key }) => {
               setSelectedKey(key);
-              setIsSecessionContinue(false);
-              setChecked(false);
+              if (key !== '7') {
+                setIsSecessionContinue(false);
+                setChecked(false);
+                setInputPassword('');
+              }
             }}
           >
             <Menu.ItemGroup key="0" title="환경설정">
@@ -180,6 +189,7 @@ function SettingDialog(props) {
               toggleContinue={handleToggleContinue}
               isCheck={checked}
               toggleCheck={handleToggleCheck}
+              handleInputPassword={handleInputPassword}
             />
           )}
         </ContentArea>
