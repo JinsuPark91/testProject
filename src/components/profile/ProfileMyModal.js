@@ -13,6 +13,8 @@ import checkekIcon from '../../assets/ts_check.svg';
 import { ReactComponent as SquareSpaceIcon } from '../../assets/thumbnail.svg';
 import ProfileInfoModal from './ProfileInfoModal';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
+import AddFriendsBySearch from '../friends/AddFriendsBySearch';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const ProfileMyModal = ({
   userId,
@@ -30,8 +32,10 @@ const ProfileMyModal = ({
   const [spaceListVisible, setSpaceListVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
+  const [isSpaceMemViewOpen, setIsSpaceMemViewOpen] = useState(false);
 
   const isAdmin = userStore.myProfile.grade === 'admin';
+  const isSpaceEmpty = PlatformUIStore.space.userCount === 1;
 
   // 1월 업데이트
   // const [lngListVisible, setLngListVisible] = useState(false);
@@ -84,17 +88,21 @@ const ProfileMyModal = ({
   //   i18n.changeLanguage(lng);
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
-  const toggleInviteDialog = () => {
+  const toggleInviteDialog = useCallback(() => {
     setIsInviteDialogOpen(!isInviteDialogOpen);
-  };
+  }, [isInviteDialogOpen]);
+
+  const toggleSpaceMemViewDialog = useCallback(() => {
+    setIsSpaceMemViewOpen(!isSpaceMemViewOpen);
+  }, [isSpaceMemViewOpen]);
 
   const handleInviteDialog = useCallback(() => {
     toggleInviteDialog();
-  }, []);
+  }, [toggleInviteDialog]);
 
   const handleMemberList = useCallback(() => {
-    console.log('MemberList');
-  }, []);
+    toggleSpaceMemViewDialog();
+  }, [toggleSpaceMemViewDialog]);
 
   const handleSpaceEditDialog = useCallback(() => {
     console.log('MemberList');
@@ -287,6 +295,14 @@ const ProfileMyModal = ({
       <AddFriendsByInvitationDialog
         visible={isInviteDialogOpen}
         onCancel={toggleInviteDialog}
+      />
+      <AddFriendsBySearch
+        visible={isSpaceMemViewOpen}
+        onCancelAddFriends={toggleSpaceMemViewDialog}
+        isOrgExist={false}
+        isSpaceEmpty={isSpaceEmpty}
+        title="UX팀"
+        isViewMode
       />
     </>
   );

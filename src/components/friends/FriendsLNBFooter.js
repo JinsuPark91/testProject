@@ -7,6 +7,7 @@ import AddFriendsDialog from './AddFriendsDialog';
 import AddFriendsBySearch from './AddFriendsBySearch';
 import { useStore } from '../../stores';
 import { WaplLogo, FriendAddIcon } from '../Icons';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const { Footer } = Layout;
 
@@ -36,26 +37,22 @@ const FriendAddButton = styled(Button)`
 
 function FriendsLNBFooter() {
   const { uiStore } = useStore();
-  const { userStore, orgStore, spaceStore } = useCoreStores();
+  const { userStore, orgStore } = useCoreStores();
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isOrgExist, setIsOrgExist] = useState(false);
   const [isSpaceEmpty, setIsSpaceEmpty] = useState(false);
 
   const handleOpenAddFriendsDialog = useCallback(async () => {
-    const currentSpace = spaceStore.spaceList.find(
-      elem => elem.fullDomain === 'dev',
-    );
-
-    // if (currentSpace && currentSpace.userCount === 1) {
-    // setIsSpaceEmpty(true);
-    // } else {
-    const response = await orgStore.getOrgTree();
-    if (response.length) {
-      setIsOrgExist(true);
+    if (PlatformUIStore.space.userCount === 1) {
+      setIsSpaceEmpty(true);
+    } else {
+      const response = await orgStore.getOrgTree();
+      if (response.length) {
+        setIsOrgExist(true);
+      }
     }
-    // }
     setIsDialogVisible(!isDialogVisible);
-  }, [spaceStore, orgStore, isDialogVisible]);
+  }, [orgStore, isDialogVisible]);
 
   const handleCloseAddFriendsDialog = useCallback(async () => {
     setIsDialogVisible(!isDialogVisible);
@@ -81,6 +78,8 @@ function FriendsLNBFooter() {
         onCancelAddFriends={handleCloseAddFriendsDialog}
         isOrgExist={isOrgExist}
         isSpaceEmpty={isSpaceEmpty}
+        title="프렌즈 추가"
+        isViewMode={false}
       />
     </FooterWrapper>
   ));

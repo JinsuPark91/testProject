@@ -205,10 +205,8 @@ function AddFriendsBySearch({
   onCancelAddFriends,
   isOrgExist,
   isSpaceEmpty,
-  orgList,
-  onDropdownChange,
-  overwrittenValue,
-  defaultValue,
+  title,
+  isViewMode,
 }) {
   const { orgStore, userStore, friendStore } = useCoreStores();
   const [isInviteDialogVisible, setIsInviteDialogVisible] = useState(false);
@@ -243,7 +241,7 @@ function AddFriendsBySearch({
         mask={false}
         footer={null}
         width="24.38rem"
-        title="프렌즈 추가"
+        title={title}
         onCancel={onCancelAddFriends}
       >
         {isSpaceEmpty ? (
@@ -292,7 +290,10 @@ function AddFriendsBySearch({
               // /> }
               //   </GroupBox>
               <FriendList>
-                <AddFriendsItem friendAddList={TestData} />
+                <AddFriendsItem
+                  friendAddList={friendStore.friendInfoList}
+                  isViewMode={isViewMode}
+                />
               </FriendList>
             )}
           </AddFriendSearchForm>

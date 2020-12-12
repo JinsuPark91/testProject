@@ -62,7 +62,7 @@ const FriendAddBtn = styled.button`
   }
 `;
 
-const AddFriendsItem = ({ friendAddList }) => {
+const AddFriendsItem = ({ friendAddList, isViewMode }) => {
   const { authStore, userStore, friendStore } = useCoreStores();
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [friendUserName, setFriendUserName] = useState('');
@@ -112,7 +112,7 @@ const AddFriendsItem = ({ friendAddList }) => {
             })}`}
           />
           <FriendName>{userName}</FriendName>
-          {renderMenu(friendInfo)}
+          {!isViewMode && renderMenu(friendInfo)}
         </FriendItem>
       </>
     );
