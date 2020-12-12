@@ -21,6 +21,10 @@ function RoomList() {
   const [keyword, setKeyword] = useState('');
   const [openRoomDialogVisible, setOpenRoomDialogVisible] = useState(false);
   const [targetRoom, setTargetRoom] = useState(null);
+  const [isRoomMemberModalVisible, setIsRoomMemberModalVisible] = useState(
+    false,
+  );
+  const [roomMemberAttr, setRoomMemberAttr] = useState({});
   const { roomStore, userStore } = useCoreStores();
 
   const [visible, setVisible] = useState({
@@ -51,16 +55,33 @@ function RoomList() {
   };
 
   const handleRoomMemeberModalCancel = () => {
-    PlatformUIStore.roomMemberModal.close();
+    setIsRoomMemberModalVisible(false);
   };
 
   const handleMenuClick = roomInfo => {
     setTargetRoom(roomInfo);
   };
 
+  const handleClickMenuItem = ({ key, item, value }) => {
+    switch (key) {
+      case 'member':
+      case 'changeName':
+        setRoomMemberAttr(value);
+        setTargetRoom(item);
+        setIsRoomMemberModalVisible(true);
+        break;
+      default:
+    }
+  };
+
   const handleOpenRoomModalCancel = () => {
     setOpenRoomDialogVisible(false);
   };
+
+  const handleClickRoomPhoto = useCallback(roomInfo => {
+    setTargetRoom(roomInfo);
+    setIsRoomMemberModalVisible(true);
+  }, []);
 
   const isOnlyMyRoom = () => {
     const rooms = roomStore
@@ -73,17 +94,15 @@ function RoomList() {
     <Wrapper>
       <Observer>
         {() => {
-          const modal = PlatformUIStore.roomMemberModal;
-
           return (
             <RoomInquiryModal
               roomId={targetRoom?.id}
-              visible={modal.visible}
+              visible={isRoomMemberModalVisible}
               onCancel={handleRoomMemeberModalCancel}
               width="17.5rem"
-              top={modal.top}
-              isEdit={modal.isEdit}
-              left={modal.left}
+              top="calc(50% - 15rem)"
+              left="calc(50% - 9rem)"
+              isEdit={roomMemberAttr.isEdit}
             />
           );
         }}
@@ -129,6 +148,8 @@ function RoomList() {
                   }
                   onClick={handleSelectRoom}
                   onMenuClick={handleMenuClick}
+                  onClickMenuItem={handleClickMenuItem}
+                  onClickRoomPhoto={handleClickRoomPhoto}
                 />
               ));
           }}
