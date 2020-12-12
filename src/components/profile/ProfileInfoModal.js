@@ -23,7 +23,9 @@ import ProfileImageModal from './ProfileImageModal';
 function ProfileInfoModal({
   userId = '',
   visible,
-  onToggle = () => {},
+  onClose = () => {},
+  onClickTalk = () => {},
+  onClickMeeting = () => {},
   position,
   profilePhoto = '',
   editMode = false,
@@ -114,13 +116,13 @@ function ProfileInfoModal({
     [friendStore.friendInfoList],
   );
 
-  const handleToggleModal = useCallback(
+  const handleCloseModal = useCallback(
     e => {
       if (e) e.stopPropagation();
       setImageModal(false);
-      onToggle();
+      onClose();
     },
-    [onToggle],
+    [onClose],
   );
 
   const isFav = useCallback(() => {
@@ -182,7 +184,7 @@ function ProfileInfoModal({
     }
   };
 
-  const handleTalkClick = async () => {
+  const handleClickTalk = async () => {
     try {
       const myUserId = userStore.myProfile.id;
       const { roomInfo } = roomStore.getDMRoom(myUserId, userId);
@@ -205,10 +207,16 @@ function ProfileInfoModal({
         });
         history.push(`/s/${roomId}/talk`);
       }
-      onToggle();
+      onClose();
+      onClickTalk();
     } catch (e) {
       console.error(`Error is${e}`);
     }
+  };
+
+  const handleClickMeeting = async () => {
+    // TODO 미팅 로직 추가 필요
+    onClickMeeting();
   };
 
   const handleConfirm = async () => {
@@ -252,7 +260,7 @@ function ProfileInfoModal({
 
     setIsEditMode(false);
     setIsChange(false);
-    if (editMode === true) onToggle();
+    if (editMode === true) onClose();
   };
 
   const handleExit = () => {
@@ -262,7 +270,7 @@ function ProfileInfoModal({
     // Reset local input date
     resetLocalInputData();
 
-    if (editMode === true) onToggle();
+    if (editMode === true) onClose();
   };
 
   const handleCancel = () => {
@@ -472,7 +480,7 @@ function ProfileInfoModal({
       outLine={editMode}
       isMyId={isMyId}
       isEditMode={isEditMode}
-      onCancel={handleToggleModal}
+      onCancel={handleCloseModal}
       toggleFav={handleToggleFavorite}
       checkFav={isFav}
       userId={userId}
@@ -496,7 +504,7 @@ function ProfileInfoModal({
           ) : (
             !isNotMyFriend() && (
               <>
-                <UtilButton onClick={handleTalkClick}>
+                <UtilButton onClick={handleClickTalk}>
                   <UtilIcon iconimg="friends" />
                   <UtilText>{isMyId ? `나와의 Talk` : `1:1 Talk`}</UtilText>
                 </UtilButton>
@@ -506,7 +514,7 @@ function ProfileInfoModal({
                     <UtilText>프로필 편집</UtilText>
                   </UtilButton>
                 ) : (
-                  <UtilButton>
+                  <UtilButton onClick={handleClickMeeting}>
                     <UtilIcon iconimg="meeting" />
                     <UtilText>1:1 Meeting</UtilText>
                   </UtilButton>

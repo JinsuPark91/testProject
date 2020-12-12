@@ -238,7 +238,7 @@ const Profile = React.memo(
           <ProfileInfoModal
             userId={itemId}
             visible={infoVisible}
-            onToggle={toggleProfilePopup}
+            onClose={toggleProfilePopup}
             position={{ left: '17rem' }}
             profilePhoto={`${profilePhoto}`}
           />
