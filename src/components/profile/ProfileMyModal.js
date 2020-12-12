@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { Button, Avatar, Dropdown, Menu, Checkbox } from 'antd';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, Toast } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 // import { useTranslation } from 'react-i18next';
 import ProfileModal from './ProfileModal';
@@ -33,6 +33,7 @@ const ProfileMyModal = ({
   const [isEditMode, setIsEditMode] = useState(false);
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
   const [isSpaceMemViewOpen, setIsSpaceMemViewOpen] = useState(false);
+  const [isToastOpen, setIsToastOpen] = useState(false);
 
   const isAdmin = userStore.myProfile.grade === 'admin';
   const isSpaceEmpty = PlatformUIStore.space.userCount === 1;
@@ -90,6 +91,7 @@ const ProfileMyModal = ({
   // }, []);
   const toggleInviteDialog = useCallback(() => {
     setIsInviteDialogOpen(!isInviteDialogOpen);
+    setIsToastOpen(true);
   }, [isInviteDialogOpen]);
 
   const toggleSpaceMemViewDialog = useCallback(() => {
@@ -97,8 +99,8 @@ const ProfileMyModal = ({
   }, [isSpaceMemViewOpen]);
 
   const handleInviteDialog = useCallback(() => {
-    toggleInviteDialog();
-  }, [toggleInviteDialog]);
+    setIsInviteDialogOpen(true);
+  }, []);
 
   const handleMemberList = useCallback(() => {
     toggleSpaceMemViewDialog();
@@ -304,6 +306,15 @@ const ProfileMyModal = ({
         title="UX팀"
         isViewMode
       />
+      <Toast
+        visible={isToastOpen}
+        timeoutMs={1000}
+        onClose={() => {
+          setIsToastOpen(false);
+        }}
+      >
+        발송한 초대장은 24시간 이후 만료됩니다.
+      </Toast>
     </>
   );
 
