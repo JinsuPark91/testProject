@@ -336,6 +336,11 @@ function RoomInquiryModal({
       if (!result) {
         throw Error('[Platform] Invite Member failed.');
       }
+
+      // 1:1 룸에 초대한 경우 새로운 룸이 생성되는데, 이 경우 그 룸으로 이동해야함.
+      if (roomId !== resultRoomId) {
+        history.push(`/s/${resultRoomId}/talk`);
+      }
     } catch (e) {
       console.error('[Platform] Invite Member Error : ', e);
     } finally {
