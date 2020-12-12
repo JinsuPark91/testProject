@@ -295,14 +295,14 @@ const ProfileMyModal = ({
       subContent={subContent}
       footer={
         <UserSettingArea>
-          {/* <SettingButton
+          <SettingButton
             type="text"
             shape="round"
             onClick={() => handleSettingDialogOpen('2')}
           >
             설정
           </SettingButton>
-          <SettingBar /> */}
+          <SettingBar />
           <SettingButton type="text" shape="round">
             고객지원
           </SettingButton>

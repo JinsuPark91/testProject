@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { Button, Radio, Checkbox, PageHeader } from 'antd';
-
 import SettingContentTitle from './SettingContentTitle';
 
 function onChange(e) {
   console.log('checked = ${e.target.checked}');
 }
+
+// 현재 사용하지 않는 js 파일 - 참고용으로 둔 후 추후 삭제
 class SettingSpaceSecession extends Component {
   constructor() {
     super();

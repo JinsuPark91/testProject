@@ -85,6 +85,7 @@ function SettingDialog(props) {
 
   const handleToggleContinue = () => {
     setIsSecessionContinue(!isSecessionContinue);
+    setbuttonFooter(true);
   };
 
   const handleToggleCheck = () => {
@@ -133,7 +134,11 @@ function SettingDialog(props) {
         <SiderArea>
           <StyledMenu
             defaultSelectedKeys={['3']}
-            onClick={({ item, key }) => setSelectedKey(key)}
+            onClick={({ item, key }) => {
+              setSelectedKey(key);
+              setIsSecessionContinue(false);
+              setChecked(false);
+            }}
           >
             <Menu.ItemGroup key="0" title="환경설정">
               {/* <Menu.Item key="1">일반</Menu.Item> */}
@@ -171,7 +176,6 @@ function SettingDialog(props) {
           )}
           {selectedKey === '7' && (
             <ContentSpaceSecession
-              onEmptyInput={handleSecessionButton}
               isContinue={isSecessionContinue}
               toggleContinue={handleToggleContinue}
               isCheck={checked}

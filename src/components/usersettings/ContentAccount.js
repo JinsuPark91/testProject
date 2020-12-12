@@ -219,6 +219,7 @@ function ContentAccount({ isEdit }) {
     handleToggleBirthDayInput();
   }, [birthDay, userStore, handleToggleBirthDayInput]);
 
+  // TODO: 이름 변경 서비스, 별명 바꾸면 이름까지 바뀌는 이슈, 생년월일 update 안 되는 이슈 해결 필요
   return (
     <>
       <ContentTitle
@@ -284,13 +285,13 @@ function ContentAccount({ isEdit }) {
                   <p>{authStore.user.name}</p>
                 </TextArea>
                 <ButtonArea>
-                  <Button
+                  {/* <Button
                     size="small"
                     type="outlined"
                     onClick={handleToggleNameInput}
                   >
                     변경
-                  </Button>
+                  </Button> */}
                 </ButtonArea>
               </>
             )}
@@ -497,13 +498,13 @@ function ContentAccount({ isEdit }) {
                   <p>{authStore.user.birthDate}</p>
                 </TextArea>
                 <ButtonArea>
-                  <Button
+                  {/* <Button
                     size="small"
                     type="outlined"
                     onClick={handleToggleBirthDayInput}
                   >
                     변경
-                  </Button>
+                  </Button> */}
                 </ButtonArea>
               </>
             )}
