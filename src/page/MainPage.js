@@ -45,6 +45,11 @@ const MainPage = () => {
       .then(res => {
         // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
         console.log('RES : ', res);
+        const currentSpace = spaceStore.spaceList.find(
+          elem => elem.fullDomain === 'dev',
+        );
+        PlatformUIStore.space = currentSpace;
+
         return talkRoomStore.initialize(myUserId);
       })
       .then(() => {

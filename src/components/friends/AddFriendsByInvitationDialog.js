@@ -3,6 +3,7 @@ import { useCoreStores, Toast, Chip, Message } from 'teespace-core';
 import styled from 'styled-components';
 import { Button, Input, Modal } from 'antd';
 import { checkEmailValid } from '../../libs/Regex';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const StyledModal = styled(Modal)`
   .ant-modal-body {
@@ -88,7 +89,7 @@ const StyledLinkButton = styled(Button)`
 `;
 
 function AddFriendsBySearch({ visible, onCancel }) {
-  const { friendStore, userStore, spaceStore } = useCoreStores();
+  const { friendStore, userStore } = useCoreStores();
   const [mailAddress, setMailAddress] = useState('');
   const [chipList, setChipList] = useState([]);
   const [isToastVisible, setIsToastVisible] = useState(false);
@@ -181,14 +182,11 @@ function AddFriendsBySearch({ visible, onCancel }) {
     }
 
     try {
-      const currentSpace = spaceStore.spaceList.find(
-        elem => elem.fullDomain === 'dev',
-      );
       friendStore.sendInvitationMail({
         myUserId,
         userEmailList: chipList,
-        domainName: currentSpace.fullDomain,
-        userCount: currentSpace.userCount,
+        domainName: PlatformUIStore.space.fullDomain,
+        userCount: PlatformUIStore.space.userCount,
       });
       onCancel();
     } catch (e) {
@@ -234,7 +232,7 @@ function AddFriendsBySearch({ visible, onCancel }) {
                   text={elem}
                   key={elem}
                   onClose={() => handleCloseChip(elem)}
-                  alert={!checkEmailValid(elem)}
+                  alert={!checkEmailValid(elem).toString()}
                 />
               ))}
             </StyledChipBox>
