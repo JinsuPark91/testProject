@@ -80,7 +80,7 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
   );
 
   const renderMenu = friendInfo => {
-    const userId = friendInfo?.id;
+    const userId = friendInfo?.friendId;
     const isMe = userId === userStore.myProfile.id;
     const isFriend = friendStore.checkAlreadyFriend({ userId });
     if (isMe) {
