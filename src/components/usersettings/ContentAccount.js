@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Button, Radio, Select } from 'antd';
+import { Button, Radio, Select, Dropdown, Menu } from 'antd';
+import Upload from 'rc-upload';
 import { useObserver } from 'mobx-react';
 import { useCoreStores, Input } from 'teespace-core';
 import styled from 'styled-components';
@@ -124,6 +125,12 @@ const EditNameInput = styled(InputCounter)`
   }
 `;
 
+const StyledUpload = styled(Upload)`
+  &:focus {
+    outline: 0;
+  }
+`;
+
 function onChange(e) {
   console.log('checked = ${e.target.checked}');
 }
@@ -131,7 +138,9 @@ function onChange(e) {
 function ContentAccount({ isEdit }) {
   const { authStore, userStore } = useCoreStores();
   const { Option } = Select;
-  // console.log(authStore.checkAuth);
+
+  const [profilePhoto, setProfilePhoto] = useState(undefined);
+
   const [isNameEdit, setIsNameEdit] = useState(false);
   const [name, setName] = useState('');
 
@@ -157,6 +166,10 @@ function ContentAccount({ isEdit }) {
       setBirthDay('');
     };
   }, []);
+
+  const handleChangePhoto = file => {
+    setProfilePhoto(URL.createObjectURL(file));
+  };
 
   const handleToggleNameInput = useCallback(() => {
     setIsNameEdit(!isNameEdit);
@@ -242,6 +255,24 @@ function ContentAccount({ isEdit }) {
                   })}`}
                 />
                 <ImageIcon />
+                {/* <Dropdown
+                  trigger={['click']}
+                  placement="bottomLeft"
+                  overlay={
+                    <Menu>
+                      <Menu.Item>
+                        <StyledUpload
+                          component="div"
+                          multiple={false}
+                          accept={['.jpg,.jpeg,.png']}
+                          customRequest={({ file }) => handleChangePhoto(file)}
+                        >
+                          프로필 사진 변경
+                        </StyledUpload>
+                      </Menu.Item>
+                    </Menu>
+                  }
+                /> */}
               </ImageBox>
               <Info>사진을 추가하여 스페이스 별로 설정할 수 있습니다.</Info>
             </TextArea>
