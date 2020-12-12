@@ -189,7 +189,6 @@ const RoomItemContent = ({ roomInfo, isMyRoom, onMenuClick }) => {
             {() => {
               let userPhotos = null;
               if (isMyRoom) {
-                console.log(userStore.myProfile);
                 userPhotos = [
                   userStore.getProfilePhotoURL(userStore.myProfile.id, 'small'),
                 ];

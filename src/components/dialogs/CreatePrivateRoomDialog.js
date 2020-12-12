@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { ItemSelector, useCoreStores } from 'teespace-core';
 import { Checkbox } from 'antd';
 import {
@@ -14,7 +14,7 @@ import {
 } from './CreatePrivateRoomDialogStyle';
 
 const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
-  const { userStore, roomStore } = useCoreStores();
+  const { userStore } = useCoreStores();
   const initialOptions = {
     isChangeName: false,
     roomName: '',
@@ -22,13 +22,17 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
   };
   const [options, setOptions] = useState(initialOptions);
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const disabledIds = [userStore.myProfile.id];
 
   const clearState = () => {
     setOptions(initialOptions);
   };
 
   const handleOk = () => {
-    onOk(options);
+    onOk({
+      ...options,
+      selectedUsers,
+    });
     clearState();
   };
 
@@ -48,9 +52,11 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
     setOptions({ ...options, isStartMeeting: isChecked });
   };
 
-  const handleSelectedUserChange = useCallback(users => {
-    setSelectedUsers(users);
-    console.log(users);
+  const handleSelectedUserChange = useCallback(({ userArray }) => {
+    const filteredUsers = userArray.filter(
+      user => !disabledIds.includes(user.friendId || user.id),
+    );
+    setSelectedUsers(filteredUsers);
   }, []);
 
   const handleChangeName = e => {
@@ -71,14 +77,14 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
       }
       footer={null}
       style={{ width: 'auto' }}
+      destroyOnClose
     >
       <>
         <ItemSelector
           isVisibleRoom={false}
           onSelectChange={handleSelectedUserChange}
-          disabledIds={[userStore.myProfile.id]}
+          disabledIds={disabledIds}
           defaultSelectedUsers={[userStore.myProfile]}
-          defaultSelectedRooms={[]}
           height={20} // rem
         />
         <ConfigWrapper>

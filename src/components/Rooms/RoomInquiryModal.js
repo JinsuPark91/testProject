@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled, { css } from 'styled-components';
-import { Button } from 'antd';
-import { useCoreStores, UserSelectDialog } from 'teespace-core';
+import { Button, Modal } from 'antd';
+import { useCoreStores, ItemSelector } from 'teespace-core';
 import ProfileModal from '../profile/ProfileModal';
 import Photos from '../Photos';
 import Input from '../Input';
@@ -58,6 +58,20 @@ const UserImag = styled.div`
     border-radius: 50%;
   }
 `;
+const FlexModal = styled(Modal)`
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+
+  & .ant-modal-header {
+    border-bottom: 1px solid #e3e7eb;
+  }
+
+  & .ant-modal-body {
+    padding: 0;
+  }
+`;
+
 const UserName = styled.p`
   padding-left: 0.5rem;
   font-size: 0.75rem;
@@ -294,8 +308,15 @@ function RoomInquiryModal({
     setUserSelectDialogVisible(true);
   };
 
-  const handleSelectedUserChange = useCallback(users => {
-    setSelectedUsers(users);
+  const handleSelectedUserChange = useCallback(({ userArray }) => {
+    const originRoomMemberIds = members.map(
+      member => member.friendId || member.id,
+    );
+    const filteredUsers = userArray.filter(
+      user => !originRoomMemberIds.includes(user.friendId || user.id),
+    );
+    console.log('Filtered Users : ', filteredUsers);
+    setSelectedUsers(filteredUsers);
   }, []);
 
   const handleInviteOk = async () => {
@@ -407,38 +428,45 @@ function RoomInquiryModal({
 
   return (
     <>
-      <UserSelectDialog
-        visible={userSelectDialogVisible}
+      <FlexModal
         title={
           <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>
             룸 구성원 초대
           </div>
         }
-        initialMembers={members}
-        onSelectedUserChange={handleSelectedUserChange}
-        bottom={
-          <ButtonContainer>
-            <Button
-              type="solid"
-              size="default"
-              shape="round"
-              onClick={handleInviteOk}
-              style={{ marginRight: '0.38rem' }}
-              disabled={selectedUsers.length <= 0}
-            >
-              {`초대 ${selectedUsers.length}`}
-            </Button>
-            <Button
-              type="outlined"
-              size="default"
-              shape="round"
-              onClick={handleInviteCancel}
-            >
-              취소
-            </Button>
-          </ButtonContainer>
-        }
-      />
+        visible={userSelectDialogVisible}
+        closable={false}
+        footer={null}
+        destroyOnClose
+      >
+        <ItemSelector
+          isVisibleRoom={false}
+          onSelectChange={handleSelectedUserChange}
+          disabledIds={members.map(member => member.friendId || member.id)}
+          defaultSelectedUsers={members}
+          height={20} // rem
+        />
+        <ButtonContainer>
+          <Button
+            type="solid"
+            size="default"
+            shape="round"
+            onClick={handleInviteOk}
+            style={{ marginRight: '0.38rem' }}
+            disabled={selectedUsers.length <= 0}
+          >
+            {`초대 ${selectedUsers.length}`}
+          </Button>
+          <Button
+            type="outlined"
+            size="default"
+            shape="round"
+            onClick={handleInviteCancel}
+          >
+            취소
+          </Button>
+        </ButtonContainer>
+      </FlexModal>
       <ProfileModal
         style={{ top, left, margin: 'unset' }}
         visible={visible}
