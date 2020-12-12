@@ -36,7 +36,7 @@ const ProfileMyModal = ({
   const [isToastOpen, setIsToastOpen] = useState(false);
 
   const isAdmin = userStore.myProfile.grade === 'admin';
-  const isSpaceEmpty = PlatformUIStore.space.userCount === 1;
+  const isSpaceEmpty = PlatformUIStore.space?.userCount === 1;
 
   // 1월 업데이트
   // const [lngListVisible, setLngListVisible] = useState(false);

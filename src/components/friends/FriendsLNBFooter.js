@@ -43,7 +43,7 @@ function FriendsLNBFooter() {
   const [isSpaceEmpty, setIsSpaceEmpty] = useState(false);
 
   const handleOpenAddFriendsDialog = useCallback(async () => {
-    if (PlatformUIStore.space.userCount === 1) {
+    if (PlatformUIStore.space && PlatformUIStore.space.userCount === 1) {
       setIsSpaceEmpty(true);
     } else {
       const response = await orgStore.getOrgTree();
