@@ -90,6 +90,19 @@ function RoomList() {
     return rooms.length === 1 && rooms[0].type === 'WKS0001';
   };
 
+  const getRoomName = roomInfo => {
+    const isMyRoom = roomInfo.type === 'WKS0001';
+    return isMyRoom
+      ? userStore.myProfile.name
+      : roomInfo.customName || roomInfo.name;
+  };
+
+  // 이름과 표시 여부로 필터
+  // TODO 멤버 이름으로 검색은 아직 안 됨. 이를 위해서는 모든 룸에 대한 멤버 목록을 가져와야함.
+  const roomFilter = roomInfo =>
+    roomInfo.isVisible &&
+    (!keyword || getRoomName(roomInfo)?.includes(keyword));
+
   return (
     <Wrapper>
       <Observer>
@@ -137,7 +150,7 @@ function RoomList() {
           {() => {
             return roomStore
               .getRoomArray()
-              .filter(roomInfo => roomInfo.isVisible)
+              .filter(roomFilter)
               .map(roomInfo => (
                 <RoomItem
                   key={roomInfo.id}
