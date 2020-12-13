@@ -126,13 +126,8 @@ function ProfileInfoModal({
   );
 
   const isFav = useCallback(() => {
-    const friendIdx = friendStore.friendInfoList.findIndex(
-      friend => friend.friendId === userId,
-    );
-    return friendIdx === -1
-      ? false
-      : friendStore.friendInfoList[friendIdx].friendFavorite;
-  }, [userId, friendStore.friendInfoList]);
+    return friendStore.isFavoriteFriend(userId);
+  }, [userId, friendStore]);
 
   const handleImageModal = useCallback(e => {
     if (e) e.stopPropagation();
