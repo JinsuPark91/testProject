@@ -14,10 +14,9 @@ import { MainAppContainer, SubAppContainer } from './AppContainer';
 import Profile from '../Profile';
 
 const Content = () => {
-  const { userStore } = useCoreStores();
+  const { userStore, roomStore } = useCoreStores();
   const splitRef = useRef(null);
   const contentRef = useRef(null);
-  const { roomStore } = useCoreStores();
 
   useEffect(() => {
     if (contentRef) {

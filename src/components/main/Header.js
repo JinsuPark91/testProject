@@ -165,7 +165,7 @@ const Header = observer(() => {
           throw Error('DM ROOM GET FAILED');
         }
         history.push({
-          pathname: `/s/${response.roomId}/talk`,
+          pathname: `/s/${response.roomInfo.id}/talk`,
           search: `?sub=${appName}`,
         });
       } catch (e) {
