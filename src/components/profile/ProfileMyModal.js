@@ -170,7 +170,7 @@ const ProfileMyModal = ({
     <ProfileInfoModal
       userId={userId}
       visible={isEditMode}
-      onToggle={toggleEditMode}
+      onClose={toggleEditMode}
       profilePhoto={thumbPhoto}
       editMode
     />

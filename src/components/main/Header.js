@@ -154,7 +154,7 @@ const Header = observer(() => {
     setIsMessageVisible(!isMessageVisible);
   };
 
-  const addHistory = async appName => {
+  const openSubApp = async appName => {
     if (PlatformUIStore.resourceType === 'f') {
       try {
         const response = await roomStore.getDMRoom(
@@ -179,11 +179,19 @@ const Header = observer(() => {
     }
   };
 
+  const closeSubApp = () => {
+    history.push({
+      pathname: history.location.pathname,
+    });
+  };
+
   const handleAppClick = appName => {
     if (appName === 'meeting') {
       toggleMessageVisible();
+    } else if (PlatformUIStore.subApp !== appName) {
+      openSubApp(appName);
     } else {
-      addHistory(appName);
+      closeSubApp();
     }
   };
 
@@ -245,7 +253,7 @@ const Header = observer(() => {
               type: 'solid',
               onClick: () => {
                 toggleMessageVisible();
-                addHistory('meeting');
+                openSubApp('meeting');
               },
             },
             {
