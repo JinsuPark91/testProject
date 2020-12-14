@@ -529,13 +529,13 @@ function ContentAccount({ isEdit }) {
                   <p>{authStore.user.birthDate}</p>
                 </TextArea>
                 <ButtonArea>
-                  {/* <Button
+                  <Button
                     size="small"
                     type="outlined"
                     onClick={handleToggleBirthDayInput}
                   >
                     변경
-                  </Button> */}
+                  </Button>
                 </ButtonArea>
               </>
             )}

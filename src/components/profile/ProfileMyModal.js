@@ -189,7 +189,7 @@ const ProfileMyModal = ({
           </Logo>
           <Info>
             <Title>{PlatformUIStore.space?.name}</Title>
-            tmax-ux.wapl.ai
+            {PlatformUIStore.space?.fullDomain}
           </Info>
           <Button
             type="circle"

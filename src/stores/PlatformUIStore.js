@@ -17,7 +17,7 @@ const PlatformUIStore = observable({
   subApp: null,
   layout: 'collapse',
 
-  // domain
+  // current space
   space: null,
 
   // modal

@@ -149,7 +149,7 @@ function ContentSpaceSecession({
           </SpaceLogo>
           <SpaceInfo>
             <SpaceTitle>{PlatformUIStore.space?.name}</SpaceTitle>
-            tmax-ux.wapl.ai
+            {PlatformUIStore.space?.fullDomain}
           </SpaceInfo>
         </SpaceBox>
       </ContentGroup>
