@@ -106,7 +106,6 @@ const ProfileMyModal = ({
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userStore]);
-
   useEffect(() => {
     setIsCreated(created);
   }, [created]);
@@ -173,7 +172,7 @@ const ProfileMyModal = ({
             U
           </Logo>
           <Info>
-            <Title>UX팀</Title>
+            <Title>{profile?.domain}</Title>
             tmax-ux.wapl.ai
           </Info>
           <Button
@@ -303,7 +302,11 @@ const ProfileMyModal = ({
             설정
           </SettingButton>
           <SettingBar /> */}
-          <SettingButton type="text" shape="round">
+          <SettingButton
+            type="text"
+            shape="round"
+            onClick={() => window.open('http://www.wapl.ai')}
+          >
             고객지원
           </SettingButton>
         </UserSettingArea>

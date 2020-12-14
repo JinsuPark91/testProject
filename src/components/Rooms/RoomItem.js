@@ -3,10 +3,11 @@ import { useHistory } from 'react-router-dom';
 import { List, Menu, Dropdown } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, usePortalWindow } from 'teespace-core';
 import Photos from '../Photos';
 import { ViewMoreIcon, ExportIcon, DisableAlarmIcon, PinIcon } from '../Icons';
 import PlatformUIStore from '../../stores/PlatformUIStore';
+import { Talk } from 'teespace-talk-app';
 
 const MAX_PROFILE_COUNT = 4;
 
@@ -188,11 +189,25 @@ const RoomItemContent = ({
   onClickMenuItem,
   onClickRoomPhoto,
 }) => {
-  const { userStore } = useCoreStores();
-
-  const handleExport = e => {
+  const { userStore, roomStore } = useCoreStores();
+  const openTalkWindow = usePortalWindow();
+  const handleExport = async e => {
     e.stopPropagation();
-    console.log('handleExport');
+    openTalkWindow({
+      element: (
+        <Talk
+          roomId={roomInfo.id}
+          channelId={
+            roomStore
+              .getRoomMap()
+              .get(roomInfo.id)
+              ?.channelList?.find(channel => channel.type === 'CHN0001')?.id
+          }
+        />
+      ),
+      opts: 'width=600, height=900',
+      title: 'mini-talk',
+    });
   };
 
   const handleMenuClick = _roomInfo => {

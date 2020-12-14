@@ -206,12 +206,8 @@ const DropdownMenu = React.memo(
 );
 
 const Profile = React.memo(
-  ({ mode, tooltipPopupContainer, profilePhoto, itemId }) => {
-    const [infoVisible, setInfoVisible] = useState(false);
-    const toggleProfilePopup = useCallback(e => {
-      if (e) e.stopPropagation();
-      setInfoVisible(v => !v);
-    }, []);
+  ({ mode, tooltipPopupContainer, profilePhoto, itemId, handleClickPhoto }) => {
+    const { userStore } = useCoreStores();
 
     return (
       <>
@@ -223,7 +219,7 @@ const Profile = React.memo(
             <StyledAvatar
               src={`${profilePhoto}`}
               mode="me"
-              onClick={toggleProfilePopup}
+              onClick={e => handleClickPhoto(e, itemId)}
             />
           </StyledWrapper>
         )}
@@ -231,16 +227,7 @@ const Profile = React.memo(
           <StyledAvatar
             src={`${profilePhoto}`}
             mode={mode}
-            onClick={toggleProfilePopup}
-          />
-        )}
-        {infoVisible && (
-          <ProfileInfoModal
-            userId={itemId}
-            visible={infoVisible}
-            onClose={toggleProfilePopup}
-            position={{ left: '17rem' }}
-            profilePhoto={`${profilePhoto}`}
+            onClick={e => handleClickPhoto(e, itemId)}
           />
         )}
       </>
@@ -419,6 +406,8 @@ const FriendItem = observer(
     const { authStore, friendStore, userStore, roomStore } = useCoreStores();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
+    const [selectedId, setSelectedId] = useState('');
+    const [infoModalVisible, setInfoModalVisible] = useState(false);
     const [visibleMessage, setVisibleMessage] = useState(false);
     const [
       visibleRemoveFriendMessage,
@@ -428,6 +417,16 @@ const FriendItem = observer(
 
     /* merged info of userInfo and friendInfo */
     const itemId = friendId || userId;
+
+    const handleSelectPhoto = (e, id = '') => {
+      if (e) e.stopPropagation();
+      if (id) {
+        setSelectedId(id);
+        setInfoModalVisible(true);
+      } else {
+        setInfoModalVisible(false);
+      }
+    };
 
     const talkWindowOpen = usePortalWindow();
 
@@ -567,6 +566,7 @@ const FriendItem = observer(
 
     const handleItemClick = useCallback(
       e => {
+        e.preventDefault();
         if (e) e.stopPropagation();
         if (onClick) {
           onClick(itemId);
@@ -604,93 +604,106 @@ const FriendItem = observer(
     const isMe = itemId === authStore.user.id;
 
     return (
-      <FriendItemWrapper
-        style={style}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClick={handleItemClick}
-        isActive={isActive}
-        mode={mode}
-      >
-        <Toast
-          visible={visibleToast}
-          timeoutMs={1000}
-          onClose={handleToastClose}
+      <>
+        <FriendItemWrapper
+          style={style}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onClick={handleItemClick}
+          isActive={isActive}
+          mode={mode}
         >
-          {`${displayName}님이 프렌즈로 추가되었습니다`}
-        </Toast>
-        <Message
-          visible={visibleRemoveFriendMessage}
-          title={`${displayName}님을 프렌즈 목록에서 삭제하시겠습니까?`}
-          type="error"
-          btns={[
-            {
-              text: '삭제',
-              type: 'solid',
-              shape: 'round',
-              onClick: handleRemoveFriend,
-            },
-            {
-              text: '취소',
-              type: 'outlined',
-              onClick: handleRemoveFriendMessageClose,
-            },
-          ]}
-        />
-        <Message
-          visible={visibleMessage}
-          title={`${displayName}님을 즐겨찾기에 추가하시겠습니까?`}
-          btns={[
-            {
-              type: 'solid',
-              text: '추가',
-              handler: () => setVisibleMessage(false),
-            },
-            {
-              type: 'outlined',
-              text: '취소',
-              handler: () => setVisibleMessage(false),
-            },
-          ]}
-        />
-        <ProfileWrapper>
-          <Profile
-            mode={mode}
-            tooltipPopupContainer={tooltipPopupContainer}
-            profilePhoto={userStore.getProfilePhotoURL(itemId, 'small')}
-            itemId={itemId}
+          <Toast
+            visible={visibleToast}
+            timeoutMs={1000}
+            onClose={handleToastClose}
+          >
+            {`${displayName}님이 프렌즈로 추가되었습니다`}
+          </Toast>
+          <Message
+            visible={visibleRemoveFriendMessage}
+            title={`${displayName}님을 프렌즈 목록에서 삭제하시겠습니까?`}
+            type="error"
+            btns={[
+              {
+                text: '삭제',
+                type: 'solid',
+                shape: 'round',
+                onClick: handleRemoveFriend,
+              },
+              {
+                text: '취소',
+                type: 'outlined',
+                onClick: handleRemoveFriendMessageClose,
+              },
+            ]}
           />
-        </ProfileWrapper>
-        <TextWrapper>
-          <TextComponent
-            displayName={displayName}
-            fullCompanyJob={fullCompanyJob}
-            mode={mode}
-            orgName={orgName}
-            position={position}
+          <Message
+            visible={visibleMessage}
+            title={`${displayName}님을 즐겨찾기에 추가하시겠습니까?`}
+            btns={[
+              {
+                type: 'solid',
+                text: '추가',
+                handler: () => setVisibleMessage(false),
+              },
+              {
+                type: 'outlined',
+                text: '취소',
+                handler: () => setVisibleMessage(false),
+              },
+            ]}
           />
-        </TextWrapper>
-        <ActionWrapper>
-          <Action
-            mode={mode}
-            isHovering={isHovering}
-            menu={
-              <DropdownMenu
-                friendFavorite={friendFavorite}
-                handleCancelBookmark={handleCancelBookmark}
-                handleAddBookmark={handleAddBookmark}
-                handleRemoveFriendMessageOpen={handleRemoveFriendMessageOpen}
-              />
-            }
-            handleDropdownVisible={handleDropdownVisible}
-            handleTalkWindowOpen={handleTalkWindowOpen}
-            friendRelation={friendStore.checkAlreadyFriend({ userId: itemId })}
-            handleAddFriend={handleAddFriend}
-            isMe={isMe}
+          <ProfileWrapper>
+            <Profile
+              mode={mode}
+              tooltipPopupContainer={tooltipPopupContainer}
+              profilePhoto={userStore.getProfilePhotoURL(itemId, 'small')}
+              itemId={itemId}
+              handleClickPhoto={handleSelectPhoto}
+            />
+          </ProfileWrapper>
+          <TextWrapper>
+            <TextComponent
+              displayName={displayName}
+              fullCompanyJob={fullCompanyJob}
+              mode={mode}
+              orgName={orgName}
+              position={position}
+            />
+          </TextWrapper>
+          <ActionWrapper>
+            <Action
+              mode={mode}
+              isHovering={isHovering}
+              menu={
+                <DropdownMenu
+                  friendFavorite={friendFavorite}
+                  handleCancelBookmark={handleCancelBookmark}
+                  handleAddBookmark={handleAddBookmark}
+                  handleRemoveFriendMessageOpen={handleRemoveFriendMessageOpen}
+                />
+              }
+              handleDropdownVisible={handleDropdownVisible}
+              handleTalkWindowOpen={handleTalkWindowOpen}
+              friendRelation={friendStore.checkAlreadyFriend({
+                userId: itemId,
+              })}
+              handleAddFriend={handleAddFriend}
+              isMe={isMe}
+            />
+            {mode === 'addFriend' && isMe && <span>내 계정</span>}
+          </ActionWrapper>
+        </FriendItemWrapper>
+        {infoModalVisible && (
+          <ProfileInfoModal
+            userId={selectedId}
+            visible={infoModalVisible}
+            onClose={handleSelectPhoto}
+            position={{ left: '17rem' }}
           />
-          {mode === 'addFriend' && isMe && <span>내 계정</span>}
-        </ActionWrapper>
-      </FriendItemWrapper>
+        )}
+      </>
     );
   },
 );
