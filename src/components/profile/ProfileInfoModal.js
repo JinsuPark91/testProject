@@ -27,7 +27,6 @@ function ProfileInfoModal({
   onClickTalk = () => {},
   onClickMeeting = () => {},
   position,
-  profilePhoto = '',
   editMode = false,
 }) {
   const history = useHistory();
@@ -58,7 +57,7 @@ function ProfileInfoModal({
   const renderProfilePhoto =
     localProfilePhoto === null
       ? profile.defaultPhotoUrl
-      : localProfilePhoto || profilePhoto;
+      : localProfilePhoto || userStore.getProfilePhotoURL(userId, 'medium');
 
   // calculate whether default url be shown
   const isDefaultProfilePhotoUsed =
@@ -232,7 +231,7 @@ function ProfileInfoModal({
     } else {
       // The null value means default photo
       updatedInfo.profilePhoto =
-        localProfilePhoto === null ? localProfilePhoto : profilePhoto;
+        localProfilePhoto === null ? localProfilePhoto : userStore.getProfilePhotoURL(userId, 'medium');
     }
 
     if (localBackgroundPhoto?.includes('blob:')) {
