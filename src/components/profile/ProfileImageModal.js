@@ -7,43 +7,52 @@ import {
 } from '@ant-design/icons';
 
 function ProfileImageModal({ profilePhoto = '', onCancel }) {
-  const [enlargeStack, setEnlargeStack] = useState(4);
-  const addStack = e => {
-    e.stopPropagation();
-    setEnlargeStack(s => s + 1);
-  };
-  const subStack = e => {
-    e.stopPropagation();
-    setEnlargeStack(s => s - 1);
-  };
+  // const [enlargeStack, setEnlargeStack] = useState(1);
+  // const addStack = e => {
+  //   e.stopPropagation();
+  //   setEnlargeStack(s => s + 0.25);
+  // };
+  // const subStack = e => {
+  //   e.stopPropagation();
+  //   setEnlargeStack(s => s - 0.25);
+  // };
 
   return (
-    <ModalWrap>
-      <ModalInner>
-        <ModalHeader>
-          <Title>나의 프로필 사진</Title>
-          <CloseButton type="close" onClick={onCancel}>
-            <Blind>닫기</Blind>
-            <CloseOutlined />
-          </CloseButton>
-        </ModalHeader>
-        <img
-          src={profilePhoto}
-          alt=""
-          style={{ height: `${25 * enlargeStack}%` }}
-        />
-      </ModalInner>
-      <ModalFooter>
-        <Button disabled={enlargeStack === 4} onClick={subStack}>
-          <MinusCircleFilled />
-          <Blind>축소</Blind>
-        </Button>
-        <Button disabled={enlargeStack === 8} onClick={addStack}>
-          <PlusCircleFilled />
-          <Blind>확대</Blind>
-        </Button>
-      </ModalFooter>
-    </ModalWrap>
+ 
+        <ModalWrap>
+          <ModalInner>
+            <ModalHeader>
+              <Title>나의 프로필 사진</Title>
+              <CloseButton type="close" onClick={onCancel}>
+                <Blind>닫기</Blind>
+                <CloseOutlined />
+              </CloseButton>
+            </ModalHeader>
+              <img src={profilePhoto} alt="" />
+          </ModalInner>
+          {/* <ModalFooter>
+            <Button
+              disabled={enlargeStack === 1}
+              onClick={e => {
+                zoomOut(e);
+                subStack(e);
+              }}
+            >
+              <MinusCircleFilled />
+              <Blind>축소</Blind>
+            </Button>
+            <Button
+              disabled={enlargeStack === 2}
+              onClick={e => {
+                zoomIn(e);
+                addStack(e);
+              }}
+            >
+              <PlusCircleFilled />
+              <Blind>확대</Blind>
+            </Button>
+          </ModalFooter> */}
+        </ModalWrap>
   );
 }
 
@@ -56,6 +65,7 @@ const ModalWrap = styled.div`
   border-radius: 0.25rem;
   box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.3);
   text-align: center;
+  background-color: #fff;
   z-index: 1000;
 `;
 const ModalInner = styled.div`
@@ -63,20 +73,30 @@ const ModalInner = styled.div`
   position: relative;
   height: 24.56rem;
   border-radius: 0.25rem 0.25rem 0 0;
+  .react-transform-component {
+    width: 100%;
+    height: 100%;
+  }
+  .react-transform-element {
+    height: 100%;
+  }
   img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
     width: auto;
     height: 100%;
+    /* 확대 축소 기능 임시 제거 */
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
   }
 `;
 const ModalHeader = styled.div`
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   padding: 0 2.56rem;
-  background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0));
+  background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0));
   color: #fff;
   z-index: 5;
 `;

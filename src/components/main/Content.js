@@ -13,11 +13,16 @@ import { Wrapper, Splitter } from './ContentStyle';
 import { MainAppContainer, SubAppContainer } from './AppContainer';
 import Profile from '../Profile';
 
+const remToPixel = rem => {
+  return (
+    parseFloat(getComputedStyle(document.documentElement).fontSize, 10) * rem
+  );
+};
+
 const Content = () => {
-  const { userStore } = useCoreStores();
+  const { userStore, roomStore } = useCoreStores();
   const splitRef = useRef(null);
   const contentRef = useRef(null);
-  const { roomStore } = useCoreStores();
 
   useEffect(() => {
     if (contentRef) {
@@ -112,25 +117,38 @@ const Content = () => {
   return (
     <Wrapper ref={contentRef}>
       <Observer>
-        {() => (
-          <Splitter
-            sizes={PlatformUIStore.resourceType === 'm' ? [38, 62] : [75, 25]}
-            minSize={500}
-            gutterSize={10}
-            ref={splitRef}
-          >
-            <MainAppContainer>
-              {getApplication(PlatformUIStore.mainApp)}
-            </MainAppContainer>
+        {() => {
+          const width = window.innerWidth;
+          const mainDefaultWidth = 50 - (remToPixel(16.19) * 100) / width;
+          const subDefaultWidth = 100 - mainDefaultWidth;
 
-            <SubAppContainer
-              layoutState={PlatformUIStore.layout}
-              splitRef={splitRef}
+          const mainMinWidth = width / 2 - remToPixel(16.19);
+          const subMinWidth = (width * 2) / 7;
+
+          return (
+            <Splitter
+              sizes={
+                PlatformUIStore.resourceType === 'm'
+                  ? [38, 62]
+                  : [mainDefaultWidth, subDefaultWidth]
+              }
+              minSize={[mainMinWidth, subMinWidth]}
+              gutterSize={10}
+              ref={splitRef}
             >
-              {getApplication(PlatformUIStore.subApp)}
-            </SubAppContainer>
-          </Splitter>
-        )}
+              <MainAppContainer>
+                {getApplication(PlatformUIStore.mainApp)}
+              </MainAppContainer>
+
+              <SubAppContainer
+                layoutState={PlatformUIStore.layout}
+                splitRef={splitRef}
+              >
+                {getApplication(PlatformUIStore.subApp)}
+              </SubAppContainer>
+            </Splitter>
+          );
+        }}
       </Observer>
     </Wrapper>
   );
