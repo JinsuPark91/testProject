@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled, { css } from 'styled-components';
-import { Button } from 'antd';
-import { useCoreStores, UserSelectDialog } from 'teespace-core';
+import { Button, Modal } from 'antd';
+import { useCoreStores, ItemSelector } from 'teespace-core';
 import ProfileModal from '../profile/ProfileModal';
 import Photos from '../Photos';
 import Input from '../Input';
@@ -11,6 +11,7 @@ import AddIcon from '../../assets/ts_friends_add.svg';
 import TalkIcon from '../../assets/ts_TeeTalk.svg';
 import MeetingIcon from '../../assets/ts_TeeMeeting.svg';
 import EditIcon from '../../assets/ts_edit.svg';
+import ProfileInfoModal from '../profile/ProfileInfoModal';
 
 const AddButton = styled.button`
   display: flex;
@@ -58,6 +59,20 @@ const UserImag = styled.div`
     border-radius: 50%;
   }
 `;
+const FlexModal = styled(Modal)`
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+
+  & .ant-modal-header {
+    border-bottom: 1px solid #e3e7eb;
+  }
+
+  & .ant-modal-body {
+    padding: 0;
+  }
+`;
+
 const UserName = styled.p`
   padding-left: 0.5rem;
   font-size: 0.75rem;
@@ -184,6 +199,7 @@ function RoomInquiryModal({
   const [userSelectDialogVisible, setUserSelectDialogVisible] = useState(
     initialStates.userSelectDialogVisible,
   );
+
   const [isEditMode, setIsEditMode] = useState(initialStates.isEditMode);
   const [roomName, setRoomName] = useState(initialStates.roomName);
   const [roomInfo, setRoomInfo] = useState(initialStates.roomInfo);
@@ -191,6 +207,8 @@ function RoomInquiryModal({
   const [members, setMembers] = useState(initialStates.members);
   const [memberPhotos, setMemberPhotos] = useState(initialStates.memberPhotos);
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
+  const [profileUserId, setProfileUserId] = useState();
   const { roomStore, userStore } = useCoreStores();
 
   const getUserPhotos = _roomInfo => {
@@ -198,14 +216,7 @@ function RoomInquiryModal({
       return _roomInfo.memberIdListString
         .split(',')
         .splice(0, 4)
-        .map(
-          userId =>
-            `${userStore.getUserProfilePhoto({
-              userId,
-              size: 'small',
-              isLocal: true,
-            })}`,
-        );
+        .map(userId => userStore.getProfilePhotoURL(userId, 'small'));
     }
     return [];
   };
@@ -294,8 +305,15 @@ function RoomInquiryModal({
     setUserSelectDialogVisible(true);
   };
 
-  const handleSelectedUserChange = useCallback(users => {
-    setSelectedUsers(users);
+  const handleSelectedUserChange = useCallback(({ userArray }) => {
+    const originRoomMemberIds = members.map(
+      member => member.friendId || member.id,
+    );
+    const filteredUsers = userArray.filter(
+      user => !originRoomMemberIds.includes(user.friendId || user.id),
+    );
+    console.log('Filtered Users : ', filteredUsers);
+    setSelectedUsers(filteredUsers);
   }, []);
 
   const handleInviteOk = async () => {
@@ -315,6 +333,11 @@ function RoomInquiryModal({
       if (!result) {
         throw Error('[Platform] Invite Member failed.');
       }
+
+      // 1:1 룸에 초대한 경우 새로운 룸이 생성되는데, 이 경우 그 룸으로 이동해야함.
+      if (roomId !== resultRoomId) {
+        history.push(`/s/${resultRoomId}/talk`);
+      }
     } catch (e) {
       console.error('[Platform] Invite Member Error : ', e);
     } finally {
@@ -326,6 +349,28 @@ function RoomInquiryModal({
   const handleInviteCancel = () => {
     setUserSelectDialogVisible(false);
   };
+
+  const handleClickProfilePhoto = useCallback((e, userId) => {
+    e.stopPropagation();
+    setProfileUserId(userId);
+    setIsProfileModalVisible(true);
+  }, []);
+
+  const handleCloseProfileModal = useCallback(e => {
+    // (X) 클릭하거나 혹은 모달 바깥쪽을 클릭해서 닫을 수 있기 때문에 e 를 체크해야함.
+    if (e) e.stopPropagation();
+    setIsProfileModalVisible(false);
+  }, []);
+
+  const handleClickProfileTalk = useCallback(() => {
+    setIsProfileModalVisible(false);
+    onCancel();
+  }, []);
+
+  const handleClickProfileMeeting = useCallback(() => {
+    setIsProfileModalVisible(false);
+    onCancel();
+  }, []);
 
   const userContent = (
     <>
@@ -341,7 +386,11 @@ function RoomInquiryModal({
                 onChange={handleChange}
               />
             ) : (
-              <p>{roomInfo?.customName || roomInfo?.name}</p>
+              <p>
+                {roomInfo?.isMyRoom
+                  ? userStore.myProfile.name
+                  : roomInfo?.customName || roomInfo?.name}
+              </p>
             )}
           </GroupTitle>
         )}
@@ -387,57 +436,78 @@ function RoomInquiryModal({
     </>
   );
   const subContent = (
-    <UserList>
-      {members.map(memberInfo => (
-        <UserItem key={memberInfo.id}>
-          <UserImag>
-            <img
-              src={`${userStore.getUserProfilePhoto({
-                userId: memberInfo.id,
-                size: 'small',
-                isLocal: true,
-              })}`}
-            />
-          </UserImag>
-          <UserName>{memberInfo.name}</UserName>
-        </UserItem>
-      ))}
-    </UserList>
+    <>
+      <UserList>
+        {members.map(memberInfo => (
+          <UserItem
+            key={memberInfo.id}
+            onClick={e => handleClickProfilePhoto(e, memberInfo.id)}
+          >
+            <UserImag>
+              <img
+                alt=""
+                src={userStore.getProfilePhotoURL(memberInfo.id, 'small')}
+              />
+            </UserImag>
+            <UserName>{memberInfo.name}</UserName>
+          </UserItem>
+        ))}
+      </UserList>
+      {isProfileModalVisible && (
+        <ProfileInfoModal
+          userId={profileUserId}
+          visible={isProfileModalVisible}
+          onClose={handleCloseProfileModal}
+          onClickTalk={handleClickProfileTalk}
+          onClickMeeting={handleClickProfileMeeting}
+          position={{ top, left: `calc(${left} + 18.5rem)` }}
+          profilePhoto={userStore.getProfilePhotoURL(profileUserId, 'small')}
+        />
+      )}
+    </>
   );
 
   return (
     <>
-      <UserSelectDialog
-        visible={userSelectDialogVisible}
+      <FlexModal
         title={
           <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>
             룸 구성원 초대
           </div>
         }
-        onSelectedUserChange={handleSelectedUserChange}
-        bottom={
-          <ButtonContainer>
-            <Button
-              type="solid"
-              size="default"
-              shape="round"
-              onClick={handleInviteOk}
-              style={{ marginRight: '0.38rem' }}
-              disabled={!selectedUsers.length}
-            >
-              {`초대 ${selectedUsers.length}`}
-            </Button>
-            <Button
-              type="outlined"
-              size="default"
-              shape="round"
-              onClick={handleInviteCancel}
-            >
-              취소
-            </Button>
-          </ButtonContainer>
-        }
-      />
+        visible={userSelectDialogVisible}
+        closable={false}
+        footer={null}
+        destroyOnClose
+      >
+        <ItemSelector
+          isVisibleRoom={false}
+          onSelectChange={handleSelectedUserChange}
+          disabledIds={members.map(member => member.friendId || member.id)}
+          defaultSelectedUsers={members}
+          height={20} // rem
+        />
+        <ButtonContainer>
+          <Button
+            type="solid"
+            size="default"
+            shape="round"
+            onClick={handleInviteOk}
+            style={{ marginRight: '0.38rem' }}
+            disabled={selectedUsers.length <= 0}
+          >
+            {`초대 ${selectedUsers.length}`}
+          </Button>
+          <Button
+            type="outlined"
+            size="default"
+            shape="round"
+            onClick={handleInviteCancel}
+          >
+            취소
+          </Button>
+        </ButtonContainer>
+      </FlexModal>
       <ProfileModal
         style={{ top, left, margin: 'unset' }}
         visible={visible}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { Input, Button, Dropdown, Modal } from 'antd';
+import { Input, Button, Dropdown, Modal, Menu } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useCoreStores } from 'teespace-core';
 import Upload from 'rc-upload';
@@ -23,43 +23,82 @@ import ProfileImageModal from './ProfileImageModal';
 function ProfileInfoModal({
   userId = '',
   visible,
-  onToggle = () => {},
+  onClose = () => {},
+  onClickTalk = () => {},
+  onClickMeeting = () => {},
   position,
   profilePhoto = '',
   editMode = false,
 }) {
   const history = useHistory();
   const { userStore, friendStore, roomStore, authStore } = useCoreStores();
-  const [profile, setProfile] = useState(null);
   const [isEditMode, setIsEditMode] = useState(editMode);
   const [imageModal, setImageModal] = useState(false);
   const [userType, setUserType] = useState('');
-
-  const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState('');
-  const [localProfilePhoto, setLocalProfilePhoto] = useState('');
-  const [phone, setPhone] = useState('');
-  const [mobile, setMobile] = useState('');
   const [isChange, setIsChange] = useState(false);
-  const [name, setName] = useState('');
-  const [statusMsg, setStatusMsg] = useState('');
+
+  // NOTE. Setting state to undefined means the state is not changed
+  //  This undefined is different from empty('')
+  const [name, setName] = useState(undefined);
+  const [statusMsg, setStatusMsg] = useState(undefined);
+  const [phone, setPhone] = useState(undefined);
+  const [mobile, setMobile] = useState(undefined);
+  // NOTE. Setting null to photo means default image is used
+  const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(undefined);
+  const [localProfilePhoto, setLocalProfilePhoto] = useState(undefined);
+
+  // get profile from store
+  const profile = userStore.userProfiles[userId];
 
   const getBackPhoto = () => {
     return userStore.getBackgroudPhotoURL(userId);
   };
 
+  // calculate photo
+  const renderProfilePhoto =
+    localProfilePhoto === null
+      ? profile.defaultPhotoUrl
+      : localProfilePhoto || profilePhoto;
+
+  // calculate whether default url be shown
+  const isDefaultProfilePhotoUsed =
+    localProfilePhoto === null ||
+    (localProfilePhoto === undefined && !profile?.thumbPhoto);
+  const isDefaultBackgroundPhotoUsed =
+    localBackgroundPhoto === null ||
+    (localBackgroundPhoto === undefined && !profile?.thumbBack);
+
+  const setLocalInputData = () => {
+    setPhone(profile?.companyNum);
+    setMobile(profile?.phone);
+    setName(profile?.nick || profile?.name);
+    setStatusMsg(profile?.profileStatusMsg);
+    setLocalProfilePhoto(undefined);
+    setLocalBackgroundPhoto(undefined);
+  };
+
+  const resetLocalInputData = () => {
+    setPhone(undefined);
+    setMobile(undefined);
+    setName(undefined);
+    setStatusMsg(undefined);
+    setLocalProfilePhoto(undefined);
+    setLocalBackgroundPhoto(undefined);
+  };
+
+  const isValidInputData = () => !!name;
+
   useEffect(() => {
     if (visible === false) return;
     (async () => {
-      const userProfile = await userStore.getProfile({ userId });
-      const userAuthInfo = await authStore.user;
-      const nickName = userProfile?.nick || userProfile?.name;
+      let userProfile = userStore.userProfiles[userId];
+      if (!userProfile) {
+        userProfile = await userStore.getProfile({ userId });
+      }
+      // set initial local input data
+      setLocalInputData();
 
-      setProfile(userProfile);
-      setPhone(userProfile?.companyNum);
-      setMobile(userProfile?.phone);
-      setName(nickName);
-      setStatusMsg(userProfile?.profileStatusMsg);
-      setLocalBackgroundPhoto(`${getBackPhoto()}`);
+      const userAuthInfo = await authStore.user;
       setUserType(userAuthInfo.type);
     })();
 
@@ -77,23 +116,18 @@ function ProfileInfoModal({
     [friendStore.friendInfoList],
   );
 
-  const handleToggleModal = useCallback(
+  const handleCloseModal = useCallback(
     e => {
       if (e) e.stopPropagation();
       setImageModal(false);
-      onToggle();
+      onClose();
     },
-    [onToggle],
+    [onClose],
   );
 
   const isFav = useCallback(() => {
-    const friendIdx = friendStore.friendInfoList.findIndex(
-      friend => friend.friendId === userId,
-    );
-    return friendIdx === -1
-      ? false
-      : friendStore.friendInfoList[friendIdx].friendFavorite;
-  }, [userId, friendStore.friendInfoList]);
+    return friendStore.isFavoriteFriend(userId);
+  }, [userId, friendStore]);
 
   const handleImageModal = useCallback(e => {
     if (e) e.stopPropagation();
@@ -125,7 +159,7 @@ function ProfileInfoModal({
 
   const handleChangeDefaultBackground = () => {
     setIsChange(true);
-    setLocalBackgroundPhoto(`${getBackPhoto()}`);
+    setLocalBackgroundPhoto(null);
   };
 
   const handleChangeDefaultPhoto = () => {
@@ -145,7 +179,7 @@ function ProfileInfoModal({
     }
   };
 
-  const handleTalkClick = async () => {
+  const handleClickTalk = async () => {
     try {
       const myUserId = userStore.myProfile.id;
       const { roomInfo } = roomStore.getDMRoom(myUserId, userId);
@@ -168,13 +202,20 @@ function ProfileInfoModal({
         });
         history.push(`/s/${roomId}/talk`);
       }
-      onToggle();
+      onClose();
+      onClickTalk();
     } catch (e) {
       console.error(`Error is${e}`);
     }
   };
 
+  const handleClickMeeting = async () => {
+    // TODO 미팅 로직 추가 필요
+    onClickMeeting();
+  };
+
   const handleConfirm = async () => {
+    // set update data from user input
     const updatedInfo = {
       nick: name,
       companyNum: phone,
@@ -189,7 +230,9 @@ function ProfileInfoModal({
 
       URL.revokeObjectURL(localProfilePhoto);
     } else {
-      updatedInfo.profilePhoto = profilePhoto;
+      // The null value means default photo
+      updatedInfo.profilePhoto =
+        localProfilePhoto === null ? localProfilePhoto : profilePhoto;
     }
 
     if (localBackgroundPhoto?.includes('blob:')) {
@@ -199,29 +242,30 @@ function ProfileInfoModal({
 
       URL.revokeObjectURL(localBackgroundPhoto);
     } else {
-      updatedInfo.backPhoto = getBackPhoto();
+      // The null value means default photo
+      updatedInfo.backPhoto =
+        localBackgroundPhoto === null ? localBackgroundPhoto : getBackPhoto();
     }
 
-    const updatedProfile = await userStore.updateMyProfile({ updatedInfo });
+    // Update my profile information
+    await userStore.updateMyProfile({ updatedInfo });
 
-    setName(updatedProfile?.name);
-    setPhone(updatedProfile?.companyNum);
-    setMobile(updatedProfile?.phone);
+    // Reset local input date
+    resetLocalInputData();
 
     setIsEditMode(false);
     setIsChange(false);
-    if (editMode === true) onToggle();
+    if (editMode === true) onClose();
   };
 
   const handleExit = () => {
     setIsChange(false);
     setIsEditMode(false);
 
-    setMobile(profile?.phone);
-    setPhone(profile?.companyNum);
-    setLocalBackgroundPhoto(getBackPhoto());
-    setLocalProfilePhoto(null);
-    if (editMode === true) onToggle();
+    // Reset local input date
+    resetLocalInputData();
+
+    if (editMode === true) onClose();
   };
 
   const handleCancel = () => {
@@ -243,38 +287,46 @@ function ProfileInfoModal({
   };
 
   const imageChangeMenu = (
-    <ButtonDrop>
-      <DropItem>
+    <Menu>
+      <Menu.Item>
         <StyledUpload
           component="div"
-          accept={['image/*']}
+          accept={['.jpg,.jpeg,.png']}
           multiple={false}
           customRequest={({ file }) => handleChangePhoto(file)}
         >
           프로필 사진 변경
         </StyledUpload>
-      </DropItem>
-      <DropItem onClick={handleChangeDefaultPhoto}>기본 이미지로 변경</DropItem>
-    </ButtonDrop>
+      </Menu.Item>
+      <Menu.Item
+        disabled={isDefaultProfilePhotoUsed}
+        onClick={handleChangeDefaultPhoto}
+      >
+        기본 이미지로 변경
+      </Menu.Item>
+    </Menu>
   );
 
   const backgroundMenu = (
-    <ButtonDrop>
-      <DropItem>
+    <Menu>
+      <Menu.Item>
         <StyledUpload
           component="div"
-          accept={['image/*']}
+          accept={['.jpg,.jpeg,.png']}
           multiple={false}
           customRequest={({ file }) => handleChangeBackground(file)}
         >
           내 PC에서 배경 변경
         </StyledUpload>
-      </DropItem>
+      </Menu.Item>
       {/* <DropItem>테마 이미지에서 변경</DropItem>  1월 업데이트 */}
-      <DropItem onClick={handleChangeDefaultBackground}>
+      <Menu.Item
+        disabled={isDefaultBackgroundPhotoUsed}
+        onClick={handleChangeDefaultBackground}
+      >
         기본 이미지로 변경
-      </DropItem>
-    </ButtonDrop>
+      </Menu.Item>
+    </Menu>
   );
 
   const handleToggleFavorite = useCallback(
@@ -298,7 +350,7 @@ function ProfileInfoModal({
     <UserBox>
       {imageModal && (
         <ProfileImageModal
-          profilePhoto={localProfilePhoto || profilePhoto}
+          profilePhoto={renderProfilePhoto}
           onCancel={handleImageModal}
         />
       )}
@@ -314,11 +366,7 @@ function ProfileInfoModal({
         </Dropdown>
       )}
       <UserImage>
-        <img
-          alt=""
-          src={localProfilePhoto || profilePhoto}
-          onClick={handleImageModal}
-        />
+        <img alt="" src={renderProfilePhoto} onClick={handleImageModal} />
         {isEditMode && (
           <ImageChangeBox>
             <Dropdown
@@ -339,7 +387,8 @@ function ProfileInfoModal({
           {isEditMode ? (
             <EditNameInput
               maxLength={20}
-              value={name}
+              placeholder="별명을 입력해주세요."
+              value={name !== undefined ? name : profile?.nick || profile?.name}
               onChange={e => {
                 setName(e);
                 setIsChange(true);
@@ -349,12 +398,14 @@ function ProfileInfoModal({
             <p>{profile?.nick || profile?.name}</p>
           )}
         </UserName>
-        <UserMail>{profile?.email}</UserMail>
+        <UserMail>{`(${profile?.loginId})`}</UserMail>
         <UserStatus>
           {isEditMode ? (
             <EditStatusInput
               maxLength={50}
-              value={statusMsg}
+              value={
+                statusMsg !== undefined ? statusMsg : profile?.profileStatusMsg
+              }
               onChange={e => {
                 setStatusMsg(e);
                 setIsChange(true);
@@ -379,7 +430,9 @@ function ProfileInfoModal({
             <>
               <EditNumInputBox>
                 <Input
-                  value={phone}
+                  value={
+                    phone !== undefined ? phone : profile?.companyNum || `-`
+                  }
                   onChange={e => {
                     setPhone(e.target.value);
                     setIsChange(true);
@@ -422,7 +475,7 @@ function ProfileInfoModal({
       outLine={editMode}
       isMyId={isMyId}
       isEditMode={isEditMode}
-      onCancel={handleToggleModal}
+      onCancel={handleCloseModal}
       toggleFav={handleToggleFavorite}
       checkFav={isFav}
       userId={userId}
@@ -434,7 +487,7 @@ function ProfileInfoModal({
               <EditButton
                 type="solid"
                 shape="round"
-                disabled={!isChange}
+                disabled={!isChange || !isValidInputData()}
                 onClick={handleConfirm}
               >
                 저장
@@ -446,7 +499,7 @@ function ProfileInfoModal({
           ) : (
             !isNotMyFriend() && (
               <>
-                <UtilButton onClick={handleTalkClick}>
+                <UtilButton onClick={handleClickTalk}>
                   <UtilIcon iconimg="friends" />
                   <UtilText>{isMyId ? `나와의 Talk` : `1:1 Talk`}</UtilText>
                 </UtilButton>
@@ -456,7 +509,7 @@ function ProfileInfoModal({
                     <UtilText>프로필 편집</UtilText>
                   </UtilButton>
                 ) : (
-                  <UtilButton>
+                  <UtilButton onClick={handleClickMeeting}>
                     <UtilIcon iconimg="meeting" />
                     <UtilText>1:1 Meeting</UtilText>
                   </UtilButton>
@@ -537,35 +590,13 @@ const ImageChangeBox = styled.div`
   border: 0.25rem solid #0b1d41;
   border-radius: 50%;
 `;
-const ButtonDrop = styled.ul`
-  padding: 0.25rem 0;
-  background-color: #fff;
-  border: 1px solid #c6ced6;
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 0.25rem;
-  z-index: 5;
-`;
-const DropItem = styled.li`
-  padding: 0 0.75rem;
-  font-size: 0.75rem;
-  color: #000;
-  line-height: 1.63rem;
-  white-space: nowrap;
-  border-radius: 0.81rem;
-  cursor: pointer;
-  &:hover {
-    background-color: #dcddff;
-  }
-  &:active,
-  &:focus {
-    background-color: #bcbeff;
-  }
-`;
+
 const StyledUpload = styled(Upload)`
   &:focus {
     outline: 0;
   }
 `;
+
 const ImageChangeButton = styled.button`
   width: 2rem;
   height: 2rem;

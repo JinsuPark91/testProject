@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import Upload from 'rc-upload';
 import styled, { css } from 'styled-components';
@@ -15,6 +15,8 @@ import tsMailIcon from '../assets/ts_mail.svg';
 import EmailHoverIcon from '../assets/ts_export.svg';
 import tsBgImgIcon from '../assets/ts_photo.svg';
 import tsCameraImgIcon from '../assets/ts_camera.svg';
+import starLineIcon from '../assets/ts_star_line.svg';
+import starIcon from '../assets/ts_star.svg';
 
 const Profile = observer(
   ({
@@ -26,18 +28,23 @@ const Profile = observer(
     onClickCancelBtn = () => {},
   }) => {
     const history = useHistory();
-    const { roomStore, userStore } = useCoreStores();
+    const { roomStore, userStore, friendStore } = useCoreStores();
     const [isEditMode, setEditMode] = useState(editOnlyMode);
-    const [profile, setProfile] = useState(null);
-    // 유저 정보들
-    const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(null);
-    const [localProfilePhoto, setLocalProfilePhoto] = useState(null);
-    const [phone, setPhone] = useState('');
-    const [mobile, setMobile] = useState('');
-    const [isChange, setIsChange] = useState(false);
-    const [name, setName] = useState('');
-    const [profileStatusMsg, setStatusMsg] = useState('');
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
+    const [isChange, setIsChange] = useState(false);
+
+    // NOTE. Setting state to undefined means the state is not changed
+    //  This undefined is different from empty('')
+    const [name, setName] = useState(undefined);
+    const [statusMsg, setStatusMsg] = useState(undefined);
+    const [phone, setPhone] = useState(undefined);
+    const [mobile, setMobile] = useState(undefined);
+    // NOTE. Setting null to photo means default image is used
+    const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(undefined);
+    const [localProfilePhoto, setLocalProfilePhoto] = useState(undefined);
+
+    // get profile from store
+    const profile = userStore.userProfiles[userId];
 
     const isMyId = () => userId === userStore.myProfile.id;
 
@@ -48,16 +55,51 @@ const Profile = observer(
       return userStore.getProfilePhotoURL(userId, 'medium');
     };
 
+    // calculate photo
+    const renderProfilePhoto =
+      localProfilePhoto === null
+        ? profile.defaultPhotoUrl
+        : localProfilePhoto || getProfilePhoto();
+    const renderBackgroundPhoto =
+      localBackgroundPhoto === null
+        ? profile.defaultBackgroundUrl
+        : localBackgroundPhoto || getBackPhoto();
+
+    // calculate whether default url be shown
+    const isDefaultProfilePhotoUsed =
+      localProfilePhoto === null ||
+      (localProfilePhoto === undefined && !profile?.thumbPhoto);
+    const isDefaultBackgroundPhotoUsed =
+      localBackgroundPhoto === null ||
+      (localBackgroundPhoto === undefined && !profile?.thumbBack);
+
+    const setLocalInputData = () => {
+      setPhone(profile?.companyNum);
+      setMobile(profile?.phone);
+      setName(profile?.nick || profile?.name);
+      setStatusMsg(profile?.profileStatusMsg);
+      setLocalProfilePhoto(undefined);
+      setLocalBackgroundPhoto(undefined);
+    };
+
+    const resetLocalInputData = () => {
+      setPhone(undefined);
+      setMobile(undefined);
+      setName(undefined);
+      setStatusMsg(undefined);
+      setLocalProfilePhoto(undefined);
+      setLocalBackgroundPhoto(undefined);
+    };
+
+    const isValidInputData = () => !!name;
+
     useEffect(() => {
       setEditMode(editOnlyMode);
       (async () => {
-        const userProfile = await userStore.getProfile({ userId });
-        setProfile(userProfile);
-        setPhone(userProfile?.companyNum);
-        setMobile(userProfile?.phone);
-        setName(userProfile?.name);
-
-        setLocalBackgroundPhoto(`${getBackPhoto()}`);
+        const userProfile = userStore.userProfiles[userId];
+        if (!userProfile) {
+          await userStore.getProfile({ userId });
+        }
       })();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId]);
@@ -83,6 +125,8 @@ const Profile = observer(
 
     const handleChangeMode = () => {
       setEditMode(true);
+      // set initial local input data
+      setLocalInputData();
     };
 
     const handleMeetingClick = () => {
@@ -101,7 +145,7 @@ const Profile = observer(
 
     const handleChangeDefaultBackground = () => {
       setIsChange(true);
-      setLocalBackgroundPhoto(`${getBackPhoto()}`);
+      setLocalBackgroundPhoto(null);
     };
 
     const handleChangeDefaultPhoto = () => {
@@ -110,12 +154,12 @@ const Profile = observer(
     };
 
     const handleConfirm = async () => {
-      console.log('BACK PHOTO : ', localBackgroundPhoto);
-      console.log('THUMB PHOTO : ', localProfilePhoto);
-
+      // set update data from user input
       const updatedInfo = {
+        nick: name,
         companyNum: phone,
         phone: mobile,
+        profileStatusMsg: statusMsg,
       };
 
       if (localProfilePhoto?.includes('blob:')) {
@@ -125,7 +169,9 @@ const Profile = observer(
 
         URL.revokeObjectURL(localProfilePhoto);
       } else {
-        updatedInfo.profilePhoto = getProfilePhoto();
+        // The null value means default photo
+        updatedInfo.profilePhoto =
+          localProfilePhoto === null ? localProfilePhoto : getProfilePhoto();
       }
 
       if (localBackgroundPhoto?.includes('blob:')) {
@@ -135,21 +181,19 @@ const Profile = observer(
 
         URL.revokeObjectURL(localBackgroundPhoto);
       } else {
-        updatedInfo.backPhoto = getBackPhoto();
+        // The null value means default photo
+        updatedInfo.backPhoto =
+          localBackgroundPhoto === null ? localBackgroundPhoto : getBackPhoto();
       }
 
-      console.log('updated Info : ', updatedInfo);
-      const updatedProfile = await userStore.updateMyProfile({ updatedInfo });
+      // Update my profile information
+      await userStore.updateMyProfile({ updatedInfo });
 
-      console.log('UPDATED!!!!!!!!!!!!! : ', updatedProfile);
-      setPhone(updatedProfile?.companyNum);
-      setMobile(updatedProfile?.phone);
+      // Reset local input date
+      resetLocalInputData();
 
       setIsChange(false);
       setEditMode(false);
-
-      // Show server side photo after 'confirm'
-      setLocalProfilePhoto(null);
 
       onClickSaveBtn();
     };
@@ -157,15 +201,12 @@ const Profile = observer(
     const handleExit = () => {
       setIsChange(false);
       setEditMode(false);
-      setMobile(profile?.phone);
-      setPhone(profile?.companyNum);
-      setLocalBackgroundPhoto(getBackPhoto());
+
+      // Reset local input date
+      resetLocalInputData();
 
       // hide confirm dialog
       setCancelDialogVisible(false);
-
-      // Show previous photo after exit
-      setLocalProfilePhoto(null);
 
       onClickCancelBtn();
     };
@@ -210,6 +251,23 @@ const Profile = observer(
       }
     };
 
+    const handleToggleFavoriteFriend = useCallback(
+      async event => {
+        if (event) event.stopPropagation();
+        try {
+          await friendStore.setFriendFavorite({
+            myUserId: userStore.myProfile.id,
+            friendId: userId,
+            isFav: !friendStore.isFavoriteFriend(userId),
+          });
+        } catch (e) {
+          console.log(e);
+        }
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [friendStore, userId],
+    );
+
     // check edit mode
     const editEnabled = editOnlyMode || isEditMode;
 
@@ -234,7 +292,7 @@ const Profile = observer(
             },
           ]}
         />
-        <Wrapper imageSrc={localBackgroundPhoto}>
+        <Wrapper imageSrc={renderBackgroundPhoto}>
           {showSider && (
             <Sidebar>
               <StyledButton onClick={handleTalkClick}>
@@ -255,38 +313,8 @@ const Profile = observer(
             </Sidebar>
           )}
           <Content showSider={showSider}>
-            {editEnabled && (
-              <Dropdown
-                trigger={['click']}
-                overlay={
-                  <Menu>
-                    <Menu.Item>
-                      <StyledUpload
-                        component="div"
-                        accept={['image/*']}
-                        multiple={false}
-                        customRequest={({ file }) =>
-                          handleChangeBackground(file)
-                        }
-                      >
-                        배경 변경
-                      </StyledUpload>
-                    </Menu.Item>
-
-                    <Menu.Item onClick={handleChangeDefaultBackground}>
-                      기본 이미지로 변경
-                    </Menu.Item>
-                  </Menu>
-                }
-              >
-                <ImageChangeButton position="tl">
-                  <StyleBgImgIcon />
-                </ImageChangeButton>
-              </Dropdown>
-            )}
-            <UserImageWrapper position="br">
-              <UserImage src={localProfilePhoto || getProfilePhoto()} />
-              {isMyId() && editEnabled && (
+            <ContentTop>
+              {editEnabled && (
                 <Dropdown
                   trigger={['click']}
                   overlay={
@@ -294,122 +322,180 @@ const Profile = observer(
                       <Menu.Item>
                         <StyledUpload
                           component="div"
+                          accept={['.jpg,.jpeg,.png']}
                           multiple={false}
-                          accept={['image/*']}
-                          customRequest={({ file }) => handleChangePhoto(file)}
+                          customRequest={({ file }) =>
+                            handleChangeBackground(file)
+                          }
                         >
-                          프로필 사진 변경
+                          내 PC에서 배경 변경
                         </StyledUpload>
                       </Menu.Item>
-                      <Menu.Item onClick={handleChangeDefaultPhoto}>
+                      <Menu.Item
+                        disabled={isDefaultBackgroundPhotoUsed}
+                        onClick={handleChangeDefaultBackground}
+                      >
                         기본 이미지로 변경
                       </Menu.Item>
                     </Menu>
                   }
                 >
-                  <ImageChangeButton position="br">
-                    <StyleCameraImgIcon />
+                  <ImageChangeButton position="tl">
+                    <StyleBgImgIcon />
                   </ImageChangeButton>
                 </Dropdown>
               )}
-            </UserImageWrapper>
-            <BigText>
-              {editEnabled ? (
-                <StyleInput
-                  className="type2"
-                  onChange={e => {
-                    setIsChange(true);
-                    setName(e.target.value);
-                  }}
-                  value={name}
-                />
-              ) : (
-                name
+              {!editEnabled && !(userId === userStore.myProfile.id) && (
+                <TopButton
+                  type="bookMark"
+                  isFav={friendStore.isFavoriteFriend(userId)}
+                  onClick={handleToggleFavoriteFriend}
+                >
+                  <Blind>즐겨찾기</Blind>
+                </TopButton>
               )}
-            </BigText>
-            <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
-            <UserStatusMsg>
-              {editEnabled ? (
-                <StyleInput
-                  className="type2"
-                  onChange={e => {
-                    setIsChange(true);
-                    setStatusMsg(e.target.value);
-                  }}
-                  value={profileStatusMsg}
-                />
-              ) : (
-                profileStatusMsg
-              )}
-            </UserStatusMsg>
-            <UserInfoList>
-              <UserInfoItem>
-                <StyleOfficeIcon iconimg="address" />
-                <StylText>{profile?.fullCompanyJob}</StylText>
-              </UserInfoItem>
-              <UserInfoItem>
-                <StyleOfficeIcon iconimg="company" />
+            </ContentTop>
+            <ContentBody>
+              <UserImageWrapper position="br">
+                <UserImage src={renderProfilePhoto} />
+                {isMyId() && editEnabled && (
+                  <Dropdown
+                    trigger={['click']}
+                    overlay={
+                      <Menu>
+                        <Menu.Item>
+                          <StyledUpload
+                            component="div"
+                            multiple={false}
+                            accept={['.jpg,.jpeg,.png']}
+                            customRequest={({ file }) =>
+                              handleChangePhoto(file)
+                            }
+                          >
+                            프로필 사진 변경
+                          </StyledUpload>
+                        </Menu.Item>
+                        <Menu.Item
+                          disabled={isDefaultProfilePhotoUsed}
+                          onClick={handleChangeDefaultPhoto}
+                        >
+                          기본 이미지로 변경
+                        </Menu.Item>
+                      </Menu>
+                    }
+                  >
+                    <ImageChangeButton position="br">
+                      <StyleCameraImgIcon />
+                    </ImageChangeButton>
+                  </Dropdown>
+                )}
+              </UserImageWrapper>
+              <BigText>
                 {editEnabled ? (
                   <StyleInput
+                    className="type2"
+                    maxLength={20}
+                    placeholder="별명을 입력해주세요."
                     onChange={e => {
                       setIsChange(true);
-                      setMobile(e.target.value);
+                      setName(e.target.value);
                     }}
-                    value={mobile}
+                    value={
+                      name !== undefined ? name : profile?.nick || profile?.name
+                    }
                   />
                 ) : (
-                  <StylText>{mobile}</StylText>
+                  profile?.nick || profile?.name
                 )}
-              </UserInfoItem>
-              <UserInfoItem>
-                <StyleOfficeIcon iconimg="phone" />
+              </BigText>
+              <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
+              <UserStatusMsg>
                 {editEnabled ? (
                   <StyleInput
+                    className="type2"
                     onChange={e => {
                       setIsChange(true);
-                      setPhone(e.target.value);
+                      setStatusMsg(e.target.value);
                     }}
-                    value={phone}
+                    value={
+                      statusMsg !== undefined
+                        ? statusMsg
+                        : profile?.profileStatusMsg
+                    }
                   />
                 ) : (
-                  <StylText>{phone}</StylText>
+                  profile?.profileStatusMsg
                 )}
-              </UserInfoItem>
-              {/* 프로필 편집 시 "email" class 삭제 */}
-              <UserInfoItem
-                className={editEnabled ? '' : 'email'}
-                onClick={() => {
-                  console.log('todo');
-                }}
-              >
-                <StyleOfficeIcon iconimg="email" />
-                <StyleOfficeIcon iconimg="emailhover" />
-                <StylText>{profile?.email}</StylText>
-              </UserInfoItem>
-            </UserInfoList>
-            <ButtonContainer>
-              {editEnabled && (
-                <>
-                  <Button
-                    style={{ marginRight: '1.25rem' }}
-                    type="solid"
-                    shape="round"
-                    disabled={!isChange}
-                    onClick={handleConfirm}
-                  >
-                    저장
-                  </Button>
-                  <Button
-                    type="outlined"
-                    shape="round"
-                    onClick={handleCancel}
-                    style={{ backgroundColor: '#fff' }}
-                  >
-                    취소
-                  </Button>
-                </>
-              )}
-            </ButtonContainer>
+              </UserStatusMsg>
+              <UserInfoList>
+                <UserInfoItem>
+                  <StyleOfficeIcon iconimg="address" />
+                  <StylText>{profile?.fullCompanyJob}</StylText>
+                </UserInfoItem>
+                <UserInfoItem>
+                  <StyleOfficeIcon iconimg="company" />
+                  {editEnabled ? (
+                    <StyleInput
+                      onChange={e => {
+                        setIsChange(true);
+                        setMobile(e.target.value);
+                      }}
+                      value={phone !== undefined ? phone : profile?.companyNum}
+                    />
+                  ) : (
+                    <StylText>{profile?.companyNum}</StylText>
+                  )}
+                </UserInfoItem>
+                <UserInfoItem>
+                  <StyleOfficeIcon iconimg="phone" />
+                  {editEnabled ? (
+                    <StyleInput
+                      onChange={e => {
+                        setIsChange(true);
+                        setPhone(e.target.value);
+                      }}
+                      value={mobile !== undefined ? mobile : profile?.phone}
+                    />
+                  ) : (
+                    <StylText>{profile?.phone}</StylText>
+                  )}
+                </UserInfoItem>
+                {/* 프로필 편집 시 "email" class 삭제 */}
+                <UserInfoItem
+                  className={editEnabled ? '' : 'email'}
+                  onClick={() => {
+                    console.log('todo');
+                  }}
+                >
+                  <StyleOfficeIcon iconimg="email" />
+                  <StyleOfficeIcon iconimg="emailhover" />
+                  <StylText>{profile?.email}</StylText>
+                </UserInfoItem>
+              </UserInfoList>
+              <ButtonContainer>
+                {editEnabled && (
+                  <>
+                    <Button
+                      style={{ marginRight: '1.25rem' }}
+                      type="solid"
+                      shape="round"
+                      disabled={!isChange || !isValidInputData()}
+                      onClick={handleConfirm}
+                    >
+                      저장
+                    </Button>
+                    <Button
+                      type="outlined"
+                      shape="round"
+                      onClick={handleCancel}
+                      style={{ backgroundColor: '#fff' }}
+                    >
+                      취소
+                    </Button>
+                  </>
+                )}
+              </ButtonContainer>
+            </ContentBody>
           </Content>
         </Wrapper>
       </>
@@ -533,8 +619,27 @@ const Content = styled.div`
   height: 100%;
   flex-direction: column;
   align-items: center;
+  justify-content: top;
+`;
+
+const ContentTop = styled.div`
+  display: flex;
+  align-items: left;
+  width: 100%;
+  height: 8rem;
+  padding: 0.25rem 0.25rem 0;
+`;
+
+const ContentBody = styled.div`
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
 `;
+
 const UserImageWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -734,4 +839,37 @@ const UserStatusMsg = styled.p`
   text-align: center;
 `;
 
+const TopButton = styled.button`
+  width: 3rem;
+  height: 3rem;
+  background-color: transparent;
+  border-radius: 50%;
+  border: 0;
+  cursor: pointer;
+  ${props => {
+    return css`
+      background: url(${starLineIcon}) no-repeat 50% 50%;
+      background-size: 1.13rem 1.13rem;
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+      &:active {
+        background-image: url(${starIcon});
+        background-color: rgba(90, 95, 255, 0.8);
+      }
+      ${props.isFav
+        ? `background-image: url(${starIcon});`
+        : `background-image: url(${starLineIcon});`}
+    `;
+  }}
+`;
+
+const Blind = styled.span`
+  position: absolute;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+`;
 export default Profile;
