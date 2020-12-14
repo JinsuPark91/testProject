@@ -106,10 +106,6 @@ const InputName = styled.label`
   color: #000;
 `;
 
-function onChange(e) {
-  console.log('checked = ${e.target.checked}');
-}
-
 function ContentSpaceSecession({
   isContinue,
   toggleContinue,
