@@ -19,6 +19,7 @@ const FriendItem = styled.li`
     & > img {
       width: 2.5rem;
       height: 2.5rem;
+      border-radius: 50%;
     }
 `;
 
@@ -109,12 +110,7 @@ const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
         <FriendItem style={style}>
           <img
             alt="profile"
-            src={`${userStore.getUserProfilePhoto({
-              userId: friendInfo?.id,
-              size: 'small',
-              isLocal: true,
-              thumbPhoto: null,
-            })}`}
+            src={userStore.getProfilePhotoURL(friendInfo?.friendId, 'small')}
           />
           <FriendName>{userName}</FriendName>
           {!isViewMode && renderMenu(friendInfo)}
