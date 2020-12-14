@@ -38,10 +38,7 @@ const MainPage = () => {
   useEffect(() => {
     Promise.all([
       // 스페이스를 불러오자
-      // testing UserId,
-      spaceStore.fetchSpaces({
-        userId: waplUserStore.myProfile?.id,
-      }),
+      // spaceStore.fetchSpaces({ userId: myUserId }),
       // 룸을 불러오자
       roomStore.fetchRoomList({ myUserId }),
       // 유저 프로필을 불러오자
@@ -51,10 +48,10 @@ const MainPage = () => {
     ])
       .then(res => {
         console.log('RES : ', res);
-        const currentDomain =
-          waplUserStore.myProfile?.domainKey || window.location.host;
+        const currDomainKey =
+          userStore.myProfile?.domainKey || window.location.host;
         const currentSpace = spaceStore.spaceList.find(elem =>
-          currentDomain.includes(elem.domainKey),
+          currDomainKey.includes(elem.domainKey),
         );
         PlatformUIStore.space = currentSpace;
 

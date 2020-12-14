@@ -207,6 +207,7 @@ function AddFriendsBySearch({
   isSpaceEmpty,
   title,
   isViewMode,
+  spaceMemberList,
 }) {
   const { orgStore, userStore, friendStore } = useCoreStores();
   const [isInviteDialogVisible, setIsInviteDialogVisible] = useState(false);
@@ -291,7 +292,7 @@ function AddFriendsBySearch({
               //   </GroupBox>
               <FriendList>
                 <AddFriendsItem
-                  friendAddList={friendStore.friendInfoList}
+                  friendAddList={spaceMemberList}
                   isViewMode={isViewMode}
                   searchText={searchText}
                 />

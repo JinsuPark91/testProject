@@ -41,6 +41,7 @@ function FriendsLNBFooter() {
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isOrgExist, setIsOrgExist] = useState(false);
   const [isSpaceEmpty, setIsSpaceEmpty] = useState(false);
+  const [spaceMemberList, setSpaceMemberList] = useState([]);
 
   const handleOpenAddFriendsDialog = useCallback(async () => {
     if (PlatformUIStore.space && PlatformUIStore.space.userCount === 1) {
@@ -49,6 +50,14 @@ function FriendsLNBFooter() {
       const response = await orgStore.getOrgTree();
       if (response.length) {
         setIsOrgExist(true);
+      } else {
+        const { myProfile } = userStore;
+        const memberList = await orgStore.getUserOrgUserList(
+          myProfile?.companyCode,
+          myProfile?.departmentCode,
+          myProfile?.id,
+        );
+        setSpaceMemberList(memberList);
       }
     }
     setIsDialogVisible(!isDialogVisible);
@@ -80,6 +89,7 @@ function FriendsLNBFooter() {
         isSpaceEmpty={isSpaceEmpty}
         title="프렌즈 추가"
         isViewMode={false}
+        spaceMemberList={spaceMemberList}
       />
     </FooterWrapper>
   ));
