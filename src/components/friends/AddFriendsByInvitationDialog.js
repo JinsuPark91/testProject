@@ -185,7 +185,7 @@ function AddFriendsBySearch({ visible, onCancel }) {
       friendStore.sendInvitationMail({
         myUserId,
         userEmailList: chipList,
-        domainName: PlatformUIStore.space?.fullDomain,
+        domainName: PlatformUIStore.space?.domainKey || window.location.host,
         userCount: PlatformUIStore.space?.userCount,
       });
       onCancel();
