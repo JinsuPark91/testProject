@@ -197,6 +197,8 @@ function ContentAccount({ isEdit }) {
       await userStore.updateMyProfile({ updatedInfo });
       URL.revokeObjectURL(fileURL);
     }
+    // initialize
+    setProfilePhoto(undefined);
   };
 
   const getProfilePhoto = () => {
@@ -207,6 +209,14 @@ function ContentAccount({ isEdit }) {
     profilePhoto === null
       ? profile.defaultPhotoUrl
       : profilePhoto || getProfilePhoto();
+
+  const handleChangeToDefaultPhoto = async () => {
+    const updatedInfo = {};
+    updatedInfo.profilePhoto = null;
+    await userStore.updateMyProfile({ updatedInfo });
+  };
+
+  const isDefaultPhoto = profilePhoto === undefined && !profile?.thumbPhoto;
 
   const handleToggleNameInput = useCallback(() => {
     setIsNameEdit(!isNameEdit);
@@ -281,7 +291,9 @@ function ContentAccount({ isEdit }) {
           프로필 사진 변경
         </StyledUpload>
       </Menu.Item>
-      <Menu.Item>기본 이미지로 변경</Menu.Item>
+      <Menu.Item onClick={handleChangeToDefaultPhoto} disabled={isDefaultPhoto}>
+        기본 이미지로 변경
+      </Menu.Item>
     </Menu>
   );
 
