@@ -3,6 +3,7 @@ import { useCoreStores, Toast, Chip, Message } from 'teespace-core';
 import styled from 'styled-components';
 import { Button, Input, Modal } from 'antd';
 import { checkEmailValid } from '../../libs/Regex';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const StyledModal = styled(Modal)`
   .ant-modal-body {
@@ -110,36 +111,6 @@ function AddFriendsBySearch({ visible, onCancel }) {
     setIsMessageVisible(!isMessageVisible);
   };
 
-  const handleSendInviteMail = async () => {
-    if (!chipList.length) {
-      setToastText('초대할 이메일 주소를 1개 이상 입력해 주세요.');
-      handleToggleToast();
-      return;
-    }
-
-    // 급한대로 추가 - 추후 refactoring
-    for (let i = 0; i < chipList.length; i += 1) {
-      if (!checkEmailValid(chipList[i])) {
-        handleToggleMessage();
-        return;
-      }
-    }
-
-    try {
-      // const response = await friendStore.sendInvitationMail({
-      //   myUserId,
-      //   userEmailList: mailArr,
-      //   domainName: ,
-      //   userCount: ,
-      // });
-      // console.log(response);
-      onCancel();
-    } catch (e) {
-      console.log(`Just Error is ${e}`);
-    }
-    // 급한대로 추가 - 추후 refactoring
-  };
-
   const handleCopyInviteLink = async () => {
     try {
       const response = await friendStore.fetchUserInvitationLink({
@@ -190,6 +161,39 @@ function AddFriendsBySearch({ visible, onCancel }) {
     setChipList(Array.from(chipsSet));
   };
 
+  const handleSendInviteMail = async () => {
+    if (mailAddress.length) {
+      handlePressEnter();
+      return;
+    }
+
+    if (!chipList.length) {
+      setToastText('초대할 이메일 주소를 1개 이상 입력해 주세요.');
+      handleToggleToast();
+      return;
+    }
+
+    // 추후 refactoring
+    for (let i = 0; i < chipList.length; i += 1) {
+      if (!checkEmailValid(chipList[i])) {
+        handleToggleMessage();
+        return;
+      }
+    }
+
+    try {
+      friendStore.sendInvitationMail({
+        myUserId,
+        userEmailList: chipList,
+        domainName: PlatformUIStore.space?.domainKey || window.location.host,
+        userCount: PlatformUIStore.space?.userCount,
+      });
+      onCancel();
+    } catch (e) {
+      console.log(`Just Error is ${e}`);
+    }
+  };
+
   return (
     <>
       <StyledModal
@@ -228,7 +232,7 @@ function AddFriendsBySearch({ visible, onCancel }) {
                   text={elem}
                   key={elem}
                   onClose={() => handleCloseChip(elem)}
-                  alert={!checkEmailValid(elem)}
+                  alert={!checkEmailValid(elem).toString()}
                 />
               ))}
             </StyledChipBox>

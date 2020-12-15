@@ -21,6 +21,9 @@ const PlatformUIStore = observable({
   */
   isSearchVisible: false,
 
+  // current space
+  space: null,
+
   // modal
   roomMemberModal: {
     isEdit: false,
