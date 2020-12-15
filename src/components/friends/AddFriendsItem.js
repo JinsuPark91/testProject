@@ -123,11 +123,7 @@ const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
   return useObserver(() => (
     <>
       <Wrapper>
-        {/* {friendStore.friendInfoList.length &&
-          friendAddList.map((elem, index) => (
-            <FriendAddItem key={index} friendInfo={elem} />
-          ))} */}
-        {friendStore.friendInfoList.length && (
+        {memberList.length > -1 && (
           <List
             height={400}
             itemCount={memberList.length}

@@ -51,13 +51,13 @@ function FriendsLNBFooter() {
       if (response.length) {
         setIsOrgExist(true);
       } else {
-        const { myProfile } = userStore;
-        const memberList = await orgStore.getUserOrgUserList(
-          myProfile?.companyCode,
-          myProfile?.departmentCode,
-          myProfile?.id,
-        );
-        setSpaceMemberList(memberList);
+        // const { myProfile } = userStore;
+        // const memberList = await orgStore.getUserOrgUserList(
+        //   myProfile?.companyCode,
+        //   myProfile?.departmentCode,
+        //   myProfile?.id,
+        // );
+        // setSpaceMemberList(memberList);
       }
     }
     setIsDialogVisible(!isDialogVisible);
