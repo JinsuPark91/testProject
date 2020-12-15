@@ -204,10 +204,10 @@ function AddFriendsBySearch({
   visible,
   onCancelAddFriends,
   isOrgExist,
-  orgList,
-  onDropdownChange,
-  overwrittenValue,
-  defaultValue,
+  isSpaceEmpty,
+  title,
+  isViewMode,
+  spaceMemberList,
 }) {
   const { orgStore, userStore, friendStore } = useCoreStores();
   const [isInviteDialogVisible, setIsInviteDialogVisible] = useState(false);
@@ -234,9 +234,6 @@ function AddFriendsBySearch({
 
   // TODO: SPACE 멤버 얻어오는 서비스 붙이기
   const TestData = ['1', '2', '3', '4', '5'];
-  // 일단 조직도 나와야 하므로
-  const noFriends = false;
-  // const noFriends = friendStore.friendInfoList.length === 0; 스페이스 구성원이 있으면
 
   return (
     <>
@@ -245,10 +242,10 @@ function AddFriendsBySearch({
         mask={false}
         footer={null}
         width="24.38rem"
-        title="프렌즈 추가"
+        title={title}
         onCancel={onCancelAddFriends}
       >
-        {noFriends ? (
+        {isSpaceEmpty ? (
           <InvitationForm>
             <StyledInfoImg src={FriendModalImg} alt="" />
             <StyledInfoText>프렌즈가 없습니다.</StyledInfoText>
@@ -294,7 +291,11 @@ function AddFriendsBySearch({
               // /> }
               //   </GroupBox>
               <FriendList>
-                <AddFriendsItem friendAddList={TestData} />
+                <AddFriendsItem
+                  friendAddList={spaceMemberList}
+                  isViewMode={isViewMode}
+                  searchText={searchText}
+                />
               </FriendList>
             )}
           </AddFriendSearchForm>

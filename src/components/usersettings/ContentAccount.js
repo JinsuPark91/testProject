@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Button, Radio, Select } from 'antd';
+import { Button, Select, Dropdown, Menu } from 'antd';
+import Upload from 'rc-upload';
 import { useObserver } from 'mobx-react';
 import { useCoreStores, Input } from 'teespace-core';
 import styled from 'styled-components';
@@ -68,6 +69,7 @@ const ImageBox = styled.div`
   }
   & > img {
     width: 100%;
+    height: 100%;
   }
 `;
 const ImageIcon = styled.span`
@@ -124,14 +126,18 @@ const EditNameInput = styled(InputCounter)`
   }
 `;
 
-function onChange(e) {
-  console.log('checked = ${e.target.checked}');
-}
+const StyledUpload = styled(Upload)`
+  &:focus {
+    outline: 0;
+  }
+`;
 
 function ContentAccount({ isEdit }) {
   const { authStore, userStore } = useCoreStores();
   const { Option } = Select;
-  // console.log(authStore.checkAuth);
+
+  const [profilePhoto, setProfilePhoto] = useState(undefined);
+
   const [isNameEdit, setIsNameEdit] = useState(false);
   const [name, setName] = useState('');
 
@@ -146,9 +152,19 @@ function ContentAccount({ isEdit }) {
 
   const [isBirthDayEdit, setIsBirthDayEdit] = useState(false);
   const [birthDay, setBirthDay] = useState('');
+
   const isB2B = userStore.myProfile.type === 'USR0001';
+  const userId = userStore.myProfile.id;
+  const profile = userStore.userProfiles[userId];
 
   useEffect(() => {
+    (async () => {
+      let userProfile = userStore.userProfiles[userId];
+      if (!userProfile) {
+        userProfile = await userStore.getProfile({ userId });
+      }
+    })();
+
     return () => {
       setName('');
       setNick('');
@@ -157,6 +173,50 @@ function ContentAccount({ isEdit }) {
       setBirthDay('');
     };
   }, []);
+
+  const toBase64 = async blobImage =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(blobImage);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = err => reject(err);
+    });
+
+  const toBlob = async file => {
+    const result = await fetch(file).then(r => r.blob());
+    return result;
+  };
+
+  const handleChangePhoto = async file => {
+    const fileURL = URL.createObjectURL(file);
+    if (fileURL?.includes('blob:')) {
+      const blobImage = await toBlob(fileURL);
+      const base64Image = await toBase64(blobImage);
+      const updatedInfo = {};
+      updatedInfo.profilePhoto = base64Image;
+      await userStore.updateMyProfile({ updatedInfo });
+      URL.revokeObjectURL(fileURL);
+    }
+    // initialize
+    setProfilePhoto(undefined);
+  };
+
+  const getProfilePhoto = () => {
+    return userStore.getProfilePhotoURL(userId, 'medium');
+  };
+
+  const renderProfilePhoto =
+    profilePhoto === null
+      ? profile.defaultPhotoUrl
+      : profilePhoto || getProfilePhoto();
+
+  const handleChangeToDefaultPhoto = async () => {
+    const updatedInfo = {};
+    updatedInfo.profilePhoto = null;
+    await userStore.updateMyProfile({ updatedInfo });
+  };
+
+  const isDefaultPhoto = profilePhoto === undefined && !profile?.thumbPhoto;
 
   const handleToggleNameInput = useCallback(() => {
     setIsNameEdit(!isNameEdit);
@@ -219,6 +279,25 @@ function ContentAccount({ isEdit }) {
     handleToggleBirthDayInput();
   }, [birthDay, userStore, handleToggleBirthDayInput]);
 
+  const profileMenu = (
+    <Menu>
+      <Menu.Item>
+        <StyledUpload
+          component="div"
+          multiple={false}
+          accept={['.jpg,.jpeg,.png']}
+          customRequest={({ file }) => handleChangePhoto(file)}
+        >
+          프로필 사진 변경
+        </StyledUpload>
+      </Menu.Item>
+      <Menu.Item onClick={handleChangeToDefaultPhoto} disabled={isDefaultPhoto}>
+        기본 이미지로 변경
+      </Menu.Item>
+    </Menu>
+  );
+
+  // TODO: 이름 변경 서비스, 별명 바꾸면 이름까지 바뀌는 이슈, 생년월일 update 안 되는 이슈 해결 필요
   return (
     <>
       <ContentTitle
@@ -230,18 +309,16 @@ function ContentAccount({ isEdit }) {
           <Name>사진</Name>
           <Data>
             <TextArea>
-              <ImageBox>
-                <img
-                  alt="profile"
-                  src={`${userStore.getUserProfilePhoto({
-                    userId: userStore.myProfile.id,
-                    size: 'small',
-                    isLocal: true,
-                    thumbPhoto: null,
-                  })}`}
-                />
-                <ImageIcon />
-              </ImageBox>
+              <Dropdown
+                trigger={['click']}
+                placement="bottomLeft"
+                overlay={profileMenu}
+              >
+                <ImageBox>
+                  <img alt="profile" src={renderProfilePhoto} />
+                  <ImageIcon />
+                </ImageBox>
+              </Dropdown>
               <Info>사진을 추가하여 스페이스 별로 설정할 수 있습니다.</Info>
             </TextArea>
           </Data>
@@ -284,13 +361,13 @@ function ContentAccount({ isEdit }) {
                   <p>{authStore.user.name}</p>
                 </TextArea>
                 <ButtonArea>
-                  <Button
+                  {/* <Button
                     size="small"
                     type="outlined"
                     onClick={handleToggleNameInput}
                   >
                     변경
-                  </Button>
+                  </Button> */}
                 </ButtonArea>
               </>
             )}

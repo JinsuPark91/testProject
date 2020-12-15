@@ -82,13 +82,19 @@ function SettingDialog(props) {
   );
   const [isSecessionContinue, setIsSecessionContinue] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [inputPassword, setInputPassword] = useState('');
 
   const handleToggleContinue = () => {
     setIsSecessionContinue(!isSecessionContinue);
+    setbuttonFooter(true);
   };
 
   const handleToggleCheck = () => {
     setChecked(!checked);
+  };
+
+  const handleInputPassword = input => {
+    setInputPassword(input);
   };
 
   useEffect(() => {
@@ -123,6 +129,7 @@ function SettingDialog(props) {
             toggleContinue={handleToggleContinue}
             toggleFooter={handleSecessionButton}
             toggleCheck={handleToggleCheck}
+            inputPassword={inputPassword}
           />
         ) : (
           <TermsFooter />
@@ -133,7 +140,14 @@ function SettingDialog(props) {
         <SiderArea>
           <StyledMenu
             defaultSelectedKeys={['3']}
-            onClick={({ item, key }) => setSelectedKey(key)}
+            onClick={({ item, key }) => {
+              setSelectedKey(key);
+              if (key !== '7') {
+                setIsSecessionContinue(false);
+                setChecked(false);
+                setInputPassword('');
+              }
+            }}
           >
             <Menu.ItemGroup key="0" title="환경설정">
               {/* <Menu.Item key="1">일반</Menu.Item> */}
@@ -171,11 +185,11 @@ function SettingDialog(props) {
           )}
           {selectedKey === '7' && (
             <ContentSpaceSecession
-              onEmptyInput={handleSecessionButton}
               isContinue={isSecessionContinue}
               toggleContinue={handleToggleContinue}
               isCheck={checked}
               toggleCheck={handleToggleCheck}
+              handleInputPassword={handleInputPassword}
             />
           )}
         </ContentArea>
