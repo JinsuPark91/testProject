@@ -231,9 +231,7 @@ function AddFriendsBySearch({
   const handleCancelIconClick = () => {
     setSearchText('');
   };
-
   // TODO: SPACE 멤버 얻어오는 서비스 붙이기
-  const TestData = ['1', '2', '3', '4', '5'];
 
   return (
     <>
