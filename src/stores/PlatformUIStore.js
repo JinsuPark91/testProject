@@ -4,7 +4,6 @@ const PlatformUIStore = observable({
   /*
     Resource Type : URL 상의 s / f / m
   */
-
   resourceType: null,
 
   /*
@@ -16,6 +15,14 @@ const PlatformUIStore = observable({
   mainApp: 'talk',
   subApp: null,
   layout: 'collapse',
+
+  /*
+    Talk Search Input visibility
+  */
+  isSearchVisible: false,
+
+  // current space
+  space: null,
 
   // modal
   roomMemberModal: {

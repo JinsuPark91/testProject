@@ -3,6 +3,7 @@ import { Button, Checkbox, Avatar } from 'antd';
 import { Input } from 'teespace-core';
 import styled from 'styled-components';
 import ContentTitle from './ContentTitle';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const ContentGroup = styled.div`
   padding: 0.25rem 0 1.25rem;
@@ -105,16 +106,12 @@ const InputName = styled.label`
   color: #000;
 `;
 
-function onChange(e) {
-  console.log('checked = ${e.target.checked}');
-}
-
 function ContentSpaceSecession({
-  onEmptyInput,
   isContinue,
   toggleContinue,
   isCheck,
   toggleCheck,
+  handleInputPassword,
 }) {
   // constructor() {
   //   super();
@@ -126,16 +123,9 @@ function ContentSpaceSecession({
   // handleChange(checked) {
   //   this.setState({ checked });
   // }
-  const [inputPassword, setInputPassword] = useState('');
-  const [CheckPassword, setCheckPassword] = useState(true);
 
   const handlePasswordInput = inputText => {
-    setInputPassword(inputText);
-    if (inputText.length) {
-      onEmptyInput(true);
-    } else {
-      onEmptyInput(false);
-    }
+    handleInputPassword(inputText);
   };
 
   return (
@@ -154,8 +144,8 @@ function ContentSpaceSecession({
             U
           </SpaceLogo>
           <SpaceInfo>
-            <SpaceTitle>UX팀</SpaceTitle>
-            tmax-ux.wapl.ai
+            <SpaceTitle>{PlatformUIStore.space?.name}</SpaceTitle>
+            {PlatformUIStore.space?.fullDomain}
           </SpaceInfo>
         </SpaceBox>
       </ContentGroup>

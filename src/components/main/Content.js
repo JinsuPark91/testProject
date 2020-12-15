@@ -47,6 +47,10 @@ const Content = () => {
     return null;
   };
 
+  const handleSearchClose = () => {
+    PlatformUIStore.isSearchVisible = false;
+  };
+
   const getApplication = appName => {
     switch (appName) {
       case 'talk':
@@ -55,6 +59,8 @@ const Content = () => {
             roomId={getRoomId()}
             channelId={getChannelId('CHN0001')}
             layoutState={PlatformUIStore.layout}
+            isSearchInputVisible={PlatformUIStore.isSearchVisible}
+            onSearchClose={handleSearchClose}
           />
         );
       case 'note':
