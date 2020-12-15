@@ -337,7 +337,7 @@ const ProfileMyModal = ({
           >
             설정
           </SettingButton>
-          <SettingBar /> */}
+          <SettingBar />
           <SettingButton
             type="text"
             shape="round"
