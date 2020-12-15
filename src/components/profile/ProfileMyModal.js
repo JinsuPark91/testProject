@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { Button, Avatar, Dropdown, Menu, Checkbox } from 'antd';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, Toast } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 // import { useTranslation } from 'react-i18next';
 import ProfileModal from './ProfileModal';
@@ -12,6 +12,9 @@ import moreSpaceIcon from '../../assets/view_more.svg';
 import checkekIcon from '../../assets/ts_check.svg';
 import { ReactComponent as SquareSpaceIcon } from '../../assets/thumbnail.svg';
 import ProfileInfoModal from './ProfileInfoModal';
+import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
+import AddFriendsBySearch from '../friends/AddFriendsBySearch';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const ProfileMyModal = ({
   userId,
@@ -20,7 +23,7 @@ const ProfileMyModal = ({
   visible = false,
   created = false,
 }) => {
-  const { userStore, authStore } = useCoreStores();
+  const { userStore, authStore, spaceStore } = useCoreStores();
   const history = useHistory();
   const [isCreated, setIsCreated] = useState(created);
   const [profile, setProfile] = useState(null);
@@ -28,8 +31,12 @@ const ProfileMyModal = ({
   const [settingDialogVisible, setSettingDialogVisible] = useState(false);
   const [spaceListVisible, setSpaceListVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
+  const [isSpaceMemViewOpen, setIsSpaceMemViewOpen] = useState(false);
+  const [isToastOpen, setIsToastOpen] = useState(false);
 
   const isAdmin = userStore.myProfile.grade === 'admin';
+  const isSpaceEmpty = PlatformUIStore.space?.userCount === 1;
 
   // 1월 업데이트
   // const [lngListVisible, setLngListVisible] = useState(false);
@@ -82,14 +89,22 @@ const ProfileMyModal = ({
   //   i18n.changeLanguage(lng);
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
+  const toggleInviteDialog = useCallback(() => {
+    setIsInviteDialogOpen(!isInviteDialogOpen);
+    setIsToastOpen(true);
+  }, [isInviteDialogOpen]);
+
+  const toggleSpaceMemViewDialog = useCallback(() => {
+    setIsSpaceMemViewOpen(!isSpaceMemViewOpen);
+  }, [isSpaceMemViewOpen]);
 
   const handleInviteDialog = useCallback(() => {
-    console.log('InviteDialog');
+    setIsInviteDialogOpen(true);
   }, []);
 
   const handleMemberList = useCallback(() => {
-    console.log('MemberList');
-  }, []);
+    toggleSpaceMemViewDialog();
+  }, [toggleSpaceMemViewDialog]);
 
   const handleSpaceEditDialog = useCallback(() => {
     console.log('MemberList');
@@ -172,8 +187,8 @@ const ProfileMyModal = ({
             U
           </Logo>
           <Info>
-            <Title>{profile?.domain}</Title>
-            tmax-ux.wapl.ai
+            <Title>{PlatformUIStore.space?.name}</Title>
+            {PlatformUIStore.space?.fullDomain}
           </Info>
           <Button
             type="circle"
@@ -240,21 +255,21 @@ const ProfileMyModal = ({
               U
             </LogoSmall>
             <NowInfo>
-              <NowTitle>UX팀</NowTitle>
+              <NowTitle>{PlatformUIStore.space?.name}</NowTitle>
               현재 스페이스입니다.
             </NowInfo>
             <Checkbox checked className="check-round" />
           </ConvertNow>
           <ConvertList>
-            {ConvertLists.map(i => (
-              <ConvertItem onClick={handleSwitchSpace} key={i}>
+            {spaceStore.spaceList.map(elem => (
+              <ConvertItem onClick={handleSwitchSpace} key={elem}>
                 <LogoSmall
                   shape="square"
                   style={{ color: '#fff', backgroundColor: '#75757F' }}
                 >
                   U
                 </LogoSmall>
-                <ItemText>{i}</ItemText>
+                <ItemText>{elem.name}</ItemText>
               </ConvertItem>
             ))}
           </ConvertList>
@@ -278,6 +293,27 @@ const ProfileMyModal = ({
         visible={settingDialogVisible}
         onCancel={handleSettingDialogClose}
       />
+      <AddFriendsByInvitationDialog
+        visible={isInviteDialogOpen}
+        onCancel={toggleInviteDialog}
+      />
+      <AddFriendsBySearch
+        visible={isSpaceMemViewOpen}
+        onCancelAddFriends={toggleSpaceMemViewDialog}
+        isOrgExist={false}
+        isSpaceEmpty={isSpaceEmpty}
+        title={PlatformUIStore.space?.name}
+        isViewMode
+      />
+      <Toast
+        visible={isToastOpen}
+        timeoutMs={1000}
+        onClose={() => {
+          setIsToastOpen(false);
+        }}
+      >
+        발송한 초대장은 24시간 이후 만료됩니다.
+      </Toast>
     </>
   );
 
@@ -294,7 +330,7 @@ const ProfileMyModal = ({
       subContent={subContent}
       footer={
         <UserSettingArea>
-          {/* <SettingButton
+          <SettingButton
             type="text"
             shape="round"
             onClick={() => handleSettingDialogOpen('2')}

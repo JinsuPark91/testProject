@@ -24,15 +24,21 @@ const MainPage = () => {
   const { resourceType, resourceId, mainApp } = useParams();
   const { sub: subApp } = useQueryParams(history.location.search);
 
-  const { roomStore, userStore, friendStore, spaceStore } = useCoreStores();
+  const {
+    roomStore,
+    userStore,
+    friendStore,
+    spaceStore,
+    waplUserStore,
+  } = useCoreStores();
   const myUserId = userStore.myProfile.id;
-
   /*
     Loading 체크
   */
   useEffect(() => {
     Promise.all([
-      spaceStore.fetchSpaces({ userId: myUserId }),
+      // 스페이스를 불러오자
+      // spaceStore.fetchSpaces({ userId: myUserId }),
       // 룸을 불러오자
       roomStore.fetchRoomList({ myUserId }),
       // 유저 프로필을 불러오자
@@ -41,8 +47,15 @@ const MainPage = () => {
       friendStore.fetchFriends({ myUserId }),
     ])
       .then(res => {
-        // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
         console.log('RES : ', res);
+        const currDomainKey =
+          userStore.myProfile?.domainKey || window.location.host;
+        const currentSpace = spaceStore.spaceList.find(elem =>
+          currDomainKey.includes(elem.domainKey),
+        );
+        PlatformUIStore.space = currentSpace;
+
+        // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
         return talkRoomStore.initialize(myUserId);
       })
       .then(() => {

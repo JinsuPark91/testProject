@@ -17,6 +17,9 @@ const PlatformUIStore = observable({
   subApp: null,
   layout: 'collapse',
 
+  // current space
+  space: null,
+
   // modal
   roomMemberModal: {
     isEdit: false,

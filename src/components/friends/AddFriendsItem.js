@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useObserver } from 'mobx-react';
 import { useCoreStores, Toast } from 'teespace-core';
+import { FixedSizeList as List } from 'react-window';
 import styled from 'styled-components';
 import Photos from '../Photos';
 import AddFriendImg from '../../assets/ts_friend_add.svg';
@@ -18,6 +19,7 @@ const FriendItem = styled.li`
     & > img {
       width: 2.5rem;
       height: 2.5rem;
+      border-radius: 50%;
     }
 `;
 
@@ -37,6 +39,7 @@ const FriendName = styled.p`
 const MyAccountText = styled.span`
   font-size: 0.69rem;
   color: #8d8d8d;
+  margin-right: 1rem;
 `;
 
 const FriendAddBtn = styled.button`
@@ -44,6 +47,7 @@ const FriendAddBtn = styled.button`
   background-color: transparent;
   border: none;
   cursor: pointer;
+  margin-right: 1rem;
 
   span {
     display: inline-block;
@@ -59,10 +63,15 @@ const FriendAddBtn = styled.button`
   }
 `;
 
-const AddFriendsItem = ({ friendAddList }) => {
+const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
   const { authStore, userStore, friendStore } = useCoreStores();
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [friendUserName, setFriendUserName] = useState('');
+
+  let memberList = friendAddList;
+  if (searchText) {
+    memberList = memberList.filter(elem => elem.name.includes(searchText));
+  }
 
   const handleAddFriend = useCallback(
     async friendInfo => {
@@ -77,7 +86,7 @@ const AddFriendsItem = ({ friendAddList }) => {
   );
 
   const renderMenu = friendInfo => {
-    const userId = friendInfo?.id;
+    const userId = friendInfo?.friendId;
     const isMe = userId === userStore.myProfile.id;
     const isFriend = friendStore.checkAlreadyFriend({ userId });
     if (isMe) {
@@ -94,23 +103,17 @@ const AddFriendsItem = ({ friendAddList }) => {
     return null;
   };
 
-  // <Photos srcList={['a1']} defaultDiameter="2.13" />
-  const FriendAddItem = ({ friendInfo }) => {
+  const FriendAddItem = ({ friendInfo, style }) => {
     const userName = friendInfo?.name;
     return (
       <>
-        <FriendItem>
+        <FriendItem style={style}>
           <img
             alt="profile"
-            src={`${userStore.getUserProfilePhoto({
-              userId: friendInfo?.id,
-              size: 'small',
-              isLocal: true,
-              thumbPhoto: null,
-            })}`}
+            src={userStore.getProfilePhotoURL(friendInfo?.friendId, 'small')}
           />
           <FriendName>{userName}</FriendName>
-          {renderMenu(friendInfo)}
+          {!isViewMode && renderMenu(friendInfo)}
         </FriendItem>
       </>
     );
@@ -120,10 +123,24 @@ const AddFriendsItem = ({ friendAddList }) => {
   return useObserver(() => (
     <>
       <Wrapper>
-        {friendStore.friendInfoList.length &&
-          friendAddList.map((elem, index) => (
-            <FriendAddItem key={index} friendInfo={elem} />
-          ))}
+        {friendStore.friendInfoList.length > -1 && (
+          <List
+            height={400}
+            itemCount={memberList.length}
+            itemSize={70}
+            width="100%"
+          >
+            {({ index, style }) => {
+              return (
+                <FriendAddItem
+                  key={index}
+                  friendInfo={memberList[index]}
+                  style={style}
+                />
+              );
+            }}
+          </List>
+        )}
       </Wrapper>
       <Toast
         visible={isToastVisible}

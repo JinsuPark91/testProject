@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { Button } from 'antd';
 import styled from 'styled-components';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const SpaceInformation = styled.div`
   position: absolute;
@@ -77,7 +78,7 @@ function ProfileSpaceModal({ oneButton, userName, onInvite, onClose }) {
     <SpaceInformation>
       <Title>{title}</Title>
       <Description>
-        이제 {userName}님은 UX팀의 멤버입니다.
+        이제 {userName}님은 {PlatformUIStore.space?.name}의 멤버입니다.
         <br />
         멤버들과 Talk 중심으로 다양한 앱을 사용해 보세요.
       </Description>
