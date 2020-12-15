@@ -139,14 +139,6 @@ const ProfileMyModal = ({
     </Menu>
   );
 
-  const ConvertLists = [
-    '다른 스페이스 이름',
-    '다른 스페이스 이름2',
-    '다른 스페이스 이름3',
-    '다른 스페이스 이름4',
-    '다른 스페이스 이름5',
-  ];
-
   const userContent = !isEditMode ? (
     <>
       <UserImage src={thumbPhoto} onLoad={revokeURL} />
@@ -184,7 +176,7 @@ const ProfileMyModal = ({
             shape="square"
             style={{ color: '#fff', backgroundColor: '#75757F' }}
           >
-            U
+            {PlatformUIStore.space?.name[0]}
           </Logo>
           <Info>
             <Title>{PlatformUIStore.space?.name}</Title>
@@ -252,7 +244,7 @@ const ProfileMyModal = ({
               checked
               style={{ color: '#fff', backgroundColor: '#75757F' }}
             >
-              U
+              {PlatformUIStore.space?.name[0]}
             </LogoSmall>
             <NowInfo>
               <NowTitle>{PlatformUIStore.space?.name}</NowTitle>
@@ -260,19 +252,21 @@ const ProfileMyModal = ({
             </NowInfo>
             <Checkbox checked className="check-round" />
           </ConvertNow>
-          <ConvertList>
-            {spaceStore.spaceList.map(elem => (
-              <ConvertItem onClick={handleSwitchSpace} key={elem}>
-                <LogoSmall
-                  shape="square"
-                  style={{ color: '#fff', backgroundColor: '#75757F' }}
-                >
-                  U
-                </LogoSmall>
-                <ItemText>{elem.name}</ItemText>
-              </ConvertItem>
-            ))}
-          </ConvertList>
+          {spaceStore.spaceList.length > 0 && (
+            <ConvertList>
+              {spaceStore.spaceList.map(elem => (
+                <ConvertItem onClick={handleSwitchSpace} key={elem}>
+                  <LogoSmall
+                    shape="square"
+                    style={{ color: '#fff', backgroundColor: '#75757F' }}
+                  >
+                    {elem?.name[0]}
+                  </LogoSmall>
+                  <ItemText>{elem?.name}</ItemText>
+                </ConvertItem>
+              ))}
+            </ConvertList>
+          )}
           <ConvertAdd>
             <AddButton href="#">
               <span>+</span> 새 스페이스 생성
@@ -451,6 +445,9 @@ const DataBox = styled.div`
   align-items: center;
   .ant-btn {
     background-color: transparent;
+    &:hover {
+      background-color: #dcddff;
+    }
   }
   .ant-btn-circle {
     width: 1.5rem;

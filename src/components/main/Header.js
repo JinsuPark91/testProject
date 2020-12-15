@@ -143,7 +143,7 @@ const Header = observer(() => {
   };
 
   const handleSearch = () => {
-    console.log('handleSearch');
+    PlatformUIStore.isSearchVisible = true;
   };
 
   const handleAddMember = () => {

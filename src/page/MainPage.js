@@ -24,7 +24,13 @@ const MainPage = () => {
   const { resourceType, resourceId, mainApp } = useParams();
   const { sub: subApp } = useQueryParams(history.location.search);
 
-  const { roomStore, userStore, friendStore, spaceStore } = useCoreStores();
+  const {
+    roomStore,
+    userStore,
+    friendStore,
+    spaceStore,
+    waplUserStore,
+  } = useCoreStores();
   const myUserId = userStore.myProfile.id;
   /*
     Loading 체크
@@ -32,7 +38,10 @@ const MainPage = () => {
   useEffect(() => {
     Promise.all([
       // 스페이스를 불러오자
-      spaceStore.fetchSpaces({ userId: myUserId, isLocal: true }),
+      spaceStore.fetchSpaces({
+        userId: myUserId,
+        isLocal: process.env.REACT_APP_ENV,
+      }),
       // 룸을 불러오자
       roomStore.fetchRoomList({ myUserId }),
       // 유저 프로필을 불러오자
