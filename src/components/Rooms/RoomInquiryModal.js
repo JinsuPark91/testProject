@@ -515,6 +515,7 @@ function RoomInquiryModal({
         footer={null}
         onCancel={handleCancel}
         topButton
+        type="room"
         userContent={userContent}
         subContent={subContent}
         footer={<AddButton onClick={handleInvite}>룸 구성원 초대</AddButton>}
