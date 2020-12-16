@@ -270,13 +270,10 @@ const FriendAction = React.memo(
 );
 
 const MeAction = React.memo(({ mode, handleTalkWindowOpen }) => {
-  const handleOpenTalk = useCallback(() => {
-    console.log(handleTalkWindowOpen());
-  }, []);
   return (
     <>
       {mode === 'me' && (
-        <Button shape="circle" icon={<ExportIcon />} onClick={handleOpenTalk} />
+        <Button shape="circle" icon={<ExportIcon />} onClick={handleTalkWindowOpen} />
       )}
     </>
   );
@@ -430,7 +427,8 @@ const FriendItem = observer(
 
     const talkWindowOpen = usePortalWindow();
 
-    const handleTalkWindowOpen = async () => {
+    const handleTalkWindowOpen = async (e) => {
+      if (e) e.stopPropagation();
       try {
         const myUserId = userStore.myProfile.id;
         const targetId = friendInfo.friendId || myUserId;
@@ -566,7 +564,7 @@ const FriendItem = observer(
 
     const handleItemClick = useCallback(
       e => {
-        e.preventDefault();
+        if (e) e.preventDefault();
         if (e) e.stopPropagation();
         if (onClick) {
           onClick(itemId);
@@ -582,11 +580,13 @@ const FriendItem = observer(
       [itemId, history, mode, onClick],
     );
 
-    const handleRemoveFriendMessageClose = useCallback(() => {
+    const handleRemoveFriendMessageClose = useCallback((e) => {
+      if (e) e.stopPropagation();
       setVisibleRemoveFriendMessage(false);
     }, []);
 
-    const handleRemoveFriendMessageOpen = useCallback(() => {
+    const handleRemoveFriendMessageOpen = useCallback(({ domEvent: e }) => {
+      if (e) e.stopPropagation();
       setIsHovering(false);
       setDropdownVisible(false);
       setVisibleRemoveFriendMessage(true);

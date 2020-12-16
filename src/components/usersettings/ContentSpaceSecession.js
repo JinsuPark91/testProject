@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
+import { useCoreStores, Input } from 'teespace-core';
 import { Button, Checkbox, Avatar } from 'antd';
-import { Input } from 'teespace-core';
+
 import styled from 'styled-components';
 import ContentTitle from './ContentTitle';
-import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const ContentGroup = styled.div`
   padding: 0.25rem 0 1.25rem;
@@ -123,6 +123,7 @@ function ContentSpaceSecession({
   // handleChange(checked) {
   //   this.setState({ checked });
   // }
+  const { spaceStore } = useCoreStores();
 
   const handlePasswordInput = inputText => {
     handleInputPassword(inputText);
@@ -141,11 +142,11 @@ function ContentSpaceSecession({
             shape="square"
             style={{ color: '#fff', backgroundColor: '#75757F' }}
           >
-            U
+            {spaceStore.currentSpace?.name[0]}
           </SpaceLogo>
           <SpaceInfo>
-            <SpaceTitle>{PlatformUIStore.space?.name}</SpaceTitle>
-            {PlatformUIStore.space?.fullDomain}
+            <SpaceTitle>{spaceStore.currentSpace?.name}</SpaceTitle>
+            {spaceStore.currentSpace?.name}
           </SpaceInfo>
         </SpaceBox>
       </ContentGroup>

@@ -38,7 +38,10 @@ const MainPage = () => {
   useEffect(() => {
     Promise.all([
       // 스페이스를 불러오자
-      // spaceStore.fetchSpaces({ userId: myUserId }),
+      spaceStore.fetchSpaces({
+        userId: myUserId,
+        isLocal: process.env.REACT_APP_ENV,
+      }),
       // 룸을 불러오자
       roomStore.fetchRoomList({ myUserId }),
       // 유저 프로필을 불러오자
@@ -48,13 +51,6 @@ const MainPage = () => {
     ])
       .then(res => {
         console.log('RES : ', res);
-        const currDomainKey =
-          userStore.myProfile?.domainKey || window.location.host;
-        const currentSpace = spaceStore.spaceList.find(elem =>
-          currDomainKey.includes(elem.domainKey),
-        );
-        PlatformUIStore.space = currentSpace;
-
         // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
         return talkRoomStore.initialize(myUserId);
       })

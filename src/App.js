@@ -8,6 +8,7 @@ import { PortalProvider, useCoreStores } from 'teespace-core';
 import { initApp as initDriveApp } from 'teespace-drive-app';
 import { initApp as initCalendarApp } from 'teespace-calendar-app';
 // import { I18nextProvider } from 'react-i18next';
+import { useKeycloak } from '@react-keycloak/web';
 import AdminPage from './page/AdminPage';
 import LoginPage from './page/LoginPage';
 import NotFoundPage from './page/NotFoundPage';
@@ -21,9 +22,7 @@ import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
 import PrivateRoute from './libs/PrivateRoute';
 import KeycloakRedirectRoute from './libs/KeycloakRedirectRoute';
-import { useKeycloak } from '@react-keycloak/web';
 // import i18next from './i18n';
-
 
 const hydrate = create();
 
@@ -38,7 +37,6 @@ function App() {
     initCalendarApp();
   }, []);
 
- 
   // hydrate mobx stores
   useEffect(() => {
     if (!initialized) {
@@ -53,7 +51,7 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialized]);
 
-  if (!isHydrating || !initialized ) return <></>;
+  if (!isHydrating || !initialized) return <></>;
   return (
     <DndProvider backend={HTML5Backend}>
       <PortalProvider>
@@ -61,7 +59,7 @@ function App() {
         <BrowserRouter>
           <Switch>
             <Route exact path="/">
-                <Redirect to="/login" />
+              <Redirect to="/login" />
             </Route>
             <Route exact path="/drive/files/:fileId">
               <DriveSharedFilePage />

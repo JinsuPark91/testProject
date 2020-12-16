@@ -23,7 +23,7 @@ const ProfileMyModal = ({
   visible = false,
   created = false,
 }) => {
-  const { userStore, authStore, spaceStore } = useCoreStores();
+  const { userStore, authStore, spaceStore, orgStore } = useCoreStores();
   const history = useHistory();
   const [isCreated, setIsCreated] = useState(created);
   const [profile, setProfile] = useState(null);
@@ -33,10 +33,10 @@ const ProfileMyModal = ({
   const [isEditMode, setIsEditMode] = useState(false);
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
   const [isSpaceMemViewOpen, setIsSpaceMemViewOpen] = useState(false);
+  const [spaceMemberList, setSpaceMemberList] = useState([]);
   const [isToastOpen, setIsToastOpen] = useState(false);
 
   const isAdmin = userStore.myProfile.grade === 'admin';
-  const isSpaceEmpty = PlatformUIStore.space?.userCount === 1;
 
   // 1월 업데이트
   // const [lngListVisible, setLngListVisible] = useState(false);
@@ -64,7 +64,6 @@ const ProfileMyModal = ({
   }, []);
 
   const handleSwitchSpace = useCallback(() => {
-    console.log('select space');
     setSpaceListVisible(false);
   }, []);
 
@@ -102,9 +101,21 @@ const ProfileMyModal = ({
     setIsInviteDialogOpen(true);
   }, []);
 
-  const handleMemberList = useCallback(() => {
+  const handleMemberList = useCallback(async () => {
+    const { myProfile } = userStore;
+    try {
+      const response = await orgStore.getUserOrgUserList(
+        myProfile?.companyCode,
+        myProfile?.departmentCode,
+        myProfile?.id,
+        // PlatformUIStore.domainKey,
+      );
+      setSpaceMemberList(response);
+    } catch (e) {
+      console.log('getUserList Error');
+    }
     toggleSpaceMemViewDialog();
-  }, [toggleSpaceMemViewDialog]);
+  }, [orgStore, userStore, toggleSpaceMemViewDialog]);
 
   const handleSpaceEditDialog = useCallback(() => {
     console.log('MemberList');
@@ -113,6 +124,14 @@ const ProfileMyModal = ({
   const handleAdminPage = useCallback(() => {
     history.push('/admin');
   }, [history]);
+
+  const handleOpenSupport = () => {
+    const url = window.location.href;
+    const purl = url?.split('.');
+    if (purl[0] === 'dev' || purl[0] !== 'wapl') {
+      window.open(window.location.protocol + '//' + 'dev.wapl.ai/support');
+    } else window.open(window.location.protocol + '//' + 'wapl.ai/support');
+  };
 
   useEffect(() => {
     (async () => {
@@ -138,14 +157,6 @@ const ProfileMyModal = ({
       )}
     </Menu>
   );
-
-  const ConvertLists = [
-    '다른 스페이스 이름',
-    '다른 스페이스 이름2',
-    '다른 스페이스 이름3',
-    '다른 스페이스 이름4',
-    '다른 스페이스 이름5',
-  ];
 
   const userContent = !isEditMode ? (
     <>
@@ -184,11 +195,11 @@ const ProfileMyModal = ({
             shape="square"
             style={{ color: '#fff', backgroundColor: '#75757F' }}
           >
-            U
+            {spaceStore.currentSpace?.name[0]}
           </Logo>
           <Info>
-            <Title>{PlatformUIStore.space?.name}</Title>
-            {PlatformUIStore.space?.fullDomain}
+            <Title>{spaceStore.currentSpace?.name}</Title>
+            {spaceStore.currentSpace?.name}
           </Info>
           <Button
             type="circle"
@@ -252,27 +263,32 @@ const ProfileMyModal = ({
               checked
               style={{ color: '#fff', backgroundColor: '#75757F' }}
             >
-              U
+              {spaceStore.currentSpace?.name[0]}
             </LogoSmall>
             <NowInfo>
-              <NowTitle>{PlatformUIStore.space?.name}</NowTitle>
+              <NowTitle>{spaceStore.currentSpace?.name}</NowTitle>
               현재 스페이스입니다.
             </NowInfo>
             <Checkbox checked className="check-round" />
           </ConvertNow>
-          <ConvertList>
-            {spaceStore.spaceList.map(elem => (
-              <ConvertItem onClick={handleSwitchSpace} key={elem}>
-                <LogoSmall
-                  shape="square"
-                  style={{ color: '#fff', backgroundColor: '#75757F' }}
+          {spaceStore.spaceList.length > 0 && (
+            <ConvertList>
+              {spaceStore.spaceList.map(elem => (
+                <ConvertItem
+                  onClick={() => window.location.replace(elem.fullDomain)}
+                  key={elem}
                 >
-                  U
-                </LogoSmall>
-                <ItemText>{elem.name}</ItemText>
-              </ConvertItem>
-            ))}
-          </ConvertList>
+                  <LogoSmall
+                    shape="square"
+                    style={{ color: '#fff', backgroundColor: '#75757F' }}
+                  >
+                    {elem?.name[0]}
+                  </LogoSmall>
+                  <ItemText>{elem?.name}</ItemText>
+                </ConvertItem>
+              ))}
+            </ConvertList>
+          )}
           <ConvertAdd>
             <AddButton href="#">
               <span>+</span> 새 스페이스 생성
@@ -301,9 +317,10 @@ const ProfileMyModal = ({
         visible={isSpaceMemViewOpen}
         onCancelAddFriends={toggleSpaceMemViewDialog}
         isOrgExist={false}
-        isSpaceEmpty={isSpaceEmpty}
-        title={PlatformUIStore.space?.name}
+        isSpaceEmpty={false}
+        title={spaceStore.currentSpace?.name}
         isViewMode
+        spaceMemberList={spaceMemberList}
       />
       <Toast
         visible={isToastOpen}
@@ -337,12 +354,8 @@ const ProfileMyModal = ({
           >
             설정
           </SettingButton>
-          <SettingBar /> */}
-          <SettingButton
-            type="text"
-            shape="round"
-            onClick={() => window.open('http://www.wapl.ai')}
-          >
+          <SettingBar />
+          <SettingButton type="text" shape="round" onClick={handleOpenSupport}>
             고객지원
           </SettingButton>
         </UserSettingArea>
@@ -451,6 +464,9 @@ const DataBox = styled.div`
   align-items: center;
   .ant-btn {
     background-color: transparent;
+    &:hover {
+      background-color: #dcddff;
+    }
   }
   .ant-btn-circle {
     width: 1.5rem;
