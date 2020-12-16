@@ -398,7 +398,7 @@ function ProfileInfoModal({
             )}
         </UserName>
         <UserMail>{`(${profile?.loginId})`}</UserMail>
-        <UserStatus>
+        {/* <UserStatus>
           {isEditMode ? (
             <EditStatusInput
               maxLength={50}
@@ -413,7 +413,7 @@ function ProfileInfoModal({
           ) : (
               <span>{profile?.profileStatusMsg}</span>
             )}
-        </UserStatus>
+        </UserStatus> */}
       </UserInfo>
       <UserInfoList>
         {userType === 'USR0001' && (

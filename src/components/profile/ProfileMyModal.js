@@ -125,6 +125,14 @@ const ProfileMyModal = ({
     history.push('/admin');
   }, [history]);
 
+  const handleOpenSupport = () => {
+    const url = window.location.href;
+    const purl = url?.split('.');
+    if (purl[0] === 'dev' || purl[0] !== 'wapl') {
+      window.open(window.location.protocol + '//' + 'dev.wapl.ai/support');
+    } else window.open(window.location.protocol + '//' + 'wapl.ai/support');
+  };
+
   useEffect(() => {
     (async () => {
       const userProfile = await userStore.getProfile({ userId });
@@ -347,11 +355,7 @@ const ProfileMyModal = ({
             설정
           </SettingButton>
           <SettingBar />
-          <SettingButton
-            type="text"
-            shape="round"
-            onClick={() => window.open('http://www.wapl.ai')}
-          >
+          <SettingButton type="text" shape="round" onClick={handleOpenSupport}>
             고객지원
           </SettingButton>
         </UserSettingArea>
