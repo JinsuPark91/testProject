@@ -206,9 +206,9 @@ const Header = observer(() => {
   return (
     <Wrapper>
       <TitleWrapper>
-        <Title>
-          {PlatformUIStore.resourceType === 's' && (
-            <>
+        {PlatformUIStore.resourceType === 's' && (
+          <>
+            <Title>
               <Photos
                 srcList={getUserPhotos()}
                 onClick={handleClickRoomPhoto}
@@ -223,23 +223,23 @@ const Header = observer(() => {
                 top="calc(50% - 15rem)"
                 left="calc(50% - 9rem)"
               />
-            </>
-          )}
-        </Title>
+            </Title>
 
-        <SystemIconContainer>
-          <IconWrapper onClick={handleExport}>
-            <ExportIcon />
-          </IconWrapper>
-          <IconWrapper onClick={handleSearch}>
-            <SearchIcon />
-          </IconWrapper>
-          {!findRoom()?.isMyRoom && (
-            <IconWrapper onClick={handleAddMember}>
-              <AddAcountIcon />
-            </IconWrapper>
-          )}
-        </SystemIconContainer>
+            <SystemIconContainer>
+              <IconWrapper onClick={handleExport}>
+                <ExportIcon />
+              </IconWrapper>
+              <IconWrapper onClick={handleSearch}>
+                <SearchIcon />
+              </IconWrapper>
+              {!findRoom()?.isMyRoom && (
+                <IconWrapper onClick={handleAddMember}>
+                  <AddAcountIcon />
+                </IconWrapper>
+              )}
+            </SystemIconContainer>
+          </>
+        )}
       </TitleWrapper>
 
       <AppIconContainer>
