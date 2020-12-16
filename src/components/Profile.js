@@ -438,7 +438,7 @@ const Profile = observer(
                     <StyleInput
                       onChange={e => {
                         setIsChange(true);
-                        setMobile(e.target.value);
+                        setPhone(e.target.value);
                       }}
                       value={phone !== undefined ? phone : profile?.companyNum}
                     />
@@ -452,7 +452,7 @@ const Profile = observer(
                     <StyleInput
                       onChange={e => {
                         setIsChange(true);
-                        setPhone(e.target.value);
+                        setMobile(e.target.value);
                       }}
                       value={mobile !== undefined ? mobile : profile?.phone}
                     />
