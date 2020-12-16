@@ -313,9 +313,10 @@ const RoomItemContent = ({
           </IconWrapper>
         </RoomDropdown>
       )}
-      <IconWrapper className="room-item__icon" onClick={handleExport}>
+      {/* 미니챗 기능 추후 업데이트 */}
+      {/* <IconWrapper className="room-item__icon" onClick={handleExport}>
         <ExportIcon width={1} height={1} />
-      </IconWrapper>
+      </IconWrapper> */}
     </>
   );
 };
