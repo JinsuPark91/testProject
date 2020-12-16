@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { Button, Avatar, Dropdown, Menu, Checkbox } from 'antd';
-import { useCoreStores, Toast } from 'teespace-core';
+import { useCoreStores, Toast, WWMS } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 // import { useTranslation } from 'react-i18next';
+import { useKeycloak } from '@react-keycloak/web';
 import ProfileModal from './ProfileModal';
 import SettingDialog from '../usersettings/SettingDialog';
 import ProfileSpaceModal from './ProfileSpaceModal';
@@ -15,6 +16,8 @@ import ProfileInfoModal from './ProfileInfoModal';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
 import AddFriendsBySearch from '../friends/AddFriendsBySearch';
 import PlatformUIStore from '../../stores/PlatformUIStore';
+
+import keycloak from '../../libs/keycloak';
 
 const ProfileMyModal = ({
   userId,
@@ -35,6 +38,7 @@ const ProfileMyModal = ({
   const [isSpaceMemViewOpen, setIsSpaceMemViewOpen] = useState(false);
   const [spaceMemberList, setSpaceMemberList] = useState([]);
   const [isToastOpen, setIsToastOpen] = useState(false);
+  const { keycloak } = useKeycloak();
 
   const isAdmin = userStore.myProfile.grade === 'admin';
 
@@ -68,8 +72,22 @@ const ProfileMyModal = ({
   }, []);
 
   const handleLogout = async () => {
+    /* keycloak 임시 코드 */
+    const url = window.location.origin; //  http://xxx.dev.teespace.net
+    const con_url = url.split(`//`)[1]; // xxx.dev.teespace.net
+    const main_url = con_url.slice(con_url.indexOf('.') + 1, con_url.length); // dev.teespace.net
+
     await authStore.logout({});
-    history.push(`/login`);
+    if (process.env.REACT_APP_ENV === `local`) {
+      WWMS.disconnect();
+      history.push(`/login`);
+    } else {
+      WWMS.disconnect();
+      /* keycloak 임시 logout */
+      await keycloak.logout({
+        redirectUri: `http://${main_url}/spaces`,
+      });
+    }
   };
 
   const revokeURL = useCallback(() => {
@@ -140,8 +158,8 @@ const ProfileMyModal = ({
     const url = window.location.href;
     const purl = url?.split('.');
     if (purl[0] === 'dev' || purl[0] !== 'wapl') {
-      window.open(`${window.location.protocol}//` + `dev.wapl.ai/support`);
-    } else window.open(`${window.location.protocol}//` + `wapl.ai/support`);
+      window.open(`${window.location.protocol}//dev.wapl.ai/support`);
+    } else window.open(`${window.location.protocol}//wapl.ai/support`);
   };
 
   useEffect(() => {
@@ -358,6 +376,7 @@ const ProfileMyModal = ({
       closable={false}
       outLine
       width="17rem"
+      type="user"
       userContent={userContent}
       subContent={subContent}
       footer={
