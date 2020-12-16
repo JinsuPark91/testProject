@@ -125,12 +125,25 @@ const ProfileMyModal = ({
     history.push('/admin');
   }, [history]);
 
+  const handleMoveSpacePage = useCallback(() => {
+    const url = window.location.href;
+    const purl = url?.split('.');
+    if (purl[0] === 'dev' || purl[0] !== 'wapl') {
+      history.push({
+        pathname: `${window.location.protocol}//` + `dev.wapl.ai/spaces`,
+      });
+    } else {
+      history.push({
+        pathname: `${window.location.protocol}//` + 'wapl.ai/spaces',
+      });
+    }
+  }, [history]);
   const handleOpenSupport = () => {
     const url = window.location.href;
     const purl = url?.split('.');
     if (purl[0] === 'dev' || purl[0] !== 'wapl') {
-      window.open(window.location.protocol + '//' + 'dev.wapl.ai/support');
-    } else window.open(window.location.protocol + '//' + 'wapl.ai/support');
+      window.open(`${window.location.protocol}//` + `dev.wapl.ai/support`);
+    } else window.open(`${window.location.protocol}//` + `wapl.ai/support`);
   };
 
   useEffect(() => {
@@ -186,6 +199,10 @@ const ProfileMyModal = ({
     />
   );
 
+  const spaceViewList = spaceStore.spaceList.filter(
+    elem => elem.id !== spaceStore.currentSpace.id,
+  );
+
   const subContent = (
     <>
       <UserSpaceArea isEdit={isEditMode}>
@@ -201,13 +218,13 @@ const ProfileMyModal = ({
             <Title>{spaceStore.currentSpace?.name}</Title>
             {spaceStore.currentSpace?.name}
           </Info>
-          <Button
+          {/* <Button
             type="circle"
             className="btn-convert"
             onClick={handleSpaceList}
           >
             <Blind>스페이스 전환</Blind>
-          </Button>
+          </Button> */}
           <Dropdown
             trigger={['click']}
             overlay={moreMenu}
@@ -220,7 +237,7 @@ const ProfileMyModal = ({
         </DataBox>
       </UserSpaceArea>
       <UserSubArea>
-        <SubInfo tabIndex="-1">
+        <SubInfo tabIndex="-1" onClick={handleMoveSpacePage}>
           <LinkIcon>
             <SquareSpaceIcon />
           </LinkIcon>
@@ -271,11 +288,11 @@ const ProfileMyModal = ({
             </NowInfo>
             <Checkbox checked className="check-round" />
           </ConvertNow>
-          {spaceStore.spaceList.length > 0 && (
+          {spaceViewList.length > 0 && (
             <ConvertList>
               {spaceStore.spaceList.map(elem => (
                 <ConvertItem
-                  onClick={() => window.location.replace(elem.fullDomain)}
+                  onClick={() => window.location.replace(elem.domain)}
                   key={elem}
                 >
                   <LogoSmall
