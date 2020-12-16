@@ -178,6 +178,10 @@ const ProfileMyModal = ({
     />
   );
 
+  const spaceViewList = spaceStore.spaceList.filter(
+    elem => elem.id !== spaceStore.currentSpace.id,
+  );
+
   const subContent = (
     <>
       <UserSpaceArea isEdit={isEditMode}>
@@ -263,9 +267,9 @@ const ProfileMyModal = ({
             </NowInfo>
             <Checkbox checked className="check-round" />
           </ConvertNow>
-          {spaceStore.spaceList.length > 0 && (
+          {spaceViewList.length > 0 && (
             <ConvertList>
-              {spaceStore.spaceList.map(elem => (
+              {spaceViewList.map(elem => (
                 <ConvertItem
                   onClick={() => window.location.replace(elem.fullDomain)}
                   key={elem}
