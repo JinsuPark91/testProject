@@ -257,9 +257,11 @@ const RoomItemContent = ({
                 </RoomNameText>
               )}
             </Observer>
-            <Observer>
-              {() => <UserCountText>{roomInfo.userCount}</UserCountText>}
-            </Observer>
+            {!isMyRoom && (
+              <Observer>
+                {() => <UserCountText>{roomInfo.userCount}</UserCountText>}
+              </Observer>
+            )}
 
             <Observer>
               {() =>
