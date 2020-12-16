@@ -151,7 +151,7 @@ function SettingDialog(props) {
           >
             <Menu.ItemGroup key="0" title="환경설정">
               {/* <Menu.Item key="1">일반</Menu.Item> */}
-              <Menu.Item key="2">알림</Menu.Item>
+              {/* <Menu.Item key="2">알림</Menu.Item> */}
             </Menu.ItemGroup>
             <Menu.ItemGroup key="3" title="계정설정">
               <Menu.Item key="4">내 정보</Menu.Item>
