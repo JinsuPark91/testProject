@@ -237,7 +237,7 @@ function AddFriendsBySearch({
     <>
       <StyledModal
         visible={visible}
-        mask={false}
+        mask
         footer={null}
         width="24.38rem"
         title={title}

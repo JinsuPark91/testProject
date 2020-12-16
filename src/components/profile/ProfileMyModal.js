@@ -197,13 +197,13 @@ const ProfileMyModal = ({
             <Title>{spaceStore.currentSpace?.name}</Title>
             {spaceStore.currentSpace?.name}
           </Info>
-          <Button
+          {/* <Button
             type="circle"
             className="btn-convert"
             onClick={handleSpaceList}
           >
             <Blind>스페이스 전환</Blind>
-          </Button>
+          </Button> */}
           <Dropdown
             trigger={['click']}
             overlay={moreMenu}
@@ -269,9 +269,9 @@ const ProfileMyModal = ({
           </ConvertNow>
           {spaceViewList.length > 0 && (
             <ConvertList>
-              {spaceViewList.map(elem => (
+              {spaceStore.spaceList.map(elem => (
                 <ConvertItem
-                  onClick={() => window.location.replace(elem.fullDomain)}
+                  onClick={() => window.location.replace(elem.domain)}
                   key={elem}
                 >
                   <LogoSmall
