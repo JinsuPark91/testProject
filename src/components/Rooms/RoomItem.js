@@ -318,6 +318,13 @@ const RoomItemContent = ({
   );
 };
 
+const ACCEPT_ITEMS = [
+  'Item:Drive:Files',
+  'Item:Note:Pages',
+  'Item:Note:SharedPages',
+];
+const TALK_ITEMS = ['Item:Note:Pages', 'Item:Note:SharedPages'];
+
 const RoomItem = ({
   roomInfo,
   selected,
@@ -328,14 +335,14 @@ const RoomItem = ({
 }) => {
   const isMyRoom = roomInfo.type === 'WKS0001';
   const [{ canDrop, isOver }, drop] = useDrop({
-    accept: 'item',
+    accept: ACCEPT_ITEMS,
     drop: item => {
-      // if( ['Item:Note:Pages', 'Item:Note:SharedPages'] ){ }
-      // talk로 넘기자.
-
       //
       // Item Type에 따라서 처리해야 될 일들
       //
+      if (TALK_ITEMS.includes(item.type)) {
+        console.log('TALK 로 아이템 전달. ', item.data);
+      }
 
       // Drag 시작한 쪽이 정보를 알아야 하는 경우 고려
       return {
