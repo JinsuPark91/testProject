@@ -5,6 +5,7 @@ import { useObserver } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import LoginPasswordInput from './LoginPasswordInput';
 import LoginIdInput from './LoginIdInput';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const layout = {
   labelCol: {
@@ -89,17 +90,18 @@ const LoginContent = () => {
 
   const onFinish = async values => {
     setIsLoading(true);
+    // PlatformUIStore.domainKey = values.domain;
     try {
       const res = await authStore.login({
-        id: values.username,  // localhost용 id= "seonhyeok_kim2@tmax.co.kr"
+        id: values.username, // localhost용 id= "seonhyeok_kim2@tmax.co.kr"
         domainUrl: values.domain, //  localhost용 domain= "test-8sh1"
         isLocal: process.env.REACT_APP_ENV,
         deviceType: 'PC',
       });
-      if(res.id){
+      if (res.id) {
         history.push(`/f/${authStore.user.loginId}`);
-      }else{
-        setIsLoading(false)
+      } else {
+        setIsLoading(false);
       }
     } catch (e) {
       setErrorResult(e.message);

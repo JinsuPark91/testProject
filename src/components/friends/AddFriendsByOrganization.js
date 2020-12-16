@@ -7,6 +7,7 @@ import AddFriendsByOrganizationHeader from './AddFriendsByOrganizationHeader';
 import AddFriendsByOrganizationContent from './AddFriendsByOrganizationContent';
 import AddFriendsItem from './AddFriendsItem';
 import OrganizationDropdown from './OrganizationDropdown';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -32,6 +33,7 @@ function AddFriendsByOrganization({ timestamp, searchText }) {
       await orgStore.getUserOrgUserList(
         ...value.split('_'),
         userStore.myProfile.id,
+        // PlatformUIStore.domainKey,
       );
       setSearchedUserList(orgStore.userOrgUserList);
       console.log(orgStore.userOrgUserList);

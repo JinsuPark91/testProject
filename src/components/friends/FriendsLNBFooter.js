@@ -5,7 +5,6 @@ import { useObserver } from 'mobx-react';
 import { Layout } from 'antd';
 import AddFriendsDialog from './AddFriendsDialog';
 import AddFriendsBySearch from './AddFriendsBySearch';
-import { useStore } from '../../stores';
 import { WaplLogo, FriendAddIcon } from '../Icons';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
@@ -36,8 +35,7 @@ const FriendAddButton = styled(Button)`
 `;
 
 function FriendsLNBFooter() {
-  const { uiStore } = useStore();
-  const { userStore, orgStore } = useCoreStores();
+  const { orgStore, userStore, spaceStore } = useCoreStores();
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isOrgExist, setIsOrgExist] = useState(false);
   const [isSpaceEmpty, setIsSpaceEmpty] = useState(false);
@@ -51,24 +49,26 @@ function FriendsLNBFooter() {
       if (response.length) {
         setIsOrgExist(true);
       } else {
-        // const { myProfile } = userStore;
-        // const memberList = await orgStore.getUserOrgUserList(
-        //   myProfile?.companyCode,
-        //   myProfile?.departmentCode,
-        //   myProfile?.id,
-        // );
-        // setSpaceMemberList(memberList);
+        const { myProfile } = userStore;
+        try {
+          const res = await orgStore.getUserOrgUserList(
+            myProfile?.companyCode,
+            myProfile?.departmentCode,
+            myProfile?.id,
+            // PlatformUIStore.domainKey,
+          );
+          setSpaceMemberList(res);
+        } catch (e) {
+          console.log('getUserList Error');
+        }
       }
     }
     setIsDialogVisible(!isDialogVisible);
-  }, [orgStore, isDialogVisible]);
+  }, [spaceStore, orgStore, isDialogVisible, userStore]);
 
   const handleCloseAddFriendsDialog = useCallback(async () => {
     setIsDialogVisible(!isDialogVisible);
   }, [isDialogVisible]);
-
-  //   uiStore.showAddFriendsDialog();
-  // }, [uiStore]);
 
   // <AddFriendsDialog
   //   visible={uiStore.visibleAddFriendsDialog}

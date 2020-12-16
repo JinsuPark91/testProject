@@ -57,7 +57,7 @@ function FriendsLNBHeader({ handleInputChange, handleInputClear }) {
         <StyledSearch
           onChange={handleInputChange}
           onClear={handleInputClear}
-          placeholder="룸 이름, 멤버 검색"
+          placeholder="프렌즈 검색"
           style={{ width: '100%' }}
         />
       </SearchBox>
