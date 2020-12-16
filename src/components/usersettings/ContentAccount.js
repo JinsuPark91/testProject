@@ -361,13 +361,13 @@ function ContentAccount({ isEdit }) {
                   <p>{authStore.user.name}</p>
                 </TextArea>
                 <ButtonArea>
-                  {/* <Button
+                  <Button
                     size="small"
                     type="outlined"
                     onClick={handleToggleNameInput}
                   >
                     변경
-                  </Button> */}
+                  </Button>
                 </ButtonArea>
               </>
             )}

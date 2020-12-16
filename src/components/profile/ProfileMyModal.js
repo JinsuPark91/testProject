@@ -23,7 +23,7 @@ const ProfileMyModal = ({
   visible = false,
   created = false,
 }) => {
-  const { userStore, authStore, spaceStore } = useCoreStores();
+  const { userStore, authStore, spaceStore, orgStore } = useCoreStores();
   const history = useHistory();
   const [isCreated, setIsCreated] = useState(created);
   const [profile, setProfile] = useState(null);
@@ -33,10 +33,10 @@ const ProfileMyModal = ({
   const [isEditMode, setIsEditMode] = useState(false);
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
   const [isSpaceMemViewOpen, setIsSpaceMemViewOpen] = useState(false);
+  const [spaceMemberList, setSpaceMemberList] = useState([]);
   const [isToastOpen, setIsToastOpen] = useState(false);
 
   const isAdmin = userStore.myProfile.grade === 'admin';
-  const isSpaceEmpty = PlatformUIStore.space?.userCount === 1;
 
   // 1월 업데이트
   // const [lngListVisible, setLngListVisible] = useState(false);
@@ -64,7 +64,6 @@ const ProfileMyModal = ({
   }, []);
 
   const handleSwitchSpace = useCallback(() => {
-    console.log('select space');
     setSpaceListVisible(false);
   }, []);
 
@@ -102,9 +101,21 @@ const ProfileMyModal = ({
     setIsInviteDialogOpen(true);
   }, []);
 
-  const handleMemberList = useCallback(() => {
+  const handleMemberList = useCallback(async () => {
+    const { myProfile } = userStore;
+    try {
+      const response = await orgStore.getUserOrgUserList(
+        myProfile?.companyCode,
+        myProfile?.departmentCode,
+        myProfile?.id,
+        // PlatformUIStore.domainKey,
+      );
+      setSpaceMemberList(response);
+    } catch (e) {
+      console.log('getUserList Error');
+    }
     toggleSpaceMemViewDialog();
-  }, [toggleSpaceMemViewDialog]);
+  }, [orgStore, userStore, toggleSpaceMemViewDialog]);
 
   const handleSpaceEditDialog = useCallback(() => {
     console.log('MemberList');
@@ -176,11 +187,11 @@ const ProfileMyModal = ({
             shape="square"
             style={{ color: '#fff', backgroundColor: '#75757F' }}
           >
-            {PlatformUIStore.space?.name[0]}
+            {spaceStore.currentSpace?.name[0]}
           </Logo>
           <Info>
-            <Title>{PlatformUIStore.space?.name}</Title>
-            {PlatformUIStore.space?.fullDomain}
+            <Title>{spaceStore.currentSpace?.name}</Title>
+            {spaceStore.currentSpace?.name}
           </Info>
           <Button
             type="circle"
@@ -244,10 +255,10 @@ const ProfileMyModal = ({
               checked
               style={{ color: '#fff', backgroundColor: '#75757F' }}
             >
-              {PlatformUIStore.space?.name[0]}
+              {spaceStore.currentSpace?.name[0]}
             </LogoSmall>
             <NowInfo>
-              <NowTitle>{PlatformUIStore.space?.name}</NowTitle>
+              <NowTitle>{spaceStore.currentSpace?.name}</NowTitle>
               현재 스페이스입니다.
             </NowInfo>
             <Checkbox checked className="check-round" />
@@ -255,7 +266,10 @@ const ProfileMyModal = ({
           {spaceStore.spaceList.length > 0 && (
             <ConvertList>
               {spaceStore.spaceList.map(elem => (
-                <ConvertItem onClick={handleSwitchSpace} key={elem}>
+                <ConvertItem
+                  onClick={() => window.location.replace(elem.fullDomain)}
+                  key={elem}
+                >
                   <LogoSmall
                     shape="square"
                     style={{ color: '#fff', backgroundColor: '#75757F' }}
@@ -295,9 +309,10 @@ const ProfileMyModal = ({
         visible={isSpaceMemViewOpen}
         onCancelAddFriends={toggleSpaceMemViewDialog}
         isOrgExist={false}
-        isSpaceEmpty={isSpaceEmpty}
-        title={PlatformUIStore.space?.name}
+        isSpaceEmpty={false}
+        title={spaceStore.currentSpace?.name}
         isViewMode
+        spaceMemberList={spaceMemberList}
       />
       <Toast
         visible={isToastOpen}

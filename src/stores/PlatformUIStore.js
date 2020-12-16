@@ -21,8 +21,8 @@ const PlatformUIStore = observable({
   */
   isSearchVisible: false,
 
-  // current space
-  space: null,
+  // current domain key
+  domainKey: null,
 
   // modal
   roomMemberModal: {
