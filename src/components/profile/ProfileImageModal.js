@@ -5,8 +5,9 @@ import {
   PlusCircleFilled,
   MinusCircleFilled,
 } from '@ant-design/icons';
+import { useCoreStores } from 'teespace-core';
 
-function ProfileImageModal({ profilePhoto = '', onCancel }) {
+function ProfileImageModal({ profilePhoto = '', onCancel, name = null }) {
   // const [enlargeStack, setEnlargeStack] = useState(1);
   // const addStack = e => {
   //   e.stopPropagation();
@@ -17,20 +18,21 @@ function ProfileImageModal({ profilePhoto = '', onCancel }) {
   //   setEnlargeStack(s => s - 0.25);
   // };
 
+  const { userStore } = useCoreStores();
+
   return (
- 
-        <ModalWrap>
-          <ModalInner>
-            <ModalHeader>
-              <Title>나의 프로필 사진</Title>
-              <CloseButton type="close" onClick={onCancel}>
-                <Blind>닫기</Blind>
-                <CloseOutlined />
-              </CloseButton>
-            </ModalHeader>
-              <img src={profilePhoto} alt="" />
-          </ModalInner>
-          {/* <ModalFooter>
+    <ModalWrap>
+      <ModalInner>
+        <ModalHeader>
+          <Title>{name}</Title>
+          <CloseButton type="close" onClick={onCancel}>
+            <Blind>닫기</Blind>
+            <CloseOutlined />
+          </CloseButton>
+        </ModalHeader>
+        <img src={profilePhoto} alt="" />
+      </ModalInner>
+      {/* <ModalFooter>
             <Button
               disabled={enlargeStack === 1}
               onClick={e => {
@@ -52,7 +54,7 @@ function ProfileImageModal({ profilePhoto = '', onCancel }) {
               <Blind>확대</Blind>
             </Button>
           </ModalFooter> */}
-        </ModalWrap>
+    </ModalWrap>
   );
 }
 

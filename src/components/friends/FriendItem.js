@@ -257,11 +257,12 @@ const FriendAction = React.memo(
                 onClick={handleStopPropagation}
               />
             </Dropdown>
-            <Button
+            {/* 미니챗 기능 추후 업데이트 */}
+            {/* <Button
               shape="circle"
               icon={<ExportIcon />}
               onClick={handleOpenTalk}
-            />
+            /> */}
           </>
         )}
       </>
@@ -272,9 +273,13 @@ const FriendAction = React.memo(
 const MeAction = React.memo(({ mode, handleTalkWindowOpen }) => {
   return (
     <>
-      {mode === 'me' && (
-        <Button shape="circle" icon={<ExportIcon />} onClick={handleTalkWindowOpen} />
-      )}
+      {/* {mode === 'me' && (
+        <Button
+          shape="circle"
+          icon={<ExportIcon />}
+          onClick={handleTalkWindowOpen}
+        />
+      )} */}
     </>
   );
 });

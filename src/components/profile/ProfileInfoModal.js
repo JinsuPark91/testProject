@@ -353,6 +353,7 @@ function ProfileInfoModal({
         <ProfileImageModal
           profilePhoto={renderProfilePhoto}
           onCancel={handleImageModal}
+          name={isMyId ? '나의 프로필 사진' : profile?.nick || profile?.name}
         />
       )}
       {isEditMode && (
@@ -465,12 +466,12 @@ function ProfileInfoModal({
             </>
           )}
         </UserInfoItem>
-        {userType === 'USR0001' && (
+        {/* {userType === 'USR0001' && (
           <UserInfoItem>
             <UserInfoIcon iconimg="email" />
             {profile?.email}
           </UserInfoItem>
-        )}
+        )} */}
       </UserInfoList>
     </UserBox>
   );
