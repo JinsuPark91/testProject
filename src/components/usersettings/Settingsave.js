@@ -34,15 +34,12 @@ function Settingsave(props) {
     const url = window.location.href;
     const purl = url?.split('.');
     if (purl[0] === 'dev' || purl[0] !== 'wapl') {
-      history.push({
-        pathname: `${window.location.protocol}//` + `dev.wapl.ai/spaces`,
-      });
+      window.location.href =
+        `${window.location.protocol}//` + `dev.wapl.ai/spaces`;
     } else {
-      history.push({
-        pathname: `${window.location.protocol}//` + 'wapl.ai/spaces',
-      });
+      window.location.href = `${window.location.protocol}//` + `wapl.ai/spaces`;
     }
-  }, [history]);
+  }, []);
 
   const handleInputPassword = async () => {
     const input = props.inputPassword;
