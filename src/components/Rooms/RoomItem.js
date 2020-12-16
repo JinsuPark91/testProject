@@ -322,8 +322,13 @@ const ACCEPT_ITEMS = [
   'Item:Drive:Files',
   'Item:Note:Pages',
   'Item:Note:SharedPages',
+  'Item:Calendar:ShareSchedules',
 ];
-const TALK_ACCEPT_ITEMS = ['Item:Note:Pages', 'Item:Note:SharedPages'];
+const TALK_ACCEPT_ITEMS = [
+  'Item:Note:Pages',
+  'Item:Note:SharedPages',
+  'Item:Calendar:ShareSchedules',
+];
 
 const RoomItem = ({
   roomInfo,
