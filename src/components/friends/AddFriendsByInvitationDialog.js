@@ -98,9 +98,9 @@ function AddFriendsBySearch({ visible, onCancel }) {
   const myUserId = userStore.myProfile.id;
 
   const handleCancel = () => {
-    onCancel();
     setMailAddress('');
     setChipList([]);
+    onCancel();
   };
 
   const handleToggleToast = () => {
@@ -232,7 +232,7 @@ function AddFriendsBySearch({ visible, onCancel }) {
                   text={elem}
                   key={elem}
                   onClose={() => handleCloseChip(elem)}
-                  alert={!checkEmailValid(elem).toString()}
+                  alert={!checkEmailValid(elem) ? 1 : undefined}
                 />
               ))}
             </StyledChipBox>
