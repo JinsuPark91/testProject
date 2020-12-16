@@ -125,6 +125,20 @@ const ProfileMyModal = ({
     history.push('/admin');
   }, [history]);
 
+  const handleMoveSpacePage = useCallback(() => {
+    const url = window.location.href;
+    const purl = url?.split('.');
+    if (purl[0] === 'dev' || purl[0] !== 'wapl') {
+      history.push({
+        pathname: `${window.location.protocol}//` + `dev.wapl.ai/spaces`,
+      });
+    } else {
+      history.push({
+        pathname: `${window.location.protocol}//` + 'wapl.ai/spaces',
+      });
+    }
+  }, [history]);
+
   useEffect(() => {
     (async () => {
       const userProfile = await userStore.getProfile({ userId });
@@ -216,7 +230,7 @@ const ProfileMyModal = ({
         </DataBox>
       </UserSpaceArea>
       <UserSubArea>
-        <SubInfo tabIndex="-1">
+        <SubInfo tabIndex="-1" onClick={handleMoveSpacePage}>
           <LinkIcon>
             <SquareSpaceIcon />
           </LinkIcon>
