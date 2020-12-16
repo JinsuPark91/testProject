@@ -64,7 +64,7 @@ const FriendAddBtn = styled.button`
 `;
 
 const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
-  const { authStore, userStore, friendStore } = useCoreStores();
+  const { userStore, friendStore } = useCoreStores();
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [friendUserName, setFriendUserName] = useState('');
 
@@ -86,7 +86,7 @@ const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
   );
 
   const renderMenu = friendInfo => {
-    const userId = friendInfo?.friendId;
+    const userId = friendInfo?.friendId || friendInfo?.id;
     const isMe = userId === userStore.myProfile.id;
     const isFriend = friendStore.checkAlreadyFriend({ userId });
     if (isMe) {
@@ -110,7 +110,10 @@ const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
         <FriendItem style={style}>
           <img
             alt="profile"
-            src={userStore.getProfilePhotoURL(friendInfo?.friendId, 'small')}
+            src={userStore.getProfilePhotoURL(
+              friendInfo?.friendId || friendInfo?.id,
+              'small',
+            )}
           />
           <FriendName>{userName}</FriendName>
           {!isViewMode && renderMenu(friendInfo)}
@@ -123,7 +126,7 @@ const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
   return useObserver(() => (
     <>
       <Wrapper>
-        {friendStore.friendInfoList.length > -1 && (
+        {friendStore.friendInfoList && (
           <List
             height={400}
             itemCount={memberList.length}
