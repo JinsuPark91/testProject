@@ -91,7 +91,7 @@
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "upgrade:all": "yarn upgrade teespace-core teespace-calendar-app teespace-drive-app teespace-mail-app teespace-note-app teespace-talk-app teespace-admin"
+    "upgrade:all": "yarn upgrade teespace-core teespace-calendar-app teespace-drive-app teespace-mail-app teespace-note-app teespace-talk-app teespace-admin teespace-meeting-app teespace-office-app"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -150,5 +150,6 @@
     "rollup-plugin-postcss": "^3.1.8",
     "rollup-plugin-url": "^3.0.1",
     "rollup-plugin-visualizer": "^4.1.1"
-  }
+  },
+  "proxy" : "http://dev.dev.teespace.net"
 }

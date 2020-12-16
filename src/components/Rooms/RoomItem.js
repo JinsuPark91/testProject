@@ -257,9 +257,11 @@ const RoomItemContent = ({
                 </RoomNameText>
               )}
             </Observer>
-            <Observer>
-              {() => <UserCountText>{roomInfo.userCount}</UserCountText>}
-            </Observer>
+            {!(isMyRoom || roomInfo.isDirectMsg) ? (
+              <Observer>
+                {() => <UserCountText>{roomInfo.userCount}</UserCountText>}
+              </Observer>
+            ) : null}
 
             <Observer>
               {() =>
@@ -311,9 +313,10 @@ const RoomItemContent = ({
           </IconWrapper>
         </RoomDropdown>
       )}
-      <IconWrapper className="room-item__icon" onClick={handleExport}>
+      {/* 미니챗 기능 추후 업데이트 */}
+      {/* <IconWrapper className="room-item__icon" onClick={handleExport}>
         <ExportIcon width={1} height={1} />
-      </IconWrapper>
+      </IconWrapper> */}
     </>
   );
 };
@@ -322,8 +325,15 @@ const ACCEPT_ITEMS = [
   'Item:Drive:Files',
   'Item:Note:Pages',
   'Item:Note:SharedPages',
+  'Item:Note:Chapters',
+  'Item:Note:SharedChapters',
+  'Item:Calendar:ShareSchedules',
 ];
-const TALK_ITEMS = ['Item:Note:Pages', 'Item:Note:SharedPages'];
+const TALK_ACCEPT_ITEMS = [
+  'Item:Note:Pages',
+  'Item:Note:SharedPages',
+  'Item:Calendar:ShareSchedules',
+];
 
 const RoomItem = ({
   roomInfo,
@@ -340,13 +350,13 @@ const RoomItem = ({
       //
       // Item Type에 따라서 처리해야 될 일들
       //
-      if (TALK_ITEMS.includes(item.type)) {
+      if (TALK_ACCEPT_ITEMS.includes(item.type)) {
         console.log('TALK 로 아이템 전달. ', item.data);
       }
 
       // Drag 시작한 쪽이 정보를 알아야 하는 경우 고려
       return {
-        source: item.type, // "Drag:Note:Chapter"
+        source: item.type, // "Item:Note:Chapter"
         sourceData: item.data,
         target: 'Platform:Room',
         targetData: roomInfo,
