@@ -257,11 +257,11 @@ const RoomItemContent = ({
                 </RoomNameText>
               )}
             </Observer>
-            {!isMyRoom && (
+            {!(isMyRoom || roomInfo.isDirectMsg) ? (
               <Observer>
                 {() => <UserCountText>{roomInfo.userCount}</UserCountText>}
               </Observer>
-            )}
+            ) : null}
 
             <Observer>
               {() =>
