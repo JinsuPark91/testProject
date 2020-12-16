@@ -119,6 +119,16 @@ const Header = observer(() => {
     return null;
   };
 
+  const isMyRoom = () => {
+    const found = findRoom();
+    return found?.type === 'WKS0001';
+  };
+
+  const isDMRoom = () => {
+    const found = findRoom();
+    return !!found?.isDirectMsg;
+  };
+
   const getUserCount = () => {
     const found = findRoom();
     if (found && found?.userCount) {
@@ -214,7 +224,9 @@ const Header = observer(() => {
                 onClick={handleClickRoomPhoto}
               />
               <TitleText>{getRoomName()}</TitleText>
-              <UserCountText>{getUserCount()}</UserCountText>
+              {!(isMyRoom() || isDMRoom()) ? (
+                <UserCountText>{getUserCount()}</UserCountText>
+              ) : null}
               <RoomInquiryModal
                 roomId={findRoom()?.id}
                 visible={isRoomMemberModalVisible}
@@ -232,7 +244,7 @@ const Header = observer(() => {
               <IconWrapper onClick={handleSearch}>
                 <SearchIcon />
               </IconWrapper>
-              {!findRoom()?.isMyRoom && (
+              {!isMyRoom() && (
                 <IconWrapper onClick={handleAddMember}>
                   <AddAcountIcon />
                 </IconWrapper>
