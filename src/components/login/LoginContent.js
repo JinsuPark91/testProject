@@ -90,7 +90,6 @@ const LoginContent = () => {
 
   const onFinish = async values => {
     setIsLoading(true);
-    // PlatformUIStore.domainKey = values.domain;
     try {
       const res = await authStore.login({
         id: values.username, // localhost용 id= "seonhyeok_kim2@tmax.co.kr"

@@ -33,13 +33,13 @@ function AddFriendsByOrganization({ timestamp, searchText }) {
       await orgStore.getUserOrgUserList(
         ...value.split('_'),
         userStore.myProfile.id,
-        // PlatformUIStore.domainKey,
+        // userStore.myProfile.domainKey,
       );
       setSearchedUserList(orgStore.userOrgUserList);
       console.log(orgStore.userOrgUserList);
       setDropdownDisplayValue('');
     },
-    [orgStore, userStore.myProfile.id],
+    [orgStore, userStore],
   );
 
   const handleSearch = useCallback(async () => {
