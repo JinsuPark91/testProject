@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { Button, Avatar, Dropdown, Menu, Checkbox } from 'antd';
-import { useCoreStores, Toast,WWMS } from 'teespace-core';
+import { useCoreStores, Toast, WWMS } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 // import { useTranslation } from 'react-i18next';
+import { useKeycloak } from '@react-keycloak/web';
 import ProfileModal from './ProfileModal';
 import SettingDialog from '../usersettings/SettingDialog';
 import ProfileSpaceModal from './ProfileSpaceModal';
@@ -17,7 +18,6 @@ import AddFriendsBySearch from '../friends/AddFriendsBySearch';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
 import keycloak from '../../libs/keycloak';
-import { useKeycloak } from '@react-keycloak/web';
 
 const ProfileMyModal = ({
   userId,
@@ -39,7 +39,7 @@ const ProfileMyModal = ({
   const [spaceMemberList, setSpaceMemberList] = useState([]);
   const [isToastOpen, setIsToastOpen] = useState(false);
   const { keycloak } = useKeycloak();
-  
+
   const isAdmin = userStore.myProfile.grade === 'admin';
 
   // 1월 업데이트
@@ -72,23 +72,8 @@ const ProfileMyModal = ({
   }, []);
 
   const handleLogout = async () => {
-    /* keycloak 임시 코드 */
-    const url = window.location.origin; //  http://xxx.dev.teespace.net
-    const con_url = url.split(`//`)[1]; // xxx.dev.teespace.net
-    const main_url = con_url.slice(con_url.indexOf('.')+1 , con_url.length); //dev.teespace.net
-
-    await authStore.logout({});
-    if(process.env.REACT_APP_ENV === `local` ){
-      WWMS.disconnect(); 
-      history.push(`/login`);
-    }else{
-      WWMS.disconnect();
-      /* keycloak 임시 logout */
-      await keycloak.logout({
-        redirectUri: `http://${main_url}/spaces`
-      });
-    }
-    
+    history.push(`/logout`);
+    // 기존코드는 logoutPage.js 로 옮겨짐
   };
 
   const revokeURL = useCallback(() => {
@@ -127,7 +112,7 @@ const ProfileMyModal = ({
         myProfile?.companyCode,
         myProfile?.departmentCode,
         myProfile?.id,
-        // PlatformUIStore.domainKey,
+        // myProfile?.domainKey,
       );
       setSpaceMemberList(response);
     } catch (e) {
@@ -144,12 +129,23 @@ const ProfileMyModal = ({
     history.push('/admin');
   }, [history]);
 
+  const handleMoveSpacePage = useCallback(() => {
+    const url = window.location.href;
+    const purl = url?.split('.');
+    if (purl[0] === 'dev' || purl[0] !== 'wapl') {
+      window.location.href =
+        `${window.location.protocol}//` + `dev.wapl.ai/spaces`;
+    } else {
+      window.location.href = `${window.location.protocol}//` + `wapl.ai/spaces`;
+    }
+  }, []);
+
   const handleOpenSupport = () => {
     const url = window.location.href;
     const purl = url?.split('.');
     if (purl[0] === 'dev' || purl[0] !== 'wapl') {
-      window.open(window.location.protocol + '//' + 'dev.wapl.ai/support');
-    } else window.open(window.location.protocol + '//' + 'wapl.ai/support');
+      window.open(`${window.location.protocol}//dev.wapl.ai/support`);
+    } else window.open(`${window.location.protocol}//wapl.ai/support`);
   };
 
   useEffect(() => {
@@ -181,7 +177,7 @@ const ProfileMyModal = ({
     <>
       <UserImage src={thumbPhoto} onLoad={revokeURL} />
       <UserName>{profile?.nick || profile?.name}</UserName>
-      <UserMail>{`(${profile?.email})`}</UserMail>
+      <UserMail>{`(${profile?.loginId})`}</UserMail>
       <UserButtonBox>
         <Button type="link" onClick={toggleEditMode}>
           프로필 편집
@@ -205,6 +201,10 @@ const ProfileMyModal = ({
     />
   );
 
+  const spaceViewList = spaceStore.spaceList.filter(
+    elem => elem.id !== spaceStore.currentSpace.id,
+  );
+
   const subContent = (
     <>
       <UserSpaceArea isEdit={isEditMode}>
@@ -220,13 +220,13 @@ const ProfileMyModal = ({
             <Title>{spaceStore.currentSpace?.name}</Title>
             {spaceStore.currentSpace?.name}
           </Info>
-          <Button
+          {/* <Button
             type="circle"
             className="btn-convert"
             onClick={handleSpaceList}
           >
             <Blind>스페이스 전환</Blind>
-          </Button>
+          </Button> */}
           <Dropdown
             trigger={['click']}
             overlay={moreMenu}
@@ -239,7 +239,7 @@ const ProfileMyModal = ({
         </DataBox>
       </UserSpaceArea>
       <UserSubArea>
-        <SubInfo tabIndex="-1">
+        <SubInfo tabIndex="-1" onClick={handleMoveSpacePage}>
           <LinkIcon>
             <SquareSpaceIcon />
           </LinkIcon>
@@ -290,11 +290,11 @@ const ProfileMyModal = ({
             </NowInfo>
             <Checkbox checked className="check-round" />
           </ConvertNow>
-          {spaceStore.spaceList.length > 0 && (
+          {spaceViewList.length > 0 && (
             <ConvertList>
               {spaceStore.spaceList.map(elem => (
                 <ConvertItem
-                  onClick={() => window.location.replace(elem.fullDomain)}
+                  onClick={() => window.location.replace(elem.domain)}
                   key={elem}
                 >
                   <LogoSmall
@@ -362,6 +362,7 @@ const ProfileMyModal = ({
       closable={false}
       outLine
       width="17rem"
+      type="user"
       userContent={userContent}
       subContent={subContent}
       footer={

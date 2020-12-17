@@ -4,12 +4,11 @@ import { List, Menu, Dropdown } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
 import { useCoreStores, usePortalWindow } from 'teespace-core';
+import { Talk } from 'teespace-talk-app';
+import { useDrop } from 'react-dnd';
 import Photos from '../Photos';
 import { ViewMoreIcon, ExportIcon, DisableAlarmIcon, PinIcon } from '../Icons';
 import PlatformUIStore from '../../stores/PlatformUIStore';
-import { Talk } from 'teespace-talk-app';
-
-const MAX_PROFILE_COUNT = 4;
 
 const RoomDropdown = React.memo(
   ({ children, roomInfo, onMenuClick, onClickMenuItem }) => {
@@ -235,7 +234,7 @@ const RoomItemContent = ({
               } else {
                 userPhotos = roomInfo.memberIdListString
                   .split(',')
-                  .splice(0, MAX_PROFILE_COUNT)
+                  .splice(0, 4)
                   .map(userId => userStore.getProfilePhotoURL(userId, 'small'));
               }
               return (
@@ -258,9 +257,11 @@ const RoomItemContent = ({
                 </RoomNameText>
               )}
             </Observer>
-            <Observer>
-              {() => <UserCountText>{roomInfo.userCount}</UserCountText>}
-            </Observer>
+            {!(isMyRoom || roomInfo.isDirectMsg) ? (
+              <Observer>
+                {() => <UserCountText>{roomInfo.userCount}</UserCountText>}
+              </Observer>
+            ) : null}
 
             <Observer>
               {() =>
@@ -312,12 +313,27 @@ const RoomItemContent = ({
           </IconWrapper>
         </RoomDropdown>
       )}
-      <IconWrapper className="room-item__icon" onClick={handleExport}>
+      {/* 미니챗 기능 추후 업데이트 */}
+      {/* <IconWrapper className="room-item__icon" onClick={handleExport}>
         <ExportIcon width={1} height={1} />
-      </IconWrapper>
+      </IconWrapper> */}
     </>
   );
 };
+
+const ACCEPT_ITEMS = [
+  'Item:Drive:Files',
+  'Item:Note:Pages',
+  'Item:Note:SharedPages',
+  'Item:Note:Chapters',
+  'Item:Note:SharedChapters',
+  'Item:Calendar:ShareSchedules',
+];
+const TALK_ACCEPT_ITEMS = [
+  'Item:Note:Pages',
+  'Item:Note:SharedPages',
+  'Item:Calendar:ShareSchedules',
+];
 
 const RoomItem = ({
   roomInfo,
@@ -328,6 +344,38 @@ const RoomItem = ({
   onClickRoomPhoto = () => {},
 }) => {
   const isMyRoom = roomInfo.type === 'WKS0001';
+  const [{ canDrop, isOver }, drop] = useDrop({
+    accept: ACCEPT_ITEMS,
+    drop: item => {
+      //
+      // Item Type에 따라서 처리해야 될 일들
+      //
+      if (TALK_ACCEPT_ITEMS.includes(item.type)) {
+        console.log('TALK 로 아이템 전달. ', item.data);
+      }
+
+      // Drag 시작한 쪽이 정보를 알아야 하는 경우 고려
+      return {
+        source: item.type, // "Item:Note:Chapter"
+        sourceData: item.data,
+        target: 'Platform:Room',
+        targetData: roomInfo,
+      };
+    },
+    collect: monitor => {
+      return {
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      };
+    },
+  });
+
+  const isActive = canDrop && isOver;
+
+  let backgroundColor = 'transparent';
+  if (isActive) {
+    backgroundColor = 'rgba(255, 123, 123, 0.2)';
+  }
 
   const handleRoomClick = useCallback(() => {
     onClick(roomInfo);
@@ -338,7 +386,8 @@ const RoomItem = ({
   };
 
   return (
-    <StyledItem onClick={handleRoomClick} isMyRoom={isMyRoom}>
+    <StyledItem ref={drop} onClick={handleRoomClick} isMyRoom={isMyRoom}>
+      {isActive && <DropEffect style={{ backgroundColor }} />}
       <ItemWrapper selected={selected}>
         <RoomItemContent
           roomInfo={roomInfo}
@@ -352,6 +401,36 @@ const RoomItem = ({
   );
 };
 
+const DropEffect = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+`;
+
+const ItemWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  flex: 1;
+  ${({ selected }) =>
+    selected &&
+    css`
+      background: #e2e3fb;
+    `}
+
+  border-radius: 1.875rem;
+  padding: 0.625rem;
+  &:hover {
+    background: #eaeafb;
+
+    .room-item__unread {
+      display: none;
+    }
+
+    .room-item__icon {
+      display: flex;
+    }
+  }
+`;
 const StyledMenu = styled(Menu)`
   & {
     background: #ffffff;
@@ -420,35 +499,8 @@ const UserCountText = styled.span`
   margin-left: 0.375rem;
 `;
 
-const ItemWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  flex: 1;
-  ${({ selected }) =>
-    selected &&
-    css`
-      background: #e2e3fb;
-    `}
-
-  border-radius: 1.875rem;
-  padding: 0.625rem;
-  &:hover {
-    background: #eaeafb;
-
-    .room-item__unread {
-      display: none;
-    }
-
-    .room-item__icon {
-      display: flex;
-    }
-  }
-`;
-
-/* https://milooy.wordpress.com/2019/09/19/react-external-component%EB%A5%BC-styledcomponent%EB%A1%9C-%EA%B0%90%EC%8C%8C%EC%9D%84-%EB%95%8C-warning-unknown-props-%EC%9B%8C%EB%8B%9D-%ED%95%B4%EA%B2%B0/ */
-const StyledItem = styled(({ isMyRoom, children, ...rest }) => (
-  <List.Item {...rest}>{children}</List.Item>
-))`
+const StyledItem = styled.div`
+  position: relative;
   user-select: none;
   cursor: pointer;
   padding: 0;

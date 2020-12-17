@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { useCoreStores, Toast, Message, Button } from 'teespace-core';
+import { useHistory } from 'react-router-dom';
 
 import { useStore } from '../../stores';
 
@@ -11,6 +12,7 @@ function Settingsave(props) {
   const [isMessageOpen, setIsMessageOpen] = useState(false);
   const { userStore, authStore, spaceStore } = useCoreStores();
   const { form, onClick, selectedKey } = props;
+  const history = useHistory();
 
   const saveOut = props => {
     if (selectedKey === '3') props.saveaccountOut();
@@ -28,6 +30,17 @@ function Settingsave(props) {
     setIsMessageOpen(!isMessageOpen);
   };
 
+  const handleMoveSpacePage = useCallback(() => {
+    const url = window.location.href;
+    const purl = url?.split('.');
+    if (purl[0] === 'dev' || purl[0] !== 'wapl') {
+      window.location.href =
+        `${window.location.protocol}//` + `dev.wapl.ai/spaces`;
+    } else {
+      window.location.href = `${window.location.protocol}//` + `wapl.ai/spaces`;
+    }
+  }, []);
+
   const handleInputPassword = async () => {
     const input = props.inputPassword;
     const res = await authStore.checkAuth({
@@ -38,11 +51,10 @@ function Settingsave(props) {
     if (!res) {
       handleToggleMessage();
     } else {
-      // 스페이스 탈퇴
-      // await spaceStore.deleteSpace({
-      //   id: '',
-      // });
-      // 화면 이동
+      await spaceStore.deleteSpace({
+        id: spaceStore.currentSpace.id,
+      });
+      handleMoveSpacePage();
     }
   };
 

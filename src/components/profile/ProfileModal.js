@@ -2,10 +2,10 @@ import React, { useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { Modal, Dropdown } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import starLineIcon from '../../assets/ts_star_line.svg';
-import starIcon from '../../assets/ts_star.svg';
 import { useObserver } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
+import starLineIcon from '../../assets/ts_star_line.svg';
+import starIcon from '../../assets/ts_star.svg';
 
 function ProfileModal({
   visible,
@@ -18,6 +18,7 @@ function ProfileModal({
   userId,
   outLine,
   topButton,
+  type,
   userContent,
   subContent,
   footer,
@@ -56,15 +57,17 @@ function ProfileModal({
         {topButton && (
           <>
             <TopButtonBox>
-              {!(userId === userStore.myProfile.id) && !isNotMyFriend() && (
-                <TopButton
-                  type="bookMark"
-                  isFav={isFav}
-                  onClick={handleToggleFav}
-                >
-                  <Blind>즐겨찾기</Blind>
-                </TopButton>
-              )}
+              {type === 'user' &&
+                !(userId === userStore.myProfile.id) &&
+                !isNotMyFriend() && (
+                  <TopButton
+                    type="bookMark"
+                    isFav={isFav}
+                    onClick={handleToggleFav}
+                  >
+                    <Blind>즐겨찾기</Blind>
+                  </TopButton>
+                )}
               <TopButton type="close" onClick={onCancel}>
                 <Blind>닫기</Blind>
                 <CloseOutlined />

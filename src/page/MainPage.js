@@ -24,13 +24,7 @@ const MainPage = () => {
   const { resourceType, resourceId, mainApp } = useParams();
   const { sub: subApp } = useQueryParams(history.location.search);
 
-  const {
-    roomStore,
-    userStore,
-    friendStore,
-    spaceStore,
-    waplUserStore,
-  } = useCoreStores();
+  const { roomStore, userStore, friendStore, spaceStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
   /*
     Loading 체크
@@ -50,7 +44,6 @@ const MainPage = () => {
       friendStore.fetchFriends({ myUserId }),
     ])
       .then(res => {
-        console.log('RES : ', res);
         // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
         return talkRoomStore.initialize(myUserId);
       })
@@ -117,11 +110,15 @@ const MainPage = () => {
   const leftSide = useMemo(() => <LeftSide />, []);
   const mainSide = useMemo(() => <MainSide />, []);
 
-  return isLoading ? (
-    <Loader>
-      <img src={LoadingImg} alt="loader" />
-    </Loader>
-  ) : (
+  if (isLoading) {
+    return (
+      <Loader>
+        <img src={LoadingImg} alt="loader" />
+      </Loader>
+    );
+  }
+
+  return (
     <Wrapper>
       {leftSide}
       {mainSide}

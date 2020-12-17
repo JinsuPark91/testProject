@@ -10,7 +10,7 @@ import Input from '../Input';
 import AddIcon from '../../assets/ts_friends_add.svg';
 import TalkIcon from '../../assets/ts_TeeTalk.svg';
 import MeetingIcon from '../../assets/ts_TeeMeeting.svg';
-import EditIcon from '../../assets/ts_edit.svg';
+import EditIcon from '../../assets/edit_white.svg';
 import ProfileInfoModal from '../profile/ProfileInfoModal';
 
 const AddButton = styled.button`
@@ -515,6 +515,7 @@ function RoomInquiryModal({
         footer={null}
         onCancel={handleCancel}
         topButton
+        type="room"
         userContent={userContent}
         subContent={subContent}
         footer={<AddButton onClick={handleInvite}>룸 구성원 초대</AddButton>}

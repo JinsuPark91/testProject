@@ -438,7 +438,7 @@ const Profile = observer(
                     <StyleInput
                       onChange={e => {
                         setIsChange(true);
-                        setMobile(e.target.value);
+                        setPhone(e.target.value);
                       }}
                       value={phone !== undefined ? phone : profile?.companyNum}
                     />
@@ -452,7 +452,7 @@ const Profile = observer(
                     <StyleInput
                       onChange={e => {
                         setIsChange(true);
-                        setPhone(e.target.value);
+                        setMobile(e.target.value);
                       }}
                       value={mobile !== undefined ? mobile : profile?.phone}
                     />
@@ -461,7 +461,7 @@ const Profile = observer(
                   )}
                 </UserInfoItem>
                 {/* 프로필 편집 시 "email" class 삭제 */}
-                <UserInfoItem
+                {/* <UserInfoItem
                   className={editEnabled ? '' : 'email'}
                   onClick={() => {
                     console.log('todo');
@@ -470,7 +470,7 @@ const Profile = observer(
                   <StyleOfficeIcon iconimg="email" />
                   <StyleOfficeIcon iconimg="emailhover" />
                   <StylText>{profile?.email}</StylText>
-                </UserInfoItem>
+                </UserInfoItem> */}
               </UserInfoList>
               <ButtonContainer>
                 {editEnabled && (
