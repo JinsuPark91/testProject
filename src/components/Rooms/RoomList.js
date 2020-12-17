@@ -15,6 +15,7 @@ import OpenRoomHome from './OpenRoomHome';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
+import ProfileInfoModal from '../profile/ProfileInfoModal';
 
 function RoomList() {
   const history = useHistory();
@@ -26,6 +27,10 @@ function RoomList() {
   );
   const [roomMemberAttr, setRoomMemberAttr] = useState({});
   const { roomStore, userStore } = useCoreStores();
+  const [isProfileInfoModalVisible, setIsProfileInfoModalVisible] = useState(
+    false,
+  );
+  const [targetUserId, setTargetUserId] = useState(null);
 
   const [visible, setVisible] = useState({
     selectRoomType: false,
@@ -78,9 +83,29 @@ function RoomList() {
     setOpenRoomDialogVisible(false);
   };
 
-  const handleClickRoomPhoto = useCallback(roomInfo => {
-    setTargetRoom(roomInfo);
-    setIsRoomMemberModalVisible(true);
+  const handleClickRoomPhoto = useCallback(
+    roomInfo => {
+      // NOTE. 마이룸인 경우 나의 프로파일 정보를,
+      //  1:1 방의 경우 상대 유저의 프로파일 정보를 보여줌.
+      if (roomInfo.userCount === 1) {
+        setTargetUserId(userStore.myProfile.id);
+        setIsProfileInfoModalVisible(true);
+      } else if (roomInfo.userCount === 2) {
+        const found = roomInfo.memberIdListString
+          .split(',')
+          .find(userId => userId !== userStore.myProfile.id);
+        setTargetUserId(found);
+        setIsProfileInfoModalVisible(true);
+      } else {
+        setTargetRoom(roomInfo);
+        setIsRoomMemberModalVisible(true);
+      }
+    },
+    [userStore],
+  );
+
+  const handleCloseProfileInfoModal = useCallback(() => {
+    setIsProfileInfoModalVisible(false);
   }, []);
 
   const isOnlyMyRoom = () => {
@@ -117,6 +142,20 @@ function RoomList() {
               left="calc(50% - 9rem)"
               isEdit={roomMemberAttr.isEdit}
             />
+          );
+        }}
+      </Observer>
+      <Observer>
+        {() => {
+          return (
+            targetUserId && (
+              <ProfileInfoModal
+                userId={targetUserId}
+                visible={isProfileInfoModalVisible}
+                onClose={handleCloseProfileInfoModal}
+                position={{ left: '17rem' }}
+              />
+            )
           );
         }}
       </Observer>

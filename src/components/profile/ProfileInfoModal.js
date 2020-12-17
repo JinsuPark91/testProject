@@ -94,15 +94,15 @@ function ProfileInfoModal({
       // 프로파일 정보가 로딩되어 있지 않는 경우 로딩하고 로컬 스테이트 설정
       if (!userProfile) {
         userProfile = await userStore.getProfile({ userId });
-        setProfile(userProfile);
       }
+      setProfile(userProfile);
 
       const userAuthInfo = authStore.user;
       setUserType(userAuthInfo.type);
     })();
     // NOTE. 다이얼로그가 오픈될 때만(visble 이 true 가 된 시점) 호출되어야함.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible]);
+  }, [userId, visible]);
 
   const isMyId = userId === userStore.myProfile.id;
   const isNotMyFriend = useCallback(
