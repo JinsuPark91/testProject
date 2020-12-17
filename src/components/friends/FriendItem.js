@@ -20,6 +20,7 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 
 const FriendItemWrapper = styled.div`
+  cursor: pointer;
   /* 조직도 조회, 추천친구 스타일 */
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -432,7 +433,7 @@ const FriendItem = observer(
 
     const talkWindowOpen = usePortalWindow();
 
-    const handleTalkWindowOpen = async (e) => {
+    const handleTalkWindowOpen = async e => {
       if (e) e.stopPropagation();
       try {
         const myUserId = userStore.myProfile.id;
@@ -585,7 +586,7 @@ const FriendItem = observer(
       [itemId, history, mode, onClick],
     );
 
-    const handleRemoveFriendMessageClose = useCallback((e) => {
+    const handleRemoveFriendMessageClose = useCallback(e => {
       if (e) e.stopPropagation();
       setVisibleRemoveFriendMessage(false);
     }, []);
