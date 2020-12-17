@@ -126,7 +126,7 @@ const ProfileMyModal = ({
         myProfile?.companyCode,
         myProfile?.departmentCode,
         myProfile?.id,
-        // PlatformUIStore.domainKey,
+        // myProfile?.domainKey,
       );
       setSpaceMemberList(response);
     } catch (e) {

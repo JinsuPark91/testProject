@@ -1,9 +1,10 @@
 import React, { useState, useRef } from 'react';
-import ContentTitle from './ContentTitle';
 import { useCoreStores, Switch, Checkbox } from 'teespace-core';
 import { Button } from 'antd';
 import styled, { css } from 'styled-components';
-import { ReactComponent as SoundIcon } from '../../assets/sound_on.svg'
+import ContentTitle from './ContentTitle';
+import { ReactComponent as SoundIcon } from '../../assets/sound_on.svg';
+import AlarmSound from '../../assets/alarm_sound.wav';
 
 const FormItemMain = styled.div`
   display: flex;
@@ -11,7 +12,7 @@ const FormItemMain = styled.div`
   margin-top: 1.25rem;
   padding: 1.625rem 0 1.188rem;
   border-top: 1px solid #d8d8d8;
-`
+`;
 const AlarmList = styled.div`
   width: 20rem;
 `;
@@ -25,7 +26,7 @@ const FormItem = styled(FormItemMain)`
   .ant-switch {
     margin: 0.4375rem 0 auto;
   }
-`
+`;
 const ItemMain = styled.label`
   span {
     padding-left: 0.56rem;
@@ -50,7 +51,7 @@ const ItemSub = styled.div`
   font-size: 0.81rem;
   .ant-checkbox-wrapper {
     font-size: 0.81rem;
-    &+.ant-checkbox-wrapper {
+    & + .ant-checkbox-wrapper {
       margin-left: 1.25rem;
     }
   }
@@ -60,7 +61,7 @@ const ItemSub = styled.div`
 `;
 const SoundText = styled.span`
   vertical-align: middle;
-`
+`;
 const SoundButton = styled(Button)`
   width: 1.5rem;
   height: 1.5rem;
@@ -69,7 +70,7 @@ const SoundButton = styled(Button)`
   background-color: transparent;
   border: 1px solid;
   border-color: transparent;
-  svg{
+  svg {
     width: 1rem;
     height: 1rem;
     color: #75757f;
@@ -79,7 +80,7 @@ const SoundButton = styled(Button)`
   &:hover {
     background-color: #e3e7eb;
     border-color: #e3e7eb;
-    svg{
+    svg {
       color: #43434a;
     }
   }
@@ -87,35 +88,84 @@ const SoundButton = styled(Button)`
   &:focus {
     background-color: #dcddff;
     border-color: #dcddff;
-    svg{
+    svg {
       color: #523dc7;
     }
   }
   ${props =>
     props.checked &&
     css`
-    svg{
-      color: #523dc7;
-    }
+      svg {
+        color: #523dc7;
+      }
     `}
-`
+`;
 
-function onChange(checked) {
-  // console.log(`switch to ${checked}`);
-}
-
-function ContentAlarm() {
+function ContentAlarm({
+  desktopAlarm,
+  soundAlarm,
+  messageAlarm,
+  messagePreviewAlarm,
+  meetingAlarm,
+  meetingStartAlarm,
+  meetingEndAlarm,
+  mailAlarm,
+  calendarAlarm,
+}) {
   const { authStore } = useCoreStores();
 
-  const handleFinish = values => {
-    // ----Store.-------(values) ->toggle change store 참조
-    console.log(values)
+  const [isAlarmChecked, setIsAlarmChecked] = useState(true);
+  const [isSoundChecked, setIsSoundChecked] = useState(true);
+
+  const [isMessageNoticeChecked, setIsMessageNoticeChecked] = useState(true);
+  const [isMessagePreviewChecked, setIsMessagePreviewChecked] = useState(true);
+
+  const [isMeetingNoticeChecked, setIsMeetingNoticeChecked] = useState(true);
+  const [isMeetingStartChecked, setIsMeetingStartChecked] = useState(true);
+  const [isMeetingEndChecked, setIsMeetingEndChecked] = useState(true);
+
+  const [isMailNoticeChecked, setisMailNoticeChecked] = useState(true);
+  const [isCalendarNoticeChecked, setIsCalendarNoticeChecked] = useState(true);
+
+  // value - On: True, Off: False
+  const handleDeskTopNotification = value => {
+    setIsAlarmChecked(value);
   };
 
-  const [alarmchecked, setAlarmchecked] = useState(true);
-  const [soundChecked, setsoundChecked] = useState(true);
-  const [messageChecked, setmessageChecked] = useState(true);
-  const [meetingChecked, setmeetingChecked] = useState(true);
+  const handleAlarmSound = value => {
+    setIsSoundChecked(value);
+  };
+
+  const handleTalkMessage = value => {
+    setIsMessageNoticeChecked(value);
+  };
+
+  const handleMessagePreview = () => {
+    setIsMessagePreviewChecked(!isMessagePreviewChecked);
+  };
+
+  const handleMeetingNotice = value => {
+    setIsMeetingNoticeChecked(value);
+  };
+
+  const handleMeetingStart = () => {
+    setIsMeetingStartChecked(!isMeetingStartChecked);
+  };
+
+  const handleMeetingEnd = () => {
+    setIsMeetingEndChecked(!isMeetingEndChecked);
+  };
+
+  const handleMailNotice = value => {
+    setisMailNoticeChecked(value);
+  };
+
+  const handleCalendarNotice = value => {
+    setIsCalendarNoticeChecked(value);
+  };
+
+  const alarmSound = new Audio();
+  alarmSound.src = AlarmSound;
 
   return (
     <>
@@ -123,81 +173,109 @@ function ContentAlarm() {
         title="알림"
         subTitle="바탕화면 알림을 허용하면, 다른 작업중에도 놓치지 않고 알림을 받아보실 수 있습니다."
       />
-      <form onValuesChange={handleFinish}>
-        <FormItemMain
-          valuePropName="alarmchecked"
-        >
+      <form>
+        <FormItemMain valuePropName="alarmchecked">
           <ItemMain>
-            <Switch defaultChecked onChange={(alarmchecked) => {
-              setAlarmchecked(alarmchecked);
-            }} />
+            <Switch defaultChecked onChange={handleDeskTopNotification} />
             <span>바탕화면 알림 허용</span>
           </ItemMain>
         </FormItemMain>
-        {alarmchecked && (
+        {isAlarmChecked && (
           <AlarmList>
             <FormItem valuePropName="alarmchecked">
               <ItemInfo>
-                <ItemTitle for="alarmsound">소리 알림</ItemTitle>
-                {soundChecked && (
+                <ItemTitle htmlFor="alarmsound">소리 알림</ItemTitle>
+                {isSoundChecked && (
                   <ItemSub>
                     <SoundText>알림 소리 - WAPL</SoundText>
                     {/* click시 checked */}
-                    <SoundButton type="circle"><SoundIcon /></SoundButton>
+                    <SoundButton type="circle">
+                      <SoundIcon onClick={() => alarmSound.play()} />
+                    </SoundButton>
                   </ItemSub>
                 )}
               </ItemInfo>
               <Switch
                 id="alarmsound"
                 defaultChecked
-                onChange={soundChecked => setsoundChecked(soundChecked)}
+                onChange={handleAlarmSound}
               />
             </FormItem>
             <FormItem>
               <ItemInfo>
-                <ItemTitle for="newmessagetoggle">Talk 새 메시지 수신</ItemTitle>
-                {messageChecked && (
+                <ItemTitle htmlFor="newmessagetoggle">
+                  Talk 새 메시지 수신
+                </ItemTitle>
+                {isMessageNoticeChecked && (
                   <ItemSub>
-                    <Checkbox onChange={onChange} shape="round">메시지 내용 미리보기</Checkbox>
+                    <Checkbox
+                      checked={isMessagePreviewChecked}
+                      onChange={handleMessagePreview}
+                      shape="round"
+                    >
+                      메시지 내용 미리보기
+                    </Checkbox>
                   </ItemSub>
                 )}
               </ItemInfo>
               <Switch
                 id="newmessagetoggle"
                 defaultChecked
-                onChange={messageChecked => setmessageChecked(messageChecked)}
+                onChange={handleTalkMessage}
               />
             </FormItem>
             <FormItem>
               <ItemInfo>
-                <ItemTitle for="Meetingtoggle">Meeting 회의 알림</ItemTitle>
-                {meetingChecked && (
+                <ItemTitle htmlFor="Meetingtoggle">Meeting 회의 알림</ItemTitle>
+                {isMeetingNoticeChecked && (
                   <ItemSub>
-                    <Checkbox onChange={onChange} shape="round">회의 시작</Checkbox>
-                    <Checkbox onChange={onChange} shape="round">회의 종료</Checkbox>
+                    <Checkbox
+                      checked={isMeetingStartChecked}
+                      onChange={handleMeetingStart}
+                      shape="round"
+                    >
+                      회의 시작
+                    </Checkbox>
+                    <Checkbox
+                      checked={isMeetingEndChecked}
+                      onChange={handleMeetingEnd}
+                      shape="round"
+                    >
+                      회의 종료
+                    </Checkbox>
                   </ItemSub>
                 )}
               </ItemInfo>
               <Switch
                 id="Meetingtoggle"
                 defaultChecked
-                onChange={meetingChecked => setmeetingChecked(meetingChecked)}
+                onChange={handleMeetingNotice}
               />
             </FormItem>
             <FormItem>
               <ItemInfo>
-                <ItemTitle for="Newlettertoggle">Mail 새 편지 수신</ItemTitle>
-                <ItemSub>
-                  BASIC 플랜에서는 제공하지 않는 서비스 입니다.
-                </ItemSub>
+                <ItemTitle htmlFor="Newlettertoggle">
+                  Mail 새 편지 수신
+                </ItemTitle>
+                <ItemSub>BASIC 플랜에서는 제공하지 않는 서비스 입니다.</ItemSub>
               </ItemInfo>
-              <Switch id="Newlettertoggle" defaultChecked onChange={onChange} />
+              <Switch
+                id="Newlettertoggle"
+                defaultChecked
+                onChange={handleMailNotice}
+              />
             </FormItem>
             <FormItem>
               <ItemInfo>
-                <ItemTitleBlack for="scheduletoggle">TeeCalendar 일정 미리 알림</ItemTitleBlack>
+                <ItemTitleBlack htmlFor="scheduletoggle">
+                  TeeCalendar 일정 미리 알림
+                </ItemTitleBlack>
               </ItemInfo>
-              <Switch id="scheduletoggle" defaultChecked onChange={onChange} />
+              <Switch
+                id="scheduletoggle"
+                defaultChecked
+                onChange={handleCalendarNotice}
+              />
             </FormItem>
           </AlarmList>
         )}

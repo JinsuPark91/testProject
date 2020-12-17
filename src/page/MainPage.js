@@ -24,13 +24,7 @@ const MainPage = () => {
   const { resourceType, resourceId, mainApp } = useParams();
   const { sub: subApp } = useQueryParams(history.location.search);
 
-  const {
-    roomStore,
-    userStore,
-    friendStore,
-    spaceStore,
-    waplUserStore,
-  } = useCoreStores();
+  const { roomStore, userStore, friendStore, spaceStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
   /*
     Loading 체크
