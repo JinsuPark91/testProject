@@ -42,7 +42,7 @@ function FriendsLNBFooter() {
   const [spaceMemberList, setSpaceMemberList] = useState([]);
 
   const handleOpenAddFriendsDialog = useCallback(async () => {
-    if (PlatformUIStore.space && PlatformUIStore.space.userCount === 1) {
+    if (spaceStore.currentSpace && spaceStore.currentSpace.userCount === 1) {
       setIsSpaceEmpty(true);
     } else {
       const response = await orgStore.getOrgTree();
@@ -55,7 +55,7 @@ function FriendsLNBFooter() {
             myProfile?.companyCode,
             myProfile?.departmentCode,
             myProfile?.id,
-            // PlatformUIStore.domainKey,
+            // myProfile?.domainKey,
           );
           setSpaceMemberList(res);
         } catch (e) {

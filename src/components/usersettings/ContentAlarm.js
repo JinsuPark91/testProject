@@ -101,11 +101,17 @@ const SoundButton = styled(Button)`
     `}
 `;
 
-function onChange(checked) {
-  console.log(`switch to ${checked}`);
-}
-
-function ContentAlarm() {
+function ContentAlarm({
+  desktopAlarm,
+  soundAlarm,
+  messageAlarm,
+  messagePreviewAlarm,
+  meetingAlarm,
+  meetingStartAlarm,
+  meetingEndAlarm,
+  mailAlarm,
+  calendarAlarm,
+}) {
   const { authStore } = useCoreStores();
 
   const [isAlarmChecked, setIsAlarmChecked] = useState(true);
