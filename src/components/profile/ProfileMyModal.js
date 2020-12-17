@@ -72,22 +72,8 @@ const ProfileMyModal = ({
   }, []);
 
   const handleLogout = async () => {
-    /* keycloak 임시 코드 */
-    const url = window.location.origin; //  http://xxx.dev.teespace.net
-    const con_url = url.split(`//`)[1]; // xxx.dev.teespace.net
-    const main_url = con_url.slice(con_url.indexOf('.') + 1, con_url.length); // dev.teespace.net
-
-    await authStore.logout({});
-    if (process.env.REACT_APP_ENV === `local`) {
-      WWMS.disconnect();
-      history.push(`/login`);
-    } else {
-      WWMS.disconnect();
-      /* keycloak 임시 logout */
-      await keycloak.logout({
-        redirectUri: `http://${main_url}/spaces`,
-      });
-    }
+    history.push(`/logout`);
+    // 기존코드는 logoutPage.js 로 옮겨짐
   };
 
   const revokeURL = useCallback(() => {
