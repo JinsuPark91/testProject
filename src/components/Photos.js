@@ -59,6 +59,7 @@ function Photos({
 }
 
 const Wrapper = styled.div`
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   flex: 0 0 ${({ defaultDiameter }) => defaultDiameter}rem;

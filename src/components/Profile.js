@@ -409,6 +409,7 @@ const Profile = observer(
                 )}
               </BigText>
               <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
+              {/* NOTE 프로파일 상태 메시지는 추후에 지원함.
               <UserStatusMsg>
                 {editEnabled ? (
                   <StyleInput
@@ -427,6 +428,7 @@ const Profile = observer(
                   profile?.profileStatusMsg
                 )}
               </UserStatusMsg>
+              */}
               <UserInfoList>
                 <UserInfoItem>
                   <StyleOfficeIcon iconimg="address" />
