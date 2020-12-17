@@ -223,6 +223,15 @@ function AddFriendsBySearch({
     toggleInviteDialog();
   };
 
+  const handleChangeSearchText = e => {
+    setSearchText(e.target.value);
+  };
+
+  const handleCancelInvite = () => {
+    setSearchText('');
+    onCancelAddFriends();
+  };
+
   const handleSearch = event => {
     const targetText = event.target.value;
     setSearchText(targetText);
@@ -241,7 +250,7 @@ function AddFriendsBySearch({
         footer={null}
         width="24.38rem"
         title={title}
-        onCancel={onCancelAddFriends}
+        onCancel={handleCancelInvite}
       >
         {isSpaceEmpty ? (
           <InvitationForm>
@@ -264,6 +273,8 @@ function AddFriendsBySearch({
                 style={{ width: '100%' }}
                 onPressEnter={handleSearch}
                 onClear={handleCancelIconClick}
+                onChange={handleChangeSearchText}
+                value={searchText}
               />
             </SearchBox>
             {isOrgExist ? (
