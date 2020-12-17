@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { EventBus, useCoreStores } from 'teespace-core';
+import { EventBus, useCoreStores, DesktopNotification } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
@@ -26,6 +26,22 @@ const MainPage = () => {
 
   const { roomStore, userStore, friendStore, spaceStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
+
+  /**
+   * Desktop Notification 권한 확인 및 클릭 시 핸들링 추가
+   */
+  useEffect(() => {
+    DesktopNotification.askPermission();
+    DesktopNotification.onClick = noti => {
+      const { data } = noti.target;
+      if (data) {
+        if (data.url) {
+          history.push(data.url);
+        }
+      }
+    };
+  }, []);
+
   /*
     Loading 체크
   */
