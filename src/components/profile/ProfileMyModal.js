@@ -191,7 +191,7 @@ const ProfileMyModal = ({
     <>
       <UserImage src={thumbPhoto} onLoad={revokeURL} />
       <UserName>{profile?.nick || profile?.name}</UserName>
-      <UserMail>{`(${profile?.email})`}</UserMail>
+      <UserMail>{`(${profile?.loginId})`}</UserMail>
       <UserButtonBox>
         <Button type="link" onClick={toggleEditMode}>
           프로필 편집
