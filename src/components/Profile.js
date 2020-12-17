@@ -4,7 +4,7 @@ import Upload from 'rc-upload';
 import styled, { css } from 'styled-components';
 import { Button, Input, Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
-import { useCoreStores, Message } from 'teespace-core';
+import { useCoreStores, Message, Toast } from 'teespace-core';
 import friendsIcon from '../assets/ts_friends.svg';
 import profileEditIcon from '../assets/ts_profile_edit.svg';
 import teeMeetingIcon from '../assets/ts_TeeMeeting.svg';
@@ -31,6 +31,8 @@ const Profile = observer(
     const { roomStore, userStore, friendStore } = useCoreStores();
     const [isEditMode, setEditMode] = useState(editOnlyMode);
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
+    const [toastText, setToastText] = useState('');
+    const [isToastVisible, setIsToastVisible] = useState(false);
     const [isChange, setIsChange] = useState(false);
 
     // NOTE. Setting state to undefined means the state is not changed
@@ -254,12 +256,20 @@ const Profile = observer(
     const handleToggleFavoriteFriend = useCallback(
       async event => {
         if (event) event.stopPropagation();
+        const isFav = !friendStore.isFavoriteFriend(userId);
         try {
           await friendStore.setFriendFavorite({
             myUserId: userStore.myProfile.id,
             friendId: userId,
-            isFav: !friendStore.isFavoriteFriend(userId),
+            isFav,
           });
+
+          if (isFav) {
+            setToastText('즐겨찾기가 설정되었습니다.');
+          } else {
+            setToastText('즐겨찾기가 해제되었습니다.');
+          }
+          setIsToastVisible(true);
         } catch (e) {
           console.log(e);
         }
@@ -292,6 +302,13 @@ const Profile = observer(
             },
           ]}
         />
+        <Toast
+          visible={isToastVisible}
+          timeoutMs={1000}
+          onClose={() => setIsToastVisible(false)}
+        >
+          {toastText}
+        </Toast>
         <Wrapper imageSrc={renderBackgroundPhoto}>
           {showSider && (
             <Sidebar>
