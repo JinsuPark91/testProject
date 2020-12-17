@@ -17,6 +17,7 @@ import SignUpFormPage from './page/SignUpFormPage';
 import SignUpCompletePage from './page/SignUpCompletePage';
 import DriveSharedFilePage from './page/DriveSharedFilePage';
 import OfficeFilePage from './page/OffiveFilePage';
+import LogoutPage from './page/LogoutPage';
 // import MainPage from './local-test/MainPage';
 import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
@@ -61,6 +62,7 @@ function App() {
             <Route exact path="/">
               <Redirect to="/login" />
             </Route>
+            <Route exact path="/logout" component={LogoutPage} />
             <Route exact path="/drive/files/:fileId">
               <DriveSharedFilePage />
             </Route>

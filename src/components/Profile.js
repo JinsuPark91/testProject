@@ -426,6 +426,7 @@ const Profile = observer(
                 )}
               </BigText>
               <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
+              {/* NOTE 프로파일 상태 메시지는 추후에 지원함.
               <UserStatusMsg>
                 {editEnabled ? (
                   <StyleInput
@@ -444,6 +445,7 @@ const Profile = observer(
                   profile?.profileStatusMsg
                 )}
               </UserStatusMsg>
+              */}
               <UserInfoList>
                 <UserInfoItem>
                   <StyleOfficeIcon iconimg="address" />
@@ -455,7 +457,7 @@ const Profile = observer(
                     <StyleInput
                       onChange={e => {
                         setIsChange(true);
-                        setMobile(e.target.value);
+                        setPhone(e.target.value);
                       }}
                       value={phone !== undefined ? phone : profile?.companyNum}
                     />
@@ -469,7 +471,7 @@ const Profile = observer(
                     <StyleInput
                       onChange={e => {
                         setIsChange(true);
-                        setPhone(e.target.value);
+                        setMobile(e.target.value);
                       }}
                       value={mobile !== undefined ? mobile : profile?.phone}
                     />
