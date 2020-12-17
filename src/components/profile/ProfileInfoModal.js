@@ -85,7 +85,7 @@ function ProfileInfoModal({
     setLocalBackgroundPhoto(undefined);
   };
 
-  const isValidInputData = () => !!name;
+  const isValidInputData = () => name === undefined || !!name;
 
   useEffect(() => {
     if (visible === false) return;
