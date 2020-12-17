@@ -151,5 +151,5 @@
     "rollup-plugin-url": "^3.0.1",
     "rollup-plugin-visualizer": "^4.1.1"
   },
-  "proxy" : "http://dev.dev.teespace.net"
+  "proxy": "http://dev.dev.teespace.net"
 }
