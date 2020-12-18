@@ -570,7 +570,6 @@ const FriendItem = observer(
 
     const handleItemClick = useCallback(
       e => {
-        if (e) e.preventDefault();
         if (e) e.stopPropagation();
         if (onClick) {
           onClick(itemId);
