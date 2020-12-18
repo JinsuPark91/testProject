@@ -141,8 +141,8 @@ const ProfileMyModal = ({
   }, []);
 
   const handleAdminPage = useCallback(() => {
-    window.open(`${window.location.href}/admin`);
-  }, []);
+    history.push(`/admin`);
+  }, [history]);
 
   /// TODO REFACTOR: Move Page 함수 하나로 합치기!!!!
   const handleMoveSpacePage = useCallback(() => {
@@ -352,7 +352,7 @@ const ProfileMyModal = ({
               {spaceStore.spaceList.map(elem => (
                 <ConvertItem
                   onClick={() => {
-                    window.location.href = elem.domain;
+                    window.location.href = `${window.location.protocol}//${elem.domain}`;
                   }}
                   key={elem}
                 >
