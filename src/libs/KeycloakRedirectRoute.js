@@ -36,7 +36,7 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
             return <Component {...props} />;
           } else {
             keycloak.login({
-              redirectUri: `http://${main_url}?domain=${sub_url}`,
+              redirectUri: `http://${main_url}/domain/${sub_url}`,
               locale: 'ko', // login page locale 설정. 'en' or 'ko' 설정.
             }); // keycloak login page로 redirect
           }

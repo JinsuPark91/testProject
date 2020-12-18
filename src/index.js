@@ -22,9 +22,11 @@ setEnv({
   resourceURL: `http://${
     process.env.REACT_APP_DEV_SERVICE_DOMAIN || window.location.hostname
   }`,
-  comURL: global.env.REACT_APP_COMMON_URL ||`http://${
-    process.env.REACT_APP_DEV_COM_DOMAIN || window.location.hostname
-  }`,
+  comURL:
+    global.env.REACT_APP_COMMON_URL ||
+    `http://${
+      process.env.REACT_APP_DEV_COM_DOMAIN || window.location.hostname
+    }`,
   websocketURL: `ws://${
     process.env.REACT_APP_DEV_WEBSOCKET_DOMAIN || window.location.hostname
   }/${process.env.REACT_APP_DEV_WEBSOCKET_PATH}`,
@@ -34,19 +36,30 @@ const url = window.location.origin; //  http://xxx.dev.teespace.net
 const con_url = url.split(`//`)[1]; // xxx.dev.teespace.net
 const sub_url = url.split(`//`)[1].split(`.`)[0]; //  xxx
 const main_url = con_url.slice(con_url.indexOf('.') + 1, con_url.length); //dev.teespace.net
+const urlParams = new URLSearchParams(window.location.search);
+const tokenParam = urlParams.get('accessToken');
+const idTokenParam = urlParams.get('idToken');
+const refreshTokenParam = urlParams.get('refreshToken');
 
 ReactDOM.render(
   <CoreStoreProvider config={getEnv()}>
     <ReactKeycloakProvider
       authClient={keycloak}
-      initOptions={{
-        checkLoginIframe: false,
-
-        redirectUri:
-          process.env.REACT_APP_ENV === 'local'
-            ? `http://localhost:3000`
-            : `http://${main_url}?domain=${sub_url}`,
-      }}
+      initOptions={
+        tokenParam
+          ? {
+              token: tokenParam,
+              idToken: idTokenParam,
+              refreshToken : refreshTokenParam,
+            }
+          : {
+              checkLoginIframe: false,
+              redirectUri:
+                process.env.REACT_APP_ENV === 'local'
+                  ? `http://localhost:3000`
+                  : `http://${main_url}/domain/${sub_url}`,
+            }
+      }
     >
       <GlobalStyle />
       <GlobalCommonStyles />

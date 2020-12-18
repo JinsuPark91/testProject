@@ -66,7 +66,11 @@ function App() {
             <Route exact path="/drive/files/:fileId">
               <DriveSharedFilePage />
             </Route>
-            <KeycloakRedirectRoute exact path="/login" component={LoginPage} />
+            <KeycloakRedirectRoute
+              exact
+              path="/login"
+              component={process.env.REACT_APP_ENV === `local` ? LoginPage : MainPage}
+            />
             <PrivateRoute path="/office/:fileId" component={OfficeFilePage} />
             <RedirectablePublicRoute
               exact
