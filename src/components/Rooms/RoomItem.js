@@ -147,7 +147,7 @@ const RoomDropdown = React.memo(
           </Menu.Item>
         )}
         <Menu.Item key="member" onClick={handleViewMember}>
-          멤버 보기
+          룸 구성원 보기
         </Menu.Item>
         <Menu.Item key="changeName" onClick={handleNameChange}>
           이름 변경
