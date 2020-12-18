@@ -33,11 +33,19 @@ function Settingsave(props) {
   const handleMoveSpacePage = useCallback(() => {
     const url = window.location.href;
     const purl = url?.split('.');
-    if (purl[0] === 'dev' || purl[0] !== 'wapl') {
-      window.location.href =
-        `${window.location.protocol}//` + `dev.wapl.ai/spaces`;
+    if (
+      purl[0].match('127') ||
+      purl[0].match('192') ||
+      purl[0].match('local')
+    ) {
+      window.location.href = `${window.location.protocol}//dev.wapl.ai/spaces`;
     } else {
-      window.location.href = `${window.location.protocol}//` + `wapl.ai/spaces`;
+      const tdomain = purl[1];
+      if (purl[1] === 'wapl') {
+        window.location.href = `${window.location.protocol}//wapl.ai/spaces`;
+      } else {
+        window.location.href = `${window.location.protocol}//${tdomain}wapl.ai/spaces`;
+      }
     }
   }, []);
 

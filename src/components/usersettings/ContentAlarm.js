@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useCoreStores, Switch, Checkbox } from 'teespace-core';
 import { Button } from 'antd';
 import styled, { css } from 'styled-components';
 import ContentTitle from './ContentTitle';
 import { ReactComponent as SoundIcon } from '../../assets/sound_on.svg';
 import AlarmSound from '../../assets/alarm_sound.wav';
+import { ALARM_TYPE, EDIT_TYPE } from './SettingConstants';
 
 const FormItemMain = styled.div`
   display: flex;
@@ -112,7 +113,7 @@ function ContentAlarm({
   mailAlarm,
   calendarAlarm,
 }) {
-  const { authStore } = useCoreStores();
+  const { userStore } = useCoreStores();
 
   const [isAlarmChecked, setIsAlarmChecked] = useState(true);
   const [isSoundChecked, setIsSoundChecked] = useState(true);
@@ -124,44 +125,146 @@ function ContentAlarm({
   const [isMeetingStartChecked, setIsMeetingStartChecked] = useState(true);
   const [isMeetingEndChecked, setIsMeetingEndChecked] = useState(true);
 
-  const [isMailNoticeChecked, setisMailNoticeChecked] = useState(true);
+  const [isMailNoticeChecked, setIsMailNoticeChecked] = useState(true);
   const [isCalendarNoticeChecked, setIsCalendarNoticeChecked] = useState(true);
 
+  const handleInitState = value => {
+    switch (value) {
+      case ALARM_TYPE.DESKTOP: {
+        setIsAlarmChecked(false);
+        break;
+      }
+
+      case ALARM_TYPE.TALK: {
+        setIsMessageNoticeChecked(false);
+        break;
+      }
+
+      case ALARM_TYPE.TALK_CONTENTS: {
+        setIsMessagePreviewChecked(false);
+        break;
+      }
+
+      case ALARM_TYPE.MEETING: {
+        setIsMeetingNoticeChecked(false);
+        break;
+      }
+
+      case ALARM_TYPE.MEETING_START: {
+        setIsMeetingStartChecked(false);
+        break;
+      }
+
+      case ALARM_TYPE.MEETING_END: {
+        setIsMeetingEndChecked(false);
+        break;
+      }
+
+      case ALARM_TYPE.MAIL: {
+        setIsMailNoticeChecked(false);
+        break;
+      }
+
+      case ALARM_TYPE.CALENDAR: {
+        setIsCalendarNoticeChecked(false);
+        break;
+      }
+
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        console.log(EDIT_TYPE.INSERT);
+        const res = await userStore.getAlarmList(userStore.myProfile.id);
+        console.log(res);
+        // if (res) {
+        //   res.forEach(elem => handleInitState(elem));
+        // }
+      } catch (e) {
+        console.log(`getalarmlist error${e}`);
+      }
+    })();
+  }, [userStore]);
+
   // value - On: True, Off: False
-  const handleDeskTopNotification = value => {
+  const handleDeskTopNotification = async value => {
     setIsAlarmChecked(value);
+    await userStore.updateAlarm({
+      userId: userStore.myProfile.id,
+      type: value ? EDIT_TYPE.INSERT : EDIT_TYPE.DELETE,
+      alarmCode: ALARM_TYPE.DESKTOP,
+    });
   };
 
   const handleAlarmSound = value => {
     setIsSoundChecked(value);
   };
 
-  const handleTalkMessage = value => {
+  const handleTalkMessage = async value => {
     setIsMessageNoticeChecked(value);
+    await userStore.updateAlarm({
+      userId: userStore.myProfile.id,
+      type: value ? EDIT_TYPE.INSERT : EDIT_TYPE.DELETE,
+      alarmCode: ALARM_TYPE.TALK,
+    });
   };
 
-  const handleMessagePreview = () => {
+  const handleMessagePreview = async () => {
     setIsMessagePreviewChecked(!isMessagePreviewChecked);
+    await userStore.updateAlarm({
+      userId: userStore.myProfile.id,
+      type: !isMessagePreviewChecked ? EDIT_TYPE.INSERT : EDIT_TYPE.DELETE,
+      alarmCode: ALARM_TYPE.TALK_CONTENTS,
+    });
   };
 
-  const handleMeetingNotice = value => {
+  const handleMeetingNotice = async value => {
     setIsMeetingNoticeChecked(value);
+    await userStore.updateAlarm({
+      userId: userStore.myProfile.id,
+      type: value ? EDIT_TYPE.INSERT : EDIT_TYPE.DELETE,
+      alarmCode: ALARM_TYPE.MEETING,
+    });
   };
 
-  const handleMeetingStart = () => {
+  const handleMeetingStart = async () => {
     setIsMeetingStartChecked(!isMeetingStartChecked);
+    userStore.updateAlarm({
+      userId: userStore.myProfile.id,
+      type: !isMeetingStartChecked ? EDIT_TYPE.INSERT : EDIT_TYPE.DELETE,
+      alarmCode: ALARM_TYPE.MEETING_START,
+    });
   };
 
   const handleMeetingEnd = () => {
     setIsMeetingEndChecked(!isMeetingEndChecked);
+    userStore.updateAlarm({
+      userId: userStore.myProfile.id,
+      type: !isMeetingEndChecked ? EDIT_TYPE.INSERT : EDIT_TYPE.DELETE,
+      alarmCode: ALARM_TYPE.MEETING_END,
+    });
   };
 
-  const handleMailNotice = value => {
-    setisMailNoticeChecked(value);
+  const handleMailNotice = async value => {
+    setIsMailNoticeChecked(value);
+    await userStore.updateAlarm({
+      userId: userStore.myProfile.id,
+      type: value ? EDIT_TYPE.INSERT : EDIT_TYPE.DELETE,
+      alarmCode: ALARM_TYPE.MAIL,
+    });
   };
 
-  const handleCalendarNotice = value => {
+  const handleCalendarNotice = async value => {
     setIsCalendarNoticeChecked(value);
+    await userStore.updateAlarm({
+      userId: userStore.myProfile.id,
+      type: value ? EDIT_TYPE.INSERT : EDIT_TYPE.DELETE,
+      alarmCode: ALARM_TYPE.CALENDAR,
+    });
   };
 
   const alarmSound = new Audio();
@@ -197,7 +300,7 @@ function ContentAlarm({
               </ItemInfo>
               <Switch
                 id="alarmsound"
-                defaultChecked
+                defaultChecked={isAlarmChecked}
                 onChange={handleAlarmSound}
               />
             </FormItem>
@@ -220,7 +323,7 @@ function ContentAlarm({
               </ItemInfo>
               <Switch
                 id="newmessagetoggle"
-                defaultChecked
+                defaultChecked={isMessageNoticeChecked}
                 onChange={handleTalkMessage}
               />
             </FormItem>
@@ -248,7 +351,7 @@ function ContentAlarm({
               </ItemInfo>
               <Switch
                 id="Meetingtoggle"
-                defaultChecked
+                defaultChecked={isMeetingNoticeChecked}
                 onChange={handleMeetingNotice}
               />
             </FormItem>
@@ -261,7 +364,7 @@ function ContentAlarm({
               </ItemInfo>
               <Switch
                 id="Newlettertoggle"
-                defaultChecked
+                defaultChecked={isMailNoticeChecked}
                 onChange={handleMailNotice}
               />
             </FormItem>
@@ -273,7 +376,7 @@ function ContentAlarm({
               </ItemInfo>
               <Switch
                 id="scheduletoggle"
-                defaultChecked
+                defaultChecked={isCalendarNoticeChecked}
                 onChange={handleCalendarNotice}
               />
             </FormItem>

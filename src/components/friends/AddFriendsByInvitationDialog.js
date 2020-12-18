@@ -149,10 +149,12 @@ function AddFriendsBySearch({ visible, onCancel }) {
   };
 
   const handlePressEnter = () => {
-    const chipsSet = new Set(chipList);
-    chipsSet.add(mailAddress);
-    setChipList(Array.from(chipsSet));
-    setMailAddress('');
+    if (mailAddress.length) {
+      const chipsSet = new Set(chipList);
+      chipsSet.add(mailAddress);
+      setChipList(Array.from(chipsSet));
+      setMailAddress('');
+    }
   };
 
   const handleCloseChip = elem => {
