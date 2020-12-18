@@ -254,7 +254,7 @@ function ProfileInfoModal({
     }
 
     // Update my profile information
-    await userStore.updateMyProfile({ updatedInfo });
+    setProfile(await userStore.updateMyProfile({ updatedInfo }));
 
     // Reset local input date
     resetLocalInputData();
@@ -446,7 +446,7 @@ function ProfileInfoModal({
               <EditNumInputBox>
                 <Input
                   value={
-                    phone !== undefined ? phone : profile?.companyNum || `-`
+                    phone !== undefined ? phone : profile?.companyNum || ``
                   }
                   onChange={e => {
                     setPhone(e.target.value);
@@ -456,11 +456,33 @@ function ProfileInfoModal({
               </EditNumInputBox>
             </>
           ) : (
-            userType === 'USR0001' && (profile?.companyNum || `-`)
+            userType === 'USR0001' &&
+            (profile?.companyNum
+              ? profile?.nationalCode + ' ' + profile?.companyNum
+              : `-`)
           )}
         </UserInfoItem>
         <UserInfoItem>
+          <UserInfoIcon iconimg="phone" />
           {isEditMode ? (
+            <>
+              <EditNumInputBox>
+                <Input
+                  value={mobile !== undefined ? mobile : profile?.phone || ``}
+                  onChange={e => {
+                    setMobile(e.target.value);
+                    setIsChange(true);
+                  }}
+                />
+              </EditNumInputBox>
+            </>
+          ) : profile?.phone ? (
+            profile?.nationalCode + ' ' + profile?.phone
+          ) : (
+            `-`
+          )}
+          {/* 1월 업데이트 사항으로 추가 */}
+          {/* {isEditMode ? (
             <EditNotic>
               휴대폰 번호는 <strong>계정 정보 변경</strong>에서 변경하세요.
             </EditNotic>
@@ -469,7 +491,7 @@ function ProfileInfoModal({
               <UserInfoIcon iconimg="phone" /> {profile?.departmentCode}{' '}
               {profile?.phone || `-`}
             </>
-          )}
+          )} */}
         </UserInfoItem>
         {/* {userType === 'USR0001' && (
           <UserInfoItem>
