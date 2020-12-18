@@ -159,7 +159,7 @@ const ProfileMyModal = ({
       if (purl[1] === 'wapl') {
         window.location.href = `${window.location.protocol}//wapl.ai/spaces`;
       } else {
-        window.location.href = `${window.location.protocol}//${tdomain}wapl.ai/spaces`;
+        window.location.href = `${window.location.protocol}//${tdomain}.wapl.ai/spaces`;
       }
     }
   }, []);
@@ -178,7 +178,7 @@ const ProfileMyModal = ({
       if (purl[1] === 'wapl') {
         window.location.href = `${window.location.protocol}//wapl.ai/account`;
       } else {
-        window.location.href = `${window.location.protocol}//${tdomain}wapl.ai/account`;
+        window.location.href = `${window.location.protocol}//${tdomain}.wapl.ai/account`;
       }
     }
   }, []);
@@ -197,7 +197,7 @@ const ProfileMyModal = ({
       if (purl[1] === 'wapl') {
         window.open(`${window.location.protocol}//wapl.ai/support`);
       } else {
-        window.open(`${window.location.protocol}//${tdomain}wapl.ai/support`);
+        window.open(`${window.location.protocol}//${tdomain}.wapl.ai/support`);
       }
     }
   };
