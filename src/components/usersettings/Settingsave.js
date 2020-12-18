@@ -44,7 +44,7 @@ function Settingsave(props) {
       if (purl[1] === 'wapl') {
         window.location.href = `${window.location.protocol}//wapl.ai/spaces`;
       } else {
-        window.location.href = `${window.location.protocol}//${tdomain}wapl.ai/spaces`;
+        window.location.href = `${window.location.protocol}//${tdomain}.wapl.ai/spaces`;
       }
     }
   }, []);
