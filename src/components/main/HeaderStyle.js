@@ -75,5 +75,6 @@ export const AppIconWrapper = styled.div`
   height:1.5rem;
   overflow:hidden;
   margin-right:0.75rem;
-  cursor:pointer;
+  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+  pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
 `;

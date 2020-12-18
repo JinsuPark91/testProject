@@ -35,6 +35,7 @@ import {
   ViewFileActiveIcon,
   MeetingIcon,
   MeetingActiveIcon,
+  MeetingDisabledIcon,
 } from '../Icons';
 
 const apps = [
@@ -42,49 +43,78 @@ const apps = [
     name: 'drive',
     icons: {
       active: <DriveActiveIcon width={1.5} height={1.5} />,
+      disabled: <DriveIcon width={1.5} height={1.5} />,
       default: <DriveIcon width={1.5} height={1.5} />,
     },
+    isUsedInMyRoom: true,
   },
   {
     name: 'calendar',
     icons: {
       active: <CalendarActiveIcon width={1.5} height={1.5} />,
+      disabled: <CalendarIcon width={1.5} height={1.5} />,
       default: <CalendarIcon width={1.5} height={1.5} />,
     },
+    isUsedInMyRoom: true,
   },
   {
     name: 'note',
     icons: {
       active: <NoteActiveIcon width={1.5} height={1.5} />,
+      disabled: <NoteIcon width={1.5} height={1.5} />,
       default: <NoteIcon width={1.5} height={1.5} />,
     },
+    isUsedInMyRoom: true,
   },
 
   {
     name: 'meeting',
     icons: {
       active: <MeetingActiveIcon width={1.5} height={1.5} />,
+      disabled: <MeetingDisabledIcon width={1.5} height={1.5} />,
       default: <MeetingIcon width={1.5} height={1.5} />,
     },
+    isUsedInMyRoom: false,
   },
   {
     name: 'files',
     icons: {
       active: <ViewFileActiveIcon width={1.5} height={1.5} />,
+      disabled: <ViewFileIcon width={1.5} height={1.5} />,
       default: <ViewFileIcon width={1.5} height={1.5} />,
     },
+    isUsedInMyRoom: true,
   },
 ];
 
 const AppIcon = React.memo(
-  ({ subApp, appName, onClick, defaultIcon, activeIcon }) => {
+  ({
+    subApp,
+    appName,
+    onClick,
+    defaultIcon,
+    activeIcon,
+    disabledIcon,
+    disabled,
+  }) => {
     const handleAppClick = () => {
       onClick(appName);
     };
 
+    let icon = defaultIcon;
+    if (disabled) {
+      icon = disabledIcon;
+    } else {
+      icon = subApp === appName ? activeIcon : defaultIcon;
+    }
+
     return (
-      <AppIconWrapper key={appName} onClick={handleAppClick}>
-        {subApp === appName ? activeIcon : defaultIcon}
+      <AppIconWrapper
+        key={appName}
+        onClick={handleAppClick}
+        disabled={disabled}
+      >
+        {icon}
       </AppIconWrapper>
     );
   },
@@ -277,7 +307,7 @@ const Header = observer(() => {
             },
           ]}
         />
-        {apps.map(({ name, icons }) => (
+        {apps.map(({ name, icons, isUsedInMyRoom }) => (
           <AppIcon
             key={name}
             subApp={PlatformUIStore.subApp}
@@ -285,6 +315,8 @@ const Header = observer(() => {
             onClick={handleAppClick}
             defaultIcon={icons.default}
             activeIcon={icons.active}
+            disabledIcon={icons.disabled}
+            disabled={isMyRoom() && !isUsedInMyRoom}
           />
         ))}
       </AppIconContainer>
