@@ -24,8 +24,8 @@ const Profile = observer(
     editOnlyMode = false,
     showSider = true,
     onModeChange = null,
-    onClickSaveBtn = () => {},
-    onClickCancelBtn = () => {},
+    onClickSaveBtn = () => { },
+    onClickCancelBtn = () => { },
   }) => {
     const history = useHistory();
     const { roomStore, userStore, friendStore } = useCoreStores();
@@ -322,11 +322,11 @@ const Profile = observer(
                   <Text>프로필 편집</Text>
                 </StyledButton>
               ) : (
-                <StyledButton onClick={handleMeetingClick}>
-                  <StyleIcon iconimg="meeting" />
-                  <Text>1:1 Meeting</Text>
-                </StyledButton>
-              )}
+                  <StyledButton onClick={handleMeetingClick}>
+                    <StyleIcon iconimg="meeting" />
+                    <Text>1:1 Meeting</Text>
+                  </StyledButton>
+                )}
             </Sidebar>
           )}
           <Content showSider={showSider}>
@@ -422,8 +422,8 @@ const Profile = observer(
                     }
                   />
                 ) : (
-                  profile?.nick || profile?.name
-                )}
+                    profile?.nick || profile?.name
+                  )}
               </BigText>
               <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
               {/* NOTE 프로파일 상태 메시지는 추후에 지원함.
@@ -449,7 +449,7 @@ const Profile = observer(
               <UserInfoList>
                 <UserInfoItem>
                   <StyleOfficeIcon iconimg="address" />
-                  <StylText>{profile?.fullCompanyJob}</StylText>
+                  <UserInfoText>{profile?.fullCompanyJob}</UserInfoText>
                 </UserInfoItem>
                 <UserInfoItem>
                   <StyleOfficeIcon iconimg="company" />
@@ -462,8 +462,8 @@ const Profile = observer(
                       value={phone !== undefined ? phone : profile?.companyNum}
                     />
                   ) : (
-                    <StylText>{profile?.companyNum}</StylText>
-                  )}
+                      <UserInfoText>{profile?.companyNum}</UserInfoText>
+                    )}
                 </UserInfoItem>
                 <UserInfoItem>
                   <StyleOfficeIcon iconimg="phone" />
@@ -476,8 +476,8 @@ const Profile = observer(
                       value={mobile !== undefined ? mobile : profile?.phone}
                     />
                   ) : (
-                    <StylText>{profile?.phone}</StylText>
-                  )}
+                      <UserInfoText>{profile?.phone}</UserInfoText>
+                    )}
                 </UserInfoItem>
                 {/* 프로필 편집 시 "email" class 삭제 */}
                 {/* <UserInfoItem
@@ -488,7 +488,7 @@ const Profile = observer(
                 >
                   <StyleOfficeIcon iconimg="email" />
                   <StyleOfficeIcon iconimg="emailhover" />
-                  <StylText>{profile?.email}</StylText>
+                  <UserInfoText>{profile?.email}</UserInfoText>
                 </UserInfoItem> */}
               </UserInfoList>
               <ButtonContainer>
@@ -537,6 +537,7 @@ const Wrapper = styled.div`
 const Sidebar = styled.div`
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   width: ${props => (props.isVertical ? '100%' : '9.38rem')};
@@ -551,16 +552,18 @@ const StyledUpload = styled(Upload)`
 `;
 
 const Text = styled.span`
-  display: flex;
-  align-items: center;
+  overflow: hidden;
+  display: block;
+  width: 100%;
   color: #fff;
   font-size: 0.81rem;
   font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
 `;
 
 const UserEmailText = styled(Text)`
-  display: flex;
-  align-items: center;
   margin-top: 0.5rem;
   line-height: 1.25rem;
   color: rgba(255, 255, 255, 0.7);
@@ -632,13 +635,13 @@ const StyledButton = styled(Text)`
 `;
 
 const Content = styled.div`
+  overflow: hidden;
   display: flex;
   position: relative;
   width: 100%;
   height: 100%;
   flex-direction: column;
   align-items: center;
-  justify-content: top;
 `;
 
 const ContentTop = styled.div`
@@ -758,17 +761,16 @@ const StyleIcon = styled.span`
   }}
 `;
 
-const StylText = styled(Text)`
+const UserInfoText = styled.span`
+  overflow: hidden;
   display: inline-block;
   width: 12.19rem;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
-  align-items: center;
-  color: #fff;
-  line-height: 1.25rem;
   font-size: 0.88rem;
+  line-height: 1.25rem;
   font-weight: 600;
+  color: #fff;
 `;
 
 const StyleOfficeIcon = styled.em`
