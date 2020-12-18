@@ -102,7 +102,7 @@ function SettingDialog(props) {
   }, [selectedKey]);
 
   useEffect(() => {
-    setSelectedKey(selectedKeyA);
+    setSelectedKey('4'); // setSelectedKey(selectedKeyA);
   }, [selectedKeyA]);
 
   const handleSecessionButton = type => {
