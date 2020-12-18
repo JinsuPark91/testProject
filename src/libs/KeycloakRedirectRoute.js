@@ -29,8 +29,10 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
                 history.push(`/f/${authStore.user.id}/profile`);
               })
               .catch(e => console.error(e));
+          }else{
+            return <Component {...props} />;
           }
-          return <Component {...props} />;
+          return null;
         } else {
           if (process.env.REACT_APP_ENV === 'local') {
             return <Component {...props} />;
