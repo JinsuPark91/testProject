@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import { Button, Avatar, Dropdown, Menu, Checkbox } from 'antd';
 import { useCoreStores, Toast, WWMS } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
+import { useObserver } from 'mobx-react';
 // import { useTranslation } from 'react-i18next';
 import { useKeycloak } from '@react-keycloak/web';
 import ProfileModal from './ProfileModal';
@@ -72,8 +73,22 @@ const ProfileMyModal = ({
   }, []);
 
   const handleLogout = async () => {
-    history.push(`/logout`);
-    // 기존코드는 logoutPage.js 로 옮겨짐
+    /* keycloak 임시 코드 */
+    const url = window.location.origin; //  http://xxx.dev.teespace.net
+    const con_url = url.split(`//`)[1]; // xxx.dev.teespace.net
+    const main_url = con_url.slice(con_url.indexOf('.') + 1, con_url.length); // dev.teespace.net
+
+    await authStore.logout({});
+    if (process.env.REACT_APP_ENV === `local`) {
+      WWMS.disconnect();
+      history.push(`/login`);
+    } else {
+      WWMS.disconnect();
+      /* keycloak 임시 logout */
+      await keycloak.logout({
+        redirectUri: `http://${main_url}/spaces`,
+      });
+    }
   };
 
   const revokeURL = useCallback(() => {
@@ -112,7 +127,7 @@ const ProfileMyModal = ({
         myProfile?.companyCode,
         myProfile?.departmentCode,
         myProfile?.id,
-        // myProfile?.domainKey,
+        // PlatformUIStore.domainKey,
       );
       setSpaceMemberList(response);
     } catch (e) {
@@ -126,35 +141,60 @@ const ProfileMyModal = ({
   }, []);
 
   const handleAdminPage = useCallback(() => {
-    history.push('/admin');
-  }, [history]);
+    window.open(`${window.location.href}/admin`);
+  }, []);
 
   const handleMoveSpacePage = useCallback(() => {
     const url = window.location.href;
     const purl = url?.split('.');
-    if (purl[0] === 'dev' || purl[0] !== 'wapl') {
-      window.location.href =
-        `${window.location.protocol}//` + `dev.wapl.ai/spaces`;
+    if (
+      purl[0].match('127') ||
+      purl[0].match('192') ||
+      purl[0].match('local')
+    ) {
+      window.open(`${window.location.protocol}//dev.wapl.ai/spaces`);
     } else {
-      window.location.href = `${window.location.protocol}//` + `wapl.ai/spaces`;
+      const tdomain = purl[1];
+      if (purl[1] === 'wapl') {
+        window.open(`${window.location.protocol}//wapl.ai/spaces`);
+      } else {
+        window.open(
+          `${window.location.protocol}//` + tdomain + `wapl.ai/spaces`,
+        );
+      }
     }
   }, []);
 
   const handleOpenSupport = () => {
     const url = window.location.href;
     const purl = url?.split('.');
-    if (purl[0] === 'dev' || purl[0] !== 'wapl') {
+    if (
+      purl[0].match('127') ||
+      purl[0].match('192') ||
+      purl[0].match('local')
+    ) {
       window.open(`${window.location.protocol}//dev.wapl.ai/support`);
-    } else window.open(`${window.location.protocol}//wapl.ai/support`);
+    } else {
+      const tdomain = purl[1];
+      if (purl[1] === 'wapl') {
+        window.open(`${window.location.protocol}//wapl.ai/support`);
+      } else {
+        window.open(
+          `${window.location.protocol}//` + tdomain + `wapl.ai/support`,
+        );
+      }
+    }
   };
 
   useEffect(() => {
+    if (isEditMode === true) return;
     (async () => {
       const userProfile = await userStore.getProfile({ userId });
       setProfile(userProfile);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userStore]);
+  }, [isEditMode, userStore]);
+
   useEffect(() => {
     setIsCreated(created);
   }, [created]);
@@ -172,12 +212,13 @@ const ProfileMyModal = ({
       )}
     </Menu>
   );
-
   const userContent = !isEditMode ? (
     <>
       <UserImage src={thumbPhoto} onLoad={revokeURL} />
-      <UserName>{profile?.nick || profile?.name}</UserName>
-      <UserMail>{`(${profile?.loginId})`}</UserMail>
+      <UserName>
+        {userStore.myProfile?.nick || userStore.myProfile?.name}
+      </UserName>
+      <UserMail>{`(${userStore.myProfile?.loginId})`}</UserMail>
       <UserButtonBox>
         <Button type="link" onClick={toggleEditMode}>
           프로필 편집
@@ -353,7 +394,7 @@ const ProfileMyModal = ({
     </>
   );
 
-  return (
+  return useObserver(() => (
     <ProfileModal
       visible={visible}
       mask={isCreated}
@@ -384,7 +425,7 @@ const ProfileMyModal = ({
       maskTransitionName=""
       style={{ top: '2.875rem', margin: '0 20px 0 auto' }}
     />
-  );
+  ));
 };
 
 const UserImage = styled.img`
