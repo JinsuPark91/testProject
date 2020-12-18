@@ -134,9 +134,14 @@ const RoomDropdown = React.memo(
 
     const roomMenu = () => (
       <StyledMenu>
-        <Menu.Item key="setting" onClick={handleSetting}>
-          룸 설정
-        </Menu.Item>
+        {
+          // NOTE. 마이룸과 1:1 룸은 이름 변경할 수 있음
+          roomInfo.userCount > 2 && (
+            <Menu.Item key="changeName" onClick={handleNameChange}>
+              이름 변경
+            </Menu.Item>
+          )
+        }
         {roomInfo.isRoomBookmarked ? (
           <Menu.Item key="disableBookmark" onClick={handleBookmarkDisable}>
             룸 상단 고정 해제
@@ -146,12 +151,6 @@ const RoomDropdown = React.memo(
             룸 상단 고정
           </Menu.Item>
         )}
-        <Menu.Item key="member" onClick={handleViewMember}>
-          룸 구성원 보기
-        </Menu.Item>
-        <Menu.Item key="changeName" onClick={handleNameChange}>
-          이름 변경
-        </Menu.Item>
         {roomInfo.isAlarmUsed ? (
           <Menu.Item key="disableAlarm" onClick={handleAlarmDisable}>
             알림 끄기
@@ -161,6 +160,17 @@ const RoomDropdown = React.memo(
             알림 켜기
           </Menu.Item>
         )}
+        <Menu.Item key="member" onClick={handleViewMember}>
+          룸 구성원 보기
+        </Menu.Item>
+        {
+          // NOTE. 마이룸과 1:1 룸은 룸설정 할 수 없음
+          roomInfo.userCount > 2 && (
+            <Menu.Item key="setting" onClick={handleSetting}>
+              룸 설정
+            </Menu.Item>
+          )
+        }
         <Menu.Item key="exit" onClick={handleExit}>
           나가기
         </Menu.Item>
