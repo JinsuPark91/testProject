@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography, Button, Modal } from 'antd';
 import { useCoreStores } from 'teespace-core';
+import { talkRoomStore } from 'teespace-talk-app';
 import privateRoomImg from '../../assets/private_room.svg';
 import openRoomImg from '../../assets/open_room.svg';
 import CreatePrivateRoomDialog from '../dialogs/CreatePrivateRoomDialog';
@@ -118,6 +119,8 @@ function SelectRoomTypeDialog({ visible, onCancel }) {
       });
     }
 
+    await talkRoomStore.initialize(userStore.myProfile.id, roomId);
+
     history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
   };
 
@@ -142,6 +145,8 @@ function SelectRoomTypeDialog({ visible, onCancel }) {
 
     setIsVisible({ ...isVisible, createPublicRoom: false });
     const { roomId } = await roomStore.createRoom(data);
+
+    await talkRoomStore.initialize(userStore.myProfile.id, roomId);
 
     history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
   };
