@@ -218,7 +218,7 @@ const ProfileMyModal = ({
           </Logo>
           <Info>
             <Title>{spaceStore.currentSpace?.name}</Title>
-            {spaceStore.currentSpace?.name}
+            {spaceStore.currentSpace?.domain}
           </Info>
           {/* <Button
             type="circle"
