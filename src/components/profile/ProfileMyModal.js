@@ -144,6 +144,7 @@ const ProfileMyModal = ({
     window.open(`${window.location.href}/admin`);
   }, []);
 
+  /// TODO REFACTOR: Move Page 함수 하나로 합치기!!!!
   const handleMoveSpacePage = useCallback(() => {
     const url = window.location.href;
     const purl = url?.split('.');
@@ -152,15 +153,32 @@ const ProfileMyModal = ({
       purl[0].match('192') ||
       purl[0].match('local')
     ) {
-      window.open(`${window.location.protocol}//dev.wapl.ai/spaces`);
+      window.location.href = `${window.location.protocol}//dev.wapl.ai/spaces`;
     } else {
       const tdomain = purl[1];
       if (purl[1] === 'wapl') {
-        window.open(`${window.location.protocol}//wapl.ai/spaces`);
+        window.location.href = `${window.location.protocol}//wapl.ai/spaces`;
       } else {
-        window.open(
-          `${window.location.protocol}//` + tdomain + `wapl.ai/spaces`,
-        );
+        window.location.href = `${window.location.protocol}//${tdomain}wapl.ai/spaces`;
+      }
+    }
+  }, []);
+
+  const handleMoveAccountPage = useCallback(() => {
+    const url = window.location.href;
+    const purl = url?.split('.');
+    if (
+      purl[0].match('127') ||
+      purl[0].match('192') ||
+      purl[0].match('local')
+    ) {
+      window.location.href = `${window.location.protocol}//dev.wapl.ai/account`;
+    } else {
+      const tdomain = purl[1];
+      if (purl[1] === 'wapl') {
+        window.location.href = `${window.location.protocol}//wapl.ai/account`;
+      } else {
+        window.location.href = `${window.location.protocol}//${tdomain}wapl.ai/account`;
       }
     }
   }, []);
@@ -179,9 +197,7 @@ const ProfileMyModal = ({
       if (purl[1] === 'wapl') {
         window.open(`${window.location.protocol}//wapl.ai/support`);
       } else {
-        window.open(
-          `${window.location.protocol}//` + tdomain + `wapl.ai/support`,
-        );
+        window.open(`${window.location.protocol}//${tdomain}wapl.ai/support`);
       }
     }
   };
@@ -223,10 +239,10 @@ const ProfileMyModal = ({
         <Button type="link" onClick={toggleEditMode}>
           프로필 편집
         </Button>
-        {/* <UserBar />
-        <Button type="link" onClick={handleSettingDialogOpen.bind(this, '6')}>
+        <UserBar />
+        <Button type="link" onClick={handleMoveAccountPage}>
           비밀번호 변경
-        </Button> */}
+        </Button>
       </UserButtonBox>
       <LogoutButton shape="round" onClick={handleLogout}>
         로그아웃
@@ -261,13 +277,13 @@ const ProfileMyModal = ({
             <Title>{spaceStore.currentSpace?.name}</Title>
             {spaceStore.currentSpace?.domain}
           </Info>
-          {/* <Button
+          <Button
             type="circle"
             className="btn-convert"
             onClick={handleSpaceList}
           >
             <Blind>스페이스 전환</Blind>
-          </Button> */}
+          </Button>
           <Dropdown
             trigger={['click']}
             overlay={moreMenu}
@@ -335,7 +351,9 @@ const ProfileMyModal = ({
             <ConvertList>
               {spaceStore.spaceList.map(elem => (
                 <ConvertItem
-                  onClick={() => window.location.replace(elem.domain)}
+                  onClick={() => {
+                    window.location.href = elem.domain;
+                  }}
                   key={elem}
                 >
                   <LogoSmall
@@ -349,11 +367,11 @@ const ProfileMyModal = ({
               ))}
             </ConvertList>
           )}
-          <ConvertAdd>
+          {/* <ConvertAdd>
             <AddButton href="#">
               <span>+</span> 새 스페이스 생성
             </AddButton>
-          </ConvertAdd>
+          </ConvertAdd> */}
         </ConvertDropdown>
       )}
       {isCreated && (
