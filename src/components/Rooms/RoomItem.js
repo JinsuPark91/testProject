@@ -4,7 +4,7 @@ import { List, Menu, Dropdown } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
 import { useCoreStores, usePortalWindow } from 'teespace-core';
-import { Talk } from 'teespace-talk-app';
+import { Talk, talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
 import Photos from '../Photos';
 import { ViewMoreIcon, ExportIcon, DisableAlarmIcon, PinIcon } from '../Icons';
@@ -362,6 +362,10 @@ const RoomItem = ({
       //
       if (TALK_ACCEPT_ITEMS.includes(item.type)) {
         console.log('TALK 로 아이템 전달. ', item.data);
+        talkOnDrop({
+          room: roomInfo,
+          data: item.data,
+        });
       }
 
       // Drag 시작한 쪽이 정보를 알아야 하는 경우 고려
