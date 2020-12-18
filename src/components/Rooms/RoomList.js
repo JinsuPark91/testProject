@@ -139,7 +139,7 @@ function RoomList() {
               onCancel={handleRoomMemeberModalCancel}
               width="17.5rem"
               top="calc(50% - 15rem)"
-              left="calc(50% - 9rem)"
+              left="17rem"
               isEdit={roomMemberAttr.isEdit}
             />
           );

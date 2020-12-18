@@ -262,8 +262,8 @@ const Header = observer(() => {
                 visible={isRoomMemberModalVisible}
                 onCancel={handleCancelRoomMemeberModal}
                 width="17.5rem"
-                top="calc(50% - 15rem)"
-                left="calc(50% - 9rem)"
+                top="3.5rem"
+                left="17rem"
               />
             </Title>
 
