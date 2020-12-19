@@ -136,7 +136,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
             onClick={handleOk}
             disabled={!selectedUsers.length}
           >
-            확인
+            {`초대 ${selectedUsers.length > 99 ? '99+' : selectedUsers.length}`}
           </StyledButton>
           <StyledButton buttonType="cancel" onClick={handleCancel}>
             취소

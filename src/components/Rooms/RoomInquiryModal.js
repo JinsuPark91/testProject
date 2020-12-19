@@ -497,7 +497,7 @@ function RoomInquiryModal({
             style={{ marginRight: '0.38rem' }}
             disabled={selectedUsers.length <= 0}
           >
-            {`초대 ${selectedUsers.length}`}
+            {`초대 ${selectedUsers.length > 99 ? '99+' : selectedUsers.length}`}
           </Button>
           <Button
             type="outlined"
