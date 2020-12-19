@@ -85,6 +85,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
           onSelectChange={handleSelectedUserChange}
           disabledIds={disabledIds}
           defaultSelectedUsers={[userStore.myProfile]}
+          showMeOnFriendTab={false}
           height={20} // rem
         />
         <ConfigWrapper>
