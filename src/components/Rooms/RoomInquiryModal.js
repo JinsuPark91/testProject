@@ -485,6 +485,7 @@ function RoomInquiryModal({
           onSelectChange={handleSelectedUserChange}
           disabledIds={members.map(member => member.friendId || member.id)}
           defaultSelectedUsers={members}
+          showMeOnFriendTab={false}
           height={20} // rem
         />
         <ButtonContainer>
