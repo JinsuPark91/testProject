@@ -88,7 +88,11 @@ const StyledLinkButton = styled(Button)`
   }
 `;
 
-function AddFriendsBySearch({ visible, onCancel }) {
+function AddFriendsByInvitationDialog({
+  visible,
+  onSendInviteMail = () => {},
+  onCancel,
+}) {
   const { friendStore, userStore, spaceStore } = useCoreStores();
   const [mailAddress, setMailAddress] = useState('');
   const [chipList, setChipList] = useState([]);
@@ -190,7 +194,7 @@ function AddFriendsBySearch({ visible, onCancel }) {
         domainName: spaceStore.currentSpace?.name,
         userCount: spaceStore.currentSpace?.userCount,
       });
-      onCancel();
+      onSendInviteMail();
     } catch (e) {
       console.log(`Just Error is ${e}`);
     }
@@ -271,4 +275,4 @@ function AddFriendsBySearch({ visible, onCancel }) {
   );
 }
 
-export default AddFriendsBySearch;
+export default AddFriendsByInvitationDialog;

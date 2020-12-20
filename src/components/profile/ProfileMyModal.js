@@ -110,10 +110,14 @@ const ProfileMyModal = ({
   //   i18n.changeLanguage(lng);
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
-  const toggleInviteDialog = useCallback(() => {
-    setIsInviteDialogOpen(!isInviteDialogOpen);
+  const handleSendInviteMail = useCallback(() => {
+    setIsInviteDialogOpen(false);
     setIsToastOpen(true);
-  }, [isInviteDialogOpen]);
+  }, []);
+
+  const handleCancelInviteMail = useCallback(() => {
+    setIsInviteDialogOpen(false);
+  }, []);
 
   const toggleSpaceMemViewDialog = useCallback(() => {
     setIsSpaceMemViewOpen(!isSpaceMemViewOpen);
@@ -392,7 +396,8 @@ const ProfileMyModal = ({
       />
       <AddFriendsByInvitationDialog
         visible={isInviteDialogOpen}
-        onCancel={toggleInviteDialog}
+        onSendInviteMail={handleSendInviteMail}
+        onCancel={handleCancelInviteMail}
       />
       <AddFriendsBySearch
         visible={isSpaceMemViewOpen}
