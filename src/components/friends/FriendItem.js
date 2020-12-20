@@ -358,14 +358,18 @@ const TextComponent = React.memo(
       // addFriend (organization)은 Org 목록에서 조회한 UserModel을 사용
       // 둘이 fullCompanyJob 규칙이 살짝 다르다.
       switch (mode) {
-        case 'friend': // friends LNB
-          if (fullCompanyJob) {
-            return `${displayName} (${fullCompanyJob
-              .split(', ')
-              .map(jobTitle => jobTitle.split(' ').join('-'))
-              .join(', ')})`;
+        // friends LNB
+        case 'friend': {
+          const orgInfoList = fullCompanyJob
+            ?.split(', ')
+            .map(jobTitle => jobTitle.trim().split(' ').join('-'))
+            .filter(jobTitleStr => jobTitleStr?.length > 0);
+
+          if (orgInfoList?.length > 0) {
+            return `${displayName} (${orgInfoList.join(', ')})`;
           }
           return displayName;
+        }
         case 'addFriend': // organization
           if (orgName && position) {
             return `${displayName} (${orgName}·${position})`;
@@ -608,6 +612,8 @@ const FriendItem = observer(
     const handleToastClose = useCallback(() => setVisibleToast(false), []);
     const isMe = itemId === authStore.user.id;
 
+    console.log('=======================');
+    console.log(fullCompanyJob);
     return (
       <>
         <FriendItemWrapper
