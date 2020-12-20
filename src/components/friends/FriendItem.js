@@ -612,8 +612,6 @@ const FriendItem = observer(
     const handleToastClose = useCallback(() => setVisibleToast(false), []);
     const isMe = itemId === authStore.user.id;
 
-    console.log('=======================');
-    console.log(fullCompanyJob);
     return (
       <>
         <FriendItemWrapper
