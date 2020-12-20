@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import styled, { css } from 'styled-components';
 import { Avatar, Button } from 'antd';
+import moment from 'moment';
 import {
   useCoreStores,
   Dropdown,
@@ -612,6 +613,14 @@ const FriendItem = observer(
     const handleToastClose = useCallback(() => setVisibleToast(false), []);
     const isMe = itemId === authStore.user.id;
 
+    const now = moment();
+    const friendRegDate = moment(
+      friendInfo.friendRegDate,
+      'YYYY-MM-DD HH:mm:ss.S Z',
+    );
+    const isNewFriend =
+      friendRegDate.isValid() && now.diff(friendRegDate, 'minutes') < 60;
+
     return (
       <>
         <FriendItemWrapper
@@ -682,6 +691,7 @@ const FriendItem = observer(
             />
           </TextWrapper>
           <ActionWrapper>
+            {!isHovering && isNewFriend && <NewFriendBadge> N </NewFriendBadge>}
             <Action
               mode={mode}
               isHovering={isHovering}
@@ -716,5 +726,15 @@ const FriendItem = observer(
     );
   },
 );
+
+const NewFriendBadge = styled.div`
+  background-color: #ff486d;
+  height: fit-content;
+  color: #fff;
+  font-weight: 400;
+  font-size: 0.63rem;
+  padding: 0.06rem 0.19rem;
+  border-radius: 0.56rem;
+`;
 
 export default FriendItem;
