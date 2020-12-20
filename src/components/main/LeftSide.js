@@ -1,6 +1,7 @@
 import React from 'react';
 import { useObserver } from 'mobx-react';
 import { MailSideView } from 'teespace-mail-app';
+import { Tooltip } from 'antd';
 import { ChattingIcon, MailIcon, PeopleIcon } from '../Icons';
 import FriendLnb from '../friends/FriendsLNB';
 import RoomList from '../Rooms/RoomList';
@@ -21,15 +22,15 @@ const LeftSide = () => {
         onTabClick={handleSelectTab}
         animated={false}
       >
-        <TabPane key="f" tab={<PeopleIcon />}>
+        <TabPane key="f" tab={<PeopleIcon tooltipText="프렌즈 목록" />}>
           <FriendLnb />
         </TabPane>
 
-        <TabPane key="s" tab={<ChattingIcon />}>
+        <TabPane key="s" tab={<ChattingIcon tooltipText="룸 목록" />}>
           <RoomList />
         </TabPane>
 
-        <TabPane key="m" tab={<MailIcon />}>
+        <TabPane key="m" tab={<MailIcon tooltipText="Mail" />}>
           <MailSideView />
         </TabPane>
       </CustomTabs>
