@@ -231,6 +231,12 @@ function RoomInquiryModal({
     setMemberPhotos(initialStates.memberPhotos);
   };
 
+  // NOTE. 다이얼로그가 보여지는 상태로 바뀌는 경우, EDIT 모드 여부를 체크해서 로컬 상태로 반영
+  //  주의, 바로 아래 useEffect 보다 먼저 실행되어야 focus(), select() 가 적용됨.
+  useEffect(() => {
+    setIsEditMode(isEdit);
+  }, [isEdit, visible]);
+
   useEffect(() => {
     if (roomId && visible) {
       const foundRoom = roomStore.getRoomMap().get(roomId);
@@ -256,10 +262,6 @@ function RoomInquiryModal({
         .then(roomMembers => setMembers(roomMembers));
     }
   }, [roomId, visible]);
-
-  useEffect(() => {
-    setIsEditMode(isEdit);
-  }, [isEdit]);
 
   const updateRoomSetting = async options => {
     try {
