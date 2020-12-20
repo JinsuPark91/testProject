@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled, { css } from 'styled-components';
@@ -210,6 +210,7 @@ function RoomInquiryModal({
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [profileUserId, setProfileUserId] = useState();
   const { roomStore, userStore } = useCoreStores();
+  const nameInputRef = useRef();
 
   const getUserPhotos = _roomInfo => {
     if (_roomInfo && _roomInfo?.memberIdListString) {
@@ -237,6 +238,11 @@ function RoomInquiryModal({
 
       setRoomName(foundRoom.customName || foundRoom.name);
       setMemberPhotos(getUserPhotos(foundRoom));
+      // NOTE. 수정 모드인 경우 기존 내용을 선택하고, 포커스 설정
+      if (isEditMode && nameInputRef?.current) {
+        nameInputRef.current.select();
+        nameInputRef.current.focus();
+      }
     } else if (!visible) {
       clearState();
     }
@@ -384,6 +390,7 @@ function RoomInquiryModal({
                 maxLength={20}
                 value={roomName}
                 onChange={handleChange}
+                ref={nameInputRef}
               />
             ) : (
               <p>
