@@ -65,7 +65,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-function SelectRoomTypeDialog({ visible, onCancel }) {
+function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
   const { userStore, roomStore } = useCoreStores();
   const history = useHistory();
   // Private Room
@@ -120,6 +120,9 @@ function SelectRoomTypeDialog({ visible, onCancel }) {
     }
 
     await talkRoomStore.initialize(userStore.myProfile.id, roomId);
+
+    // NOTE. 룸 목록 컴포넌트에서 토스트를 띄우기 위해 전달
+    onCreateRoom({ selectedUsers });
 
     history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
   };

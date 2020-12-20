@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled from 'styled-components';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, Toast } from 'teespace-core';
 import {
   WaplLogo,
   AddRoomIcon,
@@ -35,9 +35,12 @@ function RoomList() {
   const [visible, setVisible] = useState({
     selectRoomType: false,
   });
+  const [toastText, setToastText] = useState('');
+  const [isToastVisible, setIsToastVisible] = useState(false);
 
   const handleCreateRoom = () => {
     setVisible({ ...visible, selectRoomType: true });
+    setIsToastVisible(true);
   };
 
   const handleOpenChat = useCallback(() => {
@@ -163,6 +166,10 @@ function RoomList() {
       <SelectRoomTypeDialog
         visible={visible.selectRoomType}
         onCancel={handleSelectRoomTypeCancel}
+        onCreateRoom={({ selectedUsers }) => {
+          setIsToastVisible(true);
+          setToastText(`${selectedUsers.length}명의 구성원이 초대되었습니다.`);
+        }}
       />
 
       <TopWrapper>
@@ -242,6 +249,13 @@ function RoomList() {
         <AddRoomIconWrapper onClick={handleCreateRoom}>
           <AddRoomIcon />
         </AddRoomIconWrapper>
+        <Toast
+          visible={isToastVisible}
+          timeoutMs={1000}
+          onClose={() => setIsToastVisible(false)}
+        >
+          {toastText}
+        </Toast>
       </ButtomWrapper>
     </Wrapper>
   );
