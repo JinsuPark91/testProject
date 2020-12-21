@@ -418,4 +418,4 @@ function ContentAlarm({
   );
 }
 
-export default ContentAlarm;
+export default React.memo(ContentAlarm);
