@@ -77,6 +77,20 @@ const MyBadge = styled.span`
   color: #fff;
   line-height: 0.81rem;
   z-index: 100;
+  &:after {
+    display: block;
+    content: '';
+    top: 100%;
+    left: 50%;
+    border: 0.15rem solid transparent;
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: rgba(136, 183, 213, 0);
+    border-top-color: #523dc7;
+    margin-left: -0.15rem;
+  }
 `;
 
 const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
@@ -85,9 +99,12 @@ const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
   const [friendUserName, setFriendUserName] = useState('');
 
   let memberList = friendAddList;
+
+  // 내 정보 제일 상단에 표시
   if (memberList[0].id !== userStore.myProfile.id) {
     memberList.unshift(userStore.myProfile);
   }
+
   if (searchText) {
     memberList = memberList.filter(elem => elem.name.includes(searchText));
   }
