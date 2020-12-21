@@ -145,9 +145,10 @@ const RoomSetting = ({ roomInfo }) => {
           <TabPane key="common" tab="기본 정보 설정">
             <CommonSettingPage roomInfo={roomInfo} />
           </TabPane>
-          <TabPane key="member" tab="구성원 관리">
+          {/* TODO */}
+          {/* <TabPane key="member" tab="구성원 관리">
             <MemberSettingPage />
-          </TabPane>
+          </TabPane> */}
         </StyledTabs>
       </Content>
     </Wrapper>

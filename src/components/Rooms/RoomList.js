@@ -201,10 +201,7 @@ function RoomList() {
                 <RoomItem
                   key={roomInfo.id}
                   roomInfo={roomInfo}
-                  selected={
-                    PlatformUIStore.resourceType === 's' &&
-                    PlatformUIStore.resourceId === roomInfo.id
-                  }
+                  selected={PlatformUIStore.resourceId === roomInfo.id}
                   onClick={handleSelectRoom}
                   onMenuClick={handleMenuClick}
                   onClickMenuItem={handleClickMenuItem}

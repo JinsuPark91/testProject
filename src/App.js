@@ -11,6 +11,7 @@ import {
   initApp as initCalendarApp,
   initializeApp as initializeCalendarApp,
 } from 'teespace-calendar-app';
+import { initApp as initMailApp } from 'teespace-mail-app';
 // import { I18nextProvider } from 'react-i18next';
 import { useKeycloak } from '@react-keycloak/web';
 import AdminPage from './page/AdminPage';
@@ -39,6 +40,7 @@ function App() {
   // initialize apps
   useEffect(() => {
     initTalkApp();
+    initMailApp();
     initDriveApp();
     initCalendarApp();
     initializeCalendarApp();
