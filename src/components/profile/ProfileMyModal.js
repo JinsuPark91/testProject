@@ -73,6 +73,9 @@ const ProfileMyModal = ({
   }, []);
 
   const handleLogout = async () => {
+    // Close dialog first
+    if (onCancel) onCancel();
+
     /* keycloak 임시 코드 */
     const url = window.location.origin; //  http://xxx.dev.teespace.net
     const con_url = url.split(`//`)[1]; // xxx.dev.teespace.net
@@ -107,10 +110,14 @@ const ProfileMyModal = ({
   //   i18n.changeLanguage(lng);
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
-  const toggleInviteDialog = useCallback(() => {
-    setIsInviteDialogOpen(!isInviteDialogOpen);
+  const handleSendInviteMail = useCallback(() => {
+    setIsInviteDialogOpen(false);
     setIsToastOpen(true);
-  }, [isInviteDialogOpen]);
+  }, []);
+
+  const handleCancelInviteMail = useCallback(() => {
+    setIsInviteDialogOpen(false);
+  }, []);
 
   const toggleSpaceMemViewDialog = useCallback(() => {
     setIsSpaceMemViewOpen(!isSpaceMemViewOpen);
@@ -259,7 +266,7 @@ const ProfileMyModal = ({
   );
 
   const spaceViewList = spaceStore.spaceList.filter(
-    elem => elem.id !== spaceStore.currentSpace.id,
+    elem => spaceStore.currentSpace && elem.id !== spaceStore.currentSpace.id,
   );
 
   const subContent = (
@@ -389,7 +396,8 @@ const ProfileMyModal = ({
       />
       <AddFriendsByInvitationDialog
         visible={isInviteDialogOpen}
-        onCancel={toggleInviteDialog}
+        onSendInviteMail={handleSendInviteMail}
+        onCancel={handleCancelInviteMail}
       />
       <AddFriendsBySearch
         visible={isSpaceMemViewOpen}

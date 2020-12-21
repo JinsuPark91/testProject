@@ -21,6 +21,7 @@ import Photos from '../Photos';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import MyProfileInfo from '../profile/MyProfileInfo';
 import RoomInquiryModal from '../Rooms/RoomInquiryModal';
+import ProfileInfoModal from '../profile/ProfileInfoModal';
 import {
   ExportIcon,
   SearchIcon,
@@ -124,7 +125,7 @@ const Header = observer(() => {
   const history = useHistory();
   const { roomStore, userStore } = useCoreStores();
   const [isMessageVisible, setIsMessageVisible] = useState(false);
-  const [isRoomMemberModalVisible, setIsRoomMemberModalVisible] = useState(
+  const [isRoomProfileModalVisible, setRoomProfileModalVisible] = useState(
     false,
   );
 
@@ -187,7 +188,7 @@ const Header = observer(() => {
   };
 
   const handleAddMember = () => {
-    setIsRoomMemberModalVisible(true);
+    setRoomProfileModalVisible(true);
   };
 
   const toggleMessageVisible = () => {
@@ -236,12 +237,50 @@ const Header = observer(() => {
   };
 
   const handleClickRoomPhoto = useCallback(() => {
-    setIsRoomMemberModalVisible(true);
+    setRoomProfileModalVisible(true);
   }, []);
 
   const handleCancelRoomMemeberModal = useCallback(() => {
-    setIsRoomMemberModalVisible(false);
+    setRoomProfileModalVisible(false);
   }, []);
+
+  const currRoomInfo = findRoom();
+  let profileModal;
+
+  if (isMyRoom()) {
+    profileModal = (
+      <ProfileInfoModal
+        userId={userStore.myProfile.id}
+        visible={isRoomProfileModalVisible}
+        onClose={handleCancelRoomMemeberModal}
+        position={{ top: '3.5rem', left: '17rem' }}
+      />
+    );
+  } else if (currRoomInfo?.userCount === 2) {
+    const dmUserId = currRoomInfo.memberIdListString
+      .split(',')
+      .find(userId => userId !== userStore.myProfile.id);
+
+    profileModal = (
+      <ProfileInfoModal
+        userId={dmUserId}
+        visible={isRoomProfileModalVisible}
+        onClose={handleCancelRoomMemeberModal}
+        position={{ top: '3.5rem', left: '17rem' }}
+      />
+    );
+  } else {
+    profileModal = (
+      <RoomInquiryModal
+        roomId={findRoom()?.id}
+        visible={isRoomProfileModalVisible}
+        onCancel={handleCancelRoomMemeberModal}
+        width="17.5rem"
+        top="3.5rem"
+        left="17rem"
+      />
+    );
+  }
 
   return (
     <Wrapper>
@@ -257,14 +296,7 @@ const Header = observer(() => {
               {!(isMyRoom() || isDMRoom()) ? (
                 <UserCountText>{getUserCount()}</UserCountText>
               ) : null}
-              <RoomInquiryModal
-                roomId={findRoom()?.id}
-                visible={isRoomMemberModalVisible}
-                onCancel={handleCancelRoomMemeberModal}
-                width="17.5rem"
-                top="3.5rem"
-                left="17rem"
-              />
+              {profileModal}
             </Title>
 
             <SystemIconContainer>

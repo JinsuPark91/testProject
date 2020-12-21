@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled, { css } from 'styled-components';
@@ -210,6 +210,7 @@ function RoomInquiryModal({
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [profileUserId, setProfileUserId] = useState();
   const { roomStore, userStore } = useCoreStores();
+  const nameInputRef = useRef();
 
   const getUserPhotos = _roomInfo => {
     if (_roomInfo && _roomInfo?.memberIdListString) {
@@ -230,6 +231,12 @@ function RoomInquiryModal({
     setMemberPhotos(initialStates.memberPhotos);
   };
 
+  // NOTE. 다이얼로그가 보여지는 상태로 바뀌는 경우, EDIT 모드 여부를 체크해서 로컬 상태로 반영
+  //  주의, 바로 아래 useEffect 보다 먼저 실행되어야 focus(), select() 가 적용됨.
+  useEffect(() => {
+    setIsEditMode(isEdit);
+  }, [isEdit, visible]);
+
   useEffect(() => {
     if (roomId && visible) {
       const foundRoom = roomStore.getRoomMap().get(roomId);
@@ -237,6 +244,11 @@ function RoomInquiryModal({
 
       setRoomName(foundRoom.customName || foundRoom.name);
       setMemberPhotos(getUserPhotos(foundRoom));
+      // NOTE. 수정 모드인 경우 기존 내용을 선택하고, 포커스 설정
+      if (isEditMode && nameInputRef?.current) {
+        nameInputRef.current.select();
+        nameInputRef.current.focus();
+      }
     } else if (!visible) {
       clearState();
     }
@@ -250,10 +262,6 @@ function RoomInquiryModal({
         .then(roomMembers => setMembers(roomMembers));
     }
   }, [roomId, visible]);
-
-  useEffect(() => {
-    setIsEditMode(isEdit);
-  }, [isEdit]);
 
   const updateRoomSetting = async options => {
     try {
@@ -384,6 +392,7 @@ function RoomInquiryModal({
                 maxLength={20}
                 value={roomName}
                 onChange={handleChange}
+                ref={nameInputRef}
               />
             ) : (
               <p>
@@ -485,6 +494,7 @@ function RoomInquiryModal({
           onSelectChange={handleSelectedUserChange}
           disabledIds={members.map(member => member.friendId || member.id)}
           defaultSelectedUsers={members}
+          showMeOnFriendTab={false}
           height={20} // rem
         />
         <ButtonContainer>
@@ -496,7 +506,7 @@ function RoomInquiryModal({
             style={{ marginRight: '0.38rem' }}
             disabled={selectedUsers.length <= 0}
           >
-            {`초대 ${selectedUsers.length}`}
+            {`초대 ${selectedUsers.length > 99 ? '99+' : selectedUsers.length}`}
           </Button>
           <Button
             type="outlined"

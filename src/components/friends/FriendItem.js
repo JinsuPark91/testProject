@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import styled, { css } from 'styled-components';
 import { Avatar, Button } from 'antd';
+import moment from 'moment';
 import {
   useCoreStores,
   Dropdown,
@@ -358,14 +359,18 @@ const TextComponent = React.memo(
       // addFriend (organization)은 Org 목록에서 조회한 UserModel을 사용
       // 둘이 fullCompanyJob 규칙이 살짝 다르다.
       switch (mode) {
-        case 'friend': // friends LNB
-          if (fullCompanyJob) {
-            return `${displayName} (${fullCompanyJob
-              .split(', ')
-              .map(jobTitle => jobTitle.split(' ').join('-'))
-              .join(', ')})`;
+        // friends LNB
+        case 'friend': {
+          const orgInfoList = fullCompanyJob
+            ?.split(', ')
+            .map(jobTitle => jobTitle.trim().split(' ').join('-'))
+            .filter(jobTitleStr => jobTitleStr?.length > 0);
+
+          if (orgInfoList?.length > 0) {
+            return `${displayName} (${orgInfoList.join(', ')})`;
           }
           return displayName;
+        }
         case 'addFriend': // organization
           if (orgName && position) {
             return `${displayName} (${orgName}·${position})`;
@@ -608,6 +613,14 @@ const FriendItem = observer(
     const handleToastClose = useCallback(() => setVisibleToast(false), []);
     const isMe = itemId === authStore.user.id;
 
+    const now = moment();
+    const friendRegDate = moment(
+      friendInfo.friendRegDate,
+      'YYYY-MM-DD HH:mm:ss.S Z',
+    );
+    const isNewFriend =
+      friendRegDate.isValid() && now.diff(friendRegDate, 'minutes') < 60;
+
     return (
       <>
         <FriendItemWrapper
@@ -678,6 +691,7 @@ const FriendItem = observer(
             />
           </TextWrapper>
           <ActionWrapper>
+            {!isHovering && isNewFriend && <NewFriendBadge> N </NewFriendBadge>}
             <Action
               mode={mode}
               isHovering={isHovering}
@@ -712,5 +726,15 @@ const FriendItem = observer(
     );
   },
 );
+
+const NewFriendBadge = styled.div`
+  background-color: #ff486d;
+  height: fit-content;
+  color: #fff;
+  font-weight: 400;
+  font-size: 0.63rem;
+  padding: 0.06rem 0.19rem;
+  border-radius: 0.56rem;
+`;
 
 export default FriendItem;
