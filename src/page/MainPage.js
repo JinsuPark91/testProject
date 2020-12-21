@@ -70,7 +70,7 @@ const MainPage = () => {
       .catch(err => {
         setTimeout(() => {
           history.push('/logout');
-        }, 3000);
+        }, 1000);
         console.log(err);
       });
   }, []);
