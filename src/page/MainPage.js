@@ -68,6 +68,9 @@ const MainPage = () => {
         console.log('USER PROFILES : ', userStore.userProfiles);
       })
       .catch(err => {
+        setTimeout(() => {
+          history.push('/logout');
+        }, 3000);
         console.log(err);
       });
   }, []);
