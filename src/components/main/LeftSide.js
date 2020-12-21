@@ -31,11 +31,7 @@ const LeftSide = () => {
           <RoomList />
         </TabPane>
 
-        <TabPane
-          key="m"
-          disabled={spaceStore.currentSpace.plan === 'BASIC'}
-          tab={<MailIcon tooltipText="Mail" />}
-        >
+        <TabPane key="m" tab={<MailIcon tooltipText="Mail" />}>
           <MailSideView />
         </TabPane>
       </CustomTabs>
