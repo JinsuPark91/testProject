@@ -165,6 +165,16 @@ const ProfileBadge = styled.span`
   }
 `;
 
+const NewFriendBadge = styled.div`
+  background-color: #ff486d;
+  height: fit-content;
+  color: #fff;
+  font-weight: 400;
+  font-size: 0.63rem;
+  padding: 0.06rem 0.19rem;
+  border-radius: 0.56rem;
+`;
+
 const StyledAvatar = styled(Avatar)`
   ${props => {
     switch (props.mode) {
@@ -726,15 +736,5 @@ const FriendItem = observer(
     );
   },
 );
-
-const NewFriendBadge = styled.div`
-  background-color: #ff486d;
-  height: fit-content;
-  color: #fff;
-  font-weight: 400;
-  font-size: 0.63rem;
-  padding: 0.06rem 0.19rem;
-  border-radius: 0.56rem;
-`;
 
 export default FriendItem;

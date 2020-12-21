@@ -63,12 +63,48 @@ const FriendAddBtn = styled.button`
   }
 `;
 
+const MyBadge = styled.span`
+  position: absolute;
+  top: 0rem;
+  text-align: center;
+  background-color: #523dc7;
+  min-width: 1.06rem;
+  min-height: 0.94rem;
+  padding: 0.06rem 0.25rem;
+  border-radius: 0.28rem;
+  font-weight: 600;
+  font-size: 0.56rem;
+  color: #fff;
+  line-height: 0.81rem;
+  z-index: 100;
+  &:after {
+    display: block;
+    content: '';
+    top: 100%;
+    left: 50%;
+    border: 0.15rem solid transparent;
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: rgba(136, 183, 213, 0);
+    border-top-color: #523dc7;
+    margin-left: -0.15rem;
+  }
+`;
+
 const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
   const { userStore, friendStore } = useCoreStores();
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [friendUserName, setFriendUserName] = useState('');
 
   let memberList = friendAddList;
+
+  // 내 정보 제일 상단에 표시
+  if (memberList[0].id !== userStore.myProfile.id) {
+    memberList.unshift(userStore.myProfile);
+  }
+
   if (searchText) {
     memberList = memberList.filter(elem => elem.name.includes(searchText));
   }
@@ -105,9 +141,12 @@ const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
 
   const FriendAddItem = ({ friendInfo, style }) => {
     const userName = friendInfo?.name;
+    const isMe =
+      friendInfo?.friendId || friendInfo.id === userStore.myProfile.id;
     return (
       <>
         <FriendItem style={style}>
+          {isMe && <MyBadge> 나 </MyBadge>}
           <img
             alt="profile"
             src={userStore.getProfilePhotoURL(
