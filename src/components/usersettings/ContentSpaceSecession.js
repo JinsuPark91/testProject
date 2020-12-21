@@ -146,7 +146,7 @@ function ContentSpaceSecession({
           </SpaceLogo>
           <SpaceInfo>
             <SpaceTitle>{spaceStore.currentSpace?.name}</SpaceTitle>
-            {spaceStore.currentSpace?.name}
+            {spaceStore.currentSpace?.domain}
           </SpaceInfo>
         </SpaceBox>
       </ContentGroup>

@@ -23,6 +23,7 @@ const Content = () => {
   const { userStore, roomStore } = useCoreStores();
   const splitRef = useRef(null);
   const contentRef = useRef(null);
+  const myUserId = userStore.myProfile.id;
 
   useEffect(() => {
     if (contentRef) {
@@ -31,17 +32,18 @@ const Content = () => {
   });
 
   const getRoomId = () => {
-    if (PlatformUIStore.resourceType === 's') {
+    if (PlatformUIStore.resourceType !== 'f') {
       return PlatformUIStore.resourceId;
     }
     return null;
   };
 
   const getChannelId = type => {
-    if (PlatformUIStore.resourceType === 's') {
+    const roomId = getRoomId();
+    if (PlatformUIStore.resourceType !== 'f') {
       return roomStore
         .getRoomMap()
-        .get(PlatformUIStore.resourceId)
+        .get(roomId)
         ?.channelList?.find(channel => channel.type === type)?.id;
     }
     return null;
@@ -74,7 +76,7 @@ const Content = () => {
       case 'drive':
         return (
           <DriveApp
-            userId={userStore.myProfile.id}
+            userId={myUserId}
             roomId={getRoomId()}
             channelId={getChannelId('CHN0006')}
             layoutState={PlatformUIStore.layout}
@@ -83,7 +85,7 @@ const Content = () => {
       case 'files':
         return (
           <DriveAllApp
-            userId={userStore.myProfile.id}
+            userId={myUserId}
             roomId={getRoomId()}
             channelId={getChannelId('CHN0006')}
             layoutState={PlatformUIStore.layout}

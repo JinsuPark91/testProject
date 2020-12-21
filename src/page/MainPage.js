@@ -68,6 +68,9 @@ const MainPage = () => {
         console.log('USER PROFILES : ', userStore.userProfiles);
       })
       .catch(err => {
+        setTimeout(() => {
+          history.push('/logout');
+        }, 1000);
         console.log(err);
       });
   }, []);
@@ -79,8 +82,15 @@ const MainPage = () => {
   }, [resourceType]);
 
   useEffect(() => {
-    PlatformUIStore.resourceId = resourceId;
-  }, [resourceId]);
+    if (resourceType === 'm') {
+      PlatformUIStore.resourceId = roomStore.getDMRoom(
+        myUserId,
+        myUserId,
+      ).roomInfo.id;
+    } else {
+      PlatformUIStore.resourceId = resourceId;
+    }
+  }, [resourceId, resourceType]);
 
   useEffect(() => {
     PlatformUIStore.mainApp = mainApp;

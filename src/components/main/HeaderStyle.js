@@ -29,16 +29,20 @@ export const Title = styled.div`
 export const SystemIconContainer = styled.div`
   display: flex;
   align-items: center;
-  border-right: 1px solid #dddddd;
   padding-right: 0.9375rem;
 `;
 
 export const AppIconContainer = styled.div`
   display: flex;
   align-items: center;
+  border-left: 1px solid #dddddd;
   border-right: 1px solid #dddddd;
   height: 40px;
   padding: 0 0.9375rem;
+
+  & .header__app-icon:not(:last-child) {
+    margin-right: 0.75rem;
+  }
 `;
 
 export const UserMenu = styled.div`
@@ -74,6 +78,6 @@ export const AppIconWrapper = styled.div`
   width 1.5rem;
   height:1.5rem;
   overflow:hidden;
-  margin-right:0.75rem;
-  cursor:pointer;
+  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+  pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
 `;

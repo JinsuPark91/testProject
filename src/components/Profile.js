@@ -4,7 +4,7 @@ import Upload from 'rc-upload';
 import styled, { css } from 'styled-components';
 import { Button, Input, Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
-import { useCoreStores, Message } from 'teespace-core';
+import { useCoreStores, Message, Toast } from 'teespace-core';
 import friendsIcon from '../assets/ts_friends.svg';
 import profileEditIcon from '../assets/ts_profile_edit.svg';
 import teeMeetingIcon from '../assets/ts_TeeMeeting.svg';
@@ -24,13 +24,15 @@ const Profile = observer(
     editOnlyMode = false,
     showSider = true,
     onModeChange = null,
-    onClickSaveBtn = () => {},
-    onClickCancelBtn = () => {},
+    onClickSaveBtn = () => { },
+    onClickCancelBtn = () => { },
   }) => {
     const history = useHistory();
     const { roomStore, userStore, friendStore } = useCoreStores();
     const [isEditMode, setEditMode] = useState(editOnlyMode);
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
+    const [toastText, setToastText] = useState('');
+    const [isToastVisible, setIsToastVisible] = useState(false);
     const [isChange, setIsChange] = useState(false);
 
     // NOTE. Setting state to undefined means the state is not changed
@@ -254,12 +256,20 @@ const Profile = observer(
     const handleToggleFavoriteFriend = useCallback(
       async event => {
         if (event) event.stopPropagation();
+        const isFav = !friendStore.isFavoriteFriend(userId);
         try {
           await friendStore.setFriendFavorite({
             myUserId: userStore.myProfile.id,
             friendId: userId,
-            isFav: !friendStore.isFavoriteFriend(userId),
+            isFav,
           });
+
+          if (isFav) {
+            setToastText('즐겨찾기가 설정되었습니다.');
+          } else {
+            setToastText('즐겨찾기가 해제되었습니다.');
+          }
+          setIsToastVisible(true);
         } catch (e) {
           console.log(e);
         }
@@ -292,6 +302,13 @@ const Profile = observer(
             },
           ]}
         />
+        <Toast
+          visible={isToastVisible}
+          timeoutMs={1000}
+          onClose={() => setIsToastVisible(false)}
+        >
+          {toastText}
+        </Toast>
         <Wrapper imageSrc={renderBackgroundPhoto}>
           {showSider && (
             <Sidebar>
@@ -305,11 +322,11 @@ const Profile = observer(
                   <Text>프로필 편집</Text>
                 </StyledButton>
               ) : (
-                <StyledButton onClick={handleMeetingClick}>
-                  <StyleIcon iconimg="meeting" />
-                  <Text>1:1 Meeting</Text>
-                </StyledButton>
-              )}
+                  <StyledButton onClick={handleMeetingClick}>
+                    <StyleIcon iconimg="meeting" />
+                    <Text>1:1 Meeting</Text>
+                  </StyledButton>
+                )}
             </Sidebar>
           )}
           <Content showSider={showSider}>
@@ -405,8 +422,8 @@ const Profile = observer(
                     }
                   />
                 ) : (
-                  profile?.nick || profile?.name
-                )}
+                    profile?.nick || profile?.name
+                  )}
               </BigText>
               <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
               {/* NOTE 프로파일 상태 메시지는 추후에 지원함.
@@ -432,7 +449,7 @@ const Profile = observer(
               <UserInfoList>
                 <UserInfoItem>
                   <StyleOfficeIcon iconimg="address" />
-                  <StylText>{profile?.fullCompanyJob}</StylText>
+                  <UserInfoText>{profile?.fullCompanyJob}</UserInfoText>
                 </UserInfoItem>
                 <UserInfoItem>
                   <StyleOfficeIcon iconimg="company" />
@@ -445,8 +462,8 @@ const Profile = observer(
                       value={phone !== undefined ? phone : profile?.companyNum}
                     />
                   ) : (
-                    <StylText>{profile?.companyNum}</StylText>
-                  )}
+                      <UserInfoText>{profile?.companyNum}</UserInfoText>
+                    )}
                 </UserInfoItem>
                 <UserInfoItem>
                   <StyleOfficeIcon iconimg="phone" />
@@ -459,8 +476,8 @@ const Profile = observer(
                       value={mobile !== undefined ? mobile : profile?.phone}
                     />
                   ) : (
-                    <StylText>{profile?.phone}</StylText>
-                  )}
+                      <UserInfoText>{profile?.phone}</UserInfoText>
+                    )}
                 </UserInfoItem>
                 {/* 프로필 편집 시 "email" class 삭제 */}
                 {/* <UserInfoItem
@@ -471,7 +488,7 @@ const Profile = observer(
                 >
                   <StyleOfficeIcon iconimg="email" />
                   <StyleOfficeIcon iconimg="emailhover" />
-                  <StylText>{profile?.email}</StylText>
+                  <UserInfoText>{profile?.email}</UserInfoText>
                 </UserInfoItem> */}
               </UserInfoList>
               <ButtonContainer>
@@ -520,6 +537,7 @@ const Wrapper = styled.div`
 const Sidebar = styled.div`
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   width: ${props => (props.isVertical ? '100%' : '9.38rem')};
@@ -534,16 +552,19 @@ const StyledUpload = styled(Upload)`
 `;
 
 const Text = styled.span`
-  display: flex;
-  align-items: center;
+  overflow: hidden;
+  display: block;
+  max-width: 14.69rem;
+  width: 100%;
   color: #fff;
   font-size: 0.81rem;
   font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
 `;
 
 const UserEmailText = styled(Text)`
-  display: flex;
-  align-items: center;
   margin-top: 0.5rem;
   line-height: 1.25rem;
   color: rgba(255, 255, 255, 0.7);
@@ -615,13 +636,13 @@ const StyledButton = styled(Text)`
 `;
 
 const Content = styled.div`
+  overflow: hidden;
   display: flex;
   position: relative;
   width: 100%;
   height: 100%;
   flex-direction: column;
   align-items: center;
-  justify-content: top;
 `;
 
 const ContentTop = styled.div`
@@ -660,7 +681,7 @@ const UserImage = styled.img`
 `;
 
 const UserInfoList = styled.div`
-  min-width: 300px;
+  min-width: 14.69rem;
   display: flex;
   flex-direction: column;
 `;
@@ -741,17 +762,15 @@ const StyleIcon = styled.span`
   }}
 `;
 
-const StylText = styled(Text)`
-  display: inline-block;
-  width: 12.19rem;
-  white-space: nowrap;
+const UserInfoText = styled.span`
   overflow: hidden;
+  display: inline-block;
+  white-space: nowrap;
   text-overflow: ellipsis;
-  align-items: center;
-  color: #fff;
-  line-height: 1.25rem;
   font-size: 0.88rem;
+  line-height: 1.25rem;
   font-weight: 600;
+  color: #fff;
 `;
 
 const StyleOfficeIcon = styled.em`

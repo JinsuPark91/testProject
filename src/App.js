@@ -5,8 +5,13 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import './App.less';
 import { create } from 'mobx-persist';
 import { PortalProvider, useCoreStores } from 'teespace-core';
+import { initApp as initTalkApp } from 'teespace-talk-app';
 import { initApp as initDriveApp } from 'teespace-drive-app';
-import { initApp as initCalendarApp } from 'teespace-calendar-app';
+import {
+  initApp as initCalendarApp,
+  initializeApp as initializeCalendarApp,
+} from 'teespace-calendar-app';
+import { initApp as initMailApp } from 'teespace-mail-app';
 // import { I18nextProvider } from 'react-i18next';
 import { useKeycloak } from '@react-keycloak/web';
 import AdminPage from './page/AdminPage';
@@ -34,8 +39,11 @@ function App() {
 
   // initialize apps
   useEffect(() => {
+    initTalkApp();
+    initMailApp();
     initDriveApp();
     initCalendarApp();
+    initializeCalendarApp();
   }, []);
 
   // hydrate mobx stores
@@ -69,7 +77,9 @@ function App() {
             <KeycloakRedirectRoute
               exact
               path="/login"
-              component={process.env.REACT_APP_ENV === `local` ? LoginPage : MainPage}
+              component={
+                process.env.REACT_APP_ENV === `local` ? LoginPage : MainPage
+              }
             />
             <PrivateRoute path="/office/:fileId" component={OfficeFilePage} />
             <RedirectablePublicRoute

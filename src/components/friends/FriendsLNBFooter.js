@@ -35,7 +35,7 @@ const FriendAddButton = styled(Button)`
 `;
 
 function FriendsLNBFooter() {
-  const { orgStore, userStore, spaceStore } = useCoreStores();
+  const { orgStore, userStore, spaceStore, authStore } = useCoreStores();
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isOrgExist, setIsOrgExist] = useState(false);
   const [isSpaceEmpty, setIsSpaceEmpty] = useState(false);
@@ -51,11 +51,15 @@ function FriendsLNBFooter() {
       } else {
         const { myProfile } = userStore;
         try {
+          const domainKey =
+            process.env.REACT_APP_ENV === 'local'
+              ? authStore.sessionInfo.domainKey
+              : undefined;
           const res = await orgStore.getUserOrgUserList(
             myProfile?.companyCode,
             myProfile?.departmentCode,
             myProfile?.id,
-            // myProfile?.domainKey,
+            domainKey,
           );
           setSpaceMemberList(res);
         } catch (e) {

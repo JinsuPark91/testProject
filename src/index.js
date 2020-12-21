@@ -27,6 +27,11 @@ setEnv({
     `http://${
       process.env.REACT_APP_DEV_COM_DOMAIN || window.location.hostname
     }`,
+  hsmURL:
+    global.env.REACT_APP_HSM_URL ||
+    `http://${
+      process.env.REACT_APP_DEV_HSM_DOMAIN || window.location.hostname
+    }`,
   websocketURL: `ws://${
     process.env.REACT_APP_DEV_WEBSOCKET_DOMAIN || window.location.hostname
   }/${process.env.REACT_APP_DEV_WEBSOCKET_PATH}`,
@@ -35,7 +40,7 @@ setEnv({
 const url = window.location.origin; //  http://xxx.dev.teespace.net
 const con_url = url.split(`//`)[1]; // xxx.dev.teespace.net
 const sub_url = url.split(`//`)[1].split(`.`)[0]; //  xxx
-const main_url = con_url.slice(con_url.indexOf('.') + 1, con_url.length); //dev.teespace.net
+const main_url = con_url.slice(con_url.indexOf('.') + 1, con_url.length); // dev.teespace.net
 const urlParams = new URLSearchParams(window.location.search);
 const tokenParam = urlParams.get('accessToken');
 const idTokenParam = urlParams.get('idToken');
@@ -50,7 +55,7 @@ ReactDOM.render(
           ? {
               token: tokenParam,
               idToken: idTokenParam,
-              refreshToken : refreshTokenParam,
+              refreshToken: refreshTokenParam,
             }
           : {
               checkLoginIframe: false,

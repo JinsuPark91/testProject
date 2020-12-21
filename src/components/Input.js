@@ -1,36 +1,41 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled, { css } from 'styled-components';
 
-const Input = ({
-  maxLength = 0,
-  disabled = false,
-  value = '',
-  onChange = null,
-  className,
-  placeholder,
-}) => {
-  const handleChange = e => {
-    const inputValue = e.target.value;
-    if (maxLength >= inputValue.length) {
-      onChange(e.target.value);
-      e.stopPropagation();
-    }
-  };
-
-  return (
-    <Wrapper disabled={disabled} className={className}>
-      <input
-        disabled={disabled}
-        value={value}
-        onChange={handleChange}
-        placeholder={placeholder}
-      />
-      {maxLength ? (
-        <div className="input-counter">{`${value.length}/${maxLength}`}</div>
-      ) : null}
-    </Wrapper>
-  );
-};
+const Input = React.forwardRef(
+  (
+    {
+      maxLength = 0,
+      disabled = false,
+      value = '',
+      onChange = null,
+      className,
+      placeholder,
+    },
+    ref,
+  ) => {
+    const handleChange = e => {
+      const inputValue = e.target.value;
+      if (maxLength >= inputValue.length) {
+        onChange(e.target.value);
+        e.stopPropagation();
+      }
+    };
+    return (
+      <Wrapper disabled={disabled} className={className}>
+        <input
+          disabled={disabled}
+          value={value}
+          onChange={handleChange}
+          placeholder={placeholder}
+          ref={ref}
+        />
+        {maxLength ? (
+          <div className="input-counter">{`${value.length}/${maxLength}`}</div>
+        ) : null}
+      </Wrapper>
+    );
+  },
+);
 
 const Wrapper = styled.div`
   display: flex;

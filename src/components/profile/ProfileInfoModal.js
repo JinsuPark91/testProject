@@ -23,9 +23,9 @@ import ProfileImageModal from './ProfileImageModal';
 function ProfileInfoModal({
   userId = '',
   visible,
-  onClose = () => {},
-  onClickTalk = () => {},
-  onClickMeeting = () => {},
+  onClose = () => { },
+  onClickTalk = () => { },
+  onClickMeeting = () => { },
   position,
   editMode = false,
 }) {
@@ -94,15 +94,15 @@ function ProfileInfoModal({
       // 프로파일 정보가 로딩되어 있지 않는 경우 로딩하고 로컬 스테이트 설정
       if (!userProfile) {
         userProfile = await userStore.getProfile({ userId });
-        setProfile(userProfile);
       }
+      setProfile(userProfile);
 
       const userAuthInfo = authStore.user;
       setUserType(userAuthInfo.type);
     })();
     // NOTE. 다이얼로그가 오픈될 때만(visble 이 true 가 된 시점) 호출되어야함.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible]);
+  }, [userId, visible]);
 
   const isMyId = userId === userStore.myProfile.id;
   const isNotMyFriend = useCallback(
@@ -254,7 +254,7 @@ function ProfileInfoModal({
     }
 
     // Update my profile information
-    await userStore.updateMyProfile({ updatedInfo });
+    setProfile(await userStore.updateMyProfile({ updatedInfo }));
 
     // Reset local input date
     resetLocalInputData();
@@ -402,8 +402,8 @@ function ProfileInfoModal({
               }}
             />
           ) : (
-            <p>{profile?.nick || profile?.name}</p>
-          )}
+              <p>{profile?.nick || profile?.name}</p>
+            )}
         </UserName>
         <UserMail>{`(${profile?.loginId})`}</UserMail>
         {/* <UserStatus>
@@ -446,7 +446,7 @@ function ProfileInfoModal({
               <EditNumInputBox>
                 <Input
                   value={
-                    phone !== undefined ? phone : profile?.companyNum || `-`
+                    phone !== undefined ? phone : profile?.companyNum || ``
                   }
                   onChange={e => {
                     setPhone(e.target.value);
@@ -456,11 +456,33 @@ function ProfileInfoModal({
               </EditNumInputBox>
             </>
           ) : (
-            userType === 'USR0001' && (profile?.companyNum || `-`)
-          )}
+              userType === 'USR0001' &&
+              (profile?.companyNum
+                ? profile?.nationalCode + ' ' + profile?.companyNum
+                : `-`)
+            )}
         </UserInfoItem>
         <UserInfoItem>
+          <UserInfoIcon iconimg="phone" />
           {isEditMode ? (
+            <>
+              <EditNumInputBox>
+                <Input
+                  value={mobile !== undefined ? mobile : profile?.phone || ``}
+                  onChange={e => {
+                    setMobile(e.target.value);
+                    setIsChange(true);
+                  }}
+                />
+              </EditNumInputBox>
+            </>
+          ) : profile?.phone ? (
+            profile?.nationalCode + ' ' + profile?.phone
+          ) : (
+                `-`
+              )}
+          {/* 1월 업데이트 사항으로 추가 */}
+          {/* {isEditMode ? (
             <EditNotic>
               휴대폰 번호는 <strong>계정 정보 변경</strong>에서 변경하세요.
             </EditNotic>
@@ -469,7 +491,7 @@ function ProfileInfoModal({
               <UserInfoIcon iconimg="phone" /> {profile?.departmentCode}{' '}
               {profile?.phone || `-`}
             </>
-          )}
+          )} */}
         </UserInfoItem>
         {/* {userType === 'USR0001' && (
           <UserInfoItem>
@@ -512,26 +534,26 @@ function ProfileInfoModal({
               </EditButton>
             </>
           ) : (
-            !isNotMyFriend() && (
-              <>
-                <UtilButton onClick={handleClickTalk}>
-                  <UtilIcon iconimg="friends" />
-                  <UtilText>{isMyId ? `나와의 Talk` : `1:1 Talk`}</UtilText>
-                </UtilButton>
-                {isMyId ? (
-                  <UtilButton onClick={handleClickEdit}>
-                    <UtilIcon iconimg="profile" />
-                    <UtilText>프로필 편집</UtilText>
+              !isNotMyFriend() && (
+                <>
+                  <UtilButton onClick={handleClickTalk}>
+                    <UtilIcon iconimg="friends" />
+                    <UtilText>{isMyId ? `나와의 Talk` : `1:1 Talk`}</UtilText>
                   </UtilButton>
-                ) : (
-                  <UtilButton onClick={handleClickMeeting}>
-                    <UtilIcon iconimg="meeting" />
-                    <UtilText>1:1 Meeting</UtilText>
-                  </UtilButton>
-                )}
-              </>
-            )
-          )}
+                  {isMyId ? (
+                    <UtilButton onClick={handleClickEdit}>
+                      <UtilIcon iconimg="profile" />
+                      <UtilText>프로필 편집</UtilText>
+                    </UtilButton>
+                  ) : (
+                      <UtilButton onClick={handleClickMeeting}>
+                        <UtilIcon iconimg="meeting" />
+                        <UtilText>1:1 Meeting</UtilText>
+                      </UtilButton>
+                    )}
+                </>
+              )
+            )}
           {isNotMyFriend() && (
             <UtilButton onClick={handleAddFriend}>
               <UtilIcon iconimg="friendAdd" />
@@ -544,10 +566,10 @@ function ProfileInfoModal({
         editMode
           ? { top: '2.875rem', margin: '0 20px 0 auto' }
           : {
-              margin: 'unset',
-              top: position?.top,
-              left: position?.left,
-            }
+            margin: 'unset',
+            top: position?.top,
+            left: position?.left,
+          }
       }
     />
   ));
@@ -651,7 +673,8 @@ const UserName = styled.div`
 `;
 const UserMail = styled.span`
   overflow: hidden;
-  margin-top: 0.31rem;
+  display: block;
+  margin-top: 0.25rem;
   font-size: 0.69rem;
   line-height: 1.06rem;
   opacity: 0.8;

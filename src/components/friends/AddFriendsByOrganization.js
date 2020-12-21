@@ -19,7 +19,7 @@ const StyledDivider = styled(Divider)`
 `;
 
 function AddFriendsByOrganization({ timestamp, searchText }) {
-  const { orgStore, userStore } = useCoreStores();
+  const { orgStore, userStore, authStore } = useCoreStores();
   const [isOpen, setIsOpen] = useState(false);
   const [searchedUserList, setSearchedUserList] = useState([]);
   const [dropdownDisplayValue, setDropdownDisplayValue] = useState('');
@@ -30,16 +30,20 @@ function AddFriendsByOrganization({ timestamp, searchText }) {
   // dropdown의 item을 클릭했을 때
   const handleDropdownChange = useCallback(
     async value => {
+      const domainKey =
+        process.env.REACT_APP_ENV === 'local'
+          ? authStore.sessionInfo.domainKey
+          : undefined;
       await orgStore.getUserOrgUserList(
         ...value.split('_'),
         userStore.myProfile.id,
-        // userStore.myProfile.domainKey,
+        domainKey,
       );
       setSearchedUserList(orgStore.userOrgUserList);
       console.log(orgStore.userOrgUserList);
       setDropdownDisplayValue('');
     },
-    [orgStore, userStore],
+    [orgStore, userStore, authStore],
   );
 
   const handleSearch = useCallback(async () => {

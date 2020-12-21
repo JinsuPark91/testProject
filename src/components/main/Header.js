@@ -21,6 +21,7 @@ import Photos from '../Photos';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import MyProfileInfo from '../profile/MyProfileInfo';
 import RoomInquiryModal from '../Rooms/RoomInquiryModal';
+import ProfileInfoModal from '../profile/ProfileInfoModal';
 import {
   ExportIcon,
   SearchIcon,
@@ -35,6 +36,7 @@ import {
   ViewFileActiveIcon,
   MeetingIcon,
   MeetingActiveIcon,
+  MeetingDisabledIcon,
 } from '../Icons';
 
 const apps = [
@@ -42,49 +44,79 @@ const apps = [
     name: 'drive',
     icons: {
       active: <DriveActiveIcon width={1.5} height={1.5} />,
+      disabled: <DriveIcon width={1.5} height={1.5} />,
       default: <DriveIcon width={1.5} height={1.5} />,
     },
+    isUsedInMyRoom: true,
   },
   {
     name: 'calendar',
     icons: {
       active: <CalendarActiveIcon width={1.5} height={1.5} />,
+      disabled: <CalendarIcon width={1.5} height={1.5} />,
       default: <CalendarIcon width={1.5} height={1.5} />,
     },
+    isUsedInMyRoom: true,
   },
   {
     name: 'note',
     icons: {
       active: <NoteActiveIcon width={1.5} height={1.5} />,
+      disabled: <NoteIcon width={1.5} height={1.5} />,
       default: <NoteIcon width={1.5} height={1.5} />,
     },
+    isUsedInMyRoom: true,
   },
 
   {
     name: 'meeting',
     icons: {
       active: <MeetingActiveIcon width={1.5} height={1.5} />,
+      disabled: <MeetingDisabledIcon width={1.5} height={1.5} />,
       default: <MeetingIcon width={1.5} height={1.5} />,
     },
+    isUsedInMyRoom: false,
   },
   {
     name: 'files',
     icons: {
       active: <ViewFileActiveIcon width={1.5} height={1.5} />,
+      disabled: <ViewFileIcon width={1.5} height={1.5} />,
       default: <ViewFileIcon width={1.5} height={1.5} />,
     },
+    isUsedInMyRoom: true,
   },
 ];
 
 const AppIcon = React.memo(
-  ({ subApp, appName, onClick, defaultIcon, activeIcon }) => {
+  ({
+    subApp,
+    appName,
+    onClick,
+    defaultIcon,
+    activeIcon,
+    disabledIcon,
+    disabled,
+  }) => {
     const handleAppClick = () => {
       onClick(appName);
     };
 
+    let icon = defaultIcon;
+    if (disabled) {
+      icon = disabledIcon;
+    } else {
+      icon = subApp === appName ? activeIcon : defaultIcon;
+    }
+
     return (
-      <AppIconWrapper key={appName} onClick={handleAppClick}>
-        {subApp === appName ? activeIcon : defaultIcon}
+      <AppIconWrapper
+        className="header__app-icon"
+        key={appName}
+        onClick={handleAppClick}
+        disabled={disabled}
+      >
+        {icon}
       </AppIconWrapper>
     );
   },
@@ -94,12 +126,12 @@ const Header = observer(() => {
   const history = useHistory();
   const { roomStore, userStore } = useCoreStores();
   const [isMessageVisible, setIsMessageVisible] = useState(false);
-  const [isRoomMemberModalVisible, setIsRoomMemberModalVisible] = useState(
+  const [isRoomProfileModalVisible, setRoomProfileModalVisible] = useState(
     false,
   );
 
   const findRoom = () => {
-    if (PlatformUIStore.resourceType === 's') {
+    if (PlatformUIStore.resourceType !== 'f') {
       return roomStore.getRoomMap().get(PlatformUIStore.resourceId);
     }
     return null;
@@ -157,7 +189,7 @@ const Header = observer(() => {
   };
 
   const handleAddMember = () => {
-    setIsRoomMemberModalVisible(true);
+    setRoomProfileModalVisible(true);
   };
 
   const toggleMessageVisible = () => {
@@ -206,17 +238,55 @@ const Header = observer(() => {
   };
 
   const handleClickRoomPhoto = useCallback(() => {
-    setIsRoomMemberModalVisible(true);
+    setRoomProfileModalVisible(true);
   }, []);
 
   const handleCancelRoomMemeberModal = useCallback(() => {
-    setIsRoomMemberModalVisible(false);
+    setRoomProfileModalVisible(false);
   }, []);
+
+  const currRoomInfo = findRoom();
+  let profileModal;
+
+  if (isMyRoom()) {
+    profileModal = (
+      <ProfileInfoModal
+        userId={userStore.myProfile.id}
+        visible={isRoomProfileModalVisible}
+        onClose={handleCancelRoomMemeberModal}
+        position={{ top: '3.5rem', left: '17rem' }}
+      />
+    );
+  } else if (currRoomInfo?.userCount === 2) {
+    const dmUserId = currRoomInfo.memberIdListString
+      .split(',')
+      .find(userId => userId !== userStore.myProfile.id);
+
+    profileModal = (
+      <ProfileInfoModal
+        userId={dmUserId}
+        visible={isRoomProfileModalVisible}
+        onClose={handleCancelRoomMemeberModal}
+        position={{ top: '3.5rem', left: '17rem' }}
+      />
+    );
+  } else {
+    profileModal = (
+      <RoomInquiryModal
+        roomId={findRoom()?.id}
+        visible={isRoomProfileModalVisible}
+        onCancel={handleCancelRoomMemeberModal}
+        width="17.5rem"
+        top="3.5rem"
+        left="17rem"
+      />
+    );
+  }
 
   return (
     <Wrapper>
       <TitleWrapper>
-        {PlatformUIStore.resourceType === 's' && (
+        {PlatformUIStore.resourceType !== 'f' && (
           <>
             <Title>
               <Photos
@@ -227,29 +297,24 @@ const Header = observer(() => {
               {!(isMyRoom() || isDMRoom()) ? (
                 <UserCountText>{getUserCount()}</UserCountText>
               ) : null}
-              <RoomInquiryModal
-                roomId={findRoom()?.id}
-                visible={isRoomMemberModalVisible}
-                onCancel={handleCancelRoomMemeberModal}
-                width="17.5rem"
-                top="calc(50% - 15rem)"
-                left="calc(50% - 9rem)"
-              />
+              {profileModal}
             </Title>
 
-            <SystemIconContainer>
-              <IconWrapper onClick={handleExport}>
-                <ExportIcon />
-              </IconWrapper>
-              <IconWrapper onClick={handleSearch}>
-                <SearchIcon />
-              </IconWrapper>
-              {!isMyRoom() && (
-                <IconWrapper onClick={handleAddMember}>
-                  <AddAcountIcon />
+            {PlatformUIStore.resourceType !== 'm' && (
+              <SystemIconContainer>
+                <IconWrapper onClick={handleExport}>
+                  <ExportIcon />
                 </IconWrapper>
-              )}
-            </SystemIconContainer>
+                <IconWrapper onClick={handleSearch}>
+                  <SearchIcon />
+                </IconWrapper>
+                {!isMyRoom() && (
+                  <IconWrapper onClick={handleAddMember}>
+                    <AddAcountIcon />
+                  </IconWrapper>
+                )}
+              </SystemIconContainer>
+            )}
           </>
         )}
       </TitleWrapper>
@@ -277,7 +342,7 @@ const Header = observer(() => {
             },
           ]}
         />
-        {apps.map(({ name, icons }) => (
+        {apps.map(({ name, icons, isUsedInMyRoom }) => (
           <AppIcon
             key={name}
             subApp={PlatformUIStore.subApp}
@@ -285,6 +350,8 @@ const Header = observer(() => {
             onClick={handleAppClick}
             defaultIcon={icons.default}
             activeIcon={icons.active}
+            disabledIcon={icons.disabled}
+            disabled={isMyRoom() && !isUsedInMyRoom}
           />
         ))}
       </AppIconContainer>

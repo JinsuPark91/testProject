@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled from 'styled-components';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, Toast } from 'teespace-core';
 import {
   WaplLogo,
   AddRoomIcon,
@@ -15,6 +15,7 @@ import OpenRoomHome from './OpenRoomHome';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
+import ProfileInfoModal from '../profile/ProfileInfoModal';
 
 function RoomList() {
   const history = useHistory();
@@ -26,13 +27,20 @@ function RoomList() {
   );
   const [roomMemberAttr, setRoomMemberAttr] = useState({});
   const { roomStore, userStore } = useCoreStores();
+  const [isProfileInfoModalVisible, setIsProfileInfoModalVisible] = useState(
+    false,
+  );
+  const [targetUserId, setTargetUserId] = useState(null);
 
   const [visible, setVisible] = useState({
     selectRoomType: false,
   });
+  const [toastText, setToastText] = useState('');
+  const [isToastVisible, setIsToastVisible] = useState(false);
 
   const handleCreateRoom = () => {
     setVisible({ ...visible, selectRoomType: true });
+    setIsToastVisible(true);
   };
 
   const handleOpenChat = useCallback(() => {
@@ -78,9 +86,29 @@ function RoomList() {
     setOpenRoomDialogVisible(false);
   };
 
-  const handleClickRoomPhoto = useCallback(roomInfo => {
-    setTargetRoom(roomInfo);
-    setIsRoomMemberModalVisible(true);
+  const handleClickRoomPhoto = useCallback(
+    roomInfo => {
+      // NOTE. 마이룸인 경우 나의 프로파일 정보를,
+      //  1:1 방의 경우 상대 유저의 프로파일 정보를 보여줌.
+      if (roomInfo.userCount === 1) {
+        setTargetUserId(userStore.myProfile.id);
+        setIsProfileInfoModalVisible(true);
+      } else if (roomInfo.userCount === 2) {
+        const found = roomInfo.memberIdListString
+          .split(',')
+          .find(userId => userId !== userStore.myProfile.id);
+        setTargetUserId(found);
+        setIsProfileInfoModalVisible(true);
+      } else {
+        setTargetRoom(roomInfo);
+        setIsRoomMemberModalVisible(true);
+      }
+    },
+    [userStore],
+  );
+
+  const handleCloseProfileInfoModal = useCallback(() => {
+    setIsProfileInfoModalVisible(false);
   }, []);
 
   const isOnlyMyRoom = () => {
@@ -114,9 +142,23 @@ function RoomList() {
               onCancel={handleRoomMemeberModalCancel}
               width="17.5rem"
               top="calc(50% - 15rem)"
-              left="calc(50% - 9rem)"
+              left="17rem"
               isEdit={roomMemberAttr.isEdit}
             />
+          );
+        }}
+      </Observer>
+      <Observer>
+        {() => {
+          return (
+            targetUserId && (
+              <ProfileInfoModal
+                userId={targetUserId}
+                visible={isProfileInfoModalVisible}
+                onClose={handleCloseProfileInfoModal}
+                position={{ left: '17rem' }}
+              />
+            )
           );
         }}
       </Observer>
@@ -124,6 +166,10 @@ function RoomList() {
       <SelectRoomTypeDialog
         visible={visible.selectRoomType}
         onCancel={handleSelectRoomTypeCancel}
+        onCreateRoom={({ selectedUsers }) => {
+          setIsToastVisible(true);
+          setToastText(`${selectedUsers.length}명의 구성원이 초대되었습니다.`);
+        }}
       />
 
       <TopWrapper>
@@ -155,10 +201,7 @@ function RoomList() {
                 <RoomItem
                   key={roomInfo.id}
                   roomInfo={roomInfo}
-                  selected={
-                    PlatformUIStore.resourceType === 's' &&
-                    PlatformUIStore.resourceId === roomInfo.id
-                  }
+                  selected={PlatformUIStore.resourceId === roomInfo.id}
                   onClick={handleSelectRoom}
                   onMenuClick={handleMenuClick}
                   onClickMenuItem={handleClickMenuItem}
@@ -203,6 +246,13 @@ function RoomList() {
         <AddRoomIconWrapper onClick={handleCreateRoom}>
           <AddRoomIcon />
         </AddRoomIconWrapper>
+        <Toast
+          visible={isToastVisible}
+          timeoutMs={1000}
+          onClose={() => setIsToastVisible(false)}
+        >
+          {toastText}
+        </Toast>
       </ButtomWrapper>
     </Wrapper>
   );

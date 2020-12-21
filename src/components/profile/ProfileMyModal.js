@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import { Button, Avatar, Dropdown, Menu, Checkbox } from 'antd';
 import { useCoreStores, Toast, WWMS } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
+import { useObserver } from 'mobx-react';
 // import { useTranslation } from 'react-i18next';
 import { useKeycloak } from '@react-keycloak/web';
 import ProfileModal from './ProfileModal';
@@ -72,8 +73,9 @@ const ProfileMyModal = ({
   }, []);
 
   const handleLogout = async () => {
-    history.push(`/logout`);
-    // 기존코드는 logoutPage.js 로 옮겨짐
+    // Close dialog first
+    if (onCancel) onCancel();
+    history.push('/logout');
   };
 
   const revokeURL = useCallback(() => {
@@ -92,10 +94,14 @@ const ProfileMyModal = ({
   //   i18n.changeLanguage(lng);
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
-  const toggleInviteDialog = useCallback(() => {
-    setIsInviteDialogOpen(!isInviteDialogOpen);
+  const handleSendInviteMail = useCallback(() => {
+    setIsInviteDialogOpen(false);
     setIsToastOpen(true);
-  }, [isInviteDialogOpen]);
+  }, []);
+
+  const handleCancelInviteMail = useCallback(() => {
+    setIsInviteDialogOpen(false);
+  }, []);
 
   const toggleSpaceMemViewDialog = useCallback(() => {
     setIsSpaceMemViewOpen(!isSpaceMemViewOpen);
@@ -108,11 +114,15 @@ const ProfileMyModal = ({
   const handleMemberList = useCallback(async () => {
     const { myProfile } = userStore;
     try {
+      const domainKey =
+        process.env.REACT_APP_ENV === 'local'
+          ? authStore.sessionInfo.domainKey
+          : undefined;
       const response = await orgStore.getUserOrgUserList(
         myProfile?.companyCode,
         myProfile?.departmentCode,
         myProfile?.id,
-        // myProfile?.domainKey,
+        domainKey,
       );
       setSpaceMemberList(response);
     } catch (e) {
@@ -126,35 +136,76 @@ const ProfileMyModal = ({
   }, []);
 
   const handleAdminPage = useCallback(() => {
-    history.push('/admin');
+    history.push(`/admin`);
   }, [history]);
 
+  /// TODO REFACTOR: Move Page 함수 하나로 합치기!!!!
   const handleMoveSpacePage = useCallback(() => {
     const url = window.location.href;
     const purl = url?.split('.');
-    if (purl[0] === 'dev' || purl[0] !== 'wapl') {
-      window.location.href =
-        `${window.location.protocol}//` + `dev.wapl.ai/spaces`;
+    if (
+      purl[0].match('127') ||
+      purl[0].match('192') ||
+      purl[0].match('local')
+    ) {
+      window.location.href = `${window.location.protocol}//dev.wapl.ai/spaces`;
     } else {
-      window.location.href = `${window.location.protocol}//` + `wapl.ai/spaces`;
+      const tdomain = purl[1];
+      if (purl[1] === 'wapl') {
+        window.location.href = `${window.location.protocol}//wapl.ai/spaces`;
+      } else {
+        window.location.href = `${window.location.protocol}//${tdomain}.wapl.ai/spaces`;
+      }
+    }
+  }, []);
+
+  const handleMoveAccountPage = useCallback(() => {
+    const url = window.location.href;
+    const purl = url?.split('.');
+    if (
+      purl[0].match('127') ||
+      purl[0].match('192') ||
+      purl[0].match('local')
+    ) {
+      window.location.href = `${window.location.protocol}//dev.wapl.ai/account`;
+    } else {
+      const tdomain = purl[1];
+      if (purl[1] === 'wapl') {
+        window.location.href = `${window.location.protocol}//wapl.ai/account`;
+      } else {
+        window.location.href = `${window.location.protocol}//${tdomain}.wapl.ai/account`;
+      }
     }
   }, []);
 
   const handleOpenSupport = () => {
     const url = window.location.href;
     const purl = url?.split('.');
-    if (purl[0] === 'dev' || purl[0] !== 'wapl') {
+    if (
+      purl[0].match('127') ||
+      purl[0].match('192') ||
+      purl[0].match('local')
+    ) {
       window.open(`${window.location.protocol}//dev.wapl.ai/support`);
-    } else window.open(`${window.location.protocol}//wapl.ai/support`);
+    } else {
+      const tdomain = purl[1];
+      if (purl[1] === 'wapl') {
+        window.open(`${window.location.protocol}//wapl.ai/support`);
+      } else {
+        window.open(`${window.location.protocol}//${tdomain}.wapl.ai/support`);
+      }
+    }
   };
 
   useEffect(() => {
+    if (isEditMode === true) return;
     (async () => {
       const userProfile = await userStore.getProfile({ userId });
       setProfile(userProfile);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userStore]);
+  }, [isEditMode, userStore]);
+
   useEffect(() => {
     setIsCreated(created);
   }, [created]);
@@ -172,20 +223,21 @@ const ProfileMyModal = ({
       )}
     </Menu>
   );
-
   const userContent = !isEditMode ? (
     <>
       <UserImage src={thumbPhoto} onLoad={revokeURL} />
-      <UserName>{profile?.nick || profile?.name}</UserName>
-      <UserMail>{`(${profile?.loginId})`}</UserMail>
+      <UserName>
+        {userStore.myProfile?.nick || userStore.myProfile?.name}
+      </UserName>
+      <UserMail>{`(${userStore.myProfile?.loginId})`}</UserMail>
       <UserButtonBox>
         <Button type="link" onClick={toggleEditMode}>
           프로필 편집
         </Button>
-        {/* <UserBar />
-        <Button type="link" onClick={handleSettingDialogOpen.bind(this, '6')}>
+        <UserBar />
+        <Button type="link" onClick={handleMoveAccountPage}>
           비밀번호 변경
-        </Button> */}
+        </Button>
       </UserButtonBox>
       <LogoutButton shape="round" onClick={handleLogout}>
         로그아웃
@@ -202,7 +254,7 @@ const ProfileMyModal = ({
   );
 
   const spaceViewList = spaceStore.spaceList.filter(
-    elem => elem.id !== spaceStore.currentSpace.id,
+    elem => spaceStore.currentSpace && elem.id !== spaceStore.currentSpace.id,
   );
 
   const subContent = (
@@ -218,15 +270,15 @@ const ProfileMyModal = ({
           </Logo>
           <Info>
             <Title>{spaceStore.currentSpace?.name}</Title>
-            {spaceStore.currentSpace?.name}
+            {spaceStore.currentSpace?.domain}
           </Info>
-          {/* <Button
+          <Button
             type="circle"
             className="btn-convert"
             onClick={handleSpaceList}
           >
             <Blind>스페이스 전환</Blind>
-          </Button> */}
+          </Button>
           <Dropdown
             trigger={['click']}
             overlay={moreMenu}
@@ -294,7 +346,9 @@ const ProfileMyModal = ({
             <ConvertList>
               {spaceStore.spaceList.map(elem => (
                 <ConvertItem
-                  onClick={() => window.location.replace(elem.domain)}
+                  onClick={() => {
+                    window.location.href = `${window.location.protocol}//${elem.domain}`;
+                  }}
                   key={elem}
                 >
                   <LogoSmall
@@ -308,11 +362,11 @@ const ProfileMyModal = ({
               ))}
             </ConvertList>
           )}
-          <ConvertAdd>
+          {/* <ConvertAdd>
             <AddButton href="#">
               <span>+</span> 새 스페이스 생성
             </AddButton>
-          </ConvertAdd>
+          </ConvertAdd> */}
         </ConvertDropdown>
       )}
       {isCreated && (
@@ -330,7 +384,8 @@ const ProfileMyModal = ({
       />
       <AddFriendsByInvitationDialog
         visible={isInviteDialogOpen}
-        onCancel={toggleInviteDialog}
+        onSendInviteMail={handleSendInviteMail}
+        onCancel={handleCancelInviteMail}
       />
       <AddFriendsBySearch
         visible={isSpaceMemViewOpen}
@@ -353,7 +408,7 @@ const ProfileMyModal = ({
     </>
   );
 
-  return (
+  return useObserver(() => (
     <ProfileModal
       visible={visible}
       mask={isCreated}
@@ -384,7 +439,7 @@ const ProfileMyModal = ({
       maskTransitionName=""
       style={{ top: '2.875rem', margin: '0 20px 0 auto' }}
     />
-  );
+  ));
 };
 
 const UserImage = styled.img`

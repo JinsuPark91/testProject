@@ -312,6 +312,7 @@ function AddFriendsBySearch({
       </StyledModal>
       <AddFriendsByInvitationDialog
         visible={isInviteDialogVisible}
+        onSendInviteMail={toggleInviteDialog}
         onCancel={toggleInviteDialog}
       />
     </>

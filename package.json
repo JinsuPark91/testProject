@@ -27,6 +27,7 @@
     "draft-js-mention-plugin": "^3.1.5",
     "draft-js-plugins-editor": "^3.0.0",
     "emoji-mart": "^3.0.0",
+    "http-proxy-middleware": "^1.0.6",
     "i18next": "^19.8.4",
     "i18next-http-backend": "^1.0.21",
     "jodit-react": "^1.0.65",
@@ -150,6 +151,5 @@
     "rollup-plugin-postcss": "^3.1.8",
     "rollup-plugin-url": "^3.0.1",
     "rollup-plugin-visualizer": "^4.1.1"
-  },
-  "proxy": "http://dev.dev.teespace.net"
+  }
 }

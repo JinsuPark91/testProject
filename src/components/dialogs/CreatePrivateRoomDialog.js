@@ -85,6 +85,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
           onSelectChange={handleSelectedUserChange}
           disabledIds={disabledIds}
           defaultSelectedUsers={[userStore.myProfile]}
+          showMeOnFriendTab={false}
           height={20} // rem
         />
         <ConfigWrapper>
@@ -100,7 +101,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
           </ConfigTitle>
 
           <ConfigDescriptionText>
-            {`초기 설정하지 않을 시, 멤버 이름으로 나열된 룸이 개설되며,
+            {`초기 설정하지 않을 시, 구성원 이름으로 나열된 룸이 개설되며,
             이후 변경한 룸 이름은 개인에게만 적용됩니다.`}
           </ConfigDescriptionText>
 
@@ -135,7 +136,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
             onClick={handleOk}
             disabled={!selectedUsers.length}
           >
-            확인
+            {`초대 ${selectedUsers.length > 99 ? '99+' : selectedUsers.length}`}
           </StyledButton>
           <StyledButton buttonType="cancel" onClick={handleCancel}>
             취소
