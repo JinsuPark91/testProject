@@ -1,7 +1,7 @@
 import React from 'react';
 import { useObserver } from 'mobx-react';
 import { MailSideView } from 'teespace-mail-app';
-import { Tooltip } from 'antd';
+import { useCoreStores } from 'teespace-core';
 import { ChattingIcon, MailIcon, PeopleIcon } from '../Icons';
 import FriendLnb from '../friends/FriendsLNB';
 import RoomList from '../Rooms/RoomList';
@@ -11,6 +11,7 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 const { TabPane } = CustomTabs;
 
 const LeftSide = () => {
+  const { spaceStore } = useCoreStores();
   const handleSelectTab = key => {
     PlatformUIStore.tabType = key;
   };
@@ -30,7 +31,11 @@ const LeftSide = () => {
           <RoomList />
         </TabPane>
 
-        <TabPane key="m" tab={<MailIcon tooltipText="Mail" />}>
+        <TabPane
+          key="m"
+          disabled={spaceStore.currentSpace.plan === 'BASIC'}
+          tab={<MailIcon tooltipText="Mail" />}
+        >
           <MailSideView />
         </TabPane>
       </CustomTabs>
