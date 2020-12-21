@@ -130,11 +130,15 @@ const ProfileMyModal = ({
   const handleMemberList = useCallback(async () => {
     const { myProfile } = userStore;
     try {
+      const domainKey =
+        process.env.REACT_APP_ENV === 'local'
+          ? authStore.sessionInfo.domainKey
+          : undefined;
       const response = await orgStore.getUserOrgUserList(
         myProfile?.companyCode,
         myProfile?.departmentCode,
         myProfile?.id,
-        // PlatformUIStore.domainKey,
+        domainKey,
       );
       setSpaceMemberList(response);
     } catch (e) {
