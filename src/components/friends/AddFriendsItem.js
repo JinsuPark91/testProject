@@ -85,7 +85,9 @@ const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
   const [friendUserName, setFriendUserName] = useState('');
 
   let memberList = friendAddList;
-  memberList.unshift(userStore.myProfile); // 내 정보 표시
+  if (memberList[0].id !== userStore.myProfile.id) {
+    memberList.unshift(userStore.myProfile);
+  }
   if (searchText) {
     memberList = memberList.filter(elem => elem.name.includes(searchText));
   }
