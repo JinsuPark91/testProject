@@ -113,8 +113,9 @@ function ContentAlarm({
   mailAlarm,
   calendarAlarm,
 }) {
-  const { userStore } = useCoreStores();
+  const { userStore, spaceStore } = useCoreStores();
 
+  const [isLoading, setIsLoading] = useState(true);
   const [isAlarmChecked, setIsAlarmChecked] = useState(true);
   const [isSoundChecked, setIsSoundChecked] = useState(true);
 
@@ -132,6 +133,11 @@ function ContentAlarm({
     switch (value) {
       case ALARM_TYPE.DESKTOP: {
         setIsAlarmChecked(false);
+        break;
+      }
+
+      case ALARM_TYPE.SOUND: {
+        setIsSoundChecked(false);
         break;
       }
 
@@ -178,15 +184,14 @@ function ContentAlarm({
   useEffect(() => {
     (async () => {
       try {
-        console.log(EDIT_TYPE.INSERT);
         const res = await userStore.getAlarmList(userStore.myProfile.id);
-        console.log(res);
-        // if (res) {
-        //   res.forEach(elem => handleInitState(elem));
-        // }
+        if (res) {
+          res.forEach(elem => handleInitState(elem));
+        }
       } catch (e) {
         console.log(`getalarmlist error${e}`);
       }
+      setIsLoading(false);
     })();
   }, [userStore]);
 
@@ -195,29 +200,35 @@ function ContentAlarm({
     setIsAlarmChecked(value);
     await userStore.updateAlarm({
       userId: userStore.myProfile.id,
-      type: value ? EDIT_TYPE.INSERT : EDIT_TYPE.DELETE,
+      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
       alarmCode: ALARM_TYPE.DESKTOP,
     });
   };
 
-  const handleAlarmSound = value => {
+  const handleAlarmSound = async value => {
     setIsSoundChecked(value);
+    await userStore.updateAlarm({
+      userId: userStore.myProfile.id,
+      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
+      alarmCode: ALARM_TYPE.SOUND,
+    });
   };
 
   const handleTalkMessage = async value => {
     setIsMessageNoticeChecked(value);
     await userStore.updateAlarm({
       userId: userStore.myProfile.id,
-      type: value ? EDIT_TYPE.INSERT : EDIT_TYPE.DELETE,
+      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
       alarmCode: ALARM_TYPE.TALK,
     });
   };
 
   const handleMessagePreview = async () => {
-    setIsMessagePreviewChecked(!isMessagePreviewChecked);
+    const value = !isMessagePreviewChecked;
+    setIsMessagePreviewChecked(value);
     await userStore.updateAlarm({
       userId: userStore.myProfile.id,
-      type: !isMessagePreviewChecked ? EDIT_TYPE.INSERT : EDIT_TYPE.DELETE,
+      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
       alarmCode: ALARM_TYPE.TALK_CONTENTS,
     });
   };
@@ -226,25 +237,27 @@ function ContentAlarm({
     setIsMeetingNoticeChecked(value);
     await userStore.updateAlarm({
       userId: userStore.myProfile.id,
-      type: value ? EDIT_TYPE.INSERT : EDIT_TYPE.DELETE,
+      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
       alarmCode: ALARM_TYPE.MEETING,
     });
   };
 
   const handleMeetingStart = async () => {
-    setIsMeetingStartChecked(!isMeetingStartChecked);
+    const value = !isMeetingStartChecked;
+    setIsMeetingStartChecked(value);
     userStore.updateAlarm({
       userId: userStore.myProfile.id,
-      type: !isMeetingStartChecked ? EDIT_TYPE.INSERT : EDIT_TYPE.DELETE,
+      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
       alarmCode: ALARM_TYPE.MEETING_START,
     });
   };
 
   const handleMeetingEnd = () => {
-    setIsMeetingEndChecked(!isMeetingEndChecked);
+    const value = !isMeetingEndChecked;
+    setIsMeetingEndChecked(value);
     userStore.updateAlarm({
       userId: userStore.myProfile.id,
-      type: !isMeetingEndChecked ? EDIT_TYPE.INSERT : EDIT_TYPE.DELETE,
+      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
       alarmCode: ALARM_TYPE.MEETING_END,
     });
   };
@@ -253,7 +266,7 @@ function ContentAlarm({
     setIsMailNoticeChecked(value);
     await userStore.updateAlarm({
       userId: userStore.myProfile.id,
-      type: value ? EDIT_TYPE.INSERT : EDIT_TYPE.DELETE,
+      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
       alarmCode: ALARM_TYPE.MAIL,
     });
   };
@@ -262,13 +275,17 @@ function ContentAlarm({
     setIsCalendarNoticeChecked(value);
     await userStore.updateAlarm({
       userId: userStore.myProfile.id,
-      type: value ? EDIT_TYPE.INSERT : EDIT_TYPE.DELETE,
+      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
       alarmCode: ALARM_TYPE.CALENDAR,
     });
   };
 
   const alarmSound = new Audio();
   alarmSound.src = AlarmSound;
+
+  const isBasicPlan = spaceStore.currentSpace?.plan === 'BASIC';
+
+  if (isLoading) return null;
 
   return (
     <>
@@ -279,7 +296,10 @@ function ContentAlarm({
       <form>
         <FormItemMain valuePropName="alarmchecked">
           <ItemMain>
-            <Switch defaultChecked onChange={handleDeskTopNotification} />
+            <Switch
+              defaultChecked={isAlarmChecked}
+              onChange={handleDeskTopNotification}
+            />
             <span>바탕화면 알림 허용</span>
           </ItemMain>
         </FormItemMain>
@@ -288,19 +308,25 @@ function ContentAlarm({
             <FormItem valuePropName="alarmchecked">
               <ItemInfo>
                 <ItemTitle htmlFor="alarmsound">소리 알림</ItemTitle>
-                {isSoundChecked && (
-                  <ItemSub>
-                    <SoundText>알림 소리 - WAPL</SoundText>
-                    {/* click시 checked */}
-                    <SoundButton type="circle">
-                      <SoundIcon onClick={() => alarmSound.play()} />
-                    </SoundButton>
-                  </ItemSub>
-                )}
+                <ItemSub>
+                  <SoundText>알림 소리 - WAPL</SoundText>
+                  {/* click시 checked */}
+                  <SoundButton type="circle">
+                    <SoundIcon
+                      onClick={() => {
+                        alarmSound.pause();
+                        if (alarmSound.currentTime > 0) {
+                          alarmSound.currentTime = 0;
+                        }
+                        alarmSound.play();
+                      }}
+                    />
+                  </SoundButton>
+                </ItemSub>
               </ItemInfo>
               <Switch
                 id="alarmsound"
-                defaultChecked={isAlarmChecked}
+                defaultChecked={isSoundChecked}
                 onChange={handleAlarmSound}
               />
             </FormItem>
@@ -360,12 +386,17 @@ function ContentAlarm({
                 <ItemTitle htmlFor="Newlettertoggle">
                   Mail 새 편지 수신
                 </ItemTitle>
-                <ItemSub>BASIC 플랜에서는 제공하지 않는 서비스 입니다.</ItemSub>
+                {isBasicPlan && (
+                  <ItemSub>
+                    BASIC 플랜에서는 제공하지 않는 서비스 입니다.
+                  </ItemSub>
+                )}
               </ItemInfo>
               <Switch
                 id="Newlettertoggle"
                 defaultChecked={isMailNoticeChecked}
                 onChange={handleMailNotice}
+                disabled={isBasicPlan}
               />
             </FormItem>
             <FormItem>

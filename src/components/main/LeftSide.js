@@ -33,7 +33,7 @@ const LeftSide = () => {
 
         <TabPane
           key="m"
-          disabled={spaceStore.currentSpace.plan === 'BASIC'}
+          disabled={spaceStore.currentSpace?.plan === 'BASIC'}
           tab={<MailIcon tooltipText="Mail" />}
         >
           <MailSideView />
