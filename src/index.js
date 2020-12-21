@@ -40,24 +40,41 @@ setEnv({
 const url = window.location.origin; //  http://xxx.dev.teespace.net
 const con_url = url.split(`//`)[1]; // xxx.dev.teespace.net
 const sub_url = url.split(`//`)[1].split(`.`)[0]; //  xxx
-const main_url = con_url.slice(con_url.indexOf('.') + 1, con_url.length); // dev.teespace.net
-const urlParams = new URLSearchParams(window.location.search);
-const tokenParam = urlParams.get('accessToken');
-const idTokenParam = urlParams.get('idToken');
-const refreshTokenParam = urlParams.get('refreshToken');
+const main_url = con_url.slice(con_url.indexOf('.') + 1, con_url.length); //dev.teespace.net
+
+const getCookieValue = key => {
+  let cookieKey = key + '=';
+  let result = '';
+  const cookieArr = document.cookie.split(';');
+
+  for (let i = 0; i < cookieArr.length; i++) {
+    if (cookieArr[i][0] === ' ') {
+      cookieArr[i] = cookieArr[i].substring(1);
+    }
+
+    if (cookieArr[i].indexOf(cookieKey) === 0) {
+      result = cookieArr[i].slice(cookieKey.length, cookieArr[i].length);
+      return result;
+    }
+  }
+  return result;
+};
 
 ReactDOM.render(
   <CoreStoreProvider config={getEnv()}>
     <ReactKeycloakProvider
       authClient={keycloak}
       initOptions={
-        tokenParam
+        // tokenParam
+        getCookieValue(`ACCESS_TOKEN`)
           ? {
-              token: tokenParam,
-              idToken: idTokenParam,
-              refreshToken: refreshTokenParam,
+              // onLoad: 'check-sso',
+              token: getCookieValue(`ACCESS_TOKEN`),
+              refreshToken: getCookieValue(`REFRESH_TOKEN`),
             }
           : {
+              // onLoad: 'check-sso',
+              // silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
               checkLoginIframe: false,
               redirectUri:
                 process.env.REACT_APP_ENV === 'local'
