@@ -63,12 +63,29 @@ const FriendAddBtn = styled.button`
   }
 `;
 
+const MyBadge = styled.span`
+  position: absolute;
+  top: 0rem;
+  text-align: center;
+  background-color: #523dc7;
+  min-width: 1.06rem;
+  min-height: 0.94rem;
+  padding: 0.06rem 0.25rem;
+  border-radius: 0.28rem;
+  font-weight: 600;
+  font-size: 0.56rem;
+  color: #fff;
+  line-height: 0.81rem;
+  z-index: 100;
+`;
+
 const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
   const { userStore, friendStore } = useCoreStores();
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [friendUserName, setFriendUserName] = useState('');
 
   let memberList = friendAddList;
+  memberList.unshift(userStore.myProfile); // 내 정보 표시
   if (searchText) {
     memberList = memberList.filter(elem => elem.name.includes(searchText));
   }
@@ -105,9 +122,12 @@ const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
 
   const FriendAddItem = ({ friendInfo, style }) => {
     const userName = friendInfo?.name;
+    const isMe =
+      friendInfo?.friendId || friendInfo.id === userStore.myProfile.id;
     return (
       <>
         <FriendItem style={style}>
+          {isMe && <MyBadge> 나 </MyBadge>}
           <img
             alt="profile"
             src={userStore.getProfilePhotoURL(
