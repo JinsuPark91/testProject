@@ -5,6 +5,7 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import './App.less';
 import { create } from 'mobx-persist';
 import { PortalProvider, useCoreStores } from 'teespace-core';
+import { initApp as initTalkApp } from 'teespace-talk-app';
 import { initApp as initDriveApp } from 'teespace-drive-app';
 import {
   initApp as initCalendarApp,
@@ -37,6 +38,7 @@ function App() {
 
   // initialize apps
   useEffect(() => {
+    initTalkApp();
     initDriveApp();
     initCalendarApp();
     initializeCalendarApp();
