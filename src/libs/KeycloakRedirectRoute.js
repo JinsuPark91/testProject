@@ -11,7 +11,7 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
   const url = window.location.origin; //  http://xxx.dev.teespace.net
   const con_url = url.split(`//`)[1]; // xxx.dev.teespace.net
   const sub_url = url.split(`//`)[1].split(`.`)[0]; //  xxx
-  const main_url = con_url.slice(con_url.indexOf('.')+1 , con_url.length); //dev.teespace.net
+  const main_url = con_url.slice(con_url.indexOf('.') + 1, con_url.length); //dev.teespace.net
 
   return (
     <Route
@@ -20,16 +20,22 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
         if (keycloak.authenticated) {
           console.log(process.env.REACT_APP_ENV);
           if (process.env.REACT_APP_ENV !== 'local') {
-            authStore
-              .login({
-                deviceType: "PC",
-                domainUrl:"",
-              })
-              .then(() => {
+            (async () => {
+              try {
+                keycloak.tokenParsed.email !== authStore.user?.loginId
+                  ? await authStore.logout()
+                  : '';
+                await authStore.login({
+                  deviceType: 'PC',
+                  domainUrl: '',
+                });
                 history.push(`/f/${authStore.user.id}/profile`);
-              })
-              .catch(e => console.error(e));
-          }else{
+              } catch (e) {
+                window.location.href = `http://${main_url}/domain/${sub_url}`;
+                console.error(e);
+              }
+            })();
+          } else {
             return <Component {...props} />;
           }
           return null;
