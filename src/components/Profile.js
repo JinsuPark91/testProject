@@ -554,6 +554,7 @@ const StyledUpload = styled(Upload)`
 const Text = styled.span`
   overflow: hidden;
   display: block;
+  max-width: 14.69rem;
   width: 100%;
   color: #fff;
   font-size: 0.81rem;
@@ -680,7 +681,7 @@ const UserImage = styled.img`
 `;
 
 const UserInfoList = styled.div`
-  min-width: 300px;
+  min-width: 14.69rem;
   display: flex;
   flex-direction: column;
 `;
@@ -764,7 +765,6 @@ const StyleIcon = styled.span`
 const UserInfoText = styled.span`
   overflow: hidden;
   display: inline-block;
-  width: 12.19rem;
   white-space: nowrap;
   text-overflow: ellipsis;
   font-size: 0.88rem;
