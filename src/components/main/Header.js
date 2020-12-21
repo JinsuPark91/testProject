@@ -111,6 +111,7 @@ const AppIcon = React.memo(
 
     return (
       <AppIconWrapper
+        className="header__app-icon"
         key={appName}
         onClick={handleAppClick}
         disabled={disabled}
@@ -130,7 +131,7 @@ const Header = observer(() => {
   );
 
   const findRoom = () => {
-    if (PlatformUIStore.resourceType === 's') {
+    if (PlatformUIStore.resourceType !== 'f') {
       return roomStore.getRoomMap().get(PlatformUIStore.resourceId);
     }
     return null;
@@ -285,7 +286,7 @@ const Header = observer(() => {
   return (
     <Wrapper>
       <TitleWrapper>
-        {PlatformUIStore.resourceType === 's' && (
+        {PlatformUIStore.resourceType !== 'f' && (
           <>
             <Title>
               <Photos
@@ -299,19 +300,21 @@ const Header = observer(() => {
               {profileModal}
             </Title>
 
-            <SystemIconContainer>
-              <IconWrapper onClick={handleExport}>
-                <ExportIcon />
-              </IconWrapper>
-              <IconWrapper onClick={handleSearch}>
-                <SearchIcon />
-              </IconWrapper>
-              {!isMyRoom() && (
-                <IconWrapper onClick={handleAddMember}>
-                  <AddAcountIcon />
+            {PlatformUIStore.resourceType !== 'm' && (
+              <SystemIconContainer>
+                <IconWrapper onClick={handleExport}>
+                  <ExportIcon />
                 </IconWrapper>
-              )}
-            </SystemIconContainer>
+                <IconWrapper onClick={handleSearch}>
+                  <SearchIcon />
+                </IconWrapper>
+                {!isMyRoom() && (
+                  <IconWrapper onClick={handleAddMember}>
+                    <AddAcountIcon />
+                  </IconWrapper>
+                )}
+              </SystemIconContainer>
+            )}
           </>
         )}
       </TitleWrapper>
