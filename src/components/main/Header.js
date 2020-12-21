@@ -302,12 +302,14 @@ const Header = observer(() => {
 
             {PlatformUIStore.resourceType !== 'm' && (
               <SystemIconContainer>
-                <IconWrapper onClick={handleExport}>
+                {/* <IconWrapper onClick={handleExport}>
                   <ExportIcon />
-                </IconWrapper>
-                <IconWrapper onClick={handleSearch}>
-                  <SearchIcon />
-                </IconWrapper>
+                </IconWrapper> */}
+                {PlatformUIStore.layout !== 'expand' && (
+                  <IconWrapper onClick={handleSearch}>
+                    <SearchIcon />
+                  </IconWrapper>
+                )}
                 {!isMyRoom() && (
                   <IconWrapper onClick={handleAddMember}>
                     <AddAcountIcon />
