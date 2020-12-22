@@ -46,7 +46,7 @@ function FriendsLNBFooter() {
       setIsSpaceEmpty(true);
     } else {
       const response = await orgStore.getOrgTree();
-      if (response.length) {
+      if (response && response.length) {
         setIsOrgExist(true);
       } else {
         const { myProfile } = userStore;
