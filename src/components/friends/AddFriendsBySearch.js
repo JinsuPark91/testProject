@@ -1,7 +1,7 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { useCoreStores, Search, Toast } from 'teespace-core';
 import styled from 'styled-components';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Avatar } from 'antd';
 import Photos from '../Photos';
 import AddFriendsByInvitationDialog from './AddFriendsByInvitationDialog';
 import FriendModalImg from '../../assets/none_friends.svg';
@@ -200,6 +200,15 @@ const FriendList = styled.ul`
   padding: 0.63rem 0.81rem 0.63rem 0.63rem;
 `;
 
+const Logo = styled(Avatar)`
+  flex-shrink: 0;
+  width: 1.69rem;
+  height: 1.69rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+`;
+
 function AddFriendsBySearch({
   visible,
   onCancelAddFriends,
@@ -249,7 +258,19 @@ function AddFriendsBySearch({
         mask
         footer={null}
         width="24.38rem"
-        title={title}
+        title={
+          // <>
+          //   {isViewMode && (
+          //     <Logo
+          //       shape="square"
+          //       style={{ color: '#fff', backgroundColor: '#75757F' }}
+          //     >
+          //       {title[0]}
+          //     </Logo>
+          //   )}
+          title
+          // </>
+        }
         onCancel={handleCancelInvite}
       >
         {isSpaceEmpty ? (
