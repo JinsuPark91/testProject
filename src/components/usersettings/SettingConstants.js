@@ -1,5 +1,6 @@
 export const ALARM_TYPE = {
   DESKTOP: 'desktop_all',
+  SOUND: 'alarm_sound',
   TALK: 'ttalk_all',
   TALK_CONTENTS: 'ttalk_showContents',
   MEETING: 'cloudmeeting_all',
