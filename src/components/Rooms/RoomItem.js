@@ -133,17 +133,15 @@ const RoomDropdown = React.memo(
     };
 
     const roomMenu = () => {
-      const isMyRoom = roomInfo.type === 'WKS0001';
       const isDMRoom = roomInfo.isDirectMsg;
-      const showSetting =
-        !isMyRoom && !isDMRoom && roomInfo.adminId === myUserId;
+      const isAdmin = roomInfo.adminId === myUserId;
 
       return (
         <StyledMenu>
           {
             // NOTE. 마이룸과 1:1 룸은 이름 변경할 수 있음
-            // NOTE. Open룸 고려하여 마이룸, DM룸 아니면서 내가 admin 인경우
-            showSetting && (
+            // NOTE. 마이름은 메뉴 자체가 없다. (체크할 필요 없음)
+            !isDMRoom && (
               <Menu.Item key="changeName" onClick={handleNameChange}>
                 이름 변경
               </Menu.Item>
@@ -172,8 +170,8 @@ const RoomDropdown = React.memo(
           </Menu.Item>
           {
             // NOTE. 마이룸과 1:1 룸은 룸설정 할 수 없음
-            // NOTE. Open룸 고려하여 마이룸, DM룸 아니면서 내가 admin 인경우
-            showSetting && (
+            // NOTE. 1:1 방이 아니고, 내가 관리자면 세팅페이지를 볼수 있다.
+            !isDMRoom && isAdmin && (
               <Menu.Item key="setting" onClick={handleSetting}>
                 룸 설정
               </Menu.Item>
