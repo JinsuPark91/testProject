@@ -490,11 +490,11 @@ const Profile = observer(
                       />
                     ) : profile?.companyNum ? (
                       <UserInfoText>
-                        {profile?.nationalCode + ' ' + profile?.companyNum}
+                        {`${profile?.nationalCode} ${profile?.companyNum}`}
                       </UserInfoText>
                     ) : (
-                          <UserInfoText>{`-`}</UserInfoText>
-                        )}
+                      <UserInfoText>{`-`}</UserInfoText>
+                    )}
                   </UserInfoItem>
                 )}
                 <UserInfoItem>
@@ -510,12 +510,12 @@ const Profile = observer(
                       }
                     />
                   ) : (
-                      <UserInfoText>
-                        {profile?.phone
-                          ? profile?.nationalCode + ` ` + profile?.phone
-                          : `-`}
-                      </UserInfoText>
-                    )}
+                    <UserInfoText>
+                      {profile?.phone
+                        ? `${profile?.nationalCode} ${profile?.phone}`
+                        : `-`}
+                    </UserInfoText>
+                  )}
                 </UserInfoItem>
                 {/* 프로필 편집 시 "email" class 삭제 */}
                 {/* <UserInfoItem

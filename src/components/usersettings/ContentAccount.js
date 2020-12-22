@@ -354,21 +354,21 @@ function ContentAccount({ isEdit }) {
                 </ButtonArea>
               </>
             ) : (
-                <>
-                  <TextArea>
-                    <p>{authStore.user.name}</p>
-                  </TextArea>
-                  <ButtonArea>
-                    <Button
-                      size="small"
-                      type="outlined"
-                      onClick={handleToggleNameInput}
-                    >
-                      변경
+              <>
+                <TextArea>
+                  <p>{authStore.user.name}</p>
+                </TextArea>
+                <ButtonArea>
+                  <Button
+                    size="small"
+                    type="outlined"
+                    onClick={handleToggleNameInput}
+                  >
+                    변경
                   </Button>
-                  </ButtonArea>
-                </>
-              )}
+                </ButtonArea>
+              </>
+            )}
           </Data>
         </InnerItem>
         <InnerItem>
@@ -406,24 +406,24 @@ function ContentAccount({ isEdit }) {
                 </ButtonArea>
               </>
             ) : (
-                <>
-                  <TextArea>
-                    <p>{authStore.user.nick}</p>
-                    <Info>
-                      스페이스에서 불리고 싶은 별명을 설정할 수 있습니다.
+              <>
+                <TextArea>
+                  <p>{authStore.user.nick}</p>
+                  <Info>
+                    스페이스에서 불리고 싶은 별명을 설정할 수 있습니다.
                   </Info>
-                  </TextArea>
-                  <ButtonArea>
-                    <Button
-                      size="small"
-                      type="outlined"
-                      onClick={handleToggleNickInput}
-                    >
-                      변경
+                </TextArea>
+                <ButtonArea>
+                  <Button
+                    size="small"
+                    type="outlined"
+                    onClick={handleToggleNickInput}
+                  >
+                    변경
                   </Button>
-                  </ButtonArea>
-                </>
-              )}
+                </ButtonArea>
+              </>
+            )}
           </Data>
         </InnerItem>
         {isB2B ? (
@@ -473,21 +473,21 @@ function ContentAccount({ isEdit }) {
                     </ButtonArea>
                   </>
                 ) : (
-                    <>
-                      <TextArea>
-                        <p>{authStore.user.companyNum}</p>
-                      </TextArea>
-                      <ButtonArea>
-                        <Button
-                          size="small"
-                          type="outlined"
-                          onClick={handleToggleCompanyPhoneInput}
-                        >
-                          변경
+                  <>
+                    <TextArea>
+                      <p>{authStore.user.companyNum}</p>
+                    </TextArea>
+                    <ButtonArea>
+                      <Button
+                        size="small"
+                        type="outlined"
+                        onClick={handleToggleCompanyPhoneInput}
+                      >
+                        변경
                       </Button>
-                      </ButtonArea>
-                    </>
-                  )}
+                    </ButtonArea>
+                  </>
+                )}
               </Data>
             </InnerItem>
           </>
@@ -521,21 +521,21 @@ function ContentAccount({ isEdit }) {
                 </ButtonArea>
               </>
             ) : (
-                <>
-                  <TextArea>
-                    <p>{authStore.user.phone}</p>
-                  </TextArea>
-                  <ButtonArea>
-                    <Button
-                      size="small"
-                      type="outlined"
-                      onClick={handleToggleCellPhoneInput}
-                    >
-                      변경
+              <>
+                <TextArea>
+                  <p>{authStore.user.phone}</p>
+                </TextArea>
+                <ButtonArea>
+                  <Button
+                    size="small"
+                    type="outlined"
+                    onClick={handleToggleCellPhoneInput}
+                  >
+                    변경
                   </Button>
-                  </ButtonArea>
-                </>
-              )}
+                </ButtonArea>
+              </>
+            )}
           </Data>
         </InnerItem>
         <InnerItem>
@@ -569,21 +569,21 @@ function ContentAccount({ isEdit }) {
                 </ButtonArea>
               </>
             ) : (
-                <>
-                  <TextArea>
-                    <p>{authStore.user.birthDate}</p>
-                  </TextArea>
-                  <ButtonArea>
-                    <Button
-                      size="small"
-                      type="outlined"
-                      onClick={handleToggleBirthDayInput}
-                    >
-                      변경
+              <>
+                <TextArea>
+                  <p>{authStore.user.birthDate}</p>
+                </TextArea>
+                <ButtonArea>
+                  <Button
+                    size="small"
+                    type="outlined"
+                    onClick={handleToggleBirthDayInput}
+                  >
+                    변경
                   </Button>
-                  </ButtonArea>
-                </>
-              )}
+                </ButtonArea>
+              </>
+            )}
           </Data>
         </InnerItem>
       </InnerList>
