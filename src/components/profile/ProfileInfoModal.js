@@ -2,7 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { Input, Button, Dropdown, Modal, Menu, Tooltip } from 'antd';
-import { InfoCircleOutlined, LockOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { LockLineIcon } from '../Icons';
 import { useCoreStores } from 'teespace-core';
 import Upload from 'rc-upload';
 import { useObserver } from 'mobx-react';
@@ -220,12 +221,11 @@ function ProfileInfoModal({
 
   const handleConfirm = async () => {
     // set update data from user input
-    const updatedInfo = {
-      nick: name,
-      companyNum: phone,
-      phone: mobile,
-      profileStatusMsg: statusMsg,
-    };
+    const updatedInfo = {};
+    if (name || name === '') updatedInfo.nick = name;
+    if (phone || phone === '') updatedInfo.companyNum = phone;
+    if (mobile || mobile === '') updatedInfo.phone = mobile;
+    if (statusMsg || statusMsg === '') updatedInfo.profileStatusMsg = statusMsg;
 
     if (localProfilePhoto?.includes('blob:')) {
       const blobImage = await toBlob(localProfilePhoto);
@@ -255,6 +255,7 @@ function ProfileInfoModal({
 
     // Update my profile information
     setProfile(await userStore.updateMyProfile({ updatedInfo }));
+    console.log(profile);
 
     // Reset local input date
     resetLocalInputData();
@@ -405,7 +406,7 @@ function ProfileInfoModal({
               <p>{profile?.nick || profile?.name}</p>
             )}
         </UserName>
-        <UserMail>{`(${profile?.loginId})`}</UserMail>
+        {!isEditMode && <UserMail>{`(${profile?.loginId})`}</UserMail>}
         {/* <UserStatus>
           {isEditMode ? (
             <EditStatusInput
@@ -434,15 +435,17 @@ function ProfileInfoModal({
                 title="어드민만 변경 가능"
                 color="#75757f"
               >
-                <LockOutlined />
+                <LockIconBox>
+                  <LockLineIcon width="0.88" height="0.88" />
+                </LockIconBox>
               </Tooltip>
             )}
           </UserInfoItem>
         )}
-        <UserInfoItem>
-          <UserInfoIcon iconimg="company" />
-          {isEditMode ? (
-            <>
+        {userType === 'USR0001' && (
+          <UserInfoItem>
+            <UserInfoIcon iconimg="company" />
+            {isEditMode ? (
               <EditNumInputBox>
                 <Input
                   value={
@@ -454,30 +457,27 @@ function ProfileInfoModal({
                   }}
                 />
               </EditNumInputBox>
-            </>
-          ) : (
-              userType === 'USR0001' &&
-              (profile?.companyNum
-                ? profile?.nationalCode + ' ' + profile?.companyNum
-                : `-`)
-            )}
-        </UserInfoItem>
+            ) : profile?.companyNum ? (
+              `${profile?.nationalCode} ${profile?.companyNum}`
+            ) : (
+                  `-`
+                )}
+          </UserInfoItem>
+        )}
         <UserInfoItem>
           <UserInfoIcon iconimg="phone" />
           {isEditMode ? (
-            <>
-              <EditNumInputBox>
-                <Input
-                  value={mobile !== undefined ? mobile : profile?.phone || ``}
-                  onChange={e => {
-                    setMobile(e.target.value);
-                    setIsChange(true);
-                  }}
-                />
-              </EditNumInputBox>
-            </>
+            <EditNumInputBox>
+              <Input
+                value={mobile !== undefined ? mobile : profile?.phone || ``}
+                onChange={e => {
+                  setMobile(e.target.value);
+                  setIsChange(true);
+                }}
+              />
+            </EditNumInputBox>
           ) : profile?.phone ? (
-            profile?.nationalCode + ' ' + profile?.phone
+            `${profile?.nationalCode} ${profile?.phone}`
           ) : (
                 `-`
               )}
@@ -681,6 +681,7 @@ const UserMail = styled.span`
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
+// eslint-disable-next-line no-unused-vars
 const UserStatus = styled.div`
   margin-top: 0.5rem;
   opacity: 0.8;
@@ -720,17 +721,14 @@ const UserInfoItem = styled.li`
   font-size: 0.75rem;
   line-height: 1.13rem;
   color: rgba(255, 255, 255, 0.9);
+  word-break: break-all;
+  word-wrap: break-word;
   text-align: left;
   &:first-of-type {
     margin-top: 0;
   }
-  .anticon-lock {
-    margin: auto 0;
-    padding-left: 0.3125rem;
-    font-size: 0.88rem;
-    color: #75757f;
-  }
 `;
+// eslint-disable-next-line no-unused-vars
 const EditNotic = styled.p`
   width: 100%;
   text-align: center;
@@ -771,26 +769,34 @@ const UserInfoIcon = styled.span`
   }}
 `;
 const EditNameInput = styled(InputCounter)`
+  flex-direction: column;
   height: auto;
   margin-top: 0.25rem;
-  padding: 0 0 0.25rem;
-  border-color: #fff;
-  border-width: 0 0 1px !important;
+  padding: 0;
+  border: 0 !important;
   border-radius: 0;
   background-color: transparent;
+  &:not(:disabled):focus-within {
+    input {
+      border-color: #6c56e5;
+    }
+  }
   input {
-    height: 1.38rem;
+    height: 1.875rem;
+    margin: 0;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid #fff;
     font-size: 0.94rem;
     text-align: center;
   }
   .input-counter {
-    margin-top: auto;
     font-size: 0.69rem;
     line-height: 1.06rem;
     color: #fff;
-    opacity: 0.75;
+    opacity: 0.7;
   }
 `;
+// eslint-disable-next-line no-unused-vars
 const EditStatusInput = styled(EditNameInput)`
   margin-top: 0;
   padding: 0 0 0.31rem;
@@ -846,6 +852,12 @@ const UtilText = styled.p`
   font-size: 0.69rem;
   line-height: 1.06rem;
   color: #333;
+`;
+const LockIconBox = styled.span`
+  margin: auto 0;
+  padding-left: 0.3125rem;
+  font-size: 0.88rem;
+  color: #75757f;
 `;
 
 export default ProfileInfoModal;

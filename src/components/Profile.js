@@ -2,9 +2,11 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import Upload from 'rc-upload';
 import styled, { css } from 'styled-components';
-import { Button, Input, Dropdown, Menu } from 'antd';
+import { Button, Input, Dropdown, Menu, Tooltip } from 'antd';
+import InputCounter from './Input';
 import { observer } from 'mobx-react';
 import { useCoreStores, Message, Toast } from 'teespace-core';
+import { LockLineIcon } from './Icons';
 import friendsIcon from '../assets/ts_friends.svg';
 import profileEditIcon from '../assets/ts_profile_edit.svg';
 import teeMeetingIcon from '../assets/ts_TeeMeeting.svg';
@@ -28,12 +30,13 @@ const Profile = observer(
     onClickCancelBtn = () => { },
   }) => {
     const history = useHistory();
-    const { roomStore, userStore, friendStore } = useCoreStores();
+    const { roomStore, userStore, friendStore, authStore } = useCoreStores();
     const [isEditMode, setEditMode] = useState(editOnlyMode);
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [toastText, setToastText] = useState('');
     const [isToastVisible, setIsToastVisible] = useState(false);
     const [isChange, setIsChange] = useState(false);
+    const [userType, setUserType] = useState('');
 
     // NOTE. Setting state to undefined means the state is not changed
     //  This undefined is different from empty('')
@@ -102,6 +105,9 @@ const Profile = observer(
         if (!userProfile) {
           await userStore.getProfile({ userId });
         }
+
+        const userAuthInfo = authStore.user;
+        setUserType(userAuthInfo.type);
       })();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId]);
@@ -157,12 +163,12 @@ const Profile = observer(
 
     const handleConfirm = async () => {
       // set update data from user input
-      const updatedInfo = {
-        nick: name,
-        companyNum: phone,
-        phone: mobile,
-        profileStatusMsg: statusMsg,
-      };
+      const updatedInfo = {};
+      if (name || name === '') updatedInfo.nick = name;
+      if (phone || phone === '') updatedInfo.companyNum = phone;
+      if (mobile || mobile === '') updatedInfo.phone = mobile;
+      if (statusMsg || statusMsg === '')
+        updatedInfo.profileStatusMsg = statusMsg;
 
       if (localProfilePhoto?.includes('blob:')) {
         const blobImage = await toBlob(localProfilePhoto);
@@ -409,13 +415,12 @@ const Profile = observer(
               </UserImageWrapper>
               <BigText>
                 {editEnabled ? (
-                  <StyleInput
-                    className="type2"
+                  <EditNameInput
                     maxLength={20}
                     placeholder="별명을 입력해주세요."
                     onChange={e => {
                       setIsChange(true);
-                      setName(e.target.value);
+                      setName(e);
                     }}
                     value={
                       name !== undefined ? name : profile?.nick || profile?.name
@@ -425,7 +430,9 @@ const Profile = observer(
                     profile?.nick || profile?.name
                   )}
               </BigText>
-              <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
+              {!editEnabled && (
+                <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
+              )}
               {/* NOTE 프로파일 상태 메시지는 추후에 지원함.
               <UserStatusMsg>
                 {editEnabled ? (
@@ -447,24 +454,49 @@ const Profile = observer(
               </UserStatusMsg>
               */}
               <UserInfoList>
-                <UserInfoItem>
-                  <StyleOfficeIcon iconimg="address" />
-                  <UserInfoText>{profile?.fullCompanyJob}</UserInfoText>
-                </UserInfoItem>
-                <UserInfoItem>
-                  <StyleOfficeIcon iconimg="company" />
-                  {editEnabled ? (
-                    <StyleInput
-                      onChange={e => {
-                        setIsChange(true);
-                        setPhone(e.target.value);
-                      }}
-                      value={phone !== undefined ? phone : profile?.companyNum}
-                    />
-                  ) : (
-                      <UserInfoText>{profile?.companyNum}</UserInfoText>
-                    )}
-                </UserInfoItem>
+                {userType === 'USR0001' && (
+                  <UserInfoItem>
+                    <StyleOfficeIcon iconimg="address" />
+                    <UserInfoText>
+                      {profile?.fullCompanyJob}
+                      {editEnabled && (
+                        <Tooltip
+                          placement="bottomLeft"
+                          title="어드민만 변경 가능"
+                          color="#75757f"
+                        >
+                          <LockIconBox>
+                            <LockLineIcon width="0.88" height="0.88" />
+                          </LockIconBox>
+                        </Tooltip>
+                      )}
+                    </UserInfoText>
+                  </UserInfoItem>
+                )}
+                {userType === 'USR0001' && (
+                  <UserInfoItem>
+                    <StyleOfficeIcon iconimg="company" />
+                    {editEnabled ? (
+                      <StyleInput
+                        onChange={e => {
+                          setIsChange(true);
+                          setPhone(e.target.value);
+                        }}
+                        value={
+                          phone !== undefined
+                            ? phone
+                            : profile?.companyNum || ``
+                        }
+                      />
+                    ) : profile?.companyNum ? (
+                      <UserInfoText>
+                        {profile?.nationalCode + ' ' + profile?.companyNum}
+                      </UserInfoText>
+                    ) : (
+                          <UserInfoText>{`-`}</UserInfoText>
+                        )}
+                  </UserInfoItem>
+                )}
                 <UserInfoItem>
                   <StyleOfficeIcon iconimg="phone" />
                   {editEnabled ? (
@@ -473,10 +505,16 @@ const Profile = observer(
                         setIsChange(true);
                         setMobile(e.target.value);
                       }}
-                      value={mobile !== undefined ? mobile : profile?.phone}
+                      value={
+                        mobile !== undefined ? mobile : profile?.phone || ``
+                      }
                     />
                   ) : (
-                      <UserInfoText>{profile?.phone}</UserInfoText>
+                      <UserInfoText>
+                        {profile?.phone
+                          ? profile?.nationalCode + ` ` + profile?.phone
+                          : `-`}
+                      </UserInfoText>
                     )}
                 </UserInfoItem>
                 {/* 프로필 편집 시 "email" class 삭제 */}
@@ -558,7 +596,6 @@ const Text = styled.span`
   width: 100%;
   color: #fff;
   font-size: 0.81rem;
-  font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: center;
@@ -569,7 +606,6 @@ const UserEmailText = styled(Text)`
   line-height: 1.25rem;
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.875rem;
-  font-weight: 600;
 `;
 
 const ImageChangeButton = styled(Text)`
@@ -717,6 +753,12 @@ const UserInfoItem = styled.div`
       }
     }
   }
+  .anticon-lock {
+    margin: auto 0;
+    padding-left: 0.3125rem;
+    font-size: 0.88rem;
+    color: #75757f;
+  }
 `;
 const BigText = styled(Text)`
   margin-top: 0.88rem;
@@ -764,7 +806,8 @@ const StyleIcon = styled.span`
 
 const UserInfoText = styled.span`
   overflow: hidden;
-  display: inline-block;
+  display: flex;
+  align-items: center;
   white-space: nowrap;
   text-overflow: ellipsis;
   font-size: 0.88rem;
@@ -809,6 +852,34 @@ const StyleOfficeIcon = styled.em`
         `;
     }
   }}
+`;
+
+const EditNameInput = styled(InputCounter)`
+  flex-direction: column;
+  height: auto;
+  padding: 0;
+  border: 0 !important;
+  border-radius: 0;
+  background-color: transparent;
+  &:not(:disabled):focus-within {
+    input {
+      border-color: #6c56e5;
+    }
+  }
+  input {
+    height: 2.25rem;
+    margin: 0;
+    padding-bottom: 0.56rem;
+    border-bottom: 1px solid #fff;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  .input-counter {
+    font-size: 0.88rem;
+    line-height: 1.25rem;
+    color: #fff;
+    opacity: 0.7;
+  }
 `;
 
 const StyleInput = styled(Input)`
@@ -893,4 +964,12 @@ const Blind = styled.span`
   margin: -1px;
   overflow: hidden;
 `;
+
+const LockIconBox = styled.span`
+  margin: auto 0;
+  padding-left: 0.3125rem;
+  color: #75757f;
+  line-height: 0;
+`;
+
 export default Profile;
