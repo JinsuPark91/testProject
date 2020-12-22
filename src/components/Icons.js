@@ -1423,8 +1423,8 @@ export const EmptyRoomIllust = React.memo(({ width = 1, height = 1 }) => {
   );
 });
 
-//lcok2
-export const LcokLineIcon = React.memo(
+//lock2
+export const LockLineIcon = React.memo(
   ({ width = 1, height = 1 }) => {
     const defaultWidth = 20;
     const defaultHeight = 20;
