@@ -132,50 +132,59 @@ const RoomDropdown = React.memo(
       }
     };
 
-    const roomMenu = () => (
-      <StyledMenu>
-        {
-          // NOTE. 마이룸과 1:1 룸은 이름 변경할 수 있음
-          roomInfo.userCount > 2 && (
-            <Menu.Item key="changeName" onClick={handleNameChange}>
-              이름 변경
+    const roomMenu = () => {
+      const isMyRoom = roomInfo.type === 'WKS0001';
+      const isDMRoom = roomInfo.isDirectMsg;
+      const showSetting =
+        !isMyRoom && !isDMRoom && roomInfo.adminId === myUserId;
+
+      return (
+        <StyledMenu>
+          {
+            // NOTE. 마이룸과 1:1 룸은 이름 변경할 수 있음
+            // NOTE. Open룸 고려하여 마이룸, DM룸 아니면서 내가 admin 인경우
+            showSetting && (
+              <Menu.Item key="changeName" onClick={handleNameChange}>
+                이름 변경
+              </Menu.Item>
+            )
+          }
+          {roomInfo.isRoomBookmarked ? (
+            <Menu.Item key="disableBookmark" onClick={handleBookmarkDisable}>
+              룸 상단 고정 해제
             </Menu.Item>
-          )
-        }
-        {roomInfo.isRoomBookmarked ? (
-          <Menu.Item key="disableBookmark" onClick={handleBookmarkDisable}>
-            룸 상단 고정 해제
-          </Menu.Item>
-        ) : (
-          <Menu.Item key="enableBookmark" onClick={handleBookmarkEnable}>
-            룸 상단 고정
-          </Menu.Item>
-        )}
-        {roomInfo.isAlarmUsed ? (
-          <Menu.Item key="disableAlarm" onClick={handleAlarmDisable}>
-            알림 끄기
-          </Menu.Item>
-        ) : (
-          <Menu.Item key="enableAlarm" onClick={handleAlarmEnable}>
-            알림 켜기
-          </Menu.Item>
-        )}
-        <Menu.Item key="member" onClick={handleViewMember}>
-          룸 구성원 보기
-        </Menu.Item>
-        {
-          // NOTE. 마이룸과 1:1 룸은 룸설정 할 수 없음
-          roomInfo.userCount > 2 && (
-            <Menu.Item key="setting" onClick={handleSetting}>
-              룸 설정
+          ) : (
+            <Menu.Item key="enableBookmark" onClick={handleBookmarkEnable}>
+              룸 상단 고정
             </Menu.Item>
-          )
-        }
-        <Menu.Item key="exit" onClick={handleExit}>
-          나가기
-        </Menu.Item>
-      </StyledMenu>
-    );
+          )}
+          {roomInfo.isAlarmUsed ? (
+            <Menu.Item key="disableAlarm" onClick={handleAlarmDisable}>
+              알림 끄기
+            </Menu.Item>
+          ) : (
+            <Menu.Item key="enableAlarm" onClick={handleAlarmEnable}>
+              알림 켜기
+            </Menu.Item>
+          )}
+          <Menu.Item key="member" onClick={handleViewMember}>
+            룸 구성원 보기
+          </Menu.Item>
+          {
+            // NOTE. 마이룸과 1:1 룸은 룸설정 할 수 없음
+            // NOTE. Open룸 고려하여 마이룸, DM룸 아니면서 내가 admin 인경우
+            showSetting && (
+              <Menu.Item key="setting" onClick={handleSetting}>
+                룸 설정
+              </Menu.Item>
+            )
+          }
+          <Menu.Item key="exit" onClick={handleExit}>
+            나가기
+          </Menu.Item>
+        </StyledMenu>
+      );
+    };
 
     return (
       <Dropdown
