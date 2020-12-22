@@ -20,9 +20,8 @@ export const ChattingIcon = React.memo(
           stroke="none"
           strokeWidth="1"
           fill="none"
-          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-            (height * REM_UNIT) / defaultHeight
-          })`}
+          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+            })`}
           fillRule="evenodd"
         >
           <g id="Group" transform="translate(1.500000, 3.000000)">
@@ -69,9 +68,8 @@ export const MailIcon = React.memo(
           stroke="none"
           strokeWidth="1"
           fill="none"
-          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-            (height * REM_UNIT) / defaultHeight
-          })`}
+          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+            })`}
           fillRule="evenodd"
         >
           <g id="Group" transform="translate(0.500000, 4.000000)">
@@ -118,9 +116,8 @@ export const PeopleIcon = React.memo(
           stroke="none"
           strokeWidth="1"
           fill="none"
-          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-            (height * REM_UNIT) / defaultHeight
-          })`}
+          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+            })`}
           fillRule="evenodd"
         >
           <g id="Group-2" transform="translate(0.000000, 2.000000)">
@@ -166,9 +163,8 @@ export const SpaceIcon = React.memo(({ width = 1.25, height = 1.25 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <path
@@ -213,9 +209,8 @@ export const ExportIcon = React.memo(({ width = 1, height = 1 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <path
@@ -246,9 +241,8 @@ export const SearchIcon = React.memo(
           stroke="none"
           strokeWidth="1"
           fill="none"
-          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-            (height * REM_UNIT) / defaultHeight
-          })`}
+          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+            })`}
           fillRule="evenodd"
         >
           <path
@@ -278,9 +272,8 @@ export const AddAcountIcon = React.memo(({ width = 1.25, height = 1.25 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <path
@@ -317,9 +310,8 @@ export const ViewMoreIcon = React.memo(({ width = 1, height = 1 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <path
@@ -348,9 +340,8 @@ export const WaplLogo = React.memo(({ width = 6.19, height = 1.75 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <g id="Logo/wapl_logo" transform="translate(-16.000000, -16.000000)">
@@ -389,9 +380,8 @@ export const AddRoomIcon = React.memo(({ width = 1.88, height = 1.31 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <g id="Group-3">
@@ -434,9 +424,8 @@ export const OpenChatIcon = React.memo(({ width = 1, height = 1 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <path
@@ -465,9 +454,8 @@ export const PinIcon = React.memo(({ width = 1, height = 1 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <g id="icn_pin">
@@ -507,9 +495,8 @@ export const DisableAlarmIcon = React.memo(({ width = 1, height = 1 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <path
@@ -538,9 +525,8 @@ export const FriendAddIcon = React.memo(({ width = 1.5, height = 1.38 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <path
@@ -569,9 +555,8 @@ export const CalendarIcon = React.memo(({ width = 1, height = 1 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <path
@@ -600,9 +585,8 @@ export const CalendarActiveIcon = React.memo(({ width = 1, height = 1 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <g id="calander" transform="translate(-6.000000, -6.000000)">
@@ -686,9 +670,8 @@ export const DriveIcon = React.memo(({ width = 1, height = 1 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <path
@@ -715,9 +698,8 @@ export const DriveActiveIcon = React.memo(({ width = 1, height = 1 }) => {
       <g
         id="Icon/appList/TeeDrive_active"
         stroke="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         strokeWidth="1"
         fill="none"
         fillRule="evenodd"
@@ -747,9 +729,8 @@ export const MeetingIcon = React.memo(({ width = 1, height = 1 }) => {
         id="Icon/appList/TeeMeeting"
         stroke="none"
         strokeWidth="1"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fill="none"
         fillRule="evenodd"
       >
@@ -784,9 +765,8 @@ export const MeetingActiveIcon = React.memo(({ width = 1, height = 1 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <g id="Group-2" transform="translate(1.000000, 1.000000)">
@@ -832,9 +812,8 @@ export const MeetingDisabledIcon = React.memo(({ width = 1, height = 1 }) => {
         id="Icon/appList/TeeMeeting_Disabled"
         stroke="none"
         strokeWidth="1"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fill="none"
         fillRule="evenodd"
       >
@@ -869,9 +848,8 @@ export const NoteIcon = React.memo(({ width = 1, height = 1 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <path
@@ -900,9 +878,8 @@ export const NoteActiveIcon = React.memo(({ width = 1, height = 1 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <g id="Icon/appList/TeeNote" transform="translate(2.000000, 2.000000)">
@@ -993,9 +970,8 @@ export const ViewFileIcon = React.memo(({ width = 1, height = 1 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <path
@@ -1025,9 +1001,8 @@ export const ViewFileActiveIcon = React.memo(({ width = 1, height = 1 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <g
@@ -1062,9 +1037,8 @@ export const ArrowLeftIcon = React.memo(
           stroke="none"
           strokeWidth="1"
           fill="none"
-          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-            (height * REM_UNIT) / defaultHeight
-          })`}
+          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+            })`}
           fillRule="evenodd"
         >
           <path
@@ -1095,9 +1069,8 @@ export const MinimizeIcon = React.memo(
           stroke="none"
           strokeWidth="1"
           fill="none"
-          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-            (height * REM_UNIT) / defaultHeight
-          })`}
+          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+            })`}
           fillRule="evenodd"
         >
           <path
@@ -1128,9 +1101,8 @@ export const MaximizeIcon = React.memo(
           stroke="none"
           strokeWidth="1"
           fill="none"
-          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-            (height * REM_UNIT) / defaultHeight
-          })`}
+          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+            })`}
           fillRule="evenodd"
         >
           <path
@@ -1161,9 +1133,8 @@ export const CancelIcon = React.memo(
           stroke="none"
           strokeWidth="1"
           fill="none"
-          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-            (height * REM_UNIT) / defaultHeight
-          })`}
+          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+            })`}
           fillRule="evenodd"
         >
           <path
@@ -1200,9 +1171,8 @@ export const EmptyRoomIllust = React.memo(({ width = 1, height = 1 }) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
-          (height * REM_UNIT) / defaultHeight
-        })`}
+        transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight
+          })`}
         fillRule="evenodd"
       >
         <g id="Group-89" transform="translate(25.000000, 40.000000)">
@@ -1452,3 +1422,45 @@ export const EmptyRoomIllust = React.memo(({ width = 1, height = 1 }) => {
     </svg>
   );
 });
+
+//lock2
+export const LockLineIcon = React.memo(
+  ({ width = 1, height = 1 }) => {
+    const defaultWidth = 20;
+    const defaultHeight = 20;
+
+    return (
+      <svg
+        width={`${width}rem`}
+        height={`${height}rem`}
+        viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
+        version="1.1"
+      >
+        <g
+          id="Icon/system/lock2"
+          stroke="none"
+          strokeWidth="1"
+          fill="none"
+          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${(height * REM_UNIT) / defaultHeight})`}
+          fillRule="evenodd"
+        >
+          <g
+            id="TeeNote_Icon/lock">
+            <rect
+              id="Rectangle"
+              x="0"
+              y="0"
+              width="20"
+              height="20"
+            />
+            <path
+              d="M10,0 C12.5247303,0 14.5714286,1.98967724 14.5714286,4.44406851 L14.5714286,7.77666667 L15.7142857,7.77777778 C16.9766509,7.77777778 18,8.77270056 18,10 L18,17.7777778 C18,19.0050772 16.9766509,20 15.7142857,20 L4.28571429,20 C3.02334914,20 2,19.0050772 2,17.7777778 L2,10 C2,8.77270056 3.02334914,7.77777778 4.28571429,7.77777778 L5.42857143,7.77666667 L5.42857143,4.44406851 C5.42857143,2.06405274 7.35310682,0.121013234 9.77183961,0.00543877018 L10,0 Z M12.3991673,10.0000006 L7.6,10.003426 L5,10.003426 C4.44771525,10.003426 4,10.4511412 4,11.003426 L4,17 C4,17.5522847 4.44771525,18 5,18 L15,18 C15.5522847,18 16,17.5522847 16,17 L16,11.003426 C15.9990479,10.4515128 15.5519124,10.0039516 15.0000005,10.0024743 L12.4008327,10.0000008 C12.4002776,10.0000003 12.3997224,10.0000002 12.3991673,10.0000006 Z M10,11.5 C10.7870058,11.5 11.4324506,12.2314934 11.4950275,13.1618684 L11.5,13.3103448 L11.5,14.6896552 C11.5,15.689481 10.8284271,16.5 10,16.5 C9.21299423,16.5 8.56754942,15.7685066 8.50497246,14.8381316 L8.5,14.6896552 L8.5,13.3103448 C8.5,12.310519 9.17157288,11.5 10,11.5 Z M10,2 C9.83760405,2 9.6788246,2.01486298 9.5250575,2.0432491 L9.24378138,2.11174297 L9.0009913,2.19926183 L8.93197465,2.2295649 L8.76705388,2.31168455 L8.58054405,2.4240538 L8.40277075,2.55354175 L8.23224287,2.70297736 L8.04610174,2.90255536 L7.91623823,3.07337364 L7.82562652,3.21462912 C7.75066329,3.34113016 7.68718238,3.47507594 7.63678915,3.61488373 L7.61372686,3.68201663 C7.57689903,3.79495377 7.54853285,3.91148134 7.52934101,4.03091521 L7.50685717,4.2206222 L7.5,4.3997158 L7.5,8 L12.5,8 L12.5,4.3997158 L12.4929511,4.21816274 L12.4701507,4.02776598 L12.4557113,3.94767388 L12.4336785,3.8482784 L12.3835873,3.67383189 L12.3204368,3.5049636 L12.2374762,3.3281398 L12.1358225,3.1518376 L12.058225,3.03719945 C11.9885751,2.9404415 11.9117113,2.84883475 11.8283795,2.76309537 L11.6828189,2.62504045 L11.5975002,2.55391332 C11.3975163,2.39401412 11.1703522,2.26333421 10.9239066,2.16919743 L10.8006054,2.12571558 L10.6936103,2.09375627 L10.5060232,2.04938208 L10.3710271,2.02624641 L10.1865838,2.00678482 L10,2 Z"
+              id="Shape"
+              fill="currentcolor"
+            />
+          </g>
+        </g>
+      </svg>
+    );
+  },
+);

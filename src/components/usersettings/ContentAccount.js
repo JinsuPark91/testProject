@@ -4,7 +4,7 @@ import Upload from 'rc-upload';
 import { useObserver } from 'mobx-react';
 import { useCoreStores, Input } from 'teespace-core';
 import styled from 'styled-components';
-import { LockOutlined } from '@ant-design/icons';
+import { LockLineIcon } from '../Icons';
 import CameraIcon from '../../assets/ts_camera.svg';
 import ContentTitle from './ContentTitle';
 import { default as InputCounter } from '../Input';
@@ -113,10 +113,6 @@ const TextArea = styled.div`
 const ButtonArea = styled.div`
   margin-left: auto;
   flex-shrink: 0;
-  .anticon-lock {
-    font-size: 0.88rem;
-    color: #75757f;
-  }
 `;
 const EditNameInput = styled(InputCounter)`
   width: 11.88rem;
@@ -125,11 +121,13 @@ const EditNameInput = styled(InputCounter)`
     color: #bdc6d3;
   }
 `;
-
 const StyledUpload = styled(Upload)`
   &:focus {
     outline: 0;
   }
+`;
+const LockIconBox = styled.span`
+  color: #75757f;
 `;
 
 function ContentAccount({ isEdit }) {
@@ -356,21 +354,21 @@ function ContentAccount({ isEdit }) {
                 </ButtonArea>
               </>
             ) : (
-              <>
-                <TextArea>
-                  <p>{authStore.user.name}</p>
-                </TextArea>
-                <ButtonArea>
-                  <Button
-                    size="small"
-                    type="outlined"
-                    onClick={handleToggleNameInput}
-                  >
-                    변경
+                <>
+                  <TextArea>
+                    <p>{authStore.user.name}</p>
+                  </TextArea>
+                  <ButtonArea>
+                    <Button
+                      size="small"
+                      type="outlined"
+                      onClick={handleToggleNameInput}
+                    >
+                      변경
                   </Button>
-                </ButtonArea>
-              </>
-            )}
+                  </ButtonArea>
+                </>
+              )}
           </Data>
         </InnerItem>
         <InnerItem>
@@ -408,24 +406,24 @@ function ContentAccount({ isEdit }) {
                 </ButtonArea>
               </>
             ) : (
-              <>
-                <TextArea>
-                  <p>{authStore.user.nick}</p>
-                  <Info>
-                    스페이스에서 불리고 싶은 별명을 설정할 수 있습니다.
+                <>
+                  <TextArea>
+                    <p>{authStore.user.nick}</p>
+                    <Info>
+                      스페이스에서 불리고 싶은 별명을 설정할 수 있습니다.
                   </Info>
-                </TextArea>
-                <ButtonArea>
-                  <Button
-                    size="small"
-                    type="outlined"
-                    onClick={handleToggleNickInput}
-                  >
-                    변경
+                  </TextArea>
+                  <ButtonArea>
+                    <Button
+                      size="small"
+                      type="outlined"
+                      onClick={handleToggleNickInput}
+                    >
+                      변경
                   </Button>
-                </ButtonArea>
-              </>
-            )}
+                  </ButtonArea>
+                </>
+              )}
           </Data>
         </InnerItem>
         {isB2B ? (
@@ -440,7 +438,9 @@ function ContentAccount({ isEdit }) {
                   </p>
                 </TextArea>
                 <ButtonArea>
-                  <LockOutlined />
+                  <LockIconBox>
+                    <LockLineIcon width="0.88" height="0.88" />
+                  </LockIconBox>
                 </ButtonArea>
               </Data>
             </InnerItem>
@@ -473,21 +473,21 @@ function ContentAccount({ isEdit }) {
                     </ButtonArea>
                   </>
                 ) : (
-                  <>
-                    <TextArea>
-                      <p>{authStore.user.companyNum}</p>
-                    </TextArea>
-                    <ButtonArea>
-                      <Button
-                        size="small"
-                        type="outlined"
-                        onClick={handleToggleCompanyPhoneInput}
-                      >
-                        변경
+                    <>
+                      <TextArea>
+                        <p>{authStore.user.companyNum}</p>
+                      </TextArea>
+                      <ButtonArea>
+                        <Button
+                          size="small"
+                          type="outlined"
+                          onClick={handleToggleCompanyPhoneInput}
+                        >
+                          변경
                       </Button>
-                    </ButtonArea>
-                  </>
-                )}
+                      </ButtonArea>
+                    </>
+                  )}
               </Data>
             </InnerItem>
           </>
@@ -521,21 +521,21 @@ function ContentAccount({ isEdit }) {
                 </ButtonArea>
               </>
             ) : (
-              <>
-                <TextArea>
-                  <p>{authStore.user.phone}</p>
-                </TextArea>
-                <ButtonArea>
-                  <Button
-                    size="small"
-                    type="outlined"
-                    onClick={handleToggleCellPhoneInput}
-                  >
-                    변경
+                <>
+                  <TextArea>
+                    <p>{authStore.user.phone}</p>
+                  </TextArea>
+                  <ButtonArea>
+                    <Button
+                      size="small"
+                      type="outlined"
+                      onClick={handleToggleCellPhoneInput}
+                    >
+                      변경
                   </Button>
-                </ButtonArea>
-              </>
-            )}
+                  </ButtonArea>
+                </>
+              )}
           </Data>
         </InnerItem>
         <InnerItem>
@@ -569,21 +569,21 @@ function ContentAccount({ isEdit }) {
                 </ButtonArea>
               </>
             ) : (
-              <>
-                <TextArea>
-                  <p>{authStore.user.birthDate}</p>
-                </TextArea>
-                <ButtonArea>
-                  <Button
-                    size="small"
-                    type="outlined"
-                    onClick={handleToggleBirthDayInput}
-                  >
-                    변경
+                <>
+                  <TextArea>
+                    <p>{authStore.user.birthDate}</p>
+                  </TextArea>
+                  <ButtonArea>
+                    <Button
+                      size="small"
+                      type="outlined"
+                      onClick={handleToggleBirthDayInput}
+                    >
+                      변경
                   </Button>
-                </ButtonArea>
-              </>
-            )}
+                  </ButtonArea>
+                </>
+              )}
           </Data>
         </InnerItem>
       </InnerList>

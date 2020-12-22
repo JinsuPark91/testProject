@@ -68,7 +68,7 @@ function FriendsLNBFooter() {
       }
     }
     setIsDialogVisible(!isDialogVisible);
-  }, [spaceStore, orgStore, isDialogVisible, userStore]);
+  }, [spaceStore, orgStore, isDialogVisible, userStore, authStore]);
 
   const handleCloseAddFriendsDialog = useCallback(async () => {
     setIsDialogVisible(!isDialogVisible);
