@@ -16,8 +16,6 @@ import { ReactComponent as SquareSpaceIcon } from '../../assets/thumbnail.svg';
 import ProfileInfoModal from './ProfileInfoModal';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
 import AddFriendsBySearch from '../friends/AddFriendsBySearch';
-import PlatformUIStore from '../../stores/PlatformUIStore';
-
 import keycloak from '../../libs/keycloak';
 
 const ProfileMyModal = ({
@@ -39,6 +37,7 @@ const ProfileMyModal = ({
   const [isSpaceMemViewOpen, setIsSpaceMemViewOpen] = useState(false);
   const [spaceMemberList, setSpaceMemberList] = useState([]);
   const [isToastOpen, setIsToastOpen] = useState(false);
+  const [isViewMode, setIsViewMode] = useState(true);
   const { keycloak } = useKeycloak();
 
   const isAdmin = userStore.myProfile.grade === 'admin';
@@ -371,9 +370,12 @@ const ProfileMyModal = ({
       )}
       {isCreated && (
         <ProfileSpaceModal
-          oneButton={isAdmin}
-          userName={profile?.name}
-          onInvite={() => console.log('')}
+          userName={profile?.nick || profile?.name}
+          onInvite={() => setIsInviteDialogOpen(true)}
+          onAddFriend={() => {
+            setIsViewMode(false);
+            setIsSpaceMemViewOpen(true);
+          }}
           onClose={() => setIsCreated(false)}
         />
       )}
@@ -393,7 +395,7 @@ const ProfileMyModal = ({
         isOrgExist={false}
         isSpaceEmpty={false}
         title={spaceStore.currentSpace?.name}
-        isViewMode
+        isViewMode={isViewMode}
         spaceMemberList={spaceMemberList}
       />
       <Toast
