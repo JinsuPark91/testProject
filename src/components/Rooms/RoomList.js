@@ -47,10 +47,7 @@ function RoomList() {
   }, []);
 
   const handleSelectRoom = useCallback(roomInfo => {
-    history.push({
-      pathname: `/s/${roomInfo.id}/talk`,
-      search: history.location.search,
-    });
+    history.push(`/s/${roomInfo.id}/talk`);
   }, []);
 
   const handleChange = useCallback(e => {
