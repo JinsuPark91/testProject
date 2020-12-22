@@ -40,7 +40,6 @@ function RoomList() {
 
   const handleCreateRoom = () => {
     setVisible({ ...visible, selectRoomType: true });
-    setIsToastVisible(true);
   };
 
   const handleOpenChat = useCallback(() => {
@@ -131,6 +130,9 @@ function RoomList() {
     roomInfo.isVisible &&
     (!keyword || getRoomName(roomInfo)?.includes(keyword));
 
+  const handleToastClose = () => {
+    setIsToastVisible(false);
+  };
   return (
     <Wrapper>
       <Observer>
@@ -249,7 +251,7 @@ function RoomList() {
         <Toast
           visible={isToastVisible}
           timeoutMs={1000}
-          onClose={() => setIsToastVisible(false)}
+          onClose={handleToastClose}
         >
           {toastText}
         </Toast>
