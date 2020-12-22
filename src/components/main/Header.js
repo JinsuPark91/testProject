@@ -21,6 +21,7 @@ import Photos from '../Photos';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import MyProfileInfo from '../profile/MyProfileInfo';
 import RoomInquiryModal from '../Rooms/RoomInquiryModal';
+import RoomAddMemberModal from '../Rooms/RoomAddMemberModal';
 import ProfileInfoModal from '../profile/ProfileInfoModal';
 import {
   ExportIcon,
@@ -126,9 +127,8 @@ const Header = observer(() => {
   const history = useHistory();
   const { roomStore, userStore } = useCoreStores();
   const [isMessageVisible, setIsMessageVisible] = useState(false);
-  const [isRoomProfileModalVisible, setRoomProfileModalVisible] = useState(
-    false,
-  );
+  const [isRoomProfileVisible, setRoomProfileVisible] = useState(false);
+  const [isAddMemberVisible, setAddMemberVisible] = useState(false);
 
   const findRoom = () => {
     if (PlatformUIStore.resourceType !== 'f') {
@@ -188,10 +188,6 @@ const Header = observer(() => {
     PlatformUIStore.isSearchVisible = true;
   };
 
-  const handleAddMember = () => {
-    setRoomProfileModalVisible(true);
-  };
-
   const toggleMessageVisible = () => {
     setIsMessageVisible(!isMessageVisible);
   };
@@ -238,12 +234,29 @@ const Header = observer(() => {
   };
 
   const handleClickRoomPhoto = useCallback(() => {
-    setRoomProfileModalVisible(true);
+    setRoomProfileVisible(true);
   }, []);
 
   const handleCancelRoomMemeberModal = useCallback(() => {
-    setRoomProfileModalVisible(false);
+    setRoomProfileVisible(false);
   }, []);
+
+  const handleAddMember = () => {
+    setAddMemberVisible(true);
+  };
+
+  const handleInviteUsers = async (_, resultRoomId) => {
+    // 1:1 룸에 초대한 경우 새로운 룸이 생성되는데, 이 경우 그 룸으로 이동해야함.
+    if (findRoom()?.id !== resultRoomId) {
+      history.push(`/s/${resultRoomId}/talk`);
+    }
+
+    setAddMemberVisible(false);
+  };
+
+  const handleCancelInviteUsers = () => {
+    setAddMemberVisible(false);
+  };
 
   const currRoomInfo = findRoom();
   let profileModal;
@@ -252,7 +265,7 @@ const Header = observer(() => {
     profileModal = (
       <ProfileInfoModal
         userId={userStore.myProfile.id}
-        visible={isRoomProfileModalVisible}
+        visible={isRoomProfileVisible}
         onClose={handleCancelRoomMemeberModal}
         position={{ top: '3.5rem', left: '17rem' }}
       />
@@ -265,7 +278,7 @@ const Header = observer(() => {
     profileModal = (
       <ProfileInfoModal
         userId={dmUserId}
-        visible={isRoomProfileModalVisible}
+        visible={isRoomProfileVisible}
         onClose={handleCancelRoomMemeberModal}
         position={{ top: '3.5rem', left: '17rem' }}
       />
@@ -274,7 +287,7 @@ const Header = observer(() => {
     profileModal = (
       <RoomInquiryModal
         roomId={findRoom()?.id}
-        visible={isRoomProfileModalVisible}
+        visible={isRoomProfileVisible}
         onCancel={handleCancelRoomMemeberModal}
         width="17.5rem"
         top="3.5rem"
@@ -309,9 +322,17 @@ const Header = observer(() => {
                   <SearchIcon />
                 </IconWrapper>
                 {!isMyRoom() && (
-                  <IconWrapper onClick={handleAddMember}>
-                    <AddAcountIcon />
-                  </IconWrapper>
+                  <>
+                    <IconWrapper onClick={handleAddMember}>
+                      <AddAcountIcon />
+                    </IconWrapper>
+                    <RoomAddMemberModal
+                      visible={isAddMemberVisible}
+                      roomId={findRoom()?.id}
+                      onInviteUsers={handleInviteUsers}
+                      onCancel={handleCancelInviteUsers}
+                    />
+                  </>
                 )}
               </SystemIconContainer>
             )}

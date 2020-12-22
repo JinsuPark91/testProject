@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled, { css } from 'styled-components';
-import { Button, Modal } from 'antd';
-import { useCoreStores, ItemSelector } from 'teespace-core';
+import { Button } from 'antd';
+import { useCoreStores } from 'teespace-core';
 import ProfileModal from '../profile/ProfileModal';
 import Photos from '../Photos';
 import Input from '../Input';
@@ -12,6 +12,7 @@ import TalkIcon from '../../assets/ts_TeeTalk.svg';
 import MeetingIcon from '../../assets/ts_TeeMeeting.svg';
 import EditIcon from '../../assets/edit_white.svg';
 import ProfileInfoModal from '../profile/ProfileInfoModal';
+import RoomAddMemberModal from './RoomAddMemberModal';
 
 const AddButton = styled.button`
   display: flex;
@@ -57,19 +58,6 @@ const UserImag = styled.div`
     width: 100%;
     height: 100%;
     border-radius: 50%;
-  }
-`;
-const FlexModal = styled(Modal)`
-  font-size: 16px;
-  display: flex;
-  justify-content: center;
-
-  & .ant-modal-header {
-    border-bottom: 1px solid #e3e7eb;
-  }
-
-  & .ant-modal-body {
-    padding: 0;
   }
 `;
 
@@ -168,13 +156,6 @@ const StyledInput = styled(Input)`
   }
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  height: 4.13rem;
-  align-items: center;
-  justify-content: center;
-`;
-
 function RoomInquiryModal({
   roomId = null,
   visible = false,
@@ -206,7 +187,6 @@ function RoomInquiryModal({
   const [isChanged, setIsChanged] = useState(initialStates.isChanged);
   const [members, setMembers] = useState(initialStates.members);
   const [memberPhotos, setMemberPhotos] = useState(initialStates.memberPhotos);
-  const [selectedUsers, setSelectedUsers] = useState([]);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [profileUserId, setProfileUserId] = useState();
   const { roomStore, userStore } = useCoreStores();
@@ -313,48 +293,17 @@ function RoomInquiryModal({
     setUserSelectDialogVisible(true);
   };
 
-  const handleSelectedUserChange = useCallback(({ userArray }) => {
-    const originRoomMemberIds = members.map(
-      member => member.friendId || member.id,
-    );
-    const filteredUsers = userArray.filter(
-      user => !originRoomMemberIds.includes(user.friendId || user.id),
-    );
-    console.log('Filtered Users : ', filteredUsers);
-    setSelectedUsers(filteredUsers);
-  }, []);
-
-  const handleInviteOk = async () => {
-    const myUserId = userStore.myProfile.id;
-
-    try {
-      const { result, roomId: resultRoomId } = await roomStore.inviteNewMembers(
-        {
-          myUserId,
-          roomId,
-          newMemberList: selectedUsers.map(user => ({
-            userId: user.friendId || user.id,
-          })),
-        },
-      );
-
-      if (!result) {
-        throw Error('[Platform] Invite Member failed.');
-      }
-
-      // 1:1 룸에 초대한 경우 새로운 룸이 생성되는데, 이 경우 그 룸으로 이동해야함.
-      if (roomId !== resultRoomId) {
-        history.push(`/s/${resultRoomId}/talk`);
-      }
-    } catch (e) {
-      console.error('[Platform] Invite Member Error : ', e);
-    } finally {
-      setUserSelectDialogVisible(false);
-      onCancel();
+  const handleInviteUsers = async (_, resultRoomId) => {
+    // 1:1 룸에 초대한 경우 새로운 룸이 생성되는데, 이 경우 그 룸으로 이동해야함.
+    if (roomId !== resultRoomId) {
+      history.push(`/s/${resultRoomId}/talk`);
     }
+
+    setUserSelectDialogVisible(false);
+    onCancel();
   };
 
-  const handleInviteCancel = () => {
+  const handleCancelInviteUsers = () => {
     setUserSelectDialogVisible(false);
   };
 
@@ -478,46 +427,6 @@ function RoomInquiryModal({
 
   return (
     <>
-      <FlexModal
-        title={
-          <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>
-            룸 구성원 초대
-          </div>
-        }
-        visible={userSelectDialogVisible}
-        closable={false}
-        footer={null}
-        destroyOnClose
-      >
-        <ItemSelector
-          isVisibleRoom={false}
-          onSelectChange={handleSelectedUserChange}
-          disabledIds={members.map(member => member.friendId || member.id)}
-          defaultSelectedUsers={members}
-          showMeOnFriendTab={false}
-          height={20} // rem
-        />
-        <ButtonContainer>
-          <Button
-            type="solid"
-            size="default"
-            shape="round"
-            onClick={handleInviteOk}
-            style={{ marginRight: '0.38rem' }}
-            disabled={selectedUsers.length <= 0}
-          >
-            {`초대 ${selectedUsers.length > 99 ? '99+' : selectedUsers.length}`}
-          </Button>
-          <Button
-            type="outlined"
-            size="default"
-            shape="round"
-            onClick={handleInviteCancel}
-          >
-            취소
-          </Button>
-        </ButtonContainer>
-      </FlexModal>
       <ProfileModal
         style={{ top, left, margin: 'unset' }}
         visible={visible}
@@ -530,6 +439,18 @@ function RoomInquiryModal({
         subContent={subContent}
         footer={<AddButton onClick={handleInvite}>룸 구성원 초대</AddButton>}
       />
+      {
+        // NOTE. 룸 정보가 제대로 존재해야하기 때문에 visible 상태를 보고 모달을 렌더하도록 함.
+        userSelectDialogVisible && (
+          <RoomAddMemberModal
+            visible={userSelectDialogVisible}
+            roomId={roomInfo.id}
+            roomMembers={members}
+            onInviteUsers={handleInviteUsers}
+            onCancel={handleCancelInviteUsers}
+          />
+        )
+      }
     </>
   );
 }
