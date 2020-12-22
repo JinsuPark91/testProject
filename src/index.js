@@ -16,26 +16,26 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 setEnv({
-  serviceURL: `http://${
+  serviceURL: `${window.location.protocol}//${
     process.env.REACT_APP_DEV_SERVICE_DOMAIN || window.location.hostname
   }/${process.env.REACT_APP_DEV_PATH}`,
-  resourceURL: `http://${
+  resourceURL: `${window.location.protocol}//${
     process.env.REACT_APP_DEV_SERVICE_DOMAIN || window.location.hostname
   }`,
   comURL:
     global.env.REACT_APP_COMMON_URL ||
-    `http://${
+    `${window.location.protocol}//${
       process.env.REACT_APP_DEV_COM_DOMAIN || window.location.hostname
     }`,
   hsmURL:
     global.env.REACT_APP_HSM_URL ||
-    `http://${
+    `${window.location.protocol}//${
       process.env.REACT_APP_DEV_HSM_DOMAIN || window.location.hostname
     }`,
   websocketURL: `ws://${
     process.env.REACT_APP_DEV_WEBSOCKET_DOMAIN || window.location.hostname
   }/${process.env.REACT_APP_DEV_WEBSOCKET_PATH}`,
-  meetingURL: `http://${process.env.REACT_APP_DEV_COM_DOMAIN}`,
+  meetingURL: `${window.location.protocol}//${process.env.REACT_APP_DEV_COM_DOMAIN}`,
 });
 const url = window.location.origin; //  http://xxx.dev.teespace.net
 const con_url = url.split(`//`)[1]; // xxx.dev.teespace.net
@@ -79,7 +79,7 @@ ReactDOM.render(
               redirectUri:
                 process.env.REACT_APP_ENV === 'local'
                   ? `http://localhost:3000`
-                  : `http://${main_url}/domain/${sub_url}`,
+                  : `${window.location.protocol}//${main_url}/domain/${sub_url}`,
             }
       }
     >

@@ -31,7 +31,7 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
                 });
                 history.push(`/f/${authStore.user.id}/profile`);
               } catch (e) {
-                window.location.href = `http://${main_url}/domain/${sub_url}`;
+                window.location.href = `${window.location.protocol}//${main_url}/domain/${sub_url}`;
                 console.error(e);
               }
             })();
@@ -44,7 +44,7 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
             return <Component {...props} />;
           } else {
             keycloak.login({
-              redirectUri: `http://${main_url}/domain/${sub_url}`,
+              redirectUri: `${window.location.protocol}//${main_url}/domain/${sub_url}`,
               locale: 'ko', // login page locale 설정. 'en' or 'ko' 설정.
             }); // keycloak login page로 redirect
           }

@@ -20,7 +20,7 @@ const LogoutPage = () => {
       WWMS.disconnect();
       /* keycloak 임시 logout */
       await keycloak.logout({
-        redirectUri: `http://${main_url}/spaces`,
+        redirectUri: `${window.location.protocol}//${main_url}/spaces`,
       });
     }
   }, []);
