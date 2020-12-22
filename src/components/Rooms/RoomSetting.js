@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Tabs, Button } from 'antd';
+import { useCoreStores } from 'teespace-core';
+import { DateTime } from 'luxon';
 import { ArrowLeftIcon, CancelIcon } from '../Icons';
 import Input from '../Input';
 
@@ -19,26 +21,72 @@ const CommonSettingPage = ({ roomInfo = null }) => {
   const [value, setValue] = useState('');
   const [isChanged, setIsChanged] = useState(false);
   const [isPrivateRoom, setIsPrivateRoom] = useState(false);
+  const { roomStore, userStore } = useCoreStores();
+  const history = useHistory();
+  const myUserId = userStore.myProfile.id;
 
   useEffect(() => {
-    const name = roomInfo?.customName || roomInfo?.name;
-    setValue(name.substring(0, 20) || '');
+    if (roomInfo) {
+      const name = roomInfo?.customName || roomInfo?.name;
+      setValue(name.substring(0, 20) || '');
+
+      const isPrivate = roomInfo.type === 'WKS0002';
+      setIsPrivateRoom(isPrivate);
+    }
   }, [roomInfo]);
 
-  useEffect(() => {
-    setIsPrivateRoom(true);
-  }, [roomInfo]);
+  const getConvertedTime = timestamp => {
+    if (timestamp) {
+      return DateTime.fromFormat(timestamp, 'yyyy-MM-dd HH:mm:ss.S z')
+        .toFormat('yyyy.MM.dd a hh:mm')
+        .replace('AM', '오전')
+        .replace('PM', '오후');
+    }
+    return '';
+  };
+  const handleSave = async () => {
+    try {
+      const result = await roomStore.updateRoomInfo({
+        roomId: roomInfo.id,
+        newName: value,
+      });
 
-  const handleSave = () => {
-    console.log('handleSave : ', roomInfo.id);
+      if (result) setIsChanged(false);
+      else throw Error(`result:${result}`);
+    } catch (err) {
+      console.error(`[Platform] 룸 이름 변경 실패, ${err}`);
+    }
   };
 
-  const handleUpdate = () => {
-    console.log('handleUpdate : ', roomInfo.id);
+  const handleModeUpdate = async () => {
+    try {
+      const result = await roomStore.changeRoomModePrivate({
+        roomId: roomInfo.id,
+        userId: myUserId,
+      });
+
+      if (result) setIsPrivateRoom(true);
+      else throw Error(`result:${result}`);
+    } catch (err) {
+      console.error(`[Platform] 프라이빗 룸 전환 실패, ${err}`);
+    }
   };
 
-  const handleDelete = () => {
-    console.log('handleDelete : ', roomInfo.id);
+  const handleDelete = async () => {
+    try {
+      const result = await roomStore.deleteRoom({
+        userId: myUserId,
+        roomId: roomInfo.id,
+      });
+      const myRoomId =
+        roomStore.getDMRoom({ myUserId, userId: myUserId })?.roomInfo?.id ||
+        roomStore.getRoomArray()?.[0].id;
+
+      if (result) history.push(`/s/${myRoomId}/talk`);
+      else throw Error(`result:${result}`);
+    } catch (err) {
+      console.error(`[Platform] 룸 삭제 실패, ${err}`);
+    }
   };
 
   const handleChange = text => {
@@ -72,7 +120,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
           <SettingTitleText style={{ color: '#777' }}>
             프라이빗 룸으로 전환됨
             <SettingDescriptionText style={{ marginLeft: '0.5rem' }}>
-              2020.10.22 오후 5:42
+              {getConvertedTime(roomInfo?.typeModifiedDate)}
             </SettingDescriptionText>
           </SettingTitleText>
         ) : (
@@ -86,7 +134,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
             type="solid"
             shape="round"
             style={{ marginTop: '0.81rem' }}
-            onClick={handleUpdate}
+            onClick={handleModeUpdate}
           >
             전환
           </StyledButton>
