@@ -32,7 +32,7 @@ setEnv({
     `${window.location.protocol}//${
       process.env.REACT_APP_DEV_HSM_DOMAIN || window.location.hostname
     }`,
-  websocketURL: `ws://${
+  websocketURL: `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${
     process.env.REACT_APP_DEV_WEBSOCKET_DOMAIN || window.location.hostname
   }/${process.env.REACT_APP_DEV_WEBSOCKET_PATH}`,
   meetingURL: `${window.location.protocol}//${process.env.REACT_APP_DEV_COM_DOMAIN}`,
@@ -40,10 +40,10 @@ setEnv({
 const url = window.location.origin; //  http://xxx.dev.teespace.net
 const con_url = url.split(`//`)[1]; // xxx.dev.teespace.net
 const sub_url = url.split(`//`)[1].split(`.`)[0]; //  xxx
-const main_url = con_url.slice(con_url.indexOf('.') + 1, con_url.length); //dev.teespace.net
+const main_url = con_url.slice(con_url.indexOf('.') + 1, con_url.length); // dev.teespace.net
 
 const getCookieValue = key => {
-  let cookieKey = key + '=';
+  const cookieKey = `${key}=`;
   let result = '';
   const cookieArr = document.cookie.split(';');
 
