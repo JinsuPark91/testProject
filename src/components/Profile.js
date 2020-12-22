@@ -26,8 +26,8 @@ const Profile = observer(
     editOnlyMode = false,
     showSider = true,
     onModeChange = null,
-    onClickSaveBtn = () => { },
-    onClickCancelBtn = () => { },
+    onClickSaveBtn = () => {},
+    onClickCancelBtn = () => {},
   }) => {
     const history = useHistory();
     const { roomStore, userStore, friendStore, authStore } = useCoreStores();
@@ -54,7 +54,7 @@ const Profile = observer(
     const isMyId = () => userId === userStore.myProfile.id;
 
     const getBackPhoto = () => {
-      return userStore.getBackgroudPhotoURL(userId);
+      return userStore.getBackgroundPhotoURL(userId);
     };
     const getProfilePhoto = () => {
       return userStore.getProfilePhotoURL(userId, 'medium');
@@ -328,11 +328,11 @@ const Profile = observer(
                   <Text>프로필 편집</Text>
                 </StyledButton>
               ) : (
-                  <StyledButton onClick={handleMeetingClick}>
-                    <StyleIcon iconimg="meeting" />
-                    <Text>1:1 Meeting</Text>
-                  </StyledButton>
-                )}
+                <StyledButton onClick={handleMeetingClick}>
+                  <StyleIcon iconimg="meeting" />
+                  <Text>1:1 Meeting</Text>
+                </StyledButton>
+              )}
             </Sidebar>
           )}
           <Content showSider={showSider}>
@@ -427,8 +427,8 @@ const Profile = observer(
                     }
                   />
                 ) : (
-                    profile?.nick || profile?.name
-                  )}
+                  profile?.nick || profile?.name
+                )}
               </BigText>
               {!editEnabled && (
                 <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>

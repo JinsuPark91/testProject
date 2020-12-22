@@ -51,7 +51,7 @@ function ProfileInfoModal({
   const [profile, setProfile] = useState(userStore.userProfiles[userId]);
 
   const getBackPhoto = () => {
-    return userStore.getBackgroudPhotoURL(userId);
+    return userStore.getBackgroundPhotoURL(userId);
   };
 
   // calculate photo
