@@ -40,7 +40,6 @@ function RoomList() {
 
   const handleCreateRoom = () => {
     setVisible({ ...visible, selectRoomType: true });
-    setIsToastVisible(true);
   };
 
   const handleOpenChat = useCallback(() => {
@@ -48,10 +47,7 @@ function RoomList() {
   }, []);
 
   const handleSelectRoom = useCallback(roomInfo => {
-    history.push({
-      pathname: `/s/${roomInfo.id}/talk`,
-      search: history.location.search,
-    });
+    history.push(`/s/${roomInfo.id}/talk`);
   }, []);
 
   const handleChange = useCallback(e => {
@@ -131,6 +127,9 @@ function RoomList() {
     roomInfo.isVisible &&
     (!keyword || getRoomName(roomInfo)?.includes(keyword));
 
+  const handleToastClose = () => {
+    setIsToastVisible(false);
+  };
   return (
     <Wrapper>
       <Observer>
@@ -218,7 +217,7 @@ function RoomList() {
               <EmptyText
                 style={{ fontSize: '0.94rem', marginBottom: '0.94rem' }}
               >
-                <span> {`${userStore.myProfile.name}님, 환영합니다.`}</span>
+                <span>{`${userStore.myProfile.name}님, 환영합니다.`}</span>
                 <span>룸을 만들어 보세요!</span>
               </EmptyText>
               <EmptyText
@@ -249,7 +248,7 @@ function RoomList() {
         <Toast
           visible={isToastVisible}
           timeoutMs={1000}
-          onClose={() => setIsToastVisible(false)}
+          onClose={handleToastClose}
         >
           {toastText}
         </Toast>
@@ -317,6 +316,7 @@ const InputWrapper = styled.div`
 const EmptyText = styled.div`
   display: flex;
   flex-flow: wrap;
+  text-align: center;
   justify-content: center;
   color: #523dc7;
 
