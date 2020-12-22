@@ -23,9 +23,9 @@ import ProfileImageModal from './ProfileImageModal';
 function ProfileInfoModal({
   userId = '',
   visible,
-  onClose = () => { },
-  onClickTalk = () => { },
-  onClickMeeting = () => { },
+  onClose = () => {},
+  onClickTalk = () => {},
+  onClickMeeting = () => {},
   position,
   editMode = false,
 }) {
@@ -402,8 +402,8 @@ function ProfileInfoModal({
               }}
             />
           ) : (
-              <p>{profile?.nick || profile?.name}</p>
-            )}
+            <p>{profile?.nick || profile?.name}</p>
+          )}
         </UserName>
         <UserMail>{`(${profile?.loginId})`}</UserMail>
         {/* <UserStatus>
@@ -456,11 +456,11 @@ function ProfileInfoModal({
               </EditNumInputBox>
             </>
           ) : (
-              userType === 'USR0001' &&
-              (profile?.companyNum
-                ? profile?.nationalCode + ' ' + profile?.companyNum
-                : `-`)
-            )}
+            userType === 'USR0001' &&
+            (profile?.companyNum
+              ? `${profile?.nationalCode} ${profile?.companyNum}`
+              : `-`)
+          )}
         </UserInfoItem>
         <UserInfoItem>
           <UserInfoIcon iconimg="phone" />
@@ -477,10 +477,10 @@ function ProfileInfoModal({
               </EditNumInputBox>
             </>
           ) : profile?.phone ? (
-            profile?.nationalCode + ' ' + profile?.phone
+            `${profile?.nationalCode} ${profile?.phone}`
           ) : (
-                `-`
-              )}
+            `-`
+          )}
           {/* 1월 업데이트 사항으로 추가 */}
           {/* {isEditMode ? (
             <EditNotic>
@@ -534,26 +534,26 @@ function ProfileInfoModal({
               </EditButton>
             </>
           ) : (
-              !isNotMyFriend() && (
-                <>
-                  <UtilButton onClick={handleClickTalk}>
-                    <UtilIcon iconimg="friends" />
-                    <UtilText>{isMyId ? `나와의 Talk` : `1:1 Talk`}</UtilText>
+            !isNotMyFriend() && (
+              <>
+                <UtilButton onClick={handleClickTalk}>
+                  <UtilIcon iconimg="friends" />
+                  <UtilText>{isMyId ? `나와의 Talk` : `1:1 Talk`}</UtilText>
+                </UtilButton>
+                {isMyId ? (
+                  <UtilButton onClick={handleClickEdit}>
+                    <UtilIcon iconimg="profile" />
+                    <UtilText>프로필 편집</UtilText>
                   </UtilButton>
-                  {isMyId ? (
-                    <UtilButton onClick={handleClickEdit}>
-                      <UtilIcon iconimg="profile" />
-                      <UtilText>프로필 편집</UtilText>
-                    </UtilButton>
-                  ) : (
-                      <UtilButton onClick={handleClickMeeting}>
-                        <UtilIcon iconimg="meeting" />
-                        <UtilText>1:1 Meeting</UtilText>
-                      </UtilButton>
-                    )}
-                </>
-              )
-            )}
+                ) : (
+                  <UtilButton onClick={handleClickMeeting}>
+                    <UtilIcon iconimg="meeting" />
+                    <UtilText>1:1 Meeting</UtilText>
+                  </UtilButton>
+                )}
+              </>
+            )
+          )}
           {isNotMyFriend() && (
             <UtilButton onClick={handleAddFriend}>
               <UtilIcon iconimg="friendAdd" />
@@ -566,10 +566,10 @@ function ProfileInfoModal({
         editMode
           ? { top: '2.875rem', margin: '0 20px 0 auto' }
           : {
-            margin: 'unset',
-            top: position?.top,
-            left: position?.left,
-          }
+              margin: 'unset',
+              top: position?.top,
+              left: position?.left,
+            }
       }
     />
   ));

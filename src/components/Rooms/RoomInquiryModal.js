@@ -321,13 +321,19 @@ function RoomInquiryModal({
 
   const handleClickProfileTalk = useCallback(() => {
     setIsProfileModalVisible(false);
-    onCancel();
-  }, []);
+    // NOTE. 프로파일 다이얼로그 닫힌 다음 룸 정보 다이얼로그를 닫게 하기 위해 이벤트 시차를 둠.
+    setTimeout(() => {
+      onCancel();
+    }, 0);
+  }, [onCancel]);
 
   const handleClickProfileMeeting = useCallback(() => {
     setIsProfileModalVisible(false);
-    onCancel();
-  }, []);
+    // NOTE. 프로파일 다이얼로그 닫힌 다음 룸 정보 다이얼로그를 닫게 하기 위해 이벤트 시차를 둠.
+    setTimeout(() => {
+      onCancel();
+    }, 0);
+  }, [onCancel]);
 
   const userContent = (
     <>
