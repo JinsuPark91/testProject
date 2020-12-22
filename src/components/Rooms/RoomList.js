@@ -220,7 +220,7 @@ function RoomList() {
               <EmptyText
                 style={{ fontSize: '0.94rem', marginBottom: '0.94rem' }}
               >
-                <span> {`${userStore.myProfile.name}님, 환영합니다.`}</span>
+                <span>{`${userStore.myProfile.name}님, 환영합니다.`}</span>
                 <span>룸을 만들어 보세요!</span>
               </EmptyText>
               <EmptyText
@@ -319,6 +319,7 @@ const InputWrapper = styled.div`
 const EmptyText = styled.div`
   display: flex;
   flex-flow: wrap;
+  text-align: center;
   justify-content: center;
   color: #523dc7;
 
