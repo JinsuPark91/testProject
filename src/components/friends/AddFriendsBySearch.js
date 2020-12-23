@@ -14,7 +14,7 @@ const StyledModal = styled(Modal)`
     padding: 0;
   }
   .ant-modal-header {
-    padding: 0.69rem 0 0.88rem;
+    padding: 0.69rem 0 0.58rem;
   }
   .ant-modal-title {
     font-size: 0.94rem;
@@ -202,11 +202,10 @@ const FriendList = styled.ul`
 
 const Logo = styled(Avatar)`
   flex-shrink: 0;
-  width: 1.69rem;
-  height: 1.69rem;
   font-size: 0.88rem;
   font-weight: 500;
   border-radius: 0.5rem;
+  margin-right: 0.38rem;
 `;
 
 function AddFriendsBySearch({
@@ -259,17 +258,17 @@ function AddFriendsBySearch({
         footer={null}
         width="24.38rem"
         title={
-          // <>
-          //   {isViewMode && (
-          //     <Logo
-          //       shape="square"
-          //       style={{ color: '#fff', backgroundColor: '#75757F' }}
-          //     >
-          //       {title[0]}
-          //     </Logo>
-          //   )}
-          title
-          // </>
+          <>
+            {isViewMode && (
+              <Logo
+                shape="square"
+                style={{ color: '#fff', backgroundColor: '#75757F' }}
+              >
+                {title[0]}
+              </Logo>
+            )}
+            {title}
+          </>
         }
         onCancel={handleCancelInvite}
       >
