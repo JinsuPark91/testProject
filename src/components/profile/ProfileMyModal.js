@@ -17,6 +17,7 @@ import ProfileInfoModal from './ProfileInfoModal';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
 import AddFriendsBySearch from '../friends/AddFriendsBySearch';
 import keycloak from '../../libs/keycloak';
+import FriendsUtil from '../../utils/FriendsUtil';
 
 const ProfileMyModal = ({
   userId,
@@ -33,11 +34,17 @@ const ProfileMyModal = ({
   const [settingDialogVisible, setSettingDialogVisible] = useState(false);
   const [spaceListVisible, setSpaceListVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
-  const [isSpaceMemViewOpen, setIsSpaceMemViewOpen] = useState(false);
+  const [isFriendMemViewOpen, setIsFriendMemViewOpen] = useState(false);
   const [spaceMemberList, setSpaceMemberList] = useState([]);
   const [isToastOpen, setIsToastOpen] = useState(false);
   const [isViewMode, setIsViewMode] = useState(true);
+
+  // 튜토리얼 친구 추가 버튼
+  const [isOrgExist, setIsOrgExist] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+
   const { keycloak } = useKeycloak();
 
   const isAdmin = userStore.myProfile.grade === 'admin';
@@ -67,10 +74,6 @@ const ProfileMyModal = ({
     setIsCreated(false);
   }, []);
 
-  const handleSwitchSpace = useCallback(() => {
-    setSpaceListVisible(false);
-  }, []);
-
   const handleLogout = async () => {
     // Close dialog first
     if (onCancel) onCancel();
@@ -93,6 +96,7 @@ const ProfileMyModal = ({
   //   i18n.changeLanguage(lng);
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
+
   const handleSendInviteMail = useCallback(() => {
     setIsInviteDialogOpen(false);
     setIsToastOpen(true);
@@ -101,10 +105,6 @@ const ProfileMyModal = ({
   const handleCancelInviteMail = useCallback(() => {
     setIsInviteDialogOpen(false);
   }, []);
-
-  const toggleSpaceMemViewDialog = useCallback(() => {
-    setIsSpaceMemViewOpen(!isSpaceMemViewOpen);
-  }, [isSpaceMemViewOpen]);
 
   const handleInviteDialog = useCallback(() => {
     setIsInviteDialogOpen(true);
@@ -123,12 +123,30 @@ const ProfileMyModal = ({
         myProfile?.id,
         domainKey,
       );
+      setIsOrgExist(false);
+      setIsViewMode(true);
+      setModalTitle(spaceStore.currentSpace?.name);
       setSpaceMemberList(response);
     } catch (e) {
       console.log('getUserList Error');
     }
-    toggleSpaceMemViewDialog();
-  }, [orgStore, userStore, toggleSpaceMemViewDialog]);
+    setIsFriendMemViewOpen(true);
+  }, [orgStore, userStore, authStore, spaceStore]);
+
+  const handleAddFriend = useCallback(async () => {
+    await FriendsUtil(
+      spaceStore.currentSpace,
+      orgStore,
+      userStore.myProfile,
+      authStore.sessionInfo.domainKey,
+      () => {},
+      () => setIsOrgExist(true),
+      res => setSpaceMemberList(res),
+    );
+    setIsViewMode(false);
+    setModalTitle('프렌즈 추가');
+    setIsFriendMemViewOpen(true);
+  }, [spaceStore, orgStore, userStore, authStore]);
 
   const handleSpaceEditDialog = useCallback(() => {
     console.log('MemberList');
@@ -372,10 +390,7 @@ const ProfileMyModal = ({
         <ProfileSpaceModal
           userName={profile?.nick || profile?.name}
           onInvite={() => setIsInviteDialogOpen(true)}
-          onAddFriend={() => {
-            setIsViewMode(false);
-            setIsSpaceMemViewOpen(true);
-          }}
+          onAddFriend={handleAddFriend}
           onClose={() => setIsCreated(false)}
         />
       )}
@@ -390,11 +405,11 @@ const ProfileMyModal = ({
         onCancel={handleCancelInviteMail}
       />
       <AddFriendsBySearch
-        visible={isSpaceMemViewOpen}
-        onCancelAddFriends={toggleSpaceMemViewDialog}
-        isOrgExist={false}
+        visible={isFriendMemViewOpen}
+        onCancelAddFriends={() => setIsFriendMemViewOpen(false)}
+        isOrgExist={isOrgExist}
         isSpaceEmpty={false}
-        title={spaceStore.currentSpace?.name}
+        title={modalTitle}
         isViewMode={isViewMode}
         spaceMemberList={spaceMemberList}
       />
