@@ -136,8 +136,8 @@ const ProfileMyModal = ({
   }, []);
 
   const handleAdminPage = useCallback(() => {
-    history.push(`/admin`);
-  }, [history]);
+    window.open(`${window.location.origin}/admin`);
+  }, []);
 
   /// TODO REFACTOR: Move Page 함수 하나로 합치기!!!!
   const handleMoveSpacePage = useCallback(() => {

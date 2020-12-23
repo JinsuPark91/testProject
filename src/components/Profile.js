@@ -137,8 +137,31 @@ const Profile = observer(
       setLocalInputData();
     };
 
-    const handleMeetingClick = () => {
-      console.log('1 : 1 미팅');
+    const handleMeetingClick = async () => {
+      try {
+        const myUserId = userStore.myProfile.id;
+        const { roomInfo } = roomStore.getDMRoom(myUserId, userId);
+        if (roomInfo) {
+          if (roomInfo.isVislble) {
+            history.push(`/s/${roomInfo.id}/talk?sub=meeting`);
+          } else {
+            await roomStore.updateRoomMemberSetting({
+              roomId: roomInfo.id,
+              myUserId,
+              newIsVisible: true,
+            });
+          }
+          history.push(`/s/${roomInfo.id}/talk?sub=meeting`);
+        } else {
+          const { roomId } = await roomStore.createRoom({
+            creatorId: userStore.myProfile.id,
+            userList: [{ userId }],
+          });
+          history.push(`/s/${roomId}/talk?sub=meeting`);
+        }
+      } catch (e) {
+        console.error(`Error is${e}`);
+      }
     };
 
     const handleChangeBackground = file => {
