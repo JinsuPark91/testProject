@@ -215,8 +215,33 @@ function ProfileInfoModal({
   }, [profile, setLocalInputData]);
 
   const handleClickMeeting = async () => {
-    // TODO 미팅 로직 추가 필요
+    try {
+      const myUserId = userStore.myProfile.id;
+      const { roomInfo } = roomStore.getDMRoom(myUserId, userId);
+
+      if (roomInfo) {
+        if (roomInfo.isVislble) {
+          history.push(`/s/${roomInfo.id}/talk?sub=meeting`);
+        } else {
+          await roomStore.updateRoomMemberSetting({
+            roomId: roomInfo.id,
+            myUserId,
+            newIsVisible: true,
+          });
+        }
+        history.push(`/s/${roomInfo.id}/talk?sub=meeting`);
+      } else {
+        const { roomId } = await roomStore.createRoom({
+          creatorId: userStore.myProfile.id,
+          userList: [{ userId }],
+        });
+        history.push(`/s/${roomId}/talk?sub=meeting`);
+      }
+    } catch (e) {
+      console.error(`Error is${e}`);
+    }
     onClickMeeting();
+    onClose();
   };
 
   const handleConfirm = async () => {
