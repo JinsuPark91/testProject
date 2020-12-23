@@ -6,7 +6,7 @@ import { Layout } from 'antd';
 import AddFriendsDialog from './AddFriendsDialog';
 import AddFriendsBySearch from './AddFriendsBySearch';
 import { WaplLogo, FriendAddIcon } from '../Icons';
-import FriendsUtil from '../../utils/FriendsUtil';
+import { handleFriendsDialogType } from '../../utils/FriendsUtil';
 
 const { Footer } = Layout;
 
@@ -42,7 +42,7 @@ function FriendsLNBFooter() {
   const [spaceMemberList, setSpaceMemberList] = useState([]);
 
   const handleOpenAddFriendsDialog = useCallback(async () => {
-    await FriendsUtil(
+    await handleFriendsDialogType(
       spaceStore.currentSpace,
       orgStore,
       userStore.myProfile,

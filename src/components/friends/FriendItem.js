@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import styled, { css } from 'styled-components';
 import { Avatar, Button } from 'antd';
-import moment from 'moment';
 import {
   useCoreStores,
   Dropdown,
@@ -16,7 +15,7 @@ import { useOpenInWindow } from 'use-open-window';
 import { ExportOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import { Talk } from 'teespace-talk-app';
 import ProfileInfoModal from '../profile/ProfileInfoModal';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { handleCheckNewFriend } from '../../utils/FriendsUtil';
 
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 
@@ -622,14 +621,7 @@ const FriendItem = observer(
 
     const handleToastClose = useCallback(() => setVisibleToast(false), []);
     const isMe = itemId === authStore.user.id;
-
-    const now = moment();
-    const friendRegDate = moment(
-      friendInfo.friendRegDate,
-      'YYYY-MM-DD HH:mm:ss.S Z',
-    );
-    const isNewFriend =
-      friendRegDate.isValid() && now.diff(friendRegDate, 'minutes') < 60;
+    const isNewFriend = handleCheckNewFriend(friendInfo);
 
     return (
       <>

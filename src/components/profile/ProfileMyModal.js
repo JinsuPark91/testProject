@@ -17,7 +17,7 @@ import ProfileInfoModal from './ProfileInfoModal';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
 import AddFriendsBySearch from '../friends/AddFriendsBySearch';
 import keycloak from '../../libs/keycloak';
-import FriendsUtil from '../../utils/FriendsUtil';
+import { handleFriendsDialogType } from '../../utils/FriendsUtil';
 
 const ProfileMyModal = ({
   userId,
@@ -134,7 +134,7 @@ const ProfileMyModal = ({
   }, [orgStore, userStore, authStore, spaceStore]);
 
   const handleAddFriend = useCallback(async () => {
-    await FriendsUtil(
+    await handleFriendsDialogType(
       spaceStore.currentSpace,
       orgStore,
       userStore.myProfile,

@@ -1,4 +1,6 @@
-const FriendsUtil = async (
+import moment from 'moment';
+
+export const handleFriendsDialogType = async (
   currentSpace,
   orgStore,
   myProfile,
@@ -31,4 +33,17 @@ const FriendsUtil = async (
   }
 };
 
-export default FriendsUtil;
+export const handleCheckNewFriend = friendInfo => {
+  const now = moment();
+  const friendRegDate = moment(
+    friendInfo.friendRegDate,
+    'YYYY-MM-DD HH:mm:ss.S Z',
+  );
+
+  return friendRegDate.isValid() && now.diff(friendRegDate, 'minutes') < 60;
+};
+
+export default {
+  handleFriendsDialogType,
+  handleCheckNewFriend,
+};
