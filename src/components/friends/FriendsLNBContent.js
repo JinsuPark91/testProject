@@ -4,8 +4,9 @@ import { useObserver } from 'mobx-react';
 import { Layout, Typography } from 'antd';
 import { useCoreStores, Toast } from 'teespace-core';
 import FriendItem from './FriendItem';
+import FriendAdd from '../../assets/friend_add.svg';
 
-const { Paragraph, Text } = Typography;
+const { Text } = Typography;
 const { Content } = Layout;
 
 const ContentWrapper = styled(Content)`
@@ -26,10 +27,10 @@ const WelcomeWrapper = styled.div`
 `;
 
 const WelcomeBackgroundImage = styled.div`
-  background-image: url('/B2B/friend_add.svg');
-  background-position: center bottom;
-  background-repeat: no-repeat;
-  padding-top: 96.1%;
+  width: 12.5rem;
+  height: 12.5rem;
+  margin: 0 auto 0.81rem;
+  background: url('${FriendAdd}') center 0 no-repeat;
 `;
 
 const MyFrinedListBox = styled.div`
@@ -68,6 +69,24 @@ const StyleTitle = styled.p`
 
 const StyleText = styled(Text)`
   margin-left: 0.25rem;
+`;
+
+const StyledInfoTitle = styled.p`
+  margin-bottom: 0.81rem;
+  font-size: 0.94rem;
+  color: #523dc7;
+  letter-spacing: 0;
+  text-align: center;
+  line-height: 1.38rem;
+`;
+
+const StyledSubInfo = styled.p`
+  margin-bottom: 1.63rem;
+  font-size: 0.75rem;
+  color: #6c56e5;
+  letter-spacing: 0;
+  text-align: center;
+  line-height: 1.06rem;
 `;
 
 const FriendList = ({
@@ -146,14 +165,15 @@ const FriendsLNBContent = React.forwardRef(
             />
           </FrinedListBox>
           <WelcomeWrapper>
-            <StyleTitle level={4}>
+            <StyledInfoTitle>
               {userStore.myProfile.displayName} 님, 환영합니다. <br />
-              프렌즈 추가 버튼을 눌러 <br />내 동료를 찾아보세요!
-            </StyleTitle>
-            <Paragraph>
-              프렌즈가 되고 싶은 동료를 검색하거나 <br />
-              조직도에서 간편하게 추가할 수 있습니다.
-            </Paragraph>
+              프렌즈 목록을 만들어보세요!
+            </StyledInfoTitle>
+            <StyledSubInfo>
+              자주 연락하는 사람들을
+              <br />
+              구성원 목록에서 추가할 수 있습니다
+            </StyledSubInfo>
             <WelcomeBackgroundImage />
           </WelcomeWrapper>
         </>
