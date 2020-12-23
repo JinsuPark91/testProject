@@ -3,13 +3,8 @@ import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled from 'styled-components';
 import { useCoreStores, Toast } from 'teespace-core';
-import {
-  WaplLogo,
-  AddRoomIcon,
-  OpenChatIcon,
-  SearchIcon,
-  EmptyRoomIllust,
-} from '../Icons';
+import { WaplLogo, AddRoomIcon, OpenChatIcon, SearchIcon } from '../Icons';
+import EmptyRoomIllust from '../../assets/space_make.svg';
 import RoomItem from './RoomItem';
 import OpenRoomHome from './OpenRoomHome';
 import PlatformUIStore from '../../stores/PlatformUIStore';
@@ -214,28 +209,17 @@ function RoomList() {
         {() =>
           isOnlyMyRoom() ? (
             <div>
-              <EmptyText
-                style={{ fontSize: '0.94rem', marginBottom: '0.94rem' }}
-              >
-                <span>{`${userStore.myProfile.name}님, 환영합니다.`}</span>
-                <span>룸을 만들어 보세요!</span>
-              </EmptyText>
-              <EmptyText
-                style={{ fontSize: '0.75rem', marginBottom: '1.24rem' }}
-              >
-                <span>구성원들과 Talk 중심의</span>
-                <span>다양한 앱을 경험 할 수 있습니다.</span>
-              </EmptyText>
-
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  marginBottom: '1rem',
-                }}
-              >
-                <EmptyRoomIllust width={12.5} height={12.5} />
-              </div>
+              <StyledInfoTitle>
+                {`${userStore.myProfile.name}님, 환영합니다.`}
+                <br />
+                룸을 만들어 보세요!
+              </StyledInfoTitle>
+              <StyledSubInfo>
+                구성원들과 Talk 중심의
+                <br />
+                다양한 앱을 경험 할 수 있습니다.
+              </StyledSubInfo>
+              <WelcomeBackgroundImage />
             </div>
           ) : null
         }
@@ -313,16 +297,29 @@ const InputWrapper = styled.div`
   }
 `;
 
-const EmptyText = styled.div`
-  display: flex;
-  flex-flow: wrap;
-  text-align: center;
-  justify-content: center;
+const StyledInfoTitle = styled.p`
+  margin-bottom: 0.81rem;
+  font-size: 0.94rem;
   color: #523dc7;
+  letter-spacing: 0;
+  text-align: center;
+  line-height: 1.38rem;
+`;
 
-  $ span {
-    display: flex;
-  }
+const StyledSubInfo = styled.p`
+  margin-bottom: 1.63rem;
+  font-size: 0.75rem;
+  color: #6c56e5;
+  letter-spacing: 0;
+  text-align: center;
+  line-height: 1.06rem;
+`;
+
+const WelcomeBackgroundImage = styled.div`
+  width: 12.5rem;
+  height: 12.5rem;
+  margin: 0 auto 0.81rem;
+  background: url('${EmptyRoomIllust}') center 0 no-repeat;
 `;
 
 const AddRoomIconWrapper = styled.div`
