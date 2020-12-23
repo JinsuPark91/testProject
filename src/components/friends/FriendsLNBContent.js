@@ -6,6 +6,7 @@ import { useCoreStores, Toast } from 'teespace-core';
 import FriendItem from './FriendItem';
 import FriendAdd from '../../assets/friend_add.svg';
 
+const { Text } = Typography;
 const { Content } = Layout;
 
 const ContentWrapper = styled(Content)`
