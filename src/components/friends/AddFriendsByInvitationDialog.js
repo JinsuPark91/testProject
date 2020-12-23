@@ -194,6 +194,9 @@ function AddFriendsByInvitationDialog({
         domainName: spaceStore.currentSpace?.name,
         userCount: spaceStore.currentSpace?.userCount,
       });
+
+      setMailAddress('');
+      setChipList([]);
       onSendInviteMail();
     } catch (e) {
       console.log(`Just Error is ${e}`);

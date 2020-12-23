@@ -386,7 +386,7 @@ const ProfileMyModal = ({
       />
       <AddFriendsByInvitationDialog
         visible={isInviteDialogOpen}
-        onSendInviteMail={handleSendInviteMail}
+        onSendInviteMail={() => setIsToastOpen(true)}
         onCancel={handleCancelInviteMail}
       />
       <AddFriendsBySearch
