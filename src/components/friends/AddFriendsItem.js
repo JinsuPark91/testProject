@@ -117,7 +117,7 @@ const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
   if (memberList && memberList.length) {
     memberList = memberList
       .filter(elem => elem.id === userStore.myProfile.id)
-      .concat(friendAddList.filter(elem => elem.id !== userStore.myProfile.id));
+      .concat(memberList.filter(elem => elem.id !== userStore.myProfile.id));
   }
 
   if (searchText) {

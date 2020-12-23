@@ -6,7 +6,7 @@ import { Layout } from 'antd';
 import AddFriendsDialog from './AddFriendsDialog';
 import AddFriendsBySearch from './AddFriendsBySearch';
 import { WaplLogo, FriendAddIcon } from '../Icons';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import FriendsUtil from '../../utils/FriendsUtil';
 
 const { Footer } = Layout;
 
@@ -42,33 +42,17 @@ function FriendsLNBFooter() {
   const [spaceMemberList, setSpaceMemberList] = useState([]);
 
   const handleOpenAddFriendsDialog = useCallback(async () => {
-    if (spaceStore.currentSpace && spaceStore.currentSpace.userCount === 1) {
-      setIsSpaceEmpty(true);
-    } else {
-      const response = await orgStore.getOrgTree();
-      if (response && response.length) {
-        setIsOrgExist(true);
-      } else {
-        const { myProfile } = userStore;
-        try {
-          const domainKey =
-            process.env.REACT_APP_ENV === 'local'
-              ? authStore.sessionInfo.domainKey
-              : undefined;
-          const res = await orgStore.getUserOrgUserList(
-            myProfile?.companyCode,
-            myProfile?.departmentCode,
-            myProfile?.id,
-            domainKey,
-          );
-          setSpaceMemberList(res);
-        } catch (e) {
-          console.log('getUserList Error');
-        }
-      }
-    }
+    await FriendsUtil(
+      spaceStore.currentSpace,
+      orgStore,
+      userStore.myProfile,
+      authStore.sessionInfo?.domainKey,
+      () => setIsSpaceEmpty(true),
+      () => setIsOrgExist(true),
+      res => setSpaceMemberList(res),
+    );
     setIsDialogVisible(!isDialogVisible);
-  }, [spaceStore, orgStore, isDialogVisible, userStore, authStore]);
+  }, [spaceStore, orgStore, userStore, authStore, isDialogVisible]);
 
   const handleCloseAddFriendsDialog = useCallback(async () => {
     setIsDialogVisible(!isDialogVisible);

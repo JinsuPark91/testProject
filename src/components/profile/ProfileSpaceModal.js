@@ -69,8 +69,9 @@ function ProfileSpaceModal({ userName, onInvite, onAddFriend, onClose }) {
   }, [onClose, onInvite]);
 
   const handleAdminPage = useCallback(() => {
-    history.push(`/admin`);
-  }, [history]);
+    window.open(`${window.location.origin}/admin`);
+    // history.push(`/admin`);
+  }, []);
 
   const handleCreateRoom = useCallback(() => {
     onClose();
