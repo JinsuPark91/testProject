@@ -1,7 +1,9 @@
+/* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect, useMemo } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { EventBus, useCoreStores, DesktopNotification } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
+import { Prompt } from 'react-router';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
 import { Loader, Wrapper } from './MainPageStyle';
@@ -58,14 +60,24 @@ const MainPage = () => {
       userStore.fetchRoomUserProfileList({}),
       // 프렌드 리스트를 불러오자
       friendStore.fetchFriends({ myUserId }),
+      // 접속 정보를 불러오자.
+      userStore.getRoutingHistory({ userId: myUserId }),
     ])
-      .then(res => {
+      .then(async res => {
         // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
-        return talkRoomStore.initialize(myUserId);
+        await talkRoomStore.initialize(myUserId);
+
+        const [, , , , histories] = res;
+        const lastUrl = histories?.[0]?.lastUrl;
+        return Promise.resolve(lastUrl);
       })
-      .then(() => {
+      .then(lastUrl => {
+        // NOTE : 마지막 접속 URL 로 Redirect 시킨다.
+        if (lastUrl) {
+          history.push(lastUrl);
+        }
+
         setIsLoading(false);
-        console.log('USER PROFILES : ', userStore.userProfiles);
       })
       .catch(err => {
         setTimeout(() => {
@@ -136,6 +148,45 @@ const MainPage = () => {
   const leftSide = useMemo(() => <LeftSide />, []);
   const mainSide = useMemo(() => <MainSide />, []);
 
+  const saveHistory = async (location, action) => {
+    // NOTE : 이 시점에서, resourceId, resouceType, mainApp, subApp 값은 아직 변경되지 않은 상태.
+    const { pathname, search } = location;
+    const pathArr = pathname.split('/');
+
+    const currentResourceType = pathArr[1];
+    const currentMainApp = pathArr[3];
+    const currentSubApp = /sub=(.[^/&?#]*)/gi.exec(search)?.[1];
+
+    let currentResourceId = pathArr[2];
+    switch (currentResourceType) {
+      case 'f':
+        currentResourceId = 'profile';
+        break;
+      case 'm':
+        currentResourceId = 'mail';
+        break;
+      // NOTE : 기본값이 roomId 이기 때문에, s에 대한 처리는 하지 않았음.
+      default:
+        break;
+    }
+
+    try {
+      await userStore.updateRoutingHistory({
+        userId: myUserId,
+        roomId: currentResourceId,
+        lastUrl: `${pathname}${search}`,
+        appInfo: `${currentMainApp || ''}/${currentSubApp || ''}`,
+      });
+    } catch (err) {
+      console.error('[Platform] History update 에러 : ', err);
+    }
+  };
+
+  const beforeRoute = (location, action) => {
+    saveHistory(location, action);
+    return true;
+  };
+
   if (isLoading) {
     return (
       <Loader>
@@ -146,6 +197,11 @@ const MainPage = () => {
 
   return (
     <Wrapper>
+      <Prompt
+        message={(location, action) => {
+          return beforeRoute(location, action);
+        }}
+      />
       {leftSide}
       {mainSide}
     </Wrapper>
