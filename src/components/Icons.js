@@ -6,8 +6,7 @@ import styled from 'styled-components';
 import { handleCheckNewFriend } from '../utils/FriendsUtil';
 
 const NewFriendBadge = styled.span`
-  display: ${props =>
-    props.number && props.number === 0 ? 'none' : 'visible'};
+  display: ${props => (props?.number !== 0 ? 'visible' : 'none')};
   position: absolute;
   font-size: 0.63rem;
   background: red;
