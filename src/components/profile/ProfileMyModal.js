@@ -15,7 +15,7 @@ import checkekIcon from '../../assets/ts_check.svg';
 import { ReactComponent as SquareSpaceIcon } from '../../assets/thumbnail.svg';
 import ProfileInfoModal from './ProfileInfoModal';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
-import AddFriendsBySearch from '../friends/AddFriendsBySearch';
+import SpaceMemberListModal from '../space/SpaceMemberListModal';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
 import keycloak from '../../libs/keycloak';
@@ -124,12 +124,17 @@ const ProfileMyModal = ({
         myProfile?.id,
         domainKey,
       );
-      setSpaceMemberList(response);
+      const spaceMembers = response.map(item => ({
+        ...item,
+        isMe: item.id === myProfile?.id,
+        profilePhotoURL: userStore.getProfilePhotoURL(item.id, 'small'),
+      }));
+      setSpaceMemberList(spaceMembers);
     } catch (e) {
       console.log('getUserList Error');
     }
     toggleSpaceMemViewDialog();
-  }, [orgStore, userStore, toggleSpaceMemViewDialog]);
+  }, [orgStore, userStore, authStore, toggleSpaceMemViewDialog]);
 
   const handleSpaceEditDialog = useCallback(() => {
     console.log('MemberList');
@@ -387,14 +392,11 @@ const ProfileMyModal = ({
         onSendInviteMail={handleSendInviteMail}
         onCancel={handleCancelInviteMail}
       />
-      <AddFriendsBySearch
+      <SpaceMemberListModal
         visible={isSpaceMemViewOpen}
-        onCancelAddFriends={toggleSpaceMemViewDialog}
-        isOrgExist={false}
-        isSpaceEmpty={false}
+        onClose={toggleSpaceMemViewDialog}
         title={spaceStore.currentSpace?.name}
-        isViewMode
-        spaceMemberList={spaceMemberList}
+        members={spaceMemberList}
       />
       <Toast
         visible={isToastOpen}
