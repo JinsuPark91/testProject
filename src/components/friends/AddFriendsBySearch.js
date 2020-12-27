@@ -205,9 +205,7 @@ function AddFriendsBySearch({
   onCancelAddFriends,
   isOrgExist,
   title,
-  isViewMode,
-  spaceName,
-  isSpaceEmpty,
+  spaceInfo,
   spaceMemberList,
 }) {
   const { orgStore, userStore, friendStore } = useCoreStores();
@@ -242,6 +240,8 @@ function AddFriendsBySearch({
     setSearchText('');
   };
   // TODO: SPACE 멤버 얻어오는 서비스 붙이기
+
+  const isSpaceEmpty = spaceInfo && spaceInfo.userCount === 1;
 
   return (
     <>
@@ -285,7 +285,7 @@ function AddFriendsBySearch({
               />
             ) : (
               <AddFriendsFromSpace
-                spaceName={spaceName}
+                spaceName={spaceInfo?.name}
                 spaceMembers={spaceMemberList}
                 searchText={searchText}
               />

@@ -1,12 +1,10 @@
 import React, { useState, useCallback } from 'react';
-import { Loader, useCoreStores, Button } from 'teespace-core';
+import { useCoreStores, Button } from 'teespace-core';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { Layout } from 'antd';
-import AddFriendsDialog from './AddFriendsDialog';
 import AddFriendsBySearch from './AddFriendsBySearch';
 import { WaplLogo, FriendAddIcon } from '../Icons';
-import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const { Footer } = Layout;
 
@@ -38,37 +36,32 @@ function FriendsLNBFooter() {
   const { orgStore, userStore, spaceStore, authStore } = useCoreStores();
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isOrgExist, setIsOrgExist] = useState(false);
-  const [isSpaceEmpty, setIsSpaceEmpty] = useState(false);
   const [spaceMemberList, setSpaceMemberList] = useState([]);
 
   const handleOpenAddFriendsDialog = useCallback(async () => {
-    if (spaceStore.currentSpace && spaceStore.currentSpace.userCount === 1) {
-      setIsSpaceEmpty(true);
+    const response = await orgStore.getOrgTree();
+    if (response && response.length) {
+      setIsOrgExist(true);
     } else {
-      const response = await orgStore.getOrgTree();
-      if (response && response.length) {
-        setIsOrgExist(true);
-      } else {
-        const { myProfile } = userStore;
-        try {
-          const domainKey =
-            process.env.REACT_APP_ENV === 'local'
-              ? authStore.sessionInfo.domainKey
-              : undefined;
-          const res = await orgStore.getUserOrgUserList(
-            myProfile?.companyCode,
-            myProfile?.departmentCode,
-            myProfile?.id,
-            domainKey,
-          );
-          setSpaceMemberList(res);
-        } catch (e) {
-          console.log('getUserList Error');
-        }
+      const { myProfile } = userStore;
+      try {
+        const domainKey =
+          process.env.REACT_APP_ENV === 'local'
+            ? authStore.sessionInfo.domainKey
+            : undefined;
+        const res = await orgStore.getUserOrgUserList(
+          myProfile?.companyCode,
+          myProfile?.departmentCode,
+          myProfile?.id,
+          domainKey,
+        );
+        setSpaceMemberList(res);
+      } catch (e) {
+        console.log('getUserList Error');
       }
     }
     setIsDialogVisible(!isDialogVisible);
-  }, [spaceStore, orgStore, isDialogVisible, userStore, authStore]);
+  }, [orgStore, isDialogVisible, userStore, authStore]);
 
   const handleCloseAddFriendsDialog = useCallback(async () => {
     setIsDialogVisible(!isDialogVisible);
@@ -92,8 +85,7 @@ function FriendsLNBFooter() {
         isOrgExist={isOrgExist}
         title="프렌즈 추가"
         isViewMode={false}
-        spaceName={spaceStore.currentSpace?.name}
-        isSpaceEmpty={isSpaceEmpty}
+        spaceInfo={spaceStore.currentSpace}
         spaceMemberList={spaceMemberList}
       />
     </FooterWrapper>
