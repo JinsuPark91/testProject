@@ -2,8 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useObserver } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
-import { Divider } from 'antd';
-import AddFriendsFromSpaceHeader from './AddFriendsFromSpaceHeader';
+import SpaceMemberHeader from '../space/SpaceMemberHeader';
 import AddFriendsItem from './AddFriendsItem';
 
 function AddFriendsFromSpace({ spaceName, spaceMembers, searchText }) {
@@ -27,11 +26,10 @@ function AddFriendsFromSpace({ spaceName, spaceMembers, searchText }) {
 
   return useObserver(() => (
     <Wrapper>
-      <AddFriendsFromSpaceHeader
+      <SpaceMemberHeader
         spaceName={spaceName}
         userCount={searchedUserList.length}
       />
-      <StyledDivider />
       <AddFriendsItem friendAddList={searchedUserList} />
     </Wrapper>
   ));
@@ -40,10 +38,6 @@ function AddFriendsFromSpace({ spaceName, spaceMembers, searchText }) {
 const Wrapper = styled.div`
   width: 100%;
   padding: 0.63rem 0.81rem 0.63rem 0.63rem;
-`;
-
-const StyledDivider = styled(Divider)`
-  margin: 0;
 `;
 
 export default AddFriendsFromSpace;

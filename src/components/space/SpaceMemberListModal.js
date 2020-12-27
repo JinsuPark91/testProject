@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Search } from 'teespace-core';
 import styled from 'styled-components';
-import { Modal } from 'antd';
+import { Modal, Avatar } from 'antd';
 import MemberListView from '../common/MemberListView';
+import SpaceMemberHeader from './SpaceMemberHeader';
 
 function SpaceMemberListModal({
   visible,
   title,
   onClose = () => {},
+  spaceName = '',
   members = [],
 }) {
   const [searchText, setSearchText] = useState('');
@@ -30,9 +32,24 @@ function SpaceMemberListModal({
     setSearchText('');
   };
 
-  const filteredMembers = searchText
+  const filteredMembers = (searchText
     ? members.filter(elem => elem.name.includes(searchText))
-    : members;
+    : members
+  ).sort((item1, item2) =>
+    item1.isMe ? -1 : item1.name.localeCompare(item2.name),
+  );
+
+  const titleNode = title || (
+    <>
+      <StyledLogo
+        shape="square"
+        style={{ color: '#fff', backgroundColor: '#75757F' }}
+      >
+        {spaceName[0]}
+      </StyledLogo>
+      <StyledTitle>{spaceName}</StyledTitle>
+    </>
+  );
 
   return (
     <StyledModal
@@ -40,7 +57,7 @@ function SpaceMemberListModal({
       mask
       footer={null}
       width="24.38rem"
-      title={title}
+      title={titleNode}
       onCancel={handleClose}
     >
       <StyledSearchForm>
@@ -55,6 +72,7 @@ function SpaceMemberListModal({
           />
         </StyledSearchBox>
         <StyledMemberList>
+          <SpaceMemberHeader spaceName={spaceName} userCount={members.length} />
           <MemberListView members={filteredMembers} />
         </StyledMemberList>
       </StyledSearchForm>
@@ -122,6 +140,26 @@ const StyledSearch = styled(Search)`
 const StyledMemberList = styled.ul`
   width: 100%;
   padding: 0.63rem 0.81rem 0.63rem 0.63rem;
+`;
+
+const StyledLogo = styled(Avatar)`
+  flex-shrink: 0;
+  width: 1.68rem;
+  height: 1.68rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+`;
+
+const StyledTitle = styled.strong`
+  overflow: hidden;
+  display: block;
+  font-size: 0.875rem;
+  line-height: 1.68rem;
+  font-weight: 500;
+  color: #000;
+  text-overflow: ellipsis;
+  padding-left: 0.375rem;
 `;
 
 export default SpaceMemberListModal;

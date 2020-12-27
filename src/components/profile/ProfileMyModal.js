@@ -395,7 +395,7 @@ const ProfileMyModal = ({
       <SpaceMemberListModal
         visible={isSpaceMemViewOpen}
         onClose={toggleSpaceMemViewDialog}
-        title={spaceStore.currentSpace?.name}
+        spaceName={spaceStore.currentSpace?.name}
         members={spaceMemberList}
       />
       <Toast
