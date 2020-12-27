@@ -90,9 +90,10 @@ function FriendsLNBFooter() {
         visible={isDialogVisible}
         onCancelAddFriends={handleCloseAddFriendsDialog}
         isOrgExist={isOrgExist}
-        isSpaceEmpty={isSpaceEmpty}
         title="프렌즈 추가"
         isViewMode={false}
+        spaceName={spaceStore.currentSpace?.name}
+        isSpaceEmpty={isSpaceEmpty}
         spaceMemberList={spaceMemberList}
       />
     </FooterWrapper>
