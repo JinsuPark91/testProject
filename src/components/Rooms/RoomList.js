@@ -176,9 +176,13 @@ function RoomList() {
       <SelectRoomTypeDialog
         visible={visible.selectRoomType}
         onCancel={handleSelectRoomTypeCancel}
-        onCreateRoom={({ selectedUsers }) => {
-          setIsToastVisible(true);
-          setToastText(`${selectedUsers.length}명의 구성원이 초대되었습니다.`);
+        onCreateRoom={({ selectedUsers, isNewRoom }) => {
+          if (isNewRoom) {
+            setIsToastVisible(true);
+            setToastText(
+              `${selectedUsers.length}명의 구성원이 초대되었습니다.`,
+            );
+          }
         }}
       />
 

@@ -106,6 +106,8 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
       Object.defineProperty(data, 'name', { value: roomName });
     }
 
+    const prevRoomList = roomStore.roomArray;
+
     setIsVisible({ ...isVisible, createPrivateRoom: false });
     const { roomId } = await roomStore.createRoom(data);
 
@@ -122,7 +124,10 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
     await talkRoomStore.initialize(userStore.myProfile.id, roomId);
 
     // NOTE. 룸 목록 컴포넌트에서 토스트를 띄우기 위해 전달
-    onCreateRoom({ selectedUsers });
+    onCreateRoom({
+      selectedUsers,
+      isNewRoom: !prevRoomList.some(prevRoom => prevRoom.id === roomId),
+    });
 
     history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
   };
