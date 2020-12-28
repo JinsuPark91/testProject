@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
 import { Button } from 'antd';
 import styled from 'styled-components';
-import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const SpaceInformation = styled.div`
   position: absolute;
@@ -70,7 +69,6 @@ function ProfileSpaceModal({ userName, onInvite, onAddFriend, onClose }) {
 
   const handleAdminPage = useCallback(() => {
     window.open(`${window.location.origin}/admin`);
-    // history.push(`/admin`);
   }, []);
 
   const handleCreateRoom = useCallback(() => {

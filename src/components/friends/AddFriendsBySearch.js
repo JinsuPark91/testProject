@@ -235,7 +235,11 @@ function AddFriendsBySearch({
 
   // UI 기획상 onChange에 검색이 아니라 Enter 키 Press시 검색입니다.
   const handleChangeSearchText = e => {
-    setValueText(e.target.value);
+    const targetText = e.target.value;
+    setValueText(targetText);
+    if (!targetText.length) {
+      setSearchText('');
+    }
   };
 
   const handleCancelInvite = () => {
