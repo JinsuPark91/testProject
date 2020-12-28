@@ -98,7 +98,7 @@ const LoginContent = () => {
         deviceType: 'PC',
       });
       if (res.id) {
-        history.push(`/f/${authStore.user.loginId}`);
+        history.push(`/f/${authStore.user.id}`);
       } else {
         setIsLoading(false);
       }
