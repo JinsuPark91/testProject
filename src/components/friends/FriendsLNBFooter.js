@@ -40,50 +40,19 @@ function FriendsLNBFooter() {
   const [spaceMemberList, setSpaceMemberList] = useState([]);
 
   const handleOpenAddFriendsDialog = useCallback(async () => {
-    //   await handleFriendsDialogType(
-    //     spaceStore.currentSpace,
-    //     orgStore,
-    //     userStore.myProfile,
-    //     authStore.sessionInfo?.domainKey,
-    //     () => setIsSpaceEmpty(true),
-    //     () => setIsOrgExist(true),
-    //     res => setSpaceMemberList(res),
-    //   );
-    //   setIsDialogVisible(!isDialogVisible);
-    // }, [spaceStore, orgStore, userStore, authStore, isDialogVisible]);
-    const response = await orgStore.getOrgTree();
-    if (response && response.length) {
-      setIsOrgExist(true);
-    } else {
-      const { myProfile } = userStore;
-      try {
-        const domainKey =
-          process.env.REACT_APP_ENV === 'local'
-            ? authStore.sessionInfo.domainKey
-            : undefined;
-        const res = await orgStore.getUserOrgUserList(
-          myProfile?.companyCode,
-          myProfile?.departmentCode,
-          myProfile?.id,
-          domainKey,
-        );
-        setSpaceMemberList(res);
-      } catch (e) {
-        console.log('getUserList Error');
-      }
-    }
+    await handleFriendsDialogType(
+      orgStore,
+      userStore.myProfile,
+      authStore.sessionInfo?.domainKey,
+      () => setIsOrgExist(true),
+      res => setSpaceMemberList(res),
+    );
     setIsDialogVisible(!isDialogVisible);
-  }, [orgStore, isDialogVisible, userStore, authStore]);
+  }, [orgStore, userStore, authStore, isDialogVisible]);
 
   const handleCloseAddFriendsDialog = useCallback(async () => {
     setIsDialogVisible(!isDialogVisible);
   }, [isDialogVisible]);
-
-  // <AddFriendsDialog
-  //   visible={uiStore.visibleAddFriendsDialog}
-  //   width={uiStore.addFriendsDialogInfo.width}
-  //   height={uiStore.addFriendsDialogInfo.height}
-  // />
 
   return useObserver(() => (
     <FooterWrapper>
