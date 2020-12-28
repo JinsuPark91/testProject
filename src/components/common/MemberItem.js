@@ -8,6 +8,7 @@ const MemberItem = ({ memberInfo, style }) => {
         {memberInfo.isMe && <Style.MyBadge> 나 </Style.MyBadge>}
         <img alt="profile" src={memberInfo.profilePhotoURL} />
         <Style.Name>{memberInfo.name}</Style.Name>
+        {memberInfo.isMe && <Style.MyAccount> 내 계정 </Style.MyAccount>}
         {memberInfo.actionItem}
       </Style.Item>
     </>
@@ -69,6 +70,12 @@ const Style = {
       border-top-color: #523dc7;
       margin-left: -0.15rem;
     }
+  `,
+
+  MyAccount: styled.span`
+    font-size: 0.69rem;
+    color: #8d8d8d;
+    margin-right: 1rem;
   `,
 };
 

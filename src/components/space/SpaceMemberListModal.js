@@ -72,7 +72,10 @@ function SpaceMemberListModal({
           />
         </StyledSearchBox>
         <StyledMemberList>
-          <SpaceMemberHeader spaceName={spaceName} userCount={members.length} />
+          <SpaceMemberHeader
+            spaceName={spaceName}
+            userCount={filteredMembers.length}
+          />
           <MemberListView members={filteredMembers} />
         </StyledMemberList>
       </StyledSearchForm>
