@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography, Modal } from 'antd';
+import { talkRoomStore } from 'teespace-talk-app';
 import { Search, useCoreStores } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import Slider from 'react-slick';
@@ -13,7 +14,8 @@ import PrevArrowIcon from '../../assets/ts_arrow_left_line.svg';
 import AddIcon from '../../assets/add1.svg';
 import Openchat from '../../assets/openchat.svg';
 import EnterIcon from '../../assets/enter.svg';
-import RoomCreateModal from './RoomCreateModal';
+// import RoomCreateModal from './RoomCreateModal';
+import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
 
 const { Title } = Typography;
 
@@ -81,13 +83,6 @@ function OpenRoomHome({ visible, onCancel }) {
     setCreateModalVisibie(true);
   }, []);
 
-  const handleCreateModalOk = roomName => {
-    setCreateModalVisibie(false);
-  };
-  const handleCreateModalCancel = () => {
-    setCreateModalVisibie(false);
-  };
-
   const handleCancel = () => {
     onCancel();
   };
@@ -117,6 +112,33 @@ function OpenRoomHome({ visible, onCancel }) {
       .map(userId => `${userStore.getProfilePhotoURL(userId, 'small')}`);
   };
 
+  // Public Room
+  const handleCreatePublicRoomOk = async ({
+    roomName,
+    selectedUsers,
+    isStartMeeting,
+  }) => {
+    const data = {
+      name: roomName,
+      creatorId: userStore.myProfile.id,
+      userList: selectedUsers.map(user => ({
+        userId: user.friendId || user.id,
+      })),
+      type: 'open',
+    };
+
+    setCreateModalVisibie(false);
+    const { roomId } = await roomStore.createRoom(data);
+
+    await talkRoomStore.initialize(userStore.myProfile.id, roomId);
+
+    history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
+  };
+
+  const handleCreatePublicRoomCancel = () => {
+    setCreateModalVisibie(false);
+  };
+
   return (
     <StyledModal
       title="오픈 룸 홈"
@@ -125,11 +147,12 @@ function OpenRoomHome({ visible, onCancel }) {
       onCancel={handleCancel}
       width="22.5rem"
     >
-      <RoomCreateModal
+      <CreatePublicRoomDialog
         visible={createModalVisible}
-        onOk={handleCreateModalOk}
-        onCancel={handleCreateModalCancel}
+        onOk={handleCreatePublicRoomOk}
+        onCancel={handleCreatePublicRoomCancel}
       />
+
       <OpenHomeForm>
         <SearchBox>
           <StyledSearch
