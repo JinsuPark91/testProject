@@ -13,18 +13,19 @@ function SpaceMemberHeader({ spaceName, userCount }) {
 const StyledWrapper = styled.div`
   display: flex;
   width: 100%;
-  margin: 0.38rem 0rem;
+  margin: 0 0 0.38rem 0;
 `;
 
-const StyledSpaceName = styled.div`
+const StyledSpaceName = styled.span`
   display: flex;
   font-size: 0.75rem;
 `;
 
-const StyledUserCounter = styled.div`
-  flex: 1;
-  text-align: right;
-  align-self: center;
+const StyledUserCounter = styled.span`
+  display: flex;
+  font-size: 0.75rem;
+  color: #6c56e5;
+  margin-left: 0.25rem;
 `;
 
 export default SpaceMemberHeader;
