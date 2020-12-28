@@ -13,7 +13,6 @@ import NextArrowIcon from '../../assets/ts_arrow_right_line.svg';
 import PrevArrowIcon from '../../assets/ts_arrow_left_line.svg';
 import AddIcon from '../../assets/add1.svg';
 import Openchat from '../../assets/openchat.svg';
-import EnterIcon from '../../assets/enter.svg';
 import { SettingIcon } from '../Icons';
 import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
 
@@ -64,7 +63,6 @@ function OpenRoomHome({ visible, onCancel }) {
   const [createModalVisible, setCreateModalVisibie] = useState(
     initialStates.createModalVisible,
   );
-
   const [keyword, setKeyword] = useState(initialStates.keyword);
 
   const { roomStore, userStore } = useCoreStores();
@@ -88,7 +86,13 @@ function OpenRoomHome({ visible, onCancel }) {
     }
   }, [visible]);
 
+  const clearState = () => {
+    setCreateModalVisibie(initialStates.createModalVisible);
+    setKeyword(initialStates.keyword);
+  };
+
   const closeHomeModal = () => {
+    clearState();
     onCancel();
   };
 
@@ -176,6 +180,7 @@ function OpenRoomHome({ visible, onCancel }) {
         footer={null}
         onCancel={closeHomeModal}
         width="22.5rem"
+        destroyOnClose
       >
         <OpenHomeForm>
           <SearchBox>
@@ -209,7 +214,12 @@ function OpenRoomHome({ visible, onCancel }) {
                         내 오픈 룸 목록
                         <RoomCount>{openRooms.length}</RoomCount>
                       </RoomTitle>
-                      <StyledSlider arrows slidesToShow={4} slidesToScroll={4}>
+                      <StyledSlider
+                        arrows
+                        initialSlide={0}
+                        slidesToShow={4}
+                        slidesToScroll={4}
+                      >
                         <ItemAddBtn onClick={handleCreateRoom}>
                           <span>오픈룸 생성</span>
                         </ItemAddBtn>
