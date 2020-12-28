@@ -213,13 +213,16 @@ function AddFriendsBySearch({
   onCancelAddFriends,
   isOrgExist,
   title,
+  isViewMode,
   spaceInfo,
   spaceMemberList,
 }) {
   const { orgStore, userStore, friendStore } = useCoreStores();
   const [isInviteDialogVisible, setIsInviteDialogVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [valueText, setValueText] = useState('');
   const timestamp = useRef(Date.now());
+  const isSpaceEmpty = spaceInfo && spaceInfo.userCount === 1;
 
   const toggleInviteDialog = useCallback(() => {
     setIsInviteDialogVisible(!isInviteDialogVisible);
@@ -230,12 +233,14 @@ function AddFriendsBySearch({
     toggleInviteDialog();
   };
 
+  // UI 기획상 onChange에 검색이 아니라 Enter 키 Press시 검색입니다.
   const handleChangeSearchText = e => {
-    setSearchText(e.target.value);
+    setValueText(e.target.value);
   };
 
   const handleCancelInvite = () => {
     setSearchText('');
+    setValueText('');
     onCancelAddFriends();
   };
 
@@ -246,10 +251,8 @@ function AddFriendsBySearch({
 
   const handleCancelIconClick = () => {
     setSearchText('');
+    setValueText('');
   };
-  // TODO: SPACE 멤버 얻어오는 서비스 붙이기
-
-  const isSpaceEmpty = spaceInfo && spaceInfo.userCount === 1;
 
   return (
     <>
@@ -295,7 +298,7 @@ function AddFriendsBySearch({
                 onPressEnter={handleSearch}
                 onClear={handleCancelIconClick}
                 onChange={handleChangeSearchText}
-                value={searchText}
+                value={valueText}
               />
             </SearchBox>
             {isOrgExist ? (
