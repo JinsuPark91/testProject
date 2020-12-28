@@ -14,7 +14,7 @@ import PrevArrowIcon from '../../assets/ts_arrow_left_line.svg';
 import AddIcon from '../../assets/add1.svg';
 import Openchat from '../../assets/openchat.svg';
 import EnterIcon from '../../assets/enter.svg';
-// import RoomCreateModal from './RoomCreateModal';
+import { SettingIcon } from '../Icons';
 import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
 
 const { Title } = Typography;
@@ -31,12 +31,24 @@ const RoomButton = ({ roomInfo, onClick, disabled }) => {
   );
 };
 
-const OpenRoomItem = ({ roomInfo, photo, onClick }) => {
+const OpenRoomItem = ({ roomInfo, photo, onClick, onSettingClick }) => {
   const handleClick = () => {
     onClick(roomInfo);
   };
+
+  const handleSetting = e => {
+    e.stopPropagation();
+    onSettingClick(roomInfo);
+  };
+
   return (
-    <div onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div
+      onClick={handleClick}
+      style={{ cursor: 'pointer', position: 'relative' }}
+    >
+      <IconWrapper onClick={handleSetting}>
+        <SettingIcon width={0.75} height={0.75} color="rgb(120,120,129)" />
+      </IconWrapper>
       <Photos srcList={photo} defaultDiameter="3.75" />
       <OpenRoomName style={{ width: '3.75rem' }}>{roomInfo.name}</OpenRoomName>
     </div>
@@ -72,10 +84,7 @@ function OpenRoomHome({ visible, onCancel }) {
         return res;
       };
 
-      Promise.all([
-        fetchOpenRoomList(),
-        fetchRecommandOpenRoomList(),
-      ]).then(res => console.log(res));
+      Promise.all([fetchOpenRoomList(), fetchRecommandOpenRoomList()]);
     }
   }, [visible]);
 
@@ -111,6 +120,11 @@ function OpenRoomHome({ visible, onCancel }) {
   const handleRoomClick = roomInfo => {
     closeHomeModal();
     history.push(`/s/${roomInfo.id}/talk`);
+  };
+
+  const handleSettingClick = roomInfo => {
+    closeHomeModal();
+    history.push(`/s/${roomInfo.id}/setting`);
   };
 
   const getUserPhotos = memberString => {
@@ -206,6 +220,7 @@ function OpenRoomHome({ visible, onCancel }) {
                               roomInfo={openRoom}
                               photo={getUserPhotos(openRoom.memberIdListString)}
                               onClick={handleRoomClick}
+                              onSettingClick={handleSettingClick}
                             />
                           );
                         })}
@@ -438,24 +453,25 @@ const RoomJoinBtn = styled.button`
     vertical-align: top;
   }
 `;
-const RoomEnterBtn = styled.button`
-  height: 1rem;
-  background-color: transparent;
-  border: none;
 
-  span {
-    display: inline-block;
-    width: 1rem;
-    height: 1rem;
-    background: url(${EnterIcon}) 50% 50% no-repeat;
-    background-size: 1rem 1rem;
-    cursor: pointer;
-    font-size: 0;
-    line-height: 0;
-    text-indent: -9999px;
-    vertical-align: top;
+const IconWrapper = styled.div`
+  position: absolute;
+  border-radius: 50%;
+  right: 0px;
+  background: #efefef;
+  top: 0px;
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+
+  :hover {
+    background: #cccccc;
   }
 `;
+
 const StyledSlider = styled(Slider)`
   margin-top: 1.06rem;
   .slick-slide {
