@@ -1,7 +1,7 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { useCoreStores, Search, Toast } from 'teespace-core';
 import styled from 'styled-components';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Avatar } from 'antd';
 import Photos from '../Photos';
 import AddFriendsByInvitationDialog from './AddFriendsByInvitationDialog';
 import FriendModalImg from '../../assets/none_friends.svg';
@@ -14,7 +14,7 @@ const StyledModal = styled(Modal)`
     padding: 0;
   }
   .ant-modal-header {
-    padding: 0.69rem 0 0.88rem;
+    padding: 0.69rem 0 0.58rem;
   }
   .ant-modal-title {
     font-size: 0.94rem;
@@ -200,18 +200,29 @@ const FriendList = styled.ul`
   padding: 0.63rem 0.81rem 0.63rem 0.63rem;
 `;
 
+const Logo = styled(Avatar)`
+  flex-shrink: 0;
+  font-size: 0.88rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  margin-right: 0.38rem;
+`;
+
 function AddFriendsBySearch({
   visible,
   onCancelAddFriends,
   isOrgExist,
   title,
+  isViewMode,
   spaceInfo,
   spaceMemberList,
 }) {
   const { orgStore, userStore, friendStore } = useCoreStores();
   const [isInviteDialogVisible, setIsInviteDialogVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [valueText, setValueText] = useState('');
   const timestamp = useRef(Date.now());
+  const isSpaceEmpty = spaceInfo && spaceInfo.userCount === 1;
 
   const toggleInviteDialog = useCallback(() => {
     setIsInviteDialogVisible(!isInviteDialogVisible);
@@ -222,12 +233,18 @@ function AddFriendsBySearch({
     toggleInviteDialog();
   };
 
+  // UI 기획상 onChange에 검색이 아니라 Enter 키 Press시 검색입니다.
   const handleChangeSearchText = e => {
-    setSearchText(e.target.value);
+    const targetText = e.target.value;
+    setValueText(targetText);
+    if (!targetText.length) {
+      setSearchText('');
+    }
   };
 
   const handleCancelInvite = () => {
     setSearchText('');
+    setValueText('');
     onCancelAddFriends();
   };
 
@@ -238,10 +255,8 @@ function AddFriendsBySearch({
 
   const handleCancelIconClick = () => {
     setSearchText('');
+    setValueText('');
   };
-  // TODO: SPACE 멤버 얻어오는 서비스 붙이기
-
-  const isSpaceEmpty = spaceInfo && spaceInfo.userCount === 1;
 
   return (
     <>
@@ -250,7 +265,19 @@ function AddFriendsBySearch({
         mask
         footer={null}
         width="24.38rem"
-        title={title}
+        title={
+          <>
+            {isViewMode && (
+              <Logo
+                shape="square"
+                style={{ color: '#fff', backgroundColor: '#75757F' }}
+              >
+                {title[0]}
+              </Logo>
+            )}
+            {title}
+          </>
+        }
         onCancel={handleCancelInvite}
       >
         {isSpaceEmpty ? (
@@ -275,7 +302,7 @@ function AddFriendsBySearch({
                 onPressEnter={handleSearch}
                 onClear={handleCancelIconClick}
                 onChange={handleChangeSearchText}
-                value={searchText}
+                value={valueText}
               />
             </SearchBox>
             {isOrgExist ? (

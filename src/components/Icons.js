@@ -1,5 +1,23 @@
 import React from 'react';
+import { useCoreStores } from 'teespace-core';
+import { useObserver } from 'mobx-react';
 import { Tooltip } from 'antd';
+import styled from 'styled-components';
+import { handleCheckNewFriend } from '../utils/FriendsUtil';
+
+const NewFriendBadge = styled.span`
+  display: ${props => (props?.number !== 0 ? 'visible' : 'none')};
+  position: absolute;
+  font-size: 0.63rem;
+  background: red;
+  color: #ffffff;
+  width: 1.44rem;
+  height: 1rem;
+  border-radius: 0.56rem;
+  top: 0.5rem;
+  right: 0.7rem;
+  text-align: center;
+`;
 
 const REM_UNIT = 16;
 
@@ -103,9 +121,9 @@ export const MailIcon = React.memo(
 
 export const PeopleIcon = React.memo(
   ({ width = 2.062, height = 1.687, tooltipText }) => {
+    const { friendStore } = useCoreStores();
     const defaultWidth = 33;
     const defaultHeight = 27;
-
     const icon = (
       <svg
         width={`${width}rem`}
@@ -139,14 +157,20 @@ export const PeopleIcon = React.memo(
       </svg>
     );
 
-    if (tooltipText) {
+    return useObserver(() => {
+      const numOfNewFriends = friendStore.friendInfoList?.filter(elem =>
+        handleCheckNewFriend(elem),
+      ).length;
+
       return (
         <Tooltip title={tooltipText} placement="bottom" color="#07142d">
           {icon}
+          <NewFriendBadge number={numOfNewFriends}>
+            {numOfNewFriends > 99 ? '99+' : numOfNewFriends}
+          </NewFriendBadge>
         </Tooltip>
       );
-    }
-    return icon;
+    });
   },
 );
 
@@ -1453,7 +1477,7 @@ export const EmptyRoomIllust = React.memo(({ width = 1, height = 1 }) => {
   );
 });
 
-//lock2
+// lock2
 export const LockLineIcon = React.memo(({ width = 1, height = 1 }) => {
   const defaultWidth = 20;
   const defaultHeight = 20;

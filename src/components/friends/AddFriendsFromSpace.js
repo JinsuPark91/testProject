@@ -1,20 +1,23 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useObserver } from 'mobx-react';
-import { useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import SpaceMemberHeader from '../space/SpaceMemberHeader';
 import AddFriendsItem from './AddFriendsItem';
 
 function AddFriendsFromSpace({ spaceName, spaceMembers, searchText }) {
-  const { userStore } = useCoreStores();
   const [searchedUserList, setSearchedUserList] = useState([]);
 
   const handleSearch = useCallback(async () => {
-    const userList = await userStore.searchUsersByKeyword({
-      keyword: searchText,
-    });
+    const userList = spaceMembers.filter(elem =>
+      elem.nick
+        ? elem.nick.toLowerCase().includes(searchText.toLowerCase())
+        : elem.name.toLowerCase().includes(searchText.toLowerCase()),
+    );
+    // .sort((item1, item2) =>
+    //   item1.isMe ? -1 : item1.name.localeCompare(item2.name),
+    // );
     setSearchedUserList(userList);
-  }, [searchText, userStore]);
+  }, [searchText, spaceMembers]);
 
   useEffect(() => {
     if (searchText) {
@@ -30,7 +33,7 @@ function AddFriendsFromSpace({ spaceName, spaceMembers, searchText }) {
         spaceName={spaceName}
         userCount={searchedUserList.length}
       />
-      <AddFriendsItem friendAddList={searchedUserList} />
+      <AddFriendsItem friendAddList={searchedUserList} isViewMode={false} />
     </Wrapper>
   ));
 }

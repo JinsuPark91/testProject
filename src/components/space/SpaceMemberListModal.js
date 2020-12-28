@@ -13,9 +13,11 @@ function SpaceMemberListModal({
   members = [],
 }) {
   const [searchText, setSearchText] = useState('');
+  const [valueText, setValueText] = useState('');
 
   const handleClose = () => {
     setSearchText('');
+    setValueText('');
     onClose();
   };
 
@@ -25,11 +27,18 @@ function SpaceMemberListModal({
   };
 
   const handleChangeSearchText = e => {
-    setSearchText(e.target.value);
+    // Enter Press시 검색이 현재 기획
+    // setSearchText(e.target.value);
+    const targetText = e.target.value;
+    setValueText(targetText);
+    if (!targetText.length) {
+      setSearchText('');
+    }
   };
 
   const handleClearSearchText = () => {
     setSearchText('');
+    setValueText('');
   };
 
   const filteredMembers = (searchText
@@ -68,11 +77,14 @@ function SpaceMemberListModal({
             onPressEnter={handleSearch}
             onClear={handleClearSearchText}
             onChange={handleChangeSearchText}
-            value={searchText}
+            value={valueText}
           />
         </StyledSearchBox>
         <StyledMemberList>
-          <SpaceMemberHeader spaceName={spaceName} userCount={members.length} />
+          <SpaceMemberHeader
+            spaceName={spaceName}
+            userCount={filteredMembers.length}
+          />
           <MemberListView members={filteredMembers} />
         </StyledMemberList>
       </StyledSearchForm>

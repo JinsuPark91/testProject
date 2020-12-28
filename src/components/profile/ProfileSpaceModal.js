@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useCoreStores } from 'teespace-core';
 import { Button } from 'antd';
 import styled from 'styled-components';
-import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const SpaceInformation = styled.div`
   position: absolute;
@@ -53,16 +54,22 @@ const ButtonContainer = styled.div`
   }
 `;
 
-function ProfileSpaceModal({ oneButton, userName, onInvite, onClose }) {
-  const title = oneButton
+function ProfileSpaceModal({ userName, onInvite, onAddFriend, onClose }) {
+  const { userStore, spaceStore } = useCoreStores();
+  const history = useHistory();
+  const isAdmin = userStore.myProfile.grade === 'admin';
+  const title = isAdmin
     ? '스페이스를 생성했습니다!'
     : '스페이스에 참여했습니다!';
 
   const handleAddMember = useCallback(() => {
     onClose();
-    console.log('Add Member');
     onInvite();
   }, [onClose, onInvite]);
+
+  const handleAdminPage = useCallback(() => {
+    window.open(`${window.location.origin}/admin`);
+  }, []);
 
   const handleCreateRoom = useCallback(() => {
     onClose();
@@ -71,22 +78,35 @@ function ProfileSpaceModal({ oneButton, userName, onInvite, onClose }) {
 
   const handleAddFriend = useCallback(() => {
     onClose();
-    console.log('Add Friend');
-  }, [onClose]);
+    onAddFriend();
+  }, [onClose, onAddFriend]);
 
   return (
     <SpaceInformation>
       <Title>{title}</Title>
-      <Description>
-        이제 {userName}님은 {PlatformUIStore.space?.name}의 멤버입니다.
-        <br />
-        멤버들과 Talk 중심으로 다양한 앱을 사용해 보세요.
-      </Description>
+      {isAdmin ? (
+        <Description>
+          이제 {userName}님은 {spaceStore.currentSpace?.name}의 어드민입니다.
+          <br />
+          스페이스에 구성원을 초대하고, 어드민 페이지에서 관리할 수 있습니다.
+        </Description>
+      ) : (
+        <Description>
+          이제 {userName}님은 {spaceStore.currentSpace?.name}의 멤버입니다.
+          <br />
+          멤버들과 Talk 중심의 다양한 앱을 사용해 보세요.
+        </Description>
+      )}
       <ButtonContainer>
-        {oneButton ? (
-          <Button type="solid" shape="round" onClick={handleAddMember}>
-            구성원 초대
-          </Button>
+        {isAdmin ? (
+          <>
+            <Button type="solid" shape="round" onClick={handleAddMember}>
+              구성원 초대
+            </Button>
+            <Button type="solid" shape="round" onClick={handleAdminPage}>
+              어드민 페이지
+            </Button>
+          </>
         ) : (
           <>
             <Button type="outlined" shape="round" onClick={handleAddFriend}>

@@ -90,7 +90,7 @@ const StyledLinkButton = styled(Button)`
 
 function AddFriendsByInvitationDialog({
   visible,
-  onSendInviteMail = () => {},
+  onSendInviteMail = () => {}, // 초대 메일 전송해도 초대 다이얼로그 닫히지 않는 것이 현재 기획 - 기획 변경으로 인해 필요없어졌지만 일단 남겨둠
   onCancel,
 }) {
   const { friendStore, userStore, spaceStore } = useCoreStores();
@@ -194,7 +194,12 @@ function AddFriendsByInvitationDialog({
         domainName: spaceStore.currentSpace?.name,
         userCount: spaceStore.currentSpace?.userCount,
       });
-      onSendInviteMail();
+
+      setMailAddress('');
+      setChipList([]);
+      setToastText('발송한 초대장은 24시간 이후 만료됩니다.');
+      handleToggleToast();
+      // onSendInviteMail();
     } catch (e) {
       console.log(`Just Error is ${e}`);
     }

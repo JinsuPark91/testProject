@@ -56,11 +56,11 @@ function RoomCreateModal({ visible, onCancel, onOk }) {
 
   const createOpenRoom = useCallback(() => {
     onOk(roomName);
-  }, [roomName]);
+  }, [onOk, roomName]);
 
   const cancelCreateRoom = useCallback(() => {
     onCancel();
-  }, []);
+  }, [onCancel]);
 
   return (
     <StyledModal

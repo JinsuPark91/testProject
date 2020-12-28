@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Button, Select, Dropdown, Menu } from 'antd';
 import Upload from 'rc-upload';
-import { useObserver } from 'mobx-react';
 import { useCoreStores, Input } from 'teespace-core';
 import styled from 'styled-components';
 import { LockLineIcon } from '../Icons';
 import CameraIcon from '../../assets/ts_camera.svg';
 import ContentTitle from './ContentTitle';
-import { default as InputCounter } from '../Input';
+import InputCounter from '../Input';
 
 const InnerList = styled.ul`
   margin-top: 1.56rem;

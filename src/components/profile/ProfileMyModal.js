@@ -15,10 +15,12 @@ import checkekIcon from '../../assets/ts_check.svg';
 import { ReactComponent as SquareSpaceIcon } from '../../assets/thumbnail.svg';
 import ProfileInfoModal from './ProfileInfoModal';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
+import AddFriendsBySearch from '../friends/AddFriendsBySearch';
 import SpaceMemberListModal from '../space/SpaceMemberListModal';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
 import keycloak from '../../libs/keycloak';
+import { handleFriendsDialogType } from '../../utils/FriendsUtil';
 
 const ProfileMyModal = ({
   userId,
@@ -35,12 +37,19 @@ const ProfileMyModal = ({
   const [settingDialogVisible, setSettingDialogVisible] = useState(false);
   const [spaceListVisible, setSpaceListVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
+  const [isFriendMemViewOpen, setIsFriendMemViewOpen] = useState(false);
   const [isSpaceMemViewOpen, setIsSpaceMemViewOpen] = useState(false);
+
   const [spaceMemberList, setSpaceMemberList] = useState([]);
   const [isToastOpen, setIsToastOpen] = useState(false);
-  const { keycloak } = useKeycloak();
+  const [isViewMode, setIsViewMode] = useState(true);
 
+  // 튜토리얼 친구 추가 버튼
+  const [isOrgExist, setIsOrgExist] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  const { keycloak } = useKeycloak();
   const isAdmin = userStore.myProfile.grade === 'admin';
 
   // 1월 업데이트
@@ -68,10 +77,6 @@ const ProfileMyModal = ({
     setIsCreated(false);
   }, []);
 
-  const handleSwitchSpace = useCallback(() => {
-    setSpaceListVisible(false);
-  }, []);
-
   const handleLogout = async () => {
     // Close dialog first
     if (onCancel) onCancel();
@@ -94,6 +99,7 @@ const ProfileMyModal = ({
   //   i18n.changeLanguage(lng);
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
+
   const handleSendInviteMail = useCallback(() => {
     setIsInviteDialogOpen(false);
     setIsToastOpen(true);
@@ -135,6 +141,19 @@ const ProfileMyModal = ({
     }
     toggleSpaceMemViewDialog();
   }, [orgStore, userStore, authStore, toggleSpaceMemViewDialog]);
+
+  const handleAddFriend = useCallback(async () => {
+    await handleFriendsDialogType(
+      orgStore,
+      userStore.myProfile,
+      authStore.sessionInfo.domainKey,
+      () => setIsOrgExist(true),
+      res => setSpaceMemberList(res),
+    );
+    setIsViewMode(false);
+    setModalTitle('프렌즈 추가');
+    setIsFriendMemViewOpen(true);
+  }, [orgStore, userStore, authStore]);
 
   const handleSpaceEditDialog = useCallback(() => {
     console.log('MemberList');
@@ -376,9 +395,9 @@ const ProfileMyModal = ({
       )}
       {isCreated && (
         <ProfileSpaceModal
-          oneButton={isAdmin}
-          userName={profile?.name}
-          onInvite={() => console.log('')}
+          userName={profile?.nick || profile?.name}
+          onInvite={() => setIsInviteDialogOpen(true)}
+          onAddFriend={handleAddFriend}
           onClose={() => setIsCreated(false)}
         />
       )}
@@ -389,8 +408,17 @@ const ProfileMyModal = ({
       />
       <AddFriendsByInvitationDialog
         visible={isInviteDialogOpen}
-        onSendInviteMail={handleSendInviteMail}
+        onSendInviteMail={() => setIsToastOpen(true)}
         onCancel={handleCancelInviteMail}
+      />
+      <AddFriendsBySearch
+        visible={isFriendMemViewOpen}
+        onCancelAddFriends={() => setIsFriendMemViewOpen(false)}
+        isOrgExist={isOrgExist}
+        isSpaceEmpty={false}
+        title={modalTitle}
+        isViewMode={isViewMode}
+        spaceMemberList={spaceMemberList}
       />
       <SpaceMemberListModal
         visible={isSpaceMemViewOpen}

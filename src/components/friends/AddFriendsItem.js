@@ -6,6 +6,22 @@ import styled from 'styled-components';
 import Photos from '../Photos';
 import AddFriendImg from '../../assets/ts_friend_add.svg';
 
+const SpaceInfo = styled.div`
+  margin-bottom: 0.24rem;
+`;
+
+const SpaceName = styled.span`
+  font-size: 0.75rem;
+  color: #000000;
+  max-width: 80%;
+`;
+
+const UserCount = styled.span`
+  font-size: 0.75rem;
+  color: #6c56e5;
+  margin-left: 0.25rem;
+`;
+
 const Wrapper = styled.div`
   max-height: 25.81rem;
 `;
@@ -93,20 +109,23 @@ const MyBadge = styled.span`
   }
 `;
 
-const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
-  const { userStore, friendStore } = useCoreStores();
+const AddFriendsItem = ({ friendAddList, isViewMode }) => {
+  const { userStore, friendStore, spaceStore } = useCoreStores();
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [friendUserName, setFriendUserName] = useState('');
-
   let memberList = friendAddList;
-  // 내 정보 제일 상단에 표시: 서비스에서 추가되어서 주석처리
-  // if (memberList[0].id !== userStore.myProfile.id) {
-  //   memberList.unshift(userStore.myProfile);
-  // }
-
-  if (searchText) {
-    memberList = memberList.filter(elem => elem.name.includes(searchText));
+  if (memberList && memberList.length) {
+    memberList = memberList
+      .filter(elem => elem.id === userStore.myProfile.id)
+      .concat(memberList.filter(elem => elem.id !== userStore.myProfile.id));
   }
+  // if (searchText) {
+  //   memberList = memberList.filter(elem =>
+  //     elem.nick
+  //       ? elem.nick.includes(searchText)
+  //       : elem.name.includes(searchText),
+  //   );
+  // }
 
   const handleAddFriend = useCallback(
     async friendInfo => {
@@ -139,7 +158,7 @@ const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
   };
 
   const FriendAddItem = ({ friendInfo, style }) => {
-    const userName = friendInfo?.name;
+    const userName = friendInfo?.nick || friendInfo?.name;
     const isMe =
       friendInfo?.friendId || friendInfo.id === userStore.myProfile.id;
     return (
@@ -163,6 +182,12 @@ const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
   // TODO: id로 key 교체
   return useObserver(() => (
     <>
+      {isViewMode && (
+        <SpaceInfo>
+          <SpaceName>{spaceStore.currentSpace?.name}</SpaceName>
+          <UserCount>{spaceStore.currentSpace?.userCount}명</UserCount>
+        </SpaceInfo>
+      )}
       <Wrapper>
         {friendStore.friendInfoList && (
           <List
