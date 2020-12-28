@@ -94,7 +94,7 @@ const MainPage = () => {
   }, [resourceType]);
 
   useEffect(() => {
-    if (resourceType === 'm') {
+    if (resourceType === 'm' && !isLoading) {
       PlatformUIStore.resourceId = roomStore.getDMRoom(
         myUserId,
         myUserId,
@@ -102,7 +102,7 @@ const MainPage = () => {
     } else {
       PlatformUIStore.resourceId = resourceId;
     }
-  }, [resourceId, resourceType]);
+  }, [isLoading, resourceId, resourceType]);
 
   useEffect(() => {
     PlatformUIStore.mainApp = mainApp;
