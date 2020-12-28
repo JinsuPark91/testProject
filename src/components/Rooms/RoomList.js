@@ -41,9 +41,25 @@ function RoomList() {
     setOpenRoomDialogVisible(true);
   }, []);
 
-  const handleSelectRoom = useCallback(roomInfo => {
-    history.push(`/s/${roomInfo.id}/talk`);
-  }, []);
+  const handleSelectRoom = async roomInfo => {
+    // NOTE : 같은 방을 누르면 history 부르지 않는다.
+    const isSameRoom = PlatformUIStore.resourceId === roomInfo.id;
+    if (isSameRoom) return Promise.resolve();
+
+    try {
+      const routingHistory = (
+        await userStore.getRoutingHistory({
+          userId: userStore.myProfile.id,
+          roomId: roomInfo.id,
+        })
+      )?.[0];
+
+      history.push(routingHistory?.lastUrl || `/s/${roomInfo.id}/talk`);
+    } catch (err) {
+      console.log('[Platform] Get routing history 에러 : ', err);
+      history.push(`/s/${roomInfo.id}/talk`);
+    }
+  };
 
   const handleChange = useCallback(e => {
     setKeyword(e.target.value);
@@ -160,9 +176,13 @@ function RoomList() {
       <SelectRoomTypeDialog
         visible={visible.selectRoomType}
         onCancel={handleSelectRoomTypeCancel}
-        onCreateRoom={({ selectedUsers }) => {
-          setIsToastVisible(true);
-          setToastText(`${selectedUsers.length}명의 구성원이 초대되었습니다.`);
+        onCreateRoom={({ selectedUsers, isNewRoom }) => {
+          if (isNewRoom) {
+            setIsToastVisible(true);
+            setToastText(
+              `${selectedUsers.length}명의 구성원이 초대되었습니다.`,
+            );
+          }
         }}
       />
 

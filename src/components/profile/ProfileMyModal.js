@@ -16,6 +16,9 @@ import { ReactComponent as SquareSpaceIcon } from '../../assets/thumbnail.svg';
 import ProfileInfoModal from './ProfileInfoModal';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
 import AddFriendsBySearch from '../friends/AddFriendsBySearch';
+import SpaceMemberListModal from '../space/SpaceMemberListModal';
+import PlatformUIStore from '../../stores/PlatformUIStore';
+
 import keycloak from '../../libs/keycloak';
 import { handleFriendsDialogType } from '../../utils/FriendsUtil';
 
@@ -123,38 +126,50 @@ const ProfileMyModal = ({
         myProfile?.id,
         domainKey,
       );
-      setIsOrgExist(false);
-      setIsViewMode(true);
-      setModalTitle(spaceStore.currentSpace?.name);
-      setSpaceMemberList(response);
+  //     setIsOrgExist(false);
+  //     setIsViewMode(true);
+  //     setModalTitle(spaceStore.currentSpace?.name);
+  //     setSpaceMemberList(response);
+  //   } catch (e) {
+  //     console.log('getUserList Error');
+  //   }
+  //   setIsFriendMemViewOpen(true);
+  // }, [orgStore, userStore, authStore, spaceStore]);
+
+  // const handleAddFriend = useCallback(async () => {
+  //   await handleFriendsDialogType(
+  //     spaceStore.currentSpace,
+  //     orgStore,
+  //     userStore.myProfile,
+  //     authStore.sessionInfo.domainKey,
+  //     () => {},
+  //     () => setIsOrgExist(true),
+  //     res => setSpaceMemberList(res),
+  //   );
+  //   setIsViewMode(false);
+  //   setModalTitle('프렌즈 추가');
+  //   setIsFriendMemViewOpen(true);
+  // }, [spaceStore, orgStore, userStore, authStore]);
+      const spaceMembers = response.map(item => ({
+        ...item,
+        isMe: item.id === myProfile?.id,
+        profilePhotoURL: userStore.getProfilePhotoURL(item.id, 'small'),
+      }));
+      setSpaceMemberList(spaceMembers);
     } catch (e) {
       console.log('getUserList Error');
     }
-    setIsFriendMemViewOpen(true);
-  }, [orgStore, userStore, authStore, spaceStore]);
-
-  const handleAddFriend = useCallback(async () => {
-    await handleFriendsDialogType(
-      spaceStore.currentSpace,
-      orgStore,
-      userStore.myProfile,
-      authStore.sessionInfo.domainKey,
-      () => {},
-      () => setIsOrgExist(true),
-      res => setSpaceMemberList(res),
-    );
-    setIsViewMode(false);
-    setModalTitle('프렌즈 추가');
-    setIsFriendMemViewOpen(true);
-  }, [spaceStore, orgStore, userStore, authStore]);
+    toggleSpaceMemViewDialog();
+  }, [orgStore, userStore, authStore, toggleSpaceMemViewDialog]);
+>>>>>>> develop
 
   const handleSpaceEditDialog = useCallback(() => {
     console.log('MemberList');
   }, []);
 
   const handleAdminPage = useCallback(() => {
-    history.push(`/admin`);
-  }, [history]);
+    window.open(`${window.location.origin}/admin`);
+  }, []);
 
   /// TODO REFACTOR: Move Page 함수 하나로 합치기!!!!
   const handleMoveSpacePage = useCallback(() => {
@@ -404,14 +419,19 @@ const ProfileMyModal = ({
         onSendInviteMail={() => setIsToastOpen(true)}
         onCancel={handleCancelInviteMail}
       />
-      <AddFriendsBySearch
+      {/* <AddFriendsBySearch
         visible={isFriendMemViewOpen}
         onCancelAddFriends={() => setIsFriendMemViewOpen(false)}
         isOrgExist={isOrgExist}
         isSpaceEmpty={false}
         title={modalTitle}
         isViewMode={isViewMode}
-        spaceMemberList={spaceMemberList}
+        spaceMemberList={spaceMemberList} */}
+      <SpaceMemberListModal
+        visible={isSpaceMemViewOpen}
+        onClose={toggleSpaceMemViewDialog}
+        spaceName={spaceStore.currentSpace?.name}
+        members={spaceMemberList}
       />
       <Toast
         visible={isToastOpen}

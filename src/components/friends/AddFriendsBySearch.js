@@ -7,7 +7,7 @@ import AddFriendsByInvitationDialog from './AddFriendsByInvitationDialog';
 import FriendModalImg from '../../assets/none_friends.svg';
 // import OrganizationDropdown from '../components/friends/OrganizationDropdown';
 import AddFriendsByOrganization from './AddFriendsByOrganization';
-import AddFriendsItem from './AddFriendsItem';
+import AddFriendsFromSpace from './AddFriendsFromSpace';
 
 const StyledModal = styled(Modal)`
   .ant-modal-body {
@@ -212,9 +212,8 @@ function AddFriendsBySearch({
   visible,
   onCancelAddFriends,
   isOrgExist,
-  isSpaceEmpty,
   title,
-  isViewMode,
+  spaceInfo,
   spaceMemberList,
 }) {
   const { orgStore, userStore, friendStore } = useCoreStores();
@@ -249,6 +248,8 @@ function AddFriendsBySearch({
     setSearchText('');
   };
   // TODO: SPACE 멤버 얻어오는 서비스 붙이기
+
+  const isSpaceEmpty = spaceInfo && spaceInfo.userCount === 1;
 
   return (
     <>
@@ -303,29 +304,11 @@ function AddFriendsBySearch({
                 searchText={searchText}
               />
             ) : (
-              //   <GroupBox>
-              //     <OrganizationTitle>TmaxGroup</OrganizationTitle>
-              //     <StyleCheckLabel>
-              //       <StyleNum>1000명</StyleNum>
-              //       <StyleCheckBox>
-              //         <StyleInput type="checkbox" />
-              //         <StyleIcon />
-              //       </StyleCheckBox>
-              //     </StyleCheckLabel>
-              //     {/<OrganizationDropdown
-              //   orgList={orgList}
-              //   onChange={onDropdownChange}
-              //   overwrittenValue={overwrittenValue}
-              //   defaultValue={defaultValue}
-              // /> }
-              //   </GroupBox>
-              <FriendList>
-                <AddFriendsItem
-                  friendAddList={spaceMemberList}
-                  isViewMode={isViewMode}
-                  searchText={searchText}
-                />
-              </FriendList>
+              <AddFriendsFromSpace
+                spaceName={spaceInfo?.name}
+                spaceMembers={spaceMemberList}
+                searchText={searchText}
+              />
             )}
           </AddFriendSearchForm>
         )}
