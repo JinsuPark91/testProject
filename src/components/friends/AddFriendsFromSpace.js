@@ -9,7 +9,9 @@ function AddFriendsFromSpace({ spaceName, spaceMembers, searchText }) {
 
   const handleSearch = useCallback(async () => {
     const userList = spaceMembers.filter(elem =>
-      elem.name.toLowerCase().includes(searchText.toLowerCase()),
+      elem.nick
+        ? elem.nick.toLowerCase().includes(searchText.toLowerCase())
+        : elem.name.toLowerCase().includes(searchText.toLowerCase()),
     );
     // .sort((item1, item2) =>
     //   item1.isMe ? -1 : item1.name.localeCompare(item2.name),

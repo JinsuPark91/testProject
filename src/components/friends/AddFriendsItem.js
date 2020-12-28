@@ -109,7 +109,7 @@ const MyBadge = styled.span`
   }
 `;
 
-const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
+const AddFriendsItem = ({ friendAddList, isViewMode }) => {
   const { userStore, friendStore, spaceStore } = useCoreStores();
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [friendUserName, setFriendUserName] = useState('');
@@ -119,14 +119,13 @@ const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
       .filter(elem => elem.id === userStore.myProfile.id)
       .concat(memberList.filter(elem => elem.id !== userStore.myProfile.id));
   }
-
-  if (searchText) {
-    memberList = memberList.filter(elem =>
-      elem.nick
-        ? elem.nick.includes(searchText)
-        : elem.name.includes(searchText),
-    );
-  }
+  // if (searchText) {
+  //   memberList = memberList.filter(elem =>
+  //     elem.nick
+  //       ? elem.nick.includes(searchText)
+  //       : elem.name.includes(searchText),
+  //   );
+  // }
 
   const handleAddFriend = useCallback(
     async friendInfo => {
