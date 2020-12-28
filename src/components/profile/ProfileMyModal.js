@@ -40,6 +40,8 @@ const ProfileMyModal = ({
 
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
   const [isFriendMemViewOpen, setIsFriendMemViewOpen] = useState(false);
+  const [isSpaceMemViewOpen, setIsSpaceMemViewOpen] = useState(false);
+
   const [spaceMemberList, setSpaceMemberList] = useState([]);
   const [isToastOpen, setIsToastOpen] = useState(false);
   const [isViewMode, setIsViewMode] = useState(true);
@@ -47,9 +49,7 @@ const ProfileMyModal = ({
   // 튜토리얼 친구 추가 버튼
   const [isOrgExist, setIsOrgExist] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
-
   const { keycloak } = useKeycloak();
-
   const isAdmin = userStore.myProfile.grade === 'admin';
 
   // 1월 업데이트
@@ -109,6 +109,10 @@ const ProfileMyModal = ({
     setIsInviteDialogOpen(false);
   }, []);
 
+  const toggleSpaceMemViewDialog = useCallback(() => {
+    setIsSpaceMemViewOpen(!isSpaceMemViewOpen);
+  }, [isSpaceMemViewOpen]);
+
   const handleInviteDialog = useCallback(() => {
     setIsInviteDialogOpen(true);
   }, []);
@@ -126,30 +130,6 @@ const ProfileMyModal = ({
         myProfile?.id,
         domainKey,
       );
-  //     setIsOrgExist(false);
-  //     setIsViewMode(true);
-  //     setModalTitle(spaceStore.currentSpace?.name);
-  //     setSpaceMemberList(response);
-  //   } catch (e) {
-  //     console.log('getUserList Error');
-  //   }
-  //   setIsFriendMemViewOpen(true);
-  // }, [orgStore, userStore, authStore, spaceStore]);
-
-  // const handleAddFriend = useCallback(async () => {
-  //   await handleFriendsDialogType(
-  //     spaceStore.currentSpace,
-  //     orgStore,
-  //     userStore.myProfile,
-  //     authStore.sessionInfo.domainKey,
-  //     () => {},
-  //     () => setIsOrgExist(true),
-  //     res => setSpaceMemberList(res),
-  //   );
-  //   setIsViewMode(false);
-  //   setModalTitle('프렌즈 추가');
-  //   setIsFriendMemViewOpen(true);
-  // }, [spaceStore, orgStore, userStore, authStore]);
       const spaceMembers = response.map(item => ({
         ...item,
         isMe: item.id === myProfile?.id,
@@ -161,7 +141,19 @@ const ProfileMyModal = ({
     }
     toggleSpaceMemViewDialog();
   }, [orgStore, userStore, authStore, toggleSpaceMemViewDialog]);
->>>>>>> develop
+
+  const handleAddFriend = useCallback(async () => {
+    await handleFriendsDialogType(
+      orgStore,
+      userStore.myProfile,
+      authStore.sessionInfo.domainKey,
+      () => setIsOrgExist(true),
+      res => setSpaceMemberList(res),
+    );
+    setIsViewMode(false);
+    setModalTitle('프렌즈 추가');
+    setIsFriendMemViewOpen(true);
+  }, [orgStore, userStore, authStore]);
 
   const handleSpaceEditDialog = useCallback(() => {
     console.log('MemberList');
@@ -419,14 +411,15 @@ const ProfileMyModal = ({
         onSendInviteMail={() => setIsToastOpen(true)}
         onCancel={handleCancelInviteMail}
       />
-      {/* <AddFriendsBySearch
+      <AddFriendsBySearch
         visible={isFriendMemViewOpen}
         onCancelAddFriends={() => setIsFriendMemViewOpen(false)}
         isOrgExist={isOrgExist}
         isSpaceEmpty={false}
         title={modalTitle}
         isViewMode={isViewMode}
-        spaceMemberList={spaceMemberList} */}
+        spaceMemberList={spaceMemberList}
+      />
       <SpaceMemberListModal
         visible={isSpaceMemViewOpen}
         onClose={toggleSpaceMemViewDialog}

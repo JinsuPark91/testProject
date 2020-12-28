@@ -121,7 +121,11 @@ const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
   }
 
   if (searchText) {
-    memberList = memberList.filter(elem => elem.name.includes(searchText));
+    memberList = memberList.filter(elem =>
+      elem.nick
+        ? elem.nick.includes(searchText)
+        : elem.name.includes(searchText),
+    );
   }
 
   const handleAddFriend = useCallback(
@@ -155,7 +159,7 @@ const AddFriendsItem = ({ friendAddList, isViewMode, searchText }) => {
   };
 
   const FriendAddItem = ({ friendInfo, style }) => {
-    const userName = friendInfo?.name;
+    const userName = friendInfo?.nick || friendInfo?.name;
     const isMe =
       friendInfo?.friendId || friendInfo.id === userStore.myProfile.id;
     return (
