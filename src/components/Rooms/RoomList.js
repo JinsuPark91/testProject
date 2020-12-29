@@ -44,7 +44,9 @@ function RoomList() {
 
   const handleSelectRoom = async roomInfo => {
     // NOTE : 같은 방을 누르면 history 부르지 않는다.
-    const isSameRoom = PlatformUIStore.resourceId === roomInfo.id;
+    const isSameRoom =
+      PlatformUIStore.resourceType === 's' &&
+      PlatformUIStore.resourceId === roomInfo.id;
     if (isSameRoom) return Promise.resolve();
 
     try {
