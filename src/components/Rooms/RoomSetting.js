@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Tabs, Button } from 'antd';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, Toast } from 'teespace-core';
 import { DateTime } from 'luxon';
 import { ArrowLeftIcon, CancelIcon } from '../Icons';
 import Input from '../Input';
@@ -21,6 +21,9 @@ const CommonSettingPage = ({ roomInfo = null }) => {
   const [value, setValue] = useState('');
   const [isChanged, setIsChanged] = useState(false);
   const [isPrivateRoom, setIsPrivateRoom] = useState(false);
+  const [isToastVisible, setIsToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
   const { roomStore, userStore } = useCoreStores();
   const history = useHistory();
   const myUserId = userStore.myProfile.id;
@@ -44,6 +47,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
     }
     return '';
   };
+
   const handleSave = async () => {
     try {
       const result = await roomStore.updateRoomInfo({
@@ -51,8 +55,15 @@ const CommonSettingPage = ({ roomInfo = null }) => {
         newName: value,
       });
 
-      if (result) setIsChanged(false);
-      else throw Error(`result:${result}`);
+      if (result) {
+        setIsChanged(false);
+        // NOTE : roomInfo.adminName 에 값이 없음.
+        const admin = await userStore.getProfile({ userId: roomInfo.adminId });
+        setToastMessage(
+          `${admin.nick || admin.name} 님이 룸 이름을 변경했습니다.`,
+        );
+        setIsToastVisible(true);
+      } else throw Error(`result:${result}`);
     } catch (err) {
       console.error(`[Platform] 룸 이름 변경 실패, ${err}`);
     }
@@ -94,8 +105,19 @@ const CommonSettingPage = ({ roomInfo = null }) => {
     setIsChanged(true);
   };
 
+  const handleToastClose = () => {
+    setIsToastVisible(false);
+  };
+
   return (
     <Wrapper style={{ padding: '2.56rem 3.75rem' }}>
+      <Toast
+        visible={isToastVisible}
+        timeoutMs={1000}
+        onClose={handleToastClose}
+      >
+        {toastMessage}
+      </Toast>
       <SettingWrapper>
         <SettingTitleText style={{ marginBottom: '0.31rem' }}>
           Room 이름
