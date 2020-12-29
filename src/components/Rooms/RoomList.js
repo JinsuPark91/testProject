@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled from 'styled-components';
 import { useCoreStores, Toast } from 'teespace-core';
+import { Tooltip } from 'antd';
 import { WaplLogo, AddRoomIcon, OpenChatIcon, SearchIcon } from '../Icons';
 import EmptyRoomIllust from '../../assets/space_make.svg';
 import RoomItem from './RoomItem';
@@ -196,10 +197,11 @@ function RoomList() {
             placeholder="룸 이름, 멤버 검색"
           />
         </InputWrapper>
-        <OpenChatIconWrapper onClick={handleOpenChat}>
-          <OpenChatIcon />
-        </OpenChatIconWrapper>
-
+        <Tooltip placement="bottomLeft" title="오픈 룸 홈" color="#0b1d41">
+          <OpenChatIconWrapper onClick={handleOpenChat}>
+            <OpenChatIcon />
+          </OpenChatIconWrapper>
+        </Tooltip>
         <OpenRoomHome
           visible={openRoomDialogVisible}
           onCancel={handleOpenRoomModalCancel}
@@ -272,24 +274,15 @@ const Wrapper = styled.div`
 
 const TopWrapper = styled.div`
   display: flex;
-  padding: 0.5rem;
-  & input {
+  padding: 0.5rem 0.75rem;
+  input {
     width: 100%;
   }
 `;
 
-const RoomContainer = styled.ul`
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: calc(100% - 2.5rem);
-  list-style-type: none;
-  margin-block-start: 0;
-  margin-block-end: 0;
-  margin-inline-start: 0;
-  margin-inline-end: 0;
-  padding-inline-start: 0;
+const RoomContainer = styled.div`
+  overflow: hidden auto;
+  flex: 1;
 `;
 
 const InputWrapper = styled.div`

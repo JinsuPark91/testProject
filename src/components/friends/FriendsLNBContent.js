@@ -1,20 +1,17 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
-import { Layout, Typography } from 'antd';
+import { Typography } from 'antd';
 import { useCoreStores, Toast } from 'teespace-core';
 import FriendItem from './FriendItem';
 import FriendAdd from '../../assets/friend_add.svg';
 
 const { Text } = Typography;
-const { Content } = Layout;
 
-const ContentWrapper = styled(Content)`
-  position: relative;
-  flex-grow: 1;
+const ContentWrapper = styled.div`
   overflow: auto;
-  display: flex;
-  flex-direction: column;
+  flex: 1;
+  padding-top: 0.25rem;
 `;
 
 const WelcomeWrapper = styled.div`
@@ -37,20 +34,18 @@ const MyFrinedListBox = styled.div`
   &:after {
     content: '';
     display: block;
-    margin: 0.375rem 0.625rem 0.375rem;
-    border-bottom: 1px solid #e3e7eb;
-  }
-  & > div {
-    padding: 0.63rem 0.63rem 0.44rem;
+    height: 1px;
+    margin: 0.25rem 0.625rem;
+    background-color: #e3e7eb;
   }
 `;
 
 const FrinedListBox = styled.div`
   &:after {
     content: '';
-    display: block;
-    margin: 0.375rem 0.625rem 0.375rem;
-    border-bottom: 1px solid #e3e7eb;
+    height: 1px;
+    margin: 0.25rem 0.625rem;
+    background-color: #e3e7eb;
   }
   &:last-of-type {
     &:after {
@@ -60,11 +55,11 @@ const FrinedListBox = styled.div`
 `;
 
 const StyleTitle = styled.p`
-  margin: 0 0.625rem 0.375rem;
-  color: #000;
-  font-weight: 500;
-  line-height: 1.13rem;
+  margin: 0.5rem 0.625rem 0.25rem;
   font-size: 0.75rem;
+  line-height: 1.13rem;
+  font-weight: 500;
+  color: #000;
 `;
 
 const StyleText = styled(Text)`

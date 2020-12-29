@@ -2,33 +2,44 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 const getStyle = (index, count, defaultDiameter) => {
-  const diameter = count > 1 ? defaultDiameter / 2 : defaultDiameter;
+  const diameter = () => {
+    if (count === 2) {
+      return defaultDiameter / 1.41;
+    }
+    if (count === 3) {
+      return defaultDiameter / 1.78;
+    }
+    if (count === 4) {
+      return defaultDiameter / 1.88;
+    }
+    return defaultDiameter;
+  };
 
   switch (count) {
     case 1:
       return {
         diameter,
         left: 0,
-        top: 0,
       };
     case 2:
       return {
         diameter,
-        left: index * diameter,
-        top: diameter / 2,
+        left: index === 0 && 0,
       };
-
     case 3:
       return {
         diameter,
-        left: index === 0 ? diameter / 2 : index === 1 ? 0 : diameter,
-        top: index === 0 ? 0 : diameter,
+        top: index === 0 && 0,
+        left: index === 1 && 0,
+        bottom: index !== 0 && 0,
       };
     case 4:
       return {
         diameter,
-        left: (index % 2) * diameter,
-        top: index === 0 || index === 1 ? 0 : diameter,
+        top: (index === 0 || index === 1) && 0,
+        left: (index === 0 || index === 2) && 0,
+        right: (index === 1 || index === 3) && 0,
+        bottom: (index === 2 || index === 3) && 0,
       };
     default:
       return [];
@@ -38,56 +49,69 @@ const getStyle = (index, count, defaultDiameter) => {
 function Photos({
   srcList,
   onClick = () => {},
-  defaultDiameter = 2.25,
-  center = false,
+  defaultDiameter = 2.125,
+  className,
 }) {
   return (
     <Wrapper
       onClick={e => onClick(e)}
       defaultDiameter={defaultDiameter}
-      center={center}
+      className={className}
     >
       {srcList.map((src, index) => (
         <UserPhoto
           key={index}
-          src={src}
           styles={getStyle(index, srcList.length, defaultDiameter)}
-        />
+        >
+          <img src={src} alt="" />
+        </UserPhoto>
       ))}
     </Wrapper>
   );
 }
 
 const Wrapper = styled.div`
-  cursor: pointer;
   display: flex;
-  flex-direction: column;
-  flex: 0 0 ${({ defaultDiameter }) => defaultDiameter}rem;
+  justify-content: center;
+  position: relative;
   width: ${({ defaultDiameter }) => defaultDiameter}rem;
   height: ${({ defaultDiameter }) => defaultDiameter}rem;
-  position: relative;
-  ${props =>
-    props.center &&
-    css`
-      margin: 0 auto;
-    `};
+  cursor: pointer;
 `;
 
-const UserPhoto = styled.img`
-  display: flex;
-  ${({ styles: { diameter, left, top } }) => {
+const UserPhoto = styled.div`
+  position: absolute;
+  ${({ styles: { diameter, top, left, right, bottom } }) => {
     return css`
       width: ${diameter}rem;
       height: ${diameter}rem;
-      left: ${left}rem;
-      top: ${top}rem;
+      top: ${top};
+      left: ${left};
+      right: ${right};
+      bottom: ${bottom};
     `;
   }}
+  &:last-child {
+    right: 0;
+    bottom: 0;
+  }
+  line-height: 0;
 
-  position: absolute;
-  background: white;
-  border-radius: 50%;
-  border: 0.0625rem solid rgba(0, 0, 0, 0.05);
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+  }
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
 `;
 
 export default Photos;

@@ -3,9 +3,9 @@ import { useHistory } from 'react-router-dom';
 import Upload from 'rc-upload';
 import styled, { css } from 'styled-components';
 import { Button, Input, Dropdown, Menu, Tooltip } from 'antd';
-import InputCounter from './Input';
 import { observer } from 'mobx-react';
 import { useCoreStores, Message, Toast } from 'teespace-core';
+import InputCounter from './Input';
 import { LockLineIcon } from './Icons';
 import friendsIcon from '../assets/ts_friends.svg';
 import profileEditIcon from '../assets/ts_profile_edit.svg';
@@ -516,7 +516,7 @@ const Profile = observer(
                         {`${profile?.nationalCode} ${profile?.companyNum}`}
                       </UserInfoText>
                     ) : (
-                      <UserInfoText>{`-`}</UserInfoText>
+                      <UserInfoText>-</UserInfoText>
                     )}
                   </UserInfoItem>
                 )}
