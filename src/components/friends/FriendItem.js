@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import styled, { css } from 'styled-components';
-import { Avatar, Button } from 'antd';
+import { Button } from 'antd';
 import {
   useCoreStores,
   Dropdown,
@@ -20,10 +20,11 @@ import { handleCheckNewFriend } from '../../utils/FriendsUtil';
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 
 const FriendItemWrapper = styled.div`
-  cursor: pointer;
   /* 조직도 조회, 추천친구 스타일 */
+  height: 3rem;
   white-space: nowrap;
   text-overflow: ellipsis;
+  cursor: pointer;
   ${props =>
     (props.mode === 'addFriend' || props.mode === 'recommended') &&
     css`
@@ -32,7 +33,7 @@ const FriendItemWrapper = styled.div`
       flex-direction: row;
       background-color: transparent;
       border-bottom: 1px solid #e3e7eb;
-      padding: 0.44rem 0.63rem;
+      padding: 0 0.63rem;
       margin-left: 0.75rem;
       margin-right: calc(0.75rem - 8px);
 
@@ -59,7 +60,7 @@ const FriendItemWrapper = styled.div`
     css`
       display: flex;
       flex-direction: row;
-      padding: 0.44rem 0.63rem;
+      padding: 0 0.63rem;
 
       ${props.isActive
         ? css`
@@ -135,32 +136,27 @@ const StyledWrapper = styled.div`
 `;
 const ProfileBadge = styled.span`
   position: absolute;
-  top: -0.56rem;
-  left: -0.13rem;
-  text-align: center;
-  background-color: #523dc7;
+  top: -0.5rem;
+  left: 0;
   min-width: 1.06rem;
   min-height: 0.94rem;
   padding: 0.06rem 0.25rem;
+  background-color: #523dc7;
   border-radius: 0.28rem;
-  font-weight: 600;
   font-size: 0.56rem;
-  color: #fff;
+  font-weight: 600;
   line-height: 0.81rem;
+  color: #fff;
   z-index: 100;
   &:after {
-    display: block;
     content: '';
+    position: absolute;
     top: 100%;
     left: 50%;
-    border: 0.15rem solid transparent;
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-    border-color: rgba(136, 183, 213, 0);
-    border-top-color: #523dc7;
     margin-left: -0.15rem;
+    border-left: 0.15rem solid transparent;
+    border-right: 0.15rem solid transparent;
+    border-top: 0.2rem solid #523dc7;
   }
 `;
 
@@ -174,13 +170,16 @@ const NewFriendBadge = styled.div`
   border-radius: 0.56rem;
 `;
 
-const StyledAvatar = styled(Avatar)`
+const StyledAvatar = styled.div`
+  position: relative;
   ${props => {
     switch (props.mode) {
       case 'me':
         return css`
           width: 2.38rem;
           height: 2.38rem;
+          border: 2px solid #fff;
+          border-radius: 50%;
         `;
       case 'addFriend':
         return css`
@@ -190,11 +189,26 @@ const StyledAvatar = styled(Avatar)`
       case 'friend':
       default:
         return css`
-          width: 2.13rem;
-          height: 2.13rem;
+          width: 2.125rem;
+          height: 2.125rem;
         `;
     }
   }}
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+  }
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
 `;
 
 const DropdownMenu = React.memo(
@@ -227,19 +241,15 @@ const Profile = React.memo(
             <ProfileBadge getPopupContainer={tooltipPopupContainer} visible>
               나
             </ProfileBadge>
-            <StyledAvatar
-              src={`${profilePhoto}`}
-              mode="me"
-              onClick={e => handleClickPhoto(e, itemId)}
-            />
+            <StyledAvatar mode="me" onClick={e => handleClickPhoto(e, itemId)}>
+              <img src={profilePhoto} alt="" />
+            </StyledAvatar>
           </StyledWrapper>
         )}
         {mode !== 'me' && (
-          <StyledAvatar
-            src={`${profilePhoto}`}
-            mode={mode}
-            onClick={e => handleClickPhoto(e, itemId)}
-          />
+          <StyledAvatar mode={mode} onClick={e => handleClickPhoto(e, itemId)}>
+            <img src={profilePhoto} alt="" />
+          </StyledAvatar>
         )}
       </>
     );

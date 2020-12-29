@@ -78,7 +78,7 @@ ReactDOM.render(
               checkLoginIframe: false,
               redirectUri:
                 process.env.REACT_APP_ENV === 'local'
-                  ? `http://localhost:3000`
+                  ? `${window.location.href}`
                   : `${window.location.protocol}//${main_url}/domain/${sub_url}`,
             }
       }

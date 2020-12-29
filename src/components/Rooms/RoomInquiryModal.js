@@ -156,6 +156,10 @@ const StyledInput = styled(Input)`
   }
 `;
 
+const StyledPhotos = styled(Photos)`
+  margin: 0 auto;
+`;
+
 function RoomInquiryModal({
   roomId = null,
   visible = false,
@@ -337,7 +341,7 @@ function RoomInquiryModal({
 
   const userContent = (
     <>
-      <Photos srcList={memberPhotos} defaultDiameter="3.75" center />
+      <StyledPhotos srcList={memberPhotos} defaultDiameter="3.75" />
 
       <Observer>
         {() => (
