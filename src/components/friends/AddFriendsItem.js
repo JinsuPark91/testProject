@@ -108,19 +108,17 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
   const { userStore, friendStore, spaceStore } = useCoreStores();
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [friendUserName, setFriendUserName] = useState('');
+
   let memberList = friendAddList;
   if (memberList && memberList.length) {
-    memberList = memberList
-      .filter(elem => elem.id === userStore.myProfile.id)
-      .concat(memberList.filter(elem => elem.id !== userStore.myProfile.id));
+    memberList = memberList.sort((a, b) =>
+      a.displayName.toLowerCase() < b.displayName.toLowerCase() ? -1 : 1,
+    );
+    memberList = [
+      ...memberList.filter(elem => elem.id === userStore.myProfile.id),
+      ...memberList.filter(elem => elem.id !== userStore.myProfile.id),
+    ];
   }
-  // if (searchText) {
-  //   memberList = memberList.filter(elem =>
-  //     elem.nick
-  //       ? elem.nick.includes(searchText)
-  //       : elem.name.includes(searchText),
-  //   );
-  // }
 
   const handleAddFriend = useCallback(
     async friendInfo => {
@@ -128,7 +126,7 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
         myUserId: userStore.myProfile.id,
         friendInfo,
       });
-      setFriendUserName(friendInfo?.name);
+      setFriendUserName(friendInfo?.displayName);
       setIsToastVisible(true);
     },
     [friendStore, userStore.myProfile.id],
@@ -153,7 +151,7 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
   };
 
   const FriendAddItem = ({ friendInfo, style }) => {
-    const userName = friendInfo?.nick || friendInfo?.name;
+    const userName = friendInfo?.displayName;
     const isMe =
       friendInfo?.friendId || friendInfo.id === userStore.myProfile.id;
     return (
@@ -214,4 +212,4 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
   ));
 };
 
-export default AddFriendsItem;
+export default React.memo(AddFriendsItem);

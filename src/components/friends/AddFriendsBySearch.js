@@ -222,7 +222,7 @@ function AddFriendsBySearch({
   const [searchText, setSearchText] = useState('');
   const [valueText, setValueText] = useState('');
   const timestamp = useRef(Date.now());
-  const isSpaceEmpty = spaceInfo && spaceInfo.userCount === 1;
+  const isSpaceEmpty = spaceMemberList?.length === 1; // spaceInfo && spaceInfo.userCount === 1;
 
   const toggleInviteDialog = useCallback(() => {
     setIsInviteDialogVisible(!isInviteDialogVisible);
