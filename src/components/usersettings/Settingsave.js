@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { useCoreStores, Toast, Message, Button } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
+import MovePage from '../../utils/MovePage';
 
 import { useStore } from '../../stores';
 
@@ -31,22 +32,7 @@ function Settingsave(props) {
   };
 
   const handleMoveSpacePage = useCallback(() => {
-    const url = window.location.href;
-    const purl = url?.split('.');
-    if (
-      purl[0].match('127') ||
-      purl[0].match('192') ||
-      purl[0].match('local')
-    ) {
-      window.location.href = `${window.location.protocol}//dev.wapl.ai/spaces`;
-    } else {
-      const tdomain = purl[1];
-      if (purl[1] === 'wapl') {
-        window.location.href = `${window.location.protocol}//wapl.ai/spaces`;
-      } else {
-        window.location.href = `${window.location.protocol}//${tdomain}.wapl.ai/spaces`;
-      }
-    }
+    MovePage('spaces');
   }, []);
 
   const handleInputPassword = async () => {

@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
 import { Button } from 'antd';
 import styled from 'styled-components';
@@ -54,9 +53,14 @@ const ButtonContainer = styled.div`
   }
 `;
 
-function ProfileSpaceModal({ userName, onInvite, onAddFriend, onClose }) {
+function ProfileSpaceModal({
+  userName,
+  onInvite,
+  onRoomCreate,
+  onAddFriend,
+  onClose,
+}) {
   const { userStore, spaceStore } = useCoreStores();
-  const history = useHistory();
   const isAdmin = userStore.myProfile.grade === 'admin';
   const title = isAdmin
     ? '스페이스를 생성했습니다!'
@@ -73,8 +77,8 @@ function ProfileSpaceModal({ userName, onInvite, onAddFriend, onClose }) {
 
   const handleCreateRoom = useCallback(() => {
     onClose();
-    console.log('Create Room');
-  }, [onClose]);
+    onRoomCreate();
+  }, [onClose, onRoomCreate]);
 
   const handleAddFriend = useCallback(() => {
     onClose();
