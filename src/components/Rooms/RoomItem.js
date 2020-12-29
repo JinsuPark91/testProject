@@ -257,7 +257,11 @@ const RoomItemContent = ({
               return (
                 <>
                   {isMyRoom && <MyTooltip>나</MyTooltip>}
-                  <Photos srcList={userPhotos} onClick={handleClickRootPhoto} />
+                  <Photos
+                    srcList={userPhotos}
+                    onClick={handleClickRootPhoto}
+                    className="photos"
+                  />
                 </>
               );
             }}
@@ -471,26 +475,29 @@ const StyledMenu = styled(Menu)`
   }
 `;
 
-const MyTooltip = styled.div`
-  display: flex;
-  font-size: 0.56rem;
-  background-color: #523dc7;
-  border-radius: 6px;
+const MyTooltip = styled.span`
   position: absolute;
-  z-index: 1;
-  color: #fff;
   top: -0.5rem;
+  left: 0;
+  min-width: 1.06rem;
+  min-height: 0.94rem;
   padding: 0.06rem 0.25rem;
-
+  background-color: #523dc7;
+  border-radius: 0.28rem;
+  font-size: 0.56rem;
+  font-weight: 600;
+  line-height: 0.81rem;
+  color: #fff;
+  z-index: 100;
   &::after {
     content: '';
     position: absolute;
     top: 100%;
     left: 50%;
-    margin-left: -0.2rem;
-    border-width: 0.2rem;
-    border-style: solid;
-    border-color: #523dc7 transparent transparent transparent;
+    margin-left: -0.15rem;
+    border-left: 0.15rem solid transparent;
+    border-right: 0.15rem solid transparent;
+    border-top: 0.2rem solid #523dc7;
   }
 `;
 
@@ -516,7 +523,7 @@ const RoomNameText = styled.span`
 const UserCountText = styled.span`
   font-size: 0.81rem;
   opacity: 0.5;
-  color: #000000;
+  color: #000;
   margin-left: 0.375rem;
 `;
 
@@ -524,32 +531,47 @@ const StyledItem = styled.div`
   position: relative;
   user-select: none;
   cursor: pointer;
-  padding: 0;
 
   ${({ isMyRoom }) =>
     isMyRoom &&
     css`
-      border-bottom: 0.0625rem solid #e3e7eb;
+      &:after {
+        content: '';
+        display: block;
+        height: 1px;
+        margin: 0.25rem 0.625rem;
+        background-color: #e3e7eb;
+      }
+      .photos {
+        width: 2.38rem;
+        height: 2.38rem;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        div {
+          width: 100%;
+          height: 100%;
+        }
+      }
     `}
 
-  & .ant-list-item-meta-avatar {
+  .ant-list-item-meta-avatar {
     margin-right: 0.3125rem;
     position: relative;
   }
 
-  & .ant-list-item-meta-content {
+  .ant-list-item-meta-content {
     margin-right: 0.3rem;
   }
 
-  & button {
+  button {
     display: none;
   }
 
-  & .ant-list-item-meta-title {
+  .ant-list-item-meta-title {
     margin: 0;
     line-height: 1.188rem;
   }
-  & .ant-list-item-meta-description {
+  .ant-list-item-meta-description {
     font-size: 0.6875rem;
     color: #47474d;
     line-height: 1.063rem;

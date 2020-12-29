@@ -16,29 +16,26 @@ export const CustomTabs = styled(Tabs)`
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
   }
-  & .ant-tabs-nav {
+  .ant-tabs-nav {
     margin: 0;
+    .ant-tabs-ink-bar {
+      height: 3px;
+      background-color: #ff486d;
+      border-radius: 3px;
+    }
   }
-
-  & .ant-tabs-nav-list {
+  .ant-tabs-nav-list {
     flex: 1;
   }
-
-  & .ant-tabs-tab {
+  .ant-tabs-tab {
     width: calc(100% / 3);
     justify-content: center;
     margin: 0;
     padding: 0.75rem 0 0.5rem;
-    background: #0b1d41;
+    background-color: #0b1d41;
     font-size: 0;
-  }
-
-  & .ant-tabs-tab:hover {
-    background: #07142d;
-  }
-
-  & .ant-tabs-ink-bar {
-    background: #ff486d;
-    height: 3px !important;
+    &:hover {
+      background-color: #07142d;
+    }
   }
 `;

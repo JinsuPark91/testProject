@@ -81,31 +81,26 @@ const FriendAddBtn = styled.button`
 
 const MyBadge = styled.span`
   position: absolute;
-  top: 0rem;
-  text-align: center;
-  background-color: #523dc7;
+  top: 0;
   min-width: 1.06rem;
   min-height: 0.94rem;
   padding: 0.06rem 0.25rem;
+  background-color: #523dc7;
   border-radius: 0.28rem;
-  font-weight: 600;
   font-size: 0.56rem;
-  color: #fff;
+  font-weight: 600;
   line-height: 0.81rem;
+  color: #fff;
   z-index: 100;
   &:after {
-    display: block;
     content: '';
+    position: absolute;
     top: 100%;
     left: 50%;
-    border: 0.15rem solid transparent;
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-    border-color: rgba(136, 183, 213, 0);
-    border-top-color: #523dc7;
     margin-left: -0.15rem;
+    border-left: 0.15rem solid transparent;
+    border-right: 0.15rem solid transparent;
+    border-top: 0.2rem solid #523dc7;
   }
 `;
 
