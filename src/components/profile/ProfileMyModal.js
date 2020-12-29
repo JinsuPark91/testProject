@@ -17,7 +17,8 @@ import ProfileInfoModal from './ProfileInfoModal';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
 import AddFriendsBySearch from '../friends/AddFriendsBySearch';
 import SpaceMemberListModal from '../space/SpaceMemberListModal';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
+import MovePage from '../../utils/MovePage';
 
 import keycloak from '../../libs/keycloak';
 import { handleFriendsDialogType } from '../../utils/FriendsUtil';
@@ -44,11 +45,14 @@ const ProfileMyModal = ({
 
   const [spaceMemberList, setSpaceMemberList] = useState([]);
   const [isToastOpen, setIsToastOpen] = useState(false);
+  const [toastText, setToastText] = useState('');
   const [isViewMode, setIsViewMode] = useState(true);
 
-  // 튜토리얼 친구 추가 버튼
+  // 튜토리얼 관련
   const [isOrgExist, setIsOrgExist] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
+
+  const [isRoomDialogVisible, setIsRoomDialogVisible] = useState(false);
   const { keycloak } = useKeycloak();
   const isAdmin = userStore.myProfile.grade === 'admin';
 
@@ -134,6 +138,7 @@ const ProfileMyModal = ({
         ...item,
         isMe: item.id === myProfile?.id,
         profilePhotoURL: userStore.getProfilePhotoURL(item.id, 'small'),
+        displayName: item.displayName,
       }));
       setSpaceMemberList(spaceMembers);
     } catch (e) {
@@ -163,62 +168,16 @@ const ProfileMyModal = ({
     window.open(`${window.location.origin}/admin`);
   }, []);
 
-  /// TODO REFACTOR: Move Page 함수 하나로 합치기!!!!
   const handleMoveSpacePage = useCallback(() => {
-    const url = window.location.href;
-    const purl = url?.split('.');
-    if (
-      purl[0].match('127') ||
-      purl[0].match('192') ||
-      purl[0].match('local')
-    ) {
-      window.location.href = `${window.location.protocol}//dev.wapl.ai/spaces`;
-    } else {
-      const tdomain = purl[1];
-      if (purl[1] === 'wapl') {
-        window.location.href = `${window.location.protocol}//wapl.ai/spaces`;
-      } else {
-        window.location.href = `${window.location.protocol}//${tdomain}.wapl.ai/spaces`;
-      }
-    }
+    MovePage('spaces');
   }, []);
 
   const handleMoveAccountPage = useCallback(() => {
-    const url = window.location.href;
-    const purl = url?.split('.');
-    if (
-      purl[0].match('127') ||
-      purl[0].match('192') ||
-      purl[0].match('local')
-    ) {
-      window.location.href = `${window.location.protocol}//dev.wapl.ai/account`;
-    } else {
-      const tdomain = purl[1];
-      if (purl[1] === 'wapl') {
-        window.location.href = `${window.location.protocol}//wapl.ai/account`;
-      } else {
-        window.location.href = `${window.location.protocol}//${tdomain}.wapl.ai/account`;
-      }
-    }
+    MovePage('account');
   }, []);
 
   const handleOpenSupport = () => {
-    const url = window.location.href;
-    const purl = url?.split('.');
-    if (
-      purl[0].match('127') ||
-      purl[0].match('192') ||
-      purl[0].match('local')
-    ) {
-      window.open(`${window.location.protocol}//dev.wapl.ai/support`);
-    } else {
-      const tdomain = purl[1];
-      if (purl[1] === 'wapl') {
-        window.open(`${window.location.protocol}//wapl.ai/support`);
-      } else {
-        window.open(`${window.location.protocol}//${tdomain}.wapl.ai/support`);
-      }
-    }
+    MovePage('support', true);
   };
 
   useEffect(() => {
@@ -397,6 +356,7 @@ const ProfileMyModal = ({
         <ProfileSpaceModal
           userName={profile?.nick || profile?.name}
           onInvite={() => setIsInviteDialogOpen(true)}
+          onRoomCreate={() => setIsRoomDialogVisible(true)}
           onAddFriend={handleAddFriend}
           onClose={() => setIsCreated(false)}
         />
@@ -408,7 +368,10 @@ const ProfileMyModal = ({
       />
       <AddFriendsByInvitationDialog
         visible={isInviteDialogOpen}
-        onSendInviteMail={() => setIsToastOpen(true)}
+        onSendInviteMail={() => {
+          setToastText('발송한 초대장은 24시간 이후 만료됩니다.');
+          setIsToastOpen(true);
+        }}
         onCancel={handleCancelInviteMail}
       />
       <AddFriendsBySearch
@@ -426,6 +389,18 @@ const ProfileMyModal = ({
         spaceName={spaceStore.currentSpace?.name}
         members={spaceMemberList}
       />
+      <SelectRoomTypeDialog
+        visible={isRoomDialogVisible}
+        onCancel={() => setIsRoomDialogVisible(false)}
+        onCreateRoom={({ selectedUsers, isNewRoom }) => {
+          if (isNewRoom) {
+            setToastText(
+              `${selectedUsers.length}명의 구성원이 초대되었습니다.`,
+            );
+            setIsToastOpen(true);
+          }
+        }}
+      />
       <Toast
         visible={isToastOpen}
         timeoutMs={1000}
@@ -433,7 +408,7 @@ const ProfileMyModal = ({
           setIsToastOpen(false);
         }}
       >
-        발송한 초대장은 24시간 이후 만료됩니다.
+        {toastText}
       </Toast>
     </>
   );

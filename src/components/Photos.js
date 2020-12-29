@@ -2,40 +2,27 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 const getStyle = (index, count, defaultDiameter) => {
-  const diameter = () => {
-    if (count === 2) {
-      return defaultDiameter / 1.41;
-    }
-    if (count === 3) {
-      return defaultDiameter / 1.78;
-    }
-    if (count === 4) {
-      return defaultDiameter / 1.88;
-    }
-    return defaultDiameter;
-  };
-
   switch (count) {
     case 1:
       return {
-        diameter,
+        diameter: defaultDiameter,
         left: 0,
       };
     case 2:
       return {
-        diameter,
+        diameter: (defaultDiameter / 1.41).toFixed(3),
         left: index === 0 && 0,
       };
     case 3:
       return {
-        diameter,
+        diameter: (defaultDiameter / 1.78).toFixed(3),
         top: index === 0 && 0,
         left: index === 1 && 0,
         bottom: index !== 0 && 0,
       };
     case 4:
       return {
-        diameter,
+        diameter: (defaultDiameter / 1.88).toFixed(3),
         top: (index === 0 || index === 1) && 0,
         left: (index === 0 || index === 2) && 0,
         right: (index === 1 || index === 3) && 0,

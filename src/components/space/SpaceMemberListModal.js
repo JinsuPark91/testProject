@@ -42,10 +42,10 @@ function SpaceMemberListModal({
   };
 
   const filteredMembers = (searchText
-    ? members.filter(elem => elem.name.includes(searchText))
+    ? members.filter(elem => elem.displayName?.includes(searchText))
     : members
   ).sort((item1, item2) =>
-    item1.isMe ? -1 : item1.name.localeCompare(item2.name),
+    item1.isMe ? -1 : item1.displayName.localeCompare(item2.displayName),
   );
 
   const titleNode = title || (
