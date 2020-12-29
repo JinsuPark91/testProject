@@ -39,3 +39,15 @@ export const CustomTabs = styled(Tabs)`
     }
   }
 `;
+
+export const UnreadCount = styled.div`
+  position: absolute;
+  background-color: #ff486d;
+  top: -0.3rem;
+  right: -0.8rem;
+  color: #fff;
+  font-weight: 400;
+  font-size: 0.63rem;
+  padding: 0.06rem 0.19rem;
+  border-radius: 0.56rem;
+`;

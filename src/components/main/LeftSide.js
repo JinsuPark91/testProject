@@ -4,7 +4,7 @@ import { MailSideView } from 'teespace-mail-app';
 import { ChattingIcon, MailIcon, PeopleIcon } from '../Icons';
 import FriendLnb from '../friends/FriendsLNB';
 import RoomList from '../Rooms/RoomList';
-import { Wrapper, CustomTabs } from './LeftSideStyle';
+import { Wrapper, CustomTabs, UnreadCount } from './LeftSideStyle';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const { TabPane } = CustomTabs;
@@ -25,7 +25,15 @@ const LeftSide = () => {
           <FriendLnb />
         </TabPane>
 
-        <TabPane key="s" tab={<ChattingIcon tooltipText="룸 목록" />}>
+        <TabPane
+          key="s"
+          tab={
+            <div style={{ position: 'relative' }}>
+              <UnreadCount>99+</UnreadCount>
+              <ChattingIcon tooltipText="룸 목록" />
+            </div>
+          }
+        >
           <RoomList />
         </TabPane>
 
