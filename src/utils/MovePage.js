@@ -1,5 +1,5 @@
 // @param {string} targetInfo - (필수) 목적지
-// @param {boolean} newPage - 새 창으로 열 지 선택 - default: false
+// @param {boolean} newWindow - 새 창으로 열 지 선택 - default: false
 
 const MovePage = (targetInfo, newWindow = false) => {
   const url = window.location.href;
