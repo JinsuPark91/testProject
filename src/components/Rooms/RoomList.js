@@ -100,10 +100,13 @@ function RoomList() {
     roomInfo => {
       // NOTE. 마이룸인 경우 나의 프로파일 정보를,
       //  1:1 방의 경우 상대 유저의 프로파일 정보를 보여줌.
-      if (roomInfo.userCount === 1) {
+      const isDMRoom = roomInfo.isDirectMsg;
+      const isMyRoom = roomInfo.type === 'WKS0001';
+
+      if (isMyRoom) {
         setTargetUserId(userStore.myProfile.id);
         setIsProfileInfoModalVisible(true);
-      } else if (roomInfo.userCount === 2) {
+      } else if (isDMRoom) {
         const found = roomInfo.memberIdListString
           .split(',')
           .find(userId => userId !== userStore.myProfile.id);
