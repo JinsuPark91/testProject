@@ -168,18 +168,17 @@ function AddFriendsByInvitationDialog({
   };
 
   const handleSendInviteMail = async () => {
-    if (mailAddress.length) {
-      handlePressEnter();
-      return;
-    }
-
-    if (!chipList.length) {
+    if (!chipList.length && !mailAddress.length) {
       setToastText('초대할 이메일 주소를 1개 이상 입력해 주세요.');
       handleToggleToast();
       return;
     }
 
-    // 추후 refactoring
+    if (!checkEmailValid(mailAddress)) {
+      handleToggleMessage();
+      return;
+    }
+
     for (let i = 0; i < chipList.length; i += 1) {
       if (!checkEmailValid(chipList[i])) {
         handleToggleMessage();
@@ -188,9 +187,12 @@ function AddFriendsByInvitationDialog({
     }
 
     try {
+      const sendChipSet = new Set(chipList);
+      sendChipSet.add(mailAddress);
+
       friendStore.sendInvitationMail({
         myUserId,
-        userEmailList: chipList,
+        userEmailList: Array.from(sendChipSet),
         domainName: spaceStore.currentSpace?.name,
         userCount: spaceStore.currentSpace?.userCount,
       });
