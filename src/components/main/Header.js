@@ -141,7 +141,7 @@ const Header = observer(() => {
     const found = findRoom();
     if (found) {
       if (found?.type === 'WKS0001') {
-        return userStore.myProfile.name;
+        return userStore.myProfile.nick || userStore.myProfile.name;
       }
       if (found?.customName || found?.name) {
         return found?.customName || found?.name;

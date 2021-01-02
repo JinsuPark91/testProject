@@ -273,7 +273,7 @@ const RoomItemContent = ({
               {() => (
                 <RoomNameText>
                   {isMyRoom
-                    ? userStore.myProfile.name
+                    ? userStore.myProfile.nick || userStore.myProfile.name
                     : roomInfo.customName || roomInfo.name}
                 </RoomNameText>
               )}
