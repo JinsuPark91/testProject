@@ -44,9 +44,17 @@ function SpaceMemberListModal({
   const filteredMembers = (searchText
     ? members.filter(elem => elem.displayName?.includes(searchText))
     : members
-  ).sort((item1, item2) =>
-    item1.isMe ? -1 : item1.displayName.localeCompare(item2.displayName),
-  );
+  ).sort((item1, item2) => {
+    // NOTE. '나'를 가장 먼저 표시
+    let result = (item2.isMe ? 1 : 0) - (item1.isMe ? 1 : 0);
+    if (result === 0) {
+      // NOTE. JS 문자열 비교 주의! localeCompare 를 사용하면 한글이 영문보다 먼저 나옴
+      if (item1.displayName < item2.displayName) result = -1;
+      else if (item1.displayName > item2.displayName) result = 1;
+      else result = 0;
+    }
+    return result;
+  });
 
   const titleNode = title || (
     <>

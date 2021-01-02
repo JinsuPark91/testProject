@@ -7,7 +7,7 @@ const MemberItem = ({ memberInfo, style }) => {
       <Style.Item style={style}>
         {memberInfo.isMe && <Style.MyBadge> 나 </Style.MyBadge>}
         <img alt="profile" src={memberInfo.profilePhotoURL} />
-        <Style.Name>{memberInfo.name}</Style.Name>
+        <Style.Name>{memberInfo.displayName || memberInfo.name}</Style.Name>
         {memberInfo.isMe && <Style.MyAccount> 내 계정 </Style.MyAccount>}
         {memberInfo.actionItem}
       </Style.Item>
