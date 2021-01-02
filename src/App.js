@@ -13,8 +13,8 @@ import {
 } from 'teespace-calendar-app';
 import { initApp as initMailApp } from 'teespace-mail-app';
 // import { I18nextProvider } from 'react-i18next';
+import { ReactKeycloakProvider } from '@react-keycloak/web';
 import AdminPage from './page/AdminPage';
-import LoginPage from './page/LoginPage';
 import NotFoundPage from './page/NotFoundPage';
 import SignUpPage from './page/SignUpPage';
 import SignUpFormPage from './page/SignUpFormPage';
@@ -28,7 +28,8 @@ import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
 import PrivateRoute from './libs/PrivateRoute';
 import KeycloakRedirectRoute from './libs/KeycloakRedirectRoute';
 import keycloak from './libs/keycloak';
-import { ReactKeycloakProvider } from '@react-keycloak/web';
+import { getCookieValue } from './utils/CookieUtil';
+
 // import i18next from './i18n';
 
 const hydrate = create();
@@ -38,27 +39,9 @@ function App() {
   const { authStore, userStore } = useCoreStores();
 
   const url = window.location.origin; //  http://xxx.dev.teespace.net
-  const con_url = url.split(`//`)[1]; // xxx.dev.teespace.net
-  const sub_url = url.split(`//`)[1].split(`.`)[0]; //  xxx
-  const main_url = con_url.slice(con_url.indexOf('.') + 1, con_url.length); // dev.teespace.net
-
-  const getCookieValue = key => {
-    const cookieKey = `${key}=`;
-    let result = '';
-    const cookieArr = document.cookie.split(';');
-
-    for (let i = 0; i < cookieArr.length; i++) {
-      if (cookieArr[i][0] === ' ') {
-        cookieArr[i] = cookieArr[i].substring(1);
-      }
-
-      if (cookieArr[i].indexOf(cookieKey) === 0) {
-        result = cookieArr[i].slice(cookieKey.length, cookieArr[i].length);
-        return result;
-      }
-    }
-    return result;
-  };
+  const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
+  const subURL = url.split(`//`)[1].split(`.`)[0]; //  xxx
+  const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
 
   // initialize apps
   useEffect(() => {
@@ -85,6 +68,9 @@ function App() {
     <DndProvider backend={HTML5Backend}>
       <BrowserRouter>
         <Switch>
+          <Route exact path="/">
+            <Redirect to="/login" />
+          </Route>
           <Route exact path="/drive/files/:fileId">
             <DriveSharedFilePage />
           </Route>
@@ -100,12 +86,12 @@ function App() {
                       refreshToken: getCookieValue(`REFRESH_TOKEN`),
                     }
                   : {
-                      onLoad: 'check-sso',
+                      onLoad: 'login-required',
                       checkLoginIframe: false,
                       redirectUri:
                         process.env.REACT_APP_ENV === 'local'
-                          ? `${window.location.href}`
-                          : `${window.location.protocol}//${main_url}/domain/${sub_url}`,
+                          ? ''
+                          : `${window.location.protocol}//${mainURL}/domain/${subURL}`,
                     }
               }
             >
@@ -113,19 +99,11 @@ function App() {
                 {/* <I18nextProvider i18n={i18next}> */}
                 <BrowserRouter>
                   <Switch>
-                    <Route exact path="/">
-                      <Redirect to="/login" />
-                    </Route>
                     <Route exact path="/logout" component={LogoutPage} />
-
                     <KeycloakRedirectRoute
                       exact
                       path="/login"
-                      component={
-                        process.env.REACT_APP_ENV === `local`
-                          ? LoginPage
-                          : MainPage
-                      }
+                      component={MainPage}
                     />
                     <PrivateRoute
                       path="/office/:fileId"

@@ -1,33 +1,33 @@
-import React, { useEffect, useCallback } from 'react';
-import { useCoreStores, WWMS } from 'teespace-core';
-import { useHistory } from 'react-router-dom';
-import keycloak from '../libs/keycloak';
+import React, { useEffect } from 'react';
+import { useCoreStores } from 'teespace-core';
+import { useKeycloak } from '@react-keycloak/web';
+import wwms from '../libs/wwms';
 
 const LogoutPage = () => {
-  const history = useHistory();
   const { authStore } = useCoreStores();
+  const { keycloak } = useKeycloak();
 
-  const logoutLogic = useCallback(async () => {
-    const url = window.location.origin; //  http://xxx.dev.teespace.net
-    const con_url = url.split(`//`)[1]; // xxx.dev.teespace.net
-    const main_url = con_url.slice(con_url.indexOf('.') + 1, con_url.length); // dev.teespace.net
-
-    await authStore.logout();
-    if (process.env.REACT_APP_ENV === `local`) {
-      WWMS.disconnect();
-      history.push(`/login`);
-    } else {
-      WWMS.disconnect();
-      /* keycloak 임시 logout */
-      await keycloak.logout({
-        redirectUri: `${window.location.protocol}//${main_url}/spaces`,
-      });
-    }
-  }, []);
+  const url = window.location.origin; //  http://xxx.dev.teespace.net
+  const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
+  const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
+  const redirectURL =
+    process.env.REACT_APP_ENV === `local`
+      ? `${url}/login`
+      : `${window.location.protocol}//${mainURL}/spaces`;
 
   useEffect(() => {
+    const logoutLogic = async () => {
+      await authStore.logout();
+
+      wwms.disconnect();
+
+      await keycloak.logout({
+        redirectUri: redirectURL,
+      });
+    };
+
     logoutLogic();
-  }, []);
+  }, [redirectURL, keycloak, authStore]);
 
   return <div />;
 };

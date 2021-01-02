@@ -1,42 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { useCoreStores, WWMS } from 'teespace-core';
-import { getEnv } from '../env';
+import { useKeycloak } from '@react-keycloak/web';
+import { useCoreStores } from 'teespace-core';
+import wwms from './wwms';
 
 export default function PrivateRoute({ component, ...rest }) {
-  const { authStore, userStore } = useCoreStores();
-  const [hasWWMSConfig, setHasWWMSConfig] = useState(null);
+  const { authStore } = useCoreStores();
+  const { keycloak } = useKeycloak();
 
-  const { websocketURL } = getEnv();
-
-  if (hasWWMSConfig === null) {
-    WWMS.setConfig({
-      url: `${websocketURL}?USER_ID=${userStore.myProfile.id}&action=&CONNECTION_ID=undefined`,
-      isDebug: true,
-
-      useInterval: false,
-      intervalTime: 1000,
-
-      useReconnect: true,
-      reconnectInterval: 2000,
-
-      intervalFunction: () => {
-        console.log('send ping.');
-      },
-      onopen: null,
-      onerror: null,
-      onmessage: null,
-      onclose: null,
-    });
-    WWMS.connect();
-    setHasWWMSConfig(true);
-  }
+  useEffect(() => {
+    if (!wwms.isConnected) {
+      wwms.connect(authStore.user.id);
+    }
+  }, [authStore]);
 
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        authStore.isAuthenticated ? (
+        authStore.isAuthenticated &&
+        keycloak.authenticated &&
+        keycloak.tokenParsed.email === authStore.user?.loginId ? (
           React.createElement(component)
         ) : (
           <Redirect
