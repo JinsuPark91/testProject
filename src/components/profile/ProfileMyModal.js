@@ -19,6 +19,7 @@ import AddFriendsBySearch from '../friends/AddFriendsBySearch';
 import SpaceMemberListModal from '../space/SpaceMemberListModal';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
 import MovePage from '../../utils/MovePage';
+import { getMainWaplURL } from '../../utils/UrlUtil';
 
 import keycloak from '../../libs/keycloak';
 import { handleFriendsDialogType } from '../../utils/FriendsUtil';
@@ -349,11 +350,17 @@ const ProfileMyModal = ({
                 ))}
             </ConvertList>
           )}
-          {/* <ConvertAdd>
-            <AddButton href="#">
-              <span>+</span> 새 스페이스 생성
-            </AddButton>
-          </ConvertAdd> */}
+          {
+            <ConvertAdd
+              onClick={() => {
+                window.location.href = getMainWaplURL('/select-space-type');
+              }}
+            >
+              <AddButton href="#">
+                <span>+</span> 새 스페이스 생성
+              </AddButton>
+            </ConvertAdd>
+          }
         </ConvertDropdown>
       )}
       {isCreated && (
