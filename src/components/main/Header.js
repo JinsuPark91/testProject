@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 // import { NoteIcon } from 'teespace-note-app';
@@ -129,6 +129,7 @@ const Header = observer(() => {
   const [isMessageVisible, setIsMessageVisible] = useState(false);
   const [isRoomProfileVisible, setRoomProfileVisible] = useState(false);
   const [isAddMemberVisible, setAddMemberVisible] = useState(false);
+  const [members, setMembers] = useState([]);
 
   const findRoom = () => {
     if (PlatformUIStore.resourceType !== 'f') {
@@ -179,6 +180,16 @@ const Header = observer(() => {
     }
     return [];
   };
+
+  const roomId = findRoom()?.id;
+  useEffect(() => {
+    if (roomId) {
+      const myUserId = userStore.myProfile.id;
+      roomStore
+        .fetchRoomMemberList({ myUserId, roomId })
+        .then(roomMembers => setMembers(roomMembers));
+    }
+  }, [roomId, roomStore, userStore.myProfile.id]);
 
   const handleExport = () => {
     console.log('handleExport');
@@ -328,12 +339,15 @@ const Header = observer(() => {
                     <IconWrapper onClick={handleAddMember}>
                       <AddAcountIcon />
                     </IconWrapper>
-                    <RoomAddMemberModal
-                      visible={isAddMemberVisible}
-                      roomId={findRoom()?.id}
-                      onInviteUsers={handleInviteUsers}
-                      onCancel={handleCancelInviteUsers}
-                    />
+                    {isAddMemberVisible && (
+                      <RoomAddMemberModal
+                        visible={isAddMemberVisible}
+                        roomId={findRoom()?.id}
+                        roomMembers={members}
+                        onInviteUsers={handleInviteUsers}
+                        onCancel={handleCancelInviteUsers}
+                      />
+                    )}
                   </>
                 )}
               </SystemIconContainer>
