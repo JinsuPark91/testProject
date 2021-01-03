@@ -329,22 +329,24 @@ const ProfileMyModal = ({
           </ConvertNow>
           {spaceViewList.length > 0 && (
             <ConvertList>
-              {spaceStore.spaceList.map(elem => (
-                <ConvertItem
-                  onClick={() => {
-                    window.location.href = `${window.location.protocol}//${elem.domain}`;
-                  }}
-                  key={elem}
-                >
-                  <LogoSmall
-                    shape="square"
-                    style={{ color: '#fff', backgroundColor: '#75757F' }}
+              {spaceStore.spaceList
+                .filter(elem => elem.id !== spaceStore.currentSpace.id)
+                .map(elem => (
+                  <ConvertItem
+                    onClick={() => {
+                      window.location.href = `${window.location.protocol}//${elem.domain}`;
+                    }}
+                    key={elem}
                   >
-                    {elem?.name[0]}
-                  </LogoSmall>
-                  <ItemText>{elem?.name}</ItemText>
-                </ConvertItem>
-              ))}
+                    <LogoSmall
+                      shape="square"
+                      style={{ color: '#fff', backgroundColor: '#75757F' }}
+                    >
+                      {elem?.name[0]}
+                    </LogoSmall>
+                    <ItemText>{elem?.name}</ItemText>
+                  </ConvertItem>
+                ))}
             </ConvertList>
           )}
           {/* <ConvertAdd>
