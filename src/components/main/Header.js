@@ -129,7 +129,6 @@ const Header = observer(() => {
   const [isMessageVisible, setIsMessageVisible] = useState(false);
   const [isRoomProfileVisible, setRoomProfileVisible] = useState(false);
   const [isAddMemberVisible, setAddMemberVisible] = useState(false);
-  const [members, setMembers] = useState([]);
 
   const findRoom = () => {
     if (PlatformUIStore.resourceType !== 'f') {
@@ -182,14 +181,7 @@ const Header = observer(() => {
   };
 
   const roomId = findRoom()?.id;
-  useEffect(() => {
-    if (roomId) {
-      const myUserId = userStore.myProfile.id;
-      roomStore
-        .fetchRoomMemberList({ myUserId, roomId })
-        .then(roomMembers => setMembers(roomMembers));
-    }
-  }, [roomId, roomStore, userStore.myProfile.id]);
+  const members = roomStore.roomMembers[roomId] || [];
 
   const handleExport = () => {
     console.log('handleExport');
