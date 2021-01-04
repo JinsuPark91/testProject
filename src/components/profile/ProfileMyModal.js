@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import { Button, Avatar, Dropdown, Menu, Checkbox } from 'antd';
+import { Button, Avatar, Dropdown, Menu, Checkbox, Tooltip } from 'antd';
 import { useCoreStores, Toast, WWMS } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import { useObserver } from 'mobx-react';
@@ -19,6 +19,7 @@ import AddFriendsBySearch from '../friends/AddFriendsBySearch';
 import SpaceMemberListModal from '../space/SpaceMemberListModal';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
 import MovePage from '../../utils/MovePage';
+import { getMainWaplURL } from '../../utils/UrlUtil';
 
 import keycloak from '../../libs/keycloak';
 import { handleFriendsDialogType } from '../../utils/FriendsUtil';
@@ -255,13 +256,15 @@ const ProfileMyModal = ({
             <Title>{spaceStore.currentSpace?.name}</Title>
             {spaceStore.currentSpace?.domain}
           </Info>
-          <Button
-            type="circle"
-            className="btn-convert"
-            onClick={handleSpaceList}
-          >
-            <Blind>스페이스 전환</Blind>
-          </Button>
+          <Tooltip placement="bottomLeft" color="#0b1d41" title="스페이스 전환">
+            <Button
+              type="circle"
+              className="btn-convert"
+              onClick={handleSpaceList}
+            >
+              <Blind>스페이스 전환</Blind>
+            </Button>
+          </Tooltip>
           <Dropdown
             trigger={['click']}
             overlay={moreMenu}
@@ -327,29 +330,37 @@ const ProfileMyModal = ({
           </ConvertNow>
           {spaceViewList.length > 0 && (
             <ConvertList>
-              {spaceStore.spaceList.map(elem => (
-                <ConvertItem
-                  onClick={() => {
-                    window.location.href = `${window.location.protocol}//${elem.domain}`;
-                  }}
-                  key={elem}
-                >
-                  <LogoSmall
-                    shape="square"
-                    style={{ color: '#fff', backgroundColor: '#75757F' }}
+              {spaceStore.spaceList
+                .filter(elem => elem.id !== spaceStore.currentSpace.id)
+                .map(elem => (
+                  <ConvertItem
+                    onClick={() => {
+                      window.location.href = `${window.location.protocol}//${elem.domain}`;
+                    }}
+                    key={elem}
                   >
-                    {elem?.name[0]}
-                  </LogoSmall>
-                  <ItemText>{elem?.name}</ItemText>
-                </ConvertItem>
-              ))}
+                    <LogoSmall
+                      shape="square"
+                      style={{ color: '#fff', backgroundColor: '#75757F' }}
+                    >
+                      {elem?.name[0]}
+                    </LogoSmall>
+                    <ItemText>{elem?.name}</ItemText>
+                  </ConvertItem>
+                ))}
             </ConvertList>
           )}
-          {/* <ConvertAdd>
-            <AddButton href="#">
-              <span>+</span> 새 스페이스 생성
-            </AddButton>
-          </ConvertAdd> */}
+          {
+            <ConvertAdd
+              onClick={() => {
+                window.location.href = getMainWaplURL('/select-space-type');
+              }}
+            >
+              <AddButton href="#">
+                <span>+</span> 새 스페이스 생성
+              </AddButton>
+            </ConvertAdd>
+          }
         </ConvertDropdown>
       )}
       {isCreated && (
@@ -706,6 +717,9 @@ const ConvertNow = styled.div`
   margin: 0 0.6875rem;
   padding: 0.625rem 0;
   border-bottom: 1px solid #e3e7eb;
+  &:only-child {
+    border-bottom: none;
+  }
   & + div {
     border-top: 0;
   }

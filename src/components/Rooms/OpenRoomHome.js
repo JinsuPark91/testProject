@@ -200,7 +200,9 @@ function OpenRoomHome({ visible, onCancel }) {
                   const openRooms = roomStore
                     .getOpenRoomArray()
                     .filter(
-                      roomInfo => roomInfo.adminId === userStore.myProfile.id,
+                      roomInfo =>
+                        roomInfo.adminId === userStore.myProfile.id &&
+                        roomInfo.isJoined,
                     );
 
                   const remain = (openRooms.length + 1) % 4;

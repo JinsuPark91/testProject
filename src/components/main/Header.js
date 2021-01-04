@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 // import { NoteIcon } from 'teespace-note-app';
@@ -141,7 +141,7 @@ const Header = observer(() => {
     const found = findRoom();
     if (found) {
       if (found?.type === 'WKS0001') {
-        return userStore.myProfile.name;
+        return userStore.myProfile.nick || userStore.myProfile.name;
       }
       if (found?.customName || found?.name) {
         return found?.customName || found?.name;
@@ -179,6 +179,9 @@ const Header = observer(() => {
     }
     return [];
   };
+
+  const roomId = findRoom()?.id;
+  const members = roomStore.roomMembers[roomId] || [];
 
   const handleExport = () => {
     console.log('handleExport');
@@ -328,12 +331,15 @@ const Header = observer(() => {
                     <IconWrapper onClick={handleAddMember}>
                       <AddAcountIcon />
                     </IconWrapper>
-                    <RoomAddMemberModal
-                      visible={isAddMemberVisible}
-                      roomId={findRoom()?.id}
-                      onInviteUsers={handleInviteUsers}
-                      onCancel={handleCancelInviteUsers}
-                    />
+                    {isAddMemberVisible && (
+                      <RoomAddMemberModal
+                        visible={isAddMemberVisible}
+                        roomId={findRoom()?.id}
+                        roomMembers={members}
+                        onInviteUsers={handleInviteUsers}
+                        onCancel={handleCancelInviteUsers}
+                      />
+                    )}
                   </>
                 )}
               </SystemIconContainer>

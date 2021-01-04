@@ -81,7 +81,8 @@ export const ConfigWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0 1.19rem 1.31rem 1.19rem;
-  border-bottom: 1px solid #e3e7eb;
+  border: solid #e3e7eb;
+  border-width: 1px 0;
 `;
 
 export const ButtonContainer = styled.div`
