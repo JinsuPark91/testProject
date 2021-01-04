@@ -35,7 +35,7 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
       render={() => {
         (async () => {
           try {
-            if (keycloak.tokenParsed.email !== authStore.user?.loginId) {
+            if (keycloak.tokenParsed?.email !== authStore.user?.loginId) {
               await authStore.logout();
             }
 
