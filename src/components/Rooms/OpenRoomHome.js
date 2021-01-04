@@ -116,9 +116,22 @@ function OpenRoomHome({ visible, onCancel }) {
     setKeyword(initialStates.keyword);
   };
 
-  const handleJoin = roomInfo => {
+  const handleJoin = async roomInfo => {
     closeHomeModal();
-    history.push(`/s/${roomInfo.id}/talk`);
+    const myUserId = userStore.myProfile.id;
+    const roomId = roomInfo.id;
+    try {
+      const res = await roomStore.enterRoom({
+        myUserId,
+        roomId,
+      });
+
+      if (res.result) {
+        history.push(`/s/${res.roomId}/talk`);
+      }
+    } catch (err) {
+      console.error('ROOM ENTER ERROR : ', err);
+    }
   };
 
   const handleRoomClick = roomInfo => {
@@ -267,12 +280,12 @@ function OpenRoomHome({ visible, onCancel }) {
                           <RecomRoomTitle>{roomInfo.name}</RecomRoomTitle>
 
                           <JoinedText>
-                            {roomInfo.isJoinable ? '' : '(참여 중)'}
+                            {roomInfo.isJoined ? '(참여 중)' : ''}
                           </JoinedText>
                           <RoomButton
                             roomInfo={roomInfo}
                             onClick={handleJoin}
-                            disabled={!roomInfo.isJoinable}
+                            disabled={roomInfo.isJoined}
                           />
                         </RoomListItem>
                       ))}
