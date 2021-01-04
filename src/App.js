@@ -79,19 +79,15 @@ function App() {
               authClient={keycloak}
               LoadingComponent={<></>}
               initOptions={
-                // tokenParam
-                getCookieValue(`ACCESS_TOKEN`)
+                process.env.REACT_APP_ENV === 'local'
                   ? {
-                      token: getCookieValue(`ACCESS_TOKEN`),
-                      refreshToken: getCookieValue(`REFRESH_TOKEN`),
+                      onLoad: 'login-required',
+                      redirectUri: '',
                     }
                   : {
-                      onLoad: 'login-required',
-                      checkLoginIframe: false,
-                      redirectUri:
-                        process.env.REACT_APP_ENV === 'local'
-                          ? ''
-                          : `${window.location.protocol}//${mainURL}/domain/${subURL}`,
+                      onLoad: 'check-sso',
+                      silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
+                      redirectUri: `${window.location.protocol}//${mainURL}/domain/${subURL}`,
                     }
               }
             >
