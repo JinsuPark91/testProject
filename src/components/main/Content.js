@@ -53,6 +53,24 @@ const Content = () => {
     PlatformUIStore.isSearchVisible = false;
   };
 
+  const handleSplitDragStart = ratio => {
+    const splitter = splitRef?.current?.parent;
+    const gutter = splitter.childNodes[1];
+
+    if (gutter) {
+      gutter.classList.add('gutter--active');
+    }
+  };
+
+  const handleSplitDragEnd = ratio => {
+    const splitter = splitRef?.current?.parent;
+    const gutter = splitter.childNodes[1];
+
+    if (gutter) {
+      gutter.classList.remove('gutter--active');
+    }
+  };
+
   const getApplication = appName => {
     switch (appName) {
       case 'talk':
@@ -141,7 +159,23 @@ const Content = () => {
                   : [mainDefaultWidth, subDefaultWidth]
               }
               minSize={[mainMinWidth, subMinWidth]}
-              gutterSize={10}
+              gutter={() => {
+                const gutter = document.createElement('div');
+                gutter.classList.add('gutter', 'gutter-horizontal');
+
+                const rect = document.createElement('span');
+                rect.classList.add('gutter__rect');
+
+                gutter.appendChild(rect);
+                return gutter;
+              }}
+              gutterStyle={() => {
+                return {
+                  width: '0.3rem',
+                };
+              }}
+              onDragStart={handleSplitDragStart}
+              onDragEnd={handleSplitDragEnd}
               ref={splitRef}
             >
               <MainAppContainer>

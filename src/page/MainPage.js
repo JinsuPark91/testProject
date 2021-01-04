@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { EventBus, useCoreStores, DesktopNotification } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
+import { beforeRoute as meetingBeforeRoute } from 'teespace-meeting-app';
 import { Prompt } from 'react-router';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
@@ -183,17 +184,24 @@ const MainPage = () => {
     }
   };
 
+  const isRunning = appName => {
+    return mainApp === appName || subApp === appName;
+  };
+
   const beforeRoute = (location, action) => {
-    let isRoute = true;
+    let isRoutable = true;
 
     // 각 앱의 beforeRoute 를 받아서 처리하자.
-    if (mainApp === 'note' || subApp === 'note')
-      isRoute = isRoute && noteBeforeRoute(location, action);
+    if (isRunning('note'))
+      isRoutable = isRoutable && noteBeforeRoute(location, action);
 
-    if (isRoute) {
+    if (isRunning('meeting'))
+      isRoutable = isRoutable && meetingBeforeRoute(location, action);
+
+    if (isRoutable) {
       saveHistory(location, action);
     }
-    return isRoute;
+    return isRoutable;
   };
 
   if (isLoading) {

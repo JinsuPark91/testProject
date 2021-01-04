@@ -13,9 +13,31 @@ export const Splitter = styled(Split)`
   height: 100%;
   & .gutter {
     border-right: 1px solid #e3e7eb;
-    border-left: 1px solid #e3e7eb;
-  }
-  & .gutter:hover {
     cursor: ew-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  & .gutter__rect {
+    width: 0.15rem;
+    height: 1.25rem;
+  }
+
+  & .gutter:hover:not(.gutter--active) {
+    background: #d6dbe0;
+
+    .gutter__rect {
+      background: #9ba0a4;
+    }
+  }
+
+  & .gutter--active {
+    opacity: 0.7;
+    background: #6c56e5;
+
+    .gutter__rect {
+      background: #ffffff;
+    }
   }
 `;
