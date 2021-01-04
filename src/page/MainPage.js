@@ -4,7 +4,6 @@ import { useHistory, useParams } from 'react-router-dom';
 import { EventBus, useCoreStores, DesktopNotification } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
-import { beforeRoute as meetingBeforeRoute } from 'teespace-meeting-app';
 import { Prompt } from 'react-router';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
@@ -195,8 +194,8 @@ const MainPage = () => {
     if (isRunning('note'))
       isRoutable = isRoutable && noteBeforeRoute(location, action);
 
-    if (isRunning('meeting'))
-      isRoutable = isRoutable && meetingBeforeRoute(location, action);
+    // if (isRunning('meeting'))
+    //   isRoutable = isRoutable && meetingBeforeRoute(location, action);
 
     if (isRoutable) {
       saveHistory(location, action);
