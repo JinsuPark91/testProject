@@ -217,7 +217,6 @@ function AddFriendsBySearch({
   spaceInfo,
   spaceMemberList,
 }) {
-  const { orgStore, userStore, friendStore } = useCoreStores();
   const [isInviteDialogVisible, setIsInviteDialogVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [valueText, setValueText] = useState('');
@@ -272,7 +271,7 @@ function AddFriendsBySearch({
                 shape="square"
                 style={{ color: '#fff', backgroundColor: '#75757F' }}
               >
-                {title[0]}
+                {title ? title[0] : null}
               </Logo>
             )}
             {title}
@@ -309,12 +308,14 @@ function AddFriendsBySearch({
               <AddFriendsByOrganization
                 timestamp={timestamp.current}
                 searchText={searchText}
+                isViewMode={isViewMode}
               />
             ) : (
               <AddFriendsFromSpace
                 spaceName={spaceInfo?.name}
                 spaceMembers={spaceMemberList}
                 searchText={searchText}
+                isViewMode={isViewMode}
               />
             )}
           </AddFriendSearchForm>
