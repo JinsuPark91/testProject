@@ -126,7 +126,7 @@ function OpenRoomHome({ visible, onCancel }) {
         roomId,
       });
 
-      if (res.result) {
+      if (res?.roomId) {
         history.push(`/s/${res.roomId}/talk`);
       }
     } catch (err) {
