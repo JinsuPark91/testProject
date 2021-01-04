@@ -7,7 +7,13 @@ import { useCoreStores, usePortalWindow } from 'teespace-core';
 import { Talk, talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
 import Photos from '../Photos';
-import { ViewMoreIcon, ExportIcon, DisableAlarmIcon, PinIcon } from '../Icons';
+import {
+  ViewMoreIcon,
+  ExportIcon,
+  DisableAlarmIcon,
+  PinIcon,
+  OpenChatIcon,
+} from '../Icons';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const RoomDropdown = React.memo(
@@ -206,6 +212,7 @@ const RoomItemContent = ({
   onClickRoomPhoto,
 }) => {
   const { userStore, roomStore } = useCoreStores();
+  const isOpenRoom = roomInfo.type === 'WKS0003';
   const openTalkWindow = usePortalWindow();
   const handleExport = async e => {
     e.stopPropagation();
@@ -271,11 +278,22 @@ const RoomItemContent = ({
           <Title>
             <Observer>
               {() => (
-                <RoomNameText>
-                  {isMyRoom
-                    ? userStore.myProfile.nick || userStore.myProfile.name
-                    : roomInfo.customName || roomInfo.name}
-                </RoomNameText>
+                <>
+                  {roomInfo.type === 'WKS0003' && (
+                    <div style={{ display: 'flex', marginRight: '0.25rem' }}>
+                      <OpenChatIcon
+                        width={0.88}
+                        height={0.88}
+                        color="rgb(125,125,136)"
+                      />
+                    </div>
+                  )}
+                  <RoomNameText>
+                    {isMyRoom
+                      ? userStore.myProfile.nick || userStore.myProfile.name
+                      : roomInfo.customName || roomInfo.name}
+                  </RoomNameText>
+                </>
               )}
             </Observer>
             {!(isMyRoom || roomInfo.isDirectMsg) ? (
