@@ -18,7 +18,7 @@ const StyledDivider = styled(Divider)`
   margin: 0;
 `;
 
-function AddFriendsByOrganization({ timestamp, searchText }) {
+function AddFriendsByOrganization({ timestamp, searchText, isViewMode }) {
   const { orgStore, userStore, authStore } = useCoreStores();
   const [isOpen, setIsOpen] = useState(false);
   const [searchedUserList, setSearchedUserList] = useState([]);
@@ -103,7 +103,10 @@ function AddFriendsByOrganization({ timestamp, searchText }) {
           timestamp={timestamp}
         />
         <StyledDivider />
-        <AddFriendsItem friendAddList={searchedUserList} />
+        <AddFriendsItem
+          friendAddList={searchedUserList}
+          isViewMode={isViewMode}
+        />
       </Wrapper>
     </Loader>
   ));
