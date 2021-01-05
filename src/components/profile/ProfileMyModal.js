@@ -18,6 +18,7 @@ import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialo
 import AddFriendsBySearch from '../friends/AddFriendsBySearch';
 import SpaceMemberListModal from '../space/SpaceMemberListModal';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
+import SpaceEditModal from './SpaceEditModal';
 import MovePage from '../../utils/MovePage';
 import { getMainWaplURL } from '../../utils/UrlUtil';
 
@@ -53,6 +54,11 @@ const ProfileMyModal = ({
   const [modalTitle, setModalTitle] = useState('');
 
   const [isRoomDialogVisible, setIsRoomDialogVisible] = useState(false);
+
+  const [isSpaceEditDialogVisible, setIsSpaceEditDialogVisible] = useState(
+    false,
+  );
+
   const { keycloak } = useKeycloak();
   const isAdmin = userStore.myProfile.grade === 'admin';
 
@@ -172,7 +178,8 @@ const ProfileMyModal = ({
   }, [orgStore, userStore, authStore]);
 
   const handleSpaceEditDialog = useCallback(() => {
-    console.log('MemberList');
+    console.log('In Progress');
+    // setIsSpaceEditDialogVisible(true);
   }, []);
 
   const handleAdminPage = useCallback(() => {
@@ -188,6 +195,7 @@ const ProfileMyModal = ({
   }, []);
 
   const handleOpenSupport = () => {
+    // setIsSpaceEditDialogVisible(true);
     MovePage('support', true);
   };
 
@@ -416,6 +424,14 @@ const ProfileMyModal = ({
             );
             setIsToastOpen(true);
           }
+        }}
+      />
+      <SpaceEditModal
+        visible={isSpaceEditDialogVisible}
+        onClose={() => setIsSpaceEditDialogVisible(false)}
+        onSuccess={() => {
+          setToastText('변경 사항이 저장되었습니다.');
+          setIsToastOpen(true);
         }}
       />
       <Toast
