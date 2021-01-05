@@ -83,7 +83,8 @@ const UserPhoto = styled.div`
     bottom: 0;
   }
   line-height: 0;
-
+  background-color: #fff;
+  border-radius: 50%;
   &:after {
     content: '';
     position: absolute;
@@ -98,6 +99,7 @@ const UserPhoto = styled.div`
     width: 100%;
     height: 100%;
     border-radius: 50%;
+    object-fit: cover;
   }
 `;
 

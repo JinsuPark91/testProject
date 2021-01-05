@@ -53,6 +53,7 @@ const UserImag = styled.div`
   width: 1.5rem;
   height: 1.5rem;
   border-radius: 50%;
+  flex-shrink: 0;
   cursor: pointer;
   img {
     width: 100%;
@@ -60,8 +61,10 @@ const UserImag = styled.div`
     border-radius: 50%;
   }
 `;
-
 const UserName = styled.p`
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   padding-left: 0.5rem;
   font-size: 0.75rem;
   line-height: 1.13rem;
