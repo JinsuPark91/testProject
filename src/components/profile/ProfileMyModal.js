@@ -18,6 +18,7 @@ import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialo
 import AddFriendsBySearch from '../friends/AddFriendsBySearch';
 import SpaceMemberListModal from '../space/SpaceMemberListModal';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
+import SpaceEditModal from './SpaceEditModal';
 import MovePage from '../../utils/MovePage';
 import { getMainWaplURL } from '../../utils/UrlUtil';
 
@@ -49,11 +50,15 @@ const ProfileMyModal = ({
   const [toastText, setToastText] = useState('');
   const [isViewMode, setIsViewMode] = useState(true);
 
-  // 튜토리얼 관련
   const [isOrgExist, setIsOrgExist] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
 
   const [isRoomDialogVisible, setIsRoomDialogVisible] = useState(false);
+
+  const [isSpaceEditDialogVisible, setIsSpaceEditDialogVisible] = useState(
+    false,
+  );
+
   const { keycloak } = useKeycloak();
   const isAdmin = userStore.myProfile.grade === 'admin';
 
@@ -123,30 +128,41 @@ const ProfileMyModal = ({
   }, []);
 
   const handleMemberList = useCallback(async () => {
-    const { myProfile } = userStore;
-    try {
-      const domainKey =
-        process.env.REACT_APP_ENV === 'local'
-          ? authStore.sessionInfo.domainKey
-          : undefined;
-      const response = await orgStore.getUserOrgUserList(
-        myProfile?.companyCode,
-        myProfile?.departmentCode,
-        myProfile?.id,
-        domainKey,
-      );
-      const spaceMembers = response.map(item => ({
-        ...item,
-        isMe: item.id === myProfile?.id,
-        profilePhotoURL: userStore.getProfilePhotoURL(item.id, 'small'),
-        displayName: item.displayName,
-      }));
-      setSpaceMemberList(spaceMembers);
-    } catch (e) {
-      console.log('getUserList Error');
-    }
-    toggleSpaceMemViewDialog();
-  }, [orgStore, userStore, authStore, toggleSpaceMemViewDialog]);
+    await handleFriendsDialogType(
+      orgStore,
+      userStore.myProfile,
+      authStore.sessionInfo.domainKey,
+      () => setIsOrgExist(true),
+      res => setSpaceMemberList(res),
+    );
+    setIsViewMode(true);
+    setModalTitle(spaceStore.currentSpace?.name);
+    setIsFriendMemViewOpen(true);
+
+    // const { myProfile } = userStore;
+    // try {
+    //   const domainKey =
+    //     process.env.REACT_APP_ENV === 'local'
+    //       ? authStore.sessionInfo.domainKey
+    //       : undefined;
+    //   const response = await orgStore.getUserOrgUserList(
+    //     myProfile?.companyCode,
+    //     myProfile?.departmentCode,
+    //     myProfile?.id,
+    //     domainKey,
+    //   );
+    //   const spaceMembers = response.map(item => ({
+    //     ...item,
+    //     isMe: item.id === myProfile?.id,
+    //     profilePhotoURL: userStore.getProfilePhotoURL(item.id, 'small'),
+    //     displayName: item.displayName,
+    //   }));
+    //   setSpaceMemberList(spaceMembers);
+    // } catch (e) {
+    //   console.log('getUserList Error');
+    // }
+    // toggleSpaceMemViewDialog();
+  }, [orgStore, userStore, authStore, spaceStore]);
 
   const handleAddFriend = useCallback(async () => {
     await handleFriendsDialogType(
@@ -162,7 +178,8 @@ const ProfileMyModal = ({
   }, [orgStore, userStore, authStore]);
 
   const handleSpaceEditDialog = useCallback(() => {
-    console.log('MemberList');
+    console.log('In Progress');
+    // setIsSpaceEditDialogVisible(true);
   }, []);
 
   const handleAdminPage = useCallback(() => {
@@ -178,6 +195,7 @@ const ProfileMyModal = ({
   }, []);
 
   const handleOpenSupport = () => {
+    // setIsSpaceEditDialogVisible(true);
     MovePage('support', true);
   };
 
@@ -209,7 +227,9 @@ const ProfileMyModal = ({
   );
   const userContent = !isEditMode ? (
     <>
-      <UserImage src={thumbPhoto} onLoad={revokeURL} />
+      <UserImage>
+        <img src={thumbPhoto} onLoad={revokeURL} alt="" />
+      </UserImage>
       <UserName>
         {userStore.myProfile?.nick || userStore.myProfile?.name}
       </UserName>
@@ -235,10 +255,6 @@ const ProfileMyModal = ({
       profilePhoto={thumbPhoto}
       editMode
     />
-  );
-
-  const spaceViewList = spaceStore.spaceList.filter(
-    elem => spaceStore.currentSpace && elem.id !== spaceStore.currentSpace.id,
   );
 
   const subContent = (
@@ -328,7 +344,7 @@ const ProfileMyModal = ({
             </NowInfo>
             <Checkbox checked className="check-round" />
           </ConvertNow>
-          {spaceViewList.length > 0 && (
+          {spaceStore.spaceList.length > 0 && (
             <ConvertList>
               {spaceStore.spaceList
                 .filter(elem => elem.id !== spaceStore.currentSpace.id)
@@ -389,17 +405,17 @@ const ProfileMyModal = ({
         visible={isFriendMemViewOpen}
         onCancelAddFriends={() => setIsFriendMemViewOpen(false)}
         isOrgExist={isOrgExist}
-        isSpaceEmpty={false}
         title={modalTitle}
         isViewMode={isViewMode}
+        spaceInfo={spaceStore.currentSpace}
         spaceMemberList={spaceMemberList}
       />
-      <SpaceMemberListModal
+      {/* <SpaceMemberListModal
         visible={isSpaceMemViewOpen}
         onClose={toggleSpaceMemViewDialog}
         spaceName={spaceStore.currentSpace?.name}
         members={spaceMemberList}
-      />
+      /> */}
       <SelectRoomTypeDialog
         visible={isRoomDialogVisible}
         onCancel={() => setIsRoomDialogVisible(false)}
@@ -410,6 +426,14 @@ const ProfileMyModal = ({
             );
             setIsToastOpen(true);
           }
+        }}
+      />
+      <SpaceEditModal
+        visible={isSpaceEditDialogVisible}
+        onClose={() => setIsSpaceEditDialogVisible(false)}
+        onSuccess={() => {
+          setToastText('변경 사항이 저장되었습니다.');
+          setIsToastOpen(true);
         }}
       />
       <Toast
@@ -458,10 +482,29 @@ const ProfileMyModal = ({
   ));
 };
 
-const UserImage = styled.img`
+const UserImage = styled.span`
+  display: inline-block;
+  position: relative;
   width: 3.75rem;
   height: 3.75rem;
   border-radius: 50%;
+  background-color: #fff;
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+  }
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 `;
 const UserName = styled.p`
   overflow: hidden;

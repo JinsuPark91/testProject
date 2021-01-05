@@ -54,7 +54,7 @@ const MainPage = () => {
       // 스페이스를 불러오자
       spaceStore.fetchSpaces({
         userId: myUserId,
-        isLocal: process.env.REACT_APP_ENV,
+        isLocal: process.env.REACT_APP_ENV === 'local',
       }),
       // 룸을 불러오자
       roomStore.fetchRoomList({ myUserId }),

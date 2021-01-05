@@ -4,7 +4,12 @@ import styled from 'styled-components';
 import SpaceMemberHeader from '../space/SpaceMemberHeader';
 import AddFriendsItem from './AddFriendsItem';
 
-function AddFriendsFromSpace({ spaceName, spaceMembers, searchText }) {
+function AddFriendsFromSpace({
+  spaceName,
+  spaceMembers,
+  searchText,
+  isViewMode,
+}) {
   const [searchedUserList, setSearchedUserList] = useState([]);
 
   const handleSearch = useCallback(async () => {
@@ -31,7 +36,10 @@ function AddFriendsFromSpace({ spaceName, spaceMembers, searchText }) {
         spaceName={spaceName}
         userCount={searchedUserList.length}
       />
-      <AddFriendsItem friendAddList={searchedUserList} isViewMode={false} />
+      <AddFriendsItem
+        friendAddList={searchedUserList}
+        isViewMode={isViewMode}
+      />
     </Wrapper>
   ));
 }

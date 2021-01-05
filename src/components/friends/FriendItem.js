@@ -179,7 +179,6 @@ const StyledAvatar = styled.div`
           width: 2.38rem;
           height: 2.38rem;
           border: 2px solid #fff;
-          border-radius: 50%;
         `;
       case 'addFriend':
         return css`
@@ -194,6 +193,8 @@ const StyledAvatar = styled.div`
         `;
     }
   }}
+  border-radius: 50%;
+  background-color: #fff;
   &:after {
     content: '';
     position: absolute;
@@ -208,6 +209,7 @@ const StyledAvatar = styled.div`
     width: 100%;
     height: 100%;
     border-radius: 50%;
+    object-fit: cover;
   }
 `;
 

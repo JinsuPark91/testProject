@@ -105,7 +105,7 @@ const MyBadge = styled.span`
 `;
 
 const AddFriendsItem = ({ friendAddList, isViewMode }) => {
-  const { userStore, friendStore, spaceStore } = useCoreStores();
+  const { userStore, friendStore } = useCoreStores();
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [friendUserName, setFriendUserName] = useState('');
 
@@ -175,12 +175,12 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
   // TODO: id로 key 교체
   return useObserver(() => (
     <>
-      {isViewMode && (
+      {/* {isViewMode && (
         <SpaceInfo>
           <SpaceName>{spaceStore.currentSpace?.name}</SpaceName>
           <UserCount>{spaceStore.currentSpace?.userCount}명</UserCount>
         </SpaceInfo>
-      )}
+      )} */}
       <Wrapper>
         {friendStore.friendInfoList && (
           <List
