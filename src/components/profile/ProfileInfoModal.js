@@ -637,11 +637,13 @@ const UserImage = styled.div`
   width: 6.25rem;
   height: 6.25rem;
   border-radius: 50%;
+  background-color: #fff;
   cursor: pointer;
   img {
     width: 100%;
     height: 100%;
     border-radius: 50%;
+    object-fit: cover;
   }
 `;
 const ImageChangeBox = styled.div`

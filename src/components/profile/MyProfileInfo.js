@@ -48,8 +48,9 @@ const ThumbImage = styled.img`
   width: 1.88rem;
   height: 1.88rem;
   border-radius: 50%;
-  cursor: pointer;
   border: 1px solid rgba(0, 0, 0, 0.05);
+  object-fit: cover;
+  cursor: pointer;
 `;
 const SettingImage = styled.div`
   position: absolute;

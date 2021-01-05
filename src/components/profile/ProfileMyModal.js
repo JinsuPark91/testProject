@@ -227,7 +227,9 @@ const ProfileMyModal = ({
   );
   const userContent = !isEditMode ? (
     <>
-      <UserImage src={thumbPhoto} onLoad={revokeURL} />
+      <UserImage>
+        <img src={thumbPhoto} onLoad={revokeURL} alt="" />
+      </UserImage>
       <UserName>
         {userStore.myProfile?.nick || userStore.myProfile?.name}
       </UserName>
@@ -480,10 +482,29 @@ const ProfileMyModal = ({
   ));
 };
 
-const UserImage = styled.img`
+const UserImage = styled.span`
+  display: inline-block;
+  position: relative;
   width: 3.75rem;
   height: 3.75rem;
   border-radius: 50%;
+  background-color: #fff;
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+  }
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 `;
 const UserName = styled.p`
   overflow: hidden;
