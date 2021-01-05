@@ -49,7 +49,6 @@ const ProfileMyModal = ({
   const [toastText, setToastText] = useState('');
   const [isViewMode, setIsViewMode] = useState(true);
 
-  // 튜토리얼 관련
   const [isOrgExist, setIsOrgExist] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
 
@@ -123,30 +122,41 @@ const ProfileMyModal = ({
   }, []);
 
   const handleMemberList = useCallback(async () => {
-    const { myProfile } = userStore;
-    try {
-      const domainKey =
-        process.env.REACT_APP_ENV === 'local'
-          ? authStore.sessionInfo.domainKey
-          : undefined;
-      const response = await orgStore.getUserOrgUserList(
-        myProfile?.companyCode,
-        myProfile?.departmentCode,
-        myProfile?.id,
-        domainKey,
-      );
-      const spaceMembers = response.map(item => ({
-        ...item,
-        isMe: item.id === myProfile?.id,
-        profilePhotoURL: userStore.getProfilePhotoURL(item.id, 'small'),
-        displayName: item.displayName,
-      }));
-      setSpaceMemberList(spaceMembers);
-    } catch (e) {
-      console.log('getUserList Error');
-    }
-    toggleSpaceMemViewDialog();
-  }, [orgStore, userStore, authStore, toggleSpaceMemViewDialog]);
+    await handleFriendsDialogType(
+      orgStore,
+      userStore.myProfile,
+      authStore.sessionInfo.domainKey,
+      () => setIsOrgExist(true),
+      res => setSpaceMemberList(res),
+    );
+    setIsViewMode(true);
+    setModalTitle(spaceStore.currentSpace?.name);
+    setIsFriendMemViewOpen(true);
+
+    // const { myProfile } = userStore;
+    // try {
+    //   const domainKey =
+    //     process.env.REACT_APP_ENV === 'local'
+    //       ? authStore.sessionInfo.domainKey
+    //       : undefined;
+    //   const response = await orgStore.getUserOrgUserList(
+    //     myProfile?.companyCode,
+    //     myProfile?.departmentCode,
+    //     myProfile?.id,
+    //     domainKey,
+    //   );
+    //   const spaceMembers = response.map(item => ({
+    //     ...item,
+    //     isMe: item.id === myProfile?.id,
+    //     profilePhotoURL: userStore.getProfilePhotoURL(item.id, 'small'),
+    //     displayName: item.displayName,
+    //   }));
+    //   setSpaceMemberList(spaceMembers);
+    // } catch (e) {
+    //   console.log('getUserList Error');
+    // }
+    // toggleSpaceMemViewDialog();
+  }, [orgStore, userStore, authStore, spaceStore]);
 
   const handleAddFriend = useCallback(async () => {
     await handleFriendsDialogType(
@@ -237,10 +247,6 @@ const ProfileMyModal = ({
     />
   );
 
-  const spaceViewList = spaceStore.spaceList.filter(
-    elem => spaceStore.currentSpace && elem.id !== spaceStore.currentSpace.id,
-  );
-
   const subContent = (
     <>
       <UserSpaceArea isEdit={isEditMode}>
@@ -328,7 +334,7 @@ const ProfileMyModal = ({
             </NowInfo>
             <Checkbox checked className="check-round" />
           </ConvertNow>
-          {spaceViewList.length > 0 && (
+          {spaceStore.spaceList.length > 0 && (
             <ConvertList>
               {spaceStore.spaceList
                 .filter(elem => elem.id !== spaceStore.currentSpace.id)
@@ -389,17 +395,17 @@ const ProfileMyModal = ({
         visible={isFriendMemViewOpen}
         onCancelAddFriends={() => setIsFriendMemViewOpen(false)}
         isOrgExist={isOrgExist}
-        isSpaceEmpty={false}
         title={modalTitle}
         isViewMode={isViewMode}
+        spaceInfo={spaceStore.currentSpace}
         spaceMemberList={spaceMemberList}
       />
-      <SpaceMemberListModal
+      {/* <SpaceMemberListModal
         visible={isSpaceMemViewOpen}
         onClose={toggleSpaceMemViewDialog}
         spaceName={spaceStore.currentSpace?.name}
         members={spaceMemberList}
-      />
+      /> */}
       <SelectRoomTypeDialog
         visible={isRoomDialogVisible}
         onCancel={() => setIsRoomDialogVisible(false)}
