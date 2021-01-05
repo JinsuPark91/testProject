@@ -86,9 +86,8 @@ function App() {
                     }
                   : {
                       onLoad: 'check-sso',
-                      checkLoginIframe: false,
                       silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
-                      redirectUri: `${window.location.protocol}//${mainURL}/domain/${subURL}`,
+                      redirectUri: ``,
                     }
               }
             >
