@@ -7,11 +7,11 @@ const MovePage = (targetInfo, newWindow = false) => {
   let targetURL = '';
 
   if (purl[0].match('127') || purl[0].match('192') || purl[0].match('local')) {
-    targetURL = `${window.location.protocol}//dev.wapl.ai/${targetInfo}`;
+    targetURL = `${window.location.protocol}//teespace.com/${targetInfo}`;
   } else {
     const tdomain = purl[1];
-    if (purl[1] === 'wapl') {
-      targetURL = `${window.location.protocol}//wapl.ai/${targetInfo}`;
+    if (purl[1] === 'teespace') {
+      targetURL = `${window.location.protocol}//teespace.com/${targetInfo}`;
     } else {
       targetURL = `${window.location.protocol}//${tdomain}.wapl.ai/${targetInfo}`;
     }

@@ -3,7 +3,6 @@ import { useCoreStores, Toast, Chip, Message } from 'teespace-core';
 import styled from 'styled-components';
 import { Button, Input, Modal } from 'antd';
 import { checkEmailValid } from '../../libs/Regex';
-import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const StyledModal = styled(Modal)`
   .ant-modal-body {
