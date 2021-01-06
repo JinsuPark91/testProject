@@ -185,10 +185,6 @@ const CommonSettingPage = ({ roomInfo = null }) => {
 const RoomSetting = ({ roomInfo }) => {
   const history = useHistory();
 
-  const handleBack = () => {
-    history.goBack();
-  };
-
   const handleClose = () => {
     history.push(`/s/${roomInfo.id}/talk`);
   };
@@ -197,7 +193,7 @@ const RoomSetting = ({ roomInfo }) => {
     <Wrapper>
       <Header style={{ padding: '0 0.89rem' }}>
         <Centered>
-          <IconWrapper onClick={handleBack}>
+          <IconWrapper onClick={handleClose}>
             <ArrowLeftIcon width={1} height={1} color="#75757F" />
           </IconWrapper>
           <TitleText style={{ marginLeft: '0.5rem' }}>룸 설정</TitleText>
