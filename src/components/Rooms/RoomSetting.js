@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Tabs, Button } from 'antd';
-import { useCoreStores, Toast } from 'teespace-core';
+import { useCoreStores, Toast, Message } from 'teespace-core';
 import { DateTime } from 'luxon';
 import { ArrowLeftIcon, CancelIcon } from '../Icons';
 import Input from '../Input';
@@ -23,6 +23,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
   const [isPrivateRoom, setIsPrivateRoom] = useState(false);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [isWarningVisible, setIsWarningVisible] = useState(false);
 
   const { roomStore, userStore } = useCoreStores();
   const history = useHistory();
@@ -70,19 +71,41 @@ const CommonSettingPage = ({ roomInfo = null }) => {
     }
   };
 
-  const handleModeUpdate = async () => {
+  const handleClickModeChange = () => {
+    setIsWarningVisible(true);
+  };
+
+  const handleConfirmModeChange = async () => {
     try {
       const result = await roomStore.changeRoomModePrivate({
         roomId: roomInfo.id,
         userId: myUserId,
       });
-
       if (result) setIsPrivateRoom(true);
       else throw Error(`result:${result}`);
     } catch (err) {
       console.error(`[Platform] 프라이빗 룸 전환 실패, ${err}`);
+    } finally {
+      setIsWarningVisible(false);
     }
   };
+
+  const handleCancelModeChange = () => {
+    setIsWarningVisible(false);
+  };
+  // const handleModeUpdate = async () => {
+  //   try {
+  //     const result = await roomStore.changeRoomModePrivate({
+  //       roomId: roomInfo.id,
+  //       userId: myUserId,
+  //     });
+
+  //     if (result) setIsPrivateRoom(true);
+  //     else throw Error(`result:${result}`);
+  //   } catch (err) {
+  //     console.error(`[Platform] 프라이빗 룸 전환 실패, ${err}`);
+  //   }
+  // };
 
   const handleDelete = async () => {
     try {
@@ -151,17 +174,39 @@ const CommonSettingPage = ({ roomInfo = null }) => {
             <SettingTitleText>프라이빗 룸으로 전환</SettingTitleText>
           ) : null}
           <SettingDescriptionText style={{ marginBottom: '0.81rem' }}>
-            프라이빗 룸으로 전활할 경우, 다시 오픈 룸으로 전환할 수 없습니다.
+            프라이빗 룸으로 전환 할 경우, 다시 오픈 룸으로 전환할 수 없습니다.
           </SettingDescriptionText>
           {!isPrivateRoom && (
-            <StyledButton
-              type="solid"
-              shape="round"
-              style={{ marginTop: '0.81rem' }}
-              onClick={handleModeUpdate}
-            >
-              전환
-            </StyledButton>
+            <>
+              <Message
+                visible={isWarningVisible}
+                title="프라이빗 룸으로 전환하시겠습니까?"
+                subtitle="한 번 변경하면 다시 오픈 룸으로 전활할 수 없습니다."
+                type="error"
+                btns={[
+                  {
+                    type: 'solid',
+                    shape: 'round',
+                    text: '전환',
+                    onClick: handleConfirmModeChange,
+                  },
+                  {
+                    type: 'outlined',
+                    shape: 'round',
+                    text: '취소',
+                    onClick: handleCancelModeChange,
+                  },
+                ]}
+              />
+              <StyledButton
+                type="solid"
+                shape="round"
+                style={{ marginTop: '0.81rem' }}
+                onClick={handleClickModeChange}
+              >
+                전환
+              </StyledButton>
+            </>
           )}
         </SettingWrapper>
       ) : null}
