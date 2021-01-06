@@ -110,6 +110,11 @@ const ProfileMyModal = ({
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
 
+  const handleCancel = useCallback(() => {
+    setSpaceListVisible(false);
+    onCancel();
+  }, [onCancel]);
+
   const handleSendInviteMail = useCallback(() => {
     setIsInviteDialogOpen(false);
     setIsToastOpen(true);
@@ -453,7 +458,7 @@ const ProfileMyModal = ({
       visible={visible}
       mask={isCreated}
       maskClosable={!isCreated}
-      onCancel={onCancel}
+      onCancel={handleCancel}
       closable={false}
       outLine
       width="17rem"
