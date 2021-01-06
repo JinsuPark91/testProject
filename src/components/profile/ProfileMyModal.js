@@ -178,8 +178,7 @@ const ProfileMyModal = ({
   }, [orgStore, userStore, authStore]);
 
   const handleSpaceEditDialog = useCallback(() => {
-    console.log('In Progress');
-    // setIsSpaceEditDialogVisible(true);
+    setIsSpaceEditDialogVisible(true);
   }, []);
 
   const handleAdminPage = useCallback(() => {
@@ -195,7 +194,6 @@ const ProfileMyModal = ({
   }, []);
 
   const handleOpenSupport = () => {
-    // setIsSpaceEditDialogVisible(true);
     MovePage('support', true);
   };
 
