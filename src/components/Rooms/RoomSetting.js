@@ -136,32 +136,34 @@ const CommonSettingPage = ({ roomInfo = null }) => {
           저장
         </StyledButton>
       </SettingWrapper>
-
-      <SettingWrapper>
-        {isPrivateRoom ? (
-          <SettingTitleText style={{ color: '#777' }}>
-            프라이빗 룸으로 전환됨
-            <SettingDescriptionText style={{ marginLeft: '0.5rem' }}>
-              {getConvertedTime(roomInfo?.typeModifiedDate)}
-            </SettingDescriptionText>
-          </SettingTitleText>
-        ) : (
-          <SettingTitleText>프라이빗 룸으로 전환</SettingTitleText>
-        )}
-        <SettingDescriptionText style={{ marginBottom: '0.81rem' }}>
-          프라이빗 룸으로 전활할 경우, 다시 오픈 룸으로 전환할 수 없습니다.
-        </SettingDescriptionText>
-        {!isPrivateRoom && (
-          <StyledButton
-            type="solid"
-            shape="round"
-            style={{ marginTop: '0.81rem' }}
-            onClick={handleModeUpdate}
-          >
-            전환
-          </StyledButton>
-        )}
-      </SettingWrapper>
+      {(isPrivateRoom && roomInfo.typeModifiedDate) || !isPrivateRoom ? (
+        <SettingWrapper>
+          {isPrivateRoom && roomInfo.typeModifiedDate ? (
+            <SettingTitleText style={{ color: '#777' }}>
+              프라이빗 룸으로 전환됨
+              <SettingDescriptionText style={{ marginLeft: '0.5rem' }}>
+                {getConvertedTime(roomInfo?.typeModifiedDate)}
+              </SettingDescriptionText>
+            </SettingTitleText>
+          ) : null}
+          {!isPrivateRoom ? (
+            <SettingTitleText>프라이빗 룸으로 전환</SettingTitleText>
+          ) : null}
+          <SettingDescriptionText style={{ marginBottom: '0.81rem' }}>
+            프라이빗 룸으로 전활할 경우, 다시 오픈 룸으로 전환할 수 없습니다.
+          </SettingDescriptionText>
+          {!isPrivateRoom && (
+            <StyledButton
+              type="solid"
+              shape="round"
+              style={{ marginTop: '0.81rem' }}
+              onClick={handleModeUpdate}
+            >
+              전환
+            </StyledButton>
+          )}
+        </SettingWrapper>
+      ) : null}
 
       <SettingWrapper>
         <SettingTitleText>룸 삭제하기</SettingTitleText>
