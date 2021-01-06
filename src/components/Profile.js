@@ -260,17 +260,29 @@ const Profile = observer(
         const { roomInfo } = roomStore.getDMRoom(myUserId, userId);
 
         if (roomInfo) {
-          if (roomInfo.isVislble) {
-            history.push(`/s/${roomInfo.id}/talk`);
-          } else {
+          // 이미 룸리스트에 있는경우
+          if (roomInfo.isVisible) {
+            const routingHistory = (
+              await userStore.getRoutingHistory({
+                userId: userStore.myProfile.id,
+                roomId: roomInfo.id,
+              })
+            )?.[0];
+
+            history.push(routingHistory?.lastUrl || `/s/${roomInfo.id}/talk`);
+          }
+          // 방은 있지만 룸리스트에 없는 경우 (나간경우)
+          else {
             await roomStore.updateRoomMemberSetting({
               roomId: roomInfo.id,
               myUserId,
               newIsVisible: true,
             });
+            history.push(`/s/${roomInfo.id}/talk`);
           }
-          history.push(`/s/${roomInfo.id}/talk`);
-        } else {
+        }
+        // 아예 방이 없는 경우 (한번도 대화한적이 없음)
+        else {
           const { roomId } = await roomStore.createRoom({
             creatorId: userStore.myProfile.id,
             userList: [{ userId }],
