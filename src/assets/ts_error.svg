@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
+    <title>Icon/system/error</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icon/system/error" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M10,1 C14.9705627,1 19,5.02943725 19,10 C19,14.9705627 14.9705627,19 10,19 C5.02943725,19 1,14.9705627 1,10 C1,5.02943725 5.02943725,1 10,1 Z M10,14 C9.44771525,14 9,14.4477153 9,15 C9,15.5522847 9.44771525,16 10,16 C10.5522847,16 11,15.5522847 11,15 C11,14.4477153 10.5522847,14 10,14 Z M10,4.1 C9.44771525,4.1 9,4.54771525 9,5.1 L9,5.1 L9,12.1 C9,12.6522847 9.44771525,13.1 10,13.1 C10.5522847,13.1 11,12.6522847 11,12.1 L11,12.1 L11,5.1 C11,4.54771525 10.5522847,4.1 10,4.1 Z" id="Combined-Shape" fill="#000000"></path>
+    </g>
+</svg>

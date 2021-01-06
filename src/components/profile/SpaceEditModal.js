@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Message, useCoreStores } from 'teespace-core';
 import styled, { css } from 'styled-components';
 import { Button, Input, Modal, Tooltip } from 'antd';
+import errorIcon from '../../assets/ts_error.svg';
 
 const Wrapper = styled(Modal)`
   width: 27.5rem;
@@ -79,10 +80,8 @@ const ButtonContainer = styled.div`
   margin-top: 2.25rem;
 `;
 
-const WarningText = styled.div`
+const ErrorIcon = styled.div`
   display: ${props => (props.visible ? 'flex' : 'none')};
-  margin-top: 0.5rem;
-  color: red;
 `;
 
 const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
@@ -115,44 +114,20 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
   const handleChangeUrl = event => {
     const targetText = event.target.value;
     setNewAddress(targetText);
-  };
-
-  const handleConfirmEditSpace = async () => {
-    const res = await spaceStore.searchSpaceByDomain({
-      domain: newAddress,
-    });
-    if (res) {
-      setIsWarningTextVisible(true);
-      return;
-    }
-
-    const userId = userStore.myProfile.id;
-    const updatedInfo = {
-      name: newSpaceName,
-      domain: newAddress,
-    };
-    const isLocal = process.env.REACT_APP_ENV === 'local';
-
-    try {
-      await spaceStore.updateCurrentSpace({
-        userId,
-        updatedInfo,
-        isLocal,
-      });
+    if (isWarningTextVisible) {
       setIsWarningTextVisible(false);
-      onClose();
-      onSuccess();
-    } catch (e) {
-      console.log(`Space Edit Error is...${e}`);
     }
   };
 
   const handleExit = () => {
-    setNewSpaceName(currentSpace?.name || '');
-    setNewAddress(currentSpace?.domain || '');
     setIsWarningTextVisible(false);
-    setIsWarningPopupVisible(false);
-    onClose();
+    // tooltip 켜진 상태에서 modal close 시 tooltip 제거
+    setTimeout(() => {
+      setNewSpaceName(currentSpace?.name || '');
+      setNewAddress(currentSpace?.domain || '');
+      setIsWarningPopupVisible(false);
+      onClose();
+    }, 0);
   };
 
   const handleCancelExit = () => {
@@ -167,11 +142,51 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
     }
   };
 
+  const handleConfirmEditSpace = async () => {
+    const userId = userStore.myProfile.id;
+    const isLocal = process.env.REACT_APP_ENV === 'local';
+    let updatedInfo = {};
+
+    if (!isBasicPlan && newAddress !== currentSpace?.domain) {
+      const res = await spaceStore.searchSpaceByDomain({
+        domain: newAddress,
+      });
+      if (res) {
+        setIsWarningTextVisible(true);
+        return;
+      }
+      updatedInfo = {
+        name: newSpaceName,
+        domain: newAddress,
+      };
+    } else {
+      // url 변경 없는 경우
+      updatedInfo = {
+        name: newSpaceName,
+      };
+    }
+
+    try {
+      await spaceStore.updateCurrentSpace({
+        userId,
+        updatedInfo,
+        isLocal,
+      });
+      setIsWarningTextVisible(false);
+      setTimeout(() => {
+        onClose();
+        onSuccess();
+      }, 0);
+    } catch (e) {
+      console.log(`Space Edit Error is...${e}`);
+    }
+  };
+
   return (
     <>
       <Wrapper
         visible={visible}
-        onCancel={onClose}
+        onCancel={handleExit}
         mask
         maskClosable={false}
         title="스페이스 편집"
@@ -189,6 +204,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
             title="URL을 변경하시려면, 플랜을 업그레이드해 주세요."
             placement="bottomLeft"
             color="#0b1d41"
+            // overlayStyle={{ whiteSpace: 'nowrap' }}
           >
             <UrlInputBox disabled={isBasicPlan}>
               <input value={newAddress} disabled />
@@ -198,12 +214,18 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
         ) : (
           <UrlInputBox disabled={isBasicPlan}>
             <input value={newAddress} onChange={handleChangeUrl} />
+            <ErrorIcon visible={isWarningTextVisible}>
+              <Tooltip
+                title="이미 사용중인 URL 입니다."
+                placement="top"
+                visible={isWarningTextVisible}
+              >
+                <img alt="error" src={errorIcon} />
+              </Tooltip>
+            </ErrorIcon>
             <div>.wapl.ai</div>
           </UrlInputBox>
         )}
-        <WarningText visible={isWarningTextVisible}>
-          이미 사용중인 URL입니다.
-        </WarningText>
         <ButtonContainer>
           <Button
             style={{ marginRight: '0.5rem' }}
