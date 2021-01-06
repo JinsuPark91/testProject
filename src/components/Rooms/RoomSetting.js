@@ -58,9 +58,10 @@ const CommonSettingPage = ({ roomInfo = null }) => {
       if (result) {
         setIsChanged(false);
         // NOTE : roomInfo.adminName 에 값이 없음.
-        const admin = await userStore.getProfile({ userId: roomInfo.adminId });
+        // const admin = await userStore.getProfile({ userId: roomInfo.adminId });
         setToastMessage(
-          `${admin.nick || admin.name} 님이 룸 이름을 변경했습니다.`,
+          // `${admin.nick || admin.name} 님이 룸 이름을 변경했습니다.`,
+          `변경 사항이 저장되었습니다.`,
         );
         setIsToastVisible(true);
       } else throw Error(`result:${result}`);
