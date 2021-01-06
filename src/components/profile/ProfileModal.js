@@ -16,6 +16,7 @@ function ProfileModal({
   checkFav = () => false,
   isNotMyFriend = () => false,
   userId,
+  backgroundPhotoURL,
   outLine,
   topButton,
   type,
@@ -53,7 +54,11 @@ function ProfileModal({
       transitionName=""
       maskTransitionName=""
     >
-      <UserArea outLine={outLine}>
+      <UserArea
+        outLine={outLine}
+        isEditMode={isEditMode}
+        imageSrc={backgroundPhotoURL}
+      >
         {topButton && (
           <>
             <TopButtonBox>
@@ -105,9 +110,18 @@ const ModalWrap = styled(Modal)`
 `;
 const UserArea = styled.div`
   background-color: #0b1d41;
+  background-size: cover;
+  background-position: center;
   font-size: 0.75rem;
   color: #fff;
   text-align: center;
+  ${props =>
+    props.isEditMode &&
+    props.imageSrc &&
+    css`
+      background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+        url('${props.imageSrc}');
+    `};
   ${props =>
     props.outLine
       ? css`
