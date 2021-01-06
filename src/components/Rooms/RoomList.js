@@ -253,9 +253,11 @@ function RoomList() {
       </Observer>
       <ButtomWrapper>
         <WaplLogo />
-        <AddRoomIconWrapper onClick={handleCreateRoom}>
-          <AddRoomIcon />
-        </AddRoomIconWrapper>
+        <Tooltip title="룸 만들기" placement="top" color="#0B1D41">
+          <AddRoomIconWrapper onClick={handleCreateRoom}>
+            <AddRoomIcon />
+          </AddRoomIconWrapper>
+        </Tooltip>
         <Toast
           visible={isToastVisible}
           timeoutMs={1000}
