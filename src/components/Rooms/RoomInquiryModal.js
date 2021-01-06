@@ -355,6 +355,7 @@ function RoomInquiryModal({
                 value={roomName}
                 onChange={handleChange}
                 ref={nameInputRef}
+                placeholder={roomInfo?.customName || roomInfo?.name}
               />
             ) : (
               <p>
