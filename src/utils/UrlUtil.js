@@ -21,10 +21,18 @@ export const getWaplSubDomain = () => {
 };
 
 export const getQueryParams = (searchParams = window.location.search) => {
-  let result = {};
-  const params = new URLSearchParams(searchParams);
-  params.forEach((value, key) => {
-    result = { ...result, [key]: value };
-  });
-  return result;
+  if (searchParams) {
+    let result = {};
+    const params = new URLSearchParams(searchParams);
+    params.forEach((value, key) => {
+      result = { ...result, [key]: value };
+    });
+    return result;
+  }
+  return {};
+};
+
+export const getQueryString = queryParams => {
+  if (queryParams) return new URLSearchParams(queryParams).toString();
+  return '';
 };
