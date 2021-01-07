@@ -8,6 +8,7 @@ import privateRoomImg from '../../assets/private_room.svg';
 import openRoomImg from '../../assets/open_room.svg';
 import CreatePrivateRoomDialog from '../dialogs/CreatePrivateRoomDialog';
 import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
+import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 
 const { Title } = Typography;
 
@@ -129,7 +130,12 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
       isNewRoom: !prevRoomList.some(prevRoom => prevRoom.id === roomId),
     });
 
-    history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
+    const queryParams = { ...getQueryParams() };
+    if (isStartMeeting) {
+      queryParams.sub = 'meeting';
+    }
+    const queryString = getQueryString(queryParams);
+    history.push(`/s/${roomId}/talk?${queryString}`);
   };
 
   const handleCreatePrivateRoomCancel = () => {
@@ -156,7 +162,12 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
 
     await talkRoomStore.initialize(userStore.myProfile.id, roomId);
 
-    history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
+    const queryParams = { ...getQueryParams() };
+    if (isStartMeeting) {
+      queryParams.sub = 'meeting';
+    }
+    const queryString = getQueryString(queryParams);
+    history.push(`/s/${roomId}/talk?${queryString}`);
   };
 
   const handleCreatePublicRoomCancel = () => {

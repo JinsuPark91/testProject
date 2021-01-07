@@ -13,6 +13,7 @@ import MeetingIcon from '../../assets/ts_TeeMeeting.svg';
 import EditIcon from '../../assets/edit_white.svg';
 import ProfileInfoModal from '../profile/ProfileInfoModal';
 import RoomAddMemberModal from './RoomAddMemberModal';
+import { getQueryString, getQueryParams } from '../../utils/UrlUtil';
 
 const AddButton = styled.button`
   display: flex;
@@ -278,7 +279,9 @@ function RoomInquiryModal({
     onCancel(e);
   };
   const handleMeeting = e => {
-    history.push(`/s/${roomInfo.id}/talk?sub=meeting`);
+    const queryParams = { ...getQueryParams(), sub: 'meeting' };
+    const queryString = getQueryString(queryParams);
+    history.push(`/s/${roomInfo.id}/talk?${queryString}`);
     onCancel(e);
   };
 

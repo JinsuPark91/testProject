@@ -15,6 +15,7 @@ import AddIcon from '../../assets/add1.svg';
 import Openchat from '../../assets/openchat.svg';
 import { SettingIcon } from '../Icons';
 import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
+import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 
 const { Title } = Typography;
 
@@ -173,7 +174,12 @@ function OpenRoomHome({ visible, onCancel }) {
 
     await talkRoomStore.initialize(userStore.myProfile.id, roomId);
 
-    history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
+    const queryParams = { ...getQueryParams() };
+    if (isStartMeeting) {
+      queryParams.sub = 'meeting';
+    }
+    const queryString = getQueryString(queryParams);
+    history.push(`/s/${roomId}/talk?${queryString}`);
   };
 
   const handleCreatePublicRoomCancel = () => {

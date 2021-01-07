@@ -39,6 +39,7 @@ import {
   MeetingActiveIcon,
   MeetingDisabledIcon,
 } from '../Icons';
+import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 
 const apps = [
   {
@@ -196,6 +197,9 @@ const Header = observer(() => {
   };
 
   const openSubApp = async appName => {
+    const queryParams = { ...getQueryParams(), sub: appName };
+    const queryString = getQueryString(queryParams);
+
     if (PlatformUIStore.resourceType === 'f') {
       try {
         const response = await roomStore.getDMRoom(
@@ -205,18 +209,12 @@ const Header = observer(() => {
         if (!response.result) {
           throw Error('DM ROOM GET FAILED');
         }
-        history.push({
-          pathname: `/s/${response.roomInfo.id}/talk`,
-          search: `?sub=${appName}`,
-        });
+        history.push(`/s/${response.roomInfo.id}/talk?${queryString}`);
       } catch (e) {
         console.error(`Error is${e}`);
       }
     } else {
-      history.push({
-        pathname: history.location.pathname,
-        search: `?sub=${appName}`,
-      });
+      history.push(`${history.location.pathname}?${queryString}`);
     }
   };
 
