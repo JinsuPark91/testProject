@@ -573,7 +573,7 @@ const StyledItem = styled.div`
     `}
 
   .ant-list-item-meta-avatar {
-    margin-right: 0.3125rem;
+    margin-right: 0.4375rem;
     position: relative;
   }
 
