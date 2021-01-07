@@ -78,18 +78,11 @@ function App() {
             <ReactKeycloakProvider
               authClient={keycloak}
               LoadingComponent={<></>}
-              initOptions={
-                process.env.REACT_APP_ENV === 'local'
-                  ? {
-                      onLoad: 'login-required',
-                      redirectUri: '',
-                    }
-                  : {
-                      onLoad: 'check-sso',
-                      silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
-                      redirectUri: ``,
-                    }
-              }
+              initOptions={{
+                onLoad: 'login-required',
+                redirectUri: '',
+                checkLoginIframe: false,
+              }}
             >
               <PortalProvider>
                 {/* <I18nextProvider i18n={i18next}> */}
