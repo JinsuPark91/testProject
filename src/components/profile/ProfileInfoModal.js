@@ -60,6 +60,11 @@ function ProfileInfoModal({
       ? profile.defaultPhotoUrl
       : localProfilePhoto || userStore.getProfilePhotoURL(userId, 'medium');
 
+  const renderBackProfilePhoto =
+    localBackgroundPhoto === null
+      ? profile.isDefaultBackgroundPhoto
+      : localBackgroundPhoto || userStore.getBackgroundPhotoURL(userId);
+
   // calculate whether default url be shown
   const isDefaultProfilePhotoUsed =
     localProfilePhoto === null ||
@@ -537,6 +542,7 @@ function ProfileInfoModal({
       topButton
       isMyId={isMyId}
       isEditMode={isEditMode}
+      backgroundPhotoURL={renderBackProfilePhoto}
       onCancel={handleCloseModal}
       toggleFav={handleToggleFavorite}
       checkFav={isFav}
@@ -637,20 +643,21 @@ const UserImage = styled.div`
   width: 6.25rem;
   height: 6.25rem;
   border-radius: 50%;
+  background-color: #fff;
   cursor: pointer;
   img {
     width: 100%;
     height: 100%;
     border-radius: 50%;
+    object-fit: cover;
   }
 `;
 const ImageChangeBox = styled.div`
   position: absolute;
-  bottom: 0;
-  right: 0;
-  background-color: #0b1d41;
-  border: 0.25rem solid #0b1d41;
+  bottom: 0.25rem;
+  right: 0.25rem;
   border-radius: 50%;
+  /* border: 4px solid #0b1d41; */
 `;
 
 const StyledUpload = styled(Upload)`
@@ -662,7 +669,7 @@ const StyledUpload = styled(Upload)`
 const ImageChangeButton = styled.button`
   width: 2rem;
   height: 2rem;
-  background: #000;
+  background-color: rgba(0, 0, 0, 0.8);
   border-radius: 50%;
   line-height: 0;
   border: 0;

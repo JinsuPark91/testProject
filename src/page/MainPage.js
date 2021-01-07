@@ -10,6 +10,7 @@ import MainSide from '../components/main/MainSide';
 import { Loader, Wrapper } from './MainPageStyle';
 import PlatformUIStore from '../stores/PlatformUIStore';
 import LoadingImg from '../assets/TeeSpace_loading.gif';
+import FloatingButton from '../components/common/FloatingButton';
 
 const useQueryParams = (searchParams = window.location.search) => {
   let result = {};
@@ -53,7 +54,7 @@ const MainPage = () => {
       // 스페이스를 불러오자
       spaceStore.fetchSpaces({
         userId: myUserId,
-        isLocal: process.env.REACT_APP_ENV,
+        isLocal: process.env.REACT_APP_ENV === 'local',
       }),
       // 룸을 불러오자
       roomStore.fetchRoomList({ myUserId }),
@@ -220,6 +221,20 @@ const MainPage = () => {
       />
       {leftSide}
       {mainSide}
+      <FloatingButton
+        visible
+        roomList={roomStore.getRoomArray()}
+        slidesToShow={7}
+        onItemClick={roomInfo => {
+          console.log('Item Clicked. ', roomInfo);
+        }}
+        onItemClose={roomInfo => {
+          console.log('Item Closed. ', roomInfo);
+        }}
+        onCloseAll={() => {
+          console.log('All Closed.');
+        }}
+      />
     </Wrapper>
   );
 };

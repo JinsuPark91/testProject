@@ -6,9 +6,10 @@ import settingIcon from '../../assets/setting.svg';
 import ProfileMyModal from './ProfileMyModal';
 
 const MyProfileInfo = observer(() => {
-  const [myModalVisible, setMyModalVisible] = useState(false);
   const { userStore, authStore } = useCoreStores();
   const userId = authStore.user.id;
+  const { isFirstLogin } = authStore.sessionInfo;
+  const [myModalVisible, setMyModalVisible] = useState(isFirstLogin);
 
   const toggleMyModal = useCallback(() => {
     setMyModalVisible(v => !v);
@@ -35,7 +36,7 @@ const MyProfileInfo = observer(() => {
         onCancel={toggleMyModal}
         visible={myModalVisible}
         thumbPhoto={thumbPhotoMedium}
-        created={false}
+        created={isFirstLogin}
       />
     </>
   );
@@ -48,8 +49,9 @@ const ThumbImage = styled.img`
   width: 1.88rem;
   height: 1.88rem;
   border-radius: 50%;
-  cursor: pointer;
   border: 1px solid rgba(0, 0, 0, 0.05);
+  object-fit: cover;
+  cursor: pointer;
 `;
 const SettingImage = styled.div`
   position: absolute;

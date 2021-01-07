@@ -83,11 +83,11 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
     <FlexModal
       title={
         <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>
-          오픈 룸 만들기
+          {step === 0 ? '오픈 룸 만들기' : '룸 구성원 초대'}
         </div>
       }
       visible={visible}
-      closable={false}
+      onCancel={handleCancel}
       footer={null}
       destroyOnClose
     >

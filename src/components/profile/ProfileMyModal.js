@@ -18,6 +18,7 @@ import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialo
 import AddFriendsBySearch from '../friends/AddFriendsBySearch';
 import SpaceMemberListModal from '../space/SpaceMemberListModal';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
+import SpaceEditModal from './SpaceEditModal';
 import MovePage from '../../utils/MovePage';
 import { getMainWaplURL } from '../../utils/UrlUtil';
 
@@ -53,6 +54,11 @@ const ProfileMyModal = ({
   const [modalTitle, setModalTitle] = useState('');
 
   const [isRoomDialogVisible, setIsRoomDialogVisible] = useState(false);
+
+  const [isSpaceEditDialogVisible, setIsSpaceEditDialogVisible] = useState(
+    false,
+  );
+
   const { keycloak } = useKeycloak();
   const isAdmin = userStore.myProfile.grade === 'admin';
 
@@ -103,6 +109,11 @@ const ProfileMyModal = ({
   //   i18n.changeLanguage(lng);
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
+
+  const handleCancel = useCallback(() => {
+    setSpaceListVisible(false);
+    onCancel();
+  }, [onCancel]);
 
   const handleSendInviteMail = useCallback(() => {
     setIsInviteDialogOpen(false);
@@ -172,7 +183,7 @@ const ProfileMyModal = ({
   }, [orgStore, userStore, authStore]);
 
   const handleSpaceEditDialog = useCallback(() => {
-    console.log('MemberList');
+    setIsSpaceEditDialogVisible(true);
   }, []);
 
   const handleAdminPage = useCallback(() => {
@@ -219,7 +230,9 @@ const ProfileMyModal = ({
   );
   const userContent = !isEditMode ? (
     <>
-      <UserImage src={thumbPhoto} onLoad={revokeURL} />
+      <UserImage>
+        <img src={thumbPhoto} onLoad={revokeURL} alt="" />
+      </UserImage>
       <UserName>
         {userStore.myProfile?.nick || userStore.myProfile?.name}
       </UserName>
@@ -371,7 +384,7 @@ const ProfileMyModal = ({
       )}
       {isCreated && (
         <ProfileSpaceModal
-          userName={profile?.nick || profile?.name}
+          userName={profile?.displayName}
           onInvite={() => setIsInviteDialogOpen(true)}
           onRoomCreate={() => setIsRoomDialogVisible(true)}
           onAddFriend={handleAddFriend}
@@ -418,6 +431,14 @@ const ProfileMyModal = ({
           }
         }}
       />
+      <SpaceEditModal
+        visible={isSpaceEditDialogVisible}
+        onClose={() => setIsSpaceEditDialogVisible(false)}
+        onSuccess={() => {
+          setToastText('변경 사항이 저장되었습니다.');
+          setIsToastOpen(true);
+        }}
+      />
       <Toast
         visible={isToastOpen}
         timeoutMs={1000}
@@ -435,7 +456,7 @@ const ProfileMyModal = ({
       visible={visible}
       mask={isCreated}
       maskClosable={!isCreated}
-      onCancel={onCancel}
+      onCancel={handleCancel}
       closable={false}
       outLine
       width="17rem"
@@ -464,10 +485,29 @@ const ProfileMyModal = ({
   ));
 };
 
-const UserImage = styled.img`
+const UserImage = styled.span`
+  display: inline-block;
+  position: relative;
   width: 3.75rem;
   height: 3.75rem;
   border-radius: 50%;
+  background-color: #fff;
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+  }
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 `;
 const UserName = styled.p`
   overflow: hidden;

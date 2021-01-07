@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Tabs, Button } from 'antd';
-import { useCoreStores, Toast } from 'teespace-core';
+import { useCoreStores, Toast, Message } from 'teespace-core';
 import { DateTime } from 'luxon';
 import { ArrowLeftIcon, CancelIcon } from '../Icons';
 import Input from '../Input';
@@ -23,6 +23,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
   const [isPrivateRoom, setIsPrivateRoom] = useState(false);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [isWarningVisible, setIsWarningVisible] = useState(false);
 
   const { roomStore, userStore } = useCoreStores();
   const history = useHistory();
@@ -58,9 +59,10 @@ const CommonSettingPage = ({ roomInfo = null }) => {
       if (result) {
         setIsChanged(false);
         // NOTE : roomInfo.adminName 에 값이 없음.
-        const admin = await userStore.getProfile({ userId: roomInfo.adminId });
+        // const admin = await userStore.getProfile({ userId: roomInfo.adminId });
         setToastMessage(
-          `${admin.nick || admin.name} 님이 룸 이름을 변경했습니다.`,
+          // `${admin.nick || admin.name} 님이 룸 이름을 변경했습니다.`,
+          `변경 사항이 저장되었습니다.`,
         );
         setIsToastVisible(true);
       } else throw Error(`result:${result}`);
@@ -69,19 +71,41 @@ const CommonSettingPage = ({ roomInfo = null }) => {
     }
   };
 
-  const handleModeUpdate = async () => {
+  const handleClickModeChange = () => {
+    setIsWarningVisible(true);
+  };
+
+  const handleConfirmModeChange = async () => {
     try {
       const result = await roomStore.changeRoomModePrivate({
         roomId: roomInfo.id,
         userId: myUserId,
       });
-
       if (result) setIsPrivateRoom(true);
       else throw Error(`result:${result}`);
     } catch (err) {
       console.error(`[Platform] 프라이빗 룸 전환 실패, ${err}`);
+    } finally {
+      setIsWarningVisible(false);
     }
   };
+
+  const handleCancelModeChange = () => {
+    setIsWarningVisible(false);
+  };
+  // const handleModeUpdate = async () => {
+  //   try {
+  //     const result = await roomStore.changeRoomModePrivate({
+  //       roomId: roomInfo.id,
+  //       userId: myUserId,
+  //     });
+
+  //     if (result) setIsPrivateRoom(true);
+  //     else throw Error(`result:${result}`);
+  //   } catch (err) {
+  //     console.error(`[Platform] 프라이빗 룸 전환 실패, ${err}`);
+  //   }
+  // };
 
   const handleDelete = async () => {
     try {
@@ -136,32 +160,56 @@ const CommonSettingPage = ({ roomInfo = null }) => {
           저장
         </StyledButton>
       </SettingWrapper>
-
-      <SettingWrapper>
-        {isPrivateRoom ? (
-          <SettingTitleText style={{ color: '#777' }}>
-            프라이빗 룸으로 전환됨
-            <SettingDescriptionText style={{ marginLeft: '0.5rem' }}>
-              {getConvertedTime(roomInfo?.typeModifiedDate)}
-            </SettingDescriptionText>
-          </SettingTitleText>
-        ) : (
-          <SettingTitleText>프라이빗 룸으로 전환</SettingTitleText>
-        )}
-        <SettingDescriptionText style={{ marginBottom: '0.81rem' }}>
-          프라이빗 룸으로 전활할 경우, 다시 오픈 룸으로 전환할 수 없습니다.
-        </SettingDescriptionText>
-        {!isPrivateRoom && (
-          <StyledButton
-            type="solid"
-            shape="round"
-            style={{ marginTop: '0.81rem' }}
-            onClick={handleModeUpdate}
-          >
-            전환
-          </StyledButton>
-        )}
-      </SettingWrapper>
+      {(isPrivateRoom && roomInfo.typeModifiedDate) || !isPrivateRoom ? (
+        <SettingWrapper>
+          {isPrivateRoom && roomInfo.typeModifiedDate ? (
+            <SettingTitleText style={{ color: '#777' }}>
+              프라이빗 룸으로 전환됨
+              <SettingDescriptionText style={{ marginLeft: '0.5rem' }}>
+                {getConvertedTime(roomInfo?.typeModifiedDate)}
+              </SettingDescriptionText>
+            </SettingTitleText>
+          ) : null}
+          {!isPrivateRoom ? (
+            <SettingTitleText>프라이빗 룸으로 전환</SettingTitleText>
+          ) : null}
+          <SettingDescriptionText style={{ marginBottom: '0.81rem' }}>
+            프라이빗 룸으로 전환 할 경우, 다시 오픈 룸으로 전환할 수 없습니다.
+          </SettingDescriptionText>
+          {!isPrivateRoom && (
+            <>
+              <Message
+                visible={isWarningVisible}
+                title="프라이빗 룸으로 전환하시겠습니까?"
+                subtitle="한 번 변경하면 다시 오픈 룸으로 전활할 수 없습니다."
+                type="error"
+                btns={[
+                  {
+                    type: 'solid',
+                    shape: 'round',
+                    text: '전환',
+                    onClick: handleConfirmModeChange,
+                  },
+                  {
+                    type: 'outlined',
+                    shape: 'round',
+                    text: '취소',
+                    onClick: handleCancelModeChange,
+                  },
+                ]}
+              />
+              <StyledButton
+                type="solid"
+                shape="round"
+                style={{ marginTop: '0.81rem' }}
+                onClick={handleClickModeChange}
+              >
+                전환
+              </StyledButton>
+            </>
+          )}
+        </SettingWrapper>
+      ) : null}
 
       <SettingWrapper>
         <SettingTitleText>룸 삭제하기</SettingTitleText>
@@ -185,10 +233,6 @@ const CommonSettingPage = ({ roomInfo = null }) => {
 const RoomSetting = ({ roomInfo }) => {
   const history = useHistory();
 
-  const handleBack = () => {
-    history.goBack();
-  };
-
   const handleClose = () => {
     history.push(`/s/${roomInfo.id}/talk`);
   };
@@ -197,7 +241,7 @@ const RoomSetting = ({ roomInfo }) => {
     <Wrapper>
       <Header style={{ padding: '0 0.89rem' }}>
         <Centered>
-          <IconWrapper onClick={handleBack}>
+          <IconWrapper onClick={handleClose}>
             <ArrowLeftIcon width={1} height={1} color="#75757F" />
           </IconWrapper>
           <TitleText style={{ marginLeft: '0.5rem' }}>룸 설정</TitleText>

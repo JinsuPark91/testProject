@@ -253,9 +253,11 @@ function RoomList() {
       </Observer>
       <ButtomWrapper>
         <WaplLogo />
-        <AddRoomIconWrapper onClick={handleCreateRoom}>
-          <AddRoomIcon />
-        </AddRoomIconWrapper>
+        <Tooltip title="룸 만들기" placement="top" color="#0B1D41">
+          <AddRoomIconWrapper onClick={handleCreateRoom}>
+            <AddRoomIcon />
+          </AddRoomIconWrapper>
+        </Tooltip>
         <Toast
           visible={isToastVisible}
           timeoutMs={1000}
@@ -316,7 +318,7 @@ const InputWrapper = styled.div`
 `;
 
 const StyledInfoTitle = styled.p`
-  margin-bottom: 0.81rem;
+  margin-bottom: 0.94rem;
   font-size: 0.94rem;
   color: #523dc7;
   letter-spacing: 0;
@@ -325,7 +327,7 @@ const StyledInfoTitle = styled.p`
 `;
 
 const StyledSubInfo = styled.p`
-  margin-bottom: 1.63rem;
+  margin-bottom: 1.25rem;
   font-size: 0.75rem;
   color: #6c56e5;
   letter-spacing: 0;
@@ -336,8 +338,9 @@ const StyledSubInfo = styled.p`
 const WelcomeBackgroundImage = styled.div`
   width: 12.5rem;
   height: 12.5rem;
-  margin: 0 auto 0.81rem;
+  margin: 0 auto;
   background: url('${EmptyRoomIllust}') center 0 no-repeat;
+  background-size: contain;
 `;
 
 const AddRoomIconWrapper = styled.div`
