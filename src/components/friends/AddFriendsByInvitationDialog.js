@@ -187,7 +187,9 @@ function AddFriendsByInvitationDialog({
 
     try {
       const sendChipSet = new Set(chipList);
-      sendChipSet.add(mailAddress);
+      if (mailAddress.length) {
+        sendChipSet.add(mailAddress);
+      }
 
       friendStore.sendInvitationMail({
         myUserId,
