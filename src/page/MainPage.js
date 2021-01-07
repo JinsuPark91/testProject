@@ -11,22 +11,14 @@ import { Loader, Wrapper } from './MainPageStyle';
 import PlatformUIStore from '../stores/PlatformUIStore';
 import LoadingImg from '../assets/TeeSpace_loading.gif';
 import FloatingButton from '../components/common/FloatingButton';
-
-const useQueryParams = (searchParams = window.location.search) => {
-  let result = {};
-  const params = new URLSearchParams(searchParams);
-  params.forEach((value, key) => {
-    result = { ...result, [key]: value };
-  });
-  return result;
-};
+import { getQueryParams } from '../utils/UrlUtil';
 
 const MainPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const history = useHistory();
   const { resourceType, resourceId, mainApp } = useParams();
-  const { sub: subApp } = useQueryParams(history.location.search);
+  const { sub: subApp } = getQueryParams(history.location.search);
 
   const { roomStore, userStore, friendStore, spaceStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
@@ -157,7 +149,7 @@ const MainPage = () => {
 
     const currentResourceType = pathArr[1];
     const currentMainApp = pathArr[3];
-    const currentSubApp = /sub=(.[^/&?#]*)/gi.exec(search)?.[1];
+    const { sub: currentSubApp } = getQueryParams(search);
 
     let currentResourceId = pathArr[2];
     switch (currentResourceType) {

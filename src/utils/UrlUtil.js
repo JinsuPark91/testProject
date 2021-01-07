@@ -19,3 +19,12 @@ export const getWaplSubDomain = () => {
   const url = window.location.origin; //  http://xxx.dev.teespace.net
   return url.split(`//`)[1].split(`.`)[0]; //  xxx
 };
+
+export const getQueryParams = (searchParams = window.location.search) => {
+  let result = {};
+  const params = new URLSearchParams(searchParams);
+  params.forEach((value, key) => {
+    result = { ...result, [key]: value };
+  });
+  return result;
+};
