@@ -13,7 +13,10 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
   const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
   let domainName;
   let loginInfo;
+  
+  
   if (process.env.REACT_APP_ENV === 'local') {
+   
     [domainName] = process.env.REACT_APP_DEV_SERVICE_DOMAIN.split('.');
     loginInfo = {
       id: keycloak.tokenParsed.email,
@@ -35,7 +38,8 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
       render={() => {
         (async () => {
           try {
-            if (keycloak.tokenParsed?.email !== authStore.user?.loginId) {
+          
+            if ( authStore.user?.loginId && authStore.user?.loginId !== keycloak.tokenParsed?.email) {
               await authStore.logout();
             }
 
