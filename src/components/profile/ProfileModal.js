@@ -112,6 +112,7 @@ const UserArea = styled.div`
   background-color: #0b1d41;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   font-size: 0.75rem;
   color: #fff;
   text-align: center;

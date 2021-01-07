@@ -51,15 +51,27 @@ const UserItem = styled.div`
   }
 `;
 const UserImag = styled.div`
+  position: relative;
   width: 1.5rem;
   height: 1.5rem;
   border-radius: 50%;
   flex-shrink: 0;
   cursor: pointer;
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+  }
   img {
     width: 100%;
     height: 100%;
     border-radius: 50%;
+    object-fit: cover;
   }
 `;
 const UserName = styled.p`

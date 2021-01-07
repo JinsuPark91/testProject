@@ -126,6 +126,7 @@ const Wrapper = styled.div`
   right: 30px;
   bottom: 30px;
   padding: 0 0.5rem;
+  z-index: 5;
 `;
 
 const RoundButton = styled.div`
