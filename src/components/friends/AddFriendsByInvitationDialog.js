@@ -173,7 +173,7 @@ function AddFriendsByInvitationDialog({
       return;
     }
 
-    if (!checkEmailValid(mailAddress)) {
+    if (mailAddress.length > 0 && !checkEmailValid(mailAddress)) {
       handleToggleMessage();
       return;
     }
