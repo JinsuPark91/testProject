@@ -384,7 +384,7 @@ const ProfileMyModal = ({
       )}
       {isCreated && (
         <ProfileSpaceModal
-          userName={profile?.nick || profile?.name}
+          userName={profile?.displayName}
           onInvite={() => setIsInviteDialogOpen(true)}
           onRoomCreate={() => setIsRoomDialogVisible(true)}
           onAddFriend={handleAddFriend}
