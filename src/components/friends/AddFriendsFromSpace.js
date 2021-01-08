@@ -46,7 +46,6 @@ function AddFriendsFromSpace({
 
 const Wrapper = styled.div`
   width: 100%;
-  padding: 0.63rem 0.81rem 0.63rem 0.63rem;
 `;
 
 export default AddFriendsFromSpace;

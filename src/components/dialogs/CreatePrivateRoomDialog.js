@@ -70,13 +70,9 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
       visible={visible}
       onCancel={handleCancel}
       onOk={handleOk}
-      title={
-        <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>
-          프라이빗 룸 만들기
-        </div>
-      }
+      title="프라이빗 룸 만들기"
       footer={null}
-      style={{ width: 'auto' }}
+      width="fit-content"
       destroyOnClose
     >
       <>
@@ -86,7 +82,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
           disabledIds={disabledIds}
           defaultSelectedUsers={[userStore.myProfile]}
           showMeOnFriendTab={false}
-          height={20} // rem
+          height={25} // rem
         />
         <ConfigWrapper>
           <ConfigTitle>
