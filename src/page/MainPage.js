@@ -213,7 +213,7 @@ const MainPage = () => {
       />
       {leftSide}
       {mainSide}
-      <FloatingButton
+      {/* <FloatingButton
         visible
         roomList={roomStore.getRoomArray()}
         slidesToShow={7}
@@ -226,7 +226,7 @@ const MainPage = () => {
         onCloseAll={() => {
           console.log('All Closed.');
         }}
-      />
+      /> */}
     </Wrapper>
   );
 };
