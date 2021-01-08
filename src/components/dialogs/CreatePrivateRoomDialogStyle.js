@@ -4,28 +4,29 @@ import styled, { css } from 'styled-components';
 export const ConfigTitle = styled.div`
   display: flex;
   align-items: center;
-  margin: 0.94rem 0 0.25rem 0.38rem;
+  margin-top: 1rem;
 `;
 
 export const ConfigTitleText = styled.span`
-  font-size: 0.81rem;
-  color: #000000;
-  font-weight: bold;
   margin-left: 0.38rem;
+  font-size: 0.81rem;
+  line-height: 0.94rem;
+  color: #000;
+  font-weight: 500;
 `;
 
 export const ConfigDescriptionText = styled.div`
+  margin: 0.19rem 0 0.94rem 1.32rem;
   white-space: pre-line;
-  padding-left: 1.3rem;
   font-size: 0.75rem;
-  color: #777777;
-  margin-bottom: 0.88rem;
+  line-height: 1rem;
+  color: #777;
 `;
 
 export const Input = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 1.3rem;
+  margin-left: 1.32rem;
   padding: 0 0.75rem;
   height: 1.8rem;
   background: ${({ disabled }) => (disabled ? '#cccccc' : '#fff')};
@@ -78,9 +79,7 @@ export const FlexModal = styled(Modal)`
 `;
 
 export const ConfigWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 0 1.19rem 1.31rem 1.19rem;
+  padding: 0.19rem 1.88rem 1.19rem;
   border: solid #e3e7eb;
   border-width: 1px 0;
 `;

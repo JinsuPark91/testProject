@@ -24,19 +24,35 @@ const UserCount = styled.span`
 
 const Wrapper = styled.div`
   max-height: 25.81rem;
+  padding: 0.63rem 0.75rem;
 `;
 
-const FriendItem = styled.li`
-    display:flex;
-    justify-content: space-between;
-    align-items: center;
-    padding 0.44rem 0;
+const FriendItem = styled.div`
+  display: flex;
+  padding: 0.44rem 0.81rem 0.44rem 0.63rem;
+  justify-content: space-between;
+  align-items: center;
+`;
 
-    & > img {
-      width: 2.5rem;
-      height: 2.5rem;
-      border-radius: 50%;
-    }
+const ImageBox = styled.div`
+  position: relative;
+  width: 2.13rem;
+  height: 2.13rem;
+
+  &:after {
+    content: '';
+    position: absolute;
+    inset: 0px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 `;
 
 const FriendName = styled.p`
@@ -158,13 +174,15 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
       <>
         <FriendItem style={style}>
           {isMe && <MyBadge> 나 </MyBadge>}
-          <img
-            alt="profile"
-            src={userStore.getProfilePhotoURL(
-              friendInfo?.friendId || friendInfo?.id,
-              'small',
-            )}
-          />
+          <ImageBox>
+            <img
+              alt="profile"
+              src={userStore.getProfilePhotoURL(
+                friendInfo?.friendId || friendInfo?.id,
+                'small',
+              )}
+            />
+          </ImageBox>
           <FriendName>{userName}</FriendName>
           {!isViewMode && renderMenu(friendInfo)}
         </FriendItem>
