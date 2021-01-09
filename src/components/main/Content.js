@@ -1,12 +1,13 @@
 import React, { useRef, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import { Talk } from 'teespace-talk-app';
 import { NoteApp } from 'teespace-note-app';
 import { CalendarApp } from 'teespace-calendar-app';
 import { MailMainView, MailSubView } from 'teespace-mail-app';
 import { DriveApp, DriveAllApp } from 'teespace-drive-app';
-import { MeetingApp } from 'teespace-meeting-app';
-import { useCoreStores } from 'teespace-core';
+import { App as MeetingApp } from 'teespace-meeting-app';
+import { useCoreStores, AppState } from 'teespace-core';
 import RoomSetting from '../Rooms/RoomSetting';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import { Wrapper, Splitter } from './ContentStyle';
@@ -21,6 +22,7 @@ const remToPixel = rem => {
 
 const Content = () => {
   const { userStore, roomStore } = useCoreStores();
+  const history = useHistory();
   const splitRef = useRef(null);
   const contentRef = useRef(null);
   const myUserId = userStore.myProfile.id;
@@ -123,6 +125,13 @@ const Content = () => {
             roomId={getRoomId()}
             channelId={getChannelId('CHN0005')}
             layoutState={PlatformUIStore.layout}
+            appState={PlatformUIStore.subAppState}
+            onChangeAppState={state => {
+              PlatformUIStore.subAppState = state;
+              if (state === AppState.STOPPED) {
+                history.push(PlatformUIStore.nextLocation);
+              }
+            }}
           />
         );
       case 'mail':

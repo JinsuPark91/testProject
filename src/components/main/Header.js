@@ -1,10 +1,11 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 // import { NoteIcon } from 'teespace-note-app';
 // import { DriveIcon, ViewFileIcon } from 'teespace-drive-app';
 // import { CalendarIcon } from 'teespace-calendar-app';
-import { useCoreStores, Message } from 'teespace-core';
+import { useCoreStores } from 'teespace-core';
+import MeetingApp from 'teespace-meeting-app';
 import {
   Wrapper,
   TitleWrapper,
@@ -127,9 +128,9 @@ const AppIcon = React.memo(
 const Header = observer(() => {
   const history = useHistory();
   const { roomStore, userStore } = useCoreStores();
-  const [isMessageVisible, setIsMessageVisible] = useState(false);
   const [isRoomProfileVisible, setRoomProfileVisible] = useState(false);
   const [isAddMemberVisible, setAddMemberVisible] = useState(false);
+  const [appConfirm, setAppConfirm] = useState();
 
   const findRoom = () => {
     if (PlatformUIStore.resourceType !== 'f') {
@@ -192,10 +193,6 @@ const Header = observer(() => {
     PlatformUIStore.isSearchVisible = true;
   };
 
-  const toggleMessageVisible = () => {
-    setIsMessageVisible(!isMessageVisible);
-  };
-
   const openSubApp = async appName => {
     const queryParams = { ...getQueryParams(), sub: appName };
     const queryString = getQueryString(queryParams);
@@ -224,11 +221,24 @@ const Header = observer(() => {
     });
   };
 
-  const handleAppClick = appName => {
-    if (appName === 'meeting') {
-      toggleMessageVisible();
-    } else if (PlatformUIStore.subApp !== appName) {
-      openSubApp(appName);
+  const handleAppClick = async appName => {
+    if (PlatformUIStore.subApp !== appName) {
+      if (appName === 'meeting') {
+        const meetingAppConfirm = (
+          <MeetingApp.ConfirmLaunchApp
+            onConfirm={() => {
+              setAppConfirm(null);
+              openSubApp(appName);
+            }}
+            onCancel={() => {
+              setAppConfirm(null);
+            }}
+          />
+        );
+        setAppConfirm(meetingAppConfirm);
+      } else {
+        openSubApp(appName);
+      }
     } else {
       closeSubApp();
     }
@@ -347,28 +357,7 @@ const Header = observer(() => {
       </TitleWrapper>
 
       <AppIconContainer>
-        <Message
-          visible={isMessageVisible}
-          title="Meeting을 시작하시겠습니까?"
-          subtitle="미팅을 시작하면 멤버들에게 참여 알림이 전송됩니다."
-          btns={[
-            {
-              text: '미팅 시작',
-              type: 'solid',
-              onClick: () => {
-                toggleMessageVisible();
-                openSubApp('meeting');
-              },
-            },
-            {
-              text: '취소',
-              type: 'outlined',
-              onClick: () => {
-                toggleMessageVisible();
-              },
-            },
-          ]}
-        />
+        {appConfirm}
         {apps.map(({ name, icons, isUsedInMyRoom }) => (
           <AppIcon
             key={name}
