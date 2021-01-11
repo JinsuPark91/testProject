@@ -11,8 +11,7 @@
       "src": "logo180.png",
       "type": "image/png",
       "sizes": "180x180"
-    },
-    
+    }
   ],
   "start_url": ".",
   "display": "standalone",

@@ -131,7 +131,7 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
       isNewRoom: !prevRoomList.some(prevRoom => prevRoom.id === roomId),
     });
 
-    history.push(`/s/${roomId}/talk?${isStartMeeting ? 'sub=meeting' : ''}`);
+    history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
   };
 
   const handleCreatePrivateRoomCancel = () => {
@@ -158,7 +158,7 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
 
     await talkRoomStore.initialize(userStore.myProfile.id, roomId);
 
-    history.push(`/s/${roomId}/talk?${isStartMeeting ? 'sub=meeting' : ''}`);
+    history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
   };
 
   const handleCreatePublicRoomCancel = () => {
