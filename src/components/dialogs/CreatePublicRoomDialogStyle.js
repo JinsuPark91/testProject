@@ -1,16 +1,18 @@
 import { Modal, Checkbox } from 'antd';
 import styled, { css } from 'styled-components';
 
-export const Wrapper = styled.div`
-  padding: 2.06rem 2.13rem 0 1.56rem;
+export const InfoContainer = styled.div`
+  padding: 2.38rem 1.25rem 2rem;
+  border-bottom: 1px solid #e3e7eb;
 `;
 
 export const ButtonContainer = styled.div`
   display: flex;
-  height: 4rem;
+  padding: 1.06rem 0;
   align-items: center;
   justify-content: center;
-  & button:not(:last-child) {
+
+  button:not(:last-child) {
     margin-right: 0.38rem;
   }
 `;
@@ -37,8 +39,8 @@ export const StyledButton = styled.button`
 `;
 
 export const Input = styled.div`
-  margin-top: 0.63rem;
-  width: 31.25rem;
+  margin-top: 0.38rem;
+  width: 21.88rem;
   display: flex;
   align-items: center;
   padding: 0 0.75rem;
@@ -93,14 +95,10 @@ export const FlexModal = styled(Modal)`
   }
 `;
 
-export const Title = styled.div`
-  font-size: 0.94rem;
-  font-weight: 600;
-`;
 export const Description = styled.div`
-  font-size: 0.75rem;
-  color: #8e8d94;
-  margin-top: 0.44rem;
+  font-size: 0.69rem;
+  line-height: 1.06rem;
+  color: #8d8d8d;
 `;
 
 export const LengthCounter = styled.div`
@@ -110,5 +108,13 @@ export const LengthCounter = styled.div`
 export const ConfigWrapper = styled.div`
   display: flex;
   align-items: center;
-  padding: 0.88rem 1.19rem 0 1.19rem;
+  padding: 0.81rem 1.19rem 0 1.19rem;
+  border-top: 1px solid #e3e7eb;
+`;
+
+export const Title = styled.div`
+  font-size: 0.81rem;
+  line-height: 1.13rem;
+  font-weight: 500;
+  color: #000;
 `;

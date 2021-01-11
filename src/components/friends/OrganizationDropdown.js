@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useObserver } from 'mobx-react';
 import { TreeSelect, useCoreStores } from 'teespace-core';
+import styled from 'styled-components';
 
 const valueCreator = org => `${org.companyCode}_${org.departmentCode}`;
 /**
@@ -54,7 +55,7 @@ function OrganizationDropdown({
   ]);
 
   return useObserver(() => (
-    <TreeSelect
+    <StyledTreeSelect
       dropdownClassName="teespace-common"
       treeDefaultExpandedKeys={[dropdownValue || dropdownDefaultValue]}
       value={overwrittenValue || dropdownValue || dropdownDefaultValue}
@@ -63,10 +64,23 @@ function OrganizationDropdown({
       onChange={handleDropdownChange}
       placeholder="please select"
       dropdownMatchSelectWidth={false}
-      dropdownStyle={{ minWidth: 500 }}
+      dropdownStyle={{ minWidth: '21.5rem' }}
     />
   ));
 }
+
+const StyledTreeSelect = styled(TreeSelect)`
+  &.ant-select {
+    height: 1.5rem;
+    &:not(.ant-select-customize-input) .ant-select-selector {
+      height: 1.5rem;
+      border-color: transparent;
+      .ant-select-selection-item {
+        line-height: 1.375rem;
+      }
+    }
+  }
+`;
 
 export default OrganizationDropdown;
 OrganizationDropdown.valueCreator = valueCreator;

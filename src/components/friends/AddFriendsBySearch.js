@@ -26,15 +26,11 @@ const StyledModal = styled(Modal)`
 
 const AddFriendSearchForm = styled.div`
   width: 100%;
-  padding: 0.63rem 0.75rem;
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
   overflow-y: auto;
 `;
 
 const SearchBox = styled.div`
-  width: 100%;
+  padding: 0.63rem 0.75rem;
   .anticon {
     color: #bdc6d3;
   }

@@ -9,11 +9,11 @@ const MovePage = (targetInfo, newWindow = false) => {
   if (purl[0].match('127') || purl[0].match('192') || purl[0].match('local')) {
     targetURL = `${window.location.protocol}//teespace.com/${targetInfo}`;
   } else {
-    const tdomain = purl[1];
-    if (purl[1] === 'teespace') {
-      targetURL = `${window.location.protocol}//teespace.com/${targetInfo}`;
+    const hostname = /([0-9a-zA-Z-_]+)\.(.*)/g.exec(window.location.hostname);
+    if (hostname.length === 3) {
+      targetURL = `${window.location.protocol}//${hostname[2]}/${targetInfo}`;
     } else {
-      targetURL = `${window.location.protocol}//${tdomain}.wapl.ai/${targetInfo}`;
+      targetURL = `${window.location.protocol}//${window.location.hostname}/${targetInfo}`;
     }
   }
 

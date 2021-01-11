@@ -51,13 +51,14 @@ const StyledInfoImg = styled.img`
   margin-bottom: 0.63rem;
 `;
 const StyledButton = styled(Button)`
+  &.ant-btn {
     width: 8.38rem;
     height: 1.88rem;
+    padding: 0 0.5rem;
     font-size: 0.75rem;
-    background-color:
-    color: #FFFFFF;
-    letter-spacing: 0;
+    color: #fff;
     text-align: center;
+  }
 `;
 
 const StyledModal = styled(Modal)`
