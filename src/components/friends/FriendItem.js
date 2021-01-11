@@ -82,16 +82,15 @@ const FriendItemWrapper = styled.div`
         justify-content: center;
         align-items: center;
         background: transparent;
-        box-shadow: 0;
+        box-shadow: none;
         border: 0;
         color: #75757f;
         &:hover {
-          justify-content: center;
-          align-items: center;
-          width: 1.5rem;
-          height: 1.5rem;
-          color: #75757f;
           background-color: #dcddff;
+        }
+        &:active,
+        &:focus {
+          background-color: transparent;
         }
       }
     `}
@@ -160,13 +159,16 @@ const ProfileBadge = styled.span`
 `;
 
 const NewFriendBadge = styled.div`
-  background-color: #ff486d;
-  height: fit-content;
+  height: 1rem;
+  min-width: 1.06rem;
+  padding: 0 0.38rem;
+  line-height: 1rem;
+  font-size: 0.63rem;
   color: #fff;
   font-weight: 400;
-  font-size: 0.63rem;
-  padding: 0.06rem 0.19rem;
-  border-radius: 0.56rem;
+  text-align: center;
+  border-radius: 0.69rem;
+  background-color: #ff486d;
 `;
 
 const StyledAvatar = styled.div`

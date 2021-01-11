@@ -86,10 +86,11 @@ export const ConfigWrapper = styled.div`
 
 export const ButtonContainer = styled.div`
   display: flex;
-  height: 4.3rem;
+  padding: 1.06rem 0;
   align-items: center;
   justify-content: center;
-  & button:not(:last-child) {
+
+  button:not(:last-child) {
     margin-right: 0.38rem;
   }
 `;

@@ -600,13 +600,16 @@ const StyledItem = styled.div`
 `;
 
 const UnreadCount = styled.div`
-  background-color: #ff486d;
-  height: fit-content;
+  height: 1rem;
+  min-width: 1.06rem;
+  padding: 0 0.38rem;
+  line-height: 1rem;
+  font-size: 0.63rem;
   color: #fff;
   font-weight: 400;
-  font-size: 0.63rem;
-  padding: 0.06rem 0.19rem;
-  border-radius: 0.56rem;
+  text-align: center;
+  border-radius: 0.69rem;
+  background-color: #ff486d;
 `;
 
 const TitleIconWrapper = styled.div`
@@ -616,11 +619,13 @@ const TitleIconWrapper = styled.div`
 `;
 const IconWrapper = styled.div`
   display: none;
+  width: 1.5rem;
+  height: 1.5rem;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
   padding: 0.25rem;
   border-radius: 50%;
+  cursor: pointer;
   &:hover {
     background: #dcddff;
   }
