@@ -3,19 +3,17 @@ import { useObserver } from 'mobx-react';
 import { useCoreStores, Toast } from 'teespace-core';
 import { FixedSizeList as List } from 'react-window';
 import styled from 'styled-components';
-import Photos from '../Photos';
 import AddFriendImg from '../../assets/ts_friend_add.svg';
+import ProfileInfoModal from '../profile/ProfileInfoModal';
 
 const SpaceInfo = styled.div`
   margin-bottom: 0.24rem;
 `;
-
 const SpaceName = styled.span`
   font-size: 0.75rem;
   color: #000000;
   max-width: 80%;
 `;
-
 const UserCount = styled.span`
   font-size: 0.75rem;
   color: #6c56e5;
@@ -125,7 +123,10 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [friendUserName, setFriendUserName] = useState('');
 
-  let memberList = friendAddList;
+  const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
+  const [profileId, setProfileId] = useState('');
+
+  let memberList = friendAddList.slice();
   if (memberList && memberList.length) {
     memberList = memberList.sort((a, b) =>
       a.displayName.toLowerCase() < b.displayName.toLowerCase() ? -1 : 1,
@@ -166,7 +167,13 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
     return null;
   };
 
-  const FriendAddItem = ({ friendInfo, style }) => {
+  const handleOpenProfile = userId => {
+    // profile core 작업 후 추가
+    // setProfileId(userId);
+    // setIsProfileModalVisible(true);
+  };
+
+  const FriendAddItem = React.memo(({ friendInfo, style }) => {
     const userName = friendInfo?.displayName;
     const isMe =
       friendInfo?.friendId || friendInfo.id === userStore.myProfile.id;
@@ -174,7 +181,11 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
       <>
         <FriendItem style={style}>
           {isMe && <MyBadge> 나 </MyBadge>}
-          <ImageBox>
+          <ImageBox
+            onClick={() =>
+              handleOpenProfile(friendInfo?.friendId || friendInfo?.id)
+            }
+          >
             <img
               alt="profile"
               src={userStore.getProfilePhotoURL(
@@ -188,10 +199,9 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
         </FriendItem>
       </>
     );
-  };
+  });
 
-  // TODO: id로 key 교체
-  return useObserver(() => (
+  return (
     <>
       {/* {isViewMode && (
         <SpaceInfo>
@@ -226,8 +236,16 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
       >
         {friendUserName}님이 프렌즈로 추가되었습니다.
       </Toast>
+      {isProfileModalVisible && (
+        <ProfileInfoModal
+          userId={profileId}
+          visible={isProfileModalVisible}
+          onClose={() => setIsProfileModalVisible(false)}
+          position={{ left: '17rem' }}
+        />
+      )}
     </>
-  ));
+  );
 };
 
 export default React.memo(AddFriendsItem);

@@ -19,6 +19,7 @@ import Contentpassword from './Contentpassword';
 import SettingContentpasswordedit from './SettingContentpasswordedit';
 import Settingsave from './Settingsave';
 import TermsFooter from '../login/TermsFooter';
+import { SELECTED_TAB } from './SettingConstants';
 
 const DialogWrap = styled(Modal)`
   .ant-modal-body {
@@ -112,7 +113,6 @@ function SettingDialog(props) {
   const [isPhoneEdit, setIsPhoneEdit] = useState(false);
   const [isBirthDateEdit, setIsBirthDateEdit] = useState(false);
 
-  const [profilePhoto, setProfilePhoto] = useState(undefined);
   const [name, setName] = useState('');
   const [nick, setNick] = useState('');
   const [companyNum, setCompanyNum] = useState('');
@@ -125,7 +125,6 @@ function SettingDialog(props) {
   const [inputPassword, setInputPassword] = useState('');
 
   const isB2B = userStore.myProfile.type === 'USR0001';
-  const isAdmin = userStore.myProfile.grade === 'admin';
 
   const handleToggleNameInput = useCallback(() => {
     setIsNameEdit(!isNameEdit);
@@ -238,16 +237,47 @@ function SettingDialog(props) {
   }, [selectedKey]);
 
   useEffect(() => {
-    setSelectedKey('4'); // setSelectedKey(selectedKeyA);
+    setSelectedKey(selectedKeyA);
   }, [selectedKeyA]);
 
   const handleSecessionButton = type => {
     setbuttonFooter(type);
   };
 
+  const handleInitializeAccountButton = () => {
+    setIsNameEdit(false);
+    setIsNickEdit(false);
+    setIsCountryCodeEdit(false);
+    setIsCompanyNumEdit(false);
+    setIsPhoneEdit(false);
+    setIsBirthDateEdit(false);
+  };
+
+  const handleInitializeSecessionButton = () => {
+    setIsSecessionContinue(false);
+    setChecked(false);
+    setInputPassword('');
+  };
+
+  const handleTabClick = key => {
+    setSelectedKey(key);
+    if (key !== SELECTED_TAB.MY_INFO) {
+      handleInitializeAccountButton();
+    } else if (key !== SELECTED_TAB.SECESSION) {
+      handleInitializeSecessionButton();
+    }
+  };
+
+  const handleCancel = () => {
+    setSelectedKey(SELECTED_TAB.MY_INFO);
+    handleInitializeAccountButton();
+    handleInitializeSecessionButton();
+    onCancel();
+  };
+
   return useObserver(() => (
     <DialogWrap
-      onCancel={onCancel}
+      onCancel={handleCancel}
       visible={visible}
       width="46.88rem"
       title="설정"
@@ -275,14 +305,10 @@ function SettingDialog(props) {
       <LayoutWrap>
         <SiderArea>
           <StyledMenu
-            defaultSelectedKeys={['3']}
+            defaultSelectedKeys={['4']}
+            selectedKeys={selectedKey}
             onClick={({ item, key }) => {
-              setSelectedKey(key);
-              if (key !== '7') {
-                setIsSecessionContinue(false);
-                setChecked(false);
-                setInputPassword('');
-              }
+              handleTabClick(key);
             }}
           >
             {/* <Menu.ItemGroup key="0" title="환경설정">
@@ -292,7 +318,7 @@ function SettingDialog(props) {
             <Menu.ItemGroup key="3" title="계정설정">
               <Menu.Item key="4">내 정보</Menu.Item>
               {/* <Menu.Item key="5">비밀번호변경</Menu.Item> */}
-              {!isB2B && !isAdmin && <Menu.Item key="7">서비스 탈퇴</Menu.Item>}
+              <Menu.Item key="7">서비스 탈퇴</Menu.Item>
             </Menu.ItemGroup>
           </StyledMenu>
         </SiderArea>
@@ -361,7 +387,7 @@ function SettingDialog(props) {
               </InnerList>
             </>
           )}
-          {selectedKey === '5' && (
+          {/* {selectedKey === '5' && (
             <Contentpassword onClick={() => setSelectedKey('6')} />
           )}
           {selectedKey === '6' && (
@@ -369,7 +395,7 @@ function SettingDialog(props) {
               form={form}
               passwordChange={() => setSelectedKey('5')}
             />
-          )}
+          )} */}
           {selectedKey === '7' && (
             <ContentSpaceSecession
               isContinue={isSecessionContinue}
