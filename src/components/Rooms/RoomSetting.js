@@ -280,7 +280,10 @@ const Wrapper = styled.div`
 const SettingWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 2.25rem;
+  max-width: 25rem;
+  & + & {
+    margin-top: 2.25rem;
+  }
 `;
 
 const Centered = styled.div`
@@ -290,6 +293,7 @@ const Centered = styled.div`
 
 const Header = styled.div`
   display: flex;
+  flex-shrink: 0;
   height: 2.63rem;
   align-items: center;
   justify-content: space-between;
@@ -329,18 +333,26 @@ const SettingDescriptionText = styled.span`
 
 const Content = styled.div`
   display: flex;
+  overflow-y: auto;
 `;
 
 const StyledTabs = styled(Tabs)`
   width: 100%;
 
-  & .ant-tabs-tab {
+  &.ant-tabs.default {
+    .ant-tabs-nav {
+      height: 2.88rem;
+      margin-bottom: 0;
+    }
+  }
+
+  .ant-tabs-tab {
     flex: none !important;
     width: 7rem;
   }
 
-  & .ant-tabs-nav {
-    height: 2.88rem;
+  .ant-tabs-content {
+    overflow-y: auto;
   }
 `;
 

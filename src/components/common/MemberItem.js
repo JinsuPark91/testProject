@@ -17,10 +17,10 @@ const MemberItem = ({ memberInfo, style }) => {
 
 const Style = {
   Item: styled.li`
-    display:flex;
+    display: flex;
     justify-content: space-between;
     align-items: center;
-    padding 0.44rem 0;
+    padding: 0.44rem 0;
 
     & > img {
       width: 2.5rem;
