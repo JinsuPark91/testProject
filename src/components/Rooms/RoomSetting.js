@@ -160,9 +160,9 @@ const CommonSettingPage = ({ roomInfo = null }) => {
           저장
         </StyledButton>
       </SettingWrapper>
-      {(isPrivateRoom && roomInfo.typeModifiedDate) || !isPrivateRoom ? (
+      {(isPrivateRoom && roomInfo?.typeModifiedDate) || !isPrivateRoom ? (
         <SettingWrapper>
-          {isPrivateRoom && roomInfo.typeModifiedDate ? (
+          {isPrivateRoom && roomInfo?.typeModifiedDate ? (
             <SettingTitleText style={{ color: '#777' }}>
               프라이빗 룸으로 전환됨
               <SettingDescriptionText style={{ marginLeft: '0.5rem' }}>
