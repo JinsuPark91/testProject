@@ -130,12 +130,7 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
       isNewRoom: !prevRoomList.some(prevRoom => prevRoom.id === roomId),
     });
 
-    const queryParams = { ...getQueryParams() };
-    if (isStartMeeting) {
-      queryParams.sub = 'meeting';
-    }
-    const queryString = getQueryString(queryParams);
-    history.push(`/s/${roomId}/talk?${queryString}`);
+    history.push(`/s/${roomId}/talk?${isStartMeeting ? 'sub=meeting' : ''}`);
   };
 
   const handleCreatePrivateRoomCancel = () => {
@@ -162,12 +157,7 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
 
     await talkRoomStore.initialize(userStore.myProfile.id, roomId);
 
-    const queryParams = { ...getQueryParams() };
-    if (isStartMeeting) {
-      queryParams.sub = 'meeting';
-    }
-    const queryString = getQueryString(queryParams);
-    history.push(`/s/${roomId}/talk?${queryString}`);
+    history.push(`/s/${roomId}/talk?${isStartMeeting ? 'sub=meeting' : ''}`);
   };
 
   const handleCreatePublicRoomCancel = () => {
