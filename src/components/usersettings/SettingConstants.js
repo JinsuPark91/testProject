@@ -1,3 +1,10 @@
+export const SELECTED_TAB = {
+  GENERAL: '1',
+  ALARM: '2',
+  MY_INFO: '4',
+  SECESSION: '7',
+};
+
 export const ALARM_TYPE = {
   DESKTOP: 'desktop_all',
   SOUND: 'alarm_sound',

@@ -20,6 +20,7 @@ import SpaceMemberListModal from '../space/SpaceMemberListModal';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
 import SpaceEditModal from './SpaceEditModal';
 import MovePage from '../../utils/MovePage';
+import { SELECTED_TAB } from '../usersettings/SettingConstants';
 import { getMainWaplURL } from '../../utils/UrlUtil';
 
 import keycloak from '../../libs/keycloak';
@@ -36,7 +37,7 @@ const ProfileMyModal = ({
   const history = useHistory();
   const [isCreated, setIsCreated] = useState(created);
   const [profile, setProfile] = useState(null);
-  const [itemKey, setItemKey] = useState('2');
+  const [itemKey, setItemKey] = useState(SELECTED_TAB.GENERAL);
   const [settingDialogVisible, setSettingDialogVisible] = useState(false);
   const [spaceListVisible, setSpaceListVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -75,6 +76,7 @@ const ProfileMyModal = ({
   }, []);
 
   const handleSettingDialogClose = useCallback(() => {
+    setItemKey(SELECTED_TAB.MY_INFO);
     setSettingDialogVisible(false);
   }, []);
 
@@ -468,7 +470,7 @@ const ProfileMyModal = ({
           <SettingButton
             type="text"
             shape="round"
-            onClick={() => handleSettingDialogOpen('2')}
+            onClick={() => handleSettingDialogOpen(SELECTED_TAB.MY_INFO)}
           >
             설정
           </SettingButton>
