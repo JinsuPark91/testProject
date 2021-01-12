@@ -2,8 +2,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = app => {
   app.use(
-    '/CMS',
-    createProxyMiddleware({
+    createProxyMiddleware('/CMS', {
       target: `http://${process.env.REACT_APP_DEV_SERVICE_DOMAIN}`,
       changeOrigin: true,
       preserveHeaderKeyCase: true,
@@ -12,6 +11,10 @@ module.exports = app => {
           proxyReq.setHeader('ProObjectWebFileTransfer', true);
         }
       },
+    }),
+    createProxyMiddleware('/photo', {
+      target: `http://${process.env.REACT_APP_DEV_SERVICE_DOMAIN}`,
+      changeOrigin: true,
     }),
   );
 };

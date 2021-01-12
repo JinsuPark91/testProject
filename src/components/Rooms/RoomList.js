@@ -199,7 +199,7 @@ function RoomList() {
             type="text"
             value={keyword}
             onChange={handleChange}
-            placeholder="룸 이름, 멤버 검색"
+            placeholder="룸 이름, 구성원 검색"
           />
         </InputWrapper>
         <Tooltip placement="bottomLeft" title="오픈 룸 홈" color="#0b1d41">
@@ -306,12 +306,13 @@ const InputWrapper = styled.div`
     border: 1px solid #6c56e5;
   }
 
-  & input {
+  input {
     margin-left: 0.44rem;
     height: 1.13rem;
     border: 0;
+    font-size: 0.75rem;
 
-    :focus {
+    &:focus {
       outline: 0;
     }
   }
@@ -371,7 +372,7 @@ const ButtomWrapper = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  padding: 0 0.69rem 0.75rem 0.94rem;
+  padding: 0.75rem 0.69rem 0.75rem 0.94rem;
 `;
 
 export default RoomList;

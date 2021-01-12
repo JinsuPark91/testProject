@@ -8,6 +8,7 @@ import privateRoomImg from '../../assets/private_room.svg';
 import openRoomImg from '../../assets/open_room.svg';
 import CreatePrivateRoomDialog from '../dialogs/CreatePrivateRoomDialog';
 import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
+import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 
 const { Title } = Typography;
 
@@ -50,13 +51,14 @@ const StyledInfoImg = styled.img`
   margin-bottom: 0.63rem;
 `;
 const StyledButton = styled(Button)`
+  &.ant-btn {
     width: 8.38rem;
     height: 1.88rem;
+    padding: 0 0.5rem;
     font-size: 0.75rem;
-    background-color:
-    color: #FFFFFF;
-    letter-spacing: 0;
+    color: #fff;
     text-align: center;
+  }
 `;
 
 const StyledModal = styled(Modal)`

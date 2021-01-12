@@ -9,7 +9,6 @@ import { useDrop } from 'react-dnd';
 import Photos from '../Photos';
 import {
   ViewMoreIcon,
-  ExportIcon,
   DisableAlarmIcon,
   PinIcon,
   OpenChatIcon,
@@ -212,7 +211,8 @@ const RoomItemContent = ({
   onClickRoomPhoto,
 }) => {
   const { userStore, roomStore } = useCoreStores();
-  const isOpenRoom = roomInfo.type === 'WKS0003';
+  const isDMRoom = roomInfo.isDirectMsg;
+
   const openTalkWindow = usePortalWindow();
   const handleExport = async e => {
     e.stopPropagation();
@@ -256,10 +256,19 @@ const RoomItemContent = ({
                   userStore.getProfilePhotoURL(userStore.myProfile.id, 'small'),
                 ];
               } else {
-                userPhotos = roomInfo.memberIdListString
+                let userIds = roomInfo.memberIdListString
                   .split(',')
-                  .splice(0, 4)
-                  .map(userId => userStore.getProfilePhotoURL(userId, 'small'));
+                  .splice(0, 4);
+
+                if (isDMRoom) {
+                  userIds = userIds.filter(
+                    userId => userId !== userStore.myProfile.id,
+                  );
+                }
+
+                userPhotos = userIds.map(userId =>
+                  userStore.getProfilePhotoURL(userId, 'small'),
+                );
               }
               return (
                 <>
@@ -383,6 +392,7 @@ const RoomItem = ({
   onClickRoomPhoto = () => {},
 }) => {
   const isMyRoom = roomInfo.type === 'WKS0001';
+
   const [{ canDrop, isOver }, drop] = useDrop({
     accept: ACCEPT_ITEMS,
     drop: item => {
@@ -573,7 +583,7 @@ const StyledItem = styled.div`
     `}
 
   .ant-list-item-meta-avatar {
-    margin-right: 0.3125rem;
+    margin-right: 0.4375rem;
     position: relative;
   }
 
@@ -600,13 +610,16 @@ const StyledItem = styled.div`
 `;
 
 const UnreadCount = styled.div`
-  background-color: #ff486d;
-  height: fit-content;
+  height: 1rem;
+  min-width: 1.06rem;
+  padding: 0 0.38rem;
+  line-height: 1rem;
+  font-size: 0.63rem;
   color: #fff;
   font-weight: 400;
-  font-size: 0.63rem;
-  padding: 0.06rem 0.19rem;
-  border-radius: 0.56rem;
+  text-align: center;
+  border-radius: 0.69rem;
+  background-color: #ff486d;
 `;
 
 const TitleIconWrapper = styled.div`
@@ -616,11 +629,13 @@ const TitleIconWrapper = styled.div`
 `;
 const IconWrapper = styled.div`
   display: none;
+  width: 1.5rem;
+  height: 1.5rem;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
   padding: 0.25rem;
   border-radius: 50%;
+  cursor: pointer;
   &:hover {
     background: #dcddff;
   }

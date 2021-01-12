@@ -6,16 +6,18 @@ import styled from 'styled-components';
 import { handleCheckNewFriend } from '../utils/FriendsUtil';
 
 const NewFriendBadge = styled.span`
-  display: ${props => (props?.number !== 0 ? 'visible' : 'none')};
+  display: ${props => (props?.number !== 0 ? 'block' : 'none')};
   position: absolute;
-  font-size: 0.63rem;
-  background: red;
-  color: #ffffff;
-  width: 1.44rem;
-  height: 1rem;
-  border-radius: 0.56rem;
   top: 0.5rem;
-  right: 0.7rem;
+  left: 3.25rem;
+  min-width: 1.44rem;
+  padding: 0.125rem 0.19rem;
+  font-size: 0.63rem;
+  line-height: 0.75rem;
+  font-weight: 400;
+  color: #fff;
+  border-radius: 0.56rem;
+  background-color: #ff486d;
   text-align: center;
 `;
 

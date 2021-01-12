@@ -19,37 +19,41 @@ const StyledModal = styled(Modal)`
   }
 `;
 const StyledContent = styled.div`
-  padding: 1.25rem 1.25rem 1.44rem;
+  padding: 1.13rem 1rem 3.69rem;
 `;
 const StyledInputBox = styled.div`
   display: flex;
   justify-content: space-between;
-  aligin-item: center;
-  margin-top: 0.69rem;
+  align-items: center;
+  margin-top: 0.88rem;
 `;
 const StyledChipBox = styled.div`
-  display: inline-block;
-  padding: 0.5rem;
-  margin-top: 0.69rem;
-  width: 100%;
-  height: 9.3rem;
-  border: 1px solid #c6ced6;
   overflow-y: auto;
+  height: 9.38rem;
+  margin-top: 1rem;
+  padding: 0 0 0.38rem 0.38rem;
+  background-color: #f5f5fb;
+  border: 1px solid #c6ced6;
+  border-radius: 0.25rem;
+  & > div {
+    margin: 0.38rem 0.38rem 0 0;
+    vertical-align: top;
+  }
 `;
 const StyledInfoTitle = styled.h3`
   font-size: 0.81rem;
   line-height: 1.19rem;
   color: #000000;
   letter-spacing: 0;
-  margin-bottom: 0.19rem;
+  margin-bottom: 0.38rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
 const StyledInfoText = styled.p`
-  font-size: 0.69rem;
-  line-height: 1.06rem;
-  color: #8d8d8d;
+  font-size: 0.75rem;
+  line-height: 0.88rem;
+  color: #777;
   letter-spacing: 0;
 `;
 
@@ -70,20 +74,16 @@ const StyledButton = styled(Button)`
 `;
 
 const StyledLinkButton = styled(Button)`
-  margin-top: 0.19rem;
-  padding: 0 !important;
-  border: 0;
-  height: 1.06rem;
-  font-size: 0.69rem;
-  line-height: 1.06rem;
-  color: #6c56e5;
-  &:hover,
-  &:foucs,
-  &:active {
-    border: 0;
-  }
-  & span {
-    text-decoration: underline;
+  &.ant-btn {
+    height: auto;
+    margin-top: 1rem;
+    padding: 0;
+    font-size: 0.81rem;
+    line-height: 1.19rem;
+    color: #6c56e5;
+    &:hover span {
+      text-decoration: underline;
+    }
   }
 `;
 
@@ -187,7 +187,9 @@ function AddFriendsByInvitationDialog({
 
     try {
       const sendChipSet = new Set(chipList);
-      sendChipSet.add(mailAddress);
+      if (mailAddress.length) {
+        sendChipSet.add(mailAddress);
+      }
 
       friendStore.sendInvitationMail({
         myUserId,
@@ -213,7 +215,7 @@ function AddFriendsByInvitationDialog({
         mask
         maskClosable={false}
         footer={null}
-        width="24.38rem"
+        width="27.5rem"
         title="초대 메일 보내기"
         onCancel={handleCancel}
       >

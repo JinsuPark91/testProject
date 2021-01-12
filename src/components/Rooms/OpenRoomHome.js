@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography, Modal } from 'antd';
 import { talkRoomStore } from 'teespace-talk-app';
-import { Search, useCoreStores } from 'teespace-core';
+import { Search, useCoreStores, Message } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -15,6 +15,7 @@ import AddIcon from '../../assets/add1.svg';
 import Openchat from '../../assets/openchat.svg';
 import { SettingIcon } from '../Icons';
 import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
+import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 
 const { Title } = Typography;
 
@@ -49,7 +50,9 @@ const OpenRoomItem = ({ roomInfo, photo, onClick, onSettingClick }) => {
         <SettingIcon width={0.75} height={0.75} color="rgb(120,120,129)" />
       </IconWrapper>
       <Photos srcList={photo} defaultDiameter="3.75" />
-      <OpenRoomName style={{ width: '3.75rem' }}>{roomInfo.name}</OpenRoomName>
+      <OpenRoomName style={{ width: '3.75rem' }}>
+        <Observer>{() => roomInfo.customName || roomInfo.name}</Observer>
+      </OpenRoomName>
     </div>
   );
 };
@@ -57,13 +60,21 @@ const OpenRoomItem = ({ roomInfo, photo, onClick, onSettingClick }) => {
 function OpenRoomHome({ visible, onCancel }) {
   const initialStates = {
     createModalVisible: false,
+    enterModalVisible: false,
     keyword: '',
+    currentOpenRoom: null,
   };
 
   const [createModalVisible, setCreateModalVisibie] = useState(
     initialStates.createModalVisible,
   );
+  const [enterModalVisible, setEnterModalVisible] = useState(
+    initialStates.enterModalVisible,
+  );
   const [keyword, setKeyword] = useState(initialStates.keyword);
+  const [currentOpenRoom, setCurrentOpenRoom] = useState(
+    initialStates.currentOpenRoom,
+  );
 
   const { roomStore, userStore } = useCoreStores();
   const history = useHistory();
@@ -89,6 +100,8 @@ function OpenRoomHome({ visible, onCancel }) {
   const clearState = () => {
     setCreateModalVisibie(initialStates.createModalVisible);
     setKeyword(initialStates.keyword);
+    setEnterModalVisible(initialStates.enterModalVisible);
+    setCurrentOpenRoom(initialStates.currentOpenRoom);
   };
 
   const closeHomeModal = () => {
@@ -104,6 +117,14 @@ function OpenRoomHome({ visible, onCancel }) {
     setCreateModalVisibie(false);
   };
 
+  const openEnterModal = () => {
+    setEnterModalVisible(true);
+  };
+
+  const closeEnterModal = () => {
+    setEnterModalVisible(false);
+  };
+
   const handleCreateRoom = useCallback(() => {
     openCreateModel();
   }, []);
@@ -116,22 +137,9 @@ function OpenRoomHome({ visible, onCancel }) {
     setKeyword(initialStates.keyword);
   };
 
-  const handleJoin = async roomInfo => {
-    closeHomeModal();
-    const myUserId = userStore.myProfile.id;
-    const roomId = roomInfo.id;
-    try {
-      const res = await roomStore.enterRoom({
-        myUserId,
-        roomId,
-      });
-
-      if (res?.roomId) {
-        history.push(`/s/${res.roomId}/talk`);
-      }
-    } catch (err) {
-      console.error('ROOM ENTER ERROR : ', err);
-    }
+  const handleJoin = roomInfo => {
+    setCurrentOpenRoom(roomInfo);
+    openEnterModal();
   };
 
   const handleRoomClick = roomInfo => {
@@ -173,15 +181,130 @@ function OpenRoomHome({ visible, onCancel }) {
 
     await talkRoomStore.initialize(userStore.myProfile.id, roomId);
 
-    history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
+    const queryParams = { ...getQueryParams() };
+    if (isStartMeeting) {
+      queryParams.sub = 'meeting';
+    }
+    const queryString = getQueryString(queryParams);
+    history.push(`/s/${roomId}/talk?${queryString}`);
   };
 
   const handleCreatePublicRoomCancel = () => {
     closeCreateModal();
   };
 
+  const handleConfirmEnter = async () => {
+    const myUserId = userStore.myProfile.id;
+    try {
+      const res = await roomStore.enterRoom({
+        myUserId,
+        roomId: currentOpenRoom.id,
+      });
+
+      if (res?.roomId) {
+        history.push(`/s/${currentOpenRoom.id}/talk`);
+      }
+    } catch (err) {
+      console.error('ROOM ENTER ERROR : ', err);
+    }
+
+    closeEnterModal();
+    closeHomeModal();
+  };
+
+  const handleCancelEnter = () => {
+    closeEnterModal();
+  };
+
+  const getRoomItems = searchKeyword => {
+    const rooms = roomStore
+      .getOpenRoomArray()
+      .filter(
+        roomInfo =>
+          roomInfo.name.includes(searchKeyword) ||
+          roomInfo.adminName.includes(searchKeyword),
+      );
+
+    if (rooms.length) {
+      return rooms.map(roomInfo => {
+        return (
+          <RoomListItem key={roomInfo.id}>
+            <div style={{ flex: '0 0 2.26rem', marginRight: '0.63rem' }}>
+              <Photos
+                srcList={getUserPhotos(roomInfo.memberIdListString)}
+                defaultDiameter="2.26"
+              />
+            </div>
+            <Observer>
+              {() => (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minWidth: 0,
+                    whiteSpace: 'nowrap',
+                    flex: 1,
+                  }}
+                >
+                  <RecomRoomTitle>
+                    {roomInfo.customName || roomInfo.name}
+                  </RecomRoomTitle>
+                  <AdminText>{`관리자 ${roomInfo.adminName}`}</AdminText>
+                </div>
+              )}
+            </Observer>
+
+            <JoinedText>{roomInfo.isJoined ? '(참여 중)' : ''}</JoinedText>
+            <RoomButton
+              roomInfo={roomInfo}
+              onClick={handleJoin}
+              disabled={roomInfo.isJoined}
+            />
+          </RoomListItem>
+        );
+      });
+    }
+
+    return (
+      <RoomSearchForm>
+        <SearchTitle>{keyword}</SearchTitle>
+        <SearchSubText>검색 결과가 없습니다.</SearchSubText>
+      </RoomSearchForm>
+    );
+  };
+
   return (
     <>
+      {currentOpenRoom && (
+        <Message
+          visible={enterModalVisible}
+          title={currentOpenRoom.name}
+          subtitle="오픈 룸에 참여하시겠습니까?"
+          type="custom"
+          customBadge={
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Photos
+                srcList={getUserPhotos(currentOpenRoom.memberIdListString)}
+                defaultDiameter="2.26"
+              />
+            </div>
+          }
+          btns={[
+            {
+              type: 'solid',
+              shape: 'round',
+              text: '참여',
+              onClick: handleConfirmEnter,
+            },
+            {
+              type: 'outlined',
+              shape: 'round',
+              text: '취소',
+              onClick: handleCancelEnter,
+            },
+          ]}
+        />
+      )}
       <CreatePublicRoomDialog
         visible={createModalVisible}
         onOk={handleCreatePublicRoomOk}
@@ -206,79 +329,82 @@ function OpenRoomHome({ visible, onCancel }) {
               value={keyword}
             />
           </SearchBox>
-          {!keyword && (
-            <RoomListBox>
-              <Observer>
-                {() => {
-                  const openRooms = roomStore
-                    .getOpenRoomArray()
-                    .filter(
-                      roomInfo =>
-                        roomInfo.adminId === userStore.myProfile.id &&
-                        roomInfo.isJoined,
+          {!keyword ? (
+            <>
+              <RoomListBox>
+                <Observer>
+                  {() => {
+                    const openRooms = roomStore
+                      .getOpenRoomArray()
+                      .filter(
+                        roomInfo =>
+                          roomInfo.adminId === userStore.myProfile.id &&
+                          roomInfo.isJoined,
+                      );
+
+                    const remain = (openRooms.length + 1) % 4;
+                    const dummyArray = Array.from(
+                      Array(remain ? 4 - remain : 0).keys(),
                     );
 
-                  const remain = (openRooms.length + 1) % 4;
-                  const dummyArray = Array.from(
-                    Array(remain ? 4 - remain : 0).keys(),
-                  );
-
-                  return (
-                    <>
-                      <RoomTitle level={5}>
-                        내 오픈 룸 목록
-                        <RoomCount>{openRooms.length}</RoomCount>
-                      </RoomTitle>
-                      <StyledSlider
-                        arrows
-                        initialSlide={0}
-                        slidesToShow={4}
-                        slidesToScroll={4}
-                      >
-                        <ItemAddBtn onClick={handleCreateRoom}>
-                          <span>오픈룸 생성</span>
-                        </ItemAddBtn>
-                        {openRooms.map(openRoom => {
-                          return (
-                            <OpenRoomItem
-                              key={openRoom.id}
-                              roomInfo={openRoom}
-                              photo={getUserPhotos(openRoom.memberIdListString)}
-                              onClick={handleRoomClick}
-                              onSettingClick={handleSettingClick}
-                            />
-                          );
-                        })}
-                        {dummyArray.map(key => {
-                          return <div key={key} />;
-                        })}
-                      </StyledSlider>
-                    </>
-                  );
-                }}
-              </Observer>
-            </RoomListBox>
-          )}
-          <RecommendRoomListBox>
-            <Observer>
-              {() => {
-                const rooms = roomStore
-                  // .getOpenRoomArray()
-                  .getRecommandRoomArray()
-                  .filter(roomInfo => roomInfo.name.includes(keyword));
-
-                return !keyword || (keyword && rooms.length) ? (
-                  <>
-                    <RoomTitle level={5}>추천 오픈 룸</RoomTitle>
-                    <RoomList style={{ height: !keyword ? '15rem' : '25rem' }}>
-                      {rooms.map(roomInfo => (
+                    return (
+                      <>
+                        <RoomTitle level={5}>
+                          내 오픈 룸 목록
+                          <RoomCount>{openRooms.length}</RoomCount>
+                        </RoomTitle>
+                        <StyledSlider
+                          arrows
+                          initialSlide={0}
+                          slidesToShow={4}
+                          slidesToScroll={4}
+                        >
+                          <ItemAddBtn onClick={handleCreateRoom}>
+                            <span>오픈룸 생성</span>
+                          </ItemAddBtn>
+                          {openRooms.map(openRoom => {
+                            return (
+                              <OpenRoomItem
+                                key={openRoom.id}
+                                roomInfo={openRoom}
+                                photo={getUserPhotos(
+                                  openRoom.memberIdListString,
+                                )}
+                                onClick={handleRoomClick}
+                                onSettingClick={handleSettingClick}
+                              />
+                            );
+                          })}
+                          {dummyArray.map(key => {
+                            return <div key={key} />;
+                          })}
+                        </StyledSlider>
+                      </>
+                    );
+                  }}
+                </Observer>
+              </RoomListBox>
+              <RecommendRoomListBox>
+                <RoomTitle level={5}>추천 오픈 룸</RoomTitle>
+                <Observer>
+                  {() => (
+                    <RoomList style={{ height: '15.3rem' }}>
+                      {roomStore.getRecommandRoomArray().map(roomInfo => (
                         <RoomListItem key={roomInfo.id}>
                           <Photos
                             srcList={getUserPhotos(roomInfo.memberIdListString)}
                             defaultDiameter="2.26"
                           />
-                          <RecomRoomTitle>{roomInfo.name}</RecomRoomTitle>
 
+                          <RecomRoomTitle
+                            style={{
+                              flex: 1,
+                              marginLeft: '0.63rem',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {roomInfo.customName || roomInfo.name}
+                          </RecomRoomTitle>
                           <JoinedText>
                             {roomInfo.isJoined ? '(참여 중)' : ''}
                           </JoinedText>
@@ -290,16 +416,15 @@ function OpenRoomHome({ visible, onCancel }) {
                         </RoomListItem>
                       ))}
                     </RoomList>
-                  </>
-                ) : (
-                  <RoomSearchForm>
-                    <SearchTitle>{keyword}</SearchTitle>
-                    <SearchSubText>검색 결과가 없습니다.</SearchSubText>
-                  </RoomSearchForm>
-                );
-              }}
-            </Observer>
-          </RecommendRoomListBox>
+                  )}
+                </Observer>
+              </RecommendRoomListBox>
+            </>
+          ) : (
+            <RoomList style={{ height: '26.2rem' }}>
+              {getRoomItems(keyword)}
+            </RoomList>
+          )}
         </OpenHomeForm>
       </StyledModal>
     </>
@@ -320,9 +445,6 @@ const OpenHomeForm = styled.div`
 const SearchBox = styled.div`
   .anticon {
     color: #bdc6d3;
-  }
-  .anticon-search {
-    margin-left: 0.63rem;
   }
   &:hover,
   &:focus {
@@ -348,7 +470,7 @@ const StyledSearch = styled(Search)`
 const JoinedText = styled.div`
   color: #696969;
   white-space: nowrap;
-  padding: 0 0.5rem;
+  padding: 0 8px;
   font-size: 0.69rem;
 `;
 
@@ -372,8 +494,9 @@ const RecommendRoomListBox = styled.div`
 `;
 
 const RoomList = styled.ul`
-  padding: 0.44rem 0.5rem 0 0;
+  padding: 0 0.5rem 0 0;
   overflow-y: auto;
+  margin: 0.63rem 0;
 `;
 
 const RoomListItem = styled.li`
@@ -430,16 +553,18 @@ const RoomSearchForm = styled.div`
   flex-direction: column;
 `;
 const RecomRoomTitle = styled.p`
-  display: inline-block;
-  width: 13.56rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   font-size: 0.81rem;
   color: #000000;
   letter-spacing: 0;
-  margin-right: auto;
-  margin-left: 0.63rem;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+`;
+
+const AdminText = styled.p`
+  color: #696969;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.63rem;
 `;
 
 const SearchTitle = styled.p`

@@ -19,6 +19,7 @@ import tsBgImgIcon from '../assets/ts_photo.svg';
 import tsCameraImgIcon from '../assets/ts_camera.svg';
 import starLineIcon from '../assets/ts_star_line.svg';
 import starIcon from '../assets/ts_star.svg';
+import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 
 const Profile = observer(
   ({
@@ -138,12 +139,15 @@ const Profile = observer(
     };
 
     const handleMeetingClick = async () => {
+      const queryParams = { ...getQueryParams(), sub: 'meeting' };
+      const queryString = getQueryString(queryParams);
+
       try {
         const myUserId = userStore.myProfile.id;
         const { roomInfo } = roomStore.getDMRoom(myUserId, userId);
         if (roomInfo) {
           if (roomInfo.isVislble) {
-            history.push(`/s/${roomInfo.id}/talk?sub=meeting`);
+            history.push(`/s/${roomInfo.id}/talk?${queryString}`);
           } else {
             await roomStore.updateRoomMemberSetting({
               roomId: roomInfo.id,
@@ -151,13 +155,13 @@ const Profile = observer(
               newIsVisible: true,
             });
           }
-          history.push(`/s/${roomInfo.id}/talk?sub=meeting`);
+          history.push(`/s/${roomInfo.id}/talk?${queryString}`);
         } else {
           const { roomId } = await roomStore.createRoom({
             creatorId: userStore.myProfile.id,
             userList: [{ userId }],
           });
-          history.push(`/s/${roomId}/talk?sub=meeting`);
+          history.push(`/s/${roomId}/talk?${queryString}`);
         }
       } catch (e) {
         console.error(`Error is${e}`);

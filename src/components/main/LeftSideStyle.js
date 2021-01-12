@@ -3,8 +3,9 @@ import { Tabs } from 'antd';
 
 export const Wrapper = styled.div`
   display: flex;
-  height: 100%;
   width: 16.19rem;
+  height: 100%;
+  flex-shrink: 0;
 `;
 
 export const CustomTabs = styled(Tabs)`
@@ -35,19 +36,22 @@ export const CustomTabs = styled(Tabs)`
     background-color: #0b1d41;
     font-size: 0;
     &:hover {
-      background-color: #07142d;
+      background-color: #2d317a;
     }
   }
 `;
 
 export const UnreadCount = styled.div`
   position: absolute;
-  background-color: #ff486d;
-  top: -0.3rem;
-  right: -0.8rem;
-  color: #fff;
-  font-weight: 400;
+  top: 0.5rem;
+  left: 3.25rem;
+  min-width: 1.44rem;
+  padding: 0.125rem 0.19rem;
   font-size: 0.63rem;
-  padding: 0.06rem 0.19rem;
+  line-height: 0.75rem;
+  font-weight: 400;
+  color: #fff;
   border-radius: 0.56rem;
+  background-color: #ff486d;
+  text-align: center;
 `;

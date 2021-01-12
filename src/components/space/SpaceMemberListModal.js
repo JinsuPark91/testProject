@@ -129,9 +129,6 @@ const StyledSearchBox = styled.div`
   .anticon {
     color: #bdc6d3;
   }
-  .anticon-search {
-    margin-left: 0.63rem;
-  }
   &:hover,
   &:focus {
     .anticon {

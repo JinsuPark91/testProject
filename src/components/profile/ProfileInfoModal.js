@@ -20,6 +20,7 @@ import tsCameraImgIcon from '../../assets/ts_camera.svg';
 import addIcon from '../../assets/ts_friends_add.svg';
 import photoIcon from '../../assets/ts_photo.svg';
 import ProfileImageModal from './ProfileImageModal';
+import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 
 function ProfileInfoModal({
   userId = '',
@@ -220,13 +221,16 @@ function ProfileInfoModal({
   }, [profile, setLocalInputData]);
 
   const handleClickMeeting = async () => {
+    const queryParams = { ...getQueryParams(), sub: 'meeting' };
+    const queryString = getQueryString(queryParams);
+
     try {
       const myUserId = userStore.myProfile.id;
       const { roomInfo } = roomStore.getDMRoom(myUserId, userId);
 
       if (roomInfo) {
         if (roomInfo.isVislble) {
-          history.push(`/s/${roomInfo.id}/talk?sub=meeting`);
+          history.push(`/s/${roomInfo.id}/talk?${queryString}`);
         } else {
           await roomStore.updateRoomMemberSetting({
             roomId: roomInfo.id,
@@ -234,13 +238,13 @@ function ProfileInfoModal({
             newIsVisible: true,
           });
         }
-        history.push(`/s/${roomInfo.id}/talk?sub=meeting`);
+        history.push(`/s/${roomInfo.id}/talk?${queryString}`);
       } else {
         const { roomId } = await roomStore.createRoom({
           creatorId: userStore.myProfile.id,
           userList: [{ userId }],
         });
-        history.push(`/s/${roomId}/talk?sub=meeting`);
+        history.push(`/s/${roomId}/talk?${queryString}`);
       }
     } catch (e) {
       console.error(`Error is${e}`);

@@ -14,6 +14,7 @@ const PlatformUIStore = observable({
   resourceId: null,
   mainApp: 'talk',
   subApp: null,
+  subAppState: undefined,
   layout: 'collapse',
 
   /*

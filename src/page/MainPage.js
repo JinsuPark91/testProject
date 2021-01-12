@@ -1,7 +1,12 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect, useMemo } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { EventBus, useCoreStores, DesktopNotification } from 'teespace-core';
+import {
+  EventBus,
+  useCoreStores,
+  DesktopNotification,
+  AppState,
+} from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
 import { Prompt } from 'react-router';
@@ -11,22 +16,14 @@ import { Loader, Wrapper } from './MainPageStyle';
 import PlatformUIStore from '../stores/PlatformUIStore';
 import LoadingImg from '../assets/TeeSpace_loading.gif';
 import FloatingButton from '../components/common/FloatingButton';
-
-const useQueryParams = (searchParams = window.location.search) => {
-  let result = {};
-  const params = new URLSearchParams(searchParams);
-  params.forEach((value, key) => {
-    result = { ...result, [key]: value };
-  });
-  return result;
-};
+import { getQueryParams } from '../utils/UrlUtil';
 
 const MainPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const history = useHistory();
   const { resourceType, resourceId, mainApp } = useParams();
-  const { sub: subApp } = useQueryParams(history.location.search);
+  const { sub: subApp } = getQueryParams(history.location.search);
 
   const { roomStore, userStore, friendStore, spaceStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
@@ -157,7 +154,7 @@ const MainPage = () => {
 
     const currentResourceType = pathArr[1];
     const currentMainApp = pathArr[3];
-    const currentSubApp = /sub=(.[^/&?#]*)/gi.exec(search)?.[1];
+    const { sub: currentSubApp } = getQueryParams(search);
 
     let currentResourceId = pathArr[2];
     switch (currentResourceType) {
@@ -195,11 +192,28 @@ const MainPage = () => {
     if (isRunning('note'))
       isRoutable = isRoutable && noteBeforeRoute(location, action);
 
-    // if (isRunning('meeting'))
-    //   isRoutable = isRoutable && meetingBeforeRoute(location, action);
+    if (isRunning('meeting')) {
+      if (PlatformUIStore.subAppState === AppState.RUNNING) {
+        // NOTE. 미팅앱에서 빠져 나갈 것인지 묻는 상태로 진입
+        PlatformUIStore.subAppState = AppState.BEFORE_STOP;
+        PlatformUIStore.nextLocation = location;
+        isRoutable = false;
+      } else if (PlatformUIStore.subAppState === AppState.STOPPED) {
+        // NOTE. 미팅의 경우 라우팅이 변경될 때 토크 상태의 히스토리가 저장되어야 함.
+        //  그렇지 않으면 이 방에 들어올 때마다 미팅이 실행됨.
+        saveHistory({ ...history.location, search: '' }, action);
+      } else {
+        // DO NOTHING
+      }
+    }
 
     if (isRoutable) {
       saveHistory(location, action);
+
+      // NOTE. 서브앱으로 라우팅되는 경우 초기화 진행중 상태로 진입됨.
+      if (!subApp) {
+        PlatformUIStore.subAppState = AppState.INITIALIZING;
+      }
     }
     return isRoutable;
   };
@@ -221,7 +235,7 @@ const MainPage = () => {
       />
       {leftSide}
       {mainSide}
-      <FloatingButton
+      {/* <FloatingButton
         visible
         roomList={roomStore.getRoomArray()}
         slidesToShow={7}
@@ -234,7 +248,7 @@ const MainPage = () => {
         onCloseAll={() => {
           console.log('All Closed.');
         }}
-      />
+      /> */}
     </Wrapper>
   );
 };

@@ -1,10 +1,11 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 // import { NoteIcon } from 'teespace-note-app';
 // import { DriveIcon, ViewFileIcon } from 'teespace-drive-app';
 // import { CalendarIcon } from 'teespace-calendar-app';
-import { useCoreStores, Message } from 'teespace-core';
+import { useCoreStores } from 'teespace-core';
+import MeetingApp from 'teespace-meeting-app';
 import {
   Wrapper,
   TitleWrapper,
@@ -39,6 +40,7 @@ import {
   MeetingActiveIcon,
   MeetingDisabledIcon,
 } from '../Icons';
+import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 
 const apps = [
   {
@@ -126,9 +128,9 @@ const AppIcon = React.memo(
 const Header = observer(() => {
   const history = useHistory();
   const { roomStore, userStore } = useCoreStores();
-  const [isMessageVisible, setIsMessageVisible] = useState(false);
   const [isRoomProfileVisible, setRoomProfileVisible] = useState(false);
   const [isAddMemberVisible, setAddMemberVisible] = useState(false);
+  const [appConfirm, setAppConfirm] = useState();
 
   const findRoom = () => {
     if (PlatformUIStore.resourceType !== 'f') {
@@ -172,10 +174,15 @@ const Header = observer(() => {
   const getUserPhotos = () => {
     const found = findRoom();
     if (found && found?.memberIdListString) {
-      return found.memberIdListString
-        .split(',')
-        .splice(0, 4)
-        .map(userId => `${userStore.getProfilePhotoURL(userId, 'small')}`);
+      let userIds = found.memberIdListString.split(',').splice(0, 4);
+
+      if (found.isDirectMsg) {
+        userIds = userIds.filter(userId => userId !== userStore.myProfile.id);
+      }
+
+      return userIds.map(
+        userId => `${userStore.getProfilePhotoURL(userId, 'small')}`,
+      );
     }
     return [];
   };
@@ -191,11 +198,10 @@ const Header = observer(() => {
     PlatformUIStore.isSearchVisible = true;
   };
 
-  const toggleMessageVisible = () => {
-    setIsMessageVisible(!isMessageVisible);
-  };
-
   const openSubApp = async appName => {
+    const queryParams = { ...getQueryParams(), sub: appName };
+    const queryString = getQueryString(queryParams);
+
     if (PlatformUIStore.resourceType === 'f') {
       try {
         const response = await roomStore.getDMRoom(
@@ -205,18 +211,12 @@ const Header = observer(() => {
         if (!response.result) {
           throw Error('DM ROOM GET FAILED');
         }
-        history.push({
-          pathname: `/s/${response.roomInfo.id}/talk`,
-          search: `?sub=${appName}`,
-        });
+        history.push(`/s/${response.roomInfo.id}/talk?${queryString}`);
       } catch (e) {
         console.error(`Error is${e}`);
       }
     } else {
-      history.push({
-        pathname: history.location.pathname,
-        search: `?sub=${appName}`,
-      });
+      history.push(`${history.location.pathname}?${queryString}`);
     }
   };
 
@@ -226,11 +226,24 @@ const Header = observer(() => {
     });
   };
 
-  const handleAppClick = appName => {
-    if (appName === 'meeting') {
-      toggleMessageVisible();
-    } else if (PlatformUIStore.subApp !== appName) {
-      openSubApp(appName);
+  const handleAppClick = async appName => {
+    if (PlatformUIStore.subApp !== appName) {
+      if (appName === 'meeting') {
+        const meetingAppConfirm = (
+          <MeetingApp.ConfirmLaunchApp
+            onConfirm={() => {
+              setAppConfirm(null);
+              openSubApp(appName);
+            }}
+            onCancel={() => {
+              setAppConfirm(null);
+            }}
+          />
+        );
+        setAppConfirm(meetingAppConfirm);
+      } else {
+        openSubApp(appName);
+      }
     } else {
       closeSubApp();
     }
@@ -349,28 +362,7 @@ const Header = observer(() => {
       </TitleWrapper>
 
       <AppIconContainer>
-        <Message
-          visible={isMessageVisible}
-          title="Meeting을 시작하시겠습니까?"
-          subtitle="미팅을 시작하면 멤버들에게 참여 알림이 전송됩니다."
-          btns={[
-            {
-              text: '미팅 시작',
-              type: 'solid',
-              onClick: () => {
-                toggleMessageVisible();
-                openSubApp('meeting');
-              },
-            },
-            {
-              text: '취소',
-              type: 'outlined',
-              onClick: () => {
-                toggleMessageVisible();
-              },
-            },
-          ]}
-        />
+        {appConfirm}
         {apps.map(({ name, icons, isUsedInMyRoom }) => (
           <AppIcon
             key={name}

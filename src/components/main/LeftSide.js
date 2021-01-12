@@ -29,12 +29,12 @@ const LeftSide = () => {
         <TabPane
           key="s"
           tab={
-            <div style={{ position: 'relative' }}>
+            <>
               {talkRoomStore.totalUnreadCount && (
                 <UnreadCount>{talkRoomStore.totalUnreadCount}</UnreadCount>
               )}
               <ChattingIcon tooltipText="룸 목록" />
-            </div>
+            </>
           }
         >
           <RoomList />

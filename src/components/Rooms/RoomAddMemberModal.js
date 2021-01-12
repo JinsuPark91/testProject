@@ -84,7 +84,7 @@ function RoomAddMemberModal({
         disabledIds={members.map(member => member.friendId || member.id)}
         defaultSelectedUsers={members}
         showMeOnFriendTab={false}
-        height={20} // rem
+        height={25} // rem
       />
       <ButtonContainer>
         <Button
@@ -126,9 +126,10 @@ const FlexModal = styled(Modal)`
 
 const ButtonContainer = styled.div`
   display: flex;
-  height: 4.13rem;
+  padding: 1.06rem 0;
   align-items: center;
   justify-content: center;
+  border-top: 1px solid #e3e7eb;
 `;
 
 export default RoomAddMemberModal;
