@@ -15,6 +15,7 @@ import MainSide from '../components/main/MainSide';
 import { Loader, Wrapper } from './MainPageStyle';
 import PlatformUIStore from '../stores/PlatformUIStore';
 import LoadingImg from '../assets/TeeSpace_loading.gif';
+import FaviconChanger from '../components/common/FaviconChanger';
 import FloatingButton from '../components/common/FloatingButton';
 import { getQueryParams } from '../utils/UrlUtil';
 
@@ -228,6 +229,7 @@ const MainPage = () => {
 
   return (
     <Wrapper>
+      <FaviconChanger />
       <Prompt
         message={(location, action) => {
           return beforeRoute(location, action);
@@ -237,8 +239,15 @@ const MainPage = () => {
       {mainSide}
       {/* <FloatingButton
         visible
-        roomList={roomStore.getRoomArray()}
-        slidesToShow={7}
+        roomList={[
+          { name: 'test', userCount: 12, id: 'test01' },
+          { name: 'test', userCount: 12, id: 'test01' },
+          { name: 'test', userCount: 12, id: 'test01' },
+          { name: 'test', userCount: 12, id: 'test01' },
+          { name: 'test', userCount: 12, id: 'test01' },
+          // { name: 'test', userCount: 12, id: 'test01' },
+        ]}
+        slidesToShow={5}
         onItemClick={roomInfo => {
           console.log('Item Clicked. ', roomInfo);
         }}
