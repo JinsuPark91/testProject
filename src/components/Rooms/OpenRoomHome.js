@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography, Modal } from 'antd';
 import { talkRoomStore } from 'teespace-talk-app';
-import { Search, useCoreStores } from 'teespace-core';
+import { Search, useCoreStores, Message } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -60,13 +60,21 @@ const OpenRoomItem = ({ roomInfo, photo, onClick, onSettingClick }) => {
 function OpenRoomHome({ visible, onCancel }) {
   const initialStates = {
     createModalVisible: false,
+    enterModalVisible: false,
     keyword: '',
+    currentOpenRoom: null,
   };
 
   const [createModalVisible, setCreateModalVisibie] = useState(
     initialStates.createModalVisible,
   );
+  const [enterModalVisible, setEnterModalVisible] = useState(
+    initialStates.enterModalVisible,
+  );
   const [keyword, setKeyword] = useState(initialStates.keyword);
+  const [currentOpenRoom, setCurrentOpenRoom] = useState(
+    initialStates.currentOpenRoom,
+  );
 
   const { roomStore, userStore } = useCoreStores();
   const history = useHistory();
@@ -92,6 +100,8 @@ function OpenRoomHome({ visible, onCancel }) {
   const clearState = () => {
     setCreateModalVisibie(initialStates.createModalVisible);
     setKeyword(initialStates.keyword);
+    setEnterModalVisible(initialStates.enterModalVisible);
+    setCurrentOpenRoom(initialStates.currentOpenRoom);
   };
 
   const closeHomeModal = () => {
@@ -107,6 +117,14 @@ function OpenRoomHome({ visible, onCancel }) {
     setCreateModalVisibie(false);
   };
 
+  const openEnterModal = () => {
+    setEnterModalVisible(true);
+  };
+
+  const closeEnterModal = () => {
+    setEnterModalVisible(false);
+  };
+
   const handleCreateRoom = useCallback(() => {
     openCreateModel();
   }, []);
@@ -119,22 +137,9 @@ function OpenRoomHome({ visible, onCancel }) {
     setKeyword(initialStates.keyword);
   };
 
-  const handleJoin = async roomInfo => {
-    closeHomeModal();
-    const myUserId = userStore.myProfile.id;
-    const roomId = roomInfo.id;
-    try {
-      const res = await roomStore.enterRoom({
-        myUserId,
-        roomId,
-      });
-
-      if (res?.roomId) {
-        history.push(`/s/${res.roomId}/talk`);
-      }
-    } catch (err) {
-      console.error('ROOM ENTER ERROR : ', err);
-    }
+  const handleJoin = roomInfo => {
+    setCurrentOpenRoom(roomInfo);
+    openEnterModal();
   };
 
   const handleRoomClick = roomInfo => {
@@ -186,6 +191,29 @@ function OpenRoomHome({ visible, onCancel }) {
 
   const handleCreatePublicRoomCancel = () => {
     closeCreateModal();
+  };
+
+  const handleConfirmEnter = async () => {
+    const myUserId = userStore.myProfile.id;
+    try {
+      const res = await roomStore.enterRoom({
+        myUserId,
+        roomId: currentOpenRoom.id,
+      });
+
+      if (res?.roomId) {
+        history.push(`/s/${currentOpenRoom.id}/talk`);
+      }
+    } catch (err) {
+      console.error('ROOM ENTER ERROR : ', err);
+    }
+
+    closeEnterModal();
+    closeHomeModal();
+  };
+
+  const handleCancelEnter = () => {
+    closeEnterModal();
   };
 
   const getRoomItems = searchKeyword => {
@@ -247,6 +275,36 @@ function OpenRoomHome({ visible, onCancel }) {
 
   return (
     <>
+      {currentOpenRoom && (
+        <Message
+          visible={enterModalVisible}
+          title={currentOpenRoom.name}
+          subtitle="오픈 룸에 참여하시겠습니까?"
+          type="custom"
+          customBadge={
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Photos
+                srcList={getUserPhotos(currentOpenRoom.memberIdListString)}
+                defaultDiameter="2.26"
+              />
+            </div>
+          }
+          btns={[
+            {
+              type: 'solid',
+              shape: 'round',
+              text: '참여',
+              onClick: handleConfirmEnter,
+            },
+            {
+              type: 'outlined',
+              shape: 'round',
+              text: '취소',
+              onClick: handleCancelEnter,
+            },
+          ]}
+        />
+      )}
       <CreatePublicRoomDialog
         visible={createModalVisible}
         onOk={handleCreatePublicRoomOk}
