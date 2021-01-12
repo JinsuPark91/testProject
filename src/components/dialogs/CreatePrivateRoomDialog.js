@@ -39,7 +39,6 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
   const handleCancel = () => {
     onCancel();
     clearState();
-    console.log('HANDLE CANCEL');
   };
 
   const handleChangeNameChange = e => {
