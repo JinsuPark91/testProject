@@ -125,6 +125,7 @@ function SettingDialog(props) {
   const [inputPassword, setInputPassword] = useState('');
 
   const isB2B = userStore.myProfile.type === 'USR0001';
+  const isAdmin = userStore.myProfile.grade === 'admin';
 
   const handleToggleNameInput = useCallback(() => {
     setIsNameEdit(!isNameEdit);
@@ -318,7 +319,7 @@ function SettingDialog(props) {
             <Menu.ItemGroup key="3" title="계정설정">
               <Menu.Item key="4">내 정보</Menu.Item>
               {/* <Menu.Item key="5">비밀번호변경</Menu.Item> */}
-              <Menu.Item key="7">서비스 탈퇴</Menu.Item>
+              {!isAdmin && !isB2B && <Menu.Item key="7">서비스 탈퇴</Menu.Item>}
             </Menu.ItemGroup>
           </StyledMenu>
         </SiderArea>
