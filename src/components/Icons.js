@@ -1553,3 +1553,70 @@ export const SettingIcon = React.memo(
     );
   },
 );
+
+export const ArrowUpIcon = React.memo(
+  ({ width = 1, height = 1, color = '#000000' }) => {
+    const defaultWidth = 20;
+    const defaultHeight = 20;
+
+    return (
+      <svg
+        width={`${width}rem`}
+        height={`${height}rem`}
+        viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
+        version="1.1"
+      >
+        <g
+          id="Icon/system/arrow_up_line"
+          stroke="none"
+          strokeWidth="1"
+          fill="none"
+          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
+            (height * REM_UNIT) / defaultHeight
+          })`}
+          fillRule="evenodd"
+        >
+          <path
+            d="M4.26399246,7.26776695 C4.6159824,6.91074435 5.18667086,6.91074435 5.5386608,7.26776695 L10,11.7928932 L14.4613392,7.26776695 C14.8133291,6.91074435 15.3840176,6.91074435 15.7360075,7.26776695 C16.0879975,7.62478956 16.0879975,8.20363757 15.7360075,8.56066017 L10.6373342,13.732233 C10.2853442,14.0892557 9.71465577,14.0892557 9.36266583,13.732233 L4.26399246,8.56066017 C3.91200251,8.20363757 3.91200251,7.62478956 4.26399246,7.26776695 Z"
+            id="Path"
+            fill={color}
+            transform="translate(10.000000, 10.500000) scale(1, -1) translate(-10.000000, -10.500000) "
+          />
+        </g>
+      </svg>
+    );
+  },
+);
+
+export const ArrowDownIcon = React.memo(
+  ({ width = 1, height = 1, color = '#000000' }) => {
+    const defaultWidth = 20;
+    const defaultHeight = 20;
+
+    return (
+      <svg
+        width={`${width}rem`}
+        height={`${height}rem`}
+        viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
+        version="1.1"
+      >
+        <g
+          id="Icon/system/arrow_down_line"
+          stroke="none"
+          strokeWidth="1"
+          fill="none"
+          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
+            (height * REM_UNIT) / defaultHeight
+          })`}
+          fillRule="evenodd"
+        >
+          <path
+            d="M4.26399246,7.26776695 C4.6159824,6.91074435 5.18667086,6.91074435 5.5386608,7.26776695 L10,11.7928932 L14.4613392,7.26776695 C14.8133291,6.91074435 15.3840176,6.91074435 15.7360075,7.26776695 C16.0879975,7.62478956 16.0879975,8.20363757 15.7360075,8.56066017 L10.6373342,13.732233 C10.2853442,14.0892557 9.71465577,14.0892557 9.36266583,13.732233 L4.26399246,8.56066017 C3.91200251,8.20363757 3.91200251,7.62478956 4.26399246,7.26776695 Z"
+            id="Path"
+            fill={color}
+          />
+        </g>
+      </svg>
+    );
+  },
+);
