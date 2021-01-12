@@ -9,7 +9,6 @@ import { useDrop } from 'react-dnd';
 import Photos from '../Photos';
 import {
   ViewMoreIcon,
-  ExportIcon,
   DisableAlarmIcon,
   PinIcon,
   OpenChatIcon,
@@ -212,7 +211,8 @@ const RoomItemContent = ({
   onClickRoomPhoto,
 }) => {
   const { userStore, roomStore } = useCoreStores();
-  const isOpenRoom = roomInfo.type === 'WKS0003';
+  const isDMRoom = roomInfo.isDirectMsg;
+
   const openTalkWindow = usePortalWindow();
   const handleExport = async e => {
     e.stopPropagation();
@@ -256,10 +256,19 @@ const RoomItemContent = ({
                   userStore.getProfilePhotoURL(userStore.myProfile.id, 'small'),
                 ];
               } else {
-                userPhotos = roomInfo.memberIdListString
+                let userIds = roomInfo.memberIdListString
                   .split(',')
-                  .splice(0, 4)
-                  .map(userId => userStore.getProfilePhotoURL(userId, 'small'));
+                  .splice(0, 4);
+
+                if (isDMRoom) {
+                  userIds = userIds.filter(
+                    userId => userId !== userStore.myProfile.id,
+                  );
+                }
+
+                userPhotos = userIds.map(userId =>
+                  userStore.getProfilePhotoURL(userId, 'small'),
+                );
               }
               return (
                 <>
@@ -383,6 +392,7 @@ const RoomItem = ({
   onClickRoomPhoto = () => {},
 }) => {
   const isMyRoom = roomInfo.type === 'WKS0001';
+
   const [{ canDrop, isOver }, drop] = useDrop({
     accept: ACCEPT_ITEMS,
     drop: item => {

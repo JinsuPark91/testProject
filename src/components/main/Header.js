@@ -174,10 +174,15 @@ const Header = observer(() => {
   const getUserPhotos = () => {
     const found = findRoom();
     if (found && found?.memberIdListString) {
-      return found.memberIdListString
-        .split(',')
-        .splice(0, 4)
-        .map(userId => `${userStore.getProfilePhotoURL(userId, 'small')}`);
+      let userIds = found.memberIdListString.split(',').splice(0, 4);
+
+      if (found.isDirectMsg) {
+        userIds = userIds.filter(userId => userId !== userStore.myProfile.id);
+      }
+
+      return userIds.map(
+        userId => `${userStore.getProfilePhotoURL(userId, 'small')}`,
+      );
     }
     return [];
   };
