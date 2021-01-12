@@ -14,7 +14,7 @@ import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
 import { Loader, Wrapper } from './MainPageStyle';
 import PlatformUIStore from '../stores/PlatformUIStore';
-import LoadingImg from '../assets/TeeSpace_loading.gif';
+import LoadingImg from '../assets/WAPL_Loading.gif';
 import FaviconChanger from '../components/common/FaviconChanger';
 import FloatingButton from '../components/common/FloatingButton';
 import { getQueryParams } from '../utils/UrlUtil';
