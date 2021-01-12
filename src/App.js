@@ -81,7 +81,6 @@ function App() {
               initOptions={{
                 onLoad: 'login-required',
                 redirectUri: '',
-                checkLoginIframe: false,
               }}
             >
               <PortalProvider>
