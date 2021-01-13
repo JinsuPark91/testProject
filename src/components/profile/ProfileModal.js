@@ -14,7 +14,7 @@ function ProfileModal({
   mask = true,
   toggleFav,
   checkFav = () => false,
-  isNotMyFriend = () => false,
+  isNotMyFriend = false,
   userId,
   backgroundPhotoURL,
   outLine,
@@ -44,7 +44,6 @@ function ProfileModal({
       mask={mask && isEditMode}
       onCancel={onCancel}
       width={width}
-      isNotMyFriend={isNotMyFriend}
       title={null}
       closable={false}
       maskClosable={!isEditMode}
@@ -64,7 +63,7 @@ function ProfileModal({
             <TopButtonBox>
               {type === 'user' &&
                 !(userId === userStore.myProfile.id) &&
-                !isNotMyFriend() && (
+                !isNotMyFriend && (
                   <TopButton
                     type="bookMark"
                     isFav={isFav}

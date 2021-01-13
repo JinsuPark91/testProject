@@ -47,6 +47,7 @@ function ProfileInfoModal({
   // NOTE. Setting null to photo means default image is used
   const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(undefined);
   const [localProfilePhoto, setLocalProfilePhoto] = useState(undefined);
+  const [isNotMyFriend, setIsNotMyFriend] = useState(undefined);
 
   // get profile from store
   const [profile, setProfile] = useState(userStore.userProfiles[userId]);
@@ -93,6 +94,7 @@ function ProfileInfoModal({
   };
 
   const isValidInputData = () => name === undefined || !!name;
+  const isMyId = userId === userStore.myProfile.id;
 
   useEffect(() => {
     if (visible === false) return;
@@ -106,21 +108,26 @@ function ProfileInfoModal({
 
       const userAuthInfo = authStore.user;
       setUserType(userAuthInfo.type);
+      setIsNotMyFriend(
+        !isMyId &&
+          friendStore.friendInfoList.findIndex(
+            friend => friend.friendId === userId,
+          ) === -1,
+      );
     })();
     // NOTE. 다이얼로그가 오픈될 때만(visble 이 true 가 된 시점) 호출되어야함.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, visible]);
 
-  const isMyId = userId === userStore.myProfile.id;
-  const isNotMyFriend = useCallback(
-    () =>
-      !isMyId &&
-      friendStore.friendInfoList.findIndex(
-        friend => friend.friendId === userId,
-      ) === -1,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [friendStore.friendInfoList],
-  );
+  // const isNotMyFriend = useCallback(
+  //   () =>
+  //     !isMyId &&
+  //     friendStore.friendInfoList.findIndex(
+  //       friend => friend.friendId === userId,
+  //     ) === -1,
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   [friendStore.friendInfoList],
+  // );
 
   const handleCloseModal = useCallback(
     e => {
@@ -180,6 +187,12 @@ function ProfileInfoModal({
         myUserId: userStore.myProfile.id,
         friendInfo,
       });
+      setIsNotMyFriend(
+        !isMyId &&
+          friendStore.friendInfoList.findIndex(
+            friend => friend.friendId === userId,
+          ) === -1,
+      );
     } catch (e) {
       console.log(e);
     }
@@ -306,10 +319,12 @@ function ProfileInfoModal({
     // Reset local input date
     resetLocalInputData();
 
+    // ProfileMyModal에서 연 경우
     if (editMode === true) onClose();
   };
 
   const handleCancel = () => {
+    console.log('?');
     if (isChange) {
       Modal.confirm({
         transitionName: '',
@@ -552,6 +567,7 @@ function ProfileInfoModal({
       checkFav={isFav}
       userId={userId}
       isNotMyFriend={isNotMyFriend}
+      handleCancel={handleCancel}
       footer={
         <UtilButtonBox>
           {isEditMode ? (
@@ -569,7 +585,7 @@ function ProfileInfoModal({
               </EditButton>
             </>
           ) : (
-            !isNotMyFriend() && (
+            !isNotMyFriend && (
               <>
                 <UtilButton onClick={handleClickTalk}>
                   <UtilIcon iconimg="friends" />
@@ -589,7 +605,7 @@ function ProfileInfoModal({
               </>
             )
           )}
-          {isNotMyFriend() && (
+          {isNotMyFriend && (
             <UtilButton onClick={handleAddFriend}>
               <UtilIcon iconimg="friendAdd" />
               <UtilText>프렌즈 추가</UtilText>
