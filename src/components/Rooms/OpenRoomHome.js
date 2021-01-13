@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography, Modal } from 'antd';
 import { talkRoomStore } from 'teespace-talk-app';
-import { Search, useCoreStores, Message } from 'teespace-core';
+import { useCoreStores, Message } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -16,6 +16,7 @@ import Openchat from '../../assets/openchat.svg';
 import { SettingIcon } from '../Icons';
 import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
+import Search from '../common/Search';
 
 const { Title } = Typography;
 
@@ -129,8 +130,8 @@ function OpenRoomHome({ visible, onCancel }) {
     openCreateModel();
   }, []);
 
-  const handleKeywordChange = e => {
-    setKeyword(e.target.value);
+  const handleKeywordChange = value => {
+    setKeyword(value);
   };
 
   const handleKeywordClear = () => {
@@ -320,13 +321,10 @@ function OpenRoomHome({ visible, onCancel }) {
       >
         <OpenHomeForm>
           <SearchBox>
-            <StyledSearch
-              className="openhomeinput"
+            <Search
               placeholder="오픈 룸 검색"
-              style={{ width: '100%' }}
-              onClear={handleKeywordClear}
               onChange={handleKeywordChange}
-              value={keyword}
+              onClear={handleKeywordClear}
             />
           </SearchBox>
           {!keyword ? (
@@ -454,16 +452,6 @@ const SearchBox = styled.div`
   }
   .ant-input {
     padding: 0.38rem 1.88rem;
-  }
-`;
-const StyledSearch = styled(Search)`
-  &.openhomeinput {
-    height: 1.88rem;
-    &:hover:not(:disabled),
-    &:focus:not(:disabled) {
-      background-color: #fff;
-      border: 1px solid #6c56e5;
-    }
   }
 `;
 
