@@ -272,7 +272,7 @@ function AddFriendsBySearch({
         }
         onCancel={handleCancelInvite}
       >
-        {isSpaceEmpty ? (
+        {isSpaceEmpty && !isViewMode ? (
           <InvitationForm>
             <StyledInfoImg src={FriendModalImg} alt="" />
             <StyledInfoText>프렌즈가 없습니다.</StyledInfoText>
