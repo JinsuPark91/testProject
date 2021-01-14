@@ -17,7 +17,7 @@ const SelectRoomType = styled.div`
   padding: 2.25rem 2rem;
   display: flex;
   justify-content: space-between;
-  align-item: center;
+  align-items: center;
 `;
 
 const RoomInformation = styled.div`

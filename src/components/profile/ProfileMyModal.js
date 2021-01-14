@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { Button, Avatar, Dropdown, Menu, Checkbox, Tooltip } from 'antd';
-import { useCoreStores, Toast, WWMS } from 'teespace-core';
+import { useCoreStores, Toast, Message } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import { useObserver } from 'mobx-react';
 // import { useTranslation } from 'react-i18next';
@@ -44,7 +44,6 @@ const ProfileMyModal = ({
 
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
   const [isFriendMemViewOpen, setIsFriendMemViewOpen] = useState(false);
-  const [isSpaceMemViewOpen, setIsSpaceMemViewOpen] = useState(false);
 
   const [spaceMemberList, setSpaceMemberList] = useState([]);
   const [isToastOpen, setIsToastOpen] = useState(false);
@@ -55,10 +54,13 @@ const ProfileMyModal = ({
   const [modalTitle, setModalTitle] = useState('');
 
   const [isRoomDialogVisible, setIsRoomDialogVisible] = useState(false);
-
   const [isSpaceEditDialogVisible, setIsSpaceEditDialogVisible] = useState(
     false,
   );
+  const [
+    isNewSpaceErrorMessagVisible,
+    setIsNewSpaceErrorMessageVisible,
+  ] = useState(false);
 
   const { keycloak } = useKeycloak();
   const isAdmin = userStore.myProfile.grade === 'admin';
@@ -117,18 +119,9 @@ const ProfileMyModal = ({
     onCancel();
   }, [onCancel]);
 
-  const handleSendInviteMail = useCallback(() => {
-    setIsInviteDialogOpen(false);
-    setIsToastOpen(true);
-  }, []);
-
   const handleCancelInviteMail = useCallback(() => {
     setIsInviteDialogOpen(false);
   }, []);
-
-  const toggleSpaceMemViewDialog = useCallback(() => {
-    setIsSpaceMemViewOpen(!isSpaceMemViewOpen);
-  }, [isSpaceMemViewOpen]);
 
   const handleInviteDialog = useCallback(() => {
     setIsInviteDialogOpen(true);
@@ -145,30 +138,6 @@ const ProfileMyModal = ({
     setIsViewMode(true);
     setModalTitle(spaceStore.currentSpace?.name);
     setIsFriendMemViewOpen(true);
-
-    // const { myProfile } = userStore;
-    // try {
-    //   const domainKey =
-    //     process.env.REACT_APP_ENV === 'local'
-    //       ? authStore.sessionInfo.domainKey
-    //       : undefined;
-    //   const response = await orgStore.getUserOrgUserList(
-    //     myProfile?.companyCode,
-    //     myProfile?.departmentCode,
-    //     myProfile?.id,
-    //     domainKey,
-    //   );
-    //   const spaceMembers = response.map(item => ({
-    //     ...item,
-    //     isMe: item.id === myProfile?.id,
-    //     profilePhotoURL: userStore.getProfilePhotoURL(item.id, 'small'),
-    //     displayName: item.displayName,
-    //   }));
-    //   setSpaceMemberList(spaceMembers);
-    // } catch (e) {
-    //   console.log('getUserList Error');
-    // }
-    // toggleSpaceMemViewDialog();
   }, [orgStore, userStore, authStore, spaceStore]);
 
   const handleAddFriend = useCallback(async () => {
@@ -204,6 +173,18 @@ const ProfileMyModal = ({
     MovePage('support', true);
   };
 
+  const handleClickNewSpace = useCallback(() => {
+    const basicAdminSpace = spaceStore.spaceList?.filter(
+      elem => elem.adminId === userStore.myProfile.id && elem.plan === 'BASIC',
+    );
+
+    if (basicAdminSpace.length >= 3) {
+      setIsNewSpaceErrorMessageVisible(true);
+    } else {
+      window.location.href = getMainWaplURL('/select-space-type');
+    }
+  }, [spaceStore.spaceList, userStore.myProfile.id]);
+
   useEffect(() => {
     if (isEditMode === true) return;
     (async () => {
@@ -230,6 +211,7 @@ const ProfileMyModal = ({
       )}
     </Menu>
   );
+
   const userContent = !isEditMode ? (
     <>
       <UserImage>
@@ -372,11 +354,7 @@ const ProfileMyModal = ({
             </ConvertList>
           )}
           {
-            <ConvertAdd
-              onClick={() => {
-                window.location.href = getMainWaplURL('/select-space-type');
-              }}
-            >
+            <ConvertAdd onClick={() => handleClickNewSpace()}>
               <AddButton href="#">
                 <span>+</span> 새 스페이스 생성
               </AddButton>
@@ -450,6 +428,18 @@ const ProfileMyModal = ({
       >
         {toastText}
       </Toast>
+      <Message
+        visible={isNewSpaceErrorMessagVisible}
+        title="스페이스는 최대 3개까지 생성할 수 있습니다."
+        btns={[
+          {
+            type: 'solid',
+            shape: 'round',
+            text: '확인',
+            onClick: () => setIsNewSpaceErrorMessageVisible(false),
+          },
+        ]}
+      />
     </>
   );
 
@@ -604,6 +594,10 @@ const DataBox = styled.div`
   .ant-btn {
     background-color: transparent;
     &:hover {
+      background-color: #dcddff;
+    }
+    &:active,
+    &:focus {
       background-color: #dcddff;
     }
   }
