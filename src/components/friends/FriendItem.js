@@ -383,15 +383,15 @@ const TextComponent = React.memo(
       switch (mode) {
         // friends LNB
         case 'friend': {
-          const orgInfoList = fullCompanyJob
-            ?.split(', ')
-            .map(jobTitle => jobTitle.trim().split(' ').join('-'))
-            .filter(jobTitleStr => jobTitleStr?.length > 0);
+          // const orgInfoList = fullCompanyJob
+          //   ?.split(', ')
+          //   .map(jobTitle => jobTitle.trim().split(' ').join('-'))
+          //   .filter(jobTitleStr => jobTitleStr?.length > 0);
 
-          if (orgInfoList?.length > 0) {
-            return `${displayName} (${orgInfoList.join(', ')})`;
-          }
-          return displayName;
+          // if (orgInfoList?.length > 0) {
+          //   return `${displayName} (${orgInfoList.join(', ')})`;
+          // }
+          return `${displayName} (${fullCompanyJob})`;
         }
         case 'addFriend': // organization
           if (orgName && position) {
@@ -428,10 +428,10 @@ const FriendItem = observer(
       friendFavorite = false,
       friendId = '',
       id: userId = '',
-      fullCompanyJob,
       orgName,
       position,
     } = friendInfo;
+    const fullCompanyJob = friendInfo.getFullCompanyJob({ format: 'friend' });
     const history = useHistory();
     const { authStore, friendStore, userStore, roomStore } = useCoreStores();
     const [dropdownVisible, setDropdownVisible] = useState(false);

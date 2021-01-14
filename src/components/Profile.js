@@ -497,7 +497,7 @@ const Profile = observer(
                   <UserInfoItem>
                     <StyleOfficeIcon iconimg="address" />
                     <UserInfoText>
-                      {profile?.fullCompanyJob}
+                      {profile?.getFullCompanyJob()}
                       {editEnabled && (
                         <Tooltip
                           placement="bottomLeft"

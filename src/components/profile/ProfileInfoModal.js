@@ -477,7 +477,7 @@ function ProfileInfoModal({
         {userType === 'USR0001' && (
           <UserInfoItem>
             <UserInfoIcon iconimg="address" />
-            {profile?.fullCompanyJob}
+            {profile?.getFullCompanyJob()}
             {isEditMode && (
               <Tooltip
                 placement="bottomLeft"
