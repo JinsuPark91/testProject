@@ -324,7 +324,6 @@ function ProfileInfoModal({
   };
 
   const handleCancel = () => {
-    console.log('?');
     if (isChange) {
       Modal.confirm({
         transitionName: '',
