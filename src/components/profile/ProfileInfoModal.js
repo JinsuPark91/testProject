@@ -302,7 +302,7 @@ function ProfileInfoModal({
 
     // Update my profile information
     setProfile(await userStore.updateMyProfile({ updatedInfo }));
-    console.log(profile);
+    // console.log(profile);
 
     // Reset local input date
     resetLocalInputData();
