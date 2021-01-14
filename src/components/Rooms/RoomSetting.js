@@ -22,6 +22,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
   const [isChanged, setIsChanged] = useState(false);
   const [isPrivateRoom, setIsPrivateRoom] = useState(false);
   const [isToastVisible, setIsToastVisible] = useState(false);
+  const [isDeleteWarningVisible, setIsDeleteWarningVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [isWarningVisible, setIsWarningVisible] = useState(false);
 
@@ -93,21 +94,16 @@ const CommonSettingPage = ({ roomInfo = null }) => {
   const handleCancelModeChange = () => {
     setIsWarningVisible(false);
   };
-  // const handleModeUpdate = async () => {
-  //   try {
-  //     const result = await roomStore.changeRoomModePrivate({
-  //       roomId: roomInfo.id,
-  //       userId: myUserId,
-  //     });
 
-  //     if (result) setIsPrivateRoom(true);
-  //     else throw Error(`result:${result}`);
-  //   } catch (err) {
-  //     console.error(`[Platform] 프라이빗 룸 전환 실패, ${err}`);
-  //   }
-  // };
+  const handleDelete = () => {
+    setIsDeleteWarningVisible(true);
+  };
 
-  const handleDelete = async () => {
+  const handleDeleteCancel = () => {
+    setIsDeleteWarningVisible(false);
+  };
+
+  const handleDeleteOk = async () => {
     try {
       const result = await roomStore.deleteRoom({
         userId: myUserId,
@@ -121,6 +117,8 @@ const CommonSettingPage = ({ roomInfo = null }) => {
       else throw Error(`result:${result}`);
     } catch (err) {
       console.error(`[Platform] 룸 삭제 실패, ${err}`);
+    } finally {
+      setIsDeleteWarningVisible(false);
     }
   };
 
@@ -135,6 +133,26 @@ const CommonSettingPage = ({ roomInfo = null }) => {
 
   return (
     <Wrapper style={{ padding: '2.56rem 3.75rem' }}>
+      <Message
+        visible={isDeleteWarningVisible}
+        title="해당 룸을 삭제하시겠습니까?"
+        subtitle="한 번 삭제한 룸은 복구할 수 없습니다."
+        type="error"
+        btns={[
+          {
+            type: 'solid',
+            shape: 'round',
+            text: '삭제',
+            onClick: handleDeleteOk,
+          },
+          {
+            type: 'outlined',
+            shape: 'round',
+            text: '취소',
+            onClick: handleDeleteCancel,
+          },
+        ]}
+      />
       <Toast
         visible={isToastVisible}
         timeoutMs={1000}
