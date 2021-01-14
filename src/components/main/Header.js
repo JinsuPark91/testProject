@@ -17,8 +17,8 @@ import {
   IconWrapper,
   SystemIconContainer,
   AppIconWrapper,
+  StyledPhotos,
 } from './HeaderStyle';
-import Photos from '../Photos';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import MyProfileInfo from '../profile/MyProfileInfo';
 import RoomInquiryModal from '../Rooms/RoomInquiryModal';
@@ -318,7 +318,7 @@ const Header = observer(() => {
         {PlatformUIStore.resourceType !== 'f' && (
           <>
             <Title>
-              <Photos
+              <StyledPhotos
                 srcList={getUserPhotos()}
                 onClick={handleClickRoomPhoto}
               />

@@ -19,7 +19,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 const StyledContent = styled.div`
-  padding: 1.13rem 1rem 3.69rem;
+  padding: 1.13rem 1rem 1.44rem;
 `;
 const StyledInputBox = styled.div`
   display: flex;
@@ -62,14 +62,9 @@ const StyledInput = styled(Input)`
 `;
 
 const StyledButton = styled(Button)`
-  width: 4.38rem;
-  padding: 0 1.13rem;
-  background-color: #6c56e5;
-  color: #fff;
-  border-color: #6c56e5;
-  & > span {
-    display: flex;
-    justify-content: center;
+  &.ant-btn {
+    width: 5.38rem;
+    padding: 0 1.63rem;
   }
 `;
 
@@ -234,7 +229,11 @@ function AddFriendsByInvitationDialog({
               value={mailAddress}
               autoFocus
             />
-            <StyledButton shape="round" onClick={handleSendInviteMail}>
+            <StyledButton
+              type="solid"
+              shape="round"
+              onClick={handleSendInviteMail}
+            >
               보내기
             </StyledButton>
           </StyledInputBox>

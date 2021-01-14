@@ -753,6 +753,7 @@ const UserImage = styled.img`
   width: 6.88rem;
   height: 6.88rem;
   border-radius: 50%;
+  object-fit: cover;
 `;
 
 const UserInfoList = styled.div`
