@@ -74,7 +74,8 @@ function RoomAddMemberModal({
         </div>
       }
       visible={visible}
-      closable={false}
+      closable
+      onCancel={handleCancel}
       footer={null}
       destroyOnClose
     >
