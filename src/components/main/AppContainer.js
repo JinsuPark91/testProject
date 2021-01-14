@@ -37,7 +37,7 @@ export const SubAppContainer = ({ splitRef, children, layoutState }) => {
         subAppContainer.style.height = null;
         subAppContainer.style.width = `calc(${
           splitRef.current.split.getSizes()[1]
-        }% - ${splitRef.current.props.gutterSize / 2}px)`;
+        }% - 0.15rem)`;
         splitter.style.position = null;
         break;
       case 'close':
