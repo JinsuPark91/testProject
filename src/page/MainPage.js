@@ -237,17 +237,19 @@ const MainPage = () => {
       />
       {leftSide}
       {mainSide}
-      {/* <FloatingButton
-        visible
-        roomList={[
-          { name: 'test', userCount: 12, id: 'test01' },
-          { name: 'test', userCount: 12, id: 'test01' },
-          { name: 'test', userCount: 12, id: 'test01' },
-          { name: 'test', userCount: 12, id: 'test01' },
-          { name: 'test', userCount: 12, id: 'test01' },
-          // { name: 'test', userCount: 12, id: 'test01' },
+      <FloatingButton
+        visible={false}
+        rooms={[
+          { name: 'test1', userCount: 11, id: 'test01' },
+          { name: 'test2', userCount: 12, id: 'test02' },
+          { name: 'test3', userCount: 13, id: 'test03' },
+          { name: 'test4', userCount: 14, id: 'test04' },
+          { name: 'test5', userCount: 15, id: 'test05' },
+          { name: 'test6', userCount: 16, id: 'test06' },
+          { name: 'test7', userCount: 17, id: 'test07' },
+          // { name: 'test8', userCount: 18, id: 'test08' },
         ]}
-        slidesToShow={5}
+        count={5}
         onItemClick={roomInfo => {
           console.log('Item Clicked. ', roomInfo);
         }}
@@ -257,7 +259,7 @@ const MainPage = () => {
         onCloseAll={() => {
           console.log('All Closed.');
         }}
-      /> */}
+      />
     </Wrapper>
   );
 };
