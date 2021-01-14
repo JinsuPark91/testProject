@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Photos from '../Photos';
 
 export const Wrapper = styled.div`
   display: flex;
@@ -75,9 +76,13 @@ export const IconWrapper = styled.div`
 `;
 
 export const AppIconWrapper = styled.div`
-  width 1.5rem;
-  height:1.5rem;
-  overflow:hidden;
+  overflow: hidden;
+  width: 1.5rem;
+  height: 1.5rem;
   cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
   pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
+`;
+
+export const StyledPhotos = styled(Photos)`
+  flex-shrink: 0;
 `;

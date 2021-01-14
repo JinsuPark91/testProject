@@ -606,6 +606,10 @@ const DataBox = styled.div`
     &:hover {
       background-color: #dcddff;
     }
+    &:active,
+    &:focus {
+      background-color: #dcddff;
+    }
   }
   .ant-btn-circle {
     width: 1.5rem;

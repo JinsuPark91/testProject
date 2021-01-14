@@ -29,13 +29,8 @@ const SearchBox = styled.div`
 `;
 
 const StyledSearch = styled(Search)`
-  &.openhomeinput {
-    height: 1.81rem;
-    &:hover:not(:disabled),
-    &:focus:not(:disabled) {
-      background-color: #fff;
-      border: 1px solid #6c56e5;
-    }
+  &.ant-input-affix-wrapper {
+    border-color: #e3e7eb;
   }
 `;
 function FriendsLNBHeader({ handleInputChange, handleInputClear }) {

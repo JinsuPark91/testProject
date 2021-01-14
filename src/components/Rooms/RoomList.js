@@ -194,7 +194,7 @@ function RoomList() {
 
       <TopWrapper>
         <InputWrapper>
-          <SearchIcon width={1} height={1} color="rgb(133, 133, 133)" />
+          <SearchIcon width={1} height={1} color="currentcolor" />
           <input
             type="text"
             value={keyword}
@@ -301,20 +301,42 @@ const InputWrapper = styled.div`
   background: #fff;
   border-radius: 25px;
   border: 1px solid #e3e7eb;
+  transition: all 0.3s;
+
+  &:hover {
+    background-color: #dcddff;
+    border-color: #c6ced6;
+    svg {
+      color: #000;
+    }
+  }
 
   &:focus-within {
+    background-color: #fff;
     border: 1px solid #6c56e5;
+    &:hover {
+      background-color: #dcddff;
+    }
+    svg {
+      color: #000;
+    }
   }
 
   input {
     margin-left: 0.44rem;
-    height: 1.13rem;
     border: 0;
     font-size: 0.75rem;
-
+    background-color: transparent;
     &:focus {
       outline: 0;
     }
+    &::placeholder {
+      color: #bdc6d3;
+    }
+  }
+
+  svg {
+    color: #bdc6d3;
   }
 `;
 
@@ -361,8 +383,8 @@ const OpenChatIconWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 0 0 1.81rem;
-  height: 1.81rem;
+  flex: 0 0 1.875rem;
+  height: 1.875rem;
   border: 1px solid #e3e7eb;
   border-radius: 50%;
   background: #ffffff;
