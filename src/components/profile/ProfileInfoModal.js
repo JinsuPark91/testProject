@@ -480,7 +480,9 @@ function ProfileInfoModal({
         {userType === 'USR0001' && (
           <UserInfoItem>
             <UserInfoIcon iconimg="address" />
-            {profile?.getFullCompanyJob()}
+            <span style={{ whiteSpace: 'break-spaces' }}>
+              {profile?.getFullCompanyJob()}
+            </span>
             {isEditMode && (
               <Tooltip
                 placement="bottomLeft"
