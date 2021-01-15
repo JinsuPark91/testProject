@@ -39,7 +39,6 @@ const FriendsLNB = observer(({ userId }) => {
         // orgStore.getOrgTree(),
       ]);
       loader.stop();
-      console.log(friendStore.friendInfoList);
     })();
   }, [friendStore, loader, orgStore, userStore.myProfile.id]);
 

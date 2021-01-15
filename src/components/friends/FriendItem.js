@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import styled, { css } from 'styled-components';
@@ -14,9 +14,7 @@ import {
 import { useOpenInWindow } from 'use-open-window';
 import { ExportOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import { Talk } from 'teespace-talk-app';
-import ProfileInfoModal from '../profile/ProfileInfoModal';
 import { handleCheckNewFriend } from '../../utils/FriendsUtil';
-
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 
 const FriendItemWrapper = styled.div`
@@ -235,8 +233,6 @@ const DropdownMenu = React.memo(
 
 const Profile = React.memo(
   ({ mode, tooltipPopupContainer, profilePhoto, itemId, handleClickPhoto }) => {
-    const { userStore } = useCoreStores();
-
     return (
       <>
         {mode === 'me' && (
@@ -266,6 +262,7 @@ const FriendAction = React.memo(
       e.stopPropagation();
       console.log(handleTalkWindowOpen());
     }, []);
+
     return (
       <>
         {mode === 'friend' && (
@@ -423,6 +420,8 @@ const FriendItem = observer(
     style,
     openToast,
     setToastText,
+    setSelectedId,
+    toggleInfoModal,
   }) => {
     const {
       displayName,
@@ -437,8 +436,6 @@ const FriendItem = observer(
     const { authStore, friendStore, userStore, roomStore } = useCoreStores();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
-    const [selectedId, setSelectedId] = useState('');
-    const [infoModalVisible, setInfoModalVisible] = useState(false);
     const [visibleMessage, setVisibleMessage] = useState(false);
     const [
       visibleRemoveFriendMessage,
@@ -453,9 +450,9 @@ const FriendItem = observer(
       if (e) e.stopPropagation();
       if (id) {
         setSelectedId(id);
-        setInfoModalVisible(true);
+        toggleInfoModal(true);
       } else {
-        setInfoModalVisible(false);
+        toggleInfoModal(false);
       }
     };
 
@@ -730,14 +727,6 @@ const FriendItem = observer(
             {mode === 'addFriend' && isMe && <span>내 계정</span>}
           </ActionWrapper>
         </FriendItemWrapper>
-        {infoModalVisible && (
-          <ProfileInfoModal
-            userId={selectedId}
-            visible={infoModalVisible}
-            onClose={handleSelectPhoto}
-            position={{ left: '17rem' }}
-          />
-        )}
       </>
     );
   },
