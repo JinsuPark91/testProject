@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { Typography, Modal } from 'antd';
+import { Modal } from 'antd';
 import { talkRoomStore } from 'teespace-talk-app';
 import { useCoreStores, Message } from 'teespace-core';
 import { Observer } from 'mobx-react';
@@ -12,13 +12,10 @@ import Photos from '../Photos';
 import NextArrowIcon from '../../assets/ts_arrow_right_line.svg';
 import PrevArrowIcon from '../../assets/ts_arrow_left_line.svg';
 import AddIcon from '../../assets/add1.svg';
-import Openchat from '../../assets/openchat.svg';
-import { SettingIcon } from '../Icons';
+import { SettingIcon, OpenChatIcon } from '../Icons';
 import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 import Search from '../common/Search';
-
-const { Title } = Typography;
 
 const RoomButton = ({ roomInfo, onClick, disabled }) => {
   const handleClick = () => {
@@ -28,6 +25,7 @@ const RoomButton = ({ roomInfo, onClick, disabled }) => {
   return (
     <RoomJoinBtn onClick={handleClick} disabled={disabled}>
       <span>방 참여하기</span>
+      <OpenChatIcon width="1" height="1" color="#75757f" />
     </RoomJoinBtn>
   );
 };
@@ -347,7 +345,7 @@ function OpenRoomHome({ visible, onCancel }) {
 
                     return (
                       <>
-                        <RoomTitle level={5}>
+                        <RoomTitle>
                           내 오픈 룸 목록
                           <RoomCount>{openRooms.length}</RoomCount>
                         </RoomTitle>
@@ -383,10 +381,10 @@ function OpenRoomHome({ visible, onCancel }) {
                 </Observer>
               </RoomListBox>
               <RecommendRoomListBox>
-                <RoomTitle level={5}>추천 오픈 룸</RoomTitle>
+                <RoomOpenTitle>추천 오픈 룸</RoomOpenTitle>
                 <Observer>
                   {() => (
-                    <RoomList style={{ height: '15.3rem' }}>
+                    <RoomList>
                       {roomStore.getRecommandRoomArray().map(roomInfo => (
                         <RoomListItem key={roomInfo.id}>
                           <Photos
@@ -419,9 +417,9 @@ function OpenRoomHome({ visible, onCancel }) {
               </RecommendRoomListBox>
             </>
           ) : (
-            <RoomList style={{ height: '26.2rem' }}>
-              {getRoomItems(keyword)}
-            </RoomList>
+            <RecommendRoomListBox>
+              <RoomList>{getRoomItems(keyword)}</RoomList>
+            </RecommendRoomListBox>
           )}
         </OpenHomeForm>
       </StyledModal>
@@ -435,75 +433,66 @@ const StyledModal = styled(Modal)`
   }
 `;
 const OpenHomeForm = styled.div`
-  width: 100%;
-  height: 30rem;
-  padding: 0.63rem 0.75rem 0.5rem;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 29.75rem;
+  padding: 0 0.75rem;
 `;
 const SearchBox = styled.div`
-  .anticon {
-    color: #bdc6d3;
-  }
-  &:hover,
-  &:focus {
-    .anticon {
-      color: #000;
-    }
-  }
-  .ant-input {
-    padding: 0.38rem 1.88rem;
-  }
+  padding-top: 0.63rem;
 `;
 
 const JoinedText = styled.div`
+  padding: 0 0.5rem;
+  font-size: 0.69rem;
   color: #696969;
   white-space: nowrap;
-  padding: 0 8px;
-  font-size: 0.69rem;
 `;
 
 const OpenRoomName = styled.div`
-  width: 3.75rem;
   overflow: hidden;
+  width: 3.75rem;
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: center;
 `;
 
 const RoomListBox = styled.div`
-  padding: 0.75rem 0 1.25rem;
-  margin: 0 0.69rem 0 0.31rem;
+  margin: 0 0.5rem;
+  padding: 0.75rem 0;
   border-bottom: 1px solid #e3e7eb;
 `;
 
 const RecommendRoomListBox = styled.div`
-  padding: 0.75rem 0 0.5rem 0.31rem;
-  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 0.63rem 0;
 `;
 
 const RoomList = styled.ul`
-  padding: 0 0.5rem 0 0;
   overflow-y: auto;
-  margin: 0.63rem 0;
+  height: 100%;
+  padding: 0 0.5rem;
 `;
 
 const RoomListItem = styled.li`
-    display:flex;
-    justify-content: space-between;
-    align-items: center;
-    padding 0.44rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.44rem 0;
 `;
 
-const RoomTitle = styled(Title)`
-  &.ant-typography {
-    position: relative;
-    font-size: 0.75rem;
-    line-height: 1.13rem;
-    color: #000000;
-    letter-spacing: 0;
-    margin-right: 0.25rem;
-    margin-bottom: 0;
-  }
+const RoomTitle = styled.p`
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.13rem;
+  color: #000;
+`;
+
+const RoomOpenTitle = styled(RoomTitle)`
+  padding: 0.12rem 0.5rem 0.44rem;
 `;
 
 const RoomCount = styled.span`
@@ -517,14 +506,14 @@ const ItemAddBtn = styled.button`
   height: 3.75rem;
   background-color: transparent;
   border: none;
+  cursor: pointer;
 
   span {
-    display: inline-block;
+    display: block;
     width: 3.75rem;
     height: 3.75rem;
     border-radius: 50%;
     background: #efefef url(${AddIcon}) 50% 50% no-repeat;
-    cursor: pointer;
     font-size: 0;
     line-height: 0;
     text-indent: -9999px;
@@ -556,7 +545,7 @@ const AdminText = styled.p`
 `;
 
 const SearchTitle = styled.p`
-  font-wieght: 500;
+  font-weight: 500;
   font-size: 0.94rem;
   color: #000000;
   letter-spacing: 0;
@@ -565,7 +554,7 @@ const SearchTitle = styled.p`
 `;
 
 const SearchSubText = styled.p`
-  font-wieght: 400;
+  font-weight: 400;
   font-size: 0.75rem;
   color: #696969;
   letter-spacing: 0;
@@ -575,16 +564,17 @@ const SearchSubText = styled.p`
 const RoomJoinBtn = styled.button`
   opacity: ${({ disabled }) => (disabled ? '0.4' : '1')};
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-  height: 1rem;
+  padding: 0.25rem;
+  line-height: 0;
   background-color: transparent;
   border: none;
+  border-radius: 50%;
+
+  &:hover {
+    background-color: #dcddff;
+  }
 
   span {
-    display: inline-block;
-    width: 1rem;
-    height: 1rem;
-    background: url(${Openchat}) 50% 50% no-repeat;
-    background-size: 1rem 1rem;
     font-size: 0;
     line-height: 0;
     text-indent: -9999px;
@@ -593,31 +583,30 @@ const RoomJoinBtn = styled.button`
 `;
 
 const IconWrapper = styled.div`
-  position: absolute;
-  border-radius: 50%;
-  right: 0px;
-  background: #efefef;
-  top: 0px;
-  width: 1.25rem;
-  height: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: absolute;
+  top: -0.375rem;
+  right: -0.375rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  background: #efefef;
+  border-radius: 50%;
   z-index: 1;
 
-  :hover {
-    background: #cccccc;
+  &:hover {
+    background: #ccc;
   }
 `;
 
 const StyledSlider = styled(Slider)`
-  margin-top: 1.06rem;
+  margin-top: 0.6875rem;
   .slick-slide {
-    width: 3.75rem;
-    div {
-      div {
-        margin: 0 auto;
-      }
+    padding-top: 0.375rem;
+    & > div > div {
+      width: fit-content;
+      margin: 0 auto;
     }
   }
   .slick-prev,
@@ -627,27 +616,24 @@ const StyledSlider = styled(Slider)`
     top: -1.61rem;
     &:before {
       content: '';
+      display: inline-block;
       width: 1rem;
       height: 1rem;
-      display: inline-block;
-      font-size: 0;
-      font-family: none;
-      color: transparent;
-      background-size: 1rem 1rem;
-      background-color: transparent;
+      background-size: contain;
+      background-repeat: no-repeat;
     }
   }
   .slick-prev {
-    left: auto;
-    right: 0.5rem;
+    left: unset;
+    right: 1.5rem;
     &:before {
-      background: url(${PrevArrowIcon}) 0 0 no-repeat;
+      background-image: url(${PrevArrowIcon});
     }
   }
   .slick-next {
-    right: -0.69rem;
+    right: 0;
     &:before {
-      background: url(${NextArrowIcon}) 0 0 no-repeat;
+      background-image: url(${NextArrowIcon});
     }
   }
 `;

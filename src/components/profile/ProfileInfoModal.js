@@ -324,7 +324,6 @@ function ProfileInfoModal({
   };
 
   const handleCancel = () => {
-    console.log('?');
     if (isChange) {
       Modal.confirm({
         transitionName: '',
@@ -423,7 +422,11 @@ function ProfileInfoModal({
         </Dropdown>
       )}
       <UserImage>
-        <img alt="" src={renderProfilePhoto} onClick={handleImageModal} />
+        <img
+          alt=""
+          src={renderProfilePhoto}
+          onClick={isEditMode ? () => {} : handleImageModal}
+        />
         {isEditMode && (
           <ImageChangeBox>
             <Dropdown
@@ -477,7 +480,9 @@ function ProfileInfoModal({
         {userType === 'USR0001' && (
           <UserInfoItem>
             <UserInfoIcon iconimg="address" />
-            {profile?.getFullCompanyJob()}
+            <span style={{ whiteSpace: 'break-spaces' }}>
+              {profile?.getFullCompanyJob()}
+            </span>
             {isEditMode && (
               <Tooltip
                 placement="bottomLeft"
@@ -567,7 +572,7 @@ function ProfileInfoModal({
       checkFav={isFav}
       userId={userId}
       isNotMyFriend={isNotMyFriend}
-      handleCancel={handleCancel}
+      handleCancel={handleExit}
       footer={
         <UtilButtonBox>
           {isEditMode ? (

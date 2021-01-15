@@ -391,7 +391,8 @@ const TextComponent = React.memo(
           // if (orgInfoList?.length > 0) {
           //   return `${displayName} (${orgInfoList.join(', ')})`;
           // }
-          return `${displayName} (${fullCompanyJob})`;
+          const fullCompanyJobTxt = fullCompanyJob ? `(${fullCompanyJob})` : '';
+          return `${displayName} ${fullCompanyJobTxt}`;
         }
         case 'addFriend': // organization
           if (orgName && position) {
