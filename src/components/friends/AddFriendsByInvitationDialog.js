@@ -84,7 +84,7 @@ const StyledLinkButton = styled(Button)`
 
 function AddFriendsByInvitationDialog({
   visible,
-  onSendInviteMail = () => {}, // 초대 메일 전송해도 초대 다이얼로그 닫히지 않는 것이 현재 기획 - 기획 변경으로 인해 필요없어졌지만 일단 남겨둠
+  onSendInviteMail = () => {},
   onCancel,
 }) {
   const { friendStore, userStore, spaceStore } = useCoreStores();
@@ -254,15 +254,6 @@ function AddFriendsByInvitationDialog({
             초대 링크 복사
           </StyledLinkButton>
         </StyledContent>
-        <Toast
-          visible={isToastVisible}
-          timeoutMs={1000}
-          onClose={() => {
-            setIsToastVisible(false);
-          }}
-        >
-          {toastText}
-        </Toast>
         <Message
           visible={isMessageVisible}
           title="올바르지 않은 이메일 주소 형식이 포함되어 있습니다."
@@ -278,6 +269,15 @@ function AddFriendsByInvitationDialog({
           ]}
         />
       </StyledModal>
+      <Toast
+        visible={isToastVisible}
+        timeoutMs={1000}
+        onClose={() => {
+          setIsToastVisible(false);
+        }}
+      >
+        {toastText}
+      </Toast>
     </>
   );
 }

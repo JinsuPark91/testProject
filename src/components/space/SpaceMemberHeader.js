@@ -13,7 +13,7 @@ function SpaceMemberHeader({ spaceName, userCount }) {
 const StyledWrapper = styled.div`
   display: flex;
   width: 100%;
-  margin: 0 0 0.38rem 0;
+  padding: 0 0 0.38rem 1rem;
 `;
 
 const StyledSpaceName = styled.span`
