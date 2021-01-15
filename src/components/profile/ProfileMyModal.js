@@ -33,7 +33,13 @@ const ProfileMyModal = ({
   visible = false,
   created = false,
 }) => {
-  const { userStore, authStore, spaceStore, orgStore } = useCoreStores();
+  const {
+    userStore,
+    waplUserStore,
+    authStore,
+    spaceStore,
+    orgStore,
+  } = useCoreStores();
   const history = useHistory();
   const [isCreated, setIsCreated] = useState(created);
   const [profile, setProfile] = useState(null);
@@ -175,7 +181,8 @@ const ProfileMyModal = ({
 
   const handleClickNewSpace = useCallback(() => {
     const basicAdminSpace = spaceStore.spaceList?.filter(
-      elem => elem.adminId === userStore.myProfile.id && elem.plan === 'BASIC',
+      elem =>
+        elem.adminId === waplUserStore?.myProfile?.id && elem.plan === 'BASIC',
     );
 
     if (basicAdminSpace.length >= 3) {
@@ -183,7 +190,7 @@ const ProfileMyModal = ({
     } else {
       window.location.href = getMainWaplURL('/select-space-type');
     }
-  }, [spaceStore.spaceList, userStore.myProfile.id]);
+  }, [spaceStore.spaceList, waplUserStore]);
 
   useEffect(() => {
     if (isEditMode === true) return;
