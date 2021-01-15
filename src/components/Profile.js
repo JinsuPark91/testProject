@@ -494,10 +494,12 @@ const Profile = observer(
               */}
               <UserInfoList>
                 {userType === 'USR0001' && (
-                  <UserInfoItem>
+                  <UserInfoItem style={{ alignItems: 'flex-start' }}>
                     <StyleOfficeIcon iconimg="address" />
                     <UserInfoText>
-                      {profile?.getFullCompanyJob()}
+                      <span style={{ whiteSpace: 'break-spaces' }}>
+                        {profile?.getFullCompanyJob()}
+                      </span>
                       {editEnabled && (
                         <Tooltip
                           placement="bottomLeft"
@@ -753,7 +755,6 @@ const UserImage = styled.img`
   width: 6.88rem;
   height: 6.88rem;
   border-radius: 50%;
-  object-fit: cover;
 `;
 
 const UserInfoList = styled.div`
