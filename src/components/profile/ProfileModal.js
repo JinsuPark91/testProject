@@ -15,6 +15,7 @@ function ProfileModal({
   toggleFav,
   checkFav = () => false,
   isNotMyFriend = false,
+  handleCancel = () => {},
   userId,
   backgroundPhotoURL,
   outLine,
@@ -36,6 +37,10 @@ function ProfileModal({
       console.log(`Error ${e}`);
       setIsFav(checkFav());
     }
+  };
+  const handleClose = () => {
+    handleCancel();
+    onCancel();
   };
 
   return useObserver(() => (
@@ -72,7 +77,7 @@ function ProfileModal({
                     <Blind>즐겨찾기</Blind>
                   </TopButton>
                 )}
-              <TopButton type="close" onClick={onCancel}>
+              <TopButton type="close" onClick={handleClose}>
                 <Blind>닫기</Blind>
                 <CloseOutlined />
               </TopButton>
