@@ -204,7 +204,7 @@ function RoomList() {
         </InputWrapper>
         <Tooltip placement="bottomLeft" title="오픈 룸 홈" color="#0b1d41">
           <OpenChatIconWrapper onClick={handleOpenChat}>
-            <OpenChatIcon />
+            <OpenChatIcon color="#75757f" />
           </OpenChatIconWrapper>
         </Tooltip>
         <OpenRoomHome
