@@ -1,11 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-// import { NoteIcon } from 'teespace-note-app';
-// import { DriveIcon, ViewFileIcon } from 'teespace-drive-app';
-// import { CalendarIcon } from 'teespace-calendar-app';
 import { useCoreStores } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
+import { Tooltip } from 'antd';
 import {
   Wrapper,
   TitleWrapper,
@@ -18,6 +16,7 @@ import {
   SystemIconContainer,
   AppIconWrapper,
   StyledPhotos,
+  VerticalBar,
 } from './HeaderStyle';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import MyProfileInfo from '../profile/MyProfileInfo';
@@ -38,56 +37,68 @@ import {
   ViewFileActiveIcon,
   MeetingIcon,
   MeetingActiveIcon,
-  MeetingDisabledIcon,
 } from '../Icons';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
+
+const getIconStyle = (isDisabled = false) => {
+  return {
+    width: 1.38,
+    height: 1.38,
+    color: isDisabled ? 'rgba(68, 77, 89, 0.3)' : '#232D3B',
+  };
+};
 
 const apps = [
   {
     name: 'drive',
     icons: {
-      active: <DriveActiveIcon width={1.5} height={1.5} />,
-      disabled: <DriveIcon width={1.5} height={1.5} />,
-      default: <DriveIcon width={1.5} height={1.5} />,
+      active: <DriveActiveIcon {...getIconStyle()} />,
+      disabled: <DriveIcon {...getIconStyle(true)} />,
+      default: <DriveIcon {...getIconStyle()} />,
     },
     isUsedInMyRoom: true,
+    isSeperated: false,
   },
   {
     name: 'calendar',
     icons: {
-      active: <CalendarActiveIcon width={1.5} height={1.5} />,
-      disabled: <CalendarIcon width={1.5} height={1.5} />,
-      default: <CalendarIcon width={1.5} height={1.5} />,
+      active: <CalendarActiveIcon {...getIconStyle()} />,
+      disabled: <CalendarIcon {...getIconStyle(true)} />,
+      default: <CalendarIcon {...getIconStyle()} />,
     },
     isUsedInMyRoom: true,
+    isSeperated: false,
   },
   {
     name: 'note',
     icons: {
-      active: <NoteActiveIcon width={1.5} height={1.5} />,
-      disabled: <NoteIcon width={1.5} height={1.5} />,
-      default: <NoteIcon width={1.5} height={1.5} />,
+      active: <NoteActiveIcon {...getIconStyle()} />,
+      disabled: <NoteIcon {...getIconStyle(true)} />,
+      default: <NoteIcon {...getIconStyle()} />,
     },
     isUsedInMyRoom: true,
+    isSeperated: false,
   },
 
   {
     name: 'meeting',
     icons: {
-      active: <MeetingActiveIcon width={1.5} height={1.5} />,
-      disabled: <MeetingDisabledIcon width={1.5} height={1.5} />,
-      default: <MeetingIcon width={1.5} height={1.5} />,
+      active: <MeetingActiveIcon {...getIconStyle()} />,
+      disabled: <MeetingIcon {...getIconStyle(true)} />,
+      default: <MeetingIcon {...getIconStyle()} />,
     },
     isUsedInMyRoom: false,
+    isSeperated: false,
   },
   {
     name: 'files',
     icons: {
-      active: <ViewFileActiveIcon width={1.5} height={1.5} />,
-      disabled: <ViewFileIcon width={1.5} height={1.5} />,
-      default: <ViewFileIcon width={1.5} height={1.5} />,
+      active: <ViewFileActiveIcon {...getIconStyle()} />,
+      disabled: <ViewFileIcon {...getIconStyle(true)} />,
+      default: <ViewFileIcon {...getIconStyle()} />,
     },
     isUsedInMyRoom: true,
+    isSeperated: true,
   },
 ];
 
@@ -113,14 +124,20 @@ const AppIcon = React.memo(
     }
 
     return (
-      <AppIconWrapper
-        className="header__app-icon"
-        key={appName}
-        onClick={handleAppClick}
-        disabled={disabled}
+      <Tooltip
+        placement="bottom"
+        title={appName.charAt(0).toUpperCase() + appName.slice(1)}
+        color="#0b1d41"
       >
-        {icon}
-      </AppIconWrapper>
+        <AppIconWrapper
+          className="header__app-icon"
+          key={appName}
+          onClick={handleAppClick}
+          disabled={disabled}
+        >
+          {icon}
+        </AppIconWrapper>
+      </Tooltip>
     );
   },
 );
@@ -335,14 +352,24 @@ const Header = observer(() => {
                   <ExportIcon />
                 </IconWrapper> */}
                 {PlatformUIStore.layout !== 'expand' && (
-                  <IconWrapper onClick={handleSearch}>
-                    <SearchIcon />
+                  <IconWrapper
+                    onClick={handleSearch}
+                    style={{ marginRight: '0.44rem' }}
+                  >
+                    <SearchIcon width={1.25} height={1.25} color="#232D3B" />
                   </IconWrapper>
                 )}
                 {!isMyRoom() && (
                   <>
-                    <IconWrapper onClick={handleAddMember}>
-                      <AddAcountIcon />
+                    <IconWrapper
+                      onClick={handleAddMember}
+                      style={{ marginRight: '0.69rem' }}
+                    >
+                      <AddAcountIcon
+                        width={1.25}
+                        height={1.25}
+                        color="#232D3B"
+                      />
                     </IconWrapper>
                     {isAddMemberVisible && (
                       <RoomAddMemberModal
@@ -363,17 +390,20 @@ const Header = observer(() => {
 
       <AppIconContainer>
         {appConfirm}
-        {apps.map(({ name, icons, isUsedInMyRoom }) => (
-          <AppIcon
-            key={name}
-            subApp={PlatformUIStore.subApp}
-            appName={name}
-            onClick={handleAppClick}
-            defaultIcon={icons.default}
-            activeIcon={icons.active}
-            disabledIcon={icons.disabled}
-            disabled={isMyRoom() && !isUsedInMyRoom}
-          />
+        {apps.map(({ name, icons, isUsedInMyRoom, isSeperated }) => (
+          <>
+            {isSeperated ? <VerticalBar /> : null}
+            <AppIcon
+              key={name}
+              subApp={PlatformUIStore.subApp}
+              appName={name}
+              onClick={handleAppClick}
+              defaultIcon={icons.default}
+              activeIcon={icons.active}
+              disabledIcon={icons.disabled}
+              disabled={isMyRoom() && !isUsedInMyRoom}
+            />
+          </>
         ))}
       </AppIconContainer>
 

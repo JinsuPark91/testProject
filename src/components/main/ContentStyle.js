@@ -4,7 +4,7 @@ import Split from 'react-split';
 export const Wrapper = styled.div`
   display: flex;
   width: 100%;
-  height: calc(100% - 3.19rem);
+  height: calc(100% - 3.13rem);
 `;
 
 export const Splitter = styled(Split)`
