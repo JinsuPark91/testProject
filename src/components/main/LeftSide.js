@@ -5,7 +5,7 @@ import { talkRoomStore } from 'teespace-talk-app';
 import { ChattingIcon, MailIcon, PeopleIcon } from '../Icons';
 import FriendLnb from '../friends/FriendsLNB';
 import RoomList from '../Rooms/RoomList';
-import { Wrapper, CustomTabs, UnreadCount } from './LeftSideStyle';
+import { Wrapper, CustomTabs, UnreadCount, IconWrapper } from './LeftSideStyle';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const { TabPane } = CustomTabs;
@@ -22,25 +22,54 @@ const LeftSide = () => {
         onTabClick={handleSelectTab}
         animated={false}
       >
-        <TabPane key="f" tab={<PeopleIcon tooltipText="프렌즈 목록" />}>
+        <TabPane
+          key="f"
+          tab={
+            <IconWrapper className="lnb__icon-wrapper">
+              <PeopleIcon
+                width={1.5}
+                height={1.5}
+                color={PlatformUIStore.tabType === 'f' ? '#232d3b' : '#ffffff'}
+                tooltipText="프렌즈 목록"
+              />
+            </IconWrapper>
+          }
+        >
           <FriendLnb />
         </TabPane>
 
         <TabPane
           key="s"
           tab={
-            <>
+            <IconWrapper className="lnb__icon-wrapper">
               {talkRoomStore.totalUnreadCount && (
                 <UnreadCount>{talkRoomStore.totalUnreadCount}</UnreadCount>
               )}
-              <ChattingIcon tooltipText="룸 목록" />
-            </>
+              <ChattingIcon
+                width={1.5}
+                height={1.5}
+                color={PlatformUIStore.tabType === 's' ? '#232d3b' : '#ffffff'}
+                tooltipText="룸 목록"
+              />
+            </IconWrapper>
           }
         >
           <RoomList />
         </TabPane>
 
-        <TabPane key="m" tab={<MailIcon tooltipText="Mail" />}>
+        <TabPane
+          key="m"
+          tab={
+            <IconWrapper className="lnb__icon-wrapper">
+              <MailIcon
+                width={1.5}
+                height={1.5}
+                color={PlatformUIStore.tabType === 'm' ? '#232d3b' : '#ffffff'}
+                tooltipText="Mail"
+              />
+            </IconWrapper>
+          }
+        >
           <MailSideView />
         </TabPane>
       </CustomTabs>

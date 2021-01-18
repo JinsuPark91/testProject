@@ -20,9 +20,7 @@ export const CustomTabs = styled(Tabs)`
   .ant-tabs-nav {
     margin: 0;
     .ant-tabs-ink-bar {
-      height: 3px;
-      background-color: #ff486d;
-      border-radius: 3px;
+      height: 0;
     }
   }
   .ant-tabs-nav-list {
@@ -32,12 +30,17 @@ export const CustomTabs = styled(Tabs)`
     width: calc(100% / 3);
     justify-content: center;
     margin: 0;
-    padding: 0.75rem 0 0.5rem;
+    padding: 0;
+    height: 3.13rem;
     background-color: #0b1d41;
     font-size: 0;
     &:hover {
       background-color: #2d317a;
     }
+  }
+
+  .ant-tabs-tab-active .lnb__icon-wrapper {
+    background: #ffffff;
   }
 `;
 
@@ -54,4 +57,13 @@ export const UnreadCount = styled.div`
   border-radius: 0.56rem;
   background-color: #ff486d;
   text-align: center;
+`;
+
+export const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5.13rem;
+  height: 2.75rem;
+  border-radius: 10px;
 `;
