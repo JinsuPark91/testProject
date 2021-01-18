@@ -277,7 +277,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: rgb(245, 245, 251);
+  background: #ffffff;
   overflow-y: auto;
   height: 100%;
 `;
