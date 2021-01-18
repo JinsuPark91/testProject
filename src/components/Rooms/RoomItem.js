@@ -271,14 +271,11 @@ const RoomItemContent = ({
                 );
               }
               return (
-                <>
-                  {isMyRoom && <MyTooltip>나</MyTooltip>}
-                  <Photos
-                    srcList={userPhotos}
-                    onClick={handleClickRootPhoto}
-                    className="photos"
-                  />
-                </>
+                <Photos
+                  srcList={userPhotos}
+                  onClick={handleClickRootPhoto}
+                  className="photos"
+                />
               );
             }}
           </Observer>
@@ -293,15 +290,18 @@ const RoomItemContent = ({
                       <OpenChatIcon
                         width={0.88}
                         height={0.88}
-                        color="rgb(125,125,136)"
+                        color="rgb(0, 73, 61)"
                       />
                     </div>
                   )}
-                  <RoomNameText>
-                    {isMyRoom
-                      ? userStore.myProfile.nick || userStore.myProfile.name
-                      : roomInfo.customName || roomInfo.name}
-                  </RoomNameText>
+                  <>
+                    <RoomNameText>
+                      {isMyRoom
+                        ? userStore.myProfile.nick || userStore.myProfile.name
+                        : roomInfo.customName || roomInfo.name}
+                    </RoomNameText>
+                    {isMyRoom ? <MyIcon>나</MyIcon> : null}
+                  </>
                 </>
               )}
             </Observer>
@@ -345,7 +345,7 @@ const RoomItemContent = ({
         {() => {
           return roomInfo.metadata?.count ? (
             <UnreadCount className="room-item__unread">
-              {roomInfo.metadata?.count}
+              {roomInfo.metadata?.count > 99 ? '99+' : roomInfo.metadata?.count}
             </UnreadCount>
           ) : null;
         }}
@@ -427,7 +427,7 @@ const RoomItem = ({
 
   let backgroundColor = 'transparent';
   if (isActive) {
-    backgroundColor = 'rgba(255, 123, 123, 0.2)';
+    backgroundColor = '#F2EFEC';
   }
 
   const handleRoomClick = useCallback(() => {
@@ -460,6 +460,20 @@ const DropEffect = styled.div`
   height: 100%;
 `;
 
+const MyIcon = styled.div`
+  display: inline-flex;
+  flex: 0 0 1rem;
+  height: 1rem;
+  align-items: center;
+  justify-content: center;
+  background: #232d3b;
+  font-size: 0.69rem;
+  color: white;
+  font-weight: 400;
+  border-radius: 0.25rem;
+  margin-left: 0.25rem;
+`;
+
 const ItemWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -467,13 +481,15 @@ const ItemWrapper = styled.div`
   ${({ selected }) =>
     selected &&
     css`
-      background: #e2e3fb;
+      background: #f2efec;
     `}
 
-  border-radius: 1.875rem;
+  border-radius: 0.8125rem;
   padding: 0.625rem;
+  margin: 0 0.25rem;
+
   &:hover {
-    background: #eaeafb;
+    background: #faf8f7;
 
     .room-item__unread {
       display: none;
@@ -503,32 +519,6 @@ const StyledMenu = styled(Menu)`
   }
 `;
 
-const MyTooltip = styled.span`
-  position: absolute;
-  top: -0.5rem;
-  left: 0;
-  min-width: 1.06rem;
-  min-height: 0.94rem;
-  padding: 0.06rem 0.25rem;
-  background-color: #523dc7;
-  border-radius: 0.28rem;
-  font-size: 0.56rem;
-  font-weight: 600;
-  line-height: 0.81rem;
-  color: #fff;
-  z-index: 100;
-  &::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -0.15rem;
-    border-left: 0.15rem solid transparent;
-    border-right: 0.15rem solid transparent;
-    border-top: 0.2rem solid #523dc7;
-  }
-`;
-
 const Title = styled.div`
   display: flex;
   align-items: center;
@@ -537,7 +527,7 @@ const Title = styled.div`
 
 const StyleRoomMessage = styled.span`
   font-size: 0.69rem;
-  color: #47474d;
+  color: #414141;
 `;
 
 const RoomNameText = styled.span`
@@ -550,9 +540,8 @@ const RoomNameText = styled.span`
 
 const UserCountText = styled.span`
   font-size: 0.81rem;
-  opacity: 0.5;
-  color: #000;
-  margin-left: 0.375rem;
+  color: #7f7f7f;
+  margin-left: 0.25rem;
 `;
 
 const StyledItem = styled.div`
@@ -610,16 +599,13 @@ const StyledItem = styled.div`
 `;
 
 const UnreadCount = styled.div`
-  height: 1rem;
-  min-width: 1.06rem;
+  align-self: flex-start;
   padding: 0 0.38rem;
-  line-height: 1rem;
-  font-size: 0.63rem;
+  font-size: 0.69rem;
   color: #fff;
   font-weight: 400;
-  text-align: center;
-  border-radius: 0.69rem;
-  background-color: #ff486d;
+  border-radius: 0.56rem;
+  background-color: #dc4547;
 `;
 
 const TitleIconWrapper = styled.div`
@@ -634,10 +620,10 @@ const IconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   padding: 0.25rem;
-  border-radius: 50%;
+  border-radius: 0.25rem;
   cursor: pointer;
   &:hover {
-    background: #dcddff;
+    background: #eae6e0;
   }
 `;
 

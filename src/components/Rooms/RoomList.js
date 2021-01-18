@@ -207,7 +207,7 @@ function RoomList() {
         </InputWrapper>
         <Tooltip placement="bottomLeft" title="오픈 룸 홈" color="#0b1d41">
           <OpenChatIconWrapper onClick={handleOpenChat}>
-            <OpenChatIcon color="#75757f" />
+            <OpenChatIcon color="rgb(0, 73, 61)" />
           </OpenChatIconWrapper>
         </Tooltip>
         <OpenRoomHome
@@ -345,11 +345,15 @@ const OpenChatIconWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 0 0 1.875rem;
-  height: 1.875rem;
-  border: 1px solid #e3e7eb;
+  flex: 0 0 1.75rem;
+  height: 1.75rem;
+  border: 1px solid #faf8f7;
   border-radius: 50%;
   background: #ffffff;
+
+  &:hover {
+    background: #eae6e0;
+  }
 `;
 
 const ButtomWrapper = styled.div`
