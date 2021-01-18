@@ -199,15 +199,8 @@ function RoomList() {
 
       <TopWrapper>
         <InputWrapper>
-          {/* <SearchIcon width={1} height={1} color="currentcolor" />
-          <input
-            type="text"
-            value={keyword}
-            onChange={handleChange}
-            placeholder="룸 이름, 구성원 검색"
-          /> */}
           <Search
-            placeholder="룸 이름, 구성원 검색"
+            placeholder="룸 이름, 멤버 검색"
             onChange={handleChange}
             onClear={handleClear}
           />

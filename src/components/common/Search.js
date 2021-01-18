@@ -124,10 +124,6 @@ const Wrapper = styled.div`
     }
   }
 
-  // &:focus-within {
-  //   border: 1px solid #6c56e5;
-  // }
-
   input {
     width: 100%;
     height: 1.13rem;
