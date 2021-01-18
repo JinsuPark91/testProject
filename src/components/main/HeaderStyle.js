@@ -3,11 +3,11 @@ import Photos from '../Photos';
 
 export const Wrapper = styled.div`
   display: flex;
-  height: 3.19rem;
+  height: 3.13rem;
   align-items: center;
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #ddd9d4;
 `;
 
 export const TitleWrapper = styled.div`

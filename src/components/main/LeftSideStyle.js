@@ -13,7 +13,7 @@ export const CustomTabs = styled(Tabs)`
     width: 100%;
   }
   .ant-tabs-content {
-    border-right: 1px solid #e3e7eb;
+    border-right: 1px solid #ddd9d4;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
   }
