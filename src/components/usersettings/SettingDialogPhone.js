@@ -25,7 +25,11 @@ const SettingDialogPhone = props => {
               onChange={e => onInputChange(e.target.value)}
             />
           ) : (
-            <p>{authStore.user.phone || '-'}</p>
+            <p>
+              {authStore.user.phone
+                ? `${authStore.user.nationalCode} ${authStore.user.phone}`
+                : '-'}
+            </p>
           )}
         </TextArea>
         <ButtonArea>
