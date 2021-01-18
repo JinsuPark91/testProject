@@ -6,19 +6,19 @@ import styled from 'styled-components';
 import { handleCheckNewFriend } from '../utils/FriendsUtil';
 
 const NewFriendBadge = styled.span`
-  display: ${props => (props?.number !== 0 ? 'block' : 'none')};
+  display: ${({ number }) => (number ? 'flex' : 'none')};
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
   position: absolute;
-  top: 0.5rem;
-  left: 3.25rem;
-  min-width: 1.44rem;
-  padding: 0.125rem 0.19rem;
+  top: 0.31rem;
+  right: 0.31rem;
   font-size: 0.63rem;
-  line-height: 0.75rem;
   font-weight: 400;
   color: #fff;
-  border-radius: 0.56rem;
-  background-color: #ff486d;
-  text-align: center;
+  border-radius: 50%;
+  background-color: #dc4547;
 `;
 
 const REM_UNIT = 16;
@@ -146,9 +146,7 @@ export const PeopleIcon = React.memo(
       return (
         <Tooltip title={tooltipText} placement="bottom" color="#07142d">
           {icon}
-          <NewFriendBadge number={numOfNewFriends}>
-            {numOfNewFriends > 99 ? '99+' : numOfNewFriends}
-          </NewFriendBadge>
+          <NewFriendBadge number={numOfNewFriends}>N</NewFriendBadge>
         </Tooltip>
       );
     });

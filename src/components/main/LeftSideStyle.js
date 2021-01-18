@@ -45,18 +45,18 @@ export const CustomTabs = styled(Tabs)`
 `;
 
 export const UnreadCount = styled.div`
+  display: ${({ isVisible }) => (isVisible ? 'flex' : 'none')};
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.25rem;
   position: absolute;
-  top: 0.5rem;
-  left: 3.25rem;
-  min-width: 1.44rem;
-  padding: 0.125rem 0.19rem;
+  top: 0.31rem;
+  right: 0.31rem;
   font-size: 0.63rem;
-  line-height: 0.75rem;
   font-weight: 400;
   color: #fff;
-  border-radius: 0.56rem;
-  background-color: #ff486d;
-  text-align: center;
+  border-radius: 9px;
+  background-color: #dc4547;
 `;
 
 export const IconWrapper = styled.div`

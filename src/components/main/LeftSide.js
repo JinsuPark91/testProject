@@ -42,9 +42,11 @@ const LeftSide = () => {
           key="s"
           tab={
             <IconWrapper className="lnb__icon-wrapper">
-              {talkRoomStore.totalUnreadCount && (
-                <UnreadCount>{talkRoomStore.totalUnreadCount}</UnreadCount>
-              )}
+              <UnreadCount isVisible={talkRoomStore.totalUnreadCount > 0}>
+                {talkRoomStore.totalUnreadCount > 99
+                  ? '99+'
+                  : talkRoomStore.totalUnreadCount}
+              </UnreadCount>
               <ChattingIcon
                 width={1.5}
                 height={1.5}
@@ -61,6 +63,7 @@ const LeftSide = () => {
           key="m"
           tab={
             <IconWrapper className="lnb__icon-wrapper">
+              <UnreadCount isVisible={false}>N</UnreadCount>
               <MailIcon
                 width={1.5}
                 height={1.5}
