@@ -439,7 +439,7 @@ const RoomItem = ({
   };
 
   return (
-    <StyledItem ref={drop} onClick={handleRoomClick} isMyRoom={isMyRoom}>
+    <StyledItem ref={drop} onClick={handleRoomClick}>
       {isActive && <DropEffect style={{ backgroundColor }} />}
       <ItemWrapper selected={selected}>
         <RoomItemContent
@@ -549,28 +549,6 @@ const StyledItem = styled.div`
   user-select: none;
   cursor: pointer;
 
-  ${({ isMyRoom }) =>
-    isMyRoom &&
-    css`
-      &:after {
-        content: '';
-        display: block;
-        height: 1px;
-        margin: 0.25rem 0.625rem;
-        background-color: #e3e7eb;
-      }
-      .photos {
-        width: 2.38rem;
-        height: 2.38rem;
-        border: 2px solid #fff;
-        border-radius: 50%;
-        div {
-          width: 100%;
-          height: 100%;
-        }
-      }
-    `}
-
   .ant-list-item-meta-avatar {
     margin-right: 0.4375rem;
     position: relative;
@@ -600,7 +578,7 @@ const StyledItem = styled.div`
 
 const UnreadCount = styled.div`
   align-self: flex-start;
-  padding: 0 0.38rem;
+  padding: 0 0.25rem;
   font-size: 0.69rem;
   color: #fff;
   font-weight: 400;

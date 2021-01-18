@@ -129,13 +129,6 @@ function RoomList() {
     setIsProfileInfoModalVisible(false);
   }, []);
 
-  const isOnlyMyRoom = () => {
-    const rooms = roomStore
-      .getRoomArray()
-      .filter(roomInfo => roomInfo.isVisible);
-    return rooms.length === 1 && rooms[0].type === 'WKS0001';
-  };
-
   const getRoomName = roomInfo => {
     const isMyRoom = roomInfo.type === 'WKS0001';
     return isMyRoom
@@ -235,30 +228,11 @@ function RoomList() {
           }}
         </Observer>
       </RoomContainer>
-      <Observer>
-        {() =>
-          isOnlyMyRoom() ? (
-            <div>
-              <StyledInfoTitle>
-                {`${userStore.myProfile.name}님, 환영합니다.`}
-                <br />
-                룸을 만들어 보세요!
-              </StyledInfoTitle>
-              <StyledSubInfo>
-                구성원들과 Talk 중심의
-                <br />
-                다양한 앱을 경험 할 수 있습니다.
-              </StyledSubInfo>
-              <WelcomeBackgroundImage />
-            </div>
-          ) : null
-        }
-      </Observer>
       <ButtomWrapper>
         <WaplLogo />
         <Tooltip title="룸 만들기" placement="top" color="#0B1D41">
           <AddRoomIconWrapper onClick={handleCreateRoom}>
-            <AddRoomIcon />
+            <AddRoomIcon width={1.38} height={1.38} color="#232D3B" />
           </AddRoomIconWrapper>
         </Tooltip>
         <Toast
@@ -320,24 +294,21 @@ const StyledSubInfo = styled.p`
   line-height: 1.06rem;
 `;
 
-const WelcomeBackgroundImage = styled.div`
-  width: 12.5rem;
-  height: 12.5rem;
-  margin: 0 auto;
-  background: url('${EmptyRoomIllust}') center 0 no-repeat;
-  background-size: contain;
-`;
-
 const AddRoomIconWrapper = styled.div`
   display: flex;
   cursor: pointer;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  background: #232d3b;
+  background: white;
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+
+  &:hover {
+    background: #ebe6df;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  }
 `;
 
 const OpenChatIconWrapper = styled.div`
