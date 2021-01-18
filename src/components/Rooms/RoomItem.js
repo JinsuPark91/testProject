@@ -425,11 +425,6 @@ const RoomItem = ({
 
   const isActive = canDrop && isOver;
 
-  let backgroundColor = 'transparent';
-  if (isActive) {
-    backgroundColor = '#F2EFEC';
-  }
-
   const handleRoomClick = useCallback(() => {
     onClick(roomInfo);
   }, [onClick, roomInfo]);
@@ -440,8 +435,7 @@ const RoomItem = ({
 
   return (
     <StyledItem ref={drop} onClick={handleRoomClick}>
-      {isActive && <DropEffect style={{ backgroundColor }} />}
-      <ItemWrapper selected={selected}>
+      <ItemWrapper selected={selected} isActiveDropEffect={isActive}>
         <RoomItemContent
           roomInfo={roomInfo}
           isMyRoom={isMyRoom}
@@ -453,12 +447,6 @@ const RoomItem = ({
     </StyledItem>
   );
 };
-
-const DropEffect = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-`;
 
 const MyIcon = styled.div`
   display: inline-flex;
@@ -482,6 +470,13 @@ const ItemWrapper = styled.div`
     selected &&
     css`
       background: #f2efec;
+    `}
+
+  ${({ isActiveDropEffect }) =>
+    isActiveDropEffect &&
+    css`
+      background: rgba(236, 98, 34, 0.05);
+      box-shadow: 0 0 0 1px #ec6222 inset;
     `}
 
   border-radius: 0.8125rem;
