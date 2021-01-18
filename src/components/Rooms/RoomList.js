@@ -140,7 +140,8 @@ function RoomList() {
   // TODO 멤버 이름으로 검색은 아직 안 됨. 이를 위해서는 모든 룸에 대한 멤버 목록을 가져와야함.
   const roomFilter = roomInfo =>
     roomInfo.isVisible &&
-    (!keyword || getRoomName(roomInfo)?.includes(keyword));
+    (!keyword ||
+      getRoomName(roomInfo)?.toLowerCase()?.includes(keyword.toLowerCase()));
 
   const handleToastClose = () => {
     setIsToastVisible(false);
