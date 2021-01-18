@@ -38,10 +38,10 @@ export const AppIconContainer = styled.div`
   border-left: 1px solid #ddd9d4;
   border-right: 1px solid #ddd9d4;
   height: 40px;
-  padding: 0 0.6rem;
+  padding: 0 0.4rem;
 
   & .header__app-icon:not(:last-child) {
-    margin-right: 0.6rem;
+    margin-right: 0.4rem;
   }
 `;
 
@@ -99,5 +99,5 @@ export const VerticalBar = styled.div`
   width: 1px;
   height: 100%;
   background: #ddd9d4;
-  margin-right: 0.6rem;
+  margin-right: 0.4rem;
 `;
