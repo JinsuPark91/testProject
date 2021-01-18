@@ -15,9 +15,11 @@ export const Loader = styled.div`
 
 export const Wrapper = styled.div`
   display: flex;
-  width: 100%;
+  flex: 1;
   height: 100%;
   position: relative;
+  
+  overflow: hidden;
   & * {
     user-select: none;
   }
