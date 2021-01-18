@@ -12,6 +12,7 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
 import ProfileInfoModal from '../profile/ProfileInfoModal';
+import Search from '../common/Search';
 
 function RoomList() {
   const history = useHistory();
@@ -64,9 +65,13 @@ function RoomList() {
     }
   };
 
-  const handleChange = useCallback(e => {
-    setKeyword(e.target.value);
-  }, []);
+  const handleChange = value => {
+    setKeyword(value);
+  };
+
+  const handleClear = () => {
+    setKeyword('');
+  };
 
   const handleSelectRoomTypeCancel = () => {
     setVisible(false);
@@ -194,12 +199,17 @@ function RoomList() {
 
       <TopWrapper>
         <InputWrapper>
-          <SearchIcon width={1} height={1} color="currentcolor" />
+          {/* <SearchIcon width={1} height={1} color="currentcolor" />
           <input
             type="text"
             value={keyword}
             onChange={handleChange}
             placeholder="룸 이름, 구성원 검색"
+          /> */}
+          <Search
+            placeholder="룸 이름, 구성원 검색"
+            onChange={handleChange}
+            onClear={handleClear}
           />
         </InputWrapper>
         <Tooltip placement="bottomLeft" title="오픈 룸 홈" color="#0b1d41">
@@ -297,47 +307,6 @@ const InputWrapper = styled.div`
   flex: 1;
   align-items: center;
   margin-right: 0.5rem;
-  padding: 0 0.63rem;
-  background: #fff;
-  border-radius: 25px;
-  border: 1px solid #e3e7eb;
-  transition: all 0.3s;
-
-  &:hover {
-    background-color: #dcddff;
-    border-color: #c6ced6;
-    svg {
-      color: #000;
-    }
-  }
-
-  &:focus-within {
-    background-color: #fff;
-    border: 1px solid #6c56e5;
-    &:hover {
-      background-color: #dcddff;
-    }
-    svg {
-      color: #000;
-    }
-  }
-
-  input {
-    margin-left: 0.44rem;
-    border: 0;
-    font-size: 0.75rem;
-    background-color: transparent;
-    &:focus {
-      outline: 0;
-    }
-    &::placeholder {
-      color: #bdc6d3;
-    }
-  }
-
-  svg {
-    color: #bdc6d3;
-  }
 `;
 
 const StyledInfoTitle = styled.p`

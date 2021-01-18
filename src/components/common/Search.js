@@ -77,9 +77,9 @@ const Search = ({
         className="search-icon"
       >
         <SearchIcon
-          width={0.9}
-          height={0.9}
-          color={isSearchActive ? '#000' : '#C6CED6'}
+          width={1}
+          height={1}
+          color={isSearchActive ? '#17202B' : '#C6CED6'}
         />
       </IconWrapper>
       <input
@@ -111,24 +111,22 @@ const Search = ({
 
 const Wrapper = styled.div`
   display: flex;
-  height: 1.88rem;
+  height: 1.75rem;
   padding: 0 0.4rem;
   align-items: center;
   background-color: #fff;
-  border-radius: 1.56rem;
-  border: 1px solid #e3e7eb;
+  background-color: transparent;
+  border-bottom: 0.09rem solid #17202b;
 
   &:hover {
-    background-color: #dcddff;
-    border-color: #c6ced6;
     .search-icon path {
-      fill: #000;
+      fill: #17202b;
     }
   }
 
-  &:focus-within {
-    border: 1px solid #6c56e5;
-  }
+  // &:focus-within {
+  //   border: 1px solid #6c56e5;
+  // }
 
   input {
     width: 100%;
