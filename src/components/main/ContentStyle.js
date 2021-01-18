@@ -25,7 +25,7 @@ export const Splitter = styled(Split)`
   }
 
   & .gutter:hover:not(.gutter--active) {
-    background: #d6dbe0;
+    background: #ebe6df;
 
     .gutter__rect {
       background: #9ba0a4;
@@ -34,7 +34,7 @@ export const Splitter = styled(Split)`
 
   & .gutter--active {
     opacity: 0.7;
-    background: #6c56e5;
+    background: #d9d0c2;
 
     .gutter__rect {
       background: #ffffff;
