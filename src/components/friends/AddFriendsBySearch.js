@@ -275,8 +275,8 @@ function AddFriendsBySearch({
         {isSpaceEmpty && !isViewMode ? (
           <InvitationForm>
             <StyledInfoImg src={FriendModalImg} alt="" />
-            <StyledInfoText>프렌즈가 없습니다.</StyledInfoText>
-            <StyledSubInfoText>초대할 구성원을 찾아보세요</StyledSubInfoText>
+            <StyledInfoText>추가할 프렌즈가 없습니다.</StyledInfoText>
+            <StyledSubInfoText>먼저 구성원을 초대해 보세요.</StyledSubInfoText>
             <StyledButton
               type="solid"
               shape="round"

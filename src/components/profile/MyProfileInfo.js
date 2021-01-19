@@ -10,19 +10,25 @@ const MyProfileInfo = observer(() => {
   const userId = authStore.user.id;
   const { isFirstLogin } = authStore.sessionInfo;
   const [myModalVisible, setMyModalVisible] = useState(isFirstLogin);
+  const [tutorialVisible, setTutorialVisible] = useState(isFirstLogin);
 
   const toggleMyModal = useCallback(() => {
     setMyModalVisible(v => !v);
-  }, []);
+    if (tutorialVisible) {
+      setTutorialVisible(false);
+    }
+  }, [tutorialVisible]);
 
   const thumbPhoto = userStore.getProfilePhotoURL(
     userStore.myProfile.id,
     'small',
   );
+
   const thumbPhotoMedium = userStore.getProfilePhotoURL(
     userStore.myProfile.id,
     'medium',
   );
+
   return (
     <>
       <ProfileIcon>
@@ -36,7 +42,7 @@ const MyProfileInfo = observer(() => {
         onCancel={toggleMyModal}
         visible={myModalVisible}
         thumbPhoto={thumbPhotoMedium}
-        created={isFirstLogin}
+        created={tutorialVisible}
       />
     </>
   );
@@ -45,6 +51,7 @@ const MyProfileInfo = observer(() => {
 const ProfileIcon = styled.div`
   position: relative;
 `;
+
 const ThumbImage = styled.img`
   width: 1.88rem;
   height: 1.88rem;
@@ -53,6 +60,7 @@ const ThumbImage = styled.img`
   object-fit: cover;
   cursor: pointer;
 `;
+
 const SettingImage = styled.div`
   position: absolute;
   right: -0.125rem;
