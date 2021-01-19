@@ -82,7 +82,6 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
       visible={visible}
       onCancel={handleCancel}
       footer={null}
-      width="fit-content"
       destroyOnClose
     >
       {step === 0 ? (

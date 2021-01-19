@@ -1,7 +1,8 @@
-import { Modal, Checkbox } from 'antd';
-import styled, { css } from 'styled-components';
+import { Modal } from 'antd';
+import styled from 'styled-components';
 
 export const InfoContainer = styled.div`
+  width: 24.38rem;
   padding: 2.38rem 1.25rem 2rem;
   border-bottom: 1px solid #e3e7eb;
 `;
