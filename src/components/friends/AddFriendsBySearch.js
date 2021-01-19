@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Button, Modal, Avatar } from 'antd';
 import Photos from '../Photos';
 import AddFriendsByInvitationDialog from './AddFriendsByInvitationDialog';
-import FriendModalImg from '../../assets/none_friends.svg';
+import NoFriendModalImg from '../../assets/no_friends.svg';
 // import OrganizationDropdown from '../components/friends/OrganizationDropdown';
 import AddFriendsByOrganization from './AddFriendsByOrganization';
 import AddFriendsFromSpace from './AddFriendsFromSpace';
@@ -274,9 +274,9 @@ function AddFriendsBySearch({
       >
         {isSpaceEmpty && !isViewMode ? (
           <InvitationForm>
-            <StyledInfoImg src={FriendModalImg} alt="" />
-            <StyledInfoText>추가할 프렌즈가 없습니다.</StyledInfoText>
-            <StyledSubInfoText>먼저 구성원을 초대해 보세요.</StyledSubInfoText>
+            <StyledInfoImg src={NoFriendModalImg} alt="" />
+            <StyledInfoText>추천 프렌즈가 없습니다.</StyledInfoText>
+            <StyledSubInfoText>초대할 구성원을 선택해주세요.</StyledSubInfoText>
             <StyledButton
               type="solid"
               shape="round"
