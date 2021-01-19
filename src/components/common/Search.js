@@ -1,8 +1,11 @@
 import React, { useState, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { SearchIcon, CancelIcon } from '../Icons';
 
 const Search = ({
+  type = 'underline',
+  searchIconColor = { active: '#000000', default: '#000000' },
+  clearIconColor = { active: '#000000', default: '#000000' },
   onChange = () => {},
   placeholder = '',
   onEnterDown = () => {},
@@ -69,7 +72,7 @@ const Search = ({
   };
 
   return (
-    <Wrapper className={className}>
+    <Wrapper className={className} type={type}>
       <IconWrapper
         onMouseEnter={handleSearchMouseEnter}
         onMouseLeave={handleSearchMouseLeave}
@@ -79,7 +82,9 @@ const Search = ({
         <SearchIcon
           width={1}
           height={1}
-          color={isSearchActive ? '#17202B' : '#C6CED6'}
+          color={
+            isSearchActive ? searchIconColor.active : searchIconColor.default
+          }
         />
       </IconWrapper>
       <input
@@ -101,7 +106,9 @@ const Search = ({
           <CancelIcon
             width={0.69}
             height={0.69}
-            color={isClearActive ? '#000' : '#C6CED6'}
+            color={
+              isClearActive ? clearIconColor.active : clearIconColor.default
+            }
           />
         </IconWrapper>
       ) : null}
@@ -116,7 +123,19 @@ const Wrapper = styled.div`
   align-items: center;
   background-color: #fff;
   background-color: transparent;
-  border-bottom: 0.09rem solid #17202b;
+  ${({ type }) => {
+    switch (type) {
+      case 'underline':
+        return css`
+          border-bottom: 0.09rem solid #17202b;
+        `;
+      case 'border':
+        return css`
+          border: 1px solid #7b7671;
+          border-radius: 0.375rem;
+        `;
+    }
+  }}
 
   &:hover {
     .search-icon path {

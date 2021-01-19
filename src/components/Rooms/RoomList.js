@@ -197,6 +197,9 @@ function RoomList() {
             placeholder="룸 이름, 멤버 검색"
             onChange={handleChange}
             onClear={handleClear}
+            searchIconColor={{ active: '#17202B', default: '#C6CED6' }}
+            clearIconColor={{ active: '#17202B', default: '#C6CED6' }}
+            type="underline"
           />
         </InputWrapper>
         <Tooltip placement="bottomLeft" title="오픈 룸 홈" color="#0b1d41">

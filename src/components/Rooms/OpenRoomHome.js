@@ -25,7 +25,7 @@ const RoomButton = ({ roomInfo, onClick, disabled }) => {
   return (
     <RoomJoinBtn onClick={handleClick} disabled={disabled}>
       <span>방 참여하기</span>
-      <OpenChatIcon width="1" height="1" color="#75757f" />
+      <OpenChatIcon width={1} height={1} color="#75757f" />
     </RoomJoinBtn>
   );
 };
@@ -320,9 +320,12 @@ function OpenRoomHome({ visible, onCancel }) {
         <OpenHomeForm>
           <SearchBox>
             <Search
-              placeholder="오픈 룸 검색"
+              placeholder="전체검색"
               onChange={handleKeywordChange}
               onClear={handleKeywordClear}
+              searchIconColor={{ active: '#48423B', default: '#48423B' }}
+              clearIconColor={{ active: '#48423B', default: '#48423B' }}
+              type="border"
             />
           </SearchBox>
           {!keyword ? (
@@ -568,10 +571,10 @@ const RoomJoinBtn = styled.button`
   line-height: 0;
   background-color: transparent;
   border: none;
-  border-radius: 50%;
+  border-radius: 0.25rem;
 
   &:hover {
-    background-color: #dcddff;
+    background-color: #f2efec;
   }
 
   span {
