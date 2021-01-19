@@ -16,6 +16,7 @@ import { ExportOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import { Talk } from 'teespace-talk-app';
 import { handleCheckNewFriend } from '../../utils/FriendsUtil';
 import { ViewMoreIcon, ExportIcon } from '../Icons';
+import mySign from '../../assets/wapl_me.svg';
 
 const FriendItemWrapper = styled.div`
   /* 조직도 조회, 추천친구 스타일 */
@@ -62,13 +63,13 @@ const FriendItemWrapper = styled.div`
 
       ${props.isActive
         ? css`
-            background-color: #eaeafb;
+            background-color: #faf8f7;
             border-radius: 1.71875rem;
           `
         : ''}
 
       &:hover {
-        background-color: #eaeafb;
+        background-color: #faf8f7;
         border-radius: 1.71875rem;
       }
 
@@ -114,7 +115,7 @@ const TextWrapper = styled.div`
   overflow: hidden;
 `;
 
-const TitleForName = styled.p`
+const TitleForName = styled.span`
   font-weight: 600;
   font-size: 0.81rem;
   white-space: nowrap;
@@ -129,31 +130,6 @@ const ActionWrapper = styled.div`
 
 const StyledWrapper = styled.div`
   position: relative;
-`;
-const ProfileBadge = styled.span`
-  position: absolute;
-  top: -0.5rem;
-  left: 0;
-  min-width: 1.06rem;
-  min-height: 0.94rem;
-  padding: 0.06rem 0.25rem;
-  background-color: #523dc7;
-  border-radius: 0.28rem;
-  font-size: 0.56rem;
-  font-weight: 600;
-  line-height: 0.81rem;
-  color: #fff;
-  z-index: 100;
-  &:after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -0.15rem;
-    border-left: 0.15rem solid transparent;
-    border-right: 0.15rem solid transparent;
-    border-top: 0.2rem solid #523dc7;
-  }
 `;
 
 const NewFriendBadge = styled.div`
@@ -212,6 +188,10 @@ const StyledAvatar = styled.div`
   }
 `;
 
+const MeWrapper = styled.div`
+  margin-left: 0.25rem;
+`;
+
 const DropdownMenu = React.memo(
   ({
     friendFavorite,
@@ -237,9 +217,6 @@ const Profile = React.memo(
       <>
         {mode === 'me' && (
           <StyledWrapper>
-            <ProfileBadge getPopupContainer={tooltipPopupContainer} visible>
-              나
-            </ProfileBadge>
             <StyledAvatar mode="me" onClick={e => handleClickPhoto(e, itemId)}>
               <img src={profilePhoto} alt="" />
             </StyledAvatar>
@@ -400,7 +377,17 @@ const TextComponent = React.memo(
           return displayName;
       }
     })();
-    return <TitleForName>{fullDisplayName}</TitleForName>;
+
+    return (
+      <>
+        <TitleForName>{fullDisplayName}</TitleForName>
+        {mode === 'me' && (
+          <MeWrapper>
+            <img src={mySign} alt="me" />
+          </MeWrapper>
+        )}
+      </>
+    );
   },
 );
 /**

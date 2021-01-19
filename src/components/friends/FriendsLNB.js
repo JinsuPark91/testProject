@@ -11,7 +11,7 @@ const FriendsLNBWrapper = styled(Layout)`
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: #f5f5fb;
+  background-color: #ffffff;
 `;
 /**
  * 프렌즈 LNB
