@@ -1,11 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { useObserver } from 'mobx-react';
 import { useCoreStores, Toast, Message, Button } from 'teespace-core';
-import { useHistory } from 'react-router-dom';
 import MovePage from '../../utils/MovePage';
-
-import { useStore } from '../../stores';
 
 function Settingsave(props) {
   const [cancelVisible, setCancelVisible] = useState(false);
@@ -13,7 +9,6 @@ function Settingsave(props) {
   const [isMessageOpen, setIsMessageOpen] = useState(false);
   const { userStore, authStore, spaceStore } = useCoreStores();
   const { form, onClick, selectedKey } = props;
-  const history = useHistory();
 
   const saveOut = props => {
     if (selectedKey === '3') props.saveaccountOut();
@@ -36,17 +31,16 @@ function Settingsave(props) {
   }, []);
 
   const handleInputPassword = async () => {
-    const input = props.inputPassword;
-    const res = await authStore.checkAuth({
-      loginId: userStore.myProfile.id,
-      pw: input,
+    const passwordInput = props.inputPassword;
+    const res = await authStore.validatePassword({
+      pw: passwordInput,
     });
 
     if (!res) {
       handleToggleMessage();
     } else {
-      await spaceStore.deleteSpace({
-        id: spaceStore.currentSpace.id,
+      await spaceStore.leaveCurrentSpace({
+        userId: userStore.myProfile.id,
       });
       handleMoveSpacePage();
     }

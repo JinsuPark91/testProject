@@ -157,7 +157,7 @@ function ContentSpaceSecession({
               정말로 탈퇴를 원하시면 계정 비밀번호를 입력해 주세요.
             </GroupTitleBlack>
             <InputWrap>
-              <InputName for="password">비밀번호</InputName>
+              <InputName htmlFor="password">비밀번호</InputName>
               <Input
                 id="password"
                 type="password"
