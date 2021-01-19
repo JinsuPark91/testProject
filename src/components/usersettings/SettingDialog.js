@@ -36,7 +36,7 @@ const LayoutWrap = styled.div`
 
 const SiderArea = styled.div`
   width: 10.94rem;
-  background-color: #f5f5fb;
+  background-color: #f7f4ef;
   border-right: 1px solid #e3e7eb;
 `;
 
@@ -49,7 +49,7 @@ const ContentArea = styled.div`
 
 const StyledMenu = styled(Menu)`
   padding-top: 0.75rem;
-  background-color: #f5f5fb;
+  background-color: #f7f4ef;
   border: 0;
   .ant-menu-item-group {
     & + .ant-menu-item-group:before {
@@ -75,10 +75,10 @@ const StyledMenu = styled(Menu)`
     line-height: 2.38rem;
     color: #000;
     &:hover {
-      background-color: #eaeafb;
+      background-color: #f7f4ef;
     }
     &.ant-menu-item-selected {
-      background-color: #dcddff;
+      background-color: #ddd7cd;
     }
   }
 `;
@@ -280,7 +280,7 @@ function SettingDialog(props) {
     <DialogWrap
       onCancel={handleCancel}
       visible={visible}
-      width="46.88rem"
+      width="59.38rem"
       title="설정"
       style={{ top: 20, minWidth: '50rem' }}
       footer={
@@ -316,10 +316,12 @@ function SettingDialog(props) {
               <Menu.Item key="1">일반</Menu.Item>
               <Menu.Item key="2">알림</Menu.Item>
             </Menu.ItemGroup> */}
-            <Menu.ItemGroup key="3" title="계정설정">
+            <Menu.ItemGroup key="3" title="개인 설정">
               <Menu.Item key="4">내 정보</Menu.Item>
               {/* <Menu.Item key="5">비밀번호변경</Menu.Item> */}
-              {!isAdmin && !isB2B && <Menu.Item key="7">서비스 탈퇴</Menu.Item>}
+              {!isAdmin && !isB2B && (
+                <Menu.Item key="7">스페이스 탈퇴</Menu.Item>
+              )}
             </Menu.ItemGroup>
           </StyledMenu>
         </SiderArea>

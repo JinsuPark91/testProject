@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from 'antd';
 import styled from 'styled-components';
 import TmaxLogo from '../../assets/logo_footer_copyright.svg';
+import MovePage from '../../utils/MovePage';
 
 const CorpArea = styled.div`
   margin: auto auto 1.25rem;
@@ -41,22 +42,17 @@ const LineBar = styled.span`
 
 const TermsFooter = () => {
   const currentYear = new Date().getFullYear();
-
-  const handleClickPolicy = type => {
-    window.open(`${window.location.protocol}//teespace.com/${type}`);
-  };
-
   return (
     <CorpArea>
       <FlexRow>
         <Button
           type="link"
-          onClick={() => handleClickPolicy('term-and-conditions')}
+          onClick={() => MovePage('term-and-conditions', true)}
         >
           이용약관
         </Button>
         <LineBar />
-        <Button type="link" onClick={() => handleClickPolicy('privacy-policy')}>
+        <Button type="link" onClick={() => MovePage('privacy-policy', true)}>
           개인정보처리방침
         </Button>
       </FlexRow>
