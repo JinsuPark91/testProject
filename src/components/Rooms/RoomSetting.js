@@ -173,15 +173,15 @@ const CommonSettingPage = ({ roomInfo = null }) => {
           onChange={handleChange}
           placeholder={roomInfo?.name}
         />
-        <StyledButton
+        <Button
           type="solid"
           shape="default"
           disabled={!value.length || !isChanged}
-          style={{ marginTop: '0.63rem' }}
+          style={{ marginTop: '0.63rem', alignSelf: 'flex-end' }}
           onClick={handleSave}
         >
           저장
-        </StyledButton>
+        </Button>
       </SettingWrapper>
       {(isPrivateRoom && roomInfo?.typeModifiedDate) || !isPrivateRoom ? (
         <SettingWrapper>
@@ -221,14 +221,14 @@ const CommonSettingPage = ({ roomInfo = null }) => {
                   },
                 ]}
               />
-              <StyledButton
+              <Button
                 type="solid"
                 shape="default"
-                style={{ marginTop: '0.81rem' }}
+                style={{ marginTop: '0.81rem', alignSelf: 'flex-end' }}
                 onClick={handleClickModeChange}
               >
                 전환
-              </StyledButton>
+              </Button>
             </>
           )}
         </SettingWrapper>
@@ -240,14 +240,14 @@ const CommonSettingPage = ({ roomInfo = null }) => {
           삭제할 경우, 대화 내용과 데이터가 모두 삭제되며 룸 목록에서도
           삭제됩니다.
         </SettingDescriptionText>
-        <StyledButton
+        <Button
           type="outlined"
           shape="default"
-          style={{ marginTop: '0.81rem' }}
+          style={{ marginTop: '0.81rem', alignSelf: 'flex-end' }}
           onClick={handleDelete}
         >
           삭제
-        </StyledButton>
+        </Button>
       </SettingWrapper>
     </Wrapper>
   );
@@ -375,14 +375,5 @@ const StyledTabs = styled(Tabs)`
 
   .ant-tabs-content {
     overflow-y: auto;
-  }
-`;
-
-const StyledButton = styled(Button)`
-  align-self: flex-end;
-  width: 4.38rem;
-  height: 1.88rem;
-  & span {
-    font-size: 0.75rem;
   }
 `;
