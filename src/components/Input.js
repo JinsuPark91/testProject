@@ -8,8 +8,9 @@ const Input = React.forwardRef(
       disabled = false,
       value = '',
       onChange = null,
-      className,
-      placeholder,
+      className = '',
+      placeholder = '',
+      style = {},
     },
     ref,
   ) => {
@@ -21,7 +22,7 @@ const Input = React.forwardRef(
       }
     };
     return (
-      <Wrapper disabled={disabled} className={className}>
+      <Wrapper disabled={disabled} className={className} style={style}>
         <input
           disabled={disabled}
           value={value}
@@ -53,7 +54,11 @@ const Wrapper = styled.div`
   border: 1px solid #d0ccc7;
 
   &:hover {
-    background: #faf8f7;
+    ${({ disabled }) =>
+      !disabled &&
+      css`
+        background: #faf8f7;
+      `}
   }
 
   &:not(:disabled):focus-within {

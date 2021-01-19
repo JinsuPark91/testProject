@@ -1,17 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ItemSelector, useCoreStores } from 'teespace-core';
-import { Checkbox } from 'antd';
+import { Checkbox, Button } from 'antd';
 import {
   FlexModal,
-  Input,
   Description,
   Title,
-  LengthCounter,
   InfoContainer,
   ButtonContainer,
-  StyledButton,
   ConfigWrapper,
 } from './CreatePublicRoomDialogStyle';
+import Input from '../Input';
 
 const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
   const { userStore } = useCoreStores();
@@ -45,9 +43,8 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
     }
   }, [visible]);
 
-  const handleChangeName = e => {
-    const name = e.target.value;
-    if (name.length < 51) setRoomName(name);
+  const handleChangeName = name => {
+    setRoomName(name);
   };
 
   const handleOk = () => {
@@ -92,30 +89,30 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
         <>
           <InfoContainer>
             <Title>룸 이름 설정하기</Title>
-            <Input>
-              <input
-                type="text"
-                value={roomName}
-                onChange={handleChangeName}
-                placeholder="목적, 토픽 등이 있다면 입력해 주세요."
-              />
-              <LengthCounter>{`${roomName.length}/50`}</LengthCounter>
-            </Input>
+            <Input
+              maxLength={50}
+              value={roomName}
+              onChange={handleChangeName}
+              placeholder="목적, 토픽 등이 있다면 입력해 주세요."
+              style={{ margin: '0.5rem 0' }}
+            />
+
             <Description>
               누구나 검색을 통하여 자유롭게 참여할 수 있는 공간입니다.
             </Description>
           </InfoContainer>
           <ButtonContainer>
-            <StyledButton
-              buttonType="ok"
+            <Button
+              type="solid"
+              shape="default"
               onClick={handleOk}
               disabled={!roomName.length}
             >
               생성
-            </StyledButton>
-            <StyledButton buttonType="cancel" onClick={handleCancel}>
+            </Button>
+            <Button type="outlined" shape="default" onClick={handleCancel}>
               취소
-            </StyledButton>
+            </Button>
           </ButtonContainer>
         </>
       ) : (
@@ -140,21 +137,22 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
           <ButtonContainer>
             {selectedUsers.length ? (
               <>
-                <StyledButton
-                  buttonType="ok"
+                <Button
+                  type="solid"
+                  shape="default"
                   onClick={handleOk}
                   disabled={!selectedUsers.length}
                 >
                   확인
-                </StyledButton>
-                <StyledButton buttonType="cancel" onClick={handleCancel}>
+                </Button>
+                <Button type="outlined" shape="default" onClick={handleCancel}>
                   취소
-                </StyledButton>
+                </Button>
               </>
             ) : (
-              <StyledButton buttonType="ok" onClick={handleOk}>
+              <Button type="solid" shape="default" onClick={handleOk}>
                 건너뛰기
-              </StyledButton>
+              </Button>
             )}
           </ButtonContainer>
         </>

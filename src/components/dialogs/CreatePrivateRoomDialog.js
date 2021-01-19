@@ -1,17 +1,15 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { ItemSelector, useCoreStores } from 'teespace-core';
-import { Checkbox } from 'antd';
+import { Checkbox, Button } from 'antd';
 import {
   ConfigTitle,
   ConfigTitleText,
   ConfigDescriptionText,
-  Input,
   ConfigWrapper,
   ButtonContainer,
-  StyledButton,
-  LengthCounter,
   FlexModal,
 } from './CreatePrivateRoomDialogStyle';
+import Input from '../Input';
 
 const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
   const { userStore } = useCoreStores();
@@ -58,10 +56,8 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
     setSelectedUsers(filteredUsers);
   }, []);
 
-  const handleChangeName = e => {
-    const name = e.target.value;
-
-    if (name.length < 51) setOptions({ ...options, roomName: name });
+  const handleChangeName = name => {
+    setOptions({ ...options, roomName: name });
   };
 
   return (
@@ -100,18 +96,13 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
             이후 변경한 룸 이름은 개인에게만 적용됩니다.`}
           </ConfigDescriptionText>
 
-          <Input disabled={selectedUsers.length < 2 || !options.isChangeName}>
-            <input
-              type="text"
-              value={options.roomName}
-              onChange={handleChangeName}
-              placeholder="목적, 토픽 등이 있다면 입력해 주세요."
-              disabled={selectedUsers.length < 2 || !options.isChangeName}
-            />
-            <LengthCounter
-              disabled={selectedUsers.length < 2 || !options.isChangeName}
-            >{`${options.roomName.length}/50`}</LengthCounter>
-          </Input>
+          <Input
+            maxLength={50}
+            value={options.roomName}
+            onChange={handleChangeName}
+            placeholder="목적, 토픽 등이 있다면 입력해 주세요."
+            disabled={selectedUsers.length < 2 || !options.isChangeName}
+          />
 
           <ConfigTitle>
             <Checkbox
@@ -126,16 +117,18 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
         </ConfigWrapper>
 
         <ButtonContainer>
-          <StyledButton
-            buttonType="ok"
+          <Button
+            type="solid"
+            shape="default"
             onClick={handleOk}
             disabled={!selectedUsers.length}
-          >
-            {`초대 ${selectedUsers.length > 99 ? '99+' : selectedUsers.length}`}
-          </StyledButton>
-          <StyledButton buttonType="cancel" onClick={handleCancel}>
+          >{`초대 ${
+            selectedUsers.length > 99 ? '99+' : selectedUsers.length
+          }`}</Button>
+
+          <Button type="outlined" shape="default" onClick={handleCancel}>
             취소
-          </StyledButton>
+          </Button>
         </ButtonContainer>
       </>
     </FlexModal>

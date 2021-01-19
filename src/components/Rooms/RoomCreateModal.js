@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { Button, Modal, Input } from 'antd';
+import { Button, Modal } from 'antd';
 import styled from 'styled-components';
+import Input from '../Input';
 
 const StyledModal = styled(Modal)`
   .ant-modal-body {
@@ -71,14 +72,14 @@ function RoomCreateModal({ visible, onCancel, onOk }) {
       footer={[
         <Button
           type="solid"
-          shape="round"
+          shape="default"
           key="s"
           onClick={createOpenRoom}
           disabled={!roomName}
         >
           생성
         </Button>,
-        <Button shape="round" key="c" onClick={cancelCreateRoom}>
+        <Button shape="default" key="c" onClick={cancelCreateRoom}>
           취소
         </Button>,
       ]}

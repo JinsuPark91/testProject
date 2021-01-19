@@ -17,70 +17,6 @@ export const ButtonContainer = styled.div`
   }
 `;
 
-export const StyledButton = styled.button`
-  width: 4.5rem;
-  height: 1.88rem;
-  background: ${({ buttonType }) => (buttonType === 'ok' ? '#6c56e5' : '#fff')};
-  color: ${({ buttonType }) => (buttonType === 'ok' ? '#fff' : '#3b3b3b')};
-  border: 1px solid #c6ced6;
-  border-radius: 0.94rem;
-  cursor: pointer;
-  outline: none;
-
-  &:not(:disabled):hover {
-    opacity: 0.8;
-  }
-
-  &:disabled {
-    background: #ccc;
-    color: #fff;
-    border: 0;
-  }
-`;
-
-export const Input = styled.div`
-  margin-top: 0.38rem;
-  width: 21.88rem;
-  display: flex;
-  align-items: center;
-  padding: 0 0.75rem;
-  height: 1.8rem;
-  font-size: 0.75rem;
-  background: ${({ disabled }) => (disabled ? '#cccccc' : '#fff')};
-  ${({ disabled }) =>
-    disabled &&
-    css`
-      color: #fff;
-    `}
-  border-radius: 25px;
-  border: 1px solid #e3e7eb;
-
-  &:focus-within {
-    border: 1px solid #6c56e5;
-  }
-
-  & input {
-    background: transparent;
-    margin-right: 0.5rem;
-    height: 1.13rem;
-    border: 0;
-    font-size: 0.75rem;
-    width: 100%;
-
-    ::placeholder {
-      color: #bdc6d3;
-    }
-
-    :disabled::placeholder {
-      color: #fff;
-    }
-
-    :focus {
-      outline: 0;
-    }
-  }
-`;
-
 export const FlexModal = styled(Modal)`
   font-size: 16px;
   display: flex;
@@ -99,10 +35,6 @@ export const Description = styled.div`
   font-size: 0.69rem;
   line-height: 1.06rem;
   color: #8d8d8d;
-`;
-
-export const LengthCounter = styled.div`
-  color: #bdc6d3;
 `;
 
 export const ConfigWrapper = styled.div`
