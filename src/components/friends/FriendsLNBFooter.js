@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useCoreStores, Button } from 'teespace-core';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
-import { Layout } from 'antd';
+import { Layout, Tooltip } from 'antd';
 import AddFriendsBySearch from './AddFriendsBySearch';
 import { WaplLogo, FriendAddIcon } from '../Icons';
 import { handleFriendsDialogType } from '../../utils/FriendsUtil';
@@ -14,22 +14,23 @@ const FooterWrapper = styled(Footer)`
   align-items: flex-end;
   justify-content: space-between;
   padding: 0.75rem 0.69rem 0.75rem 0.94rem;
-  background-color: #f5f5fb;
+  background-color: #ffffff;
 `;
-const FriendAddButton = styled(Button)`
-  &.ant-btn.ant-btn-outlined {
-    display: flex;
-    cursor: pointer;
-    width: 2.5rem;
-    height: 2.5rem;
-    margin-left: auto;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    background-color: #232d3b;
-    border: none;
-    padding: 0 0.38rem 0 0.63rem;
-    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+
+const FriendAddButton = styled.div`
+  display: flex;
+  cursor: pointer;
+  width: 2rem;
+  height: 2rem;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+
+  &:hover {
+    background: #ebe6df;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
   }
 `;
 
@@ -57,9 +58,11 @@ function FriendsLNBFooter() {
   return useObserver(() => (
     <FooterWrapper>
       <WaplLogo />
-      <FriendAddButton type="outlined" onClick={handleOpenAddFriendsDialog}>
-        <FriendAddIcon />
-      </FriendAddButton>
+      <Tooltip title="프렌즈 추가" placement="top" color="faf8f7">
+        <FriendAddButton onClick={handleOpenAddFriendsDialog}>
+          <FriendAddIcon />
+        </FriendAddButton>
+      </Tooltip>
       <AddFriendsBySearch
         visible={isDialogVisible}
         onCancelAddFriends={handleCloseAddFriendsDialog}

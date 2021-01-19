@@ -16,15 +16,19 @@ const SubTitle = styled.span`
   line-height: 1.13rem;
 `;
 
+const Blank = styled.div`
+  height: 1.25rem;
+  border-bottom: 0.06rem solid #ddd9d4;
+`;
+
 function ContentTitle({ title, subTitle }) {
   return (
     <>
       <Title>
         <strong>{title}</strong>
       </Title>
-      <SubTitle>
-        {subTitle}
-      </SubTitle>
+      <SubTitle>{subTitle}</SubTitle>
+      <Blank />
     </>
   );
 }
