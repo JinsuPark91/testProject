@@ -141,13 +141,13 @@ const CommonSettingPage = ({ roomInfo = null }) => {
         btns={[
           {
             type: 'solid',
-            shape: 'round',
+            shape: 'default',
             text: '삭제',
             onClick: handleDeleteOk,
           },
           {
             type: 'outlined',
-            shape: 'round',
+            shape: 'default',
             text: '취소',
             onClick: handleDeleteCancel,
           },
@@ -175,7 +175,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
         />
         <StyledButton
           type="solid"
-          shape="round"
+          shape="default"
           disabled={!value.length || !isChanged}
           style={{ marginTop: '0.63rem' }}
           onClick={handleSave}
@@ -209,13 +209,13 @@ const CommonSettingPage = ({ roomInfo = null }) => {
                 btns={[
                   {
                     type: 'solid',
-                    shape: 'round',
+                    shape: 'default',
                     text: '전환',
                     onClick: handleConfirmModeChange,
                   },
                   {
                     type: 'outlined',
-                    shape: 'round',
+                    shape: 'default',
                     text: '취소',
                     onClick: handleCancelModeChange,
                   },
@@ -223,7 +223,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
               />
               <StyledButton
                 type="solid"
-                shape="round"
+                shape="default"
                 style={{ marginTop: '0.81rem' }}
                 onClick={handleClickModeChange}
               >
@@ -242,7 +242,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
         </SettingDescriptionText>
         <StyledButton
           type="outlined"
-          shape="round"
+          shape="default"
           style={{ marginTop: '0.81rem' }}
           onClick={handleDelete}
         >

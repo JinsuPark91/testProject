@@ -196,7 +196,7 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
             </StyledInfoText>
             <StyledButton
               type="solid"
-              shape="round"
+              shape="default"
               onClick={handlePrivateRoomCreate}
             >
               프라이빗 룸 만들기
@@ -215,7 +215,7 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
             </StyledInfoText>
             <StyledButton
               type="solid"
-              shape="round"
+              shape="default"
               onClick={handleOpenRoomCreate}
             >
               오픈 룸 만들기
