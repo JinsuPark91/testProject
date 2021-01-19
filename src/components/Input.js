@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 
 const Input = React.forwardRef(
@@ -49,10 +49,15 @@ const Wrapper = styled.div`
       color: #fff;
       cursor: not-allowed;
     `}
-  border-radius: 25px;
-  border: 1px solid #e3e7eb;
+  border-radius: 0.25rem;
+  border: 1px solid #d0ccc7;
+
+  &:hover {
+    background: #faf8f7;
+  }
+
   &:not(:disabled):focus-within {
-    border: 1px solid #6c56e5;
+    border: 1px solid #7b7671;
   }
 
   & input {
@@ -71,7 +76,7 @@ const Wrapper = styled.div`
     width: 100%;
 
     ::placeholder {
-      color: #bdc6d3;
+      color: #c9c4be;
     }
 
     :disabled::placeholder {
@@ -83,8 +88,8 @@ const Wrapper = styled.div`
     }
   }
 
-  & .input-count {
-    color: ${({ disabled }) => (disabled ? '#fff' : '#bdc6d3')};
+  & .input-counter {
+    color: ${({ disabled }) => (disabled ? '#fff' : '#C9C4BE')};
   }
 `;
 

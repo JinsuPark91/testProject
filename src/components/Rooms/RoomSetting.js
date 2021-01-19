@@ -167,7 +167,12 @@ const CommonSettingPage = ({ roomInfo = null }) => {
         <SettingDescriptionText style={{ marginBottom: '0.81rem' }}>
           구성원이 따로 이름 변경하여 보는 룸 이름에는 영향을 주지 않습니다.
         </SettingDescriptionText>
-        <Input maxLength={20} value={value} onChange={handleChange} />
+        <Input
+          maxLength={20}
+          value={value}
+          onChange={handleChange}
+          placeholder={roomInfo?.name}
+        />
         <StyledButton
           type="solid"
           shape="round"
@@ -260,7 +265,7 @@ const RoomSetting = ({ roomInfo }) => {
       <Header style={{ padding: '0 0.89rem' }}>
         <Centered>
           <IconWrapper onClick={handleClose}>
-            <ArrowLeftIcon width={1} height={1} color="#75757F" />
+            <ArrowLeftIcon width={1} height={1} color="#000000" />
           </IconWrapper>
           <TitleText style={{ marginLeft: '0.5rem' }}>룸 설정</TitleText>
         </Centered>
@@ -315,18 +320,17 @@ const Header = styled.div`
   height: 2.63rem;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #f0f2f5;
 `;
 
 const IconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  padding: 0.3rem;
+  border-radius: 0.25rem;
+  padding: 0.25rem;
   cursor: pointer;
   &:hover {
-    background: #dcddff;
+    background: #eae6e0;
   }
 `;
 
