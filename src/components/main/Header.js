@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, ProfileInfoModal } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { Tooltip } from 'antd';
 import {
@@ -22,7 +22,7 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 import MyProfileInfo from '../profile/MyProfileInfo';
 import RoomInquiryModal from '../Rooms/RoomInquiryModal';
 import RoomAddMemberModal from '../Rooms/RoomAddMemberModal';
-import ProfileInfoModal from '../profile/ProfileInfoModal';
+// import ProfileInfoModal from '../profile/ProfileInfoModal';
 import {
   ExportIcon,
   SearchIcon,

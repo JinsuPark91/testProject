@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled from 'styled-components';
-import { useCoreStores, Toast } from 'teespace-core';
+import { useCoreStores, Toast, ProfileInfoModal } from 'teespace-core';
 import { Tooltip } from 'antd';
 import { WaplLogo, AddRoomIcon, OpenChatIcon, SearchIcon } from '../Icons';
 import EmptyRoomIllust from '../../assets/space_make.svg';
@@ -11,7 +11,7 @@ import OpenRoomHome from './OpenRoomHome';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
-import ProfileInfoModal from '../profile/ProfileInfoModal';
+// import ProfileInfoModal from '../profile/ProfileInfoModal';
 import Search from '../common/Search';
 
 function RoomList() {

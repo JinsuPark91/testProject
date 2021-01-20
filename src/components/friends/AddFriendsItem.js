@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { useObserver } from 'mobx-react';
-import { useCoreStores, Toast } from 'teespace-core';
+import { useCoreStores, Toast, ProfileInfoModal } from 'teespace-core';
 import { FixedSizeList as List } from 'react-window';
 import styled from 'styled-components';
 import AddFriendImg from '../../assets/ts_friend_add.svg';
-import ProfileInfoModal from '../profile/ProfileInfoModal';
+// import ProfileInfoModal from '../profile/ProfileInfoModal';
 
 const SpaceInfo = styled.div`
   margin-bottom: 0.24rem;
