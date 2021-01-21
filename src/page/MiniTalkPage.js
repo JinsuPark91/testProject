@@ -59,11 +59,14 @@ const MiniTalkPage = () => {
 export default MiniTalkPage;
 
 const Loader = styled.div`
-  width: 4.06rem;
-  height: 4.06rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 
   & img {
-    width: 100%;
-    height: 100%;
+    width: 4.06rem;
+    height: 4.06rem;
   }
 `;
