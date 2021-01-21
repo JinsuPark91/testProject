@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { List, Menu, Dropdown } from 'antd';
 import styled, { css } from 'styled-components';
@@ -6,12 +6,14 @@ import { Observer } from 'mobx-react';
 import { useCoreStores, usePortalWindow } from 'teespace-core';
 import { Talk, talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
+import { useOpenInWindow } from 'use-open-window';
 import Photos from '../Photos';
 import {
   ViewMoreIcon,
   DisableAlarmIcon,
   PinIcon,
   OpenChatIcon,
+  ExportIcon,
 } from '../Icons';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
@@ -213,25 +215,41 @@ const RoomItemContent = ({
   const { userStore, roomStore } = useCoreStores();
   const isDMRoom = roomInfo.isDirectMsg;
 
-  const openTalkWindow = usePortalWindow();
-  const handleExport = async e => {
-    e.stopPropagation();
-    openTalkWindow({
-      element: (
-        <Talk
-          roomId={roomInfo.id}
-          channelId={
-            roomStore
-              .getRoomMap()
-              .get(roomInfo.id)
-              ?.channelList?.find(channel => channel.type === 'CHN0001')?.id
-          }
-        />
-      ),
-      opts: 'width=600, height=900',
-      title: 'mini-talk',
-    });
+  const url = `${window.location.origin}/s/${roomInfo.id}/talk?mini=true`;
+  const options = {
+    centered: true,
+    specs: {
+      width: 600,
+      height: 800,
+    },
   };
+  const [handleWindowOpen, newWindowHandle] = useOpenInWindow(url, options);
+
+  const handleExport = e => {
+    e.stopPropagation();
+
+    handleWindowOpen();
+  };
+
+  // const openTalkWindow = usePortalWindow();
+  // const handleExport = async e => {
+  //   e.stopPropagation();
+  //   openTalkWindow({
+  //     element: (
+  //       <Talk
+  //         roomId={roomInfo.id}
+  //         channelId={
+  //           roomStore
+  //             .getRoomMap()
+  //             .get(roomInfo.id)
+  //             ?.channelList?.find(channel => channel.type === 'CHN0001')?.id
+  //         }
+  //       />
+  //     ),
+  //     opts: 'width=600, height=900',
+  //     title: 'mini-talk',
+  //   });
+  // };
 
   const handleMenuClick = _roomInfo => {
     onMenuClick(_roomInfo);
@@ -361,10 +379,9 @@ const RoomItemContent = ({
           </IconWrapper>
         </RoomDropdown>
       )}
-      {/* 미니챗 기능 추후 업데이트 */}
-      {/* <IconWrapper className="room-item__icon" onClick={handleExport}>
-        <ExportIcon width={1} height={1} />
-      </IconWrapper> */}
+      <IconWrapper className="room-item__icon" onClick={handleExport}>
+        <ExportIcon width={1} height={1} color="#49423A" />
+      </IconWrapper>
     </>
   );
 };

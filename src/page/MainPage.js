@@ -7,6 +7,7 @@ import {
   DesktopNotification,
   AppState,
 } from 'teespace-core';
+// import { Observer } from 'mobx-react';
 import { talkRoomStore } from 'teespace-talk-app';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
 import { Prompt } from 'react-router';
@@ -16,7 +17,7 @@ import { Loader, Wrapper } from './MainPageStyle';
 import PlatformUIStore from '../stores/PlatformUIStore';
 import LoadingImg from '../assets/WAPL_Loading.gif';
 import FaviconChanger from '../components/common/FaviconChanger';
-import FloatingButton from '../components/common/FloatingButton';
+// import FloatingButton from '../components/common/FloatingButton';
 import { getQueryParams } from '../utils/UrlUtil';
 
 const MainPage = () => {
@@ -237,29 +238,24 @@ const MainPage = () => {
       />
       {leftSide}
       {mainSide}
-      <FloatingButton
-        visible={false}
-        rooms={[
-          { name: 'test1', userCount: 11, id: 'test01' },
-          { name: 'test2', userCount: 12, id: 'test02' },
-          { name: 'test3', userCount: 13, id: 'test03' },
-          { name: 'test4', userCount: 14, id: 'test04' },
-          { name: 'test5', userCount: 15, id: 'test05' },
-          { name: 'test6', userCount: 16, id: 'test06' },
-          { name: 'test7', userCount: 17, id: 'test07' },
-          // { name: 'test8', userCount: 18, id: 'test08' },
-        ]}
-        count={5}
-        onItemClick={roomInfo => {
-          console.log('Item Clicked. ', roomInfo);
-        }}
-        onItemClose={roomInfo => {
-          console.log('Item Closed. ', roomInfo);
-        }}
-        onCloseAll={() => {
-          console.log('All Closed.');
-        }}
-      />
+      {/* <Observer>
+        {() => (
+          <FloatingButton
+            visible={PlatformUIStore.windows.length > 0}
+            rooms={PlatformUIStore.windows}
+            count={5}
+            onItemClick={roomInfo => {
+              console.log('Item Clicked. ', roomInfo);
+            }}
+            onItemClose={roomInfo => {
+              console.log('Item Closed. ', roomInfo);
+            }}
+            onCloseAll={() => {
+              console.log('All Closed.');
+            }}
+          />
+        )}
+      </Observer> */}
     </Wrapper>
   );
 };

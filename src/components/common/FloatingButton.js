@@ -152,7 +152,7 @@ const FloatingButton = ({
             }
             onClick={rooms.length > count && startIndex !== 0 ? prev : null}
             size={remToPixel(1.5)}
-            visible={rooms.length > count && startIndex !== 0}
+            visible={(rooms.length > count && startIndex !== 0).toString()}
           />
 
           {rooms.slice(startIndex, count + startIndex).map(roomInfo => (
@@ -165,6 +165,7 @@ const FloatingButton = ({
                 />
               }
               size={remToPixel(3.5)}
+              key={roomInfo.id}
             />
           ))}
 
@@ -180,7 +181,9 @@ const FloatingButton = ({
                 : null
             }
             size={remToPixel(1.5)}
-            visible={rooms.length > count && startIndex < rooms.length - count}
+            visible={(
+              rooms.length > count && startIndex < rooms.length - count
+            ).toString()}
           />
         </CustomFloatingMenu>
       </Wrapper>
@@ -240,7 +243,7 @@ const CustomMainButton = styled(MainButton)`
 `;
 
 const ArrowChildButton = styled(ChildButton)`
-  cursor: ${({ visible }) => (visible ? 'pointer' : 'default')};
+  cursor: ${({ visible }) => (visible === 'true' ? 'pointer' : 'default')};
   margin-top: -10px;
   margin-bottom: 0;
   box-shadow: unset;

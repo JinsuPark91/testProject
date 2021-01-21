@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useCoreStores, ProfileInfoModal } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { Tooltip } from 'antd';
+import { useOpenInWindow } from 'use-open-window';
 import {
   Wrapper,
   TitleWrapper,
@@ -156,6 +157,16 @@ const Header = observer(() => {
     return null;
   };
 
+  const url = `${window.location.origin}/s/${findRoom().id}/talk?mini=true`;
+  const options = {
+    centered: true,
+    specs: {
+      width: 600,
+      height: 800,
+    },
+  };
+  const [handleWindowOpen, newWindowHandle] = useOpenInWindow(url, options);
+
   const getRoomName = () => {
     const found = findRoom();
     if (found) {
@@ -208,7 +219,7 @@ const Header = observer(() => {
   const members = roomStore.roomMembers[roomId] || [];
 
   const handleExport = () => {
-    console.log('handleExport');
+    handleWindowOpen();
   };
 
   const handleSearch = () => {
@@ -348,16 +359,21 @@ const Header = observer(() => {
 
             {PlatformUIStore.resourceType !== 'm' && (
               <SystemIconContainer>
-                {/* <IconWrapper onClick={handleExport}>
-                  <ExportIcon />
-                </IconWrapper> */}
                 {PlatformUIStore.layout !== 'expand' && (
-                  <IconWrapper
-                    onClick={handleSearch}
-                    style={{ marginRight: '0.44rem' }}
-                  >
-                    <SearchIcon width={1.25} height={1.25} color="#232D3B" />
-                  </IconWrapper>
+                  <>
+                    <IconWrapper
+                      onClick={handleExport}
+                      style={{ marginRight: '0.44rem' }}
+                    >
+                      <ExportIcon width={1.25} height={1.25} color="#232D3B" />
+                    </IconWrapper>
+                    <IconWrapper
+                      onClick={handleSearch}
+                      style={{ marginRight: '0.44rem' }}
+                    >
+                      <SearchIcon width={1.25} height={1.25} color="#232D3B" />
+                    </IconWrapper>
+                  </>
                 )}
                 {!isMyRoom() && (
                   <>

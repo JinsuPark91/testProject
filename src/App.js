@@ -31,6 +31,11 @@ import KeycloakRedirectRoute from './libs/KeycloakRedirectRoute';
 import keycloak from './libs/keycloak';
 import { getCookieValue } from './utils/CookieUtil';
 
+// MiniTalk 임시.
+import { getQueryParams } from './utils/UrlUtil';
+import MiniTalkPage from './page/MiniTalkPage';
+// MiniTalk 임시.
+
 // import i18next from './i18n';
 
 const hydrate = create();
@@ -43,6 +48,10 @@ function App() {
   const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
   const subURL = url.split(`//`)[1].split(`.`)[0]; //  xxx
   const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
+
+  // MiniTalk 임시.
+  const { mini: isMini } = getQueryParams(window.location.search);
+  // MiniTalk 임시.
 
   // initialize apps
   useEffect(() => {
@@ -116,7 +125,7 @@ function App() {
                     />
                     <PrivateRoute
                       path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
-                      component={MainPage}
+                      component={isMini ? MiniTalkPage : MainPage}
                     />
                     <Route path="/admin">
                       <AdminPage />

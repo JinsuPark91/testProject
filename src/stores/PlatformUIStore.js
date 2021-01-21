@@ -48,6 +48,8 @@ const PlatformUIStore = observable({
   content: {
     rect: null,
   },
+
+  // windows: [],
 });
 
 export default PlatformUIStore;
