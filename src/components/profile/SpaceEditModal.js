@@ -230,18 +230,12 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
           <Button
             style={{ marginRight: '0.5rem' }}
             type="solid"
-            shape="round"
             onClick={handleConfirmEditSpace}
             disabled={handleCheckDisable()}
           >
             저장
           </Button>
-          <Button
-            style={{ backgroundColor: '#fff' }}
-            type="outlined"
-            shape="round"
-            onClick={handleCancelEditSpace}
-          >
+          <Button type="outlined" onClick={handleCancelEditSpace}>
             취소
           </Button>
         </ButtonContainer>

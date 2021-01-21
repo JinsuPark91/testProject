@@ -4,17 +4,16 @@ import { Loader, useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import { Divider } from 'antd';
 import AddFriendsByOrganizationHeader from './AddFriendsByOrganizationHeader';
-import AddFriendsByOrganizationContent from './AddFriendsByOrganizationContent';
 import AddFriendsItem from './AddFriendsItem';
 import OrganizationDropdown from './OrganizationDropdown';
-import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const Wrapper = styled.div`
   width: 100%;
+  padding: 0 0.94rem;
 `;
 
 const StyledDivider = styled(Divider)`
-  margin: 0;
+  margin: 0.23rem 0 0.63rem 0;
 `;
 
 function AddFriendsByOrganization({ timestamp, searchText, isViewMode }) {

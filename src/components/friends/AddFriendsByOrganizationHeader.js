@@ -6,17 +6,16 @@ import OrganizationDropdown from './OrganizationDropdown';
 
 const Wrapper = styled.div`
   display: flex;
-  margin: 0.38rem 0.75rem;
-`;
-const StyledDivider = styled(Divider)`
-  margin: 0;
 `;
 
 const UserCounter = styled.div`
   flex: 1;
   text-align: right;
   align-self: center;
+  color: #000000;
+  font-size: 0.75rem;
 `;
+
 function AddFriendsByOrganizationHeader({
   orgList,
   orgUserSize,
@@ -41,8 +40,8 @@ function AddFriendsByOrganizationHeader({
           style={{ width: '100%' }}
           onPressEnter={onInputChange}
         />
-      </Wrapper> */}
-      <StyledDivider />
+      </Wrapper>
+      <StyledDivider /> */}
       <Wrapper>
         <OrganizationDropdown
           orgList={orgList}

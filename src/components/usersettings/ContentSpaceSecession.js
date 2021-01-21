@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useCoreStores, Input } from 'teespace-core';
 import { Button, Checkbox, Avatar } from 'antd';
-
 import styled from 'styled-components';
 import ContentTitle from './ContentTitle';
 
@@ -12,12 +11,14 @@ const ContentGroup = styled.div`
     margin-top: 1.25rem;
   }
 `;
+
 const GroupTitle = styled.p`
   margin-bottom: 1.25rem;
   font-size: 0.75rem;
   line-height: 1.13rem;
   color: #777;
 `;
+
 const GroupTitleBlack = styled(GroupTitle)`
   margin-bottom: 0.88rem;
   font-size: 0.81rem;
@@ -25,6 +26,7 @@ const GroupTitleBlack = styled(GroupTitle)`
   line-height: 1.19rem;
   color: #000;
 `;
+
 const NoticeList = styled.ul``;
 const NoticeItem = styled.li`
   position: relative;
@@ -46,10 +48,12 @@ const NoticeItem = styled.li`
     border-radius: 50%;
   }
 `;
+
 const SpaceBox = styled.div`
   display: flex;
   align-items: center;
 `;
+
 const SpaceLogo = styled(Avatar)`
   flex-shrink: 0;
   width: 2.38rem;
@@ -59,6 +63,7 @@ const SpaceLogo = styled(Avatar)`
   font-weight: 500;
   border-radius: 0.5rem;
 `;
+
 const SpaceTitle = styled.strong`
   overflow: hidden;
   display: block;
@@ -68,6 +73,7 @@ const SpaceTitle = styled.strong`
   color: #000;
   text-overflow: ellipsis;
 `;
+
 const SpaceInfo = styled.p`
   overflow: hidden;
   margin-left: 0.63rem;
@@ -77,6 +83,7 @@ const SpaceInfo = styled.p`
   white-space: nowrap;
   text-overflow: ellipsis;
 `;
+
 const CheckboxWrap = styled.div`
   padding: 1.25rem 0 1.44rem;
   .ant-checkbox-wrapper > span {
@@ -90,9 +97,18 @@ const CheckboxWrap = styled.div`
     color: #000;
   }
 `;
+
 const StyledButton = styled(Button)`
   padding: 0 0.78rem;
+  &.ant-btn {
+    width: 4.5rem;
+    height: 1.88rem;
+    font-size: 0.75rem;
+    color: #fff;
+    text-align: center;
+  }
 `;
+
 const InputWrap = styled.div`
   display: flex;
   align-items: center;
@@ -100,6 +116,7 @@ const InputWrap = styled.div`
     width: 15.63rem;
   }
 `;
+
 const InputName = styled.label`
   margin-right: 0.63rem;
   font-size: 0.81rem;
@@ -195,7 +212,7 @@ function ContentSpaceSecession({
               </Checkbox>
             </CheckboxWrap>
             <StyledButton
-              shape="round"
+              type={isCheck ? 'solid' : 'outlined'}
               disabled={!isCheck}
               onClick={toggleContinue}
             >

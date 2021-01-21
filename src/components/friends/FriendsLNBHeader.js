@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Search } from 'teespace-core';
-import { OpenChatIcon } from '../Icons';
+import { WaplSearch } from 'teespace-core';
 
 /**
  * Friends LNB Header
@@ -28,19 +27,15 @@ const SearchBox = styled.div`
   }
 `;
 
-const StyledSearch = styled(Search)`
-  &.ant-input-affix-wrapper {
-    border-color: #e3e7eb;
-  }
-`;
 function FriendsLNBHeader({ handleInputChange, handleInputClear }) {
   return (
     <SearchBox>
-      <StyledSearch
+      <WaplSearch
+        type="underline"
         onChange={handleInputChange}
         onClear={handleInputClear}
         placeholder="프렌즈 검색"
-        style={{ width: '100%' }}
+        isCountExist={false}
       />
     </SearchBox>
   );
