@@ -907,6 +907,9 @@ const EditNameInput = styled(InputCounter)`
       border-color: #6c56e5;
     }
   }
+  &:hover {
+    background-color: transparent;
+  }
   input {
     height: 2.25rem;
     margin: 0;
