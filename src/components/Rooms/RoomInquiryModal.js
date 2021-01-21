@@ -383,7 +383,7 @@ function RoomInquiryModal({
         )}
       </Observer>
 
-      <GroupNumber>{roomInfo?.userCount}</GroupNumber>
+      <GroupNumber>{roomInfo?.userCount}명</GroupNumber>
       <SettingBox>
         {isEditMode ? (
           <>

@@ -111,9 +111,13 @@ function AddFriendsByInvitationDialog({
   const myUserId = userStore.myProfile.id;
 
   const handleCancel = () => {
-    setMailAddress('');
-    setChipList([]);
-    onCancel();
+    if (isMessageVisible) {
+      setIsMessageVisible(false);
+    } else {
+      setMailAddress('');
+      setChipList([]);
+      onCancel();
+    }
   };
 
   const handleToggleToast = () => {
