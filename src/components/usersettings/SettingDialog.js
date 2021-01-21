@@ -73,15 +73,16 @@ const StyledMenu = styled(Menu)`
     border-radius: 1.19rem;
     font-size: 0.81rem;
     line-height: 2.38rem;
+    background-color: #f7f4ef;
     color: #000;
-    &:hover {
-      background-color: #f7f4ef;
-    }
     &.ant-menu-item-selected {
       background-color: #ddd7cd;
     }
   }
 `;
+// &:hover {
+//   background-color: #d3d9d0;
+// }
 
 const InnerList = styled.ul`
   margin-top: 1.56rem;

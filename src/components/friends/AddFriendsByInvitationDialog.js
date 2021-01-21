@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useCoreStores, Toast, Chip, Message } from 'teespace-core';
 import styled from 'styled-components';
 import { Button, Input, Modal } from 'antd';
+import sendMailIcon from '../../assets/invite_send.svg';
 import { checkEmailValid } from '../../libs/Regex';
 
 const StyledModal = styled(Modal)`
@@ -18,28 +19,32 @@ const StyledModal = styled(Modal)`
     letter-spacing: 0;
   }
 `;
+
 const StyledContent = styled.div`
   padding: 1.13rem 1rem 1.44rem;
 `;
+
 const StyledInputBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 0.88rem;
 `;
+
 const StyledChipBox = styled.div`
   overflow-y: auto;
-  height: 9.38rem;
-  margin-top: 1rem;
+  height: 5.2rem;
+  margin-top: 0.56rem;
   padding: 0 0 0.38rem 0.38rem;
-  background-color: #f5f5fb;
-  border: 1px solid #c6ced6;
+  background-color: white;
+  border: 0.06rem solid #d0ccc7;
   border-radius: 0.25rem;
   & > div {
-    margin: 0.38rem 0.38rem 0 0;
+    margin: 0.25rem 0.38rem 0 0;
     vertical-align: top;
   }
 `;
+
 const StyledInfoTitle = styled.h3`
   font-size: 0.81rem;
   line-height: 1.19rem;
@@ -50,22 +55,16 @@ const StyledInfoTitle = styled.h3`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
+
 const StyledInfoText = styled.p`
   font-size: 0.75rem;
-  line-height: 0.88rem;
+  line-height: 0.91rem;
   color: #777;
   letter-spacing: 0;
 `;
 
 const StyledInput = styled(Input)`
   margin-right: 0.5rem;
-`;
-
-const StyledButton = styled(Button)`
-  &.ant-btn {
-    width: 5.38rem;
-    padding: 0 1.63rem;
-  }
 `;
 
 const StyledLinkButton = styled(Button)`
@@ -75,10 +74,26 @@ const StyledLinkButton = styled(Button)`
     padding: 0;
     font-size: 0.81rem;
     line-height: 1.19rem;
-    color: #6c56e5;
+    color: #00493d;
     &:hover span {
       text-decoration: underline;
     }
+  }
+`;
+
+const SendButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 1.88rem;
+  width: 1.88rem;
+  background-color: #f7f4ef;
+  border-radius: 0.38rem;
+
+  & > img {
+    width: 1.08rem;
+    height: ;
   }
 `;
 
@@ -208,14 +223,17 @@ function AddFriendsByInvitationDialog({
       <StyledModal
         visible={visible}
         mask
+        centered
         maskClosable={false}
         footer={null}
-        width="27.5rem"
+        width="24.38rem"
         title="초대 메일 보내기"
         onCancel={handleCancel}
       >
         <StyledContent>
-          <StyledInfoTitle>현재 스페이스로 구성원 초대</StyledInfoTitle>
+          <StyledInfoTitle>
+            {spaceStore.currentSpace?.name}(으)로 구성원 초대
+          </StyledInfoTitle>
           <StyledInfoText>
             입력한 이메일 주소로 초대장이 발송됩니다.
             <br />
@@ -229,13 +247,9 @@ function AddFriendsByInvitationDialog({
               value={mailAddress}
               autoFocus
             />
-            <StyledButton
-              type="solid"
-              shape="round"
-              onClick={handleSendInviteMail}
-            >
-              보내기
-            </StyledButton>
+            <SendButton onClick={handleSendInviteMail}>
+              <img alt="send" src={sendMailIcon} />
+            </SendButton>
           </StyledInputBox>
           {chipList.length ? (
             <StyledChipBox>
@@ -256,7 +270,7 @@ function AddFriendsByInvitationDialog({
         </StyledContent>
         <Message
           visible={isMessageVisible}
-          title="올바르지 않은 이메일 주소 형식이 포함되어 있습니다."
+          title="올바르지 않은 이메일 주소가 포함되어 있습니다."
           subtitle="오류 표시된 주소를 수정하거나 삭제 후 초대 메일을 보내주세요."
           type="error"
           btns={[

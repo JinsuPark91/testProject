@@ -1,8 +1,18 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useObserver } from 'mobx-react';
 import styled from 'styled-components';
+import { Divider } from 'antd';
 import SpaceMemberHeader from '../space/SpaceMemberHeader';
 import AddFriendsItem from './AddFriendsItem';
+
+const Wrapper = styled.div`
+  width: 100%;
+  padding: 0 0.94rem;
+`;
+
+const StyledDivider = styled(Divider)`
+  margin: 0.23rem 0 0.63rem 0;
+`;
 
 function AddFriendsFromSpace({
   spaceName,
@@ -36,6 +46,7 @@ function AddFriendsFromSpace({
         spaceName={spaceName}
         userCount={searchedUserList.length}
       />
+      <StyledDivider />
       <AddFriendsItem
         friendAddList={searchedUserList}
         isViewMode={isViewMode}
@@ -43,9 +54,5 @@ function AddFriendsFromSpace({
     </Wrapper>
   ));
 }
-
-const Wrapper = styled.div`
-  width: 100%;
-`;
 
 export default AddFriendsFromSpace;

@@ -2,32 +2,17 @@ import React, { useState, useCallback } from 'react';
 import { useObserver } from 'mobx-react';
 import { useCoreStores, Toast, ProfileInfoModal } from 'teespace-core';
 import { FixedSizeList as List } from 'react-window';
-import styled from 'styled-components';
-import AddFriendImg from '../../assets/ts_friend_add.svg';
-// import ProfileInfoModal from '../profile/ProfileInfoModal';
-
-const SpaceInfo = styled.div`
-  margin-bottom: 0.24rem;
-`;
-const SpaceName = styled.span`
-  font-size: 0.75rem;
-  color: #000000;
-  max-width: 80%;
-`;
-const UserCount = styled.span`
-  font-size: 0.75rem;
-  color: #6c56e5;
-  margin-left: 0.25rem;
-`;
+import styled, { css } from 'styled-components';
+import mySign from '../../assets/wapl_me.svg';
+import AddFriendImg from '../../assets/add_friends.svg';
 
 const Wrapper = styled.div`
   max-height: 25.81rem;
-  padding: 0.63rem 0.75rem;
 `;
 
 const FriendItem = styled.div`
   display: flex;
-  padding: 0.44rem 0.81rem 0.44rem 0.63rem;
+  padding: 0.44rem 0.22rem 0.44rem 0.63rem;
   justify-content: space-between;
   align-items: center;
 `;
@@ -76,7 +61,6 @@ const FriendAddBtn = styled.button`
   height: 1rem;
   background-color: transparent;
   border: none;
-  cursor: pointer;
   margin-right: 1rem;
 
   span {
@@ -85,12 +69,26 @@ const FriendAddBtn = styled.button`
     height: 1rem;
     background: url(${AddFriendImg}) 50% 50% no-repeat;
     background-size: 1rem 1rem;
-    cursor: pointer;
     font-size: 0;
     line-height: 0;
     text-indent: -9999px;
     vertical-align: top;
   }
+
+  ${props =>
+    props.isFriend
+      ? css`
+  cursor: auto;
+  span {
+    cursor: auto;
+    filter: opacity(0.2) drop-shadow(0 0 0 #818181);
+  `
+      : css`
+          cursor: pointer;
+          span {
+            cursor: pointer;
+          }
+        `}}
 `;
 
 const MyBadge = styled.span`
@@ -98,25 +96,24 @@ const MyBadge = styled.span`
   top: 0;
   min-width: 1.06rem;
   min-height: 0.94rem;
-  padding: 0.06rem 0.25rem;
-  background-color: #523dc7;
   border-radius: 0.28rem;
   font-size: 0.56rem;
   font-weight: 600;
   line-height: 0.81rem;
   color: #fff;
   z-index: 100;
-  &:after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -0.15rem;
-    border-left: 0.15rem solid transparent;
-    border-right: 0.15rem solid transparent;
-    border-top: 0.2rem solid #523dc7;
-  }
 `;
+
+// &:after {
+//   content: '';
+//   position: absolute;
+//   top: 100%;
+//   left: 50%;
+//   margin-left: -0.15rem;
+//   border-left: 0.15rem solid transparent;
+//   border-right: 0.15rem solid transparent;
+//   border-top: 0.2rem solid #523dc7;
+// }
 
 const AddFriendsItem = ({ friendAddList, isViewMode }) => {
   const { userStore, friendStore } = useCoreStores();
@@ -159,12 +156,20 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
 
     if (!isFriend) {
       return (
-        <FriendAddBtn onClick={() => handleAddFriend(friendInfo)}>
+        <FriendAddBtn
+          isFriend={false}
+          onClick={() => handleAddFriend(friendInfo)}
+        >
           <span>프렌즈 추가</span>
         </FriendAddBtn>
       );
     }
-    return null;
+
+    return (
+      <FriendAddBtn isFriend>
+        <span>프렌즈 추가</span>
+      </FriendAddBtn>
+    );
   };
 
   const handleOpenProfile = userId => {
@@ -180,7 +185,11 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
     return (
       <>
         <FriendItem style={style}>
-          {isMe && <MyBadge> 나 </MyBadge>}
+          {isMe && (
+            <MyBadge>
+              <img src={mySign} alt="me" />
+            </MyBadge>
+          )}
           <ImageBox
             onClick={() =>
               handleOpenProfile(friendInfo?.friendId || friendInfo?.id)
@@ -201,14 +210,8 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
     );
   });
 
-  return (
+  return useObserver(() => (
     <>
-      {/* {isViewMode && (
-        <SpaceInfo>
-          <SpaceName>{spaceStore.currentSpace?.name}</SpaceName>
-          <UserCount>{spaceStore.currentSpace?.userCount}명</UserCount>
-        </SpaceInfo>
-      )} */}
       <Wrapper>
         {friendStore.friendInfoList && (
           <List
@@ -245,7 +248,7 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
         />
       )}
     </>
-  );
+  ));
 };
 
 export default React.memo(AddFriendsItem);
