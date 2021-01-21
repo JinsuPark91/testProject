@@ -157,7 +157,10 @@ const Header = observer(() => {
     return null;
   };
 
-  const url = `${window.location.origin}/s/${findRoom().id}/talk?mini=true`;
+  const url = findRoom()
+    ? `${window.location.origin}/s/${findRoom()?.id}/talk?mini=true`
+    : '';
+
   const options = {
     centered: true,
     specs: {
@@ -219,7 +222,7 @@ const Header = observer(() => {
   const members = roomStore.roomMembers[roomId] || [];
 
   const handleExport = () => {
-    handleWindowOpen();
+    if (url) handleWindowOpen();
   };
 
   const handleSearch = () => {
