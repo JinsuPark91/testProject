@@ -42,8 +42,8 @@ const FriendsLNB = observer(({ userId }) => {
     })();
   }, [friendStore, loader, orgStore, userStore.myProfile.id]);
 
-  const handleSearchKeyword = useCallback(e => {
-    setSearchKeyword(e.target.value);
+  const handleSearchKeyword = useCallback(value => {
+    setSearchKeyword(value);
   }, []);
 
   const handleClearKeyword = useCallback(() => {

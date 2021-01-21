@@ -58,7 +58,7 @@ function FriendsLNBFooter() {
   return useObserver(() => (
     <FooterWrapper>
       <WaplLogo />
-      <Tooltip title="프렌즈 추가" placement="top" color="faf8f7">
+      <Tooltip title="프렌즈 추가" placement="topRight" color="faf8f7">
         <FriendAddButton onClick={handleOpenAddFriendsDialog}>
           <FriendAddIcon />
         </FriendAddButton>

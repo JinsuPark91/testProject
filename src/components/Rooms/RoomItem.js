@@ -418,9 +418,13 @@ const RoomItem = ({
       //
       if (TALK_ACCEPT_ITEMS.includes(item.type)) {
         console.log('TALK 로 아이템 전달. ', item.data);
-        talkOnDrop({
+        const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
+          item.type.toLowerCase(),
+        );
+        console.log({
           room: roomInfo,
           data: item.data,
+          type: type[1] ? type[1] : 'unknown',
         });
       }
 

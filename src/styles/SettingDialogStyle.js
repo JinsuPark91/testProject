@@ -103,6 +103,7 @@ export const TextArea = styled.div`
 
 export const ButtonArea = styled.div`
   margin-left: auto;
+  margin-right: 3rem;
   flex-shrink: 0;
 `;
 
