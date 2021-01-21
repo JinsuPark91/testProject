@@ -37,22 +37,18 @@ const MiniTalkPage = () => {
     }
   }, [roomId, channelId]);
 
-  return (
-    <div>
-      {isLoaded ? (
-        <Talk
-          roomId={roomId}
-          channelId={channelId}
-          layoutState="expand"
-          isSearchInputVisible={false}
-          onSearchClose={() => {}}
-        />
-      ) : (
-        <Loader>
-          <img src={LoadingImg} alt="loader" />
-        </Loader>
-      )}
-    </div>
+  return isLoaded ? (
+    <Talk
+      roomId={roomId}
+      channelId={channelId}
+      layoutState="expand"
+      isSearchInputVisible={false}
+      onSearchClose={() => {}}
+    />
+  ) : (
+    <Loader>
+      <img src={LoadingImg} alt="loader" />
+    </Loader>
   );
 };
 
