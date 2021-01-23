@@ -1,19 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Tabs } from 'antd';
+import { useCoreStores } from 'teespace-core';
 import { ArrowLeftIcon, CancelIcon } from '../Icons';
 import MemberSettingPage from './MemberSettingPage';
 import CommonSettingPage from './CommonSettingPage';
 
 const { TabPane } = Tabs;
 
-const RoomSetting = ({ roomInfo }) => {
+const RoomSetting = ({ roomInfo = null }) => {
   const history = useHistory();
+  const { userStore, roomStore } = useCoreStores();
+  const [members, setMembers] = useState([]);
 
   const handleClose = () => {
     history.push(`/s/${roomInfo.id}/talk`);
   };
+
+  useEffect(() => {
+    if (roomInfo) {
+      const myUserId = userStore.myProfile.id;
+      const roomId = roomInfo.id;
+
+      roomStore
+        .fetchRoomMemberList({
+          myUserId,
+          roomId,
+        })
+        .then(res => setMembers(res));
+    }
+  }, [roomInfo]);
 
   return (
     <Wrapper>
@@ -39,7 +56,7 @@ const RoomSetting = ({ roomInfo }) => {
           </TabPane>
 
           <TabPane key="member" tab="구성원 관리">
-            <MemberSettingPage />
+            <MemberSettingPage members={members} />
           </TabPane>
         </StyledTabs>
       </Content>
