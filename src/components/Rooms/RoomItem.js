@@ -398,6 +398,7 @@ const TALK_ACCEPT_ITEMS = [
   'Item:Note:Pages',
   'Item:Note:SharedPages',
   'Item:Calendar:ShareSchedules',
+  'Item:Drive:Files',
 ];
 
 const RoomItem = ({
