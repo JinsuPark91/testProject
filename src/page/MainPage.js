@@ -18,7 +18,7 @@ import PlatformUIStore from '../stores/PlatformUIStore';
 import LoadingImg from '../assets/WAPL_Loading.gif';
 import FaviconChanger from '../components/common/FaviconChanger';
 // import FloatingButton from '../components/common/FloatingButton';
-import { getQueryParams } from '../utils/UrlUtil';
+import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 
 const MainPage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -132,10 +132,11 @@ const MainPage = () => {
       PlatformUIStore.layout = 'collapse';
     });
     const closeHandler = EventBus.on('onLayoutClose', () => {
-      history.push({
-        pathname: history.location.pathname,
-        search: null,
-      });
+      const queryParams = getQueryParams();
+      delete queryParams.sub;
+      const queryString = getQueryString(queryParams);
+
+      history.push(`${history.location.pathname}?${queryString}`);
     });
 
     return () => {

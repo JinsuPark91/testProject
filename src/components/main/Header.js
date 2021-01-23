@@ -252,9 +252,11 @@ const Header = observer(() => {
   };
 
   const closeSubApp = () => {
-    history.push({
-      pathname: history.location.pathname,
-    });
+    const queryParams = getQueryParams();
+    delete queryParams.sub;
+    const queryString = getQueryString(queryParams);
+
+    history.push(`${history.location.pathname}?${queryString}`);
   };
 
   const handleAppClick = async appName => {
