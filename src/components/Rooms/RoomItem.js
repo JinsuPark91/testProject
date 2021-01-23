@@ -421,7 +421,7 @@ const RoomItem = ({
         const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
           item.type.toLowerCase(),
         );
-        console.log({
+        talkOnDrop({
           room: roomInfo,
           data: item.data,
           type: type[1] ? type[1] : 'unknown',
