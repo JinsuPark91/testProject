@@ -65,7 +65,7 @@ function App() {
 
   // hydrate mobx stores
   useEffect(() => {
-    Promise.all([hydrate('auth', authStore), hydrate('user', userStore)])
+    Promise.all([hydrate('user', userStore)])
       .then(() => {
         userStore.initHydratedMyProfile({});
         setIsHydrating(true);
@@ -127,9 +127,7 @@ function App() {
                       path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
                       component={isMini ? MiniTalkPage : MainPage}
                     />
-                    <Route path="/admin">
-                      <AdminPage />
-                    </Route>
+                    <PrivateRoute path="/admin" component={AdminPage} />
                     <Route component={NotFoundPage} />
                   </Switch>
                   {/* <PrivateRoute

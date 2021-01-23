@@ -13,10 +13,8 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
   const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
   let domainName;
   let loginInfo;
-  
-  
+
   if (process.env.REACT_APP_ENV === 'local') {
-   
     [domainName] = process.env.REACT_APP_DEV_SERVICE_DOMAIN.split('.');
     loginInfo = {
       id: keycloak.tokenParsed.email,
@@ -35,17 +33,24 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
   return (
     <Route
       {...rest}
-      render={() => {
+      render={props => {
         (async () => {
           try {
-          
-            if ( authStore.user?.loginId && authStore.user?.loginId !== keycloak.tokenParsed?.email) {
+            if (
+              authStore.user?.loginId &&
+              authStore.user?.loginId !== keycloak.tokenParsed?.email
+            ) {
               await authStore.logout();
             }
 
             await authStore.login(loginInfo);
 
-            history.push(`/f/${authStore.user.id}/profile`);
+            // NOTE. 이전 경로가 존재하면 해당 경로로 이동
+            if (props.location.state?.from) {
+              history.push(props.location.state?.from.pathname);
+            } else {
+              history.push(`/f/${authStore.user.id}/profile`);
+            }
           } catch (e) {
             window.location.href = `${window.location.protocol}//${mainURL}/domain/${domainName}`;
             console.error(e);
