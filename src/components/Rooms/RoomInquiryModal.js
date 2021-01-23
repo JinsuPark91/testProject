@@ -303,8 +303,7 @@ function RoomInquiryModal({
 
   const handleChangeNameOK = async () => {
     setIsEditMode(false);
-    const res = await updateRoomSetting({ newRoomCustomName: roomName });
-    console.log('RES : ', res);
+    await updateRoomSetting({ newRoomCustomName: roomName });
   };
 
   const handleChangeNameCancel = () => {
@@ -370,7 +369,7 @@ function RoomInquiryModal({
                 value={roomName}
                 onChange={handleChange}
                 ref={nameInputRef}
-                placeholder={roomInfo?.customName || roomInfo?.name}
+                placeholder={roomInfo?.oriName}
               />
             ) : (
               <p>
