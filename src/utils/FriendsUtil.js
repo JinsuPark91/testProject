@@ -7,7 +7,11 @@ export const handleFriendsDialogType = async (
   orgFunction,
   noOrgFunction,
 ) => {
-  const params = { orgType: 'ADM0021', publicType: 'ADM0011' }; // 공개 조직만 조회
+  const params = {
+    orgType: 'ADM0021',
+    publicType: 'ADM0011',
+    showRootOrg: true,
+  }; // 공개 조직만 조회
   const response = await orgStore.getOrgTree(params);
   if (response && response.length) {
     orgFunction();
