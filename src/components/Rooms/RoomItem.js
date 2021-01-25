@@ -401,6 +401,14 @@ const TALK_ACCEPT_ITEMS = [
   'Item:Drive:Files',
 ];
 
+// TODO: Content.js 와 동일한 함수로 리팩토링 필요
+const getRoomId = () => {
+  if (PlatformUIStore.resourceType !== 'f') {
+    return PlatformUIStore.resourceId;
+  }
+  return null;
+};
+
 const RoomItem = ({
   roomInfo,
   selected,
@@ -426,6 +434,7 @@ const RoomItem = ({
           room: roomInfo,
           data: item.data,
           type: type[1] ? type[1] : 'unknown',
+          currentRoomId: getRoomId(),
         });
       }
 

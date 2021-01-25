@@ -1,7 +1,7 @@
 import React from 'react';
-import { useObserver } from 'mobx-react';
+import { observer } from 'mobx-react';
+import { useCoreStores } from 'teespace-core';
 import { MailSideView } from 'teespace-mail-app';
-import { talkRoomStore } from 'teespace-talk-app';
 import { ChattingIcon, MailIcon, PeopleIcon } from '../Icons';
 import FriendLnb from '../friends/FriendsLNB';
 import RoomList from '../Rooms/RoomList';
@@ -10,12 +10,24 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const { TabPane } = CustomTabs;
 
-const LeftSide = () => {
+const LeftSide = observer(() => {
+  const { roomStore } = useCoreStores();
+
   const handleSelectTab = key => {
     PlatformUIStore.tabType = key;
   };
 
-  return useObserver(() => (
+  const totalUnreadCount = roomStore
+    .getRoomArray()
+    .filter(roomInfo => roomInfo.isVisible)
+    .reduce(
+      (accumulator, roomInfo) =>
+        accumulator + parseInt(roomInfo.metadata?.count ?? '0', 10),
+      0,
+    );
+
+  console.log(totalUnreadCount);
+  return (
     <Wrapper>
       <CustomTabs
         activeKey={PlatformUIStore.tabType}
@@ -42,10 +54,8 @@ const LeftSide = () => {
           key="s"
           tab={
             <IconWrapper className="lnb__icon-wrapper">
-              <UnreadCount isVisible={talkRoomStore.totalUnreadCount > 0}>
-                {talkRoomStore.totalUnreadCount > 99
-                  ? '99+'
-                  : talkRoomStore.totalUnreadCount}
+              <UnreadCount isVisible={totalUnreadCount > 0}>
+                {totalUnreadCount > 99 ? '99+' : totalUnreadCount}
               </UnreadCount>
               <ChattingIcon
                 width={1.5}
@@ -77,7 +87,7 @@ const LeftSide = () => {
         </TabPane>
       </CustomTabs>
     </Wrapper>
-  ));
-};
+  );
+});
 
 export default LeftSide;
