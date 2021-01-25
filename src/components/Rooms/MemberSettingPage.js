@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Button, Checkbox } from 'antd';
 import { FixedSizeList as List } from 'react-window';
+import { useCoreStores } from 'teespace-core';
 import { LeaderIcon } from '../Icons';
 
 const remToPixel = rem => {
@@ -10,18 +11,23 @@ const remToPixel = rem => {
   );
 };
 
-const TableRow = ({ style, memberInfo }) => {
+const TableRow = ({ style, memberInfo, roomId }) => {
+  const { roomStore } = useCoreStores();
   const isAdmin = memberInfo.role === 'WKS0004';
-  const handleClick = () => {
-    console.log('Click!! : ', memberInfo.id);
+  const handleClick = async () => {
+    console.log(memberInfo, roomId);
+    await roomStore.updateRoomLeader({
+      roomId,
+      userId: memberInfo.id,
+    });
   };
   return (
     <RowWrapper style={style}>
       {isAdmin ? (
         <LeaderIcon width={1.13} height={1.13} color="#205855" />
       ) : (
-        <Checkbox className="check-round" />
-      )}
+          <Checkbox className="check-round" />
+        )}
       <span>{memberInfo.name}</span>
       <span>{memberInfo.loginId}</span>
       <span>{memberInfo.role === 'WKS0004' ? '어드민' : '멤버'}</span>
@@ -37,7 +43,7 @@ const TableRow = ({ style, memberInfo }) => {
   );
 };
 
-const MemberSettingPage = ({ members }) => {
+const MemberSettingPage = ({ members, roomId }) => {
   const tableBodyRef = useRef(null);
   const [listHeight, setListHeight] = useState(0);
 
@@ -58,7 +64,11 @@ const MemberSettingPage = ({ members }) => {
           width="100%"
         >
           {({ index, style }) => (
-            <TableRow style={style} memberInfo={members[index]} />
+            <TableRow
+              style={style}
+              memberInfo={members[index]}
+              roomId={roomId}
+            />
           )}
         </List>
       </TableBody>
