@@ -56,7 +56,7 @@ const RoomSetting = ({ roomInfo = null }) => {
           </TabPane>
 
           <TabPane key="member" tab="구성원 관리">
-            <MemberSettingPage members={members} />
+            <MemberSettingPage members={members} roomId={roomInfo.id} />
           </TabPane>
         </StyledTabs>
       </Content>
