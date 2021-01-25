@@ -180,17 +180,19 @@ const ProfileMyModal = ({
   };
 
   const handleClickNewSpace = useCallback(() => {
-    const basicAdminSpace = spaceStore.spaceList?.filter(
-      elem =>
-        elem.adminId === waplUserStore?.myProfile?.id && elem.plan === 'BASIC',
-    );
-
-    if (basicAdminSpace.length >= 3) {
-      setIsNewSpaceErrorMessageVisible(true);
-    } else {
-      window.location.href = getMainWaplURL('/select-space-type');
+    try {
+      const adminSpace = spaceStore.getAdminSpaces({
+        loginId: userStore.myProfile?.loginId,
+      });
+      if (adminSpace.length >= 3) {
+        setIsNewSpaceErrorMessageVisible(true);
+      } else {
+        window.location.href = getMainWaplURL('/select-space-type');
+      }
+    } catch (e) {
+      console.log('SpaceStore Adminspace Get Error...');
     }
-  }, [spaceStore.spaceList, waplUserStore]);
+  }, [spaceStore, userStore]);
 
   useEffect(() => {
     if (isEditMode === true) return;

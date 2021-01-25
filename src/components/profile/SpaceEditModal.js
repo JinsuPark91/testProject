@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Message, useCoreStores } from 'teespace-core';
 import styled, { css } from 'styled-components';
 import { Button, Input, Modal, Tooltip } from 'antd';
+import { handleCheckValidUrl } from '../../libs/Regex';
 import errorIcon from '../../assets/ts_error.svg';
 
 const Wrapper = styled(Modal)`
@@ -34,15 +35,15 @@ const UrlInputBox = styled.div`
         `
       : css`
           &:hover {
-            background-color: #dcddff;
-            border-color: #c6ced6;
+            background-color: #faf8f7;
+            border: 0.06rem solid #d0ccc7;
           }
         `}
 
-  border-radius: 25px;
-  border: 1px solid #e3e7eb;
+  border-radius: 0.25rem;
+  border: 0.06rem solid #d0ccc7;
   &:not(:disabled):focus-within {
-    border: 1px solid #6c56e5;
+    border: 1px solid #7b7671;
   }
 
   & input {
@@ -91,6 +92,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
   const [newSpaceName, setNewSpaceName] = useState(currentSpace?.name || '');
   const [newAddress, setNewAddress] = useState(currentSpace?.domain || '');
   const [isWarningPopupVisible, setIsWarningPopupVisible] = useState(false);
+  const [warningText, setWarningText] = useState('');
   const [isWarningTextVisible, setIsWarningTextVisible] = useState(false);
 
   const isBasicPlan = currentSpace?.plan === 'BASIC';
@@ -143,6 +145,12 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
   };
 
   const handleConfirmEditSpace = async () => {
+    if (handleCheckValidUrl(newAddress)) {
+      setWarningText('영문, 숫자, 하이픈(-)만 입력할 수 있습니다.');
+      setIsWarningTextVisible(true);
+      return;
+    }
+
     const userId = userStore.myProfile.id;
     const isLocal = process.env.REACT_APP_ENV === 'local';
     let updatedInfo = {};
@@ -152,6 +160,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
         domain: newAddress,
       });
       if (res) {
+        setWarningText('이미 사용중인 URL 입니다.');
         setIsWarningTextVisible(true);
         return;
       }
@@ -216,7 +225,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
             <input value={newAddress} onChange={handleChangeUrl} />
             <ErrorIcon visible={isWarningTextVisible}>
               <Tooltip
-                title="이미 사용중인 URL 입니다."
+                title={warningText}
                 placement="top"
                 visible={isWarningTextVisible}
               >

@@ -32,6 +32,8 @@ function FriendsLNBHeader({ handleInputChange, handleInputClear }) {
     <SearchBox>
       <WaplSearch
         type="underline"
+        searchIconColor={{ active: '#17202B', default: '#C6CED6' }}
+        clearIconColor={{ active: '#17202B', default: '#C6CED6' }}
         onChange={handleInputChange}
         onClear={handleInputClear}
         placeholder="프렌즈 검색"

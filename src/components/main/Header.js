@@ -112,6 +112,7 @@ const AppIcon = React.memo(
     disabledIcon,
     disabled,
   }) => {
+    const AppToolTipName = appName.charAt(0).toUpperCase() + appName.slice(1);
     const handleAppClick = () => {
       onClick(appName);
     };
@@ -126,7 +127,9 @@ const AppIcon = React.memo(
     return (
       <Tooltip
         placement="bottom"
-        title={appName.charAt(0).toUpperCase() + appName.slice(1)}
+        title={
+          AppToolTipName.toLowerCase() === 'files' ? '모아보기' : AppToolTipName
+        }
         color="#0b1d41"
       >
         <AppIconWrapper
