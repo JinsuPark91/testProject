@@ -193,7 +193,9 @@ const FloatingButton = ({
 
 export default FloatingButton;
 
-const CustomFloatingMenu = styled(FloatingMenu)`
+const CustomFloatingMenu = styled(({ isVisible, children, ...rest }) => (
+  <FloatingMenu {...rest}>{children}</FloatingMenu>
+))`
   & li {
     display: ${({ isVisible }) => (isVisible ? 'flex' : 'none')};
   }
@@ -204,6 +206,7 @@ const Wrapper = styled.div`
   position: fixed;
   right: 1rem;
   bottom: 1rem;
+  z-index: 10;
 `;
 
 const AllCloseButton = styled.div`

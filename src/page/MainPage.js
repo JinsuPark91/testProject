@@ -7,17 +7,20 @@ import {
   DesktopNotification,
   AppState,
 } from 'teespace-core';
-// import { Observer } from 'mobx-react';
+import { Observer } from 'mobx-react';
 import { talkRoomStore } from 'teespace-talk-app';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
 import { Prompt } from 'react-router';
+import { set } from 'mobx';
+import { useOpenInWindow } from 'use-open-window';
+import NewWindow from 'react-new-window';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
 import { Loader, Wrapper } from './MainPageStyle';
 import PlatformUIStore from '../stores/PlatformUIStore';
 import LoadingImg from '../assets/WAPL_Loading.gif';
 import FaviconChanger from '../components/common/FaviconChanger';
-// import FloatingButton from '../components/common/FloatingButton';
+import FloatingButton from '../components/common/FloatingButton';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 
 const MainPage = () => {
@@ -239,26 +242,79 @@ const MainPage = () => {
       />
       {leftSide}
       {mainSide}
-      {/* <Observer>
-        {() => (
-          <FloatingButton
-            visible={PlatformUIStore.windows.length > 0}
-            rooms={PlatformUIStore.windows}
-            count={5}
-            onItemClick={roomInfo => {
-              console.log('Item Clicked. ', roomInfo);
-            }}
-            onItemClose={roomInfo => {
-              console.log('Item Closed. ', roomInfo);
-            }}
-            onCloseAll={() => {
-              console.log('All Closed.');
-            }}
-          />
-        )}
-      </Observer> */}
+      <WindowManager />
     </Wrapper>
   );
 };
 
 export default MainPage;
+
+// [TODO] : 나중에 다른데로 옮기자.
+const Window = ({ windowInfo }) => {
+  const { id: windowId } = windowInfo;
+  const url = `/s/${windowId}/talk?mini=true`;
+  const [handler, setHandler] = useState(null);
+
+  useEffect(() => {
+    if (handler) {
+      const info = PlatformUIStore.getWindow(windowId);
+      info.handler = handler;
+    }
+  }, [handler]);
+
+  const handleOpen = _handler => {
+    setHandler(_handler);
+  };
+
+  return <NewWindow url={url} onOpen={handleOpen} copyStyles />;
+};
+
+const WindowManager = () => {
+  useEffect(() => {
+    // NOTE : 부모가 새로고침, 닫기 구분 필요.
+    window.fromChild = windowId => {
+      // NOTE : 일단 새로고침 = 닫기로 둔다.
+      // childWindow.closed 보면 되지만, 닫히는 시점과 맞지 않아 delay 시켜야 함.
+      // console.log("Before ChildWindow : ", childWindow, childWindow.closed)
+      // setTimeout(() => {
+      //   console.log('After ChildWindow : ', childWindow, childWindow.closed);
+      // }, 1000)
+      PlatformUIStore.closeWindow(windowId);
+    };
+  }, []);
+
+  return (
+    <Observer>
+      {() => {
+        const { windows } = PlatformUIStore;
+        const activeWindows = windows.filter(windowInfo => windowInfo.handler);
+
+        return (
+          <>
+            {windows.map(window => (
+              <Window
+                key={window.id}
+                windowInfo={window}
+                handler={window.handler}
+              />
+            ))}
+            <FloatingButton
+              visible={activeWindows.length > 0}
+              rooms={activeWindows}
+              count={5}
+              onItemClick={roomInfo => {
+                PlatformUIStore.focusWindow(roomInfo.id);
+              }}
+              onItemClose={roomInfo => {
+                PlatformUIStore.closeWindow(roomInfo.id);
+              }}
+              onCloseAll={() => {
+                PlatformUIStore.closeAllWindow();
+              }}
+            />
+          </>
+        );
+      }}
+    </Observer>
+  );
+};

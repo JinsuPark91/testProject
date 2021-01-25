@@ -47,7 +47,9 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
 
             // NOTE. 이전 경로가 존재하면 해당 경로로 이동
             if (props.location.state?.from) {
-              history.push(props.location.state?.from.pathname);
+              history.push(
+                `${props.location.state?.from.pathname}${props.location.state?.from.search}`,
+              );
             } else {
               history.push(`/f/${authStore.user.id}/profile`);
             }

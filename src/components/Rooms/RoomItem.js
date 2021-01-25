@@ -1,12 +1,11 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { List, Menu, Dropdown } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
-import { useCoreStores, usePortalWindow } from 'teespace-core';
-import { Talk, talkOnDrop } from 'teespace-talk-app';
+import { useCoreStores } from 'teespace-core';
+import { talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
-import { useOpenInWindow } from 'use-open-window';
 import Photos from '../Photos';
 import {
   ViewMoreIcon,
@@ -212,44 +211,24 @@ const RoomItemContent = ({
   onClickMenuItem,
   onClickRoomPhoto,
 }) => {
-  const { userStore, roomStore } = useCoreStores();
+  const { userStore } = useCoreStores();
   const isDMRoom = roomInfo.isDirectMsg;
-
-  const url = `${window.location.origin}/s/${roomInfo.id}/talk?mini=true`;
-  const options = {
-    centered: true,
-    specs: {
-      width: 600,
-      height: 800,
-    },
-  };
-  const [handleWindowOpen, newWindowHandle] = useOpenInWindow(url, options);
 
   const handleExport = e => {
     e.stopPropagation();
 
-    handleWindowOpen();
+    const isOpened = PlatformUIStore.getWindow(roomInfo.id);
+    if (!isOpened) {
+      PlatformUIStore.openWindow({
+        id: roomInfo.id,
+        name: roomInfo.name,
+        userCount: roomInfo.userCount,
+        handler: null,
+      });
+    } else {
+      PlatformUIStore.focusWindow(roomInfo.id);
+    }
   };
-
-  // const openTalkWindow = usePortalWindow();
-  // const handleExport = async e => {
-  //   e.stopPropagation();
-  //   openTalkWindow({
-  //     element: (
-  //       <Talk
-  //         roomId={roomInfo.id}
-  //         channelId={
-  //           roomStore
-  //             .getRoomMap()
-  //             .get(roomInfo.id)
-  //             ?.channelList?.find(channel => channel.type === 'CHN0001')?.id
-  //         }
-  //       />
-  //     ),
-  //     opts: 'width=600, height=900',
-  //     title: 'mini-talk',
-  //   });
-  // };
 
   const handleMenuClick = _roomInfo => {
     onMenuClick(_roomInfo);

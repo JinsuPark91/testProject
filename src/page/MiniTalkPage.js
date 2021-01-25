@@ -29,6 +29,11 @@ const MiniTalkPage = () => {
 
   useEffect(() => {
     init();
+    // NOTE : 로딩중 닫으면 호출하지 않는다. (redirect 때문에 어렵다.)
+    window.addEventListener('beforeunload', () => {
+      // NOTE : 부모가 새로고침, 닫기 구분 필요.
+      window.opener.fromChild(roomId);
+    });
   }, []);
 
   useEffect(() => {

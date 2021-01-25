@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import { useCoreStores, ProfileInfoModal } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { Tooltip } from 'antd';
-import { useOpenInWindow } from 'use-open-window';
 import {
   Wrapper,
   TitleWrapper,
@@ -157,19 +156,6 @@ const Header = observer(() => {
     return null;
   };
 
-  const url = findRoom()
-    ? `${window.location.origin}/s/${findRoom()?.id}/talk?mini=true`
-    : '';
-
-  const options = {
-    centered: true,
-    specs: {
-      width: 600,
-      height: 800,
-    },
-  };
-  const [handleWindowOpen, newWindowHandle] = useOpenInWindow(url, options);
-
   const getRoomName = () => {
     const found = findRoom();
     if (found) {
@@ -222,7 +208,19 @@ const Header = observer(() => {
   const members = roomStore.roomMembers[roomId] || [];
 
   const handleExport = () => {
-    if (url) handleWindowOpen();
+    const roomInfo = findRoom();
+
+    const isOpened = PlatformUIStore.getWindow(roomInfo.id);
+    if (!isOpened) {
+      PlatformUIStore.openWindow({
+        id: roomInfo.id,
+        name: roomInfo.name,
+        userCount: roomInfo.userCount,
+        handler: null,
+      });
+    } else {
+      PlatformUIStore.focusWindow(roomInfo.id);
+    }
   };
 
   const handleSearch = () => {
