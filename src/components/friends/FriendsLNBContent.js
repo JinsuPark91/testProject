@@ -19,9 +19,8 @@ const ContentWrapper = styled.div`
 const WelcomeWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: auto;
+  margin: auto;
   justify-content: flex-end;
-  flex-grow: 1;
   text-align: center;
 `;
 
@@ -59,12 +58,14 @@ const StyleTitle = styled.p`
 
 const StyleText = styled(Text)`
   margin-left: 0.25rem;
+  font-size: 0.81rem;
+  color: #7f7f7f;
 `;
 
 const StyledInfoTitle = styled.p`
   margin-bottom: 0.94rem;
   font-size: 0.94rem;
-  color: #523dc7;
+  color: #000000;
   letter-spacing: 0;
   text-align: center;
   line-height: 1.38rem;
@@ -73,7 +74,7 @@ const StyledInfoTitle = styled.p`
 const StyledSubInfo = styled.p`
   margin-bottom: 1.25rem;
   font-size: 0.75rem;
-  color: #6c56e5;
+  color: #414141;
   letter-spacing: 0;
   text-align: center;
   line-height: 1.06rem;
@@ -87,6 +88,8 @@ const FriendList = ({
   setToastText,
   setSelectedId,
   toggleInfoModal,
+  setxPosition,
+  setyPosition,
 }) => (
   <>
     {friendList.map(friendInfo => (
@@ -100,6 +103,8 @@ const FriendList = ({
         setToastText={setToastText}
         setSelectedId={setSelectedId}
         toggleInfoModal={toggleInfoModal}
+        setxPosition={setxPosition}
+        setyPosition={setyPosition}
       />
     ))}
   </>
@@ -115,21 +120,25 @@ const FriendsLNBContent = React.forwardRef(
   ({ searchKeyword, meTooltipPopupContainer, activeUserId }, ref) => {
     const { userStore, friendStore } = useCoreStores();
     const [favFriendActiveId, setFavFriendActiveId] = useState('');
-    const [friendActiveId, setFriendActiveId] = useState(null);
+    const [friendActiveId, setFriendActiveId] = useState('');
+    const [selectedId, setSelectedId] = useState('');
+
     const [isToastVisible, setIsToastVisible] = useState(false);
     const [toastText, setToastText] = useState('');
     const [infoModalVisible, setInfoModalVisible] = useState(false);
-    const [selectedId, setSelectedId] = useState('');
+
+    const [xPosition, setxPosition] = useState(0);
+    const [yPosition, setyPosition] = useState(0);
 
     useEffect(() => {
       setFriendActiveId(activeUserId);
     }, [activeUserId]);
 
-    const openToast = () => {
+    const handleOpenToast = () => {
       setIsToastVisible(true);
     };
 
-    const setText = text => {
+    const handleSetText = text => {
       setToastText(text);
     };
 
@@ -151,21 +160,19 @@ const FriendsLNBContent = React.forwardRef(
 
     return useObserver(() => {
       const renderEmptyContent = (
-        <>
-          <WelcomeWrapper>
-            <StyledInfoTitle>
-              {userStore.myProfile.displayName} 님, 환영합니다. <br />
-              프렌즈 목록을 만들어보세요!
-            </StyledInfoTitle>
-            <StyledSubInfo>
-              자주 연락하는 사람들을
-              <br />
-              구성원 목록에서 추가할 수 있습니다
-            </StyledSubInfo>
-            <WelcomeBackgroundImage />
-          </WelcomeWrapper>
-        </>
+        <WelcomeWrapper>
+          <StyledInfoTitle>
+            {userStore.myProfile.displayName} 님, 환영합니다. <br />
+            프렌즈 목록을 만들어보세요!
+          </StyledInfoTitle>
+          <StyledSubInfo>
+            자주 연락하는 사람들을
+            <br />
+            구성원 목록에서 추가할 수 있습니다.
+          </StyledSubInfo>
+        </WelcomeWrapper>
       );
+      // <WelcomeBackgroundImage />
 
       const renderContent = (
         <>
@@ -178,10 +185,12 @@ const FriendsLNBContent = React.forwardRef(
                 friendList={friendStore.favoriteFriendInfoList}
                 onClick={handleFavFriendActive}
                 activeFriendId={favFriendActiveId}
-                openToast={openToast}
-                setToastText={setText}
+                openToast={handleOpenToast}
+                setToastText={handleSetText}
                 setSelectedId={targetId => setSelectedId(targetId)}
                 toggleInfoModal={() => setInfoModalVisible(!infoModalVisible)}
+                setxPosition={xCoord => setxPosition(xCoord)}
+                setyPosition={yCoord => setyPosition(yCoord)}
               />
             </FriendListBox>
           )}
@@ -194,10 +203,12 @@ const FriendsLNBContent = React.forwardRef(
               friendList={filteredFriendList}
               onClick={handleFriendActive}
               activeFriendId={friendActiveId}
-              openToast={openToast}
-              setToastText={setText}
+              openToast={handleOpenToast}
+              setToastText={handleSetText}
               setSelectedId={targetId => setSelectedId(targetId)}
               toggleInfoModal={() => setInfoModalVisible(!infoModalVisible)}
+              setxPosition={xCoord => setxPosition(xCoord)}
+              setyPosition={yCoord => setyPosition(yCoord)}
             />
           </FriendListBox>
           <Toast
@@ -222,6 +233,8 @@ const FriendsLNBContent = React.forwardRef(
               isActive={friendActiveId === userStore.myProfile.id}
               setSelectedId={targetId => setSelectedId(targetId)}
               toggleInfoModal={() => setInfoModalVisible(!infoModalVisible)}
+              setxPosition={xCoord => setxPosition(xCoord)}
+              setyPosition={yCoord => setyPosition(yCoord)}
             />
           </FriendListBox>
           {!friendStore.friendInfoList.length && renderEmptyContent}

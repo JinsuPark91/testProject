@@ -6,6 +6,7 @@ const patternKor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
 const patternEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 // loginId pattern
 const patternId = /[^-_0-9a-z]/;
+const patternUrl = /[^-0-9a-z]/;
 
 // email validation
 export const checkEmailValid = value => {
@@ -64,6 +65,10 @@ export const checkAuthNumber = value => {
   );
 };
 
+export const handleCheckValidUrl = value => {
+  return patternUrl.test(value);
+};
+
 export default {
   checkLoginIdLength,
   checkLoginIdValid,
@@ -72,4 +77,5 @@ export default {
   checkNameValid,
   checkPhoneValid,
   checkAuthNumber,
+  handleCheckValidUrl,
 };
