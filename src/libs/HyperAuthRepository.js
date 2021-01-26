@@ -11,7 +11,7 @@ class HyperAuthRepository {
   async getRememberMe({ sessionState }) {
     try {
       const response = await axios.get(
-        `${keycloakConfig.url}/auth/realms/${keycloakConfig.realm}/session/${sessionState}`,
+        `${keycloakConfig.url}/realms/${keycloakConfig.realm}/session/${sessionState}`,
       );
       return response.data;
     } catch (error) {
