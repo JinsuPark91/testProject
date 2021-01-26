@@ -3,6 +3,7 @@ import { Route, useHistory } from 'react-router-dom';
 import { useCoreStores, WaplAuthRepository } from 'teespace-core';
 import { useKeycloak } from '@react-keycloak/web';
 import Cookies from 'js-cookie';
+import HyperAuthRepository from './HyperAuthRepository.js';
 
 function KeycloakRedirectRoute({ component: Component, ...rest }) {
   const { keycloak } = useKeycloak();
@@ -49,7 +50,7 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
             await authStore.login(loginInfo);
 
             if (process.env.REACT_APP_ENV !== 'local') {
-              await WaplAuthRepository.getRememberMe({
+              await HyperAuthRepository.getRememberMe({
                 sessionState: keycloak.tokenParsed.session_state,
               }).then(result => {
                 // on || off
