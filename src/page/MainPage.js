@@ -6,6 +6,7 @@ import {
   useCoreStores,
   DesktopNotification,
   AppState,
+  WWMS,
 } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import { talkRoomStore } from 'teespace-talk-app';
@@ -121,6 +122,25 @@ const MainPage = () => {
     }
   }, [subApp]);
 
+  const handleSystemMessage = message => {
+    // console.log('WWMS Message : ', message);
+    const resType = PlatformUIStore.resourceType;
+    const resId = PlatformUIStore.resourceId;
+
+    switch (message.NOTI_TYPE) {
+      case 'deleteRoom': {
+        const myRoomId = roomStore.getDMRoom(myUserId, myUserId)?.roomInfo?.id;
+
+        if (resType === 's' && resId === message.SPACE_ID) {
+          history.push(`/s/${myRoomId}/talk`);
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  };
+
   /*
     Layout Event 초기화
   */
@@ -142,11 +162,14 @@ const MainPage = () => {
       history.push(`${history.location.pathname}?${queryString}`);
     });
 
+    WWMS.addHandler('SYSTEM', 'platform_wwms', handleSystemMessage);
+
     return () => {
       EventBus.off('onLayoutFull', fullHandler);
       EventBus.off('onLayoutExpand', expandHandler);
       EventBus.off('onLayoutCollapse', collapseHandler);
       EventBus.off('onLayoutClose', closeHandler);
+      WWMS.removeHandler('SYSTEM', 'platform_wwms');
     };
   }, []);
 

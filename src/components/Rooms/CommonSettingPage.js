@@ -99,7 +99,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
         roomId: roomInfo.id,
       });
       const myRoomId =
-        roomStore.getDMRoom({ myUserId, userId: myUserId })?.roomInfo?.id ||
+        roomStore.getDMRoom(myUserId, myUserId)?.roomInfo?.id ||
         roomStore.getRoomArray()?.[0].id;
 
       if (result) history.push(`/s/${myRoomId}/talk`);
