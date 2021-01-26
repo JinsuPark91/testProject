@@ -343,7 +343,7 @@ const ProfileMyModal = ({
           {spaceStore.spaceList.length > 0 && (
             <ConvertList>
               {spaceStore.spaceList
-                .filter(elem => elem.id !== spaceStore.currentSpace.id)
+                .filter(elem => elem?.id !== spaceStore.currentSpace?.id)
                 .map(elem => (
                   <ConvertItem
                     onClick={() => {
