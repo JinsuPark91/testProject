@@ -3,6 +3,7 @@ import { Route, useHistory } from 'react-router-dom';
 import { useCoreStores, WaplAuthRepository } from 'teespace-core';
 import { useKeycloak } from '@react-keycloak/web';
 import Cookies from 'js-cookie';
+import { LogoutTimer } from './logoutTimer';
 import HyperAuthRepository from './HyperAuthRepository.js';
 
 function KeycloakRedirectRoute({ component: Component, ...rest }) {
@@ -55,11 +56,7 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
               }).then(result => {
                 // on || off
                 if (result === 'off') {
-                  const limitTime = 1000 * 60 * 60 * 12;
-                  //자동로그인 체크 안 할 경우, 12시간 경과 후 Logout
-                  setTimeout(async () => {
-                    history.push('/logout');
-                  }, limitTime);
+                  LogoutTimer.start();
                 }
               });
             }
