@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Button, Checkbox } from 'antd';
+import { useHistory } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
 import { useCoreStores } from 'teespace-core';
+import { useObserver } from 'mobx-react';
 import { LeaderIcon } from '../Icons';
 
 const remToPixel = rem => {
@@ -24,16 +26,24 @@ const WIDTH = {
 
 const TableRow = ({ style, memberInfo, roomId }) => {
   const { roomStore } = useCoreStores();
+  const history = useHistory();
   const isAdmin = memberInfo.role === 'WKS0004';
 
   const handleClick = async () => {
-    console.log(memberInfo, roomId);
-    await roomStore.updateRoomLeader({
-      roomId,
-      userId: memberInfo.id,
-    });
+    if (roomId) {
+      try {
+        await roomStore.updateRoomLeader({
+          roomId,
+          userId: memberInfo.id,
+        });
+      } catch (err) {
+        console.error('UPDATE ROOM LEADER ERROR : ', err);
+      } finally {
+        history.push(`/s/${roomId}/talk`);
+      }
+    }
   };
-  return (
+  return useObserver(() => (
     <RowWrapper style={style}>
       <Cell style={{ width: WIDTH.CHECKBOX }}>
         {isAdmin ? (
@@ -60,7 +70,7 @@ const TableRow = ({ style, memberInfo, roomId }) => {
         </Button>
       </Cell>
     </RowWrapper>
-  );
+  ));
 };
 
 const MemberSettingPage = ({ members, roomId }) => {
@@ -73,7 +83,7 @@ const MemberSettingPage = ({ members, roomId }) => {
     }
   }, [tableBodyRef]);
 
-  return (
+  return useObserver(() => (
     <Wrapper style={{ height: '100%', padding: '0 0.75rem 0.75rem 0.75rem' }}>
       <TableHeader>
         <HeaderCell style={{ width: WIDTH.CHECKBOX }}>
@@ -104,7 +114,7 @@ const MemberSettingPage = ({ members, roomId }) => {
         </List>
       </TableBody>
     </Wrapper>
-  );
+  ));
 };
 
 export default MemberSettingPage;
