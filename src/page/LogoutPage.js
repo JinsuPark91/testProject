@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useCoreStores } from 'teespace-core';
 import { useKeycloak } from '@react-keycloak/web';
+import Cookies from 'js-cookie';
 import wwms from '../libs/wwms';
 
 const LogoutPage = () => {
@@ -20,7 +21,7 @@ const LogoutPage = () => {
       await authStore.logout();
 
       wwms.disconnect();
-
+      Cookies.remove('ACCESS_TOKEN');
       await keycloak.logout({
         redirectUri: redirectURL,
       });
