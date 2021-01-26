@@ -26,7 +26,6 @@ const LeftSide = observer(() => {
       0,
     );
 
-  console.log(totalUnreadCount);
   return (
     <Wrapper>
       <CustomTabs

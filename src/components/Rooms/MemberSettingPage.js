@@ -11,9 +11,21 @@ const remToPixel = rem => {
   );
 };
 
+const WIDTH = {
+  CHECKBOX: '5%',
+  NICK: '10%',
+  LOGIN_ID: '20%',
+  TEAM: '10%',
+  JOB: '10%',
+  PHONE: '15%',
+  ROLE: '15%',
+  BUTTON: '15%',
+};
+
 const TableRow = ({ style, memberInfo, roomId }) => {
   const { roomStore } = useCoreStores();
   const isAdmin = memberInfo.role === 'WKS0004';
+
   const handleClick = async () => {
     console.log(memberInfo, roomId);
     await roomStore.updateRoomLeader({
@@ -23,22 +35,30 @@ const TableRow = ({ style, memberInfo, roomId }) => {
   };
   return (
     <RowWrapper style={style}>
-      {isAdmin ? (
-        <LeaderIcon width={1.13} height={1.13} color="#205855" />
-      ) : (
-          <Checkbox className="check-round" />
-        )}
-      <span>{memberInfo.name}</span>
-      <span>{memberInfo.loginId}</span>
-      <span>{memberInfo.role === 'WKS0004' ? '어드민' : '멤버'}</span>
-      <Button
-        type="solid"
-        size="small"
-        onClick={handleClick}
-        disabled={isAdmin}
-      >
-        이양
-      </Button>
+      <Cell style={{ width: WIDTH.CHECKBOX }}>
+        {isAdmin ? (
+          <LeaderIcon width={1.13} height={1.13} color="#205855" />
+        ) : // <Checkbox className="check-round" />
+        null}
+      </Cell>
+      <Cell style={{ width: WIDTH.NICK }}>{memberInfo.name}</Cell>
+      <Cell style={{ width: WIDTH.LOGIN_ID }}>{memberInfo.loginId}</Cell>
+      <Cell style={{ width: WIDTH.TEAM }}>{memberInfo.userJob}</Cell>
+      <Cell style={{ width: WIDTH.JOB }}>{memberInfo.position}</Cell>
+      <Cell style={{ width: WIDTH.PHONE }}>{memberInfo.userPhone}</Cell>
+      <Cell style={{ width: WIDTH.ROLE }}>
+        {memberInfo.role === 'WKS0004' ? '어드민' : '멤버'}
+      </Cell>
+      <Cell style={{ width: WIDTH.BUTTON }}>
+        <Button
+          type="solid"
+          size="small"
+          onClick={handleClick}
+          disabled={isAdmin}
+        >
+          이양
+        </Button>
+      </Cell>
     </RowWrapper>
   );
 };
@@ -55,7 +75,18 @@ const MemberSettingPage = ({ members, roomId }) => {
 
   return (
     <Wrapper style={{ height: '100%', padding: '0 0.75rem 0.75rem 0.75rem' }}>
-      <TableHeader>header</TableHeader>
+      <TableHeader>
+        <HeaderCell style={{ width: WIDTH.CHECKBOX }}>
+          {/* <Checkbox className="check-round" /> */}
+        </HeaderCell>
+        <HeaderCell style={{ width: WIDTH.NICK }}>별명</HeaderCell>
+        <HeaderCell style={{ width: WIDTH.LOGIN_ID }}>아이디</HeaderCell>
+        <HeaderCell style={{ width: WIDTH.TEAM }}>소속</HeaderCell>
+        <HeaderCell style={{ width: WIDTH.JOB }}>직위</HeaderCell>
+        <HeaderCell style={{ width: WIDTH.PHONE }}>휴대폰 번호</HeaderCell>
+        <HeaderCell style={{ width: WIDTH.ROLE }}>스페이스 권한</HeaderCell>
+        <HeaderCell style={{ width: WIDTH.BUTTON }}>룸 권한 이양</HeaderCell>
+      </TableHeader>
       <TableBody ref={tableBodyRef}>
         <List
           height={listHeight}
@@ -98,4 +129,17 @@ const TableHeader = styled.div`
 
 const TableBody = styled.div`
   height: 100%;
+`;
+
+const Cell = styled.div`
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-left: 0.5rem;
+  font-size: 0.81rem;
+`;
+
+const HeaderCell = styled(Cell)`
+  color: #75757f;
+  font-size: 0.75rem;
 `;
