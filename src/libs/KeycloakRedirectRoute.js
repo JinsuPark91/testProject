@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, useHistory } from 'react-router-dom';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, WaplAuthRepository } from 'teespace-core';
 import { useKeycloak } from '@react-keycloak/web';
+import Cookies from 'js-cookie';
+import HyperAuthRepository from './HyperAuthRepository.js';
 
 function KeycloakRedirectRoute({ component: Component, ...rest }) {
   const { keycloak } = useKeycloak();
@@ -40,11 +42,27 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
               authStore.user?.loginId &&
               authStore.user?.loginId !== keycloak.tokenParsed?.email
             ) {
-              await authStore.logout();
+              await authStore.logout().then(() => {
+                Cookies.remove('ACCESS_TOKEN');
+              });
             }
 
             await authStore.login(loginInfo);
 
+            if (process.env.REACT_APP_ENV !== 'local') {
+              await HyperAuthRepository.getRememberMe({
+                sessionState: keycloak.tokenParsed.session_state,
+              }).then(result => {
+                // on || off
+                if (result === 'off') {
+                  const limitTime = 1000 * 60 * 60 * 12;
+                  //자동로그인 체크 안 할 경우, 12시간 경과 후 Logout
+                  setTimeout(async () => {
+                    history.push('/logout');
+                  }, limitTime);
+                }
+              });
+            }
             // NOTE. 이전 경로가 존재하면 해당 경로로 이동
             if (props.location.state?.from) {
               history.push(

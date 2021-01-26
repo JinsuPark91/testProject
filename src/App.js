@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Switch,
+  Route,
+  Redirect,
+  useHistory,
+} from 'react-router-dom';
 import './App.less';
 import { create } from 'mobx-persist';
 import { PortalProvider, useCoreStores } from 'teespace-core';
@@ -30,6 +36,7 @@ import PrivateRoute from './libs/PrivateRoute';
 import KeycloakRedirectRoute from './libs/KeycloakRedirectRoute';
 import keycloak from './libs/keycloak';
 import { getCookieValue } from './utils/CookieUtil';
+import Cookies from 'js-cookie';
 
 // MiniTalk 임시.
 import { getQueryParams } from './utils/UrlUtil';
@@ -43,11 +50,35 @@ const hydrate = create();
 function App() {
   const [isHydrating, setIsHydrating] = useState(false);
   const { authStore, userStore } = useCoreStores();
-
+  const history = useHistory();
   const url = window.location.origin; //  http://xxx.dev.teespace.net
   const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
   const subURL = url.split(`//`)[1].split(`.`)[0]; //  xxx
   const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
+  const isLocal = process.env.REACT_APP_ENV === 'local';
+
+  const eventLogger = (event, error) => {
+    switch (event) {
+      case 'onAuthSuccess':
+      case 'onAuthRefreshSuccess': {
+        Cookies.set(
+          'ACCESS_TOKEN',
+          keycloak.token,
+          isLocal
+            ? {}
+            : {
+                domain: `.${window.location.host.slice(
+                  window.location.host.indexOf('.') + 1,
+                  window.location.host.length,
+                )}`,
+              },
+        );
+        break;
+      }
+      default:
+        break;
+    }
+  };
 
   // MiniTalk 임시.
   const { mini: isMini } = getQueryParams(window.location.search);
@@ -88,6 +119,7 @@ function App() {
           <Route>
             <ReactKeycloakProvider
               authClient={keycloak}
+              onEvent={eventLogger}
               LoadingComponent={<></>}
               initOptions={{
                 onLoad: 'login-required',
