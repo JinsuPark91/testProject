@@ -1,15 +1,19 @@
-export const getMainWaplURL = urlPath => {
+export const getMainURL = () => {
   if (process.env.REACT_APP_ENV === 'local') {
-    const mainURL = process.env.REACT_APP_DEV_SERVICE_DOMAIN.split('.')
+    return process.env.REACT_APP_DEV_SERVICE_DOMAIN.split('.')
       .slice(1)
       .join('.');
-    return `${window.location.protocol}//${mainURL}${urlPath || ''}`;
   }
   const url = window.location.origin; //  http://xxx.dev.teespace.net
   const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
-  const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
+  return conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net\
+};
 
-  return `${window.location.protocol}//${mainURL}${urlPath || ''}`;
+export const getMainWaplURL = urlPath => {
+  if (process.env.REACT_APP_ENV === 'local') {
+    return `${window.location.protocol}//${getMainURL()}${urlPath || ''}`;
+  }
+  return `${window.location.protocol}//${getMainURL()}${urlPath || ''}`;
 };
 
 export const getWaplSubDomain = () => {

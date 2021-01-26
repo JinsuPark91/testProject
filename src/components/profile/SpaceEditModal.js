@@ -3,6 +3,7 @@ import { Message, useCoreStores } from 'teespace-core';
 import styled, { css } from 'styled-components';
 import { Button, Input, Modal, Tooltip } from 'antd';
 import { handleCheckValidUrl } from '../../libs/Regex';
+import { getMainURL } from '../../utils/UrlUtil';
 import errorIcon from '../../assets/ts_error.svg';
 
 const Wrapper = styled(Modal)`
@@ -88,9 +89,10 @@ const ErrorIcon = styled.div`
 const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
   const { userStore, spaceStore } = useCoreStores();
   const { currentSpace } = spaceStore;
-
   const [newSpaceName, setNewSpaceName] = useState(currentSpace?.name || '');
-  const [newAddress, setNewAddress] = useState(currentSpace?.domain || '');
+  const [newAddress, setNewAddress] = useState(
+    currentSpace?.domain?.slice(0, currentSpace?.domain?.indexOf('.')) || '',
+  );
   const [isWarningPopupVisible, setIsWarningPopupVisible] = useState(false);
   const [warningText, setWarningText] = useState('');
   const [isWarningTextVisible, setIsWarningTextVisible] = useState(false);
@@ -217,7 +219,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
           >
             <UrlInputBox disabled={isBasicPlan}>
               <input value={newAddress} disabled />
-              <div>.wapl.ai</div>
+              <div>{getMainURL()}</div>
             </UrlInputBox>
           </Tooltip>
         ) : (
@@ -232,7 +234,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
                 <img alt="error" src={errorIcon} />
               </Tooltip>
             </ErrorIcon>
-            <div>.wapl.ai</div>
+            <div>{getMainURL()}</div>
           </UrlInputBox>
         )}
         <ButtonContainer>
