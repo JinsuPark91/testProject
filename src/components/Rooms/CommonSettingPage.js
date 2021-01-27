@@ -193,7 +193,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
               <Message
                 visible={isWarningVisible}
                 title="프라이빗 룸으로 전환하시겠습니까?"
-                subtitle="한 번 변경하면 다시 오픈 룸으로 전활할 수 없습니다."
+                subtitle="한 번 변경하면 다시 오픈 룸으로 전환 할 수 없습니다."
                 type="error"
                 btns={[
                   {
