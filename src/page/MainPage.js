@@ -120,7 +120,7 @@ const MainPage = () => {
     } else {
       PlatformUIStore.layout = 'collapse';
     }
-  }, [subApp]);
+  }, [subApp, resourceId]);
 
   const handleSystemMessage = message => {
     // console.log('WWMS Message : ', message);
