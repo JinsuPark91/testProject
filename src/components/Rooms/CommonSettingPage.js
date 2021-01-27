@@ -157,7 +157,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
           구성원이 따로 이름 변경하여 보는 룸 이름에는 영향을 주지 않습니다.
         </SettingDescriptionText>
         <Input
-          maxLength={20}
+          maxLength={50}
           value={value}
           onChange={handleChange}
           placeholder={roomInfo?.name}
