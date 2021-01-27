@@ -6,10 +6,15 @@ import {
   useCoreStores,
   DesktopNotification,
   AppState,
+  WWMS,
 } from 'teespace-core';
+import { Observer } from 'mobx-react';
 import { talkRoomStore } from 'teespace-talk-app';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
 import { Prompt } from 'react-router';
+import { set } from 'mobx';
+import { useOpenInWindow } from 'use-open-window';
+import NewWindow from 'react-new-window';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
 import { Loader, Wrapper } from './MainPageStyle';
@@ -17,7 +22,7 @@ import PlatformUIStore from '../stores/PlatformUIStore';
 import LoadingImg from '../assets/WAPL_Loading.gif';
 import FaviconChanger from '../components/common/FaviconChanger';
 import FloatingButton from '../components/common/FloatingButton';
-import { getQueryParams } from '../utils/UrlUtil';
+import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 
 const MainPage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -117,6 +122,25 @@ const MainPage = () => {
     }
   }, [subApp]);
 
+  const handleSystemMessage = message => {
+    // console.log('WWMS Message : ', message);
+    const resType = PlatformUIStore.resourceType;
+    const resId = PlatformUIStore.resourceId;
+
+    switch (message.NOTI_TYPE) {
+      case 'deleteRoom': {
+        const myRoomId = roomStore.getDMRoom(myUserId, myUserId)?.roomInfo?.id;
+
+        if (resType === 's' && resId === message.SPACE_ID) {
+          history.push(`/s/${myRoomId}/talk`);
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  };
+
   /*
     Layout Event 초기화
   */
@@ -131,17 +155,21 @@ const MainPage = () => {
       PlatformUIStore.layout = 'collapse';
     });
     const closeHandler = EventBus.on('onLayoutClose', () => {
-      history.push({
-        pathname: history.location.pathname,
-        search: null,
-      });
+      const queryParams = getQueryParams();
+      delete queryParams.sub;
+      const queryString = getQueryString(queryParams);
+
+      history.push(`${history.location.pathname}?${queryString}`);
     });
+
+    WWMS.addHandler('SYSTEM', 'platform_wwms', handleSystemMessage);
 
     return () => {
       EventBus.off('onLayoutFull', fullHandler);
       EventBus.off('onLayoutExpand', expandHandler);
       EventBus.off('onLayoutCollapse', collapseHandler);
       EventBus.off('onLayoutClose', closeHandler);
+      WWMS.removeHandler('SYSTEM', 'platform_wwms');
     };
   }, []);
 
@@ -237,31 +265,79 @@ const MainPage = () => {
       />
       {leftSide}
       {mainSide}
-      <FloatingButton
-        visible={false}
-        rooms={[
-          { name: 'test1', userCount: 11, id: 'test01' },
-          { name: 'test2', userCount: 12, id: 'test02' },
-          { name: 'test3', userCount: 13, id: 'test03' },
-          { name: 'test4', userCount: 14, id: 'test04' },
-          { name: 'test5', userCount: 15, id: 'test05' },
-          { name: 'test6', userCount: 16, id: 'test06' },
-          { name: 'test7', userCount: 17, id: 'test07' },
-          // { name: 'test8', userCount: 18, id: 'test08' },
-        ]}
-        count={5}
-        onItemClick={roomInfo => {
-          console.log('Item Clicked. ', roomInfo);
-        }}
-        onItemClose={roomInfo => {
-          console.log('Item Closed. ', roomInfo);
-        }}
-        onCloseAll={() => {
-          console.log('All Closed.');
-        }}
-      />
+      <WindowManager />
     </Wrapper>
   );
 };
 
 export default MainPage;
+
+// [TODO] : 나중에 다른데로 옮기자.
+const Window = ({ windowInfo }) => {
+  const { id: windowId } = windowInfo;
+  const url = `/s/${windowId}/talk?mini=true`;
+  const [handler, setHandler] = useState(null);
+
+  useEffect(() => {
+    if (handler) {
+      const info = PlatformUIStore.getWindow(windowId);
+      info.handler = handler;
+    }
+  }, [handler]);
+
+  const handleOpen = _handler => {
+    setHandler(_handler);
+  };
+
+  return <NewWindow url={url} onOpen={handleOpen} copyStyles />;
+};
+
+const WindowManager = () => {
+  useEffect(() => {
+    // NOTE : 부모가 새로고침, 닫기 구분 필요.
+    window.fromChild = windowId => {
+      // NOTE : 일단 새로고침 = 닫기로 둔다.
+      // childWindow.closed 보면 되지만, 닫히는 시점과 맞지 않아 delay 시켜야 함.
+      // console.log("Before ChildWindow : ", childWindow, childWindow.closed)
+      // setTimeout(() => {
+      //   console.log('After ChildWindow : ', childWindow, childWindow.closed);
+      // }, 1000)
+      PlatformUIStore.closeWindow(windowId);
+    };
+  }, []);
+
+  return (
+    <Observer>
+      {() => {
+        const { windows } = PlatformUIStore;
+        const activeWindows = windows.filter(windowInfo => windowInfo.handler);
+
+        return (
+          <>
+            {windows.map(window => (
+              <Window
+                key={window.id}
+                windowInfo={window}
+                handler={window.handler}
+              />
+            ))}
+            <FloatingButton
+              visible={false}
+              rooms={activeWindows}
+              count={5}
+              onItemClick={roomInfo => {
+                PlatformUIStore.focusWindow(roomInfo.id);
+              }}
+              onItemClose={roomInfo => {
+                PlatformUIStore.closeWindow(roomInfo.id);
+              }}
+              onCloseAll={() => {
+                PlatformUIStore.closeAllWindow();
+              }}
+            />
+          </>
+        );
+      }}
+    </Observer>
+  );
+};

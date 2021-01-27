@@ -112,6 +112,7 @@ const AppIcon = React.memo(
     disabledIcon,
     disabled,
   }) => {
+    const AppToolTipName = appName.charAt(0).toUpperCase() + appName.slice(1);
     const handleAppClick = () => {
       onClick(appName);
     };
@@ -126,7 +127,9 @@ const AppIcon = React.memo(
     return (
       <Tooltip
         placement="bottom"
-        title={appName.charAt(0).toUpperCase() + appName.slice(1)}
+        title={
+          AppToolTipName.toLowerCase() === 'files' ? '모아보기' : AppToolTipName
+        }
         color="#0b1d41"
       >
         <AppIconWrapper
@@ -208,7 +211,19 @@ const Header = observer(() => {
   const members = roomStore.roomMembers[roomId] || [];
 
   const handleExport = () => {
-    console.log('handleExport');
+    const roomInfo = findRoom();
+
+    const isOpened = PlatformUIStore.getWindow(roomInfo.id);
+    if (!isOpened) {
+      PlatformUIStore.openWindow({
+        id: roomInfo.id,
+        name: roomInfo.name,
+        userCount: roomInfo.userCount,
+        handler: null,
+      });
+    } else {
+      PlatformUIStore.focusWindow(roomInfo.id);
+    }
   };
 
   const handleSearch = () => {
@@ -238,9 +253,11 @@ const Header = observer(() => {
   };
 
   const closeSubApp = () => {
-    history.push({
-      pathname: history.location.pathname,
-    });
+    const queryParams = getQueryParams();
+    delete queryParams.sub;
+    const queryString = getQueryString(queryParams);
+
+    history.push(`${history.location.pathname}?${queryString}`);
   };
 
   const handleAppClick = async appName => {
@@ -348,16 +365,21 @@ const Header = observer(() => {
 
             {PlatformUIStore.resourceType !== 'm' && (
               <SystemIconContainer>
-                {/* <IconWrapper onClick={handleExport}>
-                  <ExportIcon />
-                </IconWrapper> */}
                 {PlatformUIStore.layout !== 'expand' && (
-                  <IconWrapper
-                    onClick={handleSearch}
-                    style={{ marginRight: '0.44rem' }}
-                  >
-                    <SearchIcon width={1.25} height={1.25} color="#232D3B" />
-                  </IconWrapper>
+                  <>
+                    <IconWrapper
+                      onClick={handleExport}
+                      style={{ marginRight: '0.44rem' }}
+                    >
+                      <ExportIcon width={1.25} height={1.25} color="#232D3B" />
+                    </IconWrapper>
+                    <IconWrapper
+                      onClick={handleSearch}
+                      style={{ marginRight: '0.44rem' }}
+                    >
+                      <SearchIcon width={1.25} height={1.25} color="#232D3B" />
+                    </IconWrapper>
+                  </>
                 )}
                 {!isMyRoom() && (
                   <>

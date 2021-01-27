@@ -303,8 +303,7 @@ function RoomInquiryModal({
 
   const handleChangeNameOK = async () => {
     setIsEditMode(false);
-    const res = await updateRoomSetting({ newRoomCustomName: roomName });
-    console.log('RES : ', res);
+    await updateRoomSetting({ newRoomCustomName: roomName });
   };
 
   const handleChangeNameCancel = () => {
@@ -370,20 +369,20 @@ function RoomInquiryModal({
                 value={roomName}
                 onChange={handleChange}
                 ref={nameInputRef}
-                placeholder={roomInfo?.customName || roomInfo?.name}
+                placeholder={roomInfo?.oriName || roomInfo?.nameByUserNames}
               />
             ) : (
-              <p>
-                {roomInfo?.isMyRoom
-                  ? userStore.myProfile.name
-                  : roomInfo?.customName || roomInfo?.name}
-              </p>
-            )}
+                <p>
+                  {roomInfo?.isMyRoom
+                    ? userStore.myProfile.name
+                    : roomInfo?.customName || roomInfo?.name}
+                </p>
+              )}
           </GroupTitle>
         )}
       </Observer>
 
-      <GroupNumber>{roomInfo?.userCount}</GroupNumber>
+      <GroupNumber>{roomInfo?.userCount}명</GroupNumber>
       <SettingBox>
         {isEditMode ? (
           <>
@@ -404,21 +403,21 @@ function RoomInquiryModal({
             </Button>
           </>
         ) : (
-          <>
-            <SettingButton onClick={handleEdit}>
-              <ButtonIcon iconimg="name" />
+            <>
+              <SettingButton onClick={handleEdit}>
+                <ButtonIcon iconimg="name" />
               이름 변경
             </SettingButton>
-            <SettingButton onClick={handleTalk}>
-              <ButtonIcon iconimg="talk" />
+              <SettingButton onClick={handleTalk}>
+                <ButtonIcon iconimg="talk" />
               Talk
             </SettingButton>
-            <SettingButton onClick={handleMeeting}>
-              <ButtonIcon iconimg="Meeting" />
+              <SettingButton onClick={handleMeeting}>
+                <ButtonIcon iconimg="Meeting" />
               Meeting
             </SettingButton>
-          </>
-        )}
+            </>
+          )}
       </SettingBox>
     </>
   );

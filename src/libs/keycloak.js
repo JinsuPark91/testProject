@@ -1,6 +1,6 @@
 import Keycloak from 'keycloak-js';
 
-const keycloakConfig = {
+export const keycloakConfig = {
   url:
     window.env.REACT_APP_HYPERAUTH_URL === '%HYPERAUTH_URL%'
       ? process.env.REACT_APP_HYPERAUTH_URL

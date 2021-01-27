@@ -194,7 +194,7 @@ function RoomList() {
       <TopWrapper>
         <InputWrapper>
           <Search
-            placeholder="룸 이름, 멤버 검색"
+            placeholder="룸 이름, 구성원 검색"
             onChange={handleChange}
             onClear={handleClear}
             searchIconColor={{ active: '#17202B', default: '#C6CED6' }}

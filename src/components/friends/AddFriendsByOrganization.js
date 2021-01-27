@@ -17,31 +17,24 @@ const StyledDivider = styled(Divider)`
 `;
 
 function AddFriendsByOrganization({ timestamp, searchText, isViewMode }) {
-  const { orgStore, userStore, authStore } = useCoreStores();
+  const { orgStore, userStore } = useCoreStores();
   const [isOpen, setIsOpen] = useState(false);
   const [searchedUserList, setSearchedUserList] = useState([]);
   const [dropdownDisplayValue, setDropdownDisplayValue] = useState('');
   const [dropdownDefaultValue, setDropdownDefaultValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState();
 
   const [loader] = Loader.useLoader();
 
   // dropdown의 item을 클릭했을 때
   const handleDropdownChange = useCallback(
     async value => {
-      const domainKey =
-        process.env.REACT_APP_ENV === 'local'
-          ? authStore.sessionInfo.domainKey
-          : undefined;
-      await orgStore.getUserOrgUserList(
-        ...value.split('_'),
-        userStore.myProfile.id,
-        domainKey,
-      );
-      setSearchedUserList(orgStore.userOrgUserList);
-      console.log(orgStore.userOrgUserList);
+      await orgStore.getOrgUserList(...value.split('_'));
+      setSearchedUserList(orgStore.orgUserList);
       setDropdownDisplayValue('');
+      setSelectedValue(value);
     },
-    [orgStore, userStore, authStore],
+    [orgStore],
   );
 
   const handleSearch = useCallback(async () => {
@@ -74,6 +67,10 @@ function AddFriendsByOrganization({ timestamp, searchText, isViewMode }) {
       } else if (searchText === '') {
         setSearchedUserList(orgStore.userOrgUserList);
         setDropdownDisplayValue('');
+        // 검색 내용이 비워져 있는 경우 기존에 선택되었던 조직 목록으로 이동함.
+        if (selectedValue) {
+          handleDropdownChange(selectedValue);
+        }
       } else {
         handleSearch();
       }

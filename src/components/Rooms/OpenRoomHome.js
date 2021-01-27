@@ -136,9 +136,14 @@ function OpenRoomHome({ visible, onCancel }) {
     setKeyword(initialStates.keyword);
   };
 
-  const handleJoin = roomInfo => {
+  const handleJoin = async roomInfo => {
     setCurrentOpenRoom(roomInfo);
-    openEnterModal();
+    if (roomInfo.isJoined) {
+      history.push(`/s/${roomInfo.id}/talk`);
+      closeHomeModal();
+    } else {
+      openEnterModal();
+    }
   };
 
   const handleRoomClick = roomInfo => {
@@ -254,11 +259,7 @@ function OpenRoomHome({ visible, onCancel }) {
             </Observer>
 
             <JoinedText>{roomInfo.isJoined ? '(참여 중)' : ''}</JoinedText>
-            <RoomButton
-              roomInfo={roomInfo}
-              onClick={handleJoin}
-              disabled={roomInfo.isJoined}
-            />
+            <RoomButton roomInfo={roomInfo} onClick={handleJoin} />
           </RoomListItem>
         );
       });

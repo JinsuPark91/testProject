@@ -1,11 +1,12 @@
 import React, { useState, useCallback } from 'react';
-import { useCoreStores, Button } from 'teespace-core';
+import { useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { Layout, Tooltip } from 'antd';
 import AddFriendsBySearch from './AddFriendsBySearch';
-import { WaplLogo, FriendAddIcon } from '../Icons';
+import { WaplLogo } from '../Icons';
 import { handleFriendsDialogType } from '../../utils/FriendsUtil';
+import FriendAddIcon from '../../assets/add_friends.svg';
 
 const { Footer } = Layout;
 
@@ -29,8 +30,13 @@ const FriendAddButton = styled.div`
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
 
   &:hover {
-    background: #ebe6df;
+    background: #eae6e0;
     box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  }
+
+  & > img {
+    width: 1.38rem;
+    height: 1.38rem;
   }
 `;
 
@@ -60,7 +66,7 @@ function FriendsLNBFooter() {
       <WaplLogo />
       <Tooltip title="프렌즈 추가" placement="topRight" color="faf8f7">
         <FriendAddButton onClick={handleOpenAddFriendsDialog}>
-          <FriendAddIcon />
+          <img alt="friend" src={FriendAddIcon} />
         </FriendAddButton>
       </Tooltip>
       <AddFriendsBySearch

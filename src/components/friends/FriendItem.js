@@ -59,19 +59,20 @@ const FriendItemWrapper = styled.div`
     css`
       display: flex;
       flex-direction: row;
-      padding: 0 0.63rem;
+      margin: 0 0.25rem;
+      padding: 0 0.38rem;
 
       ${props.isActive
         ? css`
-            background-color: #faf8f7;
-            border-radius: 1.71875rem;
+            background-color: #f2efec;
+            border-radius: 0.81rem;
           `
-        : ''}
-
-      &:hover {
-        background-color: #faf8f7;
-        border-radius: 1.71875rem;
-      }
+        : css`
+            &:hover {
+              background-color: #faf8f7;
+              border-radius: 0.81rem;
+            }
+          `}
 
       /* icon */
       .ant-btn-circle {
@@ -134,15 +135,14 @@ const StyledWrapper = styled.div`
 
 const NewFriendBadge = styled.div`
   height: 1rem;
-  min-width: 1.06rem;
-  padding: 0 0.38rem;
+  width: 1rem;
   line-height: 1rem;
   font-size: 0.63rem;
   color: #fff;
   font-weight: 400;
   text-align: center;
-  border-radius: 0.69rem;
-  background-color: #ff486d;
+  border-radius: 50%;
+  background-color: #dc4547;
 `;
 
 const StyledAvatar = styled.div`
@@ -192,6 +192,18 @@ const MeWrapper = styled.div`
   margin-left: 0.25rem;
 `;
 
+const MoreIconWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.25rem;
+  &:hover {
+    background-color: #eae6e0;
+  }
+`;
+
 const DropdownMenu = React.memo(
   ({
     friendFavorite,
@@ -234,7 +246,6 @@ const Profile = React.memo(
 
 const FriendAction = React.memo(
   ({ mode, menu, handleDropdownVisible, handleTalkWindowOpen }) => {
-    const handleStopPropagation = useCallback(e => e.stopPropagation(), []);
     const handleOpenTalk = useCallback(e => {
       e.stopPropagation();
       console.log(handleTalkWindowOpen());
@@ -247,13 +258,12 @@ const FriendAction = React.memo(
             <Dropdown
               overlay={menu}
               trigger={['click']}
+              onClick={e => e.stopPropagation()}
               onVisibleChange={handleDropdownVisible}
             >
-              <Button
-                shape="circle"
-                icon={<ViewMoreIcon />}
-                onClick={handleStopPropagation}
-              />
+              <MoreIconWrapper>
+                <ViewMoreIcon />
+              </MoreIconWrapper>
             </Dropdown>
             {/* 미니챗 기능 추후 업데이트 */}
             {/* <Button
@@ -348,6 +358,7 @@ const Action = React.memo(
     </>
   ),
 );
+
 const TextComponent = React.memo(
   ({ displayName, fullCompanyJob, mode, orgName, position }) => {
     const fullDisplayName = (() => {
@@ -390,6 +401,7 @@ const TextComponent = React.memo(
     );
   },
 );
+
 /**
  * A friend item component to use in the list view.
  * @param {Object} props
@@ -399,7 +411,7 @@ const TextComponent = React.memo(
  */
 const FriendItem = observer(
   ({
-    mode = 'friend', // 'me', 'friend', 'readOnly', 'addFriend', 'recommended'
+    mode = 'friend', // 'me', 'friend' // 추후: 'readOnly', 'addFriend', 'recommended'
     isActive = false,
     onClick,
     tooltipPopupContainer = () => document.body,
@@ -409,6 +421,8 @@ const FriendItem = observer(
     setToastText,
     setSelectedId,
     toggleInfoModal,
+    setxPosition,
+    setyPosition,
   }) => {
     const {
       displayName,
@@ -420,20 +434,25 @@ const FriendItem = observer(
     } = friendInfo;
     const fullCompanyJob = friendInfo.getFullCompanyJob({ format: 'friend' });
     const history = useHistory();
-    const { authStore, friendStore, userStore, roomStore } = useCoreStores();
+    const { friendStore, userStore, roomStore } = useCoreStores();
+
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
-    const [visibleMessage, setVisibleMessage] = useState(false);
+    const [mouseOutWithDropdown, setMouseOutWithDropdown] = useState(false);
     const [
       visibleRemoveFriendMessage,
       setVisibleRemoveFriendMessage,
     ] = useState(false);
-    const [visibleToast, setVisibleToast] = useState(false);
+    const [addFriendToastVisible, setAddFriendToastVisible] = useState(false);
 
-    /* merged info of userInfo and friendInfo */
+    const myUserId = userStore.myProfile.id;
     const itemId = friendId || userId;
+    const isMe = itemId === myUserId;
+    const isNewFriend = handleCheckNewFriend(friendInfo);
 
     const handleSelectPhoto = (e, id = '') => {
+      setxPosition(e.clientX);
+      setyPosition(e.clientY);
       if (e) e.stopPropagation();
       if (id) {
         setSelectedId(id);
@@ -448,7 +467,6 @@ const FriendItem = observer(
     const handleTalkWindowOpen = async e => {
       if (e) e.stopPropagation();
       try {
-        const myUserId = userStore.myProfile.id;
         const targetId = friendInfo.friendId || myUserId;
         const { roomInfo } = await roomStore.getDMRoom(myUserId, targetId);
 
@@ -506,32 +524,35 @@ const FriendItem = observer(
       }
     };
 
-    const handleDropdownVisible = useCallback(visible => {
-      if (!visible) {
-        setIsHovering(false);
-      }
-      setDropdownVisible(visible);
-    }, []);
+    const handleDropdownVisible = useCallback(
+      visible => {
+        if (mouseOutWithDropdown) {
+          setIsHovering(false);
+          setMouseOutWithDropdown(false);
+        }
+        setDropdownVisible(visible);
+      },
+      [mouseOutWithDropdown],
+    );
 
     const handleMouseEnter = useCallback(() => {
-      if (!dropdownVisible) {
-        setIsHovering(true);
-      }
-    }, [dropdownVisible]);
+      setIsHovering(true);
+    }, []);
 
     const handleMouseLeave = useCallback(() => {
-      if (!dropdownVisible) {
+      if (dropdownVisible) {
+        setMouseOutWithDropdown(true);
+      } else {
         setIsHovering(false);
       }
     }, [dropdownVisible]);
 
     const handleAddBookmark = useCallback(
       async ({ domEvent: e }) => {
-        console.log(e);
         e.stopPropagation();
         try {
           await friendStore.setFriendFavorite({
-            myUserId: authStore.user.id,
+            myUserId,
             friendId: itemId,
             isFav: true,
           });
@@ -543,64 +564,75 @@ const FriendItem = observer(
         setToastText('즐겨찾기가 설정되었습니다.');
         openToast();
       },
-      [friendStore, authStore, itemId, setToastText, openToast],
+      [friendStore, itemId, setToastText, openToast, myUserId],
     );
 
     const handleCancelBookmark = useCallback(
       async ({ domEvent: e }) => {
-        console.log(e);
         e.stopPropagation();
         await friendStore.setFriendFavorite({
-          myUserId: authStore.user.id,
+          myUserId,
           friendId: itemId,
           isFav: false,
         });
         setToastText('즐겨찾기가 해제되었습니다.');
         openToast();
-
-        // component un-mount. below code does not required.
-        setIsHovering(false);
-        setDropdownVisible(false);
       },
-      [friendStore, authStore, itemId, setToastText, openToast],
+      [friendStore, myUserId, itemId, setToastText, openToast],
     );
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const handleRemoveFriend = useCallback(
-      e => {
-        e.stopPropagation();
-        friendStore.deleteFriend({
-          myUserId: authStore.user.id,
-          friendId: itemId,
-        });
-        setIsHovering(false);
-        setDropdownVisible(false);
-        setVisibleRemoveFriendMessage(false);
+    const handleMoveItem = useCallback(
+      targetId => {
+        if (onClick) onClick(targetId);
+        if (mode === 'me' || mode === 'friend') {
+          history.push({
+            pathname: `/f/${targetId}/profile`,
+            search: null,
+          });
+        }
       },
-      [friendStore, authStore, itemId],
+      [onClick, mode, history],
     );
 
     const handleItemClick = useCallback(
       e => {
         if (e) e.stopPropagation();
-        if (onClick) {
-          onClick(itemId);
-        }
-        if (mode === 'me' || mode === 'friend') {
-          history.push({
-            pathname: `/f/${itemId}/profile`,
-            search: null,
-          });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        handleMoveItem(itemId);
       },
-      [itemId, history, mode, onClick],
+      [itemId, handleMoveItem],
     );
 
-    const handleRemoveFriendMessageClose = useCallback(e => {
-      if (e) e.stopPropagation();
-      setVisibleRemoveFriendMessage(false);
+    const handleRemoveFriend = useCallback(
+      async e => {
+        e.stopPropagation();
+        setVisibleRemoveFriendMessage(false);
+        await friendStore.deleteFriend({
+          myUserId,
+          friendId: itemId,
+        });
+        handleMoveItem(myUserId);
+      },
+      [friendStore, myUserId, itemId, handleMoveItem],
+    );
+
+    const handleAddFriend = useCallback(() => {
+      friendStore.addFriend({
+        myUserId,
+        friendInfo,
+      });
+      setAddFriendToastVisible(true);
+    }, [friendStore, myUserId, friendInfo]);
+
+    const handleCloseToast = useCallback(() => {
+      setAddFriendToastVisible(false);
     }, []);
+
+    const getRemoveFriendMessageTitle = useCallback(() => {
+      if (fullCompanyJob) {
+        return `${displayName}(${fullCompanyJob}) \\n 님을 프렌즈 목록에서 삭제하시겠습니까?`;
+      }
+      return `${displayName} 님을 프렌즈 목록에서 \\n 삭제하시겠습니까?`;
+    }, [displayName, fullCompanyJob]);
 
     const handleRemoveFriendMessageOpen = useCallback(({ domEvent: e }) => {
       if (e) e.stopPropagation();
@@ -609,17 +641,10 @@ const FriendItem = observer(
       setVisibleRemoveFriendMessage(true);
     }, []);
 
-    const handleAddFriend = useCallback(() => {
-      friendStore.addFriend({
-        myUserId: authStore.user.id,
-        friendInfo,
-      });
-      setVisibleToast(true);
-    }, [friendStore, authStore.user.id, friendInfo]);
-
-    const handleToastClose = useCallback(() => setVisibleToast(false), []);
-    const isMe = itemId === authStore.user.id;
-    const isNewFriend = handleCheckNewFriend(friendInfo);
+    const handleRemoveFriendMessageClose = useCallback(e => {
+      if (e) e.stopPropagation();
+      setVisibleRemoveFriendMessage(false);
+    }, []);
 
     return (
       <>
@@ -631,47 +656,6 @@ const FriendItem = observer(
           isActive={isActive}
           mode={mode}
         >
-          <Toast
-            visible={visibleToast}
-            timeoutMs={1000}
-            onClose={handleToastClose}
-          >
-            {`${displayName}님이 프렌즈로 추가되었습니다`}
-          </Toast>
-          <Message
-            visible={visibleRemoveFriendMessage}
-            title={`${displayName}님을 프렌즈 목록에서 삭제하시겠습니까?`}
-            type="error"
-            btns={[
-              {
-                text: '삭제',
-                type: 'solid',
-                shape: 'round',
-                onClick: handleRemoveFriend,
-              },
-              {
-                text: '취소',
-                type: 'outlined',
-                onClick: handleRemoveFriendMessageClose,
-              },
-            ]}
-          />
-          <Message
-            visible={visibleMessage}
-            title={`${displayName}님을 즐겨찾기에 추가하시겠습니까?`}
-            btns={[
-              {
-                type: 'solid',
-                text: '추가',
-                handler: () => setVisibleMessage(false),
-              },
-              {
-                type: 'outlined',
-                text: '취소',
-                handler: () => setVisibleMessage(false),
-              },
-            ]}
-          />
           <ProfileWrapper>
             <Profile
               mode={mode}
@@ -714,6 +698,30 @@ const FriendItem = observer(
             {mode === 'addFriend' && isMe && <span>내 계정</span>}
           </ActionWrapper>
         </FriendItemWrapper>
+        <Toast
+          visible={addFriendToastVisible}
+          timeoutMs={1000}
+          onClose={handleCloseToast}
+        >
+          {`${displayName}님이 프렌즈로 추가되었습니다`}
+        </Toast>
+        <Message
+          visible={visibleRemoveFriendMessage}
+          title={getRemoveFriendMessageTitle()}
+          type="error"
+          btns={[
+            {
+              text: '삭제',
+              type: 'solid',
+              onClick: handleRemoveFriend,
+            },
+            {
+              text: '취소',
+              type: 'outlined',
+              onClick: handleRemoveFriendMessageClose,
+            },
+          ]}
+        />
       </>
     );
   },

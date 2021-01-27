@@ -1,4 +1,5 @@
-import { observable } from 'mobx';
+/* eslint-disable no-underscore-dangle */
+import { observable, values } from 'mobx';
 
 const PlatformUIStore = observable({
   /*
@@ -47,6 +48,41 @@ const PlatformUIStore = observable({
   // ref
   content: {
     rect: null,
+  },
+
+  // windows 관련
+  windowMap: new Map(),
+
+  get windows() {
+    return values(this.windowMap);
+  },
+
+  getWindow(roomId) {
+    return this.windowMap.get(roomId);
+  },
+
+  openWindow(windowInfo) {
+    const { id: windowId } = windowInfo;
+    this.windowMap.set(windowId, windowInfo);
+  },
+
+  focusWindow(windowId) {
+    const handler = this.getWindow(windowId)?.handler;
+
+    if (handler && !handler.closed) {
+      handler.focus();
+    }
+  },
+
+  closeWindow(windowId) {
+    this.windowMap.delete(windowId);
+  },
+
+  closeAllWindow() {
+    this.windows.forEach(window => {
+      const { id: windowId } = window;
+      this.windowMap.delete(windowId);
+    });
   },
 });
 

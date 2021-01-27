@@ -3,8 +3,8 @@ import { useHistory } from 'react-router-dom';
 import { List, Menu, Dropdown } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
-import { useCoreStores, usePortalWindow } from 'teespace-core';
-import { Talk, talkOnDrop } from 'teespace-talk-app';
+import { useCoreStores } from 'teespace-core';
+import { talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
 import Photos from '../Photos';
 import {
@@ -12,6 +12,7 @@ import {
   DisableAlarmIcon,
   PinIcon,
   OpenChatIcon,
+  ExportIcon,
 } from '../Icons';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
@@ -210,27 +211,23 @@ const RoomItemContent = ({
   onClickMenuItem,
   onClickRoomPhoto,
 }) => {
-  const { userStore, roomStore } = useCoreStores();
+  const { userStore } = useCoreStores();
   const isDMRoom = roomInfo.isDirectMsg;
 
-  const openTalkWindow = usePortalWindow();
-  const handleExport = async e => {
+  const handleExport = e => {
     e.stopPropagation();
-    openTalkWindow({
-      element: (
-        <Talk
-          roomId={roomInfo.id}
-          channelId={
-            roomStore
-              .getRoomMap()
-              .get(roomInfo.id)
-              ?.channelList?.find(channel => channel.type === 'CHN0001')?.id
-          }
-        />
-      ),
-      opts: 'width=600, height=900',
-      title: 'mini-talk',
-    });
+
+    const isOpened = PlatformUIStore.getWindow(roomInfo.id);
+    if (!isOpened) {
+      PlatformUIStore.openWindow({
+        id: roomInfo.id,
+        name: roomInfo.name,
+        userCount: roomInfo.userCount,
+        handler: null,
+      });
+    } else {
+      PlatformUIStore.focusWindow(roomInfo.id);
+    }
   };
 
   const handleMenuClick = _roomInfo => {
@@ -361,10 +358,9 @@ const RoomItemContent = ({
           </IconWrapper>
         </RoomDropdown>
       )}
-      {/* 미니챗 기능 추후 업데이트 */}
-      {/* <IconWrapper className="room-item__icon" onClick={handleExport}>
-        <ExportIcon width={1} height={1} />
-      </IconWrapper> */}
+      <IconWrapper className="room-item__icon" onClick={handleExport}>
+        <ExportIcon width={1} height={1} color="#49423A" />
+      </IconWrapper>
     </>
   );
 };
@@ -381,7 +377,16 @@ const TALK_ACCEPT_ITEMS = [
   'Item:Note:Pages',
   'Item:Note:SharedPages',
   'Item:Calendar:ShareSchedules',
+  'Item:Drive:Files',
 ];
+
+// TODO: Content.js 와 동일한 함수로 리팩토링 필요
+const getRoomId = () => {
+  if (PlatformUIStore.resourceType !== 'f') {
+    return PlatformUIStore.resourceId;
+  }
+  return null;
+};
 
 const RoomItem = ({
   roomInfo,
@@ -404,10 +409,11 @@ const RoomItem = ({
         const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
           item.type.toLowerCase(),
         );
-        console.log({
+        talkOnDrop({
           room: roomInfo,
           data: item.data,
           type: type[1] ? type[1] : 'unknown',
+          currentRoomId: getRoomId(),
         });
       }
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCoreStores, Toast, Chip, Message } from 'teespace-core';
 import styled from 'styled-components';
 import { Button, Input, Modal } from 'antd';
@@ -110,10 +110,17 @@ function AddFriendsByInvitationDialog({
   const [isMessageVisible, setIsMessageVisible] = useState(false);
   const myUserId = userStore.myProfile.id;
 
-  const handleCancel = () => {
+  useEffect(() => {
     setMailAddress('');
     setChipList([]);
-    onCancel();
+  }, [visible]);
+
+  const handleCancel = () => {
+    if (isMessageVisible) {
+      setIsMessageVisible(false);
+    } else {
+      onCancel();
+    }
   };
 
   const handleToggleToast = () => {

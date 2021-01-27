@@ -180,17 +180,19 @@ const ProfileMyModal = ({
   };
 
   const handleClickNewSpace = useCallback(() => {
-    const basicAdminSpace = spaceStore.spaceList?.filter(
-      elem =>
-        elem.adminId === waplUserStore?.myProfile?.id && elem.plan === 'BASIC',
-    );
-
-    if (basicAdminSpace.length >= 3) {
-      setIsNewSpaceErrorMessageVisible(true);
-    } else {
-      window.location.href = getMainWaplURL('/select-space-type');
+    try {
+      const adminSpace = spaceStore.getAdminSpaces({
+        loginId: userStore.myProfile?.loginId,
+      });
+      if (adminSpace.length >= 3) {
+        setIsNewSpaceErrorMessageVisible(true);
+      } else {
+        window.location.href = getMainWaplURL('/select-space-type');
+      }
+    } catch (e) {
+      console.log('SpaceStore Adminspace Get Error...');
     }
-  }, [spaceStore.spaceList, waplUserStore]);
+  }, [spaceStore, userStore]);
 
   useEffect(() => {
     if (isEditMode === true) return;
@@ -341,7 +343,7 @@ const ProfileMyModal = ({
           {spaceStore.spaceList.length > 0 && (
             <ConvertList>
               {spaceStore.spaceList
-                .filter(elem => elem.id !== spaceStore.currentSpace.id)
+                .filter(elem => elem?.id !== spaceStore.currentSpace?.id)
                 .map(elem => (
                   <ConvertItem
                     onClick={() => {

@@ -3,7 +3,13 @@ import { useObserver } from 'mobx-react';
 import { TreeSelect, useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 
-const valueCreator = org => `${org.companyCode}_${org.departmentCode}`;
+const valueCreator = org => {
+  // 미분류 조직을 위해서 추가함.
+  if (!org.companyCode && !org.departmentCode) {
+    return 'NULL_NULL';
+  }
+  return `${org.companyCode}_${org.departmentCode}`;
+};
 /**
  *
  * @param {Object} props
