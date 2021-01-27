@@ -435,7 +435,7 @@ function RoomInquiryModal({
                 src={userStore.getProfilePhotoURL(memberInfo.id, 'small')}
               />
             </UserImag>
-            <UserName>{memberInfo.name}</UserName>
+            <UserName>{memberInfo.nick || memberInfo.name}</UserName>
           </UserItem>
         ))}
       </UserList>
