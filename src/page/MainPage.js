@@ -207,6 +207,10 @@ const MainPage = () => {
         break;
     }
 
+    if (!currentResourceId) {
+      return;
+    }
+
     try {
       await userStore.updateRoutingHistory({
         userId: myUserId,
