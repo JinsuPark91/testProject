@@ -17,6 +17,18 @@ export const ALARM_TYPE = {
   CALENDAR: 'tschedule_all',
 };
 
+export const ALARM_TYPE_SEND = {
+  DESKTOP: 'desktop_all',
+  SOUND: 'alarm_sound',
+  TALK: 'talk_all',
+  TALK_CONTENTS: 'talk_showContents',
+  MEETING: 'meeting_all',
+  MEETING_START: 'meeting_start',
+  MEETING_END: 'meeting_end',
+  MAIL: 'mail_all',
+  CALENDAR: 'schedule_all',
+};
+
 export const EDIT_TYPE = {
   INSERT: 'insert',
   DELETE: 'delete',
