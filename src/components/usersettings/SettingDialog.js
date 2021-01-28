@@ -138,7 +138,14 @@ function SettingDialog(props) {
       'medium',
     );
     obj.name = name ?? userStore.myProfile.name;
-    obj.nick = nick ?? (userStore.myProfile.nick || userStore.myProfile.name);
+    // 별명 빈칸 변경 시도시 이름으로 변경하는 기획
+    if (nick === undefined) {
+      obj.nick = userStore.myProfile.nick || userStore.myProfile.name;
+    } else if (nick === '') {
+      obj.nick = userStore.myProfile.name;
+    } else {
+      obj.nick = nick;
+    }
     obj.nationalCode = userStore.myProfile.nationalCode;
     obj.companyNum = companyNum ?? userStore.myProfile.companyNum;
     obj.phone = phone ?? userStore.myProfile.phone;
