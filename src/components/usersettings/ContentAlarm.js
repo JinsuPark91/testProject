@@ -1,26 +1,27 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useCoreStores, Switch, Checkbox } from 'teespace-core';
+import { useCoreStores, Switch, Checkbox, AlarmSetting } from 'teespace-core';
 import { Button } from 'antd';
 import styled, { css } from 'styled-components';
 import ContentTitle from './ContentTitle';
 import { ReactComponent as SoundIcon } from '../../assets/sound_on.svg';
 import AlarmSound from '../../assets/alarm_sound.wav';
-import { ALARM_TYPE, EDIT_TYPE } from './SettingConstants';
+import { ALARM_TYPE, ALARM_TYPE_SEND, EDIT_TYPE } from './SettingConstants';
 
 const FormItemMain = styled.div`
   display: flex;
   align-items: center;
-  margin-top: 1.25rem;
-  padding: 1.625rem 0 1.188rem;
-  border-top: 1px solid #d8d8d8;
+  padding: 1.25rem 0 2rem 0;
 `;
+
 const AlarmList = styled.div`
   width: 20rem;
 `;
+
 const FormItem = styled(FormItemMain)`
   min-height: 3.313rem;
   margin-top: 0;
   padding: 0.5625rem 0;
+  border-top: 1px solid #d8d8d8;
   &:first-of-type {
     border-top: 0;
   }
@@ -28,6 +29,7 @@ const FormItem = styled(FormItemMain)`
     margin: 0.4375rem 0 auto;
   }
 `;
+
 const ItemMain = styled.label`
   span {
     padding-left: 0.56rem;
@@ -35,18 +37,22 @@ const ItemMain = styled.label`
     vertical-align: middle;
   }
 `;
+
 const ItemInfo = styled.div`
   flex: 1;
 `;
+
 const ItemTitle = styled.label`
   display: block;
   font-size: 0.75rem;
   line-height: 1.13rem;
   color: #777;
 `;
+
 const ItemTitleBlack = styled(ItemTitle)`
   color: #000;
 `;
+
 const ItemSub = styled.div`
   margin: 0.63rem 0 0.4375rem;
   font-size: 0.81rem;
@@ -60,9 +66,11 @@ const ItemSub = styled.div`
     padding: 0 0 0 0.38rem;
   }
 `;
+
 const SoundText = styled.span`
   vertical-align: middle;
 `;
+
 const SoundButton = styled(Button)`
   width: 1.5rem;
   height: 1.5rem;
@@ -182,116 +190,112 @@ function ContentAlarm({
   };
 
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await userStore.getAlarmList(userStore.myProfile.id);
-        if (res) {
-          res.forEach(elem => handleInitState(elem));
-        }
-      } catch (e) {
-        console.log(`getalarmlist error${e}`);
-      }
-      setIsLoading(false);
-    })();
+    const { alarmSet } = AlarmSetting;
+    const alarmArray = [...alarmSet.keys()];
+    alarmArray.forEach(elem => handleInitState(elem));
+    setIsLoading(false);
   }, [userStore]);
 
+  const getOnOffText = value => {
+    return value ? 'on' : 'off';
+  };
+
   // value - On: True, Off: False
-  const handleDeskTopNotification = async value => {
-    setIsAlarmChecked(value);
-    await userStore.updateAlarm({
-      userId: userStore.myProfile.id,
-      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
-      alarmCode: ALARM_TYPE.DESKTOP,
-    });
+  const handleDeskTopNotification = value => {
+    try {
+      AlarmSetting.save(ALARM_TYPE_SEND.DESKTOP, getOnOffText(value));
+      setIsAlarmChecked(value);
+    } catch (e) {
+      console.log(`Alarm Change All Failed${e}`);
+    }
+    // await userStore.updateAlarm({
+    //   userId: userStore.myProfile.id,
+    //   type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
+    //   alarmCode: ALARM_TYPE.DESKTOP,
+    // });
   };
 
   const handleAlarmSound = async value => {
     setIsSoundChecked(value);
-    await userStore.updateAlarm({
-      userId: userStore.myProfile.id,
-      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
-      alarmCode: ALARM_TYPE.SOUND,
-    });
+    AlarmSetting.save(ALARM_TYPE_SEND.SOUND, getOnOffText(value));
   };
 
-  const handleTalkMessage = async value => {
-    setIsMessageNoticeChecked(value);
-    await userStore.updateAlarm({
-      userId: userStore.myProfile.id,
-      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
-      alarmCode: ALARM_TYPE.TALK,
-    });
+  const handleTalkMessage = value => {
+    try {
+      AlarmSetting.save(ALARM_TYPE_SEND.TALK, getOnOffText(value));
+      setIsMessageNoticeChecked(value);
+    } catch (e) {
+      console.log(`Alarm Change Talk Failed${e}`);
+    }
   };
 
-  const handleMessagePreview = async () => {
-    const value = !isMessagePreviewChecked;
-    setIsMessagePreviewChecked(value);
-    await userStore.updateAlarm({
-      userId: userStore.myProfile.id,
-      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
-      alarmCode: ALARM_TYPE.TALK_CONTENTS,
-    });
+  const handleMessagePreview = () => {
+    try {
+      const value = !isMessagePreviewChecked;
+      AlarmSetting.save(ALARM_TYPE_SEND.TALK_CONTENTS, getOnOffText(value));
+      setIsMessagePreviewChecked(value);
+    } catch (e) {
+      console.log(`Alarm Change Talk_Preview Failed${e}`);
+    }
   };
 
-  const handleMeetingNotice = async value => {
-    setIsMeetingNoticeChecked(value);
-    await userStore.updateAlarm({
-      userId: userStore.myProfile.id,
-      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
-      alarmCode: ALARM_TYPE.MEETING,
-    });
+  const handleMeetingNotice = value => {
+    try {
+      AlarmSetting.save(ALARM_TYPE_SEND.MEETING, getOnOffText(value));
+      setIsMeetingNoticeChecked(value);
+    } catch (e) {
+      console.log(`Alarm Change Meeting Failed${e}`);
+    }
   };
 
-  const handleMeetingStart = async () => {
-    const value = !isMeetingStartChecked;
-    setIsMeetingStartChecked(value);
-    userStore.updateAlarm({
-      userId: userStore.myProfile.id,
-      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
-      alarmCode: ALARM_TYPE.MEETING_START,
-    });
+  const handleMeetingStart = () => {
+    try {
+      const value = !isMeetingStartChecked;
+      AlarmSetting.save(ALARM_TYPE_SEND.MEETING_START, getOnOffText(value));
+      setIsMeetingStartChecked(value);
+    } catch (e) {
+      console.log(`Alarm Change Meeting_Start Failed${e}`);
+    }
   };
 
   const handleMeetingEnd = () => {
-    const value = !isMeetingEndChecked;
-    setIsMeetingEndChecked(value);
-    userStore.updateAlarm({
-      userId: userStore.myProfile.id,
-      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
-      alarmCode: ALARM_TYPE.MEETING_END,
-    });
+    try {
+      const value = !isMeetingEndChecked;
+      AlarmSetting.save(ALARM_TYPE_SEND.MEETING_END, getOnOffText(value));
+      setIsMeetingEndChecked(value);
+    } catch (e) {
+      console.log(`Alarm Change Meeting_End Failed${e}`);
+    }
   };
 
-  const handleMailNotice = async value => {
-    setIsMailNoticeChecked(value);
-    await userStore.updateAlarm({
-      userId: userStore.myProfile.id,
-      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
-      alarmCode: ALARM_TYPE.MAIL,
-    });
+  const handleMailNotice = value => {
+    try {
+      AlarmSetting.save(ALARM_TYPE_SEND.MAIL, getOnOffText(value));
+      setIsMailNoticeChecked(value);
+    } catch (e) {
+      console.log(`Alarm Change Mail Failed${e}`);
+    }
   };
 
-  const handleCalendarNotice = async value => {
-    setIsCalendarNoticeChecked(value);
-    await userStore.updateAlarm({
-      userId: userStore.myProfile.id,
-      type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
-      alarmCode: ALARM_TYPE.CALENDAR,
-    });
+  const handleCalendarNotice = value => {
+    try {
+      AlarmSetting.save(ALARM_TYPE_SEND.CALENDAR, getOnOffText(value));
+      setIsCalendarNoticeChecked(value);
+    } catch (e) {
+      console.log(`Alarm Change Calendar Failed${e}`);
+    }
   };
 
   const alarmSound = new Audio();
   alarmSound.src = AlarmSound;
-
   const isBasicPlan = spaceStore.currentSpace?.plan === 'BASIC';
 
   if (isLoading) return null;
-
   return (
     <>
       <ContentTitle
         title="알림"
-        subTitle="바탕화면 알림을 허용하면, 다른 작업중에도 놓치지 않고 알림을 받아보실 수 있습니다."
+        subTitle="바탕화면 알림을 허용하면, 다른 작업 중에도 놓치지 않고 알림을 받아보실 수 있습니다."
       />
       <form>
         <FormItemMain valuePropName="alarmchecked">
@@ -305,12 +309,11 @@ function ContentAlarm({
         </FormItemMain>
         {isAlarmChecked && (
           <AlarmList>
-            <FormItem valuePropName="alarmchecked">
+            {/* <FormItem valuePropName="alarmchecked">
               <ItemInfo>
                 <ItemTitle htmlFor="alarmsound">소리 알림</ItemTitle>
                 <ItemSub>
                   <SoundText>알림 소리 - WAPL</SoundText>
-                  {/* click시 checked */}
                   <SoundButton type="circle">
                     <SoundIcon
                       onClick={() => {
@@ -329,7 +332,7 @@ function ContentAlarm({
                 defaultChecked={isSoundChecked}
                 onChange={handleAlarmSound}
               />
-            </FormItem>
+            </FormItem> */}
             <FormItem>
               <ItemInfo>
                 <ItemTitle htmlFor="newmessagetoggle">
@@ -402,7 +405,7 @@ function ContentAlarm({
             <FormItem>
               <ItemInfo>
                 <ItemTitleBlack htmlFor="scheduletoggle">
-                  TeeCalendar 일정 미리 알림
+                  Calendar 일정 미리 알림
                 </ItemTitleBlack>
               </ItemInfo>
               <Switch

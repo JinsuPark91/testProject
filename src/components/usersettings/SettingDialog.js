@@ -115,11 +115,11 @@ function SettingDialog(props) {
   const [isPhoneEdit, setIsPhoneEdit] = useState(false);
   const [isBirthDateEdit, setIsBirthDateEdit] = useState(false);
 
-  const [name, setName] = useState('');
-  const [nick, setNick] = useState('');
-  const [companyNum, setCompanyNum] = useState('');
-  const [phone, setPhone] = useState('');
-  const [birthDate, setBirthDate] = useState('');
+  const [name, setName] = useState(undefined);
+  const [nick, setNick] = useState(undefined);
+  const [companyNum, setCompanyNum] = useState(undefined);
+  const [phone, setPhone] = useState(undefined);
+  const [birthDate, setBirthDate] = useState(undefined);
 
   // 스페이스 탈퇴 관련
   const [isSecessionContinue, setIsSecessionContinue] = useState(false);
@@ -128,6 +128,23 @@ function SettingDialog(props) {
 
   const isB2B = userStore.myProfile.type === 'USR0001';
   const isAdmin = userStore.myProfile.grade === 'admin';
+
+  // FIXME: 급하게 추가했지만 추후에 settingprofilephoto,
+  // settingprofilecountrycode 에 있는 함수와 합치는 작업 필요
+  const getDtoObject = useCallback(() => {
+    const obj = {};
+    obj.profilePhoto = userStore.getProfilePhotoURL(
+      userStore.myProfile.id,
+      'medium',
+    );
+    obj.name = name ?? userStore.myProfile.name;
+    obj.nick = nick ?? (userStore.myProfile.nick || userStore.myProfile.name);
+    obj.nationalCode = userStore.myProfile.nationalCode;
+    obj.companyNum = companyNum ?? userStore.myProfile.companyNum;
+    obj.phone = phone ?? userStore.myProfile.phone;
+    obj.birthDate = birthDate ?? userStore.myProfile.birthDate;
+    return obj;
+  }, [name, nick, companyNum, phone, birthDate, userStore]);
 
   const handleToggleNameInput = useCallback(() => {
     setIsNameEdit(!isNameEdit);
@@ -159,68 +176,58 @@ function SettingDialog(props) {
   }, [isBirthDateEdit, authStore]);
 
   const handleChangeName = useCallback(async () => {
-    const updateInfo = {};
-    updateInfo.name = name;
+    const updateInfo = getDtoObject();
     try {
       await userStore.updateMyProfile(updateInfo);
       setIsNameEdit(false);
     } catch (e) {
       console.log(`changeName Error is ${e}`);
     }
-  }, [name, userStore]);
+  }, [getDtoObject, userStore]);
 
   const handleChangeNick = useCallback(async () => {
-    const updateInfo = {};
-    if (nick.length) {
-      updateInfo.nick = nick;
-    } else {
-      updateInfo.nick = authStore.user.name;
-    }
-
+    const updateInfo = getDtoObject();
     try {
       await userStore.updateMyProfile(updateInfo);
       setIsNickEdit(false);
     } catch (e) {
       console.log(`changeNick Error is ${e}`);
     }
-  }, [nick, userStore, authStore]);
+  }, [getDtoObject, userStore]);
 
   const handleChangeCountryCode = useCallback(async () => {
     handleToggleCountryCode();
   }, [handleToggleCountryCode]);
 
   const handleChangeCompanyNum = useCallback(async () => {
-    const updateInfo = {};
-    updateInfo.companyNum = companyNum;
+    const updateInfo = getDtoObject();
     try {
       await userStore.updateMyProfile(updateInfo);
       setIsCompanyNumEdit(false);
     } catch (e) {
       console.log(`changeCompanyPhone Error is ${e}`);
     }
-  }, [companyNum, userStore]);
+  }, [getDtoObject, userStore]);
 
   const handleChangePhone = useCallback(async () => {
-    const updateInfo = {};
-    updateInfo.phone = phone;
+    const updateInfo = getDtoObject();
     try {
       await userStore.updateMyProfile(updateInfo);
       setIsPhoneEdit(false);
     } catch (e) {
       console.log(`changeCellPhone Error is ${e}`);
     }
-  }, [phone, userStore]);
+  }, [getDtoObject, userStore]);
 
   const handleChangeBirthDate = useCallback(async () => {
-    const updateInfo = {};
-    updateInfo.birthDate = birthDate;
+    const updateInfo = getDtoObject();
     try {
       await userStore.updateMyProfile(updateInfo);
       setIsBirthDateEdit(false);
     } catch (e) {
       console.log(`changeBirthDay Error is ${e}`);
     }
-  }, [birthDate, userStore]);
+  }, [getDtoObject, userStore]);
 
   const handleToggleContinue = () => {
     setIsSecessionContinue(!isSecessionContinue);
@@ -272,7 +279,7 @@ function SettingDialog(props) {
   };
 
   const handleCancel = () => {
-    setSelectedKey(SELECTED_TAB.MY_INFO);
+    setSelectedKey(SELECTED_TAB.ALARM);
     handleInitializeAccountButton();
     handleInitializeSecessionButton();
     onCancel();
@@ -308,16 +315,16 @@ function SettingDialog(props) {
       <LayoutWrap>
         <SiderArea>
           <StyledMenu
-            defaultSelectedKeys={['4']}
+            defaultSelectedKeys={['2']}
             selectedKeys={selectedKey}
             onClick={({ item, key }) => {
               handleTabClick(key);
             }}
           >
-            {/* <Menu.ItemGroup key="0" title="환경설정">
-              <Menu.Item key="1">일반</Menu.Item>
+            <Menu.ItemGroup key="0" title="환경설정">
+              {/* <Menu.Item key="1">일반</Menu.Item> */}
               <Menu.Item key="2">알림</Menu.Item>
-            </Menu.ItemGroup> */}
+            </Menu.ItemGroup>
             <Menu.ItemGroup key="3" title="개인 설정">
               <Menu.Item key="4">내 정보</Menu.Item>
               {/* <Menu.Item key="5">비밀번호변경</Menu.Item> */}
@@ -361,11 +368,11 @@ function SettingDialog(props) {
                   onSuccess={handleChangeNick}
                 />
                 {isB2B && <SettingDialogOrg />}
-                {/* <SettingDialogCountryCode
+                <SettingDialogCountryCode
                   isCountryCodeEdit={isCountryCodeEdit}
                   onCancel={handleToggleCountryCode}
                   onSuccess={handleChangeCountryCode}
-                /> */}
+                />
                 {isB2B && (
                   <SettingDialogCompanyNum
                     companyNum={companyNum}

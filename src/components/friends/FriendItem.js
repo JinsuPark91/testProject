@@ -15,6 +15,7 @@ import { useOpenInWindow } from 'use-open-window';
 import { ExportOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import { Talk } from 'teespace-talk-app';
 import { handleCheckNewFriend } from '../../utils/FriendsUtil';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 import mySign from '../../assets/wapl_me.svg';
 
@@ -244,51 +245,80 @@ const Profile = React.memo(
   },
 );
 
-const FriendAction = React.memo(
-  ({ mode, menu, handleDropdownVisible, handleTalkWindowOpen }) => {
-    const handleOpenTalk = useCallback(e => {
-      e.stopPropagation();
-      console.log(handleTalkWindowOpen());
-    }, []);
-
-    return (
-      <>
-        {mode === 'friend' && (
-          <>
-            <Dropdown
-              overlay={menu}
-              trigger={['click']}
-              onClick={e => e.stopPropagation()}
-              onVisibleChange={handleDropdownVisible}
-            >
-              <MoreIconWrapper>
-                <ViewMoreIcon />
-              </MoreIconWrapper>
-            </Dropdown>
-            {/* 미니챗 기능 추후 업데이트 */}
-            {/* <Button
-              shape="circle"
-              icon={<ExportIcon />}
-              onClick={handleOpenTalk}
-            /> */}
-          </>
-        )}
-      </>
-    );
-  },
-);
-
-const MeAction = React.memo(({ mode, handleTalkWindowOpen }) => {
+const FriendAction = React.memo(({ mode, menu, handleDropdownVisible }) => {
   return (
     <>
-      {/* {mode === 'me' && (
-        <Button
-          shape="circle"
-          icon={<ExportIcon />}
-          onClick={handleTalkWindowOpen}
-        />
-      )} */}
+      {mode === 'friend' && (
+        <>
+          <Dropdown
+            overlay={menu}
+            trigger={['click']}
+            onClick={e => e.stopPropagation()}
+            onVisibleChange={handleDropdownVisible}
+          >
+            <MoreIconWrapper>
+              <ViewMoreIcon />
+            </MoreIconWrapper>
+          </Dropdown>
+        </>
+      )}
     </>
+  );
+});
+
+const OpenMiniTalk = roomInfo => {
+  //  FIXME: 안정화 후 함수로 묶기
+  const isOpened = PlatformUIStore.getWindow(roomInfo.id);
+  if (!isOpened) {
+    PlatformUIStore.openWindow({
+      id: roomInfo.id,
+      name: roomInfo.name,
+      userCount: roomInfo.userCount,
+      handler: null,
+    });
+  } else {
+    PlatformUIStore.focusWindow(roomInfo.id);
+  }
+};
+
+const MeAction = React.memo(({ mode, itemId }) => {
+  const { userStore, roomStore } = useCoreStores();
+  const handleExport = async e => {
+    e.stopPropagation();
+    try {
+      const myUserId = userStore.myProfile.id;
+      const { roomInfo } = roomStore.getDMRoom(myUserId, itemId);
+
+      if (roomInfo && roomInfo.isVisible) {
+        OpenMiniTalk(roomInfo);
+        return;
+      }
+
+      if (roomInfo && !roomInfo.isVisible) {
+        await roomStore.updateRoomMemberSetting({
+          roomId: roomInfo.id,
+          myUserId,
+          newIsVisible: true,
+        });
+        OpenMiniTalk(roomInfo);
+        return;
+      }
+
+      await roomStore.createRoom({
+        creatorId: myUserId,
+        userList: [{ userId: itemId }],
+      });
+      const newRoomInfo = roomStore.getDMRoom(myUserId, itemId)?.roomInfo;
+      OpenMiniTalk(newRoomInfo);
+    } catch (e) {
+      console.log(`Room Make Error...${e}`);
+    }
+  };
+
+  return (
+    <MoreIconWrapper onClick={handleExport}>
+      <ExportIcon />
+    </MoreIconWrapper>
   );
 });
 
@@ -331,6 +361,7 @@ const Action = React.memo(
     friendRelation,
     handleAddFriend,
     isMe,
+    itemId,
   }) => (
     <>
       {mode !== 'readOnly' && isHovering && (
@@ -341,7 +372,7 @@ const Action = React.memo(
             handleDropdownVisible={handleDropdownVisible}
             handleTalkWindowOpen={handleTalkWindowOpen}
           />
-          <MeAction mode={mode} handleTalkWindowOpen={handleTalkWindowOpen} />
+          <MeAction mode={mode} itemId={itemId} />
           <AddFriendAction
             mode={mode}
             friendRelation={friendRelation}
@@ -576,6 +607,8 @@ const FriendItem = observer(
           isFav: false,
         });
         setToastText('즐겨찾기가 해제되었습니다.');
+        setIsHovering(false);
+        setDropdownVisible(false);
         openToast();
       },
       [friendStore, myUserId, itemId, setToastText, openToast],
@@ -694,6 +727,7 @@ const FriendItem = observer(
               })}
               handleAddFriend={handleAddFriend}
               isMe={isMe}
+              itemId={itemId}
             />
             {mode === 'addFriend' && isMe && <span>내 계정</span>}
           </ActionWrapper>
