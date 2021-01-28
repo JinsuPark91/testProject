@@ -32,15 +32,17 @@ export const CustomTabs = styled(Tabs)`
     margin: 0;
     padding: 0;
     height: 3.13rem;
-    background-color: #0b1d41;
+    background-color: #232d3b;
     font-size: 0;
-    &:hover {
-      background-color: #2d317a;
+    &:hover:not(.ant-tabs-tab-active) {
+      .lnb__icon-wrapper {
+        background-color: #313a46;
+      }
     }
   }
 
   .ant-tabs-tab-active .lnb__icon-wrapper {
-    background: #ffffff;
+    background-color: #fff;
   }
 `;
 
