@@ -34,6 +34,11 @@ const MainPage = () => {
   const { roomStore, userStore, friendStore, spaceStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
 
+  const url = window.location.origin; //  http://xxx.dev.teespace.net
+  const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
+  const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
+  let domainName;
+  [domainName] = url.split(`//`)[1].split(`.`);
   /**
    * Desktop Notification 권한 확인 및 클릭 시 핸들링 추가
    */
@@ -85,9 +90,13 @@ const MainPage = () => {
         setIsLoading(false);
       })
       .catch(err => {
-        setTimeout(() => {
-          history.push('/logout');
-        }, 1000);
+        if (process.env.REACT_APP_ENV === 'local') {
+          setTimeout(() => {
+            history.push('/logout');
+          }, 1000);
+        } else {
+          window.location.href = `${window.location.protocol}//${mainURL}/domain/${domainName}`;
+        }
         console.log(err);
       });
   }, []);
