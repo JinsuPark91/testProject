@@ -89,20 +89,22 @@ const ErrorIcon = styled.div`
 const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
   const { userStore, spaceStore } = useCoreStores();
   const { currentSpace } = spaceStore;
+  const getCurrentSpaceAddress = () => {
+    return (
+      currentSpace?.domain?.slice(0, currentSpace?.domain?.indexOf('.')) || ''
+    );
+  };
   const [newSpaceName, setNewSpaceName] = useState(currentSpace?.name || '');
-  const [newAddress, setNewAddress] = useState(
-    currentSpace?.domain?.slice(0, currentSpace?.domain?.indexOf('.')) || '',
-  );
+  const [newAddress, setNewAddress] = useState(getCurrentSpaceAddress());
   const [isWarningPopupVisible, setIsWarningPopupVisible] = useState(false);
   const [warningText, setWarningText] = useState('');
   const [isWarningTextVisible, setIsWarningTextVisible] = useState(false);
-
   const isBasicPlan = currentSpace?.plan === 'BASIC';
 
   const handleCheckChange = () => {
     return (
       newSpaceName === (currentSpace?.name || '') &&
-      newAddress === (currentSpace?.domain || '')
+      newAddress === (getCurrentSpaceAddress() || '')
     );
   };
 
@@ -128,7 +130,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
     // tooltip 켜진 상태에서 modal close 시 tooltip 제거
     setTimeout(() => {
       setNewSpaceName(currentSpace?.name || '');
-      setNewAddress(currentSpace?.domain || '');
+      setNewAddress(getCurrentSpaceAddress());
       setIsWarningPopupVisible(false);
       onClose();
     }, 0);
@@ -157,7 +159,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
     const isLocal = process.env.REACT_APP_ENV === 'local';
     let updatedInfo = {};
 
-    if (!isBasicPlan && newAddress !== currentSpace?.domain) {
+    if (!isBasicPlan && newAddress !== getCurrentSpaceAddress()) {
       const res = await spaceStore.searchSpaceByDomain({
         domain: newAddress,
       });

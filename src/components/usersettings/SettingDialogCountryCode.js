@@ -19,12 +19,14 @@ const SettingDialogCountryCode = props => {
   const { Option } = Select;
 
   const countryDataArray = countryData.countries?.all;
-  const defaultCountry = countryDataArray.find(
-    elem => elem.countryCallingCodes[0] === authStore.user.nationalCode,
-  );
+  const defaultCountry = authStore.user.nationalCode
+    ? countryDataArray.find(
+        elem => elem.countryCallingCodes[0] === authStore.user.nationalCode,
+      )
+    : null;
 
   const getTextFormat = item => {
-    return `${item.countryCallingCodes[0] || ''} ${item.name}`;
+    return item ? `${item.countryCallingCodes[0] || ''} ${item.name}` : '-';
   };
 
   const handleChange = value => {
