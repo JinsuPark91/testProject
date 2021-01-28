@@ -6,17 +6,16 @@ import { Button, Input, Dropdown, Menu, Tooltip } from 'antd';
 import { observer } from 'mobx-react';
 import { useCoreStores, Message, Toast } from 'teespace-core';
 import InputCounter from './Input';
-import { LockLineIcon } from './Icons';
+import { LockLineIcon, CameraIcon } from './Icons';
 import friendsIcon from '../assets/ts_friends.svg';
 import profileEditIcon from '../assets/ts_profile_edit.svg';
 import teeMeetingIcon from '../assets/ts_TeeMeeting.svg';
-import tsOfficeIcon from '../assets/ts_office.svg';
-import tsCallIcon from '../assets/ts_call.svg';
-import tsPhoneIcon from '../assets/ts_phone.svg';
-import tsMailIcon from '../assets/ts_mail.svg';
+import OfficeIcon from '../assets/office.svg';
+import CallIcon from '../assets/call.svg';
+import PhoneIcon from '../assets/phone.svg';
+import MailIcon from '../assets/mail.svg';
 import EmailHoverIcon from '../assets/ts_export.svg';
 import tsBgImgIcon from '../assets/ts_photo.svg';
-import tsCameraImgIcon from '../assets/ts_camera.svg';
 import starLineIcon from '../assets/ts_star_line.svg';
 import starIcon from '../assets/ts_star.svg';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
@@ -421,35 +420,37 @@ const Profile = observer(
               <UserImageWrapper position="br">
                 <UserImage src={renderProfilePhoto} />
                 {isMyId() && editEnabled && (
-                  <Dropdown
-                    trigger={['click']}
-                    overlay={
-                      <Menu>
-                        <Menu.Item>
-                          <StyledUpload
-                            component="div"
-                            multiple={false}
-                            accept={['.jpg,.jpeg,.png']}
-                            customRequest={({ file }) =>
-                              handleChangePhoto(file)
-                            }
+                  <ImageChange>
+                    <Dropdown
+                      trigger={['click']}
+                      overlay={
+                        <Menu>
+                          <Menu.Item>
+                            <StyledUpload
+                              component="div"
+                              multiple={false}
+                              accept={['.jpg,.jpeg,.png']}
+                              customRequest={({ file }) =>
+                                handleChangePhoto(file)
+                              }
+                            >
+                              프로필 사진 변경
+                            </StyledUpload>
+                          </Menu.Item>
+                          <Menu.Item
+                            disabled={isDefaultProfilePhotoUsed}
+                            onClick={handleChangeDefaultPhoto}
                           >
-                            프로필 사진 변경
-                          </StyledUpload>
-                        </Menu.Item>
-                        <Menu.Item
-                          disabled={isDefaultProfilePhotoUsed}
-                          onClick={handleChangeDefaultPhoto}
-                        >
-                          기본 이미지로 변경
-                        </Menu.Item>
-                      </Menu>
-                    }
-                  >
-                    <ImageChangeButton position="br">
-                      <StyleCameraImgIcon />
-                    </ImageChangeButton>
-                  </Dropdown>
+                            기본 이미지로 변경
+                          </Menu.Item>
+                        </Menu>
+                      }
+                    >
+                      <CameraBox>
+                        <CameraIcon width="1.88" height="1.88" />
+                      </CameraBox>
+                    </Dropdown>
+                  </ImageChange>
                 )}
               </UserImageWrapper>
               <BigText>
@@ -643,7 +644,7 @@ const Text = styled.span`
 `;
 
 const UserEmailText = styled(Text)`
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
   line-height: 1.25rem;
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.875rem;
@@ -741,20 +742,27 @@ const ContentBody = styled.div`
 `;
 
 const UserImageWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
   position: relative;
-  align-items: center;
-  justify-content: center;
-  width: 7.5rem;
-  height: 7.5rem;
-  background: #fff;
-  border-radius: 50%;
-`;
-const UserImage = styled.img`
   width: 6.88rem;
   height: 6.88rem;
+  background: #fff;
   border-radius: 50%;
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+  }
+`;
+const UserImage = styled.img`
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
 `;
 
 const UserInfoList = styled.div`
@@ -766,9 +774,9 @@ const UserInfoList = styled.div`
 const UserInfoItem = styled.div`
   display: flex;
   align-items: center;
-  margin-top: 0.88rem;
+  margin-top: 0.94rem;
   &:first-of-type {
-    margin-top: 4.38rem;
+    margin-top: 3.75rem;
   }
   em + em {
     display: none;
@@ -802,7 +810,7 @@ const UserInfoItem = styled.div`
   }
 `;
 const BigText = styled(Text)`
-  margin-top: 0.88rem;
+  margin-top: 1.56rem;
   line-height: 2.25rem;
   font-size: 1.5rem;
 `;
@@ -853,7 +861,6 @@ const UserInfoText = styled.span`
   text-overflow: ellipsis;
   font-size: 0.88rem;
   line-height: 1.25rem;
-  font-weight: 600;
   color: #fff;
 `;
 
@@ -869,22 +876,22 @@ const StyleOfficeIcon = styled.em`
       case 'address':
       default:
         return css`
-          background-image: url(${tsOfficeIcon});
+          background-image: url(${OfficeIcon});
         `;
 
       case 'company':
         return css`
-          background-image: url(${tsCallIcon});
+          background-image: url(${CallIcon});
         `;
 
       case 'phone':
         return css`
-          background-image: url(${tsPhoneIcon});
+          background-image: url(${PhoneIcon});
         `;
 
       case 'email':
         return css`
-          background-image: url(${tsMailIcon});
+          background-image: url(${MailIcon});
         `;
 
       case 'emailhover':
@@ -958,14 +965,6 @@ const StyleBgImgIcon = styled.span`
   background-size: 1rem 1rem;
 `;
 
-const StyleCameraImgIcon = styled.span`
-  width: 1rem;
-  height: 1rem;
-  background-image: url(${tsCameraImgIcon});
-  background-repeat: no-repeat;
-  background-size: 1rem 1rem;
-`;
-
 const UserStatusMsg = styled.p`
   margin-top: 0.63rem;
   font-size: 0.88rem;
@@ -1014,6 +1013,25 @@ const LockIconBox = styled.span`
   padding-left: 0.3125rem;
   color: #75757f;
   line-height: 0;
+`;
+
+const ImageChange = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+`;
+
+const CameraBox = styled.span`
+  line-height: 0;
+  z-index: 5;
+  cursor: pointer;
 `;
 
 export default Profile;
