@@ -117,8 +117,8 @@ const TextWrapper = styled.div`
 `;
 
 const TitleForName = styled.span`
-  font-weight: 600;
   font-size: 0.81rem;
+  font-weight: 500;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
