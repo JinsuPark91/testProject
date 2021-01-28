@@ -78,7 +78,7 @@ const FriendAddBtn = styled.button`
   ${props =>
     props.isFriend
       ? css`
-  cursor: auto;
+  cursor: auto !important;
   span {
     cursor: auto;
     filter: opacity(0.2) drop-shadow(0 0 0 #818181);
