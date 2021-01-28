@@ -637,6 +637,7 @@ const Text = styled.span`
   max-width: 14.69rem;
   width: 100%;
   color: #fff;
+  line-height: 1.19rem;
   font-size: 0.81rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -823,20 +824,21 @@ const ButtonContainer = styled.div`
 
 const FriendsIcon = styled.span`
   display: inline-block;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 1.88rem;
+  height: 1.88rem;
+  margin-bottom: 0.5rem;
   background-image: url(${friendsIcon});
   background-repeat: no-repeat;
-  background-size: 2.75rem 2.75rem;
+  background-size: 1.88rem 1.88rem;
 `;
 
 const StyleIcon = styled.span`
   display: inline-block;
-  width: 2.13rem;
-  height: 2.13rem;
-  margin-bottom: 0.25rem;
+  width: 1.88rem;
+  height: 1.88rem;
+  margin-bottom: 0.5rem;
   background-repeat: no-repeat;
-  background-size: 2.13rem 2.13rem;
+  background-size: 1.88rem 1.88rem;
   ${props => {
     switch (props.iconimg) {
       case 'profile':

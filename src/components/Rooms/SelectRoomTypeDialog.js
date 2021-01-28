@@ -182,6 +182,7 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
         footer={null}
         width="31.25rem"
         onCancel={handleCancel}
+        centered
       >
         <SelectRoomType>
           <RoomInformation>

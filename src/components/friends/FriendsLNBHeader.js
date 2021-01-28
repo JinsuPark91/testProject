@@ -9,7 +9,7 @@ import { WaplSearch } from 'teespace-core';
  */
 
 const SearchBox = styled.div`
-  padding: 0.5rem 0.75rem;
+  padding: 0.63rem 0.75rem;
   .anticon {
     color: #bdc6d3;
   }
@@ -20,17 +20,23 @@ const SearchBox = styled.div`
     }
   }
   .ant-input {
-    padding: 0.38rem 1.88rem;
     &::placeholder {
-      color: #929aa4;
+      color: #bcbcbc;
     }
+  }
+`;
+const FriendSearch = styled(WaplSearch)`
+  &.friendSearch {
+    height: 1.75rem;
+    padding: 0;
   }
 `;
 
 function FriendsLNBHeader({ handleInputChange, handleInputClear }) {
   return (
     <SearchBox>
-      <WaplSearch
+      <FriendSearch
+        className="friendSearch"
         type="underline"
         searchIconColor={{ active: '#17202B', default: '#C6CED6' }}
         clearIconColor={{ active: '#17202B', default: '#C6CED6' }}

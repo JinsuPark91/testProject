@@ -31,8 +31,8 @@ const MyProfileInfo = observer(() => {
 
   return (
     <>
-      <ProfileIcon>
-        <ThumbImage src={thumbPhoto} onClick={toggleMyModal} />
+      <ProfileIcon onClick={toggleMyModal}>
+        <ThumbImage src={thumbPhoto} />
         <SettingImage>
           <img alt="settingIcon" src={settingIcon} />
         </SettingImage>
@@ -50,6 +50,7 @@ const MyProfileInfo = observer(() => {
 
 const ProfileIcon = styled.div`
   position: relative;
+  cursor: pointer;
 `;
 
 const ThumbImage = styled.img`
@@ -58,7 +59,6 @@ const ThumbImage = styled.img`
   border-radius: 50%;
   border: 1px solid rgba(0, 0, 0, 0.05);
   object-fit: cover;
-  cursor: pointer;
 `;
 
 const SettingImage = styled.div`
