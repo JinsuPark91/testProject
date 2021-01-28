@@ -119,6 +119,7 @@ function RoomList() {
         setIsProfileInfoModalVisible(true);
       } else {
         setTargetRoom(roomInfo);
+        setRoomMemberAttr({ isEdit: false });
         setIsRoomMemberModalVisible(true);
       }
     },
