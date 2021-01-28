@@ -33,7 +33,7 @@ setEnv({
   websocketURL: `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${
     process.env.REACT_APP_DEV_WEBSOCKET_DOMAIN || window.location.hostname
   }/${process.env.REACT_APP_DEV_WEBSOCKET_PATH}`,
-  meetingURL: `${window.location.protocol}//${process.env.REACT_APP_DEV_COM_DOMAIN}`,
+  meetingURL: `${window.location.protocol}//${process.env.REACT_APP_MEETING_URL}`,
 });
 
 ReactDOM.render(
