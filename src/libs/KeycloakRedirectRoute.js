@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Route, useHistory } from 'react-router-dom';
-import { useCoreStores, WaplAuthRepository } from 'teespace-core';
+import { useCoreStores, WaplAuthRepository, API } from 'teespace-core';
 import { useKeycloak } from '@react-keycloak/web';
 import Cookies from 'js-cookie';
 import { LogoutTimer } from './logoutTimer';
@@ -16,6 +16,24 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
   const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
   let domainName;
   let loginInfo;
+  useEffect(() => {
+    const refreshTokenHandler = async () => {
+      if (keycloak.authenticated) {
+        await keycloak.updateToken(50000);
+        Cookies.set(
+          'ACCESS_TOKEN',
+          keycloak.token,
+          process.env.REACT_APP_ENV === 'local'
+            ? {}
+            : {
+                domain: `.${mainURL}`,
+              },
+        );
+      }
+    };
+    API.refreshTokenHandler = refreshTokenHandler;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (process.env.REACT_APP_ENV === 'local') {
     [domainName] = process.env.REACT_APP_DEV_SERVICE_DOMAIN.split('.');
