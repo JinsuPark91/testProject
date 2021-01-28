@@ -9,7 +9,7 @@ import { setEnv, getEnv } from './env';
 
 const GlobalStyle = createGlobalStyle`
   html {
-    font-size: ${global.screen.width / 13.66}%}
+    font-size: ${global.screen.width / 16}%}
   }
 `;
 
