@@ -7,6 +7,7 @@ import {
   DesktopNotification,
   AppState,
   WWMS,
+  AlarmSetting,
 } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import { talkRoomStore } from 'teespace-talk-app';
@@ -72,12 +73,15 @@ const MainPage = () => {
       friendStore.fetchFriends({ myUserId }),
       // 접속 정보를 불러오자.
       userStore.getRoutingHistory({ userId: myUserId }),
+      // 알림 세팅을 불러오자
+      userStore.getAlarmList(myUserId),
     ])
       .then(async res => {
         // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
         await talkRoomStore.initialize(myUserId);
 
-        const [, , , , histories] = res;
+        const [, , , , histories, alarmList] = res;
+        AlarmSetting.initAlarmSet(alarmList);
         const lastUrl = histories?.[0]?.lastUrl;
         return Promise.resolve(lastUrl);
       })
@@ -116,7 +120,7 @@ const MainPage = () => {
     } else {
       PlatformUIStore.resourceId = resourceId;
     }
-  }, [isLoading, resourceId, resourceType]);
+  }, [isLoading, resourceId, resourceType, myUserId, roomStore]);
 
   useEffect(() => {
     PlatformUIStore.mainApp = mainApp;
