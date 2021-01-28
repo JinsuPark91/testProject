@@ -20,6 +20,7 @@
     "axios": "^0.20.0",
     "build": "^0.1.4",
     "chart.js": "^2.9.4",
+    "country-data": "^0.0.31",
     "craco": "^0.0.3",
     "craco-less": "^1.17.0",
     "crypto-js": "^4.0.0",

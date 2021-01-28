@@ -365,19 +365,19 @@ function RoomInquiryModal({
           <GroupTitle>
             {isEditMode ? (
               <StyledInput
-                maxLength={20}
+                maxLength={50}
                 value={roomName}
                 onChange={handleChange}
                 ref={nameInputRef}
                 placeholder={roomInfo?.oriName || roomInfo?.nameByUserNames}
               />
             ) : (
-                <p>
-                  {roomInfo?.isMyRoom
-                    ? userStore.myProfile.name
-                    : roomInfo?.customName || roomInfo?.name}
-                </p>
-              )}
+              <p>
+                {roomInfo?.isMyRoom
+                  ? userStore.myProfile.name
+                  : roomInfo?.customName || roomInfo?.name}
+              </p>
+            )}
           </GroupTitle>
         )}
       </Observer>
@@ -403,21 +403,21 @@ function RoomInquiryModal({
             </Button>
           </>
         ) : (
-            <>
-              <SettingButton onClick={handleEdit}>
-                <ButtonIcon iconimg="name" />
+          <>
+            <SettingButton onClick={handleEdit}>
+              <ButtonIcon iconimg="name" />
               이름 변경
             </SettingButton>
-              <SettingButton onClick={handleTalk}>
-                <ButtonIcon iconimg="talk" />
+            <SettingButton onClick={handleTalk}>
+              <ButtonIcon iconimg="talk" />
               Talk
             </SettingButton>
-              <SettingButton onClick={handleMeeting}>
-                <ButtonIcon iconimg="Meeting" />
+            <SettingButton onClick={handleMeeting}>
+              <ButtonIcon iconimg="Meeting" />
               Meeting
             </SettingButton>
-            </>
-          )}
+          </>
+        )}
       </SettingBox>
     </>
   );
@@ -435,7 +435,7 @@ function RoomInquiryModal({
                 src={userStore.getProfilePhotoURL(memberInfo.id, 'small')}
               />
             </UserImag>
-            <UserName>{memberInfo.name}</UserName>
+            <UserName>{memberInfo.nick || memberInfo.name}</UserName>
           </UserItem>
         ))}
       </UserList>

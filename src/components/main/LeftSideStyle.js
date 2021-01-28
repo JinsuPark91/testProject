@@ -25,6 +25,7 @@ export const CustomTabs = styled(Tabs)`
   }
   .ant-tabs-nav-list {
     flex: 1;
+    background-color: #232d3b;
   }
   .ant-tabs-tab {
     width: calc(100% / 3);

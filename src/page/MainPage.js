@@ -7,6 +7,7 @@ import {
   DesktopNotification,
   AppState,
   WWMS,
+  AlarmSetting,
 } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import { talkRoomStore } from 'teespace-talk-app';
@@ -34,6 +35,11 @@ const MainPage = () => {
   const { roomStore, userStore, friendStore, spaceStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
 
+  const url = window.location.origin; //  http://xxx.dev.teespace.net
+  const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
+  const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
+  let domainName;
+  [domainName] = url.split(`//`)[1].split(`.`);
   /**
    * Desktop Notification 권한 확인 및 클릭 시 핸들링 추가
    */
@@ -67,12 +73,15 @@ const MainPage = () => {
       friendStore.fetchFriends({ myUserId }),
       // 접속 정보를 불러오자.
       userStore.getRoutingHistory({ userId: myUserId }),
+      // 알림 세팅을 불러오자
+      userStore.getAlarmList(myUserId),
     ])
       .then(async res => {
         // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
         await talkRoomStore.initialize(myUserId);
 
-        const [, , , , histories] = res;
+        const [, , , , histories, alarmList] = res;
+        AlarmSetting.initAlarmSet(alarmList);
         const lastUrl = histories?.[0]?.lastUrl;
         return Promise.resolve(lastUrl);
       })
@@ -85,9 +94,13 @@ const MainPage = () => {
         setIsLoading(false);
       })
       .catch(err => {
-        setTimeout(() => {
-          history.push('/logout');
-        }, 1000);
+        if (process.env.REACT_APP_ENV === 'local') {
+          setTimeout(() => {
+            history.push('/logout');
+          }, 1000);
+        } else {
+          window.location.href = `${window.location.protocol}//${mainURL}/domain/${domainName}`;
+        }
         console.log(err);
       });
   }, []);
@@ -107,7 +120,7 @@ const MainPage = () => {
     } else {
       PlatformUIStore.resourceId = resourceId;
     }
-  }, [isLoading, resourceId, resourceType]);
+  }, [isLoading, resourceId, resourceType, myUserId, roomStore]);
 
   useEffect(() => {
     PlatformUIStore.mainApp = mainApp;
@@ -120,7 +133,7 @@ const MainPage = () => {
     } else {
       PlatformUIStore.layout = 'collapse';
     }
-  }, [subApp]);
+  }, [subApp, resourceId]);
 
   const handleSystemMessage = message => {
     // console.log('WWMS Message : ', message);
@@ -196,6 +209,10 @@ const MainPage = () => {
       // NOTE : 기본값이 roomId 이기 때문에, s에 대한 처리는 하지 않았음.
       default:
         break;
+    }
+
+    if (!currentResourceId) {
+      return;
     }
 
     try {

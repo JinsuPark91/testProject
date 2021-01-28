@@ -84,7 +84,7 @@ const ProfileMyModal = ({
   }, []);
 
   const handleSettingDialogClose = useCallback(() => {
-    setItemKey(SELECTED_TAB.MY_INFO);
+    setItemKey(SELECTED_TAB.ALARM);
     setSettingDialogVisible(false);
   }, []);
 
@@ -469,7 +469,7 @@ const ProfileMyModal = ({
           <SettingButton
             type="text"
             shape="round"
-            onClick={() => handleSettingDialogOpen(SELECTED_TAB.MY_INFO)}
+            onClick={() => handleSettingDialogOpen(SELECTED_TAB.ALARM)}
           >
             설정
           </SettingButton>

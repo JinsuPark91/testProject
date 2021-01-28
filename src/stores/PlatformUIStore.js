@@ -45,6 +45,9 @@ const PlatformUIStore = observable({
     },
   },
 
+  // [TODO] : Talk 안정화 될때까지 임시
+  totalUnreadCount: 0,
+
   // ref
   content: {
     rect: null,
