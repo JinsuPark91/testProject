@@ -57,6 +57,7 @@ const apps = [
     },
     isUsedInMyRoom: true,
     isSeperated: false,
+    isUsedInProfile: true,
   },
   {
     name: 'calendar',
@@ -67,6 +68,7 @@ const apps = [
     },
     isUsedInMyRoom: true,
     isSeperated: false,
+    isUsedInProfile: true,
   },
   {
     name: 'note',
@@ -77,6 +79,7 @@ const apps = [
     },
     isUsedInMyRoom: true,
     isSeperated: false,
+    isUsedInProfile: true,
   },
 
   {
@@ -88,6 +91,7 @@ const apps = [
     },
     isUsedInMyRoom: false,
     isSeperated: false,
+    isUsedInProfile: false,
   },
   {
     name: 'files',
@@ -98,6 +102,7 @@ const apps = [
     },
     isUsedInMyRoom: true,
     isSeperated: true,
+    isUsedInProfile: true,
   },
 ];
 
@@ -411,21 +416,26 @@ const Header = observer(() => {
 
       <AppIconContainer>
         {appConfirm}
-        {apps.map(({ name, icons, isUsedInMyRoom, isSeperated }) => (
-          <>
-            {isSeperated ? <VerticalBar /> : null}
-            <AppIcon
-              key={name}
-              subApp={PlatformUIStore.subApp}
-              appName={name}
-              onClick={handleAppClick}
-              defaultIcon={icons.default}
-              activeIcon={icons.active}
-              disabledIcon={icons.disabled}
-              disabled={isMyRoom() && !isUsedInMyRoom}
-            />
-          </>
-        ))}
+        {apps.map(
+          ({ name, icons, isUsedInMyRoom, isSeperated, isUsedInProfile }) => (
+            <>
+              {isSeperated ? <VerticalBar /> : null}
+              <AppIcon
+                key={name}
+                subApp={PlatformUIStore.subApp}
+                appName={name}
+                onClick={handleAppClick}
+                defaultIcon={icons.default}
+                activeIcon={icons.active}
+                disabledIcon={icons.disabled}
+                disabled={
+                  (isMyRoom() && !isUsedInMyRoom) ||
+                  (PlatformUIStore.resourceType === 'f' && !isUsedInProfile)
+                }
+              />
+            </>
+          ),
+        )}
       </AppIconContainer>
 
       <UserMenu>

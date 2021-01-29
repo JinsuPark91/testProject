@@ -44,15 +44,18 @@ const MainPage = () => {
    * Desktop Notification 권한 확인 및 클릭 시 핸들링 추가
    */
   useEffect(() => {
-    DesktopNotification.askPermission();
-    DesktopNotification.onClick = noti => {
-      const { data } = noti.target;
-      if (data) {
-        if (data.url) {
-          history.push(data.url);
+    // NOTE. IOS 브라우져의 경우는 브라우져 알림을 지원하지 않음.
+    if (window.Notification) {
+      DesktopNotification.askPermission();
+      DesktopNotification.onClick = noti => {
+        const { data } = noti.target;
+        if (data) {
+          if (data.url) {
+            history.push(data.url);
+          }
         }
-      }
-    };
+      };
+    }
   }, []);
 
   /*
