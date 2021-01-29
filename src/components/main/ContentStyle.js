@@ -11,6 +11,7 @@ export const Splitter = styled(Split)`
   display: flex;
   width: 100%;
   height: 100%;
+  background: #f2ede6;
   & .gutter {
     border-right: 1px solid #e3e7eb;
     cursor: ew-resize;
