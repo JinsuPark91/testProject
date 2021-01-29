@@ -12,7 +12,7 @@ import ProfileSpaceModal from './ProfileSpaceModal';
 import convertSpaceIcon from '../../assets/convert space.svg';
 import moreSpaceIcon from '../../assets/view_more.svg';
 import checkekIcon from '../../assets/ts_check.svg';
-import { ReactComponent as SquareSpaceIcon } from '../../assets/thumbnail.svg';
+import { ReactComponent as SquareSpaceIcon } from '../../assets/card_view.svg';
 // import ProfileInfoModal from './ProfileInfoModal';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
 import AddFriendsBySearch from '../friends/AddFriendsBySearch';
@@ -239,9 +239,7 @@ const ProfileMyModal = ({
           비밀번호 변경
         </Button>
       </UserButtonBox>
-      <LogoutButton shape="round" onClick={handleLogout}>
-        로그아웃
-      </LogoutButton>
+      <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
     </>
   ) : (
     <ProfileInfoModal
@@ -260,7 +258,7 @@ const ProfileMyModal = ({
         <DataBox>
           <Logo
             shape="square"
-            style={{ color: '#fff', backgroundColor: '#75757F' }}
+            style={{ color: '#fff', backgroundColor: '#e2dcd1' }}
           >
             {spaceStore.currentSpace?.name[0]}
           </Logo>
@@ -466,17 +464,16 @@ const ProfileMyModal = ({
       subContent={subContent}
       footer={
         <UserSettingArea>
-          <SettingButton
-            type="text"
-            shape="round"
+          <Button
+            type="link"
             onClick={() => handleSettingDialogOpen(SELECTED_TAB.ALARM)}
           >
             설정
-          </SettingButton>
+          </Button>
           <SettingBar />
-          <SettingButton type="text" shape="round" onClick={handleOpenSupport}>
+          <Button type="link" onClick={handleOpenSupport}>
             고객지원
-          </SettingButton>
+          </Button>
         </UserSettingArea>
       }
       transitionName=""
@@ -536,9 +533,8 @@ const UserButtonBox = styled.div`
   font-size: 0.69rem;
   opacity: 0.8;
   .ant-btn.ant-btn-link {
-    padding: 0 0.375rem;
     font-size: 0.75rem;
-    color: #cacdff;
+    color: #f7f4ef;
     &:hover span {
       text-decoration: underline;
     }
@@ -557,19 +553,19 @@ const LogoutButton = styled(Button)`
   &.ant-btn {
     margin-top: 0.5rem;
     width: 13.94rem;
-    color: #7b869a;
+    color: #f7f4ef;
     background-color: transparent;
-    border-color: #7b869a;
+    border-color: #f7f4ef;
     &:hover {
       background-color: rgba(255, 255, 255, 0.2);
-      border-color: #7b869a;
-      color: #fff;
+      border-color: #f7f4ef;
+      color: #f7f4ef;
     }
     &:active,
     &:focus {
-      background-color: #6c56e5;
-      border-color: #6c56e5;
-      color: #fff;
+      background-color: #17202b;
+      border-color: #f7f4ef;
+      color: #ffffff;
     }
   }
 `;
@@ -678,8 +674,8 @@ const SubInfo = styled.p`
     color: #75757f;
   }
   &:hover {
-    background-color: #dcddff;
-    text-decoration: none;
+    background-color: #ffffff;
+    text-decoration: underline;
   }
   &:active,
   &:focus {
@@ -840,6 +836,17 @@ const UserSettingArea = styled.div`
   justify-content: center;
   padding: 0.625rem 0;
   border-top: 1px solid #e3e7eb;
+  font-size: 0.69rem;
+  opacity: 0.8;
+  .ant-btn.ant-btn-link {
+    min-width: 0;
+    padding: 0 0.375rem;
+    font-size: 0.75rem;
+    color: #3b3b3b;
+    &:hover span {
+      text-decoration: underline;
+    }
+  }
 `;
 const SettingButton = styled(Button)`
   width: 4.375rem;
