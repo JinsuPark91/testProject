@@ -29,6 +29,7 @@ const FriendSearch = styled(WaplSearch)`
   &.friendSearch {
     height: 1.75rem;
     padding: 0;
+    border-width: 0 0 0.06rem 0;
   }
 `;
 
