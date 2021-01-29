@@ -19,6 +19,8 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 import mySign from '../../assets/wapl_me.svg';
 
+const Wrapper = styled.div``;
+
 const FriendItemWrapper = styled.div`
   /* 조직도 조회, 추천친구 스타일 */
   height: 3rem;
@@ -643,9 +645,9 @@ const FriendItem = observer(
           myUserId,
           friendId: itemId,
         });
-        handleMoveItem(myUserId);
+        if (isActive) handleMoveItem(myUserId);
       },
-      [friendStore, myUserId, itemId, handleMoveItem],
+      [friendStore, myUserId, itemId, isActive, handleMoveItem],
     );
 
     const handleAddFriend = useCallback(() => {
@@ -680,7 +682,7 @@ const FriendItem = observer(
     }, []);
 
     return (
-      <>
+      <Wrapper>
         <FriendItemWrapper
           style={style}
           onMouseEnter={handleMouseEnter}
@@ -688,6 +690,7 @@ const FriendItem = observer(
           onClick={handleItemClick}
           isActive={isActive}
           mode={mode}
+          className=""
         >
           <ProfileWrapper>
             <Profile
@@ -756,7 +759,7 @@ const FriendItem = observer(
             },
           ]}
         />
-      </>
+      </Wrapper>
     );
   },
 );

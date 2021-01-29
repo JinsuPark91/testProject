@@ -113,7 +113,7 @@ const ModalWrap = styled(Modal)`
   }
 `;
 const UserArea = styled.div`
-  background-color: #0b1d41;
+  background-color: #17202b;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -132,7 +132,7 @@ const UserArea = styled.div`
       ? css`
           position: relative;
           padding: 1.25rem 1.5rem 0.9375rem;
-          border-radius: 0.1875rem 0.1875rem 1.875rem 1.875rem;
+          border-radius: 0.25rem;
           z-index: 5;
         `
       : css`

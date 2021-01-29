@@ -7,7 +7,7 @@ import { observer } from 'mobx-react';
 import { useCoreStores, Message, Toast } from 'teespace-core';
 import InputCounter from './Input';
 import { LockLineIcon, CameraIcon } from './Icons';
-import friendsIcon from '../assets/ts_friends.svg';
+import friendsIcon from '../assets/profile_talk.svg';
 import profileEditIcon from '../assets/ts_profile_edit.svg';
 import teeMeetingIcon from '../assets/ts_TeeMeeting.svg';
 import OfficeIcon from '../assets/office.svg';
@@ -402,7 +402,7 @@ const Profile = observer(
                   }
                 >
                   <ImageChangeButton position="tl">
-                    <StyleBgImgIcon />
+                    <CameraIcon width="1.25" height="1.25" />
                   </ImageChangeButton>
                 </Dropdown>
               )}
@@ -457,7 +457,7 @@ const Profile = observer(
                 {editEnabled ? (
                   <EditNameInput
                     maxLength={20}
-                    placeholder="별명을 입력해주세요."
+                    placeholder={profile?.nick || profile?.name}
                     onChange={e => {
                       setIsChange(true);
                       setName(e);
@@ -493,6 +493,7 @@ const Profile = observer(
                 )}
               </UserStatusMsg>
               */}
+              {/* <Tooltip placement="bottomLeft" title="어드민만 변경 가능" color="#75757f"></Tooltip> */}
               <UserInfoList>
                 {userType === 'USR0001' && (
                   <UserInfoItem style={{ alignItems: 'flex-start' }}>
@@ -502,15 +503,9 @@ const Profile = observer(
                         {profile?.getFullCompanyJob()}
                       </span>
                       {editEnabled && (
-                        <Tooltip
-                          placement="bottomLeft"
-                          title="어드민만 변경 가능"
-                          color="#75757f"
-                        >
-                          <LockIconBox>
-                            <LockLineIcon width="0.88" height="0.88" />
-                          </LockIconBox>
-                        </Tooltip>
+                        <LockIconBox>
+                          <LockLineIcon width="0.88" height="0.88" />
+                        </LockIconBox>
                       )}
                     </UserInfoText>
                   </UserInfoItem>
@@ -529,6 +524,7 @@ const Profile = observer(
                             ? phone
                             : profile?.companyNum || ``
                         }
+                        placeholder="회사 전화를 입력하세요."
                       />
                     ) : profile?.companyNum ? (
                       <UserInfoText>
@@ -550,6 +546,7 @@ const Profile = observer(
                       value={
                         mobile !== undefined ? mobile : profile?.phone || ``
                       }
+                      placeholder="휴대폰 번호를 입력하세요."
                     />
                   ) : (
                     <UserInfoText>
@@ -575,9 +572,12 @@ const Profile = observer(
                 {editEnabled && (
                   <>
                     <Button
-                      style={{ marginRight: '1.25rem' }}
+                      style={{
+                        color: '#ffffff',
+                        marginRight: '1.25rem',
+                        border: 'none',
+                      }}
                       type="solid"
-                      shape="round"
                       disabled={!isChange || !isValidInputData()}
                       onClick={handleConfirm}
                     >
@@ -585,9 +585,8 @@ const Profile = observer(
                     </Button>
                     <Button
                       type="outlined"
-                      shape="round"
                       onClick={handleCancel}
-                      style={{ backgroundColor: '#fff' }}
+                      style={{ backgroundColor: '#fff', color: '#3b3b3b' }}
                     >
                       취소
                     </Button>
@@ -622,7 +621,7 @@ const Sidebar = styled.div`
   justify-content: center;
   width: ${props => (props.isVertical ? '100%' : '9.38rem')};
   height: ${props => (props.isVertical ? '200px' : '100%')};
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.4);
 `;
 
 const StyledUpload = styled(Upload)`
@@ -662,8 +661,13 @@ const ImageChangeButton = styled(Text)`
   position: absolute;
 
   &:hover {
-    background: rgba(90, 95, 255);
+    background: gray;
     cursor: pointer;
+  }
+
+  &:active,
+  &:focus {
+    background-color: #205855;
   }
 
   ${props => {
@@ -913,7 +917,7 @@ const EditNameInput = styled(InputCounter)`
   background-color: transparent;
   &:not(:disabled):focus-within {
     input {
-      border-color: #6c56e5;
+      border-color: #7b7671;
     }
   }
   &:hover {
@@ -1010,7 +1014,7 @@ const Blind = styled.span`
   overflow: hidden;
 `;
 
-const LockIconBox = styled.span`
+const LockIconBox = styled.div`
   margin: auto 0;
   padding-left: 0.3125rem;
   color: #75757f;
