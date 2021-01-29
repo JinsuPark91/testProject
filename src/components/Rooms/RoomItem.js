@@ -373,12 +373,7 @@ const ACCEPT_ITEMS = [
   'Item:Note:SharedChapters',
   'Item:Calendar:ShareSchedules',
 ];
-const TALK_ACCEPT_ITEMS = [
-  'Item:Note:Pages',
-  'Item:Note:SharedPages',
-  'Item:Calendar:ShareSchedules',
-  'Item:Drive:Files',
-];
+const TALK_ACCEPT_ITEMS = ['Item:Calendar:ShareSchedules', 'Item:Drive:Files'];
 
 // TODO: Content.js 와 동일한 함수로 리팩토링 필요
 const getRoomId = () => {
