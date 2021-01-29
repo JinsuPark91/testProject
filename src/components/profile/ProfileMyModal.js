@@ -1,19 +1,23 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { Button, Avatar, Dropdown, Menu, Checkbox, Tooltip } from 'antd';
-import { useCoreStores, Toast, Message, ProfileInfoModal } from 'teespace-core';
+import {
+  useCoreStores,
+  Toast,
+  Message,
+  ProfileInfoModal,
+  ProfileModal,
+} from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import { useObserver } from 'mobx-react';
 // import { useTranslation } from 'react-i18next';
 import { useKeycloak } from '@react-keycloak/web';
-import ProfileModal from './ProfileModal';
 import SettingDialog from '../usersettings/SettingDialog';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import convertSpaceIcon from '../../assets/convert space.svg';
 import moreSpaceIcon from '../../assets/view_more.svg';
 import checkekIcon from '../../assets/ts_check.svg';
-import { ReactComponent as SquareSpaceIcon } from '../../assets/card_view.svg';
-// import ProfileInfoModal from './ProfileInfoModal';
+import { ReactComponent as SquareSpaceIcon } from '../../assets/thumbnail.svg';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
 import AddFriendsBySearch from '../friends/AddFriendsBySearch';
 import SpaceMemberListModal from '../space/SpaceMemberListModal';
@@ -256,22 +260,13 @@ const ProfileMyModal = ({
       <UserSpaceArea isEdit={isEditMode}>
         <DataName>현재 스페이스</DataName>
         <DataBox>
-          <Logo
-            shape="square"
-            style={{ color: '#fff', backgroundColor: '#e2dcd1' }}
-          >
-            {spaceStore.currentSpace?.name[0]}
-          </Logo>
+          <Logo shape="square">{spaceStore.currentSpace?.name[0]}</Logo>
           <Info>
             <Title>{spaceStore.currentSpace?.name}</Title>
             {spaceStore.currentSpace?.domain}
           </Info>
           <Tooltip placement="bottomLeft" color="#0b1d41" title="스페이스 전환">
-            <Button
-              type="circle"
-              className="btn-convert"
-              onClick={handleSpaceList}
-            >
+            <Button className="btn-convert" onClick={handleSpaceList}>
               <Blind>스페이스 전환</Blind>
             </Button>
           </Tooltip>
@@ -280,7 +275,7 @@ const ProfileMyModal = ({
             overlay={moreMenu}
             placement="bottomRight"
           >
-            <Button type="circle" className="btn-more">
+            <Button className="btn-more">
               <Blind>설정</Blind>
             </Button>
           </Dropdown>
@@ -325,11 +320,7 @@ const ProfileMyModal = ({
       {spaceListVisible && (
         <ConvertDropdown>
           <ConvertNow>
-            <LogoSmall
-              shape="square"
-              checked
-              style={{ color: '#fff', backgroundColor: '#75757F' }}
-            >
+            <LogoSmall shape="square" checked>
               {spaceStore.currentSpace?.name[0]}
             </LogoSmall>
             <NowInfo>
@@ -338,7 +329,7 @@ const ProfileMyModal = ({
             </NowInfo>
             <Checkbox checked className="check-round" />
           </ConvertNow>
-          {spaceStore.spaceList.length > 0 && (
+          {spaceStore.spaceList.length > 1 && (
             <ConvertList>
               {spaceStore.spaceList
                 .filter(elem => elem?.id !== spaceStore.currentSpace?.id)
@@ -349,12 +340,7 @@ const ProfileMyModal = ({
                     }}
                     key={elem}
                   >
-                    <LogoSmall
-                      shape="square"
-                      style={{ color: '#fff', backgroundColor: '#75757F' }}
-                    >
-                      {elem?.name[0]}
-                    </LogoSmall>
+                    <LogoSmall shape="square">{elem?.name[0]}</LogoSmall>
                     <ItemText>{elem?.name}</ItemText>
                   </ConvertItem>
                 ))}
@@ -464,16 +450,16 @@ const ProfileMyModal = ({
       subContent={subContent}
       footer={
         <UserSettingArea>
-          <Button
-            type="link"
+          <SettingButton
+            type="text"
             onClick={() => handleSettingDialogOpen(SELECTED_TAB.ALARM)}
           >
             설정
-          </Button>
+          </SettingButton>
           <SettingBar />
-          <Button type="link" onClick={handleOpenSupport}>
+          <SettingButton type="text" onClick={handleOpenSupport}>
             고객지원
-          </Button>
+          </SettingButton>
         </UserSettingArea>
       }
       transitionName=""
@@ -497,7 +483,7 @@ const UserImage = styled.span`
     left: 0;
     right: 0;
     bottom: 0;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 50%;
   }
   img {
@@ -533,7 +519,11 @@ const UserButtonBox = styled.div`
   font-size: 0.69rem;
   opacity: 0.8;
   .ant-btn.ant-btn-link {
+    min-width: auto;
+    height: auto;
+    padding: 0 0.375rem;
     font-size: 0.75rem;
+    line-height: 1.13rem;
     color: #f7f4ef;
     &:hover span {
       text-decoration: underline;
@@ -552,58 +542,65 @@ const UserBar = styled.span`
 const LogoutButton = styled(Button)`
   &.ant-btn {
     margin-top: 0.5rem;
-    width: 13.94rem;
+    width: 100%;
     color: #f7f4ef;
     background-color: transparent;
     border-color: #f7f4ef;
     &:hover {
       background-color: rgba(255, 255, 255, 0.2);
-      border-color: #f7f4ef;
-      color: #f7f4ef;
+      border-color: #ebe6df;
+      color: #ebe6df;
     }
     &:active,
     &:focus {
-      background-color: #17202b;
-      border-color: #f7f4ef;
-      color: #ffffff;
+      background-color: #ddd7cd;
+      border-color: #ddd7cd;
+      color: #fff;
     }
   }
 `;
 const UserSpaceArea = styled.div`
   position: relative;
-  padding: 0.625rem 0.5rem 1rem 0.875rem;
-  background-color: #f2f2f2;
-  border-radius: 0 0 0.625rem 0.625rem;
+  padding: 0.625rem 0.5rem 1.06rem 0.875rem;
+  background-color: #fbf9f7;
+  border-radius: 0 0 0.25rem 0.25rem;
   ${props =>
     !props.isEdit &&
     css`
       &:before {
         content: '';
         position: absolute;
-        top: -3.125rem;
+        top: -1rem;
         left: 0;
         right: 0;
-        height: 3.125rem;
-        background-color: #f2f2f2;
+        height: 1rem;
+        background-color: #fbf9f7;
       }
     `};
 `;
 const DataName = styled.p`
   margin-bottom: 0.5rem;
   font-size: 0.63rem;
+  line-height: 0.94rem;
   color: #777;
 `;
 const DataBox = styled.div`
   display: flex;
   align-items: center;
   .ant-btn {
+    min-width: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: none;
     background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
     &:hover {
-      background-color: #dcddff;
+      background-color: #f2efec;
     }
     &:active,
     &:focus {
-      background-color: #dcddff;
+      background-color: #f2efec;
     }
   }
   .ant-btn-circle {
@@ -627,7 +624,9 @@ const Logo = styled(Avatar)`
   font-size: 1.125rem;
   line-height: 2.375rem;
   font-weight: 500;
-  border-radius: 0.5rem;
+  color: #49423a;
+  border-radius: 0.25rem;
+  background-color: #ebe6df;
 `;
 const Info = styled.p`
   overflow: hidden;
@@ -673,13 +672,16 @@ const SubInfo = styled.p`
   svg {
     color: #75757f;
   }
+  & + & {
+    border-top: 1px solid #eeedeb;
+  }
   &:hover {
-    background-color: #ffffff;
-    text-decoration: underline;
+    background-color: #faf8f7;
+    text-decoration: none;
   }
   &:active,
   &:focus {
-    background-color: #bcbeff;
+    background-color: #f2efec;
     svg {
       color: #43434a;
     }
@@ -761,9 +763,9 @@ const ConvertDropdown = styled.div`
 const ConvertNow = styled.div`
   display: flex;
   align-items: center;
-  margin: 0 0.6875rem;
-  padding: 0.625rem 0;
-  border-bottom: 1px solid #e3e7eb;
+  margin: 0 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eeedeb;
   &:only-child {
     border-bottom: none;
   }
@@ -780,7 +782,7 @@ const LogoSmall = styled(Logo)`
     props.checked &&
     css`
       line-height: 1.625rem;
-      border: 2px solid #5a5fff;
+      border: 1px solid #0a1e3a;
     `}
 `;
 const NowInfo = styled(Info)`
@@ -816,18 +818,16 @@ const ItemText = styled.p`
 const ConvertAdd = styled.div`
   margin: 0 0.6875rem;
   padding: 0.5rem 0;
-  border-top: 1px solid #e3e7eb;
+  border-top: 1px solid #eeedeb;
 `;
 const AddButton = styled.a`
   display: inline-block;
   font-size: 0.75rem;
+  font-weight: bold;
   line-height: 1.25rem;
-  color: #000;
+  color: #00493d;
   &:hover {
-    color: #000;
-  }
-  span {
-    color: #6c56e5 !important;
+    color: #00493d;
   }
 `;
 const UserSettingArea = styled.div`
@@ -835,18 +835,7 @@ const UserSettingArea = styled.div`
   align-items: center;
   justify-content: center;
   padding: 0.625rem 0;
-  border-top: 1px solid #e3e7eb;
-  font-size: 0.69rem;
-  opacity: 0.8;
-  .ant-btn.ant-btn-link {
-    min-width: 0;
-    padding: 0 0.375rem;
-    font-size: 0.75rem;
-    color: #3b3b3b;
-    &:hover span {
-      text-decoration: underline;
-    }
-  }
+  border-top: 1px solid #eeedeb;
 `;
 const SettingButton = styled(Button)`
   width: 4.375rem;
@@ -858,7 +847,7 @@ const SettingBar = styled.span`
   width: 0.1875rem;
   height: 0.1875rem;
   margin: 0 0.375rem;
-  background-color: #686868;
+  background-color: #7b7671;
   border-radius: 50%;
 `;
 

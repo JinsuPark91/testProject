@@ -22,7 +22,6 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 import MyProfileInfo from '../profile/MyProfileInfo';
 import RoomInquiryModal from '../Rooms/RoomInquiryModal';
 import RoomAddMemberModal from '../Rooms/RoomAddMemberModal';
-// import ProfileInfoModal from '../profile/ProfileInfoModal';
 import {
   ExportIcon,
   SearchIcon,
