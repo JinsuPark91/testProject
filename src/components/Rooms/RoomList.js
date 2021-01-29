@@ -11,7 +11,6 @@ import OpenRoomHome from './OpenRoomHome';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
-// import ProfileInfoModal from '../profile/ProfileInfoModal';
 import Search from '../common/Search';
 
 function RoomList() {
