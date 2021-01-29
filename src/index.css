@@ -12,3 +12,8 @@ body {
 .ant-tabs-content {
   height: 100%;
 }
+
+[contenteditable], [contenteditable] * {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}

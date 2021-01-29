@@ -55,6 +55,7 @@ const ItemTitleBlack = styled(ItemTitle)`
 
 const ItemSub = styled.div`
   margin: 0.63rem 0 0.4375rem;
+  color: ${props => (props.isEmail ? '#818181' : '#000000')};
   font-size: 0.81rem;
   .ant-checkbox-wrapper {
     font-size: 0.81rem;
@@ -390,7 +391,7 @@ function ContentAlarm({
                   Mail 새 편지 수신
                 </ItemTitle>
                 {isBasicPlan && (
-                  <ItemSub>
+                  <ItemSub isMail>
                     BASIC 플랜에서는 제공하지 않는 서비스 입니다.
                   </ItemSub>
                 )}
