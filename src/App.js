@@ -14,6 +14,7 @@ import { PortalProvider, useCoreStores } from 'teespace-core';
 import { initApp as initTalkApp } from 'teespace-talk-app';
 import { initApp as initDriveApp } from 'teespace-drive-app';
 import { initApp as initNoteApp } from 'teespace-note-app';
+import { initApp as initMeetingApp } from 'teespace-meeting-app';
 import {
   initApp as initCalendarApp,
   initializeApp as initializeCalendarApp,
@@ -21,6 +22,7 @@ import {
 import { initApp as initMailApp } from 'teespace-mail-app';
 // import { I18nextProvider } from 'react-i18next';
 import { ReactKeycloakProvider } from '@react-keycloak/web';
+import Cookies from 'js-cookie';
 import AdminPage from './page/AdminPage';
 import NotFoundPage from './page/NotFoundPage';
 import SignUpPage from './page/SignUpPage';
@@ -36,7 +38,6 @@ import PrivateRoute from './libs/PrivateRoute';
 import KeycloakRedirectRoute from './libs/KeycloakRedirectRoute';
 import keycloak from './libs/keycloak';
 import { getCookieValue } from './utils/CookieUtil';
-import Cookies from 'js-cookie';
 
 // MiniTalk 임시.
 import { getQueryParams } from './utils/UrlUtil';
@@ -87,6 +88,7 @@ function App() {
   // initialize apps
   useEffect(() => {
     initTalkApp();
+    initMeetingApp();
     initMailApp();
     initDriveApp();
     initCalendarApp();
