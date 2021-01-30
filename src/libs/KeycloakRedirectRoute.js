@@ -20,6 +20,7 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
     const refreshTokenHandler = async () => {
       if (keycloak.authenticated) {
         const res = await keycloak.updateToken(60);
+
         Cookies.set(
           'ACCESS_TOKEN',
           keycloak.token,

@@ -11,7 +11,6 @@ import OpenRoomHome from './OpenRoomHome';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
-// import ProfileInfoModal from '../profile/ProfileInfoModal';
 import Search from '../common/Search';
 
 function RoomList() {
@@ -119,6 +118,7 @@ function RoomList() {
         setIsProfileInfoModalVisible(true);
       } else {
         setTargetRoom(roomInfo);
+        setRoomMemberAttr({ isEdit: false });
         setIsRoomMemberModalVisible(true);
       }
     },
@@ -262,7 +262,7 @@ const Wrapper = styled.div`
 
 const TopWrapper = styled.div`
   display: flex;
-  padding: 0.5rem 0.75rem;
+  padding: 0.63rem 0.75rem;
   input {
     width: 100%;
   }
@@ -277,7 +277,7 @@ const InputWrapper = styled.div`
   display: flex;
   flex: 1;
   align-items: center;
-  margin-right: 0.5rem;
+  margin-right: 0.56rem;
 `;
 
 const StyledInfoTitle = styled.p`

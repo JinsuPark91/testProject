@@ -17,7 +17,7 @@ const LeftSide = observer(() => {
     PlatformUIStore.tabType = key;
   };
 
-  const totalUnreadCount = roomStore
+  PlatformUIStore.totalUnreadCount = roomStore
     .getRoomArray()
     .filter(roomInfo => roomInfo.isVisible)
     .reduce(
@@ -53,8 +53,10 @@ const LeftSide = observer(() => {
           key="s"
           tab={
             <IconWrapper className="lnb__icon-wrapper">
-              <UnreadCount isVisible={totalUnreadCount > 0}>
-                {totalUnreadCount > 99 ? '99+' : totalUnreadCount}
+              <UnreadCount isVisible={PlatformUIStore.totalUnreadCount > 0}>
+                {PlatformUIStore.totalUnreadCount > 99
+                  ? '99+'
+                  : PlatformUIStore.totalUnreadCount}
               </UnreadCount>
               <ChattingIcon
                 width={1.5}

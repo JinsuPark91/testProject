@@ -99,7 +99,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
         roomId: roomInfo.id,
       });
       const myRoomId =
-        roomStore.getDMRoom({ myUserId, userId: myUserId })?.roomInfo?.id ||
+        roomStore.getDMRoom(myUserId, myUserId)?.roomInfo?.id ||
         roomStore.getRoomArray()?.[0].id;
 
       if (result) history.push(`/s/${myRoomId}/talk`);
@@ -157,7 +157,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
           구성원이 따로 이름 변경하여 보는 룸 이름에는 영향을 주지 않습니다.
         </SettingDescriptionText>
         <Input
-          maxLength={20}
+          maxLength={50}
           value={value}
           onChange={handleChange}
           placeholder={roomInfo?.name}
@@ -193,7 +193,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
               <Message
                 visible={isWarningVisible}
                 title="프라이빗 룸으로 전환하시겠습니까?"
-                subtitle="한 번 변경하면 다시 오픈 룸으로 전활할 수 없습니다."
+                subtitle="한 번 변경하면 다시 오픈 룸으로 전환 할 수 없습니다."
                 type="error"
                 btns={[
                   {

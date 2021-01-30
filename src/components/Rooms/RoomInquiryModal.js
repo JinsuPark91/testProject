@@ -3,15 +3,13 @@ import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled, { css } from 'styled-components';
 import { Button } from 'antd';
-import { useCoreStores, ProfileInfoModal } from 'teespace-core';
-import ProfileModal from '../profile/ProfileModal';
+import { useCoreStores, ProfileInfoModal, ProfileModal } from 'teespace-core';
 import Photos from '../Photos';
 import Input from '../Input';
 import AddIcon from '../../assets/ts_friends_add.svg';
 import TalkIcon from '../../assets/ts_TeeTalk.svg';
 import MeetingIcon from '../../assets/ts_TeeMeeting.svg';
 import EditIcon from '../../assets/edit_white.svg';
-// import ProfileInfoModal from '../profile/ProfileInfoModal';
 import RoomAddMemberModal from './RoomAddMemberModal';
 import { getQueryString, getQueryParams } from '../../utils/UrlUtil';
 
@@ -365,19 +363,19 @@ function RoomInquiryModal({
           <GroupTitle>
             {isEditMode ? (
               <StyledInput
-                maxLength={20}
+                maxLength={50}
                 value={roomName}
                 onChange={handleChange}
                 ref={nameInputRef}
                 placeholder={roomInfo?.oriName || roomInfo?.nameByUserNames}
               />
             ) : (
-                <p>
-                  {roomInfo?.isMyRoom
-                    ? userStore.myProfile.name
-                    : roomInfo?.customName || roomInfo?.name}
-                </p>
-              )}
+              <p>
+                {roomInfo?.isMyRoom
+                  ? userStore.myProfile.name
+                  : roomInfo?.customName || roomInfo?.name}
+              </p>
+            )}
           </GroupTitle>
         )}
       </Observer>
@@ -403,21 +401,21 @@ function RoomInquiryModal({
             </Button>
           </>
         ) : (
-            <>
-              <SettingButton onClick={handleEdit}>
-                <ButtonIcon iconimg="name" />
+          <>
+            <SettingButton onClick={handleEdit}>
+              <ButtonIcon iconimg="name" />
               이름 변경
             </SettingButton>
-              <SettingButton onClick={handleTalk}>
-                <ButtonIcon iconimg="talk" />
+            <SettingButton onClick={handleTalk}>
+              <ButtonIcon iconimg="talk" />
               Talk
             </SettingButton>
-              <SettingButton onClick={handleMeeting}>
-                <ButtonIcon iconimg="Meeting" />
+            <SettingButton onClick={handleMeeting}>
+              <ButtonIcon iconimg="Meeting" />
               Meeting
             </SettingButton>
-            </>
-          )}
+          </>
+        )}
       </SettingBox>
     </>
   );
@@ -435,7 +433,7 @@ function RoomInquiryModal({
                 src={userStore.getProfilePhotoURL(memberInfo.id, 'small')}
               />
             </UserImag>
-            <UserName>{memberInfo.name}</UserName>
+            <UserName>{memberInfo.nick || memberInfo.name}</UserName>
           </UserItem>
         ))}
       </UserList>

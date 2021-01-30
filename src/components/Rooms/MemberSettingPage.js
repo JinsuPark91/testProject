@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, Checkbox } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, Message } from 'teespace-core';
 import { useObserver } from 'mobx-react';
 import { LeaderIcon } from '../Icons';
 
@@ -24,25 +24,26 @@ const WIDTH = {
   BUTTON: '15%',
 };
 
-const TableRow = ({ style, memberInfo, roomId }) => {
-  const { roomStore } = useCoreStores();
-  const history = useHistory();
+const TableRow = ({ style, memberInfo, onTransferClick }) => {
   const isAdmin = memberInfo.role === 'WKS0004';
 
-  const handleClick = async () => {
-    if (roomId) {
-      try {
-        await roomStore.updateRoomLeader({
-          roomId,
-          userId: memberInfo.id,
-        });
-      } catch (err) {
-        console.error('UPDATE ROOM LEADER ERROR : ', err);
-      } finally {
-        history.push(`/s/${roomId}/talk`);
-      }
+  const handleClick = () => {
+    onTransferClick(memberInfo);
+  };
+
+  const getMemberType = () => {
+    switch (memberInfo.grade) {
+      case 'admin':
+        return '어드민';
+      case 'member':
+        return '멤버';
+      case 'guest':
+        return '게스트';
+      default:
+        return '';
     }
   };
+
   return useObserver(() => (
     <RowWrapper style={style}>
       <Cell style={{ width: WIDTH.CHECKBOX }}>
@@ -56,9 +57,7 @@ const TableRow = ({ style, memberInfo, roomId }) => {
       <Cell style={{ width: WIDTH.TEAM }}>{memberInfo.userJob}</Cell>
       <Cell style={{ width: WIDTH.JOB }}>{memberInfo.position}</Cell>
       <Cell style={{ width: WIDTH.PHONE }}>{memberInfo.userPhone}</Cell>
-      <Cell style={{ width: WIDTH.ROLE }}>
-        {memberInfo.role === 'WKS0004' ? '어드민' : '멤버'}
-      </Cell>
+      <Cell style={{ width: WIDTH.ROLE }}>{getMemberType()}</Cell>
       <Cell style={{ width: WIDTH.BUTTON }}>
         <Button
           type="solid"
@@ -74,8 +73,12 @@ const TableRow = ({ style, memberInfo, roomId }) => {
 };
 
 const MemberSettingPage = ({ members, roomId }) => {
+  const { roomStore } = useCoreStores();
+  const history = useHistory();
   const tableBodyRef = useRef(null);
   const [listHeight, setListHeight] = useState(0);
+  const [memberInfo, setMemberInfo] = useState(null);
+  const [trasferVisible, setTransferVisible] = useState(false);
 
   useEffect(() => {
     if (tableBodyRef.current) {
@@ -83,8 +86,54 @@ const MemberSettingPage = ({ members, roomId }) => {
     }
   }, [tableBodyRef]);
 
+  const handleTransferClick = info => {
+    setMemberInfo(info);
+    setTransferVisible(true);
+  };
+
+  const handleTransferOk = async () => {
+    try {
+      if (!roomId) throw new Error('Room ID is not exist.');
+
+      await roomStore.updateRoomLeader({
+        roomId,
+        userId: memberInfo.id,
+      });
+    } catch (err) {
+      console.error('UPDATE ROOM LEADER ERROR : ', err);
+    } finally {
+      setTransferVisible(false);
+      history.push(`/s/${roomId}/talk`);
+    }
+  };
+
+  const handleTransferCancel = () => {
+    setTransferVisible(false);
+  };
+
   return useObserver(() => (
     <Wrapper style={{ height: '100%', padding: '0 0.75rem 0.75rem 0.75rem' }}>
+      <Message
+        visible={trasferVisible}
+        title={`${memberInfo?.name}님을 룸 관리자로 지정하시겠습니까?`}
+        subtitle={`기존의 룸 관리자는 멤버로 권한 변경되며
+            이후 룸 설정에 접근할 수 없습니다.`}
+        type="error"
+        btns={[
+          {
+            type: 'solid',
+            shape: 'round',
+            text: '확인',
+            onClick: handleTransferOk,
+          },
+          {
+            type: 'outlined',
+            shape: 'round',
+            text: '취소',
+            onClick: handleTransferCancel,
+          },
+        ]}
+      />
       <TableHeader>
         <HeaderCell style={{ width: WIDTH.CHECKBOX }}>
           {/* <Checkbox className="check-round" /> */}
@@ -109,6 +158,7 @@ const MemberSettingPage = ({ members, roomId }) => {
               style={style}
               memberInfo={members[index]}
               roomId={roomId}
+              onTransferClick={handleTransferClick}
             />
           )}
         </List>

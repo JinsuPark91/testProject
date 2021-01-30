@@ -24,7 +24,7 @@ const SettingDialogPhoto = () => {
         userProfile = await userStore.getProfile({ userId });
       }
     })();
-  }, []);
+  }, [userId, userStore]);
 
   const [profilePhoto, setProfilePhoto] = useState(undefined);
 
@@ -41,14 +41,25 @@ const SettingDialogPhoto = () => {
     return result;
   };
 
+  const getDtoObject = photo => {
+    const obj = {};
+    obj.profilePhoto = photo;
+    obj.name = userStore.myProfile.name;
+    obj.nick = userStore.myProfile.nick;
+    obj.nationalCode = userStore.myProfile.nationalCode;
+    obj.companyNum = userStore.myProfile.companyNum;
+    obj.phone = userStore.myProfile.phone;
+    obj.birthDate = userStore.myProfile.birthDate;
+    return obj;
+  };
+
   const handleChangePhoto = async file => {
     const fileURL = URL.createObjectURL(file);
     if (fileURL?.includes('blob:')) {
       const blobImage = await toBlob(fileURL);
       const base64Image = await toBase64(blobImage);
-      const updatedInfo = {};
-      updatedInfo.profilePhoto = base64Image;
-      await userStore.updateMyProfile({ updatedInfo });
+      const obj = getDtoObject(base64Image);
+      await userStore.updateMyProfile(obj);
       URL.revokeObjectURL(fileURL);
     }
     // initialize
@@ -65,9 +76,8 @@ const SettingDialogPhoto = () => {
       : profilePhoto || getProfilePhoto();
 
   const handleChangeToDefaultPhoto = async () => {
-    const updatedInfo = {};
-    updatedInfo.profilePhoto = null;
-    await userStore.updateMyProfile({ updatedInfo });
+    const obj = getDtoObject(null);
+    await userStore.updateMyProfile(obj);
   };
 
   const isDefaultPhoto = profilePhoto === undefined && !profile?.thumbPhoto;

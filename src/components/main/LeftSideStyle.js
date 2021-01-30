@@ -6,6 +6,9 @@ export const Wrapper = styled.div`
   width: 16.19rem;
   height: 100%;
   flex-shrink: 0;
+  .ant-tabs-content-holder {
+    height: 100%;
+  }
 `;
 
 export const CustomTabs = styled(Tabs)`
@@ -25,6 +28,7 @@ export const CustomTabs = styled(Tabs)`
   }
   .ant-tabs-nav-list {
     flex: 1;
+    background-color: #232d3b;
   }
   .ant-tabs-tab {
     width: calc(100% / 3);
@@ -32,15 +36,17 @@ export const CustomTabs = styled(Tabs)`
     margin: 0;
     padding: 0;
     height: 3.13rem;
-    background-color: #0b1d41;
+    background-color: #232d3b;
     font-size: 0;
-    &:hover {
-      background-color: #2d317a;
+    &:hover:not(.ant-tabs-tab-active) {
+      .lnb__icon-wrapper {
+        background-color: #313a46;
+      }
     }
   }
 
   .ant-tabs-tab-active .lnb__icon-wrapper {
-    background: #ffffff;
+    background-color: #fff;
   }
 `;
 

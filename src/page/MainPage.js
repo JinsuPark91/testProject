@@ -6,6 +6,8 @@ import {
   useCoreStores,
   DesktopNotification,
   AppState,
+  WWMS,
+  AlarmSetting,
 } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import { talkRoomStore } from 'teespace-talk-app';
@@ -42,15 +44,18 @@ const MainPage = () => {
    * Desktop Notification 권한 확인 및 클릭 시 핸들링 추가
    */
   useEffect(() => {
-    DesktopNotification.askPermission();
-    DesktopNotification.onClick = noti => {
-      const { data } = noti.target;
-      if (data) {
-        if (data.url) {
-          history.push(data.url);
+    // NOTE. IOS 브라우져의 경우는 브라우져 알림을 지원하지 않음.
+    if (window.Notification) {
+      DesktopNotification.askPermission();
+      DesktopNotification.onClick = noti => {
+        const { data } = noti.target;
+        if (data) {
+          if (data.url) {
+            history.push(data.url);
+          }
         }
-      }
-    };
+      };
+    }
   }, []);
 
   /*
@@ -71,12 +76,15 @@ const MainPage = () => {
       friendStore.fetchFriends({ myUserId }),
       // 접속 정보를 불러오자.
       userStore.getRoutingHistory({ userId: myUserId }),
+      // 알림 세팅을 불러오자
+      userStore.getAlarmList(myUserId),
     ])
       .then(async res => {
         // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
         await talkRoomStore.initialize(myUserId);
 
-        const [, , , , histories] = res;
+        const [, , , , histories, alarmList] = res;
+        AlarmSetting.initAlarmSet(alarmList);
         const lastUrl = histories?.[0]?.lastUrl;
         return Promise.resolve(lastUrl);
       })
@@ -98,6 +106,32 @@ const MainPage = () => {
         }
         console.log(err);
       });
+
+    // NOTE : RECONNECT 임시 처리
+    WWMS.setOnReconnect(() => {
+      setIsLoading(true);
+      Promise.all([
+        // 룸을 불러오자
+        roomStore.fetchRoomList({ myUserId }),
+      ])
+        .then(() => {
+          // talk init (fetch room 이후.)
+          return talkRoomStore.initialize(myUserId);
+        })
+        .then(() => {
+          setIsLoading(false);
+        })
+        .catch(err => {
+          if (process.env.REACT_APP_ENV === 'local') {
+            setTimeout(() => {
+              history.push('/logout');
+            }, 1000);
+          } else {
+            window.location.href = `${window.location.protocol}//${mainURL}/domain/${domainName}`;
+          }
+          console.log(err);
+        });
+    });
   }, []);
 
   // 묶어 놓으면, 하나 바뀔때도 다 바뀜
@@ -115,7 +149,7 @@ const MainPage = () => {
     } else {
       PlatformUIStore.resourceId = resourceId;
     }
-  }, [isLoading, resourceId, resourceType]);
+  }, [isLoading, resourceId, resourceType, myUserId, roomStore]);
 
   useEffect(() => {
     PlatformUIStore.mainApp = mainApp;
@@ -128,7 +162,26 @@ const MainPage = () => {
     } else {
       PlatformUIStore.layout = 'collapse';
     }
-  }, [subApp]);
+  }, [subApp, resourceId]);
+
+  const handleSystemMessage = message => {
+    // console.log('WWMS Message : ', message);
+    const resType = PlatformUIStore.resourceType;
+    const resId = PlatformUIStore.resourceId;
+
+    switch (message.NOTI_TYPE) {
+      case 'deleteRoom': {
+        const myRoomId = roomStore.getDMRoom(myUserId, myUserId)?.roomInfo?.id;
+
+        if (resType === 's' && resId === message.SPACE_ID) {
+          history.push(`/s/${myRoomId}/talk`);
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  };
 
   /*
     Layout Event 초기화
@@ -151,11 +204,14 @@ const MainPage = () => {
       history.push(`${history.location.pathname}?${queryString}`);
     });
 
+    WWMS.addHandler('SYSTEM', 'platform_wwms', handleSystemMessage);
+
     return () => {
       EventBus.off('onLayoutFull', fullHandler);
       EventBus.off('onLayoutExpand', expandHandler);
       EventBus.off('onLayoutCollapse', collapseHandler);
       EventBus.off('onLayoutClose', closeHandler);
+      WWMS.removeHandler('SYSTEM', 'platform_wwms');
     };
   }, []);
 
@@ -182,6 +238,10 @@ const MainPage = () => {
       // NOTE : 기본값이 roomId 이기 때문에, s에 대한 처리는 하지 않았음.
       default:
         break;
+    }
+
+    if (!currentResourceId) {
+      return;
     }
 
     try {

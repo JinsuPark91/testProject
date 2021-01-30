@@ -1,7 +1,7 @@
 import React from 'react';
 import { Observer } from 'mobx-react';
-import { talkRoomStore } from 'teespace-talk-app';
-// import PlatformUIStore from '../../stores/PlatformUIStore';
+// import { talkRoomStore } from 'teespace-talk-app';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const FaviconChanger = () => {
   const changeFavicon = isAlarm => {
@@ -13,7 +13,7 @@ const FaviconChanger = () => {
     <Observer>
       {() => {
         let isAlarm = false;
-        if (talkRoomStore.totalUnreadCount > 0) {
+        if (PlatformUIStore.totalUnreadCount > 0) {
           // if (PlatformUIStore.layout === 'collapse') {
           isAlarm = true;
         }

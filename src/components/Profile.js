@@ -6,17 +6,16 @@ import { Button, Input, Dropdown, Menu, Tooltip } from 'antd';
 import { observer } from 'mobx-react';
 import { useCoreStores, Message, Toast } from 'teespace-core';
 import InputCounter from './Input';
-import { LockLineIcon } from './Icons';
-import friendsIcon from '../assets/ts_friends.svg';
+import { LockLineIcon, CameraIcon } from './Icons';
+import friendsIcon from '../assets/profile_talk.svg';
 import profileEditIcon from '../assets/ts_profile_edit.svg';
 import teeMeetingIcon from '../assets/ts_TeeMeeting.svg';
-import tsOfficeIcon from '../assets/ts_office.svg';
-import tsCallIcon from '../assets/ts_call.svg';
-import tsPhoneIcon from '../assets/ts_phone.svg';
-import tsMailIcon from '../assets/ts_mail.svg';
+import OfficeIcon from '../assets/office.svg';
+import CallIcon from '../assets/call.svg';
+import PhoneIcon from '../assets/phone.svg';
+import MailIcon from '../assets/mail.svg';
 import EmailHoverIcon from '../assets/ts_export.svg';
 import tsBgImgIcon from '../assets/ts_photo.svg';
-import tsCameraImgIcon from '../assets/ts_camera.svg';
 import starLineIcon from '../assets/ts_star_line.svg';
 import starIcon from '../assets/ts_star.svg';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
@@ -403,7 +402,7 @@ const Profile = observer(
                   }
                 >
                   <ImageChangeButton position="tl">
-                    <StyleBgImgIcon />
+                    <CameraIcon width="1.25" height="1.25" />
                   </ImageChangeButton>
                 </Dropdown>
               )}
@@ -421,42 +420,44 @@ const Profile = observer(
               <UserImageWrapper position="br">
                 <UserImage src={renderProfilePhoto} />
                 {isMyId() && editEnabled && (
-                  <Dropdown
-                    trigger={['click']}
-                    overlay={
-                      <Menu>
-                        <Menu.Item>
-                          <StyledUpload
-                            component="div"
-                            multiple={false}
-                            accept={['.jpg,.jpeg,.png']}
-                            customRequest={({ file }) =>
-                              handleChangePhoto(file)
-                            }
+                  <ImageChange>
+                    <Dropdown
+                      trigger={['click']}
+                      overlay={
+                        <Menu>
+                          <Menu.Item>
+                            <StyledUpload
+                              component="div"
+                              multiple={false}
+                              accept={['.jpg,.jpeg,.png']}
+                              customRequest={({ file }) =>
+                                handleChangePhoto(file)
+                              }
+                            >
+                              프로필 사진 변경
+                            </StyledUpload>
+                          </Menu.Item>
+                          <Menu.Item
+                            disabled={isDefaultProfilePhotoUsed}
+                            onClick={handleChangeDefaultPhoto}
                           >
-                            프로필 사진 변경
-                          </StyledUpload>
-                        </Menu.Item>
-                        <Menu.Item
-                          disabled={isDefaultProfilePhotoUsed}
-                          onClick={handleChangeDefaultPhoto}
-                        >
-                          기본 이미지로 변경
-                        </Menu.Item>
-                      </Menu>
-                    }
-                  >
-                    <ImageChangeButton position="br">
-                      <StyleCameraImgIcon />
-                    </ImageChangeButton>
-                  </Dropdown>
+                            기본 이미지로 변경
+                          </Menu.Item>
+                        </Menu>
+                      }
+                    >
+                      <CameraBox>
+                        <CameraIcon width="1.88" height="1.88" />
+                      </CameraBox>
+                    </Dropdown>
+                  </ImageChange>
                 )}
               </UserImageWrapper>
               <BigText>
                 {editEnabled ? (
                   <EditNameInput
                     maxLength={20}
-                    placeholder="별명을 입력해주세요."
+                    placeholder={profile?.nick || profile?.name}
                     onChange={e => {
                       setIsChange(true);
                       setName(e);
@@ -492,6 +493,7 @@ const Profile = observer(
                 )}
               </UserStatusMsg>
               */}
+              {/* <Tooltip placement="bottomLeft" title="어드민만 변경 가능" color="#75757f"></Tooltip> */}
               <UserInfoList>
                 {userType === 'USR0001' && (
                   <UserInfoItem style={{ alignItems: 'flex-start' }}>
@@ -501,15 +503,9 @@ const Profile = observer(
                         {profile?.getFullCompanyJob()}
                       </span>
                       {editEnabled && (
-                        <Tooltip
-                          placement="bottomLeft"
-                          title="어드민만 변경 가능"
-                          color="#75757f"
-                        >
-                          <LockIconBox>
-                            <LockLineIcon width="0.88" height="0.88" />
-                          </LockIconBox>
-                        </Tooltip>
+                        <LockIconBox>
+                          <LockLineIcon width="0.88" height="0.88" />
+                        </LockIconBox>
                       )}
                     </UserInfoText>
                   </UserInfoItem>
@@ -528,10 +524,13 @@ const Profile = observer(
                             ? phone
                             : profile?.companyNum || ``
                         }
+                        placeholder="회사 전화를 입력하세요."
                       />
                     ) : profile?.companyNum ? (
                       <UserInfoText>
-                        {`${profile?.nationalCode} ${profile?.companyNum}`}
+                        {`${profile?.nationalCode || ''} ${
+                          profile?.companyNum
+                        }`}
                       </UserInfoText>
                     ) : (
                       <UserInfoText>-</UserInfoText>
@@ -549,11 +548,12 @@ const Profile = observer(
                       value={
                         mobile !== undefined ? mobile : profile?.phone || ``
                       }
+                      placeholder="휴대폰 번호를 입력하세요."
                     />
                   ) : (
                     <UserInfoText>
                       {profile?.phone
-                        ? `${profile?.nationalCode} ${profile?.phone}`
+                        ? `${profile?.nationalCode || ''} ${profile?.phone}`
                         : `-`}
                     </UserInfoText>
                   )}
@@ -574,9 +574,12 @@ const Profile = observer(
                 {editEnabled && (
                   <>
                     <Button
-                      style={{ marginRight: '1.25rem' }}
+                      style={{
+                        color: '#ffffff',
+                        marginRight: '1.25rem',
+                        border: 'none',
+                      }}
                       type="solid"
-                      shape="round"
                       disabled={!isChange || !isValidInputData()}
                       onClick={handleConfirm}
                     >
@@ -584,9 +587,8 @@ const Profile = observer(
                     </Button>
                     <Button
                       type="outlined"
-                      shape="round"
                       onClick={handleCancel}
-                      style={{ backgroundColor: '#fff' }}
+                      style={{ backgroundColor: '#fff', color: '#3b3b3b' }}
                     >
                       취소
                     </Button>
@@ -621,7 +623,7 @@ const Sidebar = styled.div`
   justify-content: center;
   width: ${props => (props.isVertical ? '100%' : '9.38rem')};
   height: ${props => (props.isVertical ? '200px' : '100%')};
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.4);
 `;
 
 const StyledUpload = styled(Upload)`
@@ -636,6 +638,7 @@ const Text = styled.span`
   max-width: 14.69rem;
   width: 100%;
   color: #fff;
+  line-height: 1.19rem;
   font-size: 0.81rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -643,7 +646,7 @@ const Text = styled.span`
 `;
 
 const UserEmailText = styled(Text)`
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
   line-height: 1.25rem;
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.875rem;
@@ -660,8 +663,13 @@ const ImageChangeButton = styled(Text)`
   position: absolute;
 
   &:hover {
-    background: rgba(90, 95, 255);
+    background: gray;
     cursor: pointer;
+  }
+
+  &:active,
+  &:focus {
+    background-color: #205855;
   }
 
   ${props => {
@@ -741,20 +749,27 @@ const ContentBody = styled.div`
 `;
 
 const UserImageWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
   position: relative;
-  align-items: center;
-  justify-content: center;
-  width: 7.5rem;
-  height: 7.5rem;
-  background: #fff;
-  border-radius: 50%;
-`;
-const UserImage = styled.img`
   width: 6.88rem;
   height: 6.88rem;
+  background: #fff;
   border-radius: 50%;
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+  }
+`;
+const UserImage = styled.img`
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
 `;
 
 const UserInfoList = styled.div`
@@ -766,9 +781,9 @@ const UserInfoList = styled.div`
 const UserInfoItem = styled.div`
   display: flex;
   align-items: center;
-  margin-top: 0.88rem;
+  margin-top: 0.94rem;
   &:first-of-type {
-    margin-top: 4.38rem;
+    margin-top: 3.75rem;
   }
   em + em {
     display: none;
@@ -802,7 +817,7 @@ const UserInfoItem = styled.div`
   }
 `;
 const BigText = styled(Text)`
-  margin-top: 0.88rem;
+  margin-top: 1.56rem;
   line-height: 2.25rem;
   font-size: 1.5rem;
 `;
@@ -815,20 +830,21 @@ const ButtonContainer = styled.div`
 
 const FriendsIcon = styled.span`
   display: inline-block;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 1.88rem;
+  height: 1.88rem;
+  margin-bottom: 0.5rem;
   background-image: url(${friendsIcon});
   background-repeat: no-repeat;
-  background-size: 2.75rem 2.75rem;
+  background-size: 1.88rem 1.88rem;
 `;
 
 const StyleIcon = styled.span`
   display: inline-block;
-  width: 2.13rem;
-  height: 2.13rem;
-  margin-bottom: 0.25rem;
+  width: 1.88rem;
+  height: 1.88rem;
+  margin-bottom: 0.5rem;
   background-repeat: no-repeat;
-  background-size: 2.13rem 2.13rem;
+  background-size: 1.88rem 1.88rem;
   ${props => {
     switch (props.iconimg) {
       case 'profile':
@@ -853,7 +869,6 @@ const UserInfoText = styled.span`
   text-overflow: ellipsis;
   font-size: 0.88rem;
   line-height: 1.25rem;
-  font-weight: 600;
   color: #fff;
 `;
 
@@ -869,22 +884,22 @@ const StyleOfficeIcon = styled.em`
       case 'address':
       default:
         return css`
-          background-image: url(${tsOfficeIcon});
+          background-image: url(${OfficeIcon});
         `;
 
       case 'company':
         return css`
-          background-image: url(${tsCallIcon});
+          background-image: url(${CallIcon});
         `;
 
       case 'phone':
         return css`
-          background-image: url(${tsPhoneIcon});
+          background-image: url(${PhoneIcon});
         `;
 
       case 'email':
         return css`
-          background-image: url(${tsMailIcon});
+          background-image: url(${MailIcon});
         `;
 
       case 'emailhover':
@@ -904,7 +919,7 @@ const EditNameInput = styled(InputCounter)`
   background-color: transparent;
   &:not(:disabled):focus-within {
     input {
-      border-color: #6c56e5;
+      border-color: #7b7671;
     }
   }
   &:hover {
@@ -958,14 +973,6 @@ const StyleBgImgIcon = styled.span`
   background-size: 1rem 1rem;
 `;
 
-const StyleCameraImgIcon = styled.span`
-  width: 1rem;
-  height: 1rem;
-  background-image: url(${tsCameraImgIcon});
-  background-repeat: no-repeat;
-  background-size: 1rem 1rem;
-`;
-
 const UserStatusMsg = styled.p`
   margin-top: 0.63rem;
   font-size: 0.88rem;
@@ -1009,11 +1016,30 @@ const Blind = styled.span`
   overflow: hidden;
 `;
 
-const LockIconBox = styled.span`
+const LockIconBox = styled.div`
   margin: auto 0;
   padding-left: 0.3125rem;
   color: #75757f;
   line-height: 0;
+`;
+
+const ImageChange = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+`;
+
+const CameraBox = styled.span`
+  line-height: 0;
+  z-index: 5;
+  cursor: pointer;
 `;
 
 export default Profile;

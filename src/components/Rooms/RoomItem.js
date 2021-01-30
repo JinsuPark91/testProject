@@ -162,7 +162,7 @@ const RoomDropdown = React.memo(
               룸 상단 고정
             </Menu.Item>
           )}
-          {roomInfo.isAlarmUsed ? (
+          {/* {roomInfo.isAlarmUsed ? (
             <Menu.Item key="disableAlarm" onClick={handleAlarmDisable}>
               알림 끄기
             </Menu.Item>
@@ -170,7 +170,7 @@ const RoomDropdown = React.memo(
             <Menu.Item key="enableAlarm" onClick={handleAlarmEnable}>
               알림 켜기
             </Menu.Item>
-          )}
+          )} */}
           <Menu.Item key="member" onClick={handleViewMember}>
             룸 구성원 보기
           </Menu.Item>
@@ -373,12 +373,7 @@ const ACCEPT_ITEMS = [
   'Item:Note:SharedChapters',
   'Item:Calendar:ShareSchedules',
 ];
-const TALK_ACCEPT_ITEMS = [
-  'Item:Note:Pages',
-  'Item:Note:SharedPages',
-  'Item:Calendar:ShareSchedules',
-  'Item:Drive:Files',
-];
+const TALK_ACCEPT_ITEMS = ['Item:Calendar:ShareSchedules', 'Item:Drive:Files'];
 
 // TODO: Content.js 와 동일한 함수로 리팩토링 필요
 const getRoomId = () => {
@@ -537,7 +532,7 @@ const StyleRoomMessage = styled.span`
 
 const RoomNameText = styled.span`
   font-size: 0.81rem;
-  font-weight: 600;
+  font-weight: 500;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
