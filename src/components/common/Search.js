@@ -148,6 +148,7 @@ const Wrapper = styled.div`
     width: 100%;
     height: 1.13rem;
     font-size: 0.75rem;
+    margin-left: 0.38rem;
     background-color: transparent;
     border: 0;
 
@@ -163,7 +164,7 @@ const Wrapper = styled.div`
 
 const IconWrapper = styled.div`
   display: flex;
-  padding: 0 0 0 0.25rem;
+  padding: 0 0 0 0.2rem;
   justify-content: center;
   align-items: center;
   cursor: pointer;
