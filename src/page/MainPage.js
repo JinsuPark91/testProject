@@ -109,7 +109,6 @@ const MainPage = () => {
 
     // NOTE : RECONNECT 임시 처리
     WWMS.setOnReconnect(() => {
-      setIsLoading(true);
       Promise.all([
         // 룸을 불러오자
         roomStore.fetchRoomList({ myUserId }),
@@ -117,9 +116,6 @@ const MainPage = () => {
         .then(() => {
           // talk init (fetch room 이후.)
           return talkRoomStore.initialize(myUserId);
-        })
-        .then(() => {
-          setIsLoading(false);
         })
         .catch(err => {
           if (process.env.REACT_APP_ENV === 'local') {
