@@ -485,7 +485,7 @@ const ItemWrapper = styled.div`
     `}
 
   border-radius: 0.8125rem;
-  padding: 0.625rem;
+  padding: 0.625rem 0.44rem;
   margin: 0 0.25rem;
 
   &:hover {
