@@ -1472,3 +1472,37 @@ export const CameraIcon = React.memo(
     );
   },
 );
+
+export const AddIcon = React.memo(
+  ({ width = 1, height = 1, color = '#fff' }) => {
+    const defaultWidth = 24;
+    const defaultHeight = 24;
+
+    return (
+      <svg
+        width={`${width}rem`}
+        height={`${height}rem`}
+        viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
+        version="1.1"
+      >
+        <title>Icon/common/add</title>
+        <g
+          id="Icon/common/add"
+          stroke="none"
+          strokeWidth="1"
+          fill="none"
+          fillRule="evenodd"
+          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
+            (height * REM_UNIT) / defaultHeight
+          })`}
+        >
+          <path
+            d="M4,12.004 C4,12.556 4.448,13.004 5,13.004 L11,13.004 L11,19.002 C11,19.554 11.448,20.002 12,20.002 C12.552,20.002 13,19.554 13,19.002 L13,13.004 L19,13.004 C19.552,13.004 20,12.556 20,12.004 C20,11.452 19.552,11.004 19,11.004 L13,11.004 L13,5 C13,4.448 12.552,4 12,4 C11.448,4 11,4.448 11,5 L11,11.004 L5,11.004 C4.448,11.004 4,11.452 4,12.004"
+            id="Fill-1"
+            fill={color}
+          />
+        </g>
+      </svg>
+    );
+  },
+);
