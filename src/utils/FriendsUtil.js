@@ -12,13 +12,13 @@ export const handleFriendsDialogType = async (
     publicType: 'ADM0011',
     showRootOrg: true,
   }; // 공개 조직만 조회
-  const response = await orgStore.getOrgTree(params);
-  if (response && response.length) {
-    orgFunction();
-  } else {
-    // NOTE. 멤버 목록 조회는 조직이 있건 없건 필요함.
-    //  단 이후 페이지네이션을 적용하는 부분은 따로 고려해야 함.
-    try {
+  try {
+    const response = await orgStore.getOrgTree(params);
+    if (response && response.length) {
+      orgFunction();
+    } else {
+      // NOTE. 멤버 목록 조회는 조직이 있건 없건 필요함.
+      //  단 이후 페이지네이션을 적용하는 부분은 따로 고려해야 함.
       const useDomainKey =
         process.env.REACT_APP_ENV === 'local' ? domainKey : undefined;
       const res = await orgStore.getUserOrgUserList(
@@ -28,9 +28,9 @@ export const handleFriendsDialogType = async (
         useDomainKey,
       );
       noOrgFunction(res);
-    } catch (e) {
-      console.log('getUserList Error');
     }
+  } catch (e) {
+    console.log('getUserList Error...');
   }
 };
 
