@@ -31,7 +31,13 @@ const SettingDialogCompanyNum = props => {
               onChange={e => onInputChange(e.target.value)}
             />
           ) : (
-            <p>{authStore.user.companyNum || '-'}</p>
+            <p>
+              {authStore.user.companyNum
+                ? `${authStore.user.nationalCode || ''} ${
+                    authStore.user.companyNum
+                  }`
+                : '-'}
+            </p>
           )}
         </TextArea>
         <ButtonArea>

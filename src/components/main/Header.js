@@ -418,7 +418,7 @@ const Header = observer(() => {
         {appConfirm}
         {apps.map(
           ({ name, icons, isUsedInMyRoom, isSeperated, isUsedInProfile }) => (
-            <>
+            <div key={name}>
               {isSeperated ? <VerticalBar /> : null}
               <AppIcon
                 key={name}
@@ -433,7 +433,7 @@ const Header = observer(() => {
                   (PlatformUIStore.resourceType === 'f' && !isUsedInProfile)
                 }
               />
-            </>
+            </div>
           ),
         )}
       </AppIconContainer>

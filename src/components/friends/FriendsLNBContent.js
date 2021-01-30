@@ -244,7 +244,7 @@ const FriendsLNBContent = React.forwardRef(
               userId={selectedId}
               visible={infoModalVisible}
               onClose={() => setInfoModalVisible(false)}
-              position={{ left: '17rem' }}
+              position={{ left: '16.81rem' }}
             />
           )}
         </ContentWrapper>

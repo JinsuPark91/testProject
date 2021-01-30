@@ -31,6 +31,19 @@ const TableRow = ({ style, memberInfo, onTransferClick }) => {
     onTransferClick(memberInfo);
   };
 
+  const getMemberType = () => {
+    switch (memberInfo.grade) {
+      case 'admin':
+        return '어드민';
+      case 'member':
+        return '멤버';
+      case 'guest':
+        return '게스트';
+      default:
+        return '';
+    }
+  };
+
   return useObserver(() => (
     <RowWrapper style={style}>
       <Cell style={{ width: WIDTH.CHECKBOX }}>
@@ -44,9 +57,7 @@ const TableRow = ({ style, memberInfo, onTransferClick }) => {
       <Cell style={{ width: WIDTH.TEAM }}>{memberInfo.userJob}</Cell>
       <Cell style={{ width: WIDTH.JOB }}>{memberInfo.position}</Cell>
       <Cell style={{ width: WIDTH.PHONE }}>{memberInfo.userPhone}</Cell>
-      <Cell style={{ width: WIDTH.ROLE }}>
-        {memberInfo.role === 'WKS0004' ? '어드민' : '멤버'}
-      </Cell>
+      <Cell style={{ width: WIDTH.ROLE }}>{getMemberType()}</Cell>
       <Cell style={{ width: WIDTH.BUTTON }}>
         <Button
           type="solid"

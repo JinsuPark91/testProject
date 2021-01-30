@@ -106,6 +106,32 @@ const MainPage = () => {
         }
         console.log(err);
       });
+
+    // NOTE : RECONNECT 임시 처리
+    WWMS.setOnReconnect(() => {
+      setIsLoading(true);
+      Promise.all([
+        // 룸을 불러오자
+        roomStore.fetchRoomList({ myUserId }),
+      ])
+        .then(() => {
+          // talk init (fetch room 이후.)
+          return talkRoomStore.initialize(myUserId);
+        })
+        .then(() => {
+          setIsLoading(false);
+        })
+        .catch(err => {
+          if (process.env.REACT_APP_ENV === 'local') {
+            setTimeout(() => {
+              history.push('/logout');
+            }, 1000);
+          } else {
+            window.location.href = `${window.location.protocol}//${mainURL}/domain/${domainName}`;
+          }
+          console.log(err);
+        });
+    });
   }, []);
 
   // 묶어 놓으면, 하나 바뀔때도 다 바뀜

@@ -6,6 +6,9 @@ export const Wrapper = styled.div`
   width: 16.19rem;
   height: 100%;
   flex-shrink: 0;
+  .ant-tabs-content-holder {
+    height: 100%;
+  }
 `;
 
 export const CustomTabs = styled(Tabs)`
