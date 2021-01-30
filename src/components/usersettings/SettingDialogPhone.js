@@ -27,7 +27,7 @@ const SettingDialogPhone = props => {
           ) : (
             <p>
               {authStore.user.phone
-                ? `${authStore.user.nationalCode} ${authStore.user.phone}`
+                ? `${authStore.user.nationalCode || ''} ${authStore.user.phone}`
                 : '-'}
             </p>
           )}
