@@ -69,7 +69,16 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
               });
             }
 
-            await authStore.login(loginInfo);
+            const res = await authStore.login(loginInfo);
+
+            if (res) {
+              if (process.env.REACT_APP_ENV !== 'local') {
+                if (!authStore.sessionInfo.isTermAgree) {
+                  window.location.href = `${window.location.protocol}//${mainURL}/first-login`;
+                  return null;
+                }
+              }
+            }
 
             if (process.env.REACT_APP_ENV !== 'local') {
               await HyperAuthRepository.getRememberMe({
