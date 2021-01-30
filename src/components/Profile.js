@@ -528,7 +528,9 @@ const Profile = observer(
                       />
                     ) : profile?.companyNum ? (
                       <UserInfoText>
-                        {`${profile?.nationalCode} ${profile?.companyNum}`}
+                        {`${profile?.nationalCode || ''} ${
+                          profile?.companyNum
+                        }`}
                       </UserInfoText>
                     ) : (
                       <UserInfoText>-</UserInfoText>
@@ -551,7 +553,7 @@ const Profile = observer(
                   ) : (
                     <UserInfoText>
                       {profile?.phone
-                        ? `${profile?.nationalCode} ${profile?.phone}`
+                        ? `${profile?.nationalCode || ''} ${profile?.phone}`
                         : `-`}
                     </UserInfoText>
                   )}
