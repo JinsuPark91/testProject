@@ -147,6 +147,7 @@ const Wrapper = styled.div`
   input {
     width: 100%;
     height: 1.13rem;
+    margin-left: 0.38rem;
     font-size: 0.75rem;
     background-color: transparent;
     border: 0;

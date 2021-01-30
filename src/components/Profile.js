@@ -1015,7 +1015,8 @@ const Blind = styled.span`
 `;
 
 const LockIconBox = styled.div`
-  margin: auto 0;
+  align-self: flex-start;
+  margin-top: 0.25rem;
   padding-left: 0.3125rem;
   color: #75757f;
   line-height: 0;
