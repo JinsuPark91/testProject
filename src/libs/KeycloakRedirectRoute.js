@@ -19,7 +19,7 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
   useEffect(() => {
     const refreshTokenHandler = async () => {
       if (keycloak.authenticated) {
-        await keycloak.updateToken(50000);
+        const res = await keycloak.updateToken(60);
         Cookies.set(
           'ACCESS_TOKEN',
           keycloak.token,
@@ -29,7 +29,9 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
                 domain: `.${mainURL}`,
               },
         );
+        return res;
       }
+      return false;
     };
     API.refreshTokenHandler = refreshTokenHandler;
     // eslint-disable-next-line react-hooks/exhaustive-deps
