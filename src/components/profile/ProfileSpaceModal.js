@@ -6,9 +6,9 @@ import styled from 'styled-components';
 const SpaceInformation = styled.div`
   position: absolute;
   left: -24.125rem;
-  bottom: 0.75rem;
+  bottom: 0;
   width: 22.81rem;
-  padding: 1.875rem 1.563rem 0.875rem;
+  padding: 1.91rem 1rem 0.875rem;
   border-radius: 0.625rem;
   background: #fff;
   text-align: center;
@@ -26,31 +26,45 @@ const SpaceInformation = styled.div`
 `;
 const Title = styled.strong`
   display: block;
-  margin-bottom: 0.375rem;
+  margin-bottom: 0.5rem;
   font-size: 1.25rem;
   font-weight: normal;
-  line-height: 1.875rem;
-  color: #000000;
+  line-height: 1.81rem;
+  color: #000;
 `;
 const Description = styled.p`
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
   font-size: 0.75rem;
-  line-height: 1.125rem;
+  line-height: 1.13rem;
   color: #868686;
 `;
 const ButtonContainer = styled.div`
   margin-bottom: 0.375rem;
   .ant-btn {
     width: 9.25rem;
-    height: 2.5rem;
-    font-size: 0.875rem;
     &:only-child {
       width: 16.06rem;
     }
+    &:last-child {
+      border-color: #205855;
+      background-color: #205855;
+      &:hover {
+        border-color: #698c87;
+        background-color: #698c87;
+      }
+      &:active,
+      &:focus {
+        border-color: #133d3b;
+        background-color: #133d3b;
+      }
+    }
     & + .ant-btn {
-      margin-left: 0.625rem;
+      margin-left: 0.5rem;
     }
   }
+`;
+const LinkButton = styled(Button)`
+  color: #00493d;
 `;
 
 function ProfileSpaceModal({
@@ -104,27 +118,27 @@ function ProfileSpaceModal({
       <ButtonContainer>
         {isAdmin ? (
           <>
-            <Button type="solid" shape="round" onClick={handleAddMember}>
+            <Button type="solid" onClick={handleAddMember}>
               구성원 초대
             </Button>
-            <Button type="solid" shape="round" onClick={handleAdminPage}>
+            <Button type="solid" onClick={handleAdminPage}>
               어드민 페이지
             </Button>
           </>
         ) : (
           <>
-            <Button type="outlined" shape="round" onClick={handleAddFriend}>
+            <Button type="solid" onClick={handleAddFriend}>
               프렌즈 추가
             </Button>
-            <Button type="solid" shape="round" onClick={handleCreateRoom}>
+            <Button type="solid" onClick={handleCreateRoom}>
               룸 만들기
             </Button>
           </>
         )}
       </ButtonContainer>
-      <Button type="link" onClick={onClose}>
+      <LinkButton type="link" onClick={onClose}>
         다음에 하기
-      </Button>
+      </LinkButton>
     </SpaceInformation>
   );
 }

@@ -121,7 +121,6 @@ const Wrapper = styled.div`
   width: 100%;
   height: 1.75rem;
   align-items: center;
-  background-color: #fff;
   background-color: transparent;
   ${({ type }) => {
     switch (type) {

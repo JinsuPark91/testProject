@@ -180,7 +180,7 @@ const Content = () => {
               }}
               gutterStyle={() => {
                 return {
-                  width: '0.3rem',
+                  width: '0.3125rem',
                 };
               }}
               onDragStart={handleSplitDragStart}
