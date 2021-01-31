@@ -120,7 +120,6 @@ const Wrapper = styled.div`
   display: flex;
   width: 100%;
   height: 1.75rem;
-  padding: 0;
   align-items: center;
   background-color: #fff;
   background-color: transparent;
@@ -128,10 +127,13 @@ const Wrapper = styled.div`
     switch (type) {
       case 'underline':
         return css`
+          padding-left: 0.25rem;
           border-bottom: 0.09rem solid #17202b;
         `;
+      default:
       case 'border':
         return css`
+          padding: 0 0.63rem;
           border: 1px solid #7b7671;
           border-radius: 0.375rem;
         `;
@@ -147,6 +149,7 @@ const Wrapper = styled.div`
   input {
     width: 100%;
     height: 1.13rem;
+    margin-left: 0.38rem;
     font-size: 0.75rem;
     background-color: transparent;
     border: 0;
@@ -163,7 +166,6 @@ const Wrapper = styled.div`
 
 const IconWrapper = styled.div`
   display: flex;
-  padding: 0 0 0 0.25rem;
   justify-content: center;
   align-items: center;
   cursor: pointer;

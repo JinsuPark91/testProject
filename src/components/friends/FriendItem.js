@@ -19,7 +19,25 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 import mySign from '../../assets/wapl_me.svg';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  .friend-more-icon,
+  .friend-export-icon {
+    display: none;
+  }
+  .friend-new-icon {
+    display: flex;
+  }
+
+  &:hover {
+    .friend-more-icon,
+    .friend-export-icon {
+      display: flex;
+    }
+    .friend-new-icon {
+      display: none;
+    }
+  }
+`;
 
 const FriendItemWrapper = styled.div`
   /* 조직도 조회, 추천친구 스타일 */
@@ -143,7 +161,7 @@ const NewFriendBadge = styled.div`
   font-size: 0.63rem;
   color: #fff;
   font-weight: 400;
-  text-align: center;
+  justify-content: center;
   border-radius: 50%;
   background-color: #dc4547;
 `;
@@ -247,26 +265,29 @@ const Profile = React.memo(
   },
 );
 
-const FriendAction = React.memo(({ mode, menu, handleDropdownVisible }) => {
-  return (
-    <>
-      {mode === 'friend' && (
-        <>
-          <Dropdown
-            overlay={menu}
-            trigger={['click']}
-            onClick={e => e.stopPropagation()}
-            onVisibleChange={handleDropdownVisible}
-          >
-            <MoreIconWrapper>
-              <ViewMoreIcon />
-            </MoreIconWrapper>
-          </Dropdown>
-        </>
-      )}
-    </>
-  );
-});
+const FriendAction = React.memo(
+  ({ mode, menu, dropdownVisible, handleDropdownVisible }) => {
+    return (
+      <>
+        {mode === 'friend' && (
+          <>
+            <Dropdown
+              visible={dropdownVisible}
+              overlay={menu}
+              trigger={['click']}
+              onClick={e => e.stopPropagation()}
+              onVisibleChange={handleDropdownVisible}
+            >
+              <MoreIconWrapper className="friend-more-icon">
+                <ViewMoreIcon />
+              </MoreIconWrapper>
+            </Dropdown>
+          </>
+        )}
+      </>
+    );
+  },
+);
 
 const OpenMiniTalk = roomInfo => {
   //  FIXME: 안정화 후 함수로 묶기
@@ -318,7 +339,7 @@ const MeAction = React.memo(({ mode, itemId }) => {
   };
 
   return (
-    <MoreIconWrapper onClick={handleExport}>
+    <MoreIconWrapper className="friend-export-icon" onClick={handleExport}>
       <ExportIcon />
     </MoreIconWrapper>
   );
@@ -356,8 +377,8 @@ const RecommendedAction = React.memo(
 const Action = React.memo(
   ({
     mode,
-    isHovering,
     menu,
+    dropdownVisible,
     handleDropdownVisible,
     handleTalkWindowOpen,
     friendRelation,
@@ -366,11 +387,12 @@ const Action = React.memo(
     itemId,
   }) => (
     <>
-      {mode !== 'readOnly' && isHovering && (
+      {mode !== 'readOnly' && (
         <>
           <FriendAction
             mode={mode}
             menu={menu}
+            dropdownVisible={dropdownVisible}
             handleDropdownVisible={handleDropdownVisible}
             handleTalkWindowOpen={handleTalkWindowOpen}
           />
@@ -468,10 +490,7 @@ const FriendItem = observer(
     const fullCompanyJob = friendInfo.getFullCompanyJob({ format: 'friend' });
     const history = useHistory();
     const { friendStore, userStore, roomStore } = useCoreStores();
-
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    const [isHovering, setIsHovering] = useState(false);
-    const [mouseOutWithDropdown, setMouseOutWithDropdown] = useState(false);
     const [
       visibleRemoveFriendMessage,
       setVisibleRemoveFriendMessage,
@@ -557,28 +576,9 @@ const FriendItem = observer(
       }
     };
 
-    const handleDropdownVisible = useCallback(
-      visible => {
-        if (mouseOutWithDropdown) {
-          setIsHovering(false);
-          setMouseOutWithDropdown(false);
-        }
-        setDropdownVisible(visible);
-      },
-      [mouseOutWithDropdown],
-    );
-
-    const handleMouseEnter = useCallback(() => {
-      setIsHovering(true);
+    const handleDropdownVisible = useCallback(visible => {
+      setDropdownVisible(visible);
     }, []);
-
-    const handleMouseLeave = useCallback(() => {
-      if (dropdownVisible) {
-        setMouseOutWithDropdown(true);
-      } else {
-        setIsHovering(false);
-      }
-    }, [dropdownVisible]);
 
     const handleAddBookmark = useCallback(
       async ({ domEvent: e }) => {
@@ -592,7 +592,6 @@ const FriendItem = observer(
         } catch (error) {
           console.log(error);
         }
-        setIsHovering(false);
         setDropdownVisible(false);
         setToastText('즐겨찾기가 설정되었습니다.');
         openToast();
@@ -609,7 +608,6 @@ const FriendItem = observer(
           isFav: false,
         });
         setToastText('즐겨찾기가 해제되었습니다.');
-        setIsHovering(false);
         setDropdownVisible(false);
         openToast();
       },
@@ -671,7 +669,6 @@ const FriendItem = observer(
 
     const handleRemoveFriendMessageOpen = useCallback(({ domEvent: e }) => {
       if (e) e.stopPropagation();
-      setIsHovering(false);
       setDropdownVisible(false);
       setVisibleRemoveFriendMessage(true);
     }, []);
@@ -685,8 +682,6 @@ const FriendItem = observer(
       <Wrapper>
         <FriendItemWrapper
           style={style}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
           onClick={handleItemClick}
           isActive={isActive}
           mode={mode}
@@ -711,10 +706,11 @@ const FriendItem = observer(
             />
           </TextWrapper>
           <ActionWrapper>
-            {!isHovering && isNewFriend && <NewFriendBadge> N </NewFriendBadge>}
+            {isNewFriend && (
+              <NewFriendBadge className="friend-new-icon"> N </NewFriendBadge>
+            )}
             <Action
               mode={mode}
-              isHovering={isHovering}
               menu={
                 <DropdownMenu
                   friendFavorite={friendFavorite}
@@ -723,6 +719,7 @@ const FriendItem = observer(
                   handleRemoveFriendMessageOpen={handleRemoveFriendMessageOpen}
                 />
               }
+              dropdownVisible={dropdownVisible}
               handleDropdownVisible={handleDropdownVisible}
               handleTalkWindowOpen={handleTalkWindowOpen}
               friendRelation={friendStore.checkAlreadyFriend({

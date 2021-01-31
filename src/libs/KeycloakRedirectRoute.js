@@ -19,7 +19,8 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
   useEffect(() => {
     const refreshTokenHandler = async () => {
       if (keycloak.authenticated) {
-        await keycloak.updateToken(50000);
+        const res = await keycloak.updateToken(60);
+
         Cookies.set(
           'ACCESS_TOKEN',
           keycloak.token,
@@ -29,7 +30,9 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
                 domain: `.${mainURL}`,
               },
         );
+        return res;
       }
+      return false;
     };
     API.refreshTokenHandler = refreshTokenHandler;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,7 +69,16 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
               });
             }
 
-            await authStore.login(loginInfo);
+            const res = await authStore.login(loginInfo);
+
+            if (res) {
+              if (process.env.REACT_APP_ENV !== 'local') {
+                if (!authStore.sessionInfo.isTermAgree) {
+                  window.location.href = `${window.location.protocol}//${mainURL}/first-login`;
+                  return null;
+                }
+              }
+            }
 
             if (process.env.REACT_APP_ENV !== 'local') {
               await HyperAuthRepository.getRememberMe({
