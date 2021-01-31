@@ -14,6 +14,7 @@ const FooterWrapper = styled(Footer)`
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+  margin-top: auto;
   padding: 0.75rem 0.69rem 0.75rem 0.94rem;
   background-color: #ffffff;
 `;
