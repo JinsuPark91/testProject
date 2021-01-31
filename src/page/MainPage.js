@@ -115,7 +115,7 @@ const MainPage = () => {
       ])
         .then(() => {
           // talk init (fetch room 이후.)
-          return talkRoomStore.initialize(myUserId);
+          return talkRoomStore.updateRoomMetadataList(myUserId);
         })
         .catch(err => {
           if (process.env.REACT_APP_ENV === 'local') {
