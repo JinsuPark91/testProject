@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled from 'styled-components';
-import { useCoreStores, Toast, ProfileInfoModal } from 'teespace-core';
+import { useCoreStores, Toast, ProfileInfoModal, Message } from 'teespace-core';
 import { Tooltip } from 'antd';
 import { WaplLogo, AddRoomIcon, OpenChatIcon, SearchIcon } from '../Icons';
 import EmptyRoomIllust from '../../assets/space_make.svg';
@@ -18,7 +18,12 @@ function RoomList() {
   const [keyword, setKeyword] = useState('');
   const [openRoomDialogVisible, setOpenRoomDialogVisible] = useState(false);
   const [targetRoom, setTargetRoom] = useState(null);
+  const [exitTargetRoom, setExitTargetRoom] = useState(null);
   const [isRoomMemberModalVisible, setIsRoomMemberModalVisible] = useState(
+    false,
+  );
+  const [isExitAdminModalVisible, setIsExitAdminModalVisible] = useState(false);
+  const [isExitNormalModalVisible, setIsExitNormalModalVisible] = useState(
     false,
   );
   const [roomMemberAttr, setRoomMemberAttr] = useState({});
@@ -92,6 +97,14 @@ function RoomList() {
         setTargetRoom(item);
         setIsRoomMemberModalVisible(true);
         break;
+      case 'exitAdmin': // 룸 관리자가 '나가기' 버튼 누른 경우
+        setExitTargetRoom(item);
+        setIsExitAdminModalVisible(true);
+        break;
+      case 'exitNormal': // 일반 사용자가 '나가기' 버튼 누른 경우
+        setExitTargetRoom(item);
+        setIsExitNormalModalVisible(true);
+        break;
       default:
     }
   };
@@ -128,6 +141,47 @@ function RoomList() {
   const handleCloseProfileInfoModal = useCallback(() => {
     setIsProfileInfoModalVisible(false);
   }, []);
+
+  const handleCloseExitAdminModal = useCallback(() => {
+    setIsExitAdminModalVisible(false);
+  }, []);
+
+  const handleConfirmExitAdminModal = useCallback(() => {
+    if (exitTargetRoom === null) return;
+
+    history.push(`/s/${exitTargetRoom.id}/setting`);
+    setIsExitAdminModalVisible(false);
+  }, [exitTargetRoom]);
+
+  const handleCloseExitNormalModal = useCallback(() => {
+    setIsExitNormalModalVisible(false);
+  }, []);
+
+  const handleConfirmExitNormalModal = useCallback(async () => {
+    if (exitTargetRoom === null) return;
+
+    try {
+      const result = await roomStore.deleteRoomMember({
+        userId: userStore.myProfile.id,
+        roomId: exitTargetRoom.id,
+      });
+
+      if (result) {
+        if (
+          PlatformUIStore.resourceType === 's' &&
+          PlatformUIStore.resourceId === exitTargetRoom.id
+        ) {
+          const firstRoomId = roomStore.getRoomArray()?.[0].id;
+          if (firstRoomId) history.push(`/s/${firstRoomId}/talk`);
+        }
+      }
+    } catch (e1) {
+      console.log('DELETE ROOM MEMBER ERROR : ', e1);
+    } finally {
+      setExitTargetRoom(null);
+      setIsExitNormalModalVisible(false);
+    }
+  }, [exitTargetRoom, userStore, roomStore]);
 
   const getRoomName = roomInfo => {
     const isMyRoom = roomInfo.type === 'WKS0001';
@@ -177,6 +231,44 @@ function RoomList() {
           );
         }}
       </Observer>
+
+      <Message
+        visible={isExitNormalModalVisible}
+        title="룸에서 나가시겠습니까?"
+        subtitle="룸을 나가면, 모바일 WAPL에서도 룸이 삭제됩니다. 중요한 데이터는 미리 백업해 주세요."
+        type="error"
+        btns={[
+          {
+            text: '나가기',
+            type: 'solid',
+            onClick: handleConfirmExitNormalModal,
+          },
+          {
+            text: '취소',
+            type: 'outlined',
+            onClick: handleCloseExitNormalModal,
+          },
+        ]}
+      />
+
+      <Message
+        visible={isExitAdminModalVisible}
+        title="룸 관리자는 룸을 나갈 수 없습니다"
+        subtitle="룸을 나가시려면, 먼저 룸 설정에서 다른 멤버에게 룸 관리자 권한을 이양해주세요."
+        type="warning"
+        btns={[
+          {
+            text: '룸 설정으로 이동',
+            type: 'solid',
+            onClick: handleConfirmExitAdminModal,
+          },
+          {
+            text: '취소',
+            type: 'outlined',
+            onClick: handleCloseExitAdminModal,
+          },
+        ]}
+      />
 
       <SelectRoomTypeDialog
         visible={visible.selectRoomType}
