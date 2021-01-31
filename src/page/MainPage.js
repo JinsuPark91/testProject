@@ -12,9 +12,8 @@ import {
 import { Observer } from 'mobx-react';
 import { talkRoomStore } from 'teespace-talk-app';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
+import { initApp as initMailApp } from 'teespace-mail-app';
 import { Prompt } from 'react-router';
-import { set } from 'mobx';
-import { useOpenInWindow } from 'use-open-window';
 import NewWindow from 'react-new-window';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
@@ -82,6 +81,7 @@ const MainPage = () => {
       .then(async res => {
         // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
         await talkRoomStore.initialize(myUserId);
+        initMailApp(myUserId);
 
         const [, , , , histories, alarmList] = res;
         AlarmSetting.initAlarmSet(alarmList);
