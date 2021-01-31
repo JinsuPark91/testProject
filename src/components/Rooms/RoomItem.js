@@ -489,20 +489,21 @@ const ItemWrapper = styled.div`
   }
 `;
 const StyledMenu = styled(Menu)`
-  & {
-    background: #ffffff;
-    border: 1px solid #c6ced6;
-    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-  }
+  background: #ffffff;
+  border: 1px solid #d0ccc7;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 0.25rem;
 
-  & .ant-dropdown-menu-item {
+  .ant-dropdown-menu-item {
     font-size: 0.75rem;
     color: #000;
 
-    :hover {
-      background-color: #dcddff;
-      border-radius: 0.8125rem;
+    &:hover {
+      background-color: #faf8f7;
+    }
+    &:active,
+    &:focus {
+      background-color: #f2efec;
     }
   }
 `;
