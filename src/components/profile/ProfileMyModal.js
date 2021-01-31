@@ -265,7 +265,7 @@ const ProfileMyModal = ({
             <Title>{spaceStore.currentSpace?.name}</Title>
             {spaceStore.currentSpace?.domain}
           </Info>
-          <Tooltip placement="bottomLeft" color="#0b1d41" title="스페이스 전환">
+          <Tooltip placement="bottomLeft" color="#232D3B" title="스페이스 전환">
             <Button className="btn-convert" onClick={handleSpaceList}>
               <Blind>스페이스 전환</Blind>
             </Button>

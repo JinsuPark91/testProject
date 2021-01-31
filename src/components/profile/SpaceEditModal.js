@@ -222,7 +222,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
           <Tooltip
             title="URL을 변경하시려면, 플랜을 업그레이드해 주세요."
             placement="bottomLeft"
-            color="#0b1d41"
+            color="#232D3B"
             // overlayStyle={{ whiteSpace: 'nowrap' }}
           >
             <UrlInputBox disabled={isBasicPlan}>

@@ -134,7 +134,7 @@ const AppIcon = React.memo(
         title={
           AppToolTipName.toLowerCase() === 'files' ? '모아보기' : AppToolTipName
         }
-        color="#0b1d41"
+        color="#232D3B"
       >
         <AppIconWrapper
           className="header__app-icon"

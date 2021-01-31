@@ -79,7 +79,8 @@ const SettingDialogCountryCode = props => {
             <>
               <Button
                 size="small"
-                type="outlined"
+                type="solid"
+                className="color-Beige"
                 disabled={selectedCountryCode === authStore.user.nationalCode}
                 onClick={handleSuccess}
               >
