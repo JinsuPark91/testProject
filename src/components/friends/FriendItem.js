@@ -81,7 +81,7 @@ const FriendItemWrapper = styled.div`
       display: flex;
       flex-direction: row;
       margin: 0 0.25rem;
-      padding: 0 0.38rem;
+      padding: 0 0.44rem;
 
       ${props.isActive
         ? css`

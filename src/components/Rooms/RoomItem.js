@@ -112,30 +112,18 @@ const RoomDropdown = React.memo(
       onClickMenuItem({ key: 'disableAlarm' });
     };
 
-    const handleExit = async e => {
+    const handleExit = e => {
       e.domEvent.stopPropagation();
       setVisible(false);
-
-      try {
-        const result = await roomStore.deleteRoomMember({
-          userId: userStore.myProfile.id,
-          roomId: roomInfo.id,
-        });
-
-        if (result) {
-          if (
-            PlatformUIStore.resourceType === 's' &&
-            PlatformUIStore.resourceId === roomInfo.id
-          ) {
-            const firstRoomId = roomStore.getRoomArray()?.[0].id;
-            if (firstRoomId) history.push(`/s/${firstRoomId}/talk`);
-          }
-        }
-      } catch (e1) {
-        console.log('DELETE ROOM MEMBER ERROR : ', e1);
-      } finally {
-        onClickMenuItem({ key: 'exit' });
+      if (
+        roomInfo.adminId === userStore.myProfile.id &&
+        !roomInfo.isDirectMsg
+      ) {
+        onClickMenuItem({ key: 'exitAdmin', item: roomInfo });
+      } else {
+        onClickMenuItem({ key: 'exitNormal', item: roomInfo });
       }
+      return false;
     };
 
     const roomMenu = () => {
@@ -485,7 +473,7 @@ const ItemWrapper = styled.div`
     `}
 
   border-radius: 0.8125rem;
-  padding: 0.625rem;
+  padding: 0.625rem 0.44rem;
   margin: 0 0.25rem;
 
   &:hover {
