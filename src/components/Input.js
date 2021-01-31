@@ -57,7 +57,7 @@ const Wrapper = styled.div`
     ${({ disabled }) =>
       !disabled &&
       css`
-        background: #faf8f7;
+        background: transparent;
       `}
   }
 
