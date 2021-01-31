@@ -1,4 +1,5 @@
 const patternNum = /[0-9]/;
+const patternEng = /[a-zA-Z/g]/;
 const patternEngs = /[a-z]/;
 const patternEngb = /[A-Z]/;
 const patternSpc = /[`'";~!@#$%^&*()_+|<>?:{}.\\/\\,\\=\\-]/;
@@ -69,6 +70,12 @@ export const handleCheckValidUrl = value => {
   return patternUrl.test(value);
 };
 
+// 영어 최소 3자 이상 포함 정책
+export const handleCheckValidEngUrl = value => {
+  const engLetter = value.match(patternEng);
+  return engLetter ? engLetter.length >= 3 : false;
+};
+
 export default {
   checkLoginIdLength,
   checkLoginIdValid,
@@ -78,4 +85,5 @@ export default {
   checkPhoneValid,
   checkAuthNumber,
   handleCheckValidUrl,
+  handleCheckValidEngUrl,
 };
