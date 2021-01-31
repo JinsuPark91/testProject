@@ -41,7 +41,8 @@ const SettingDialogBirthDate = props => {
             <>
               <Button
                 size="small"
-                type="outlined"
+                type="solid"
+                className="color-Beige"
                 disabled={authStore.user.birthDate === birthDate}
                 onClick={onSuccess}
               >

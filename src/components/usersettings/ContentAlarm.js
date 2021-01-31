@@ -74,6 +74,7 @@ const SoundText = styled.span`
 
 const SoundButton = styled(Button)`
   width: 1.5rem;
+  min-width: auto;
   height: 1.5rem;
   margin-left: 0.19rem;
   line-height: 0;
@@ -88,25 +89,25 @@ const SoundButton = styled(Button)`
     transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
   }
   &:hover {
-    background-color: #e3e7eb;
-    border-color: #e3e7eb;
+    background-color: #f7f4ef;
+    border-color: #f7f4ef;
     svg {
-      color: #43434a;
+      color: #7b7671;
     }
   }
   &:active,
   &:focus {
-    background-color: #dcddff;
-    border-color: #dcddff;
+    background-color: #ddd7cd;
+    border-color: #ddd7cd;
     svg {
-      color: #523dc7;
+      color: #48423b;
     }
   }
   ${props =>
     props.checked &&
     css`
       svg {
-        color: #523dc7;
+        color: #48423b;
       }
     `}
 `;

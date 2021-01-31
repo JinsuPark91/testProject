@@ -493,7 +493,7 @@ const Profile = observer(
                 )}
               </UserStatusMsg>
               */}
-              {/* <Tooltip placement="bottomLeft" title="어드민만 변경 가능" color="#75757f"></Tooltip> */}
+              {/* <Tooltip placement="bottom" title="어드민만 변경 가능" color="#4C535D"></Tooltip> */}
               <UserInfoList>
                 {userType === 'USR0001' && (
                   <UserInfoItem style={{ alignItems: 'flex-start' }}>
@@ -528,9 +528,11 @@ const Profile = observer(
                       />
                     ) : profile?.companyNum ? (
                       <UserInfoText>
-                        {`${profile?.nationalCode || ''} ${
-                          profile?.companyNum
-                        }`}
+                        <span>
+                          {`${profile?.nationalCode || ''} ${
+                            profile?.companyNum
+                          }`}
+                        </span>
                       </UserInfoText>
                     ) : (
                       <UserInfoText>-</UserInfoText>
@@ -552,9 +554,11 @@ const Profile = observer(
                     />
                   ) : (
                     <UserInfoText>
-                      {profile?.phone
-                        ? `${profile?.nationalCode || ''} ${profile?.phone}`
-                        : `-`}
+                      <span>
+                        {profile?.phone
+                          ? `${profile?.nationalCode || ''} ${profile?.phone}`
+                          : `-`}
+                      </span>
                     </UserInfoText>
                   )}
                 </UserInfoItem>
@@ -773,7 +777,7 @@ const UserImage = styled.img`
 `;
 
 const UserInfoList = styled.div`
-  min-width: 14.69rem;
+  width: 14.69rem;
   display: flex;
   flex-direction: column;
 `;
@@ -861,21 +865,26 @@ const StyleIcon = styled.span`
   }}
 `;
 
-const UserInfoText = styled.span`
+const UserInfoText = styled.div`
   overflow: hidden;
   display: flex;
   align-items: center;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   font-size: 0.88rem;
   line-height: 1.25rem;
   color: #fff;
+  span {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 `;
 
 const StyleOfficeIcon = styled.em`
   display: inline-block;
   width: 1.25rem;
   height: 1.25rem;
+  flex-shrink: 0;
   margin-right: 0.75rem;
   background-repeat: no-repeat;
   background-size: 1.25rem 1.25rem;
@@ -1017,9 +1026,9 @@ const Blind = styled.span`
 `;
 
 const LockIconBox = styled.div`
+  height: 1;
   align-self: flex-start;
-  margin-top: 0.25rem;
-  padding-left: 0.3125rem;
+  margin: 0.25rem 0 0 0.3125rem;
   color: #75757f;
   line-height: 0;
 `;

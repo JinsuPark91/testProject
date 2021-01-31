@@ -37,7 +37,8 @@ const SettingDialogPhone = props => {
             <>
               <Button
                 size="small"
-                type="outlined"
+                type="solid"
+                className="color-Beige"
                 disabled={authStore.user.phone === phone}
                 onClick={onSuccess}
               >

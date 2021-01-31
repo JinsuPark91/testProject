@@ -28,7 +28,7 @@ const ChildItem = ({ roomInfo, onItemClick, onItemClose }) => {
 
   return (
     <ChildItemWrapper onClick={handleClick}>
-      <Tooltip placement="top" title={roomInfo.name} color="#0B1D41">
+      <Tooltip placement="top" title={roomInfo.name} color="#232D3B">
         <div>{roomInfo.name.slice(0, 4)}</div>
       </Tooltip>
       <div style={{ height: '1rem' }}>

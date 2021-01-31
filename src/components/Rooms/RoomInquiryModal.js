@@ -6,12 +6,12 @@ import { Button } from 'antd';
 import { useCoreStores, ProfileInfoModal, ProfileModal } from 'teespace-core';
 import Photos from '../Photos';
 import Input from '../Input';
-import AddIcon from '../../assets/ts_friends_add.svg';
 import TalkIcon from '../../assets/ts_TeeTalk.svg';
 import MeetingIcon from '../../assets/ts_TeeMeeting.svg';
 import EditIcon from '../../assets/edit_white.svg';
 import RoomAddMemberModal from './RoomAddMemberModal';
 import { getQueryString, getQueryParams } from '../../utils/UrlUtil';
+import { AddAcountIcon } from '../Icons';
 
 const AddButton = styled.button`
   display: flex;
@@ -26,14 +26,9 @@ const AddButton = styled.button`
   color: #3b3b3b;
   outline: none;
   cursor: pointer;
-  &:before {
-    content: '';
-    display: inline-block;
-    width: 1.5rem;
-    height: 1.5rem;
-    margin-right: 0.38rem;
-    background: url(${AddIcon}) no-repeat 50% 50%;
-    background-size: contain;
+
+  svg {
+    margin-right: 0.5rem;
   }
 `;
 const UserList = styled.div`
@@ -463,7 +458,12 @@ function RoomInquiryModal({
         type="room"
         userContent={userContent}
         subContent={subContent}
-        footer={<AddButton onClick={handleInvite}>룸 구성원 초대</AddButton>}
+        footer={
+          <AddButton onClick={handleInvite}>
+            <AddAcountIcon width="1.25" height="1.25" color="#232D3B" />룸
+            구성원 초대
+          </AddButton>
+        }
       />
       {
         // NOTE. 룸 정보가 제대로 존재해야하기 때문에 visible 상태를 보고 모달을 렌더하도록 함.
