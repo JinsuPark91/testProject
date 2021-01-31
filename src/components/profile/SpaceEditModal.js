@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Message, useCoreStores } from 'teespace-core';
 import styled, { css } from 'styled-components';
 import { Button, Input, Modal, Tooltip } from 'antd';
-import { handleCheckValidUrl } from '../../libs/Regex';
+import { handleCheckValidUrl, handleCheckValidEngUrl } from '../../libs/Regex';
 import { getMainURL } from '../../utils/UrlUtil';
 import errorIcon from '../../assets/ts_error.svg';
 
@@ -151,6 +151,12 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
   const handleConfirmEditSpace = async () => {
     if (handleCheckValidUrl(newAddress)) {
       setWarningText('영문, 숫자, 하이픈(-)만 입력할 수 있습니다.');
+      setIsWarningTextVisible(true);
+      return;
+    }
+
+    if (!handleCheckValidEngUrl(newAddress)) {
+      setWarningText('영문은 최소 3자 포함해 주세요.');
       setIsWarningTextVisible(true);
       return;
     }
