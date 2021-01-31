@@ -37,7 +37,7 @@ const FriendListBox = styled.div`
     content: '';
     display: block;
     height: 1px;
-    margin: 0.25rem 0.625rem;
+    margin: 0.25rem 0.75rem;
     background-color: #e3e7eb;
   }
 
@@ -49,7 +49,7 @@ const FriendListBox = styled.div`
 `;
 
 const StyleTitle = styled.p`
-  margin: 0.5rem 0.625rem 0.25rem;
+  margin: 0.25rem 0.75rem;
   font-size: 0.75rem;
   line-height: 1.13rem;
   font-weight: 500;

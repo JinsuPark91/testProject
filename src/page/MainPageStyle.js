@@ -16,9 +16,8 @@ export const Loader = styled.div`
 export const Wrapper = styled.div`
   display: flex;
   position: relative;
-  min-width: 1090px;
+  min-width: 65.88rem;
   height: 100%;
-  overflow: auto;
   & * {
     user-select: none;
   }
