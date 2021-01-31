@@ -57,11 +57,12 @@ export const UnreadCount = styled.div`
   padding: 0 0.25rem;
   position: absolute;
   top: 0.31rem;
-  right: 0.31rem;
-  font-size: 0.63rem;
+  left: 50%;
+  margin-left: 0.75rem;
+  font-size: 0.69rem;
   font-weight: 400;
   color: #fff;
-  border-radius: 9px;
+  border-radius: 0.56rem;
   background-color: #dc4547;
 `;
 
