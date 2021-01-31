@@ -14,6 +14,7 @@ const wwms = {
 
       useReconnect: true,
       reconnectInterval: 2000,
+      useDefaultHandler: true,
 
       intervalFunction: () => {
         console.log('send ping.');
