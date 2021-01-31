@@ -19,7 +19,6 @@ import {
   initApp as initCalendarApp,
   initializeApp as initializeCalendarApp,
 } from 'teespace-calendar-app';
-import { initApp as initMailApp } from 'teespace-mail-app';
 // import { I18nextProvider } from 'react-i18next';
 import { ReactKeycloakProvider } from '@react-keycloak/web';
 import Cookies from 'js-cookie';
@@ -89,7 +88,7 @@ function App() {
   useEffect(() => {
     initTalkApp();
     initMeetingApp();
-    initMailApp();
+    // initMailApp();
     initDriveApp();
     initCalendarApp();
     initNoteApp();
