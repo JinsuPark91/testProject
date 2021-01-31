@@ -294,7 +294,7 @@ function RoomList() {
             type="underline"
           />
         </InputWrapper>
-        <Tooltip placement="bottomLeft" title="오픈 룸 홈" color="#0b1d41">
+        <Tooltip placement="bottomLeft" title="오픈 룸 홈" color="#232D3B">
           <OpenChatIconWrapper onClick={handleOpenChat}>
             <OpenChatIcon color="rgb(0, 73, 61)" />
           </OpenChatIconWrapper>
@@ -326,7 +326,7 @@ function RoomList() {
       </RoomContainer>
       <ButtomWrapper>
         <WaplLogo />
-        <Tooltip title="룸 만들기" placement="top" color="#0B1D41">
+        <Tooltip title="룸 만들기" placement="top" color="#232D3B">
           <AddRoomIconWrapper onClick={handleCreateRoom}>
             <AddRoomIcon width={1.38} height={1.38} color="#232D3B" />
           </AddRoomIconWrapper>

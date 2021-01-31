@@ -37,7 +37,8 @@ const SettingDialogName = props => {
             <>
               <Button
                 size="small"
-                type="outlined"
+                type="solid"
+                className="color-Beige"
                 disabled={authStore.user.name === name}
                 onClick={onSuccess}
               >
