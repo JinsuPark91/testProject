@@ -45,14 +45,21 @@ function Photos({
       defaultDiameter={defaultDiameter}
       className={className}
     >
-      {srcList.map((src, index) => (
-        <UserPhoto
-          key={index}
-          styles={getStyle(index, srcList.length, defaultDiameter)}
-        >
-          <img src={src} alt="" />
-        </UserPhoto>
-      ))}
+      {srcList.length ? (
+        srcList.map((src, index) => (
+          <UserPhoto
+            key={index}
+            styles={getStyle(index, srcList.length, defaultDiameter)}
+          >
+            <img src={src} alt="" />
+          </UserPhoto>
+        ))
+      ) : (
+        <img
+          src={`${process.env.PUBLIC_URL}/res/face/Profile_empty_quit.svg`}
+          alt=""
+        />
+      )}
     </Wrapper>
   );
 }
