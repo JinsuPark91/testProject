@@ -1,25 +1,6 @@
 import React from 'react';
-import { useCoreStores } from 'teespace-core';
 import { useObserver } from 'mobx-react';
 import { Tooltip } from 'antd';
-import styled from 'styled-components';
-import { handleCheckNewFriend } from '../utils/FriendsUtil';
-
-const NewFriendBadge = styled.span`
-  display: ${({ number }) => (number ? 'flex' : 'none')};
-  align-items: center;
-  justify-content: center;
-  width: 1rem;
-  height: 1rem;
-  position: absolute;
-  top: 0.31rem;
-  right: 0.31rem;
-  font-size: 0.63rem;
-  font-weight: 400;
-  color: #fff;
-  border-radius: 50%;
-  background-color: #dc4547;
-`;
 
 const REM_UNIT = 16;
 
@@ -109,7 +90,6 @@ export const MailIcon = React.memo(
 
 export const PeopleIcon = React.memo(
   ({ width = 1, height = 1, color = '#ffffff', tooltipText }) => {
-    const { friendStore } = useCoreStores();
     const defaultWidth = 24;
     const defaultHeight = 24;
     const icon = (
@@ -139,14 +119,9 @@ export const PeopleIcon = React.memo(
     );
 
     return useObserver(() => {
-      const numOfNewFriends = friendStore.friendInfoList?.filter(elem =>
-        handleCheckNewFriend(elem),
-      ).length;
-
       return (
         <Tooltip title={tooltipText} placement="bottom" color="#07142d">
           {icon}
-          <NewFriendBadge number={numOfNewFriends}>N</NewFriendBadge>
         </Tooltip>
       );
     });

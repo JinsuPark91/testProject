@@ -30,7 +30,6 @@ import SignUpCompletePage from './page/SignUpCompletePage';
 import DriveSharedFilePage from './page/DriveSharedFilePage';
 import OfficeFilePage from './page/OffiveFilePage';
 import LogoutPage from './page/LogoutPage';
-// import MainPage from './local-test/MainPage';
 import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
 import PrivateRoute from './libs/PrivateRoute';
@@ -87,12 +86,12 @@ function App() {
   // initialize apps
   useEffect(() => {
     initTalkApp();
-    initMeetingApp();
-    // initMailApp();
     initDriveApp();
     initCalendarApp();
-    initNoteApp();
     initializeCalendarApp();
+    initNoteApp();
+    initMeetingApp();
+    // initMailApp();
   }, []);
 
   // hydrate mobx stores

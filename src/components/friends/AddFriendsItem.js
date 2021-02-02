@@ -180,6 +180,10 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
 
   const FriendAddItem = React.memo(({ friendInfo, style }) => {
     const userName = friendInfo?.displayName;
+    const fullCompanyJob =
+      `(${friendInfo.getFullCompanyJob({
+        format: 'friend',
+      })})` || '';
     const isMe =
       friendInfo?.friendId || friendInfo.id === userStore.myProfile.id;
     return (
@@ -203,7 +207,9 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
               )}
             />
           </ImageBox>
-          <FriendName>{userName}</FriendName>
+          <FriendName>
+            {userName} {fullCompanyJob}
+          </FriendName>
           {!isViewMode && renderMenu(friendInfo)}
         </FriendItem>
       </>
