@@ -127,6 +127,7 @@ function RoomList() {
         const found = roomInfo.memberIdListString
           .split(',')
           .find(userId => userId !== userStore.myProfile.id);
+
         setTargetUserId(found);
         setIsProfileInfoModalVisible(true);
       } else {
@@ -219,16 +220,14 @@ function RoomList() {
       </Observer>
       <Observer>
         {() => {
-          return (
-            targetUserId && (
-              <ProfileInfoModal
-                userId={targetUserId}
-                visible={isProfileInfoModalVisible}
-                onClose={handleCloseProfileInfoModal}
-                position={{ left: '17rem' }}
-              />
-            )
-          );
+          return targetUserId ? (
+            <ProfileInfoModal
+              userId={targetUserId}
+              visible={isProfileInfoModalVisible}
+              onClose={handleCloseProfileInfoModal}
+              position={{ left: '17rem' }}
+            />
+          ) : null;
         }}
       </Observer>
 
