@@ -395,11 +395,10 @@ function OpenRoomHome({ visible, onCancel }) {
                     <RoomList>
                       {roomStore.getRecommandRoomArray().map(roomInfo => (
                         <RoomListItem key={roomInfo.id}>
-                          <Photos
+                          <OpenRoomPhotos
                             srcList={getUserPhotos(roomInfo.memberIdListString)}
                             defaultDiameter="2.26"
                           />
-
                           <RecomRoomTitle
                             style={{
                               flex: 1,
@@ -646,6 +645,10 @@ const StyledSlider = styled(Slider)`
       background-image: url(${NextArrowIcon});
     }
   }
+`;
+
+const OpenRoomPhotos = styled(Photos)`
+  cursor: default;
 `;
 
 export default OpenRoomHome;

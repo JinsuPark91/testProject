@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import Upload from 'rc-upload';
-import CameraIcon from '../assets/ts_camera.svg';
+import CameraIcon from '../assets/camera.svg';
 import InputCounter from '../components/Input';
 
 export const InnerItem = styled.li`
@@ -122,5 +122,8 @@ export const StyledUpload = styled(Upload)`
 `;
 
 export const LockIconBox = styled.span`
+  display: inline-block;
+  min-width: 3.5rem;
+  text-align: center;
   color: #75757f;
 `;
