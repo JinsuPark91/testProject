@@ -1,5 +1,5 @@
 const patternNum = /[0-9]/;
-const patternEng = /[a-zA-Z/g]/;
+const patternEng = /[a-zA-Z]/g;
 const patternEngs = /[a-z]/;
 const patternEngb = /[A-Z]/;
 const patternSpc = /[`'";~!@#$%^&*()_+|<>?:{}.\\/\\,\\=\\-]/;

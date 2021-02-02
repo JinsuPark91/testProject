@@ -5,13 +5,17 @@ import { MailSideView } from 'teespace-mail-app';
 import { ChattingIcon, MailIcon, PeopleIcon } from '../Icons';
 import FriendLnb from '../friends/FriendsLNB';
 import RoomList from '../Rooms/RoomList';
+import { handleCheckNewFriend } from '../../utils/FriendsUtil';
 import { Wrapper, CustomTabs, UnreadCount, IconWrapper } from './LeftSideStyle';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const { TabPane } = CustomTabs;
 
 const LeftSide = observer(() => {
-  const { roomStore } = useCoreStores();
+  const { roomStore, friendStore } = useCoreStores();
+  const newFriendNum = friendStore.friendInfoList?.filter(elem =>
+    handleCheckNewFriend(elem),
+  ).length;
 
   const handleSelectTab = key => {
     PlatformUIStore.tabType = key;
@@ -37,6 +41,9 @@ const LeftSide = observer(() => {
           key="f"
           tab={
             <IconWrapper className="lnb__icon-wrapper">
+              <UnreadCount isVisible={newFriendNum > 0}>
+                {newFriendNum}
+              </UnreadCount>
               <PeopleIcon
                 width={1.5}
                 height={1.5}
