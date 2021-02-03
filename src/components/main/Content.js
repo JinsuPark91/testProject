@@ -83,6 +83,7 @@ const Content = () => {
             layoutState={PlatformUIStore.layout}
             isSearchInputVisible={PlatformUIStore.isSearchVisible}
             onSearchClose={handleSearchClose}
+            isMini={false}
           />
         );
       case 'note':

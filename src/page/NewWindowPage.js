@@ -64,6 +64,7 @@ const NewWindowPage = () => {
           layoutState="expand"
           isSearchInputVisible={false}
           onSearchClose={() => {}}
+          isMini
         />
       );
     case 'meeting':
