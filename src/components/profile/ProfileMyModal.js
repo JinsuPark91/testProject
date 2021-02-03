@@ -211,10 +211,14 @@ const ProfileMyModal = ({
     setIsCreated(created);
   }, [created]);
 
+  const isTmaxDomain = !!/^(tmax)\./gi.exec(window.location.hostname);
+
   // 이후 '현재 스페이스의 어드민'인지를 체크하도록 수정
   const moreMenu = (
     <Menu style={{ minWidth: '6.25rem' }}>
-      <Menu.Item onClick={handleInviteDialog}>구성원 초대</Menu.Item>
+      {!isTmaxDomain ? (
+        <Menu.Item onClick={handleInviteDialog}>구성원 초대</Menu.Item>
+      ) : null}
       <Menu.Item onClick={handleMemberList}>구성원 목록</Menu.Item>
       {isAdmin && (
         <Menu.Item onClick={handleSpaceEditDialog}>스페이스 편집</Menu.Item>
