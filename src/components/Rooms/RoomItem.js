@@ -15,6 +15,7 @@ import {
   ExportIcon,
 } from '../Icons';
 import PlatformUIStore from '../../stores/PlatformUIStore';
+import mySign from '../../assets/wapl_me.svg';
 
 const RoomDropdown = React.memo(
   ({ children, roomInfo, onMenuClick, onClickMenuItem }) => {
@@ -280,12 +281,16 @@ const RoomItemContent = ({
                     </div>
                   )}
                   <>
+                    {isMyRoom ? (
+                      <MyIcon>
+                        <img src={mySign} alt="me" />
+                      </MyIcon>
+                    ) : null}
                     <RoomNameText>
                       {isMyRoom
                         ? userStore.myProfile.nick || userStore.myProfile.name
                         : roomInfo.customName || roomInfo.name}
                     </RoomNameText>
-                    {isMyRoom ? <MyIcon>나</MyIcon> : null}
                   </>
                 </>
               )}
@@ -442,17 +447,14 @@ const RoomItem = ({
 };
 
 const MyIcon = styled.div`
-  display: inline-flex;
-  flex: 0 0 1rem;
-  height: 1rem;
-  align-items: center;
-  justify-content: center;
-  background: #232d3b;
-  font-size: 0.69rem;
-  color: white;
-  font-weight: 400;
-  border-radius: 0.25rem;
-  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+  width: 0.88rem;
+  height: 0.88rem;
+  line-height: 0;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const ItemWrapper = styled.div`
@@ -522,6 +524,7 @@ const StyleRoomMessage = styled.span`
 const RoomNameText = styled.span`
   font-size: 0.81rem;
   font-weight: 500;
+  line-height: 1;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
