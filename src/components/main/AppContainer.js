@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Wrapper, SubWrapper } from './AppContainerStyle';
 
 export const MainAppContainer = ({ children }) => {
-  return <Wrapper>{children}</Wrapper>;
+  return <Wrapper className="mainapp-container">{children}</Wrapper>;
 };
 
 export const SubAppContainer = ({ splitRef, children, layoutState }) => {
@@ -51,5 +51,5 @@ export const SubAppContainer = ({ splitRef, children, layoutState }) => {
         break;
     }
   });
-  return <SubWrapper>{children}</SubWrapper>;
+  return <SubWrapper className="subapp-container">{children}</SubWrapper>;
 };
