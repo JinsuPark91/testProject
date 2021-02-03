@@ -12,7 +12,7 @@ import {
 import { Observer } from 'mobx-react';
 import { talkRoomStore } from 'teespace-talk-app';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
-import { initApp as initMailApp } from 'teespace-mail-app';
+import { initApp as initMailApp, WindowMail } from 'teespace-mail-app';
 import { Prompt } from 'react-router';
 import NewWindow from 'react-new-window';
 import LeftSide from '../components/main/LeftSide';
@@ -308,6 +308,7 @@ const MainPage = () => {
       {leftSide}
       {mainSide}
       <WindowManager />
+      <WindowMail />
     </Wrapper>
   );
 };
