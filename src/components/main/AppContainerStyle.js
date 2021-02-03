@@ -10,4 +10,7 @@ export const Wrapper = styled.div`
 export const SubWrapper = styled(Wrapper)`
   min-width: 23.13rem;
   z-index: 5;
+  @media (max-width: 1024px) {
+    display: none;
+  }
 `;
