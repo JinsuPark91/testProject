@@ -39,7 +39,7 @@ import { getCookieValue } from './utils/CookieUtil';
 
 // MiniTalk 임시.
 import { getQueryParams } from './utils/UrlUtil';
-import MiniTalkPage from './page/MiniTalkPage';
+import NewWindowPage from './page/NewWindowPage';
 // MiniTalk 임시.
 
 // import i18next from './i18n';
@@ -157,7 +157,7 @@ function App() {
                     />
                     <PrivateRoute
                       path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
-                      component={isMini ? MiniTalkPage : MainPage}
+                      component={isMini ? NewWindowPage : MainPage}
                     />
                     <PrivateRoute path="/admin" component={AdminPage} />
                     <Route component={NotFoundPage} />

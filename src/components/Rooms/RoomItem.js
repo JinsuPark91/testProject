@@ -209,6 +209,7 @@ const RoomItemContent = ({
     if (!isOpened) {
       PlatformUIStore.openWindow({
         id: roomInfo.id,
+        type: 'talk',
         name: roomInfo.name,
         userCount: roomInfo.userCount,
         handler: null,
