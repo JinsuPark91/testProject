@@ -221,6 +221,7 @@ const Header = observer(() => {
     if (!isOpened) {
       PlatformUIStore.openWindow({
         id: roomInfo.id,
+        type: 'talk',
         name: roomInfo.name,
         userCount: roomInfo.userCount,
         handler: null,
@@ -264,6 +265,30 @@ const Header = observer(() => {
     history.push(`${history.location.pathname}?${queryString}`);
   };
 
+  const openMeeting = () => {
+    const roomInfo = findRoom();
+
+    PlatformUIStore.openWindow({
+      id: roomInfo.id,
+      type: 'meeting',
+      name: roomInfo.name,
+      userCount: roomInfo.userCount,
+      handler: null,
+    });
+    // const isOpened = PlatformUIStore.getWindow(roomInfo.id);
+    // if (!isOpened) {
+    //   PlatformUIStore.openWindow({
+    //     id: roomInfo.id,
+    //     type: 'meeting',
+    //     name: roomInfo.name,
+    //     userCount: roomInfo.userCount,
+    //     handler: null,
+    //   });
+    // } else {
+    //   PlatformUIStore.focusWindow(roomInfo.id);
+    // }
+  };
+
   const handleAppClick = async appName => {
     if (PlatformUIStore.subApp !== appName) {
       if (appName === 'meeting') {
@@ -271,7 +296,9 @@ const Header = observer(() => {
           <MeetingApp.ConfirmLaunchApp
             onConfirm={() => {
               setAppConfirm(null);
-              openSubApp(appName);
+              openMeeting();
+
+              // openSubApp(appName);
             }}
             onCancel={() => {
               setAppConfirm(null);

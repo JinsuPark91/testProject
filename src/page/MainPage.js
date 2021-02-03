@@ -12,7 +12,7 @@ import {
 import { Observer } from 'mobx-react';
 import { talkRoomStore } from 'teespace-talk-app';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
-import { initApp as initMailApp } from 'teespace-mail-app';
+import { initApp as initMailApp, WindowMail } from 'teespace-mail-app';
 import { Prompt } from 'react-router';
 import NewWindow from 'react-new-window';
 import LeftSide from '../components/main/LeftSide';
@@ -308,6 +308,7 @@ const MainPage = () => {
       {leftSide}
       {mainSide}
       <WindowManager />
+      <WindowMail />
     </Wrapper>
   );
 };
@@ -317,8 +318,15 @@ export default MainPage;
 // [TODO] : 나중에 다른데로 옮기자.
 const Window = ({ windowInfo }) => {
   const { id: windowId } = windowInfo;
-  const url = `/s/${windowId}/talk?mini=true`;
+  const url = `/s/${windowId}/${windowInfo.type}?mini=true`;
   const [handler, setHandler] = useState(null);
+  const features =
+    windowInfo.type === 'talk'
+      ? {
+          width: 600,
+          height: 800,
+        }
+      : {};
 
   useEffect(() => {
     if (handler) {
@@ -331,7 +339,15 @@ const Window = ({ windowInfo }) => {
     setHandler(_handler);
   };
 
-  return <NewWindow url={url} onOpen={handleOpen} copyStyles />;
+  return (
+    <NewWindow
+      url={url}
+      name="_blank"
+      onOpen={handleOpen}
+      features={features}
+      copyStyles
+    />
+  );
 };
 
 const WindowManager = () => {
@@ -352,7 +368,9 @@ const WindowManager = () => {
     <Observer>
       {() => {
         const { windows } = PlatformUIStore;
-        const activeWindows = windows.filter(windowInfo => windowInfo.handler);
+        const activeTalkWindows = windows.filter(
+          windowInfo => windowInfo.handler && windowInfo.type === 'talk',
+        );
 
         return (
           <>
@@ -365,7 +383,7 @@ const WindowManager = () => {
             ))}
             <FloatingButton
               visible={false}
-              rooms={activeWindows}
+              rooms={activeTalkWindows}
               count={5}
               onItemClick={roomInfo => {
                 PlatformUIStore.focusWindow(roomInfo.id);
