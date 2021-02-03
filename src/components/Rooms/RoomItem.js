@@ -447,9 +447,10 @@ const RoomItem = ({
 };
 
 const MyIcon = styled.div`
-  margin-right: 0.25rem;
   width: 0.88rem;
   height: 0.88rem;
+  flex-shrink: 0;
+  margin-right: 0.25rem;
   line-height: 0;
   img {
     width: 100%;
