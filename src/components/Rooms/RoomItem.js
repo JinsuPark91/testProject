@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { List, Menu, Dropdown } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
+import { isEqual } from 'lodash';
 import { useCoreStores } from 'teespace-core';
 import { talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
@@ -599,4 +600,13 @@ const IconWrapper = styled.div`
   }
 `;
 
-export default RoomItem;
+export default React.memo(
+  RoomItem,
+  (prevProps, nextProps) =>
+    prevProps.selected === nextProps.selected &&
+    prevProps.onClick === nextProps.onClick &&
+    prevProps.onMenuClick === nextProps.onMenuClick &&
+    prevProps.onClickMenuItem === nextProps.onClickMenuItem &&
+    prevProps.onClickRoomPhoto === nextProps.onClickRoomPhoto &&
+    isEqual(prevProps.roomInfo, nextProps.roomInfo),
+);
