@@ -6,13 +6,16 @@ import OrganizationDropdown from './OrganizationDropdown';
 
 const Wrapper = styled.div`
   display: flex;
+  margin-bottom: 0.63rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #eeedeb;
 `;
 
 const UserCounter = styled.div`
   flex: 1;
   text-align: right;
   align-self: center;
-  color: #000000;
+  color: rgba(0, 0, 0, 0.5);
   font-size: 0.75rem;
 `;
 
