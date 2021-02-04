@@ -296,9 +296,9 @@ const Header = observer(() => {
           <MeetingApp.ConfirmLaunchApp
             onConfirm={() => {
               setAppConfirm(null);
-              openMeeting();
+              // openMeeting();
 
-              // openSubApp(appName);
+              openSubApp(appName);
             }}
             onCancel={() => {
               setAppConfirm(null);

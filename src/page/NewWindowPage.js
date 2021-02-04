@@ -22,10 +22,11 @@ const NewWindowPage = () => {
       }
 
       // 스페이스를 불러오자
-      await spaceStore.fetchSpaces({
+      const result = await spaceStore.fetchSpaces({
         userId: myUserId,
         isLocal: process.env.REACT_APP_ENV === 'local',
       });
+      console.log('SPACE STORE : ', result);
 
       // 룸을 불러오자
       const roomInfo = await roomStore.fetchRoom({ roomId, myUserId });
