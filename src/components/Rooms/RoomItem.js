@@ -150,7 +150,7 @@ const RoomDropdown = React.memo(
               룸 상단 고정
             </Menu.Item>
           )}
-          {/* {roomInfo.isAlarmUsed ? (
+          {roomInfo.isAlarmUsed ? (
             <Menu.Item key="disableAlarm" onClick={handleAlarmDisable}>
               알림 끄기
             </Menu.Item>
@@ -158,7 +158,7 @@ const RoomDropdown = React.memo(
             <Menu.Item key="enableAlarm" onClick={handleAlarmEnable}>
               알림 켜기
             </Menu.Item>
-          )} */}
+          )}
           <Menu.Item key="member" onClick={handleViewMember}>
             룸 구성원 보기
           </Menu.Item>
