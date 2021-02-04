@@ -477,7 +477,6 @@ const FriendItem = observer(
     setToastText,
     setSelectedId,
     toggleInfoModal,
-    setxPosition,
     setyPosition,
   }) => {
     const {
@@ -504,7 +503,6 @@ const FriendItem = observer(
     const isNewFriend = handleCheckNewFriend(friendInfo);
 
     const handleSelectPhoto = (e, id = '') => {
-      setxPosition(e.clientX);
       setyPosition(e.clientY);
       if (e) e.stopPropagation();
       if (id) {
