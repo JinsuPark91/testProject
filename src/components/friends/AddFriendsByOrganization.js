@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useObserver } from 'mobx-react';
 import { Loader, useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
-import { Divider } from 'antd';
 import AddFriendsByOrganizationHeader from './AddFriendsByOrganizationHeader';
 import AddFriendsItem from './AddFriendsItem';
 import OrganizationDropdown from './OrganizationDropdown';
@@ -10,10 +9,6 @@ import OrganizationDropdown from './OrganizationDropdown';
 const Wrapper = styled.div`
   width: 100%;
   padding: 0 0.94rem;
-`;
-
-const StyledDivider = styled(Divider)`
-  margin: 0.23rem 0 0.63rem 0;
 `;
 
 function AddFriendsByOrganization({ timestamp, searchText, isViewMode }) {
@@ -97,7 +92,6 @@ function AddFriendsByOrganization({ timestamp, searchText, isViewMode }) {
           defaultValue={dropdownDefaultValue}
           timestamp={timestamp}
         />
-        <StyledDivider />
         <AddFriendsItem
           friendAddList={searchedUserList}
           isViewMode={isViewMode}

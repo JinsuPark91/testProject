@@ -424,9 +424,9 @@ const OpenChatIconWrapper = styled.div`
 
 const ButtomWrapper = styled.div`
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 0.69rem 0.75rem 0.94rem;
+  padding: 0.63rem 0.94rem;
 `;
 
 export default RoomList;

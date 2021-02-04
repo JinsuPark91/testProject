@@ -76,15 +76,8 @@ function OrganizationDropdown({
 }
 
 const StyledTreeSelect = styled(TreeSelect)`
-  &.ant-select {
-    height: 1.5rem;
-    &:not(.ant-select-customize-input) .ant-select-selector {
-      height: 1.5rem;
-      border-color: transparent;
-      .ant-select-selection-item {
-        line-height: 1.375rem;
-      }
-    }
+  &.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    border-color: transparent;
   }
 `;
 

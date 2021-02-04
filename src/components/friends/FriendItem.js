@@ -140,6 +140,7 @@ const TextWrapper = styled.div`
 const TitleForName = styled.span`
   font-size: 0.81rem;
   font-weight: 500;
+  line-height: 1;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -210,7 +211,15 @@ const StyledAvatar = styled.div`
 `;
 
 const MeWrapper = styled.div`
-  margin-left: 0.25rem;
+  width: 0.88rem;
+  height: 0.88rem;
+  flex-shrink: 0;
+  margin-right: 0.25rem;
+  line-height: 0;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const MoreIconWrapper = styled.div`
@@ -447,12 +456,12 @@ const TextComponent = React.memo(
 
     return (
       <>
-        <TitleForName>{fullDisplayName}</TitleForName>
         {mode === 'me' && (
           <MeWrapper>
             <img src={mySign} alt="me" />
           </MeWrapper>
         )}
+        <TitleForName>{fullDisplayName}</TitleForName>
       </>
     );
   },
@@ -477,7 +486,6 @@ const FriendItem = observer(
     setToastText,
     setSelectedId,
     toggleInfoModal,
-    setxPosition,
     setyPosition,
   }) => {
     const {
@@ -504,7 +512,6 @@ const FriendItem = observer(
     const isNewFriend = handleCheckNewFriend(friendInfo);
 
     const handleSelectPhoto = (e, id = '') => {
-      setxPosition(e.clientX);
       setyPosition(e.clientY);
       if (e) e.stopPropagation();
       if (id) {
