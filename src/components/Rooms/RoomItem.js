@@ -259,6 +259,7 @@ const RoomItemContent = ({
               }
               return (
                 <Photos
+                  defaultDiameter="2.25"
                   srcList={userPhotos}
                   onClick={handleClickRootPhoto}
                   className="photos"
@@ -462,23 +463,21 @@ const MyIcon = styled.div`
 const ItemWrapper = styled.div`
   display: flex;
   align-items: center;
-  flex: 1;
+  margin: 0 0.25rem;
+  padding: 0.56rem 0.38rem 0.56rem 0.5rem;
+  border-radius: 0.8125rem;
   ${({ selected }) =>
     selected &&
     css`
-      background: #f2efec;
+      background-color: #f2efec;
     `}
 
   ${({ isActiveDropEffect }) =>
     isActiveDropEffect &&
     css`
-      background: rgba(236, 98, 34, 0.05);
+      background-color: rgba(236, 98, 34, 0.05);
       box-shadow: 0 0 0 1px #ec6222 inset;
     `}
-
-  border-radius: 0.8125rem;
-  padding: 0.625rem 0.44rem;
-  margin: 0 0.25rem;
 
   &:hover {
     background: #faf8f7;
@@ -533,15 +532,20 @@ const RoomNameText = styled.span`
 `;
 
 const UserCountText = styled.span`
-  font-size: 0.81rem;
-  color: #7f7f7f;
   margin-left: 0.25rem;
+  font-size: 0.81rem;
+  line-height: 1;
+  color: #7f7f7f;
 `;
 
 const StyledItem = styled.div`
   position: relative;
   user-select: none;
   cursor: pointer;
+
+  .ant-list-item-meta {
+    align-items: center;
+  }
 
   .ant-list-item-meta-avatar {
     margin-right: 0.4375rem;
@@ -561,9 +565,9 @@ const StyledItem = styled.div`
     line-height: 1.188rem;
   }
   .ant-list-item-meta-description {
-    font-size: 0.6875rem;
+    font-size: 0.69rem;
+    line-height: 1.13rem;
     color: #47474d;
-    line-height: 1.063rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

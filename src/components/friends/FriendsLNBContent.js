@@ -13,7 +13,7 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   overflow: auto;
   flex: 1;
-  padding-top: 0;
+  padding-top: 0.1875rem;
 `;
 
 const WelcomeWrapper = styled.div`
