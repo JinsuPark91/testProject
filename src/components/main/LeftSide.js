@@ -1,5 +1,5 @@
 import React from 'react';
-import { observer } from 'mobx-react';
+import { observer, Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { MailSideView } from 'teespace-mail-app';
 import { ChattingIcon, MailIcon, PeopleIcon } from '../Icons';
@@ -20,15 +20,6 @@ const LeftSide = observer(() => {
   const handleSelectTab = key => {
     PlatformUIStore.tabType = key;
   };
-
-  PlatformUIStore.totalUnreadCount = roomStore
-    .getRoomArray()
-    .filter(roomInfo => roomInfo.isVisible)
-    .reduce(
-      (accumulator, roomInfo) =>
-        accumulator + parseInt(roomInfo.metadata?.count ?? '0', 10),
-      0,
-    );
 
   return (
     <Wrapper>
@@ -60,11 +51,29 @@ const LeftSide = observer(() => {
           key="s"
           tab={
             <IconWrapper className="lnb__icon-wrapper">
-              <UnreadCount isVisible={PlatformUIStore.totalUnreadCount > 0}>
-                {PlatformUIStore.totalUnreadCount > 99
-                  ? '99+'
-                  : PlatformUIStore.totalUnreadCount}
-              </UnreadCount>
+              <Observer>
+                {() => {
+                  PlatformUIStore.totalUnreadCount = roomStore
+                    .getRoomArray()
+                    .filter(roomInfo => roomInfo.isVisible)
+                    .reduce(
+                      (accumulator, roomInfo) =>
+                        accumulator +
+                        parseInt(roomInfo.metadata.count ?? '0', 10),
+                      0,
+                    );
+                  return (
+                    <UnreadCount
+                      isVisible={PlatformUIStore.totalUnreadCount > 0}
+                    >
+                      {PlatformUIStore.totalUnreadCount > 99
+                        ? '99+'
+                        : PlatformUIStore.totalUnreadCount}
+                    </UnreadCount>
+                  );
+                }}
+              </Observer>
+
               <ChattingIcon
                 width={1.5}
                 height={1.5}

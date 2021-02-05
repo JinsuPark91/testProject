@@ -56,12 +56,16 @@ const PlatformUIStore = observable({
   // windows 관련
   windowMap: new Map(),
 
-  get windows() {
-    return values(this.windowMap);
+  getWindows(type) {
+    const windowArr = values(this.windowMap);
+    if (type) {
+      return windowArr.filter(windowInfo => windowInfo.type === type);
+    }
+    return windowArr;
   },
 
-  getWindow(roomId) {
-    return this.windowMap.get(roomId);
+  getWindow(windowId) {
+    return this.windowMap.get(windowId);
   },
 
   openWindow(windowInfo) {
@@ -81,8 +85,8 @@ const PlatformUIStore = observable({
     this.windowMap.delete(windowId);
   },
 
-  closeAllWindow() {
-    this.windows.forEach(window => {
+  closeAllWindow(type) {
+    this.getWindows(type).forEach(window => {
       const { id: windowId } = window;
       this.windowMap.delete(windowId);
     });

@@ -8,7 +8,7 @@ import LoadingImg from '../assets/WAPL_Loading.gif';
 
 const NewWindowPage = () => {
   const { resourceId: roomId, mainApp } = useParams();
-  const { roomStore, userStore } = useCoreStores();
+  const { roomStore, userStore, spaceStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
 
   const [channelId, setChannelId] = useState('');
@@ -21,6 +21,14 @@ const NewWindowPage = () => {
         await talkRoomStore.initialize(myUserId);
       }
 
+      // 스페이스를 불러오자
+      const result = await spaceStore.fetchSpaces({
+        userId: myUserId,
+        isLocal: process.env.REACT_APP_ENV === 'local',
+      });
+      console.log('SPACE STORE : ', result);
+
+      // 룸을 불러오자
       const roomInfo = await roomStore.fetchRoom({ roomId, myUserId });
       const channelInfo = roomInfo.channelList.find(
         channel =>
@@ -34,6 +42,7 @@ const NewWindowPage = () => {
 
   useEffect(() => {
     init();
+
     // NOTE : 로딩중 닫으면 호출하지 않는다. (redirect 때문에 어렵다.)
     window.addEventListener('beforeunload', () => {
       // NOTE : 부모가 새로고침, 닫기 구분 필요.

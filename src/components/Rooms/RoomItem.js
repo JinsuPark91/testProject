@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { List, Menu, Dropdown } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
+import { isEqual } from 'lodash';
 import { useCoreStores } from 'teespace-core';
 import { talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
@@ -151,7 +152,7 @@ const RoomDropdown = React.memo(
               룸 상단 고정
             </Menu.Item>
           )}
-          {/* {roomInfo.isAlarmUsed ? (
+          {roomInfo.isAlarmUsed ? (
             <Menu.Item key="disableAlarm" onClick={handleAlarmDisable}>
               알림 끄기
             </Menu.Item>
@@ -159,7 +160,7 @@ const RoomDropdown = React.memo(
             <Menu.Item key="enableAlarm" onClick={handleAlarmEnable}>
               알림 켜기
             </Menu.Item>
-          )} */}
+          )}
           <Menu.Item key="member" onClick={handleViewMember}>
             룸 구성원 보기
           </Menu.Item>
@@ -603,4 +604,13 @@ const IconWrapper = styled.div`
   }
 `;
 
-export default RoomItem;
+export default React.memo(
+  RoomItem,
+  (prevProps, nextProps) =>
+    prevProps.selected === nextProps.selected &&
+    prevProps.onClick === nextProps.onClick &&
+    prevProps.onMenuClick === nextProps.onMenuClick &&
+    prevProps.onClickMenuItem === nextProps.onClickMenuItem &&
+    prevProps.onClickRoomPhoto === nextProps.onClickRoomPhoto &&
+    isEqual(prevProps.roomInfo, nextProps.roomInfo),
+);

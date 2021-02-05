@@ -44,6 +44,7 @@ const SettingDialogPhoto = () => {
   const getDtoObject = photo => {
     const obj = {};
     obj.profilePhoto = photo;
+    obj.backPhoto = userStore.getBackgroundPhotoURL(userStore.myProfile.id);
     obj.name = userStore.myProfile.name;
     obj.nick = userStore.myProfile.nick;
     obj.nationalCode = userStore.myProfile.nationalCode;

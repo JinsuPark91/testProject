@@ -367,14 +367,13 @@ const WindowManager = () => {
   return (
     <Observer>
       {() => {
-        const { windows } = PlatformUIStore;
-        const activeTalkWindows = windows.filter(
-          windowInfo => windowInfo.handler && windowInfo.type === 'talk',
+        const activeTalkWindows = PlatformUIStore.getWindows('talk').filter(
+          windowInfo => windowInfo.handler,
         );
 
         return (
           <>
-            {windows.map(window => (
+            {PlatformUIStore.getWindows().map(window => (
               <Window
                 key={window.id}
                 windowInfo={window}
@@ -392,7 +391,7 @@ const WindowManager = () => {
                 PlatformUIStore.closeWindow(roomInfo.id);
               }}
               onCloseAll={() => {
-                PlatformUIStore.closeAllWindow();
+                PlatformUIStore.closeAllWindow('talk');
               }}
             />
           </>
