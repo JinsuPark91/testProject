@@ -1,0 +1,10 @@
+REACT_APP_DOMAIN_URL=https://tmp-g1ei.teespace.com
+REACT_APP_API_BASE_URL=$REACT_APP_DOMAIN_URL/CMS
+REACT_APP_COM_URL=https://teespace.com/com
+REACT_APP_HSM_URL=http://222.122.67.70/hsm/superadmin-api
+REACT_APP_WEBSOCKET_URL=wss://tmp-g1ei.teespace.com/mqtt
+REACT_APP_HYPERMEETING_URL=https://dev.hypermeeting.biz
+REACT_APP_HYPERAUTH_URL=https://testauth.tmaxcloud.com/auth
+REACT_APP_HYPERAUTH_CLIENT_ID=hyperspace_dev
+REACT_APP_ENV=local
+REACT_APP_USE_PROXY=yes

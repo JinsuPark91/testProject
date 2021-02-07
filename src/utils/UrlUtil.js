@@ -1,6 +1,7 @@
 export const getMainURL = () => {
   if (process.env.REACT_APP_ENV === 'local') {
-    return process.env.REACT_APP_DEV_SERVICE_DOMAIN.split('.')
+    return new URL(process.env.REACT_APP_DOMAIN_URL).hostname
+      .split('.')
       .slice(1)
       .join('.');
   }
@@ -18,7 +19,7 @@ export const getMainWaplURL = urlPath => {
 
 export const getWaplSubDomain = () => {
   if (process.env.REACT_APP_ENV === 'local') {
-    return process.env.REACT_APP_DEV_SERVICE_DOMAIN.split('.')[0];
+    return new URL(process.env.REACT_APP_DOMAIN_URL).hostname.split('.')[0];
   }
   const url = window.location.origin; //  http://xxx.dev.teespace.net
   return url.split(`//`)[1].split(`.`)[0]; //  xxx

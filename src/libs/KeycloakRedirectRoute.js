@@ -39,7 +39,9 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
   }, []);
 
   if (process.env.REACT_APP_ENV === 'local') {
-    [domainName] = process.env.REACT_APP_DEV_SERVICE_DOMAIN.split('.');
+    [domainName] = new URL(process.env.REACT_APP_DOMAIN_URL).hostname.split(
+      '.',
+    );
     loginInfo = {
       id: keycloak.tokenParsed.email,
       deviceType: 'PC',
