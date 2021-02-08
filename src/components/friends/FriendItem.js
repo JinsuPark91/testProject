@@ -1,5 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
+import { talkOnDrop, Talk } from 'teespace-talk-app';
+import { useDrop } from 'react-dnd';
 import { observer } from 'mobx-react';
 import styled, { css } from 'styled-components';
 import { Button } from 'antd';
@@ -11,10 +13,10 @@ import {
   Toast,
   usePortalWindow,
 } from 'teespace-core';
-import { useOpenInWindow } from 'use-open-window';
-import { ExportOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
-import { Talk } from 'teespace-talk-app';
+import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
+import { ACCEPT_ITEMS, TALK_ACCEPT_ITEMS } from '../../utils/DndConstant';
 import { handleCheckNewFriend } from '../../utils/FriendsUtil';
+import { handleProfileMenuClick } from '../../utils/ProfileUtil';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 import mySign from '../../assets/wapl_me.svg';
@@ -114,6 +116,14 @@ const FriendItemWrapper = styled.div`
           background-color: transparent;
         }
       }
+    `}
+
+    ${({ isDndHover }) =>
+    isDndHover &&
+    css`
+      background: rgba(236, 98, 34, 0.05);
+      border-radius: 0.81rem;
+      box-shadow: 0 0 0 1px #ec6222 inset;
     `}
 `;
 
@@ -318,34 +328,15 @@ const MeAction = React.memo(({ mode, itemId }) => {
   const { userStore, roomStore } = useCoreStores();
   const handleExport = async e => {
     e.stopPropagation();
-    try {
-      const myUserId = userStore.myProfile.id;
-      const { roomInfo } = roomStore.getDMRoom(myUserId, itemId);
-
-      if (roomInfo && roomInfo.isVisible) {
-        OpenMiniTalk(roomInfo);
-        return;
-      }
-
-      if (roomInfo && !roomInfo.isVisible) {
-        await roomStore.updateRoomMemberSetting({
-          roomId: roomInfo.id,
-          myUserId,
-          newIsVisible: true,
-        });
-        OpenMiniTalk(roomInfo);
-        return;
-      }
-
-      await roomStore.createRoom({
-        creatorId: myUserId,
-        userList: [{ userId: itemId }],
-      });
-      const newRoomInfo = roomStore.getDMRoom(myUserId, itemId)?.roomInfo;
-      OpenMiniTalk(newRoomInfo);
-    } catch (e) {
-      console.log(`Room Make Error...${e}`);
-    }
+    const myUserId = userStore.myProfile.id;
+    handleProfileMenuClick(
+      roomStore,
+      myUserId,
+      itemId,
+      roomInfo => OpenMiniTalk(roomInfo),
+      roomInfo => OpenMiniTalk(roomInfo),
+      newRoomInfo => OpenMiniTalk(newRoomInfo),
+    );
   };
 
   return (
@@ -427,20 +418,10 @@ const Action = React.memo(
 const TextComponent = React.memo(
   ({ displayName, fullCompanyJob, mode, orgName, position }) => {
     const fullDisplayName = (() => {
-      // friend는 Friend 목록에서 조회한 UserModel을 사용
-      // addFriend (organization)은 Org 목록에서 조회한 UserModel을 사용
-      // 둘이 fullCompanyJob 규칙이 살짝 다르다.
       switch (mode) {
         // friends LNB
+        case 'me':
         case 'friend': {
-          // const orgInfoList = fullCompanyJob
-          //   ?.split(', ')
-          //   .map(jobTitle => jobTitle.trim().split(' ').join('-'))
-          //   .filter(jobTitleStr => jobTitleStr?.length > 0);
-
-          // if (orgInfoList?.length > 0) {
-          //   return `${displayName} (${orgInfoList.join(', ')})`;
-          // }
           const fullCompanyJobTxt = fullCompanyJob ? `(${fullCompanyJob})` : '';
           return `${displayName} ${fullCompanyJobTxt}`;
         }
@@ -510,6 +491,50 @@ const FriendItem = observer(
     const itemId = friendId || userId;
     const isMe = itemId === myUserId;
     const isNewFriend = handleCheckNewFriend(friendInfo);
+
+    // const [{ canDrop, isOver }, drop] = useDrop({
+    //   accept: ACCEPT_ITEMS,
+    //   drop: async item => {
+    //     let targetRoomInfo = {};
+    //     const setRoomInfo = roomInfo => {
+    //       targetRoomInfo = roomInfo;
+    //     };
+    //     await handleProfileMenuClick(
+    //       roomStore,
+    //       myUserId,
+    //       itemId,
+    //       roomInfo => setRoomInfo(roomInfo),
+    //       roomInfo => setRoomInfo(roomInfo),
+    //       roomInfo => setRoomInfo(roomInfo),
+    //     );
+
+    //     if (TALK_ACCEPT_ITEMS.includes(item.type)) {
+    //       const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
+    //         item.type.toLowerCase(),
+    //       );
+    //       talkOnDrop({
+    //         room: targetRoomInfo,
+    //         data: item.data,
+    //         type: type[1] ? type[1] : 'unknown',
+    //         currentRoomId: targetRoomInfo?.id,
+    //       });
+    //     }
+
+    //     return {
+    //       source: item.type,
+    //       sourceData: item.data,
+    //       target: 'Platform:Friend',
+    //       targetData: targetRoomInfo,
+    //     };
+    //   },
+    //   collect: monitor => {
+    //     return {
+    //       isOver: monitor.isOver(),
+    //       canDrop: monitor.canDrop(),
+    //     };
+    //   },
+    // });
+    const isDndHover = false; // canDrop && isOver;
 
     const handleSelectPhoto = (e, id = '') => {
       setyPosition(e.clientY);
@@ -692,6 +717,7 @@ const FriendItem = observer(
           style={style}
           onClick={handleItemClick}
           isActive={isActive}
+          isDndHover={isDndHover}
           mode={mode}
           className=""
         >

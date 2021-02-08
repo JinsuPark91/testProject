@@ -163,6 +163,7 @@ function AddFriendsBySearch({
       <StyledModal
         visible={visible}
         mask
+        maskTransitionName=""
         centered
         footer={null}
         width="24.38rem"
