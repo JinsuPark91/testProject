@@ -230,6 +230,7 @@ function AddFriendsByInvitationDialog({
       <StyledModal
         visible={visible}
         mask
+        maskTransitionName=""
         centered
         maskClosable={false}
         footer={null}
@@ -278,7 +279,7 @@ function AddFriendsByInvitationDialog({
         <Message
           visible={isMessageVisible}
           title="올바르지 않은 이메일 주소가 포함되어 있습니다."
-          subtitle="오류 표시된 주소를 수정하거나 삭제 후 초대 메일을 보내주세요."
+          subtitle={`오류 표시된 주소를 수정하거나 삭제 후 \n 초대 메일을 보내주세요.`}
           type="error"
           btns={[
             {

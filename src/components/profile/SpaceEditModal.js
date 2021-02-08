@@ -207,6 +207,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
         visible={visible}
         onCancel={handleExit}
         mask
+        maskTransitionName=""
         maskClosable={false}
         title="스페이스 편집"
         footer={null}
