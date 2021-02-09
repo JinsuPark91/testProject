@@ -8,6 +8,7 @@ import {
   initGA,
 } from 'teespace-core';
 import { createGlobalStyle } from 'styled-components';
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { setEnv, getEnv } from './env';
@@ -74,7 +75,9 @@ ReactDOM.render(
   <CoreStoreProvider config={getEnv()}>
     <GlobalStyle />
     <GlobalCommonStyles />
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </CoreStoreProvider>,
   document.getElementById('root'),
 );

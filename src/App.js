@@ -10,7 +10,7 @@ import {
 } from 'react-router-dom';
 import './App.less';
 import { create } from 'mobx-persist';
-import { PortalProvider, useCoreStores } from 'teespace-core';
+import { logPageView, PortalProvider, useCoreStores } from 'teespace-core';
 import { initApp as initTalkApp } from 'teespace-talk-app';
 import { initApp as initDriveApp } from 'teespace-drive-app';
 import { initApp as initNoteApp } from 'teespace-note-app';
@@ -108,74 +108,79 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // GA 페이지뷰 로그 수집
+  useEffect(() => {
+    return history.listen(location => {
+      logPageView(location);
+    });
+  }, [history]);
+
   if (!isHydrating) return <></>;
   return (
     <DndProvider backend={HTML5Backend}>
-      <BrowserRouter>
-        <Switch>
-          <Route exact path="/">
-            <Redirect to="/login" />
-          </Route>
-          <Route exact path="/drive/files/:fileId">
-            <DriveSharedFilePage />
-          </Route>
-          <Route>
-            <ReactKeycloakProvider
-              authClient={keycloak}
-              onEvent={eventLogger}
-              LoadingComponent={<></>}
-              initOptions={{
-                onLoad: 'login-required',
-                redirectUri: '',
-              }}
-            >
-              <PortalProvider>
-                {/* <I18nextProvider i18n={i18next}> */}
-                <BrowserRouter>
-                  <Switch>
-                    <Route exact path="/logout" component={LogoutPage} />
-                    <KeycloakRedirectRoute
-                      exact
-                      path="/login"
-                      component={MainPage}
-                    />
-                    <PrivateRoute
-                      path="/office/:fileId"
-                      component={OfficeFilePage}
-                    />
-                    <RedirectablePublicRoute
-                      exact
-                      path="/register"
-                      component={<SignUpPage />}
-                    />
-                    <RedirectablePublicRoute
-                      exact
-                      path="/registerForm"
-                      component={<SignUpFormPage />}
-                    />
-                    <RedirectablePublicRoute
-                      exact
-                      path="/registerComplete"
-                      component={<SignUpCompletePage />}
-                    />
-                    <PrivateRoute
-                      path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
-                      component={isMini ? NewWindowPage : MainPage}
-                    />
-                    <PrivateRoute path="/admin" component={AdminPage} />
-                    <Route component={NotFoundPage} />
-                  </Switch>
-                  {/* <PrivateRoute
+      <Switch>
+        <Route exact path="/">
+          <Redirect to="/login" />
+        </Route>
+        <Route exact path="/drive/files/:fileId">
+          <DriveSharedFilePage />
+        </Route>
+        <Route>
+          <ReactKeycloakProvider
+            authClient={keycloak}
+            onEvent={eventLogger}
+            LoadingComponent={<></>}
+            initOptions={{
+              onLoad: 'login-required',
+              redirectUri: '',
+            }}
+          >
+            <PortalProvider>
+              {/* <I18nextProvider i18n={i18next}> */}
+              <BrowserRouter>
+                <Switch>
+                  <Route exact path="/logout" component={LogoutPage} />
+                  <KeycloakRedirectRoute
+                    exact
+                    path="/login"
+                    component={MainPage}
+                  />
+                  <PrivateRoute
+                    path="/office/:fileId"
+                    component={OfficeFilePage}
+                  />
+                  <RedirectablePublicRoute
+                    exact
+                    path="/register"
+                    component={<SignUpPage />}
+                  />
+                  <RedirectablePublicRoute
+                    exact
+                    path="/registerForm"
+                    component={<SignUpFormPage />}
+                  />
+                  <RedirectablePublicRoute
+                    exact
+                    path="/registerComplete"
+                    component={<SignUpCompletePage />}
+                  />
+                  <PrivateRoute
+                    path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
+                    component={isMini ? NewWindowPage : MainPage}
+                  />
+                  <PrivateRoute path="/admin" component={AdminPage} />
+                  <Route component={NotFoundPage} />
+                </Switch>
+                {/* <PrivateRoute
             path="/users"
             component={MainPage}
           /> */}
-                </BrowserRouter>
-                {/* </I18nextProvider> */}
-              </PortalProvider>
-            </ReactKeycloakProvider>
-          </Route>
-        </Switch>
-      </BrowserRouter>
+              </BrowserRouter>
+              {/* </I18nextProvider> */}
+            </PortalProvider>
+          </ReactKeycloakProvider>
+        </Route>
+      </Switch>
     </DndProvider>
   );
 }
