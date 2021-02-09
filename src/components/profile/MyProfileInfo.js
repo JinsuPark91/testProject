@@ -62,12 +62,20 @@ const ThumbImage = styled.img`
 `;
 
 const SettingImage = styled.div`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
-  right: -0.125rem;
-  bottom: -0.125rem;
-  line-height: 0;
-  width: 0.9375rem;
-  height: 0.9375rem;
+  right: -0.1875rem;
+  bottom: -0.1875rem;
+  width: 1.06rem;
+  height: 1.06rem;
+  border-radius: 50%;
+  background-color: #fff;
+  img {
+    width: 0.81rem;
+    height: 0.81rem;
+  }
 `;
 
 export default MyProfileInfo;
