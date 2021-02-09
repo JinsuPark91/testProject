@@ -74,6 +74,9 @@ function App() {
         );
         break;
       }
+      case 'onAuthLogout':
+        window.location.href = '/';
+        break;
       default:
         break;
     }
