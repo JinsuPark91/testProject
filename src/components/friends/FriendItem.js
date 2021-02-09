@@ -83,7 +83,7 @@ const FriendItemWrapper = styled.div`
       display: flex;
       flex-direction: row;
       margin: 0 0.25rem;
-      padding: 0 0.44rem;
+      padding: 0 0.38rem 0 0.5rem;
 
       ${props.isActive
         ? css`
@@ -183,9 +183,8 @@ const StyledAvatar = styled.div`
     switch (props.mode) {
       case 'me':
         return css`
-          width: 2.38rem;
-          height: 2.38rem;
-          border: 2px solid #fff;
+          width: 2.25rem;
+          height: 2.25rem;
         `;
       case 'addFriend':
         return css`
