@@ -757,7 +757,7 @@ const ConvertDropdown = styled.div`
   position: absolute;
   left: -11.5rem;
   width: 11rem;
-  top: 16.06rem;
+  top: 15.63rem;
   border: 1px solid #c6ced6;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
   border-radius: 0.25rem;
