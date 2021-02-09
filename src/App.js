@@ -19,7 +19,6 @@ import {
   initApp as initCalendarApp,
   initializeApp as initializeCalendarApp,
 } from 'teespace-calendar-app';
-import { initApp as initMailApp } from 'teespace-mail-app';
 // import { I18nextProvider } from 'react-i18next';
 import { ReactKeycloakProvider } from '@react-keycloak/web';
 import Cookies from 'js-cookie';
@@ -31,7 +30,6 @@ import SignUpCompletePage from './page/SignUpCompletePage';
 import DriveSharedFilePage from './page/DriveSharedFilePage';
 import OfficeFilePage from './page/OffiveFilePage';
 import LogoutPage from './page/LogoutPage';
-// import MainPage from './local-test/MainPage';
 import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
 import PrivateRoute from './libs/PrivateRoute';
@@ -41,7 +39,7 @@ import { getCookieValue } from './utils/CookieUtil';
 
 // MiniTalk 임시.
 import { getQueryParams } from './utils/UrlUtil';
-import MiniTalkPage from './page/MiniTalkPage';
+import NewWindowPage from './page/NewWindowPage';
 // MiniTalk 임시.
 
 // import i18next from './i18n';
@@ -88,12 +86,12 @@ function App() {
   // initialize apps
   useEffect(() => {
     initTalkApp();
-    initMeetingApp();
-    initMailApp();
     initDriveApp();
     initCalendarApp();
-    initNoteApp();
     initializeCalendarApp();
+    initNoteApp();
+    initMeetingApp();
+    // initMailApp();
   }, []);
 
   // hydrate mobx stores
@@ -159,7 +157,7 @@ function App() {
                     />
                     <PrivateRoute
                       path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
-                      component={isMini ? MiniTalkPage : MainPage}
+                      component={isMini ? NewWindowPage : MainPage}
                     />
                     <PrivateRoute path="/admin" component={AdminPage} />
                     <Route component={NotFoundPage} />

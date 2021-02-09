@@ -23,7 +23,7 @@ const SettingDialogOrg = () => {
         <TextArea>
           <p>
             {authStore.user.orgName || '-'}/ {authStore.user.position || '-'}/{' '}
-            {authStore.user.departmentName || '-'}
+            {authStore.user.job || '-'}
           </p>
         </TextArea>
         <ButtonArea>
@@ -35,7 +35,7 @@ const SettingDialogOrg = () => {
               <LockLineIcon width="0.88" height="0.88" />
             </LockIconBox>
           ) : (
-            <Tooltip title={tooltipText} placement="bottomLeft">
+            <Tooltip title={tooltipText} placement="bottom" color="#4C535D">
               <LockIconBox>
                 <LockLineIcon width="0.88" height="0.88" />
               </LockIconBox>

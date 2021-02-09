@@ -1,114 +1,17 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
-import { Typography } from 'antd';
 import { ProfileInfoModal, useCoreStores, Toast } from 'teespace-core';
 import FriendItem from './FriendItem';
-import FriendAdd from '../../assets/friend_add.svg';
-
-const { Text } = Typography;
-
-const ContentWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
-  flex: 1;
-  padding-top: 0.3125rem;
-`;
-
-const WelcomeWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  justify-content: flex-end;
-  text-align: center;
-`;
-
-const WelcomeBackgroundImage = styled.div`
-  width: 12.5rem;
-  height: 12.5rem;
-  margin: 0 auto;
-  background: url('${FriendAdd}') center 0 no-repeat;
-  background-size: contain;
-`;
-
-const FriendListBox = styled.div`
-  &:after {
-    content: '';
-    display: block;
-    height: 1px;
-    margin: 0.25rem 0.625rem;
-    background-color: #e3e7eb;
-  }
-
-  &:last-of-type {
-    &:after {
-      display: ${props => (props.noFriend ? '' : 'none')};
-    }
-  }
-`;
-
-const StyleTitle = styled.p`
-  margin: 0.5rem 0.625rem 0.25rem;
-  font-size: 0.75rem;
-  line-height: 1.13rem;
-  font-weight: 500;
-  color: #000;
-`;
-
-const StyleText = styled(Text)`
-  margin-left: 0.25rem;
-  font-size: 0.81rem;
-  color: #7f7f7f;
-`;
-
-const StyledInfoTitle = styled.p`
-  margin-bottom: 0.94rem;
-  font-size: 0.94rem;
-  color: #000000;
-  letter-spacing: 0;
-  text-align: center;
-  line-height: 1.38rem;
-`;
-
-const StyledSubInfo = styled.p`
-  margin-bottom: 1.25rem;
-  font-size: 0.75rem;
-  color: #414141;
-  letter-spacing: 0;
-  text-align: center;
-  line-height: 1.06rem;
-`;
-
-const FriendList = ({
-  friendList,
-  onClick,
-  activeFriendId,
-  openToast,
-  setToastText,
-  setSelectedId,
-  toggleInfoModal,
-  setxPosition,
-  setyPosition,
-}) => (
-  <>
-    {friendList.map(friendInfo => (
-      <FriendItem
-        friendInfo={friendInfo}
-        key={friendInfo.friendId}
-        mode="friend"
-        onClick={onClick}
-        isActive={activeFriendId === friendInfo.friendId}
-        openToast={openToast}
-        setToastText={setToastText}
-        setSelectedId={setSelectedId}
-        toggleInfoModal={toggleInfoModal}
-        setxPosition={setxPosition}
-        setyPosition={setyPosition}
-      />
-    ))}
-  </>
-);
+import {
+  WelcomeWrapper,
+  ContentWrapper,
+  StyledInfoTitle,
+  StyledSubInfo,
+  FriendListBox,
+  StyleTitle,
+  StyleText,
+} from '../../styles/FriendsLNBContentStyle';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 /**
  * Friends LNB Content
@@ -116,6 +19,7 @@ const FriendList = ({
  * @param {string} props.searchKeyword - 프렌즈 탭의 친구 리스트 검색 키워드
  * @param {function} props.meTooltipPopupContainer - 프렌즈 아이템의 나일때 표시하는 tooltip
  */
+
 const FriendsLNBContent = React.forwardRef(
   ({ searchKeyword, meTooltipPopupContainer, activeUserId }, ref) => {
     const { userStore, friendStore } = useCoreStores();
@@ -126,8 +30,6 @@ const FriendsLNBContent = React.forwardRef(
     const [isToastVisible, setIsToastVisible] = useState(false);
     const [toastText, setToastText] = useState('');
     const [infoModalVisible, setInfoModalVisible] = useState(false);
-
-    const [xPosition, setxPosition] = useState(0);
     const [yPosition, setyPosition] = useState(0);
 
     useEffect(() => {
@@ -158,6 +60,28 @@ const FriendsLNBContent = React.forwardRef(
       setFriendActiveId(friendId);
     }, []);
 
+    const FriendList = ({ friendList, onClick, activeFriendId }) => {
+      return (
+        <>
+          {friendList.map(friendInfo => (
+            <FriendItem
+              friendInfo={friendInfo}
+              key={friendInfo.friendId}
+              mode="friend"
+              onClick={onClick}
+              isActive={PlatformUIStore.resourceId === friendInfo.friendId}
+              // isActive={activeFriendId === friendInfo.friendId}
+              openToast={handleOpenToast}
+              setToastText={handleSetText}
+              setSelectedId={targetId => setSelectedId(targetId)}
+              toggleInfoModal={() => setInfoModalVisible(!infoModalVisible)}
+              setyPosition={yCoord => setyPosition(yCoord)}
+            />
+          ))}
+        </>
+      );
+    };
+
     return useObserver(() => {
       const renderEmptyContent = (
         <WelcomeWrapper>
@@ -172,7 +96,6 @@ const FriendsLNBContent = React.forwardRef(
           </StyledSubInfo>
         </WelcomeWrapper>
       );
-      // <WelcomeBackgroundImage />
 
       const renderContent = (
         <>
@@ -185,12 +108,6 @@ const FriendsLNBContent = React.forwardRef(
                 friendList={friendStore.favoriteFriendInfoList}
                 onClick={handleFavFriendActive}
                 activeFriendId={favFriendActiveId}
-                openToast={handleOpenToast}
-                setToastText={handleSetText}
-                setSelectedId={targetId => setSelectedId(targetId)}
-                toggleInfoModal={() => setInfoModalVisible(!infoModalVisible)}
-                setxPosition={xCoord => setxPosition(xCoord)}
-                setyPosition={yCoord => setyPosition(yCoord)}
               />
             </FriendListBox>
           )}
@@ -203,12 +120,6 @@ const FriendsLNBContent = React.forwardRef(
               friendList={filteredFriendList}
               onClick={handleFriendActive}
               activeFriendId={friendActiveId}
-              openToast={handleOpenToast}
-              setToastText={handleSetText}
-              setSelectedId={targetId => setSelectedId(targetId)}
-              toggleInfoModal={() => setInfoModalVisible(!infoModalVisible)}
-              setxPosition={xCoord => setxPosition(xCoord)}
-              setyPosition={yCoord => setyPosition(yCoord)}
             />
           </FriendListBox>
           <Toast
@@ -230,10 +141,10 @@ const FriendsLNBContent = React.forwardRef(
               tooltipPopupContainer={meTooltipPopupContainer}
               friendInfo={userStore.myProfile}
               onClick={handleFriendActive}
-              isActive={friendActiveId === userStore.myProfile.id}
+              // isActive={friendActiveId === userStore.myProfile.id}
+              isActive={PlatformUIStore.resourceId === userStore.myProfile.id}
               setSelectedId={targetId => setSelectedId(targetId)}
               toggleInfoModal={() => setInfoModalVisible(!infoModalVisible)}
-              setxPosition={xCoord => setxPosition(xCoord)}
               setyPosition={yCoord => setyPosition(yCoord)}
             />
           </FriendListBox>

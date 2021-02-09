@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Message, useCoreStores } from 'teespace-core';
 import styled, { css } from 'styled-components';
 import { Button, Input, Modal, Tooltip } from 'antd';
-import { handleCheckValidUrl } from '../../libs/Regex';
+import { handleCheckValidUrl, handleCheckValidEngUrl } from '../../libs/Regex';
 import { getMainURL } from '../../utils/UrlUtil';
 import errorIcon from '../../assets/ts_error.svg';
 
@@ -155,6 +155,12 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
       return;
     }
 
+    if (!handleCheckValidEngUrl(newAddress)) {
+      setWarningText('영문은 최소 3자 포함해 주세요.');
+      setIsWarningTextVisible(true);
+      return;
+    }
+
     const userId = userStore.myProfile.id;
     const isLocal = process.env.REACT_APP_ENV === 'local';
     let updatedInfo = {};
@@ -201,6 +207,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
         visible={visible}
         onCancel={handleExit}
         mask
+        maskTransitionName=""
         maskClosable={false}
         title="스페이스 편집"
         footer={null}
@@ -216,7 +223,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
           <Tooltip
             title="URL을 변경하시려면, 플랜을 업그레이드해 주세요."
             placement="bottomLeft"
-            color="#0b1d41"
+            color="#232D3B"
             // overlayStyle={{ whiteSpace: 'nowrap' }}
           >
             <UrlInputBox disabled={isBasicPlan}>

@@ -39,6 +39,7 @@ const SettingDialogCountryCode = props => {
       userStore.myProfile.id,
       'medium',
     );
+    obj.backPhoto = userStore.getBackgroundPhotoURL(userStore.myProfile.id);
     obj.name = userStore.myProfile.name;
     obj.nick = userStore.myProfile.nick;
     obj.nationalCode = selectedCountryCode;
@@ -79,7 +80,8 @@ const SettingDialogCountryCode = props => {
             <>
               <Button
                 size="small"
-                type="outlined"
+                type="solid"
+                className="color-Beige"
                 disabled={selectedCountryCode === authStore.user.nationalCode}
                 onClick={handleSuccess}
               >

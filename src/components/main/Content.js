@@ -83,6 +83,7 @@ const Content = () => {
             layoutState={PlatformUIStore.layout}
             isSearchInputVisible={PlatformUIStore.isSearchVisible}
             onSearchClose={handleSearchClose}
+            isMini={false}
           />
         );
       case 'note':
@@ -180,7 +181,7 @@ const Content = () => {
               }}
               gutterStyle={() => {
                 return {
-                  width: '0.3rem',
+                  width: '0.3125rem',
                 };
               }}
               onDragStart={handleSplitDragStart}

@@ -7,20 +7,20 @@ import mySign from '../../assets/wapl_me.svg';
 import AddFriendImg from '../../assets/add_friends.svg';
 
 const Wrapper = styled.div`
-  max-height: 25.81rem;
+  padding-bottom: 0.63rem;
 `;
 
 const FriendItem = styled.div`
   display: flex;
-  padding: 0.44rem 0.22rem 0.44rem 0.63rem;
+  padding: 0.63rem 0.63rem 0.63rem 0.69rem;
   justify-content: space-between;
   align-items: center;
 `;
 
 const ImageBox = styled.div`
   position: relative;
-  width: 2.13rem;
-  height: 2.13rem;
+  width: 1.75rem;
+  height: 1.75rem;
 
   &:after {
     content: '';
@@ -48,20 +48,18 @@ const FriendName = styled.p`
   color: #000000;
   letter-spacing: 0;
   margin-right: auto;
-  margin-left: 0.63rem;
+  margin-left: 0.38rem;
 `;
 
 const MyAccountText = styled.span`
   font-size: 0.69rem;
   color: #8d8d8d;
-  margin-right: 1rem;
 `;
 
 const FriendAddBtn = styled.button`
   height: 1rem;
   background-color: transparent;
   border: none;
-  margin-right: 1rem;
 
   span {
     display: inline-block;
@@ -93,27 +91,23 @@ const FriendAddBtn = styled.button`
 
 const MyBadge = styled.span`
   position: absolute;
-  top: 0;
-  min-width: 1.06rem;
-  min-height: 0.94rem;
-  border-radius: 0.28rem;
-  font-size: 0.56rem;
-  font-weight: 600;
-  line-height: 0.81rem;
-  color: #fff;
-  z-index: 100;
+  top: 0.38rem;
+  left: 0.38rem;
+  width: 0.88rem;
+  height: 0.88rem;
+  line-height: 0;
+  z-index: 5;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
-// &:after {
-//   content: '';
-//   position: absolute;
-//   top: 100%;
-//   left: 50%;
-//   margin-left: -0.15rem;
-//   border-left: 0.15rem solid transparent;
-//   border-right: 0.15rem solid transparent;
-//   border-top: 0.2rem solid #523dc7;
-// }
+const remToPixel = rem => {
+  return (
+    parseFloat(getComputedStyle(document.documentElement).fontSize, 10) * rem
+  );
+};
 
 const AddFriendsItem = ({ friendAddList, isViewMode }) => {
   const { userStore, friendStore } = useCoreStores();
@@ -180,6 +174,8 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
 
   const FriendAddItem = React.memo(({ friendInfo, style }) => {
     const userName = friendInfo?.displayName;
+    const fullCompanyJob = friendInfo.getFullCompanyJob({ format: 'friend' });
+    const fullCompanyJobText = fullCompanyJob ? `(${fullCompanyJob})` : '';
     const isMe =
       friendInfo?.friendId || friendInfo.id === userStore.myProfile.id;
     return (
@@ -203,7 +199,9 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
               )}
             />
           </ImageBox>
-          <FriendName>{userName}</FriendName>
+          <FriendName>
+            {userName} {fullCompanyJobText}
+          </FriendName>
           {!isViewMode && renderMenu(friendInfo)}
         </FriendItem>
       </>
@@ -215,9 +213,9 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
       <Wrapper>
         {friendStore.friendInfoList && (
           <List
-            height={400}
+            height={remToPixel(21)}
             itemCount={memberList.length}
-            itemSize={70}
+            itemSize={remToPixel(3)}
             width="100%"
           >
             {({ index, style }) => {

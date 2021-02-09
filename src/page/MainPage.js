@@ -12,9 +12,8 @@ import {
 import { Observer } from 'mobx-react';
 import { talkRoomStore } from 'teespace-talk-app';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
+import { initApp as initMailApp, WindowMail } from 'teespace-mail-app';
 import { Prompt } from 'react-router';
-import { set } from 'mobx';
-import { useOpenInWindow } from 'use-open-window';
 import NewWindow from 'react-new-window';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
@@ -82,6 +81,7 @@ const MainPage = () => {
       .then(async res => {
         // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
         await talkRoomStore.initialize(myUserId);
+        initMailApp(myUserId);
 
         const [, , , , histories, alarmList] = res;
         AlarmSetting.initAlarmSet(alarmList);
@@ -109,17 +109,13 @@ const MainPage = () => {
 
     // NOTE : RECONNECT 임시 처리
     WWMS.setOnReconnect(() => {
-      setIsLoading(true);
       Promise.all([
         // 룸을 불러오자
         roomStore.fetchRoomList({ myUserId }),
       ])
         .then(() => {
           // talk init (fetch room 이후.)
-          return talkRoomStore.initialize(myUserId);
-        })
-        .then(() => {
-          setIsLoading(false);
+          return talkRoomStore.updateRoomMetadataList(myUserId);
         })
         .catch(err => {
           if (process.env.REACT_APP_ENV === 'local') {
@@ -312,6 +308,7 @@ const MainPage = () => {
       {leftSide}
       {mainSide}
       <WindowManager />
+      <WindowMail />
     </Wrapper>
   );
 };
@@ -321,8 +318,15 @@ export default MainPage;
 // [TODO] : 나중에 다른데로 옮기자.
 const Window = ({ windowInfo }) => {
   const { id: windowId } = windowInfo;
-  const url = `/s/${windowId}/talk?mini=true`;
+  const url = `/s/${windowId}/${windowInfo.type}?mini=true`;
   const [handler, setHandler] = useState(null);
+  const features =
+    windowInfo.type === 'talk'
+      ? {
+          width: 600,
+          height: 800,
+        }
+      : {};
 
   useEffect(() => {
     if (handler) {
@@ -335,7 +339,15 @@ const Window = ({ windowInfo }) => {
     setHandler(_handler);
   };
 
-  return <NewWindow url={url} onOpen={handleOpen} copyStyles />;
+  return (
+    <NewWindow
+      url={url}
+      name="_blank"
+      onOpen={handleOpen}
+      features={features}
+      copyStyles
+    />
+  );
 };
 
 const WindowManager = () => {
@@ -355,12 +367,13 @@ const WindowManager = () => {
   return (
     <Observer>
       {() => {
-        const { windows } = PlatformUIStore;
-        const activeWindows = windows.filter(windowInfo => windowInfo.handler);
+        const activeTalkWindows = PlatformUIStore.getWindows('talk').filter(
+          windowInfo => windowInfo.handler,
+        );
 
         return (
           <>
-            {windows.map(window => (
+            {PlatformUIStore.getWindows().map(window => (
               <Window
                 key={window.id}
                 windowInfo={window}
@@ -369,7 +382,7 @@ const WindowManager = () => {
             ))}
             <FloatingButton
               visible={false}
-              rooms={activeWindows}
+              rooms={activeTalkWindows}
               count={5}
               onItemClick={roomInfo => {
                 PlatformUIStore.focusWindow(roomInfo.id);
@@ -378,7 +391,7 @@ const WindowManager = () => {
                 PlatformUIStore.closeWindow(roomInfo.id);
               }}
               onCloseAll={() => {
-                PlatformUIStore.closeAllWindow();
+                PlatformUIStore.closeAllWindow('talk');
               }}
             />
           </>

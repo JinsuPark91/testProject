@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import Upload from 'rc-upload';
-import CameraIcon from '../assets/ts_camera.svg';
+import CameraIcon from '../assets/camera.svg';
 import InputCounter from '../components/Input';
 
 export const InnerItem = styled.li`
@@ -41,7 +41,6 @@ export const ImageBox = styled.div`
   height: 3.38rem;
   margin-right: 0.63rem;
   flex-shrink: 0;
-  border: 2px solid #6c56e5;
   border-radius: 50%;
   cursor: pointer;
   &:after {
@@ -51,7 +50,8 @@ export const ImageBox = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: default;
   }
   & > img {
     width: 100%;
@@ -122,5 +122,8 @@ export const StyledUpload = styled(Upload)`
 `;
 
 export const LockIconBox = styled.span`
+  display: inline-block;
+  min-width: 3.5rem;
+  text-align: center;
   color: #75757f;
 `;

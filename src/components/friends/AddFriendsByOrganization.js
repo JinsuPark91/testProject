@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useObserver } from 'mobx-react';
-import { Loader, useCoreStores } from 'teespace-core';
+import { useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
-import { Divider } from 'antd';
 import AddFriendsByOrganizationHeader from './AddFriendsByOrganizationHeader';
 import AddFriendsItem from './AddFriendsItem';
 import OrganizationDropdown from './OrganizationDropdown';
@@ -12,10 +11,6 @@ const Wrapper = styled.div`
   padding: 0 0.94rem;
 `;
 
-const StyledDivider = styled(Divider)`
-  margin: 0.23rem 0 0.63rem 0;
-`;
-
 function AddFriendsByOrganization({ timestamp, searchText, isViewMode }) {
   const { orgStore, userStore } = useCoreStores();
   const [isOpen, setIsOpen] = useState(false);
@@ -23,8 +18,6 @@ function AddFriendsByOrganization({ timestamp, searchText, isViewMode }) {
   const [dropdownDisplayValue, setDropdownDisplayValue] = useState('');
   const [dropdownDefaultValue, setDropdownDefaultValue] = useState('');
   const [selectedValue, setSelectedValue] = useState();
-
-  const [loader] = Loader.useLoader();
 
   // dropdown의 item을 클릭했을 때
   const handleDropdownChange = useCallback(
@@ -53,7 +46,6 @@ function AddFriendsByOrganization({ timestamp, searchText, isViewMode }) {
   useEffect(() => {
     (async () => {
       if (!isOpen) {
-        loader.loading();
         const { companyCode, departmentCode } =
           (await orgStore.getOrgUserDept(userStore.myProfile.id)) || {};
         const parsedValue = OrganizationDropdown.valueCreator({
@@ -62,7 +54,6 @@ function AddFriendsByOrganization({ timestamp, searchText, isViewMode }) {
         });
         setDropdownDefaultValue(parsedValue);
         handleDropdownChange(parsedValue);
-        loader.stop();
         setIsOpen(true);
       } else if (searchText === '') {
         setSearchedUserList(orgStore.userOrgUserList);
@@ -80,30 +71,26 @@ function AddFriendsByOrganization({ timestamp, searchText, isViewMode }) {
     orgStore,
     userStore.myProfile.id,
     timestamp,
-    loader,
     isOpen,
     searchText,
     handleSearch,
   ]);
 
   return useObserver(() => (
-    <Loader loader={loader}>
-      <Wrapper>
-        <AddFriendsByOrganizationHeader
-          orgList={orgStore.orgList}
-          orgUserSize={searchedUserList.length}
-          onDropdownChange={handleDropdownChange}
-          overwrittenValue={dropdownDisplayValue}
-          defaultValue={dropdownDefaultValue}
-          timestamp={timestamp}
-        />
-        <StyledDivider />
-        <AddFriendsItem
-          friendAddList={searchedUserList}
-          isViewMode={isViewMode}
-        />
-      </Wrapper>
-    </Loader>
+    <Wrapper>
+      <AddFriendsByOrganizationHeader
+        orgList={orgStore.orgList}
+        orgUserSize={searchedUserList.length}
+        onDropdownChange={handleDropdownChange}
+        overwrittenValue={dropdownDisplayValue}
+        defaultValue={dropdownDefaultValue}
+        timestamp={timestamp}
+      />
+      <AddFriendsItem
+        friendAddList={searchedUserList}
+        isViewMode={isViewMode}
+      />
+    </Wrapper>
   ));
 }
 

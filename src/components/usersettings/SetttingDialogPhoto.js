@@ -44,6 +44,7 @@ const SettingDialogPhoto = () => {
   const getDtoObject = photo => {
     const obj = {};
     obj.profilePhoto = photo;
+    obj.backPhoto = userStore.getBackgroundPhotoURL(userStore.myProfile.id);
     obj.name = userStore.myProfile.name;
     obj.nick = userStore.myProfile.nick;
     obj.nationalCode = userStore.myProfile.nationalCode;
@@ -105,16 +106,16 @@ const SettingDialogPhoto = () => {
       <Name>사진</Name>
       <Data>
         <TextArea>
-          <Dropdown
-            trigger={['click']}
-            placement="bottomLeft"
-            overlay={profileMenu}
-          >
-            <ImageBox>
-              <img alt="profile" src={renderProfilePhoto} />
+          <ImageBox>
+            <img alt="profile" src={renderProfilePhoto} />
+            <Dropdown
+              trigger={['click']}
+              placement="bottomLeft"
+              overlay={profileMenu}
+            >
               <ImageIcon />
-            </ImageBox>
-          </Dropdown>
+            </Dropdown>
+          </ImageBox>
           <Info>사진을 추가하여 스페이스 별로 설정할 수 있습니다.</Info>
         </TextArea>
       </Data>

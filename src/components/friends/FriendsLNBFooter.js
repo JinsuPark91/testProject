@@ -12,10 +12,11 @@ const { Footer } = Layout;
 
 const FooterWrapper = styled(Footer)`
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 0.69rem 0.75rem 0.94rem;
-  background-color: #ffffff;
+  margin-top: auto;
+  padding: 0.63rem 0.94rem;
+  background-color: #fff;
 `;
 
 const FriendAddButton = styled.div`
@@ -64,7 +65,7 @@ function FriendsLNBFooter() {
   return useObserver(() => (
     <FooterWrapper>
       <WaplLogo />
-      <Tooltip title="프렌즈 추가" placement="topRight" color="faf8f7">
+      <Tooltip title="프렌즈 추가" placement="top" color="#232D3B">
         <FriendAddButton onClick={handleOpenAddFriendsDialog}>
           <img alt="friend" src={FriendAddIcon} />
         </FriendAddButton>

@@ -1,7 +1,6 @@
-import React, { useEffect, useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import { observer } from 'mobx-react';
 import styled from 'styled-components';
-import { useCoreStores, Loader } from 'teespace-core';
 import { Layout } from 'antd';
 import FriendsLNBHeader from './FriendsLNBHeader';
 import FriendsLNBContent from './FriendsLNBContent';
@@ -20,27 +19,6 @@ const FriendsLNBWrapper = styled(Layout)`
 const FriendsLNB = observer(({ userId }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const lnbRef = useRef(null);
-  const [loader] = Loader.useLoader();
-  const { friendStore, orgStore, userStore } = useCoreStores();
-  useEffect(() => {
-    (async () => {
-      loader.loading();
-      await Promise.all([
-        // friendStore.fetchFriends({ myUserId: userStore.myProfile.id }),
-        // friendStore.fetchInvitedFriends({
-        //   myUserId: userStore.myProfile.id,
-        // }),
-        // friendStore.fetchRecommendedFriends({
-        //   myUserId: userStore.myProfile.id,
-        // }),
-        // friendStore.fetchUserInvitationLink({
-        //   myUserId: userStore.myProfile.id,
-        // }),
-        // orgStore.getOrgTree(),
-      ]);
-      loader.stop();
-    })();
-  }, [friendStore, loader, orgStore, userStore.myProfile.id]);
 
   const handleSearchKeyword = useCallback(value => {
     setSearchKeyword(value);
@@ -54,19 +32,17 @@ const FriendsLNB = observer(({ userId }) => {
 
   return (
     <FriendsLNBWrapper>
-      <Loader loader={loader}>
-        <FriendsLNBHeader
-          handleInputChange={handleSearchKeyword}
-          handleInputClear={handleClearKeyword}
-        />
-        <FriendsLNBContent
-          ref={lnbRef}
-          searchKeyword={searchKeyword}
-          meTooltipPopupContainer={getPopupContainer}
-          activeUserId={userId}
-        />
-        <FriendsLNBFooter />
-      </Loader>
+      <FriendsLNBHeader
+        handleInputChange={handleSearchKeyword}
+        handleInputClear={handleClearKeyword}
+      />
+      <FriendsLNBContent
+        ref={lnbRef}
+        searchKeyword={searchKeyword}
+        meTooltipPopupContainer={getPopupContainer}
+        activeUserId={userId}
+      />
+      <FriendsLNBFooter />
     </FriendsLNBWrapper>
   );
 });

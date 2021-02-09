@@ -134,7 +134,7 @@ const AppIcon = React.memo(
         title={
           AppToolTipName.toLowerCase() === 'files' ? '모아보기' : AppToolTipName
         }
-        color="#0b1d41"
+        color="#232D3B"
       >
         <AppIconWrapper
           className="header__app-icon"
@@ -221,6 +221,7 @@ const Header = observer(() => {
     if (!isOpened) {
       PlatformUIStore.openWindow({
         id: roomInfo.id,
+        type: 'talk',
         name: roomInfo.name,
         userCount: roomInfo.userCount,
         handler: null,
@@ -264,6 +265,30 @@ const Header = observer(() => {
     history.push(`${history.location.pathname}?${queryString}`);
   };
 
+  const openMeeting = () => {
+    const roomInfo = findRoom();
+
+    PlatformUIStore.openWindow({
+      id: roomInfo.id,
+      type: 'meeting',
+      name: roomInfo.name,
+      userCount: roomInfo.userCount,
+      handler: null,
+    });
+    // const isOpened = PlatformUIStore.getWindow(roomInfo.id);
+    // if (!isOpened) {
+    //   PlatformUIStore.openWindow({
+    //     id: roomInfo.id,
+    //     type: 'meeting',
+    //     name: roomInfo.name,
+    //     userCount: roomInfo.userCount,
+    //     handler: null,
+    //   });
+    // } else {
+    //   PlatformUIStore.focusWindow(roomInfo.id);
+    // }
+  };
+
   const handleAppClick = async appName => {
     if (PlatformUIStore.subApp !== appName) {
       if (appName === 'meeting') {
@@ -271,6 +296,8 @@ const Header = observer(() => {
           <MeetingApp.ConfirmLaunchApp
             onConfirm={() => {
               setAppConfirm(null);
+              // openMeeting();
+
               openSubApp(appName);
             }}
             onCancel={() => {

@@ -45,7 +45,8 @@ const SettingDialogCompanyNum = props => {
             <>
               <Button
                 size="small"
-                type="outlined"
+                type="solid"
+                className="color-Beige"
                 disabled={authStore.user.companyNum === companyNum}
                 onClick={onSuccess}
               >

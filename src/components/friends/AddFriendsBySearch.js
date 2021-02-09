@@ -29,7 +29,7 @@ const AddFriendSearchForm = styled.div`
 `;
 
 const SearchBox = styled.div`
-  padding: 0.63rem 0.75rem;
+  padding: 0.63rem 0.94rem 0.56rem;
   .anticon {
     color: #bdc6d3;
   }
@@ -163,6 +163,7 @@ function AddFriendsBySearch({
       <StyledModal
         visible={visible}
         mask
+        maskTransitionName=""
         centered
         footer={null}
         width="24.38rem"

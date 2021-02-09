@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { Button } from 'antd';
 import { useCoreStores, ProfileInfoModal, ProfileModal } from 'teespace-core';
 import Photos from '../Photos';
 import Input from '../Input';
-import AddIcon from '../../assets/ts_friends_add.svg';
-import TalkIcon from '../../assets/ts_TeeTalk.svg';
-import MeetingIcon from '../../assets/ts_TeeMeeting.svg';
-import EditIcon from '../../assets/edit_white.svg';
 import RoomAddMemberModal from './RoomAddMemberModal';
 import { getQueryString, getQueryParams } from '../../utils/UrlUtil';
+import { AddAcountIcon, ChattingIcon, EditIcon, MeetingIcon } from '../Icons';
 
 const AddButton = styled.button`
   display: flex;
@@ -26,14 +23,9 @@ const AddButton = styled.button`
   color: #3b3b3b;
   outline: none;
   cursor: pointer;
-  &:before {
-    content: '';
-    display: inline-block;
-    width: 1.5rem;
-    height: 1.5rem;
-    margin-right: 0.38rem;
-    background: url(${AddIcon}) no-repeat 50% 50%;
-    background-size: contain;
+
+  svg {
+    margin-right: 0.5rem;
   }
 `;
 const UserList = styled.div`
@@ -116,11 +108,11 @@ const SettingButton = styled.button`
   opacity: 0.9;
   cursor: pointer;
   &:hover {
-    background-color: #344360;
+    background-color: #313a46;
   }
   &:active,
   &:focus {
-    background-color: #081734;
+    background-color: #0c1724;
   }
   & + & {
     margin-left: 0.5625rem;
@@ -128,27 +120,8 @@ const SettingButton = styled.button`
 `;
 const ButtonIcon = styled.span`
   display: block;
-  width: 1.5rem;
-  height: 1.5rem;
-  margin: 0 auto 0.13rem;
-  background-repeat: no-repeat;
-  background-size: 1.5rem 1.5rem;
-  ${props => {
-    switch (props.iconimg) {
-      case 'name':
-        return css`
-          background-image: url(${EditIcon});
-        `;
-      case 'talk':
-        return css`
-          background-image: url(${TalkIcon});
-        `;
-      case 'Meeting':
-        return css`
-          background-image: url(${MeetingIcon});
-        `;
-    }
-  }}
+  margin-bottom: 0.38rem;
+  line-height: 0;
 `;
 const StyledInput = styled(Input)`
   height: auto;
@@ -172,6 +145,7 @@ const StyledInput = styled(Input)`
 
 const StyledPhotos = styled(Photos)`
   margin: 0 auto;
+  cursor: default;
 `;
 
 function RoomInquiryModal({
@@ -403,15 +377,21 @@ function RoomInquiryModal({
         ) : (
           <>
             <SettingButton onClick={handleEdit}>
-              <ButtonIcon iconimg="name" />
+              <ButtonIcon>
+                <EditIcon width="1.5" height="1.5" />
+              </ButtonIcon>
               이름 변경
             </SettingButton>
             <SettingButton onClick={handleTalk}>
-              <ButtonIcon iconimg="talk" />
+              <ButtonIcon>
+                <ChattingIcon width="1.5" height="1.5" />
+              </ButtonIcon>
               Talk
             </SettingButton>
             <SettingButton onClick={handleMeeting}>
-              <ButtonIcon iconimg="Meeting" />
+              <ButtonIcon>
+                <MeetingIcon width="1.5" height="1.5" color="#fff" />
+              </ButtonIcon>
               Meeting
             </SettingButton>
           </>
@@ -463,7 +443,12 @@ function RoomInquiryModal({
         type="room"
         userContent={userContent}
         subContent={subContent}
-        footer={<AddButton onClick={handleInvite}>룸 구성원 초대</AddButton>}
+        footer={
+          <AddButton onClick={handleInvite}>
+            <AddAcountIcon width="1.25" height="1.25" color="#232D3B" />룸
+            구성원 초대
+          </AddButton>
+        }
       />
       {
         // NOTE. 룸 정보가 제대로 존재해야하기 때문에 visible 상태를 보고 모달을 렌더하도록 함.

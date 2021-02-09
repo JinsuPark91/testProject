@@ -3,9 +3,11 @@ import { useHistory } from 'react-router-dom';
 import { List, Menu, Dropdown } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
+import { isEqual } from 'lodash';
 import { useCoreStores } from 'teespace-core';
 import { talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
+import { ACCEPT_ITEMS, TALK_ACCEPT_ITEMS } from '../../utils/DndConstant';
 import Photos from '../Photos';
 import {
   ViewMoreIcon,
@@ -15,6 +17,7 @@ import {
   ExportIcon,
 } from '../Icons';
 import PlatformUIStore from '../../stores/PlatformUIStore';
+import mySign from '../../assets/wapl_me.svg';
 
 const RoomDropdown = React.memo(
   ({ children, roomInfo, onMenuClick, onClickMenuItem }) => {
@@ -112,30 +115,18 @@ const RoomDropdown = React.memo(
       onClickMenuItem({ key: 'disableAlarm' });
     };
 
-    const handleExit = async e => {
+    const handleExit = e => {
       e.domEvent.stopPropagation();
       setVisible(false);
-
-      try {
-        const result = await roomStore.deleteRoomMember({
-          userId: userStore.myProfile.id,
-          roomId: roomInfo.id,
-        });
-
-        if (result) {
-          if (
-            PlatformUIStore.resourceType === 's' &&
-            PlatformUIStore.resourceId === roomInfo.id
-          ) {
-            const firstRoomId = roomStore.getRoomArray()?.[0].id;
-            if (firstRoomId) history.push(`/s/${firstRoomId}/talk`);
-          }
-        }
-      } catch (e1) {
-        console.log('DELETE ROOM MEMBER ERROR : ', e1);
-      } finally {
-        onClickMenuItem({ key: 'exit' });
+      if (
+        roomInfo.adminId === userStore.myProfile.id &&
+        !roomInfo.isDirectMsg
+      ) {
+        onClickMenuItem({ key: 'exitAdmin', item: roomInfo });
+      } else {
+        onClickMenuItem({ key: 'exitNormal', item: roomInfo });
       }
+      return false;
     };
 
     const roomMenu = () => {
@@ -162,7 +153,7 @@ const RoomDropdown = React.memo(
               룸 상단 고정
             </Menu.Item>
           )}
-          {/* {roomInfo.isAlarmUsed ? (
+          {roomInfo.isAlarmUsed ? (
             <Menu.Item key="disableAlarm" onClick={handleAlarmDisable}>
               알림 끄기
             </Menu.Item>
@@ -170,7 +161,7 @@ const RoomDropdown = React.memo(
             <Menu.Item key="enableAlarm" onClick={handleAlarmEnable}>
               알림 켜기
             </Menu.Item>
-          )} */}
+          )}
           <Menu.Item key="member" onClick={handleViewMember}>
             룸 구성원 보기
           </Menu.Item>
@@ -221,6 +212,7 @@ const RoomItemContent = ({
     if (!isOpened) {
       PlatformUIStore.openWindow({
         id: roomInfo.id,
+        type: 'talk',
         name: roomInfo.name,
         userCount: roomInfo.userCount,
         handler: null,
@@ -292,12 +284,16 @@ const RoomItemContent = ({
                     </div>
                   )}
                   <>
+                    {isMyRoom ? (
+                      <MyIcon>
+                        <img src={mySign} alt="me" />
+                      </MyIcon>
+                    ) : null}
                     <RoomNameText>
                       {isMyRoom
                         ? userStore.myProfile.nick || userStore.myProfile.name
                         : roomInfo.customName || roomInfo.name}
                     </RoomNameText>
-                    {isMyRoom ? <MyIcon>나</MyIcon> : null}
                   </>
                 </>
               )}
@@ -364,16 +360,6 @@ const RoomItemContent = ({
     </>
   );
 };
-
-const ACCEPT_ITEMS = [
-  'Item:Drive:Files',
-  'Item:Note:Pages',
-  'Item:Note:SharedPages',
-  'Item:Note:Chapters',
-  'Item:Note:SharedChapters',
-  'Item:Calendar:ShareSchedules',
-];
-const TALK_ACCEPT_ITEMS = ['Item:Calendar:ShareSchedules', 'Item:Drive:Files'];
 
 // TODO: Content.js 와 동일한 함수로 리팩토링 필요
 const getRoomId = () => {
@@ -454,17 +440,15 @@ const RoomItem = ({
 };
 
 const MyIcon = styled.div`
-  display: inline-flex;
-  flex: 0 0 1rem;
-  height: 1rem;
-  align-items: center;
-  justify-content: center;
-  background: #232d3b;
-  font-size: 0.69rem;
-  color: white;
-  font-weight: 400;
-  border-radius: 0.25rem;
-  margin-left: 0.25rem;
+  width: 0.88rem;
+  height: 0.88rem;
+  flex-shrink: 0;
+  margin-right: 0.25rem;
+  line-height: 0;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const ItemWrapper = styled.div`
@@ -485,7 +469,7 @@ const ItemWrapper = styled.div`
     `}
 
   border-radius: 0.8125rem;
-  padding: 0.625rem;
+  padding: 0.625rem 0.44rem;
   margin: 0 0.25rem;
 
   &:hover {
@@ -501,20 +485,21 @@ const ItemWrapper = styled.div`
   }
 `;
 const StyledMenu = styled(Menu)`
-  & {
-    background: #ffffff;
-    border: 1px solid #c6ced6;
-    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-  }
+  background: #ffffff;
+  border: 1px solid #d0ccc7;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 0.25rem;
 
-  & .ant-dropdown-menu-item {
+  .ant-dropdown-menu-item {
     font-size: 0.75rem;
     color: #000;
 
-    :hover {
-      background-color: #dcddff;
-      border-radius: 0.8125rem;
+    &:hover {
+      background-color: #faf8f7;
+    }
+    &:active,
+    &:focus {
+      background-color: #f2efec;
     }
   }
 `;
@@ -533,6 +518,7 @@ const StyleRoomMessage = styled.span`
 const RoomNameText = styled.span`
   font-size: 0.81rem;
   font-weight: 500;
+  line-height: 1;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -605,4 +591,13 @@ const IconWrapper = styled.div`
   }
 `;
 
-export default RoomItem;
+export default React.memo(
+  RoomItem,
+  (prevProps, nextProps) =>
+    prevProps.selected === nextProps.selected &&
+    prevProps.onClick === nextProps.onClick &&
+    prevProps.onMenuClick === nextProps.onMenuClick &&
+    prevProps.onClickMenuItem === nextProps.onClickMenuItem &&
+    prevProps.onClickRoomPhoto === nextProps.onClickRoomPhoto &&
+    isEqual(prevProps.roomInfo, nextProps.roomInfo),
+);

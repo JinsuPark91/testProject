@@ -11,8 +11,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import Photos from '../Photos';
 import NextArrowIcon from '../../assets/ts_arrow_right_line.svg';
 import PrevArrowIcon from '../../assets/ts_arrow_left_line.svg';
-import AddIcon from '../../assets/add1.svg';
-import { SettingIcon, OpenChatIcon } from '../Icons';
+import { SettingIcon, OpenChatIcon, AddIcon } from '../Icons';
 import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 import Search from '../common/Search';
@@ -236,7 +235,7 @@ function OpenRoomHome({ visible, onCancel }) {
             <div style={{ flex: '0 0 2.26rem', marginRight: '0.63rem' }}>
               <Photos
                 srcList={getUserPhotos(roomInfo.memberIdListString)}
-                defaultDiameter="2.26"
+                defaultDiameter="1.75"
               />
             </div>
             <Observer>
@@ -313,22 +312,22 @@ function OpenRoomHome({ visible, onCancel }) {
       <StyledModal
         title="오픈 룸 홈"
         visible={visible}
-        footer={null}
+        mask={false}
+        footer={false}
         onCancel={closeHomeModal}
-        width="22.5rem"
+        width="24.38rem"
         destroyOnClose
+        style={{ top: '3.75rem', left: '16.81rem', margin: 'unset' }}
       >
         <OpenHomeForm>
-          <SearchBox>
-            <Search
-              placeholder="전체검색"
-              onChange={handleKeywordChange}
-              onClear={handleKeywordClear}
-              searchIconColor={{ active: '#48423B', default: '#48423B' }}
-              clearIconColor={{ active: '#48423B', default: '#48423B' }}
-              type="border"
-            />
-          </SearchBox>
+          <Search
+            placeholder="전체검색"
+            onChange={handleKeywordChange}
+            onClear={handleKeywordClear}
+            searchIconColor={{ active: '#48423B', default: '#48423B' }}
+            clearIconColor={{ active: '#48423B', default: '#48423B' }}
+            type="border"
+          />
           {!keyword ? (
             <>
               <RoomListBox>
@@ -361,6 +360,11 @@ function OpenRoomHome({ visible, onCancel }) {
                         >
                           <ItemAddBtn onClick={handleCreateRoom}>
                             <span>오픈룸 생성</span>
+                            <AddIcon
+                              width="1.25"
+                              height="1.25"
+                              color="#7B7671"
+                            />
                           </ItemAddBtn>
                           {openRooms.map(openRoom => {
                             return (
@@ -391,15 +395,14 @@ function OpenRoomHome({ visible, onCancel }) {
                     <RoomList>
                       {roomStore.getRecommandRoomArray().map(roomInfo => (
                         <RoomListItem key={roomInfo.id}>
-                          <Photos
+                          <OpenRoomPhotos
                             srcList={getUserPhotos(roomInfo.memberIdListString)}
                             defaultDiameter="2.26"
                           />
-
                           <RecomRoomTitle
                             style={{
                               flex: 1,
-                              marginLeft: '0.63rem',
+                              marginLeft: '0.38rem',
                               whiteSpace: 'nowrap',
                             }}
                           >
@@ -440,10 +443,7 @@ const OpenHomeForm = styled.div`
   display: flex;
   flex-direction: column;
   height: 29.75rem;
-  padding: 0 0.75rem;
-`;
-const SearchBox = styled.div`
-  padding-top: 0.63rem;
+  padding: 0.63rem 0.94rem;
 `;
 
 const JoinedText = styled.div`
@@ -462,9 +462,8 @@ const OpenRoomName = styled.div`
 `;
 
 const RoomListBox = styled.div`
-  margin: 0 0.5rem;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #e3e7eb;
+  padding: 0.94rem 0 0.75rem;
+  border-bottom: 1px solid #eeedeb;
 `;
 
 const RecommendRoomListBox = styled.div`
@@ -472,20 +471,20 @@ const RecommendRoomListBox = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding: 0.63rem 0;
+  padding: 0.94rem 0 0.63rem;
 `;
 
 const RoomList = styled.ul`
   overflow-y: auto;
   height: 100%;
-  padding: 0 0.5rem;
+  padding: 0 0.38rem 0 0.63rem;
 `;
 
 const RoomListItem = styled.li`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.44rem 0;
+  padding: 0.63rem 0;
 `;
 
 const RoomTitle = styled.p`
@@ -496,7 +495,7 @@ const RoomTitle = styled.p`
 `;
 
 const RoomOpenTitle = styled(RoomTitle)`
-  padding: 0.12rem 0.5rem 0.44rem;
+  padding-bottom: 0.63rem;
 `;
 
 const RoomCount = styled.span`
@@ -507,21 +506,24 @@ const RoomCount = styled.span`
 `;
 
 const ItemAddBtn = styled.button`
+  position: relative;
+  width: 3.75rem !important;
   height: 3.75rem;
-  background-color: transparent;
+  margin: 0 auto;
+  border-radius: 50%;
+  background-color: #f7f4ef;
   border: none;
+  vertical-align: top;
+  font-size: 0;
+  line-height: 0;
+  text-indent: -9999px;
   cursor: pointer;
 
-  span {
-    display: block;
-    width: 3.75rem;
-    height: 3.75rem;
-    border-radius: 50%;
-    background: #efefef url(${AddIcon}) 50% 50% no-repeat;
-    font-size: 0;
-    line-height: 0;
-    text-indent: -9999px;
-    vertical-align: top;
+  svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 `;
 const RoomSearchForm = styled.div`
@@ -605,12 +607,15 @@ const IconWrapper = styled.div`
 `;
 
 const StyledSlider = styled(Slider)`
-  margin-top: 0.6875rem;
+  margin-top: 0.75rem;
   .slick-slide {
     padding-top: 0.375rem;
-    & > div > div {
-      width: fit-content;
-      margin: 0 auto;
+    & > div {
+      text-align: center;
+      & > div {
+        width: fit-content;
+        margin: 0 auto;
+      }
     }
   }
   .slick-prev,
@@ -640,6 +645,10 @@ const StyledSlider = styled(Slider)`
       background-image: url(${NextArrowIcon});
     }
   }
+`;
+
+const OpenRoomPhotos = styled(Photos)`
+  cursor: default;
 `;
 
 export default OpenRoomHome;

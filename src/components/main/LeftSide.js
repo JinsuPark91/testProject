@@ -1,30 +1,25 @@
 import React from 'react';
-import { observer } from 'mobx-react';
+import { observer, Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { MailSideView } from 'teespace-mail-app';
 import { ChattingIcon, MailIcon, PeopleIcon } from '../Icons';
 import FriendLnb from '../friends/FriendsLNB';
 import RoomList from '../Rooms/RoomList';
+import { handleCheckNewFriend } from '../../utils/FriendsUtil';
 import { Wrapper, CustomTabs, UnreadCount, IconWrapper } from './LeftSideStyle';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const { TabPane } = CustomTabs;
 
 const LeftSide = observer(() => {
-  const { roomStore } = useCoreStores();
+  const { roomStore, friendStore } = useCoreStores();
+  const newFriendNum = friendStore.friendInfoList?.filter(elem =>
+    handleCheckNewFriend(elem),
+  ).length;
 
   const handleSelectTab = key => {
     PlatformUIStore.tabType = key;
   };
-
-  PlatformUIStore.totalUnreadCount = roomStore
-    .getRoomArray()
-    .filter(roomInfo => roomInfo.isVisible)
-    .reduce(
-      (accumulator, roomInfo) =>
-        accumulator + parseInt(roomInfo.metadata?.count ?? '0', 10),
-      0,
-    );
 
   return (
     <Wrapper>
@@ -37,6 +32,9 @@ const LeftSide = observer(() => {
           key="f"
           tab={
             <IconWrapper className="lnb__icon-wrapper">
+              <UnreadCount isVisible={newFriendNum > 0}>
+                {newFriendNum}
+              </UnreadCount>
               <PeopleIcon
                 width={1.5}
                 height={1.5}
@@ -53,11 +51,29 @@ const LeftSide = observer(() => {
           key="s"
           tab={
             <IconWrapper className="lnb__icon-wrapper">
-              <UnreadCount isVisible={PlatformUIStore.totalUnreadCount > 0}>
-                {PlatformUIStore.totalUnreadCount > 99
-                  ? '99+'
-                  : PlatformUIStore.totalUnreadCount}
-              </UnreadCount>
+              <Observer>
+                {() => {
+                  PlatformUIStore.totalUnreadCount = roomStore
+                    .getRoomArray()
+                    .filter(roomInfo => roomInfo.isVisible)
+                    .reduce(
+                      (accumulator, roomInfo) =>
+                        accumulator +
+                        parseInt(roomInfo.metadata.count ?? '0', 10),
+                      0,
+                    );
+                  return (
+                    <UnreadCount
+                      isVisible={PlatformUIStore.totalUnreadCount > 0}
+                    >
+                      {PlatformUIStore.totalUnreadCount > 99
+                        ? '99+'
+                        : PlatformUIStore.totalUnreadCount}
+                    </UnreadCount>
+                  );
+                }}
+              </Observer>
+
               <ChattingIcon
                 width={1.5}
                 height={1.5}
