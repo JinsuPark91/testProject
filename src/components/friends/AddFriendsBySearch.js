@@ -141,21 +141,19 @@ function AddFriendsBySearch({
       setSearchText('');
     }
   };
+  const handleSearch = event => {
+    const targetText = event.target.value;
+    setSearchText(targetText);
+  };
+  const handleCancelIconClick = () => {
+    setSearchText('');
+    setValueText('');
+  };
 
   const handleCancelInvite = () => {
     setSearchText('');
     setValueText('');
     onCancelAddFriends();
-  };
-
-  const handleSearch = event => {
-    const targetText = event.target.value;
-    setSearchText(targetText);
-  };
-
-  const handleCancelIconClick = () => {
-    setSearchText('');
-    setValueText('');
   };
 
   return (

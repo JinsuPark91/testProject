@@ -179,32 +179,30 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
     const isMe =
       friendInfo?.friendId || friendInfo.id === userStore.myProfile.id;
     return (
-      <>
-        <FriendItem style={style}>
-          {isMe && (
-            <MyBadge>
-              <img src={mySign} alt="me" />
-            </MyBadge>
-          )}
-          <ImageBox
-            onClick={() =>
-              handleOpenProfile(friendInfo?.friendId || friendInfo?.id)
-            }
-          >
-            <img
-              alt="profile"
-              src={userStore.getProfilePhotoURL(
-                friendInfo?.friendId || friendInfo?.id,
-                'small',
-              )}
-            />
-          </ImageBox>
-          <FriendName>
-            {userName} {fullCompanyJobText}
-          </FriendName>
-          {!isViewMode && renderMenu(friendInfo)}
-        </FriendItem>
-      </>
+      <FriendItem style={style}>
+        {isMe && (
+          <MyBadge>
+            <img src={mySign} alt="me" />
+          </MyBadge>
+        )}
+        <ImageBox
+          onClick={() =>
+            handleOpenProfile(friendInfo?.friendId || friendInfo?.id)
+          }
+        >
+          <img
+            alt="profile"
+            src={userStore.getProfilePhotoURL(
+              friendInfo?.friendId || friendInfo?.id,
+              'small',
+            )}
+          />
+        </ImageBox>
+        <FriendName>
+          {userName} {fullCompanyJobText}
+        </FriendName>
+        {!isViewMode && renderMenu(friendInfo)}
+      </FriendItem>
     );
   });
 
