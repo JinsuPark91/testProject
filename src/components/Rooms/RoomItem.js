@@ -7,6 +7,7 @@ import { isEqual } from 'lodash';
 import { useCoreStores } from 'teespace-core';
 import { talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
+import { ACCEPT_ITEMS, TALK_ACCEPT_ITEMS } from '../../utils/DndConstant';
 import Photos from '../Photos';
 import {
   ViewMoreIcon,
@@ -360,16 +361,6 @@ const RoomItemContent = ({
     </>
   );
 };
-
-const ACCEPT_ITEMS = [
-  'Item:Drive:Files',
-  'Item:Note:Pages',
-  'Item:Note:SharedPages',
-  'Item:Note:Chapters',
-  'Item:Note:SharedChapters',
-  'Item:Calendar:ShareSchedules',
-];
-const TALK_ACCEPT_ITEMS = ['Item:Calendar:ShareSchedules', 'Item:Drive:Files'];
 
 // TODO: Content.js 와 동일한 함수로 리팩토링 필요
 const getRoomId = () => {

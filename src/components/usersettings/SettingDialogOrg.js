@@ -23,7 +23,7 @@ const SettingDialogOrg = () => {
         <TextArea>
           <p>
             {authStore.user.orgName || '-'}/ {authStore.user.position || '-'}/{' '}
-            {authStore.user.departmentName || '-'}
+            {authStore.user.job || '-'}
           </p>
         </TextArea>
         <ButtonArea>
