@@ -517,7 +517,7 @@ const StyleRoomMessage = styled.span`
 const RoomNameText = styled.span`
   font-size: 0.81rem;
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.19rem;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -526,7 +526,7 @@ const RoomNameText = styled.span`
 const UserCountText = styled.span`
   margin-left: 0.25rem;
   font-size: 0.81rem;
-  line-height: 1;
+  line-height: 1.19rem;
   color: #7f7f7f;
 `;
 
