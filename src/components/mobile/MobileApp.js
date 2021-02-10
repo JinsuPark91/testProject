@@ -1,19 +1,66 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
+import { initApp as initTalkApp } from 'teespace-talk-app';
+import { BrowserRouter, Switch, Route, useHistory } from 'react-router-dom';
+import { create } from 'mobx-persist';
 import { useCoreStores } from 'teespace-core';
+import { ReactKeycloakProvider } from '@react-keycloak/web';
+import PrivateRoute from '../../libs/PrivateRoute';
+import KeycloakRedirectRoute from '../../libs/KeycloakRedirectRoute';
+import keycloak from '../../libs/keycloak';
+import MobileMainPage from './MobileMainPage';
 
-const Wrapper = styled.div``;
+const hydrate = create();
 
 const MobileApp = () => {
-  const { userStore, roomStore } = useCoreStores();
+  const [isHydrating, setIsHydrating] = useState(false);
+  const { userStore } = useCoreStores();
+  const history = useHistory();
+  const url = window.location.origin; //  http://xxx.dev.teespace.net
+  const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
+  const isLocal = process.env.REACT_APP_ENV === 'local';
 
   useEffect(() => {
-    Promise.all([]);
+    initTalkApp();
   }, []);
 
-  const roomFilter = roomInfo => roomInfo.isVisible;
+  useEffect(() => {
+    Promise.all([hydrate('user', userStore)])
+      .then(() => {
+        userStore.initHydratedMyProfile({});
+        setIsHydrating(true);
+      })
+      .catch(e => console.error(e));
+  }, []);
 
-  return <Wrapper />;
+  if (!isHydrating) return <></>;
+  return (
+    <Switch>
+      <Route>
+        <ReactKeycloakProvider
+          authClient={keycloak}
+          LoadingComponent={<></>}
+          initOptions={{
+            onLoad: 'login-required',
+            redirectUri: '',
+          }}
+        >
+          <BrowserRouter>
+            <Switch>
+              <KeycloakRedirectRoute
+                exact
+                path="/login"
+                component={MobileMainPage}
+              />
+              <PrivateRoute
+                path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
+                component={MobileMainPage}
+              />
+            </Switch>
+          </BrowserRouter>
+        </ReactKeycloakProvider>
+      </Route>
+    </Switch>
+  );
 };
 
 export default MobileApp;
