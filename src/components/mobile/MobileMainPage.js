@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Observer } from 'mobx-react';
+import { useObserver } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import styled from 'styled-components';
@@ -8,14 +8,13 @@ import MobileRoomItem from './MobileRoomItem';
 const Wrapper = styled.div`
   height: 100%;
 `;
-
 const Header = styled.div`
   height: 10%;
 `;
 
 const MobileMainPage = () => {
-  const { roomStore } = useCoreStores();
-  const myUserId = '646e2725-7e82-4d54-9773-68c170efaf40';
+  const { userStore, roomStore } = useCoreStores();
+  const myUserId = userStore.myProfile.id;
 
   useEffect(() => {
     Promise.all([roomStore.fetchRoomList({ myUserId })]).then(async res => {
@@ -26,27 +25,22 @@ const MobileMainPage = () => {
 
   const roomFilter = roomInfo => roomInfo.visible;
 
-  const renderRoomList = () => {
+  const RoomList = ({ roomList }) => {
     return (
-      <Observer>
-        {() => {
-          return roomStore
-            .getRoomArray()
-            .filter(roomFilter)
-            .map(roomInfo => (
-              <MobileRoomItem key={roomInfo.id} roomInfo={roomInfo} />
-            ));
-        }}
-      </Observer>
+      <>
+        {roomList.map(roomInfo => (
+          <MobileRoomItem roomInfo={roomInfo} />
+        ))}
+      </>
     );
   };
 
-  return (
+  return useObserver(() => (
     <Wrapper>
       <Header />
-      <MobileRoomItem />
+      <RoomList roomList={roomStore.getRoomArray()[0]} />
     </Wrapper>
-  );
+  ));
 };
 
 export default MobileMainPage;
