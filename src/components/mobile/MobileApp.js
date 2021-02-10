@@ -1,19 +1,126 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
-import { useCoreStores } from 'teespace-core';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import '../../App.less';
+import { create } from 'mobx-persist';
+import { PortalProvider, useCoreStores } from 'teespace-core';
+import { initApp as initTalkApp } from 'teespace-talk-app';
+import { ReactKeycloakProvider } from '@react-keycloak/web';
+import Cookies from 'js-cookie';
+import NotFoundPage from '../../page/NotFoundPage';
+import SignUpPage from '../../page/SignUpPage';
+import SignUpFormPage from '../../page/SignUpFormPage';
+import SignUpCompletePage from '../../page/SignUpCompletePage';
+import LogoutPage from '../../page/LogoutPage';
+import MobileMainPage from './MobileMainPage';
+import RedirectablePublicRoute from '../../libs/RedirectablePublicRoute';
+import PrivateRoute from '../../libs/PrivateRoute';
+import KeycloakRedirectRoute from '../../libs/KeycloakRedirectRoute';
+import keycloak from '../../libs/keycloak';
 
-const Wrapper = styled.div``;
+const hydrate = create();
 
-const MobileApp = () => {
-  const { userStore, roomStore } = useCoreStores();
+const App = () => {
+  const [isHydrating, setIsHydrating] = useState(false);
+  const { userStore } = useCoreStores();
+  const isLocal = process.env.REACt_APP_ENV === 'local';
 
+  const eventLogger = (event, error) => {
+    switch (event) {
+      case 'onAuthSuccess':
+      case 'onAuthRefreshSuccess': {
+        Cookies.set(
+          'ACCESS_TOKEN',
+          keycloak.token,
+          isLocal
+            ? {}
+            : {
+                domain: `.${window.location.host.slice(
+                  window.location.host.indexOf('.') + 1,
+                  window.location.host.length,
+                )}`,
+              },
+        );
+        break;
+      }
+      case 'onAuthLogout':
+        window.location.href = '/';
+        break;
+      default:
+        break;
+    }
+  };
+
+  // initialize apps
   useEffect(() => {
-    Promise.all([]);
+    initTalkApp();
   }, []);
 
-  const roomFilter = roomInfo => roomInfo.isVisible;
+  // hydrate mobx stores
+  useEffect(() => {
+    Promise.all([hydrate('user', userStore)])
+      .then(() => {
+        userStore.initHydratedMyProfile({});
+        setIsHydrating(true);
+      })
+      .catch(e => console.error(e));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  return <Wrapper />;
+  if (!isHydrating) return <></>;
+  return (
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/">
+          <Redirect to="/login" />
+        </Route>
+        <Route>
+          <ReactKeycloakProvider
+            authClient={keycloak}
+            onEvent={eventLogger}
+            LoadingComponent={<></>}
+            initOptions={{
+              onLoad: 'login-required',
+              redirectUri: '',
+            }}
+          >
+            <PortalProvider>
+              {/* <I18nextProvider i18n={i18next}> */}
+              <BrowserRouter>
+                <Switch>
+                  <Route exact path="/logout" component={LogoutPage} />
+                  <KeycloakRedirectRoute
+                    exact
+                    path="/login"
+                    component={MobileMainPage}
+                  />
+                  <RedirectablePublicRoute
+                    exact
+                    path="/register"
+                    component={<SignUpPage />}
+                  />
+                  <RedirectablePublicRoute
+                    exact
+                    path="/registerForm"
+                    component={<SignUpFormPage />}
+                  />
+                  <RedirectablePublicRoute
+                    exact
+                    path="/registerComplete"
+                    component={<SignUpCompletePage />}
+                  />
+                  <PrivateRoute
+                    path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
+                    component={MobileMainPage}
+                  />
+                  <Route component={NotFoundPage} />
+                </Switch>
+              </BrowserRouter>
+            </PortalProvider>
+          </ReactKeycloakProvider>
+        </Route>
+      </Switch>
+    </BrowserRouter>
+  );
 };
 
-export default MobileApp;
+export default App;
