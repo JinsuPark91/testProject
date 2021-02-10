@@ -2,7 +2,13 @@ import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled from 'styled-components';
-import { useCoreStores, Toast, ProfileInfoModal, Message } from 'teespace-core';
+import {
+  useCoreStores,
+  Toast,
+  ProfileInfoModal,
+  Message,
+  logEvent,
+} from 'teespace-core';
 import { Tooltip } from 'antd';
 import { WaplLogo, AddRoomIcon, OpenChatIcon, SearchIcon } from '../Icons';
 import EmptyRoomIllust from '../../assets/space_make.svg';
@@ -41,10 +47,12 @@ function RoomList() {
 
   const handleCreateRoom = () => {
     setVisible({ ...visible, selectRoomType: true });
+    logEvent('main', 'clickRoomCreateBtn');
   };
 
   const handleOpenChat = useCallback(() => {
     setOpenRoomDialogVisible(true);
+    logEvent('main', 'clickOpenRoomHomeBtn');
   }, []);
 
   const handleSelectRoom = useCallback(

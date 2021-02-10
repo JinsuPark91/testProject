@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Modal } from 'antd';
 import { talkRoomStore } from 'teespace-talk-app';
-import { useCoreStores, Message } from 'teespace-core';
+import { useCoreStores, Message, logEvent } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -207,6 +207,7 @@ function OpenRoomHome({ visible, onCancel }) {
       if (res?.roomId) {
         history.push(`/s/${currentOpenRoom.id}/talk`);
       }
+      logEvent('room', 'clickEnterOpenRoomBtn');
     } catch (err) {
       console.error('ROOM ENTER ERROR : ', err);
     }

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, logEvent } from 'teespace-core';
 import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { Layout, Tooltip } from 'antd';
@@ -48,14 +48,19 @@ function FriendsLNBFooter() {
   const [spaceMemberList, setSpaceMemberList] = useState([]);
 
   const handleOpenAddFriendsDialog = useCallback(async () => {
-    await handleFriendsDialogType(
-      orgStore,
-      userStore.myProfile,
-      authStore.sessionInfo?.domainKey,
-      () => setIsOrgExist(true),
-      res => setSpaceMemberList(res),
-    );
-    setIsDialogVisible(!isDialogVisible);
+    try {
+      await handleFriendsDialogType(
+        orgStore,
+        userStore.myProfile,
+        authStore.sessionInfo?.domainKey,
+        () => setIsOrgExist(true),
+        res => setSpaceMemberList(res),
+      );
+      setIsDialogVisible(!isDialogVisible);
+      logEvent('main', 'clickAddFriendsBtn');
+    } catch (e) {
+      console.log('Friends Add Service Error..');
+    }
   }, [orgStore, userStore, authStore, isDialogVisible]);
 
   const handleCloseAddFriendsDialog = useCallback(async () => {

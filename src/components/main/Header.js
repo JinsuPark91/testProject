@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-import { useCoreStores, ProfileInfoModal } from 'teespace-core';
+import { useCoreStores, ProfileInfoModal, logEvent } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { Tooltip } from 'antd';
 import {
@@ -311,6 +311,27 @@ const Header = observer(() => {
       }
     } else {
       closeSubApp();
+    }
+
+    // 최대한 기존 코드 안 건드리려고 했는데, 수정해도 무방함
+    switch (appName) {
+      case 'drive':
+        logEvent('gnb', 'clickTeeDriveBtn');
+        break;
+      case 'calendar':
+        logEvent('gnb', 'clickTeeCalendarBtn');
+        break;
+      case 'note':
+        logEvent('gnb', 'clickTeeNoteBtn');
+        break;
+      case 'meeting':
+        logEvent('gnb', 'clickTeeMeetingBtn');
+        break;
+      case 'files':
+        logEvent('gnb', 'clickPlusBtn');
+        break;
+      default:
+        break;
     }
   };
 

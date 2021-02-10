@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ItemSelector, useCoreStores } from 'teespace-core';
+import { ItemSelector, useCoreStores, logEvent } from 'teespace-core';
 import { Checkbox, Button } from 'antd';
 import {
   FlexModal,
@@ -55,7 +55,10 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
         roomName,
         isStartMeeting,
       });
-    else setStep(step + 1);
+    else {
+      setStep(step + 1);
+      logEvent('room', 'clickCreateOpenRoomBtn');
+    }
   };
 
   const handleCancel = () => {
