@@ -9,7 +9,7 @@ import {
 } from 'teespace-core';
 import { createGlobalStyle } from 'styled-components';
 import { BrowserRouter } from 'react-router-dom';
-import App from './App';
+import MobileApp from './components/mobile/MobileApp';
 import * as serviceWorker from './serviceWorker';
 import { setEnv, getEnv } from './env';
 
@@ -76,7 +76,7 @@ ReactDOM.render(
     <GlobalStyle />
     <GlobalCommonStyles />
     <BrowserRouter>
-      <App />
+      <MobileApp />
     </BrowserRouter>
   </CoreStoreProvider>,
   document.getElementById('root'),
