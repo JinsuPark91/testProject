@@ -44,7 +44,7 @@ const MobileMainPage = () => {
   return (
     <Wrapper>
       <Header />
-      {renderRoomList}
+      <MobileRoomItem />
     </Wrapper>
   );
 };
