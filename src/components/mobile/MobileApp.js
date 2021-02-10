@@ -19,7 +19,7 @@ import keycloak from '../../libs/keycloak';
 
 const hydrate = create();
 
-const App = () => {
+const MobileApp = () => {
   const [isHydrating, setIsHydrating] = useState(false);
   const { userStore } = useCoreStores();
   const isLocal = process.env.REACt_APP_ENV === 'local';
@@ -84,7 +84,6 @@ const App = () => {
             }}
           >
             <PortalProvider>
-              {/* <I18nextProvider i18n={i18next}> */}
               <BrowserRouter>
                 <Switch>
                   <Route exact path="/logout" component={LogoutPage} />
@@ -123,4 +122,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default MobileApp;
