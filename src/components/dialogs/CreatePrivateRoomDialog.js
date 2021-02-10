@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { ItemSelector, useCoreStores } from 'teespace-core';
+import { ItemSelector, useCoreStores, logEvent } from 'teespace-core';
 import { Checkbox, Button } from 'antd';
 import {
   ConfigTitle,
@@ -32,6 +32,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
       selectedUsers,
     });
     clearState();
+    logEvent('room', 'clickInviteToPrivateRoomBtn');
   };
 
   const handleCancel = () => {
