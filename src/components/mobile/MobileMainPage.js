@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import styled from 'styled-components';
@@ -20,6 +19,7 @@ const MobileMainPage = () => {
   const { resourceId } = useParams();
   const { userStore, friendStore, roomStore } = useCoreStores();
   const [isLoading, setIsLoading] = useState(true);
+  const [searchInput, setSearchInput] = useState('');
   const myUserId = userStore.myProfile.id;
 
   useEffect(() => {
@@ -30,7 +30,6 @@ const MobileMainPage = () => {
     ]).then(async res => {
       await talkRoomStore.initialize(myUserId);
       setIsLoading(false);
-      console.log(roomStore.getRoomArray());
     });
   }, []);
 
@@ -38,7 +37,7 @@ const MobileMainPage = () => {
     PlatformUIStore.resourceId = resourceId;
   }, [resourceId]);
 
-  const roomFilter = room => room.visible;
+  const roomFilter = room => room.isVisible;
 
   const handleSelectRoom = room => {
     history.push(`${room?.id}/talk`);
@@ -66,8 +65,7 @@ const MobileMainPage = () => {
     );
   }
 
-  console.log(`platform${PlatformUIStore.resourceId}`);
-  const roomArray = roomStore.getRoomArray();
+  const roomArray = roomStore.getRoomArray().filter(roomFilter);
 
   return (
     <Wrapper>
