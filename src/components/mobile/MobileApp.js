@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import '../../App.less';
 import { create } from 'mobx-persist';
 import { PortalProvider, useCoreStores } from 'teespace-core';
 import { initApp as initTalkApp } from 'teespace-talk-app';
+import { initApp as initDriveApp } from 'teespace-drive-app';
 import { ReactKeycloakProvider } from '@react-keycloak/web';
 import Cookies from 'js-cookie';
 import NotFoundPage from '../../page/NotFoundPage';
@@ -53,6 +56,7 @@ const MobileApp = () => {
   // initialize apps
   useEffect(() => {
     initTalkApp();
+    initDriveApp();
   }, []);
 
   // hydrate mobx stores
@@ -68,57 +72,59 @@ const MobileApp = () => {
 
   if (!isHydrating) return <></>;
   return (
-    <BrowserRouter>
-      <Switch>
-        <Route exact path="/">
-          <Redirect to="/login" />
-        </Route>
-        <Route>
-          <ReactKeycloakProvider
-            authClient={keycloak}
-            onEvent={eventLogger}
-            LoadingComponent={<></>}
-            initOptions={{
-              onLoad: 'login-required',
-              redirectUri: '',
-            }}
-          >
-            <PortalProvider>
-              <BrowserRouter>
-                <Switch>
-                  <Route exact path="/logout" component={LogoutPage} />
-                  <KeycloakRedirectRoute
-                    exact
-                    path="/login"
-                    component={MobileMainPage}
-                  />
-                  <RedirectablePublicRoute
-                    exact
-                    path="/register"
-                    component={<SignUpPage />}
-                  />
-                  <RedirectablePublicRoute
-                    exact
-                    path="/registerForm"
-                    component={<SignUpFormPage />}
-                  />
-                  <RedirectablePublicRoute
-                    exact
-                    path="/registerComplete"
-                    component={<SignUpCompletePage />}
-                  />
-                  <PrivateRoute
-                    path="/:resourceType(s|f|m)/:resourceId"
-                    component={MobileMainPage}
-                  />
-                  <Route component={NotFoundPage} />
-                </Switch>
-              </BrowserRouter>
-            </PortalProvider>
-          </ReactKeycloakProvider>
-        </Route>
-      </Switch>
-    </BrowserRouter>
+    <DndProvider backend={HTML5Backend}>
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/">
+            <Redirect to="/login" />
+          </Route>
+          <Route>
+            <ReactKeycloakProvider
+              authClient={keycloak}
+              onEvent={eventLogger}
+              LoadingComponent={<></>}
+              initOptions={{
+                onLoad: 'login-required',
+                redirectUri: '',
+              }}
+            >
+              <PortalProvider>
+                <BrowserRouter>
+                  <Switch>
+                    <Route exact path="/logout" component={LogoutPage} />
+                    <KeycloakRedirectRoute
+                      exact
+                      path="/login"
+                      component={MobileMainPage}
+                    />
+                    <RedirectablePublicRoute
+                      exact
+                      path="/register"
+                      component={<SignUpPage />}
+                    />
+                    <RedirectablePublicRoute
+                      exact
+                      path="/registerForm"
+                      component={<SignUpFormPage />}
+                    />
+                    <RedirectablePublicRoute
+                      exact
+                      path="/registerComplete"
+                      component={<SignUpCompletePage />}
+                    />
+                    <PrivateRoute
+                      path="/:resourceType(room|talk)/:resourceId"
+                      component={MobileMainPage}
+                    />
+                    <Route component={NotFoundPage} />
+                  </Switch>
+                </BrowserRouter>
+              </PortalProvider>
+            </ReactKeycloakProvider>
+          </Route>
+        </Switch>
+      </BrowserRouter>
+    </DndProvider>
   );
 };
 
