@@ -1,12 +1,11 @@
 import React from 'react';
 import { Talk } from 'teespace-talk-app';
-import { useHistory } from 'react-router-dom';
+import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import MobileRoomItem from './MobileRoomItem';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
-const Content = () => {
-  const history = useHistory();
+const Content = observer(() => {
   const { roomStore } = useCoreStores();
 
   const roomFilter = room => room.isVisible;
@@ -31,19 +30,11 @@ const Content = () => {
     PlatformUIStore.isSearchVisible = false;
   };
 
-  const handleSelectRoom = roomInfo => {
-    history.push(`/talk/${roomInfo?.id}`);
-  };
-
   const RoomList = ({ roomList }) => {
     return (
       <>
         {roomList.map(roomInfo => (
-          <MobileRoomItem
-            key={roomInfo?.id}
-            roomInfo={roomInfo}
-            onClick={() => handleSelectRoom(roomInfo)}
-          />
+          <MobileRoomItem key={roomInfo?.id} roomInfo={roomInfo} />
         ))}
       </>
     );
@@ -66,6 +57,6 @@ const Content = () => {
       isMini={false}
     />
   );
-};
+});
 
 export default Content;
