@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
-import { Observer } from 'mobx-react';
+import { useParams } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import styled from 'styled-components';
 import Header from './Header';
-import MobileRoomItem from './MobileRoomItem';
+import Content from './Content';
 import LoadingImg from '../../assets/WAPL_Loading.gif';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
@@ -16,8 +15,7 @@ const Wrapper = styled.div`
 const Loader = styled.div``;
 
 const MobileMainPage = () => {
-  const history = useHistory();
-  const { resourceId } = useParams();
+  const { resourceType, resourceId } = useParams();
   const { userStore, friendStore, roomStore } = useCoreStores();
   const [isLoading, setIsLoading] = useState(true);
   const myUserId = userStore.myProfile.id;
@@ -30,33 +28,13 @@ const MobileMainPage = () => {
     ]).then(async res => {
       await talkRoomStore.initialize(myUserId);
       setIsLoading(false);
-      console.log(roomStore.getRoomArray());
     });
   }, []);
 
   useEffect(() => {
+    PlatformUIStore.resourceType = resourceType;
     PlatformUIStore.resourceId = resourceId;
-  }, [resourceId]);
-
-  const roomFilter = room => room.visible;
-
-  const handleSelectRoom = room => {
-    history.push(`${room?.id}/talk`);
-  };
-
-  const RoomList = ({ roomList }) => {
-    return (
-      <>
-        {roomList.map(roomInfo => (
-          <MobileRoomItem
-            key={roomInfo?.id}
-            roomInfo={roomInfo}
-            onClick={() => handleSelectRoom(roomInfo)}
-          />
-        ))}
-      </>
-    );
-  };
+  }, [resourceType, resourceId]);
 
   if (isLoading) {
     return (
@@ -66,13 +44,10 @@ const MobileMainPage = () => {
     );
   }
 
-  console.log(`platform${PlatformUIStore.resourceId}`);
-  const roomArray = roomStore.getRoomArray();
-
   return (
     <Wrapper>
       <Header />
-      {roomArray && <RoomList roomList={roomArray} />}
+      <Content />
     </Wrapper>
   );
 };

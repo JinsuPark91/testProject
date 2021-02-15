@@ -1,11 +1,15 @@
 import React from 'react';
 import { useCoreStores } from 'teespace-core';
+import { useObserver } from 'mobx-react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import Photos from '../Photos';
+import { getMessageTime } from '../../utils/TimeUtil';
 
 const Wrapper = styled.div``;
 
 const MobileRoomItem = ({ roomInfo, onClick }) => {
+  const history = useHistory();
   const { userStore } = useCoreStores();
   const isMyRoom = roomInfo.type === 'WKS0001';
   const isDMRoom = roomInfo.isDirectMsg;
@@ -32,12 +36,10 @@ const MobileRoomItem = ({ roomInfo, onClick }) => {
   };
 
   const handleClickRoom = () => {
-    // onClick();
+    history.push(`/talk/${roomInfo?.id}`);
   };
 
-  console.log(roomInfo);
-
-  return (
+  return useObserver(() => (
     <Wrapper onClick={handleClickRoom}>
       {getRoomPhoto()}
       <div>
@@ -45,10 +47,15 @@ const MobileRoomItem = ({ roomInfo, onClick }) => {
           ? userStore.myProfile.displayName
           : roomInfo.customName || roomInfo.name}
       </div>
-      <div>{roomInfo.metadata?.lastMessageDate}</div>
+      <div>{getMessageTime(roomInfo.metadata?.lastMessageDate)}</div>
       <div>{roomInfo.metadata?.lastMessage}</div>
+      {roomInfo.metadata?.count && (
+        <div>
+          {roomInfo.metadata?.count > 99 ? '99+' : roomInfo.metadata?.count}
+        </div>
+      )}
     </Wrapper>
-  );
+  ));
 };
 
 export default MobileRoomItem;
