@@ -1,46 +1,80 @@
-import React, { useEffect } from 'react';
-import { useObserver } from 'mobx-react';
+import React, { useEffect, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
+import { Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import styled from 'styled-components';
+import Header from './Header';
 import MobileRoomItem from './MobileRoomItem';
+import LoadingImg from '../../assets/WAPL_Loading.gif';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const Wrapper = styled.div`
   height: 100%;
 `;
-const Header = styled.div`
-  height: 10%;
-`;
+
+const Loader = styled.div``;
 
 const MobileMainPage = () => {
-  const { userStore, roomStore } = useCoreStores();
+  const history = useHistory();
+  const { resourceId } = useParams();
+  const { userStore, friendStore, roomStore } = useCoreStores();
+  const [isLoading, setIsLoading] = useState(true);
   const myUserId = userStore.myProfile.id;
 
   useEffect(() => {
-    Promise.all([roomStore.fetchRoomList({ myUserId })]).then(async res => {
+    Promise.all([
+      userStore.fetchRoomUserProfileList({}),
+      friendStore.fetchFriends({ myUserId }),
+      roomStore.fetchRoomList({ myUserId }),
+    ]).then(async res => {
       await talkRoomStore.initialize(myUserId);
+      setIsLoading(false);
       console.log(roomStore.getRoomArray());
     });
   }, []);
 
-  const roomFilter = roomInfo => roomInfo.visible;
+  useEffect(() => {
+    PlatformUIStore.resourceId = resourceId;
+  }, [resourceId]);
+
+  const roomFilter = room => room.visible;
+
+  const handleSelectRoom = room => {
+    history.push(`${room?.id}/talk`);
+  };
 
   const RoomList = ({ roomList }) => {
     return (
       <>
         {roomList.map(roomInfo => (
-          <MobileRoomItem roomInfo={roomInfo} />
+          <MobileRoomItem
+            key={roomInfo?.id}
+            roomInfo={roomInfo}
+            onClick={() => handleSelectRoom(roomInfo)}
+          />
         ))}
       </>
     );
   };
 
-  return useObserver(() => (
+  if (isLoading) {
+    return (
+      <Loader>
+        <img src={LoadingImg} alt="loading" />
+      </Loader>
+    );
+  }
+
+  console.log(`platform${PlatformUIStore.resourceId}`);
+  const roomArray = roomStore.getRoomArray();
+
+  return (
     <Wrapper>
       <Header />
-      <RoomList roomList={roomStore.getRoomArray()[0]} />
+      {roomArray && <RoomList roomList={roomArray} />}
     </Wrapper>
-  ));
+  );
 };
 
 export default MobileMainPage;
