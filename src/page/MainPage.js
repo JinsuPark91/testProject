@@ -81,7 +81,6 @@ const MainPage = () => {
       .then(async res => {
         // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
         await talkRoomStore.initialize(myUserId);
-        initMailApp(myUserId);
 
         const [, , , , histories, alarmList] = res;
         AlarmSetting.initAlarmSet(alarmList);
