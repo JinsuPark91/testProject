@@ -108,7 +108,7 @@ const MobileApp = () => {
                     component={<SignUpCompletePage />}
                   />
                   <PrivateRoute
-                    path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
+                    path="/:resourceType(s|f|m)/:resourceId"
                     component={MobileMainPage}
                   />
                   <Route component={NotFoundPage} />
