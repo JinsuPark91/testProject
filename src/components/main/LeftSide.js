@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer, Observer } from 'mobx-react';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, logEvent } from 'teespace-core';
 import { MailSideView } from 'teespace-mail-app';
 import { ChattingIcon, MailIcon, PeopleIcon } from '../Icons';
 import FriendLnb from '../friends/FriendsLNB';
@@ -19,6 +19,9 @@ const LeftSide = observer(() => {
 
   const handleSelectTab = key => {
     PlatformUIStore.tabType = key;
+    if (key === 'm') {
+      logEvent('gnb', 'clickTeeMailBtn');
+    }
   };
 
   return (

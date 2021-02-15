@@ -83,7 +83,7 @@ const FriendItemWrapper = styled.div`
       display: flex;
       flex-direction: row;
       margin: 0 0.25rem;
-      padding: 0 0.44rem;
+      padding: 0 0.38rem 0 0.5rem;
 
       ${props.isActive
         ? css`
@@ -150,7 +150,7 @@ const TextWrapper = styled.div`
 const TitleForName = styled.span`
   font-size: 0.81rem;
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.19rem;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -183,9 +183,8 @@ const StyledAvatar = styled.div`
     switch (props.mode) {
       case 'me':
         return css`
-          width: 2.38rem;
-          height: 2.38rem;
-          border: 2px solid #fff;
+          width: 2.25rem;
+          height: 2.25rem;
         `;
       case 'addFriend':
         return css`
@@ -494,12 +493,12 @@ const FriendItem = observer(
 
     // const [{ canDrop, isOver }, drop] = useDrop({
     //   accept: ACCEPT_ITEMS,
-    //   drop: async item => {
+    //   drop: item => {
     //     let targetRoomInfo = {};
     //     const setRoomInfo = roomInfo => {
     //       targetRoomInfo = roomInfo;
     //     };
-    //     await handleProfileMenuClick(
+    //     handleProfileMenuClick(
     //       roomStore,
     //       myUserId,
     //       itemId,
@@ -507,7 +506,6 @@ const FriendItem = observer(
     //       roomInfo => setRoomInfo(roomInfo),
     //       roomInfo => setRoomInfo(roomInfo),
     //     );
-
     //     if (TALK_ACCEPT_ITEMS.includes(item.type)) {
     //       const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
     //         item.type.toLowerCase(),
@@ -523,7 +521,7 @@ const FriendItem = observer(
     //     return {
     //       source: item.type,
     //       sourceData: item.data,
-    //       target: 'Platform:Friend',
+    //       target: 'Platform:Room', // 프렌즈 리스트에 drop이지만 Room에 drop과 사실상 동일해 보인다.
     //       targetData: targetRoomInfo,
     //     };
     //   },

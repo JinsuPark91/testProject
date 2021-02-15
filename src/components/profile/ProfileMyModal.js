@@ -7,6 +7,7 @@ import {
   Message,
   ProfileInfoModal,
   ProfileModal,
+  logEvent,
 } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import { useObserver } from 'mobx-react';
@@ -135,19 +136,25 @@ const ProfileMyModal = ({
 
   const handleInviteDialog = useCallback(() => {
     setIsInviteDialogOpen(true);
+    logEvent('threedot', 'clickInviteMemberBtn');
   }, []);
 
   const handleMemberList = useCallback(async () => {
-    await handleFriendsDialogType(
-      orgStore,
-      userStore.myProfile,
-      authStore.sessionInfo.domainKey,
-      () => setIsOrgExist(true),
-      res => setSpaceMemberList(res),
-    );
-    setIsViewMode(true);
-    setModalTitle(spaceStore.currentSpace?.name);
-    setIsFriendMemViewOpen(true);
+    try {
+      await handleFriendsDialogType(
+        orgStore,
+        userStore.myProfile,
+        authStore.sessionInfo.domainKey,
+        () => setIsOrgExist(true),
+        res => setSpaceMemberList(res),
+      );
+      setIsViewMode(true);
+      setModalTitle(spaceStore.currentSpace?.name);
+      setIsFriendMemViewOpen(true);
+      logEvent('threedot', 'clickShowMemberList');
+    } catch (e) {
+      console.log('service Error...');
+    }
   }, [orgStore, userStore, authStore, spaceStore]);
 
   const handleAddFriend = useCallback(async () => {
@@ -176,7 +183,7 @@ const ProfileMyModal = ({
   }, []);
 
   const handleMoveAccountPage = useCallback(() => {
-    MovePage('account');
+    MovePage('account?open=password');
   }, []);
 
   const handleOpenSupport = () => {
@@ -757,7 +764,7 @@ const ConvertDropdown = styled.div`
   position: absolute;
   left: -11.5rem;
   width: 11rem;
-  top: 16.06rem;
+  top: 15.63rem;
   border: 1px solid #c6ced6;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
   border-radius: 0.25rem;

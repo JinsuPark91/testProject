@@ -3,14 +3,14 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Modal } from 'antd';
 import { talkRoomStore } from 'teespace-talk-app';
-import { useCoreStores, Message } from 'teespace-core';
+import { useCoreStores, Message, logEvent } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Photos from '../Photos';
-import NextArrowIcon from '../../assets/ts_arrow_right_line.svg';
-import PrevArrowIcon from '../../assets/ts_arrow_left_line.svg';
+import NextArrowIcon from '../../assets/arrow_right_line.svg';
+import PrevArrowIcon from '../../assets/arrow_left_line.svg';
 import { SettingIcon, OpenChatIcon, AddIcon } from '../Icons';
 import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
@@ -207,6 +207,7 @@ function OpenRoomHome({ visible, onCancel }) {
       if (res?.roomId) {
         history.push(`/s/${currentOpenRoom.id}/talk`);
       }
+      logEvent('room', 'clickEnterOpenRoomBtn');
     } catch (err) {
       console.error('ROOM ENTER ERROR : ', err);
     }

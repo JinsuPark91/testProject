@@ -1,8 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { CoreStoreProvider, GlobalCommonStyles, API } from 'teespace-core';
+import {
+  CoreStoreProvider,
+  GlobalCommonStyles,
+  API,
+  initGA,
+} from 'teespace-core';
 import { createGlobalStyle } from 'styled-components';
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { setEnv, getEnv } from './env';
@@ -63,11 +69,15 @@ if (
   API.baseURL = serviceURL;
 }
 
+initGA(global.env.PLATFORM_GA_ID);
+
 ReactDOM.render(
   <CoreStoreProvider config={getEnv()}>
     <GlobalStyle />
     <GlobalCommonStyles />
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </CoreStoreProvider>,
   document.getElementById('root'),
 );

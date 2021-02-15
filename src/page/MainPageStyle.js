@@ -14,6 +14,7 @@ export const Loader = styled.div`
 }`;
 
 export const Wrapper = styled.div`
+  overflow: hidden;
   display: flex;
   position: relative;
   min-width: 65.88rem;

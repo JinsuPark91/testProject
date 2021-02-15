@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-import { useCoreStores, ProfileInfoModal } from 'teespace-core';
+import { useCoreStores, ProfileInfoModal, logEvent } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { Tooltip } from 'antd';
 import {
@@ -9,12 +9,13 @@ import {
   TitleWrapper,
   Title,
   AppIconContainer,
+  AppIconbutton,
   UserMenu,
   TitleText,
   UserCountText,
   IconWrapper,
   SystemIconContainer,
-  AppIconWrapper,
+  AppIconInner,
   StyledPhotos,
   VerticalBar,
 } from './HeaderStyle';
@@ -136,14 +137,13 @@ const AppIcon = React.memo(
         }
         color="#232D3B"
       >
-        <AppIconWrapper
-          className="header__app-icon"
+        <AppIconInner
           key={appName}
           onClick={handleAppClick}
           disabled={disabled}
         >
           {icon}
-        </AppIconWrapper>
+        </AppIconInner>
       </Tooltip>
     );
   },
@@ -312,6 +312,27 @@ const Header = observer(() => {
     } else {
       closeSubApp();
     }
+
+    // 최대한 기존 코드 안 건드리려고 했는데, 수정해도 무방함
+    switch (appName) {
+      case 'drive':
+        logEvent('gnb', 'clickTeeDriveBtn');
+        break;
+      case 'calendar':
+        logEvent('gnb', 'clickTeeCalendarBtn');
+        break;
+      case 'note':
+        logEvent('gnb', 'clickTeeNoteBtn');
+        break;
+      case 'meeting':
+        logEvent('gnb', 'clickTeeMeetingBtn');
+        break;
+      case 'files':
+        logEvent('gnb', 'clickPlusBtn');
+        break;
+      default:
+        break;
+    }
   };
 
   const handleClickRoomPhoto = useCallback(() => {
@@ -398,26 +419,17 @@ const Header = observer(() => {
               <SystemIconContainer>
                 {PlatformUIStore.layout !== 'expand' && (
                   <>
-                    <IconWrapper
-                      onClick={handleExport}
-                      style={{ marginRight: '0.44rem' }}
-                    >
+                    <IconWrapper onClick={handleExport}>
                       <ExportIcon width={1.25} height={1.25} color="#232D3B" />
                     </IconWrapper>
-                    <IconWrapper
-                      onClick={handleSearch}
-                      style={{ marginRight: '0.44rem' }}
-                    >
+                    <IconWrapper onClick={handleSearch}>
                       <SearchIcon width={1.25} height={1.25} color="#232D3B" />
                     </IconWrapper>
                   </>
                 )}
                 {!isMyRoom() && (
                   <>
-                    <IconWrapper
-                      onClick={handleAddMember}
-                      style={{ marginRight: '0.69rem' }}
-                    >
+                    <IconWrapper onClick={handleAddMember}>
                       <AddAcountIcon
                         width={1.25}
                         height={1.25}
@@ -445,7 +457,7 @@ const Header = observer(() => {
         {appConfirm}
         {apps.map(
           ({ name, icons, isUsedInMyRoom, isSeperated, isUsedInProfile }) => (
-            <div key={name}>
+            <AppIconbutton key={name}>
               {isSeperated ? <VerticalBar /> : null}
               <AppIcon
                 key={name}
@@ -460,7 +472,7 @@ const Header = observer(() => {
                   (PlatformUIStore.resourceType === 'f' && !isUsedInProfile)
                 }
               />
-            </div>
+            </AppIconbutton>
           ),
         )}
       </AppIconContainer>
