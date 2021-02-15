@@ -22,6 +22,7 @@ import PlatformUIStore from '../stores/PlatformUIStore';
 import LoadingImg from '../assets/WAPL_Loading.gif';
 import FaviconChanger from '../components/common/FaviconChanger';
 import FloatingButton from '../components/common/FloatingButton';
+import PortalWindowManager from '../components/common/PortalWindowManager';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 
 const MainPage = () => {
@@ -297,6 +298,7 @@ const MainPage = () => {
     );
   }
 
+  // TODO : Talk Store 분리 끝나면 WindowManager 제거 후, PortalWindowManager로 통합.
   return (
     <Wrapper>
       <FaviconChanger />
@@ -308,6 +310,7 @@ const MainPage = () => {
       {leftSide}
       {mainSide}
       <WindowManager />
+      <PortalWindowManager />
       <WindowMail />
     </Wrapper>
   );
@@ -330,7 +333,7 @@ const Window = ({ windowInfo }) => {
 
   useEffect(() => {
     if (handler) {
-      const info = PlatformUIStore.getWindow(windowId);
+      const info = PlatformUIStore.getWindow('talk', windowId);
       info.handler = handler;
     }
   }, [handler]);
@@ -360,7 +363,7 @@ const WindowManager = () => {
       // setTimeout(() => {
       //   console.log('After ChildWindow : ', childWindow, childWindow.closed);
       // }, 1000)
-      PlatformUIStore.closeWindow(windowId);
+      PlatformUIStore.closeWindow('talk', windowId);
     };
   }, []);
 
@@ -373,7 +376,7 @@ const WindowManager = () => {
 
         return (
           <>
-            {PlatformUIStore.getWindows().map(window => (
+            {PlatformUIStore.getWindows('talk').map(window => (
               <Window
                 key={window.id}
                 windowInfo={window}
@@ -385,10 +388,10 @@ const WindowManager = () => {
               rooms={activeTalkWindows}
               count={5}
               onItemClick={roomInfo => {
-                PlatformUIStore.focusWindow(roomInfo.id);
+                PlatformUIStore.focusWindow('talk', roomInfo.id);
               }}
               onItemClose={roomInfo => {
-                PlatformUIStore.closeWindow(roomInfo.id);
+                PlatformUIStore.closeWindow('talk', roomInfo.id);
               }}
               onCloseAll={() => {
                 PlatformUIStore.closeAllWindow('talk');

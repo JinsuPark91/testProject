@@ -13,6 +13,7 @@ import { useHistory } from 'react-router-dom';
 import { useObserver } from 'mobx-react';
 // import { useTranslation } from 'react-i18next';
 import { useKeycloak } from '@react-keycloak/web';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 import SettingDialog from '../usersettings/SettingDialog';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import convertSpaceIcon from '../../assets/convert space.svg';
@@ -262,6 +263,15 @@ const ProfileMyModal = ({
       visible={isEditMode}
       onClose={toggleEditMode}
       profilePhoto={thumbPhoto}
+      onClickMeeting={roomId => {
+        PlatformUIStore.openWindow({
+          id: roomId,
+          type: 'meeting',
+          name: null,
+          userCount: null,
+          handler: null,
+        });
+      }}
       editMode
     />
   );

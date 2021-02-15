@@ -309,18 +309,13 @@ const FriendAction = React.memo(
 
 const OpenMiniTalk = roomInfo => {
   //  FIXME: 안정화 후 함수로 묶기
-  const isOpened = PlatformUIStore.getWindow(roomInfo.id);
-  if (!isOpened) {
-    PlatformUIStore.openWindow({
-      id: roomInfo.id,
-      type: 'talk',
-      name: roomInfo.name,
-      userCount: roomInfo.userCount,
-      handler: null,
-    });
-  } else {
-    PlatformUIStore.focusWindow(roomInfo.id);
-  }
+  PlatformUIStore.openWindow({
+    id: roomInfo.id,
+    type: 'talk',
+    name: roomInfo.name,
+    userCount: roomInfo.userCount,
+    handler: null,
+  });
 };
 
 const MeAction = React.memo(({ mode, itemId }) => {

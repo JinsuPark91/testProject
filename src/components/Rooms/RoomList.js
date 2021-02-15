@@ -237,6 +237,15 @@ function RoomList() {
             <ProfileInfoModal
               userId={targetUserId}
               visible={isProfileInfoModalVisible}
+              onClickMeeting={_roomId => {
+                PlatformUIStore.openWindow({
+                  id: _roomId,
+                  type: 'meeting',
+                  name: null,
+                  userCount: null,
+                  handler: null,
+                });
+              }}
               onClose={handleCloseProfileInfoModal}
               position={{ left: '17rem' }}
             />

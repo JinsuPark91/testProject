@@ -7,6 +7,7 @@ import { talkRoomStore } from 'teespace-talk-app';
 import { PrivateRoomIcon, OpenChatIcon } from '../Icons';
 import CreatePrivateRoomDialog from '../dialogs/CreatePrivateRoomDialog';
 import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const { Title } = Typography;
 
@@ -130,7 +131,17 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
       isNewRoom: !prevRoomList.some(prevRoom => prevRoom.id === roomId),
     });
 
-    history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
+    if (isStartMeeting) {
+      PlatformUIStore.openWindow({
+        id: roomId,
+        type: 'meeting',
+        name: null,
+        userCount: null,
+        handler: null,
+      });
+    }
+    history.push(`/s/${roomId}/talk`);
+    // history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
   };
 
   const handleCreatePrivateRoomCancel = () => {
@@ -157,7 +168,18 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
 
     await talkRoomStore.initialize(userStore.myProfile.id, roomId);
 
-    history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
+    if (isStartMeeting) {
+      PlatformUIStore.openWindow({
+        id: roomId,
+        type: 'meeting',
+        name: null,
+        userCount: null,
+        handler: null,
+      });
+    }
+    history.push(`/s/${roomId}/talk`);
+
+    // history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
   };
 
   const handleCreatePublicRoomCancel = () => {
