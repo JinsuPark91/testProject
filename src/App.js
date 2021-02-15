@@ -15,6 +15,7 @@ import { initApp as initTalkApp } from 'teespace-talk-app';
 import { initApp as initDriveApp } from 'teespace-drive-app';
 import { initApp as initNoteApp } from 'teespace-note-app';
 import { initApp as initMeetingApp } from 'teespace-meeting-app';
+import { initApp as initMailApp, WindowMail } from 'teespace-mail-app';
 import {
   initApp as initCalendarApp,
   initializeApp as initializeCalendarApp,
@@ -91,7 +92,7 @@ function App() {
     initializeCalendarApp();
     initNoteApp();
     initMeetingApp();
-    // initMailApp();
+    initMailApp();
   }, []);
 
   // hydrate mobx stores
