@@ -34,7 +34,7 @@ const MobileRoomItem = ({ roomInfo, onClick }) => {
   };
 
   const handleClickRoom = () => {
-    // onClick();
+    onClick();
   };
 
   return useObserver(() => (
@@ -47,9 +47,11 @@ const MobileRoomItem = ({ roomInfo, onClick }) => {
       </div>
       <div>{getMessageTime(roomInfo.metadata?.lastMessageDate)}</div>
       <div>{roomInfo.metadata?.lastMessage}</div>
-      <div>
-        {roomInfo.metadata?.count > 99 ? '99+' : roomInfo.metadata?.count}
-      </div>
+      {roomInfo.metadata?.count && (
+        <div>
+          {roomInfo.metadata?.count > 99 ? '99+' : roomInfo.metadata?.count}
+        </div>
+      )}
     </Wrapper>
   ));
 };
