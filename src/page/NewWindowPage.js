@@ -9,7 +9,7 @@ import { SearchIcon } from '../components/Icons';
 
 const NewWindowPage = () => {
   const { resourceId: roomId, mainApp } = useParams();
-  const { roomStore, userStore } = useCoreStores();
+  const { roomStore, userStore, spaceStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
 
   const [channelId, setChannelId] = useState('');
@@ -19,6 +19,12 @@ const NewWindowPage = () => {
   const init = async () => {
     try {
       await talkRoomStore.initialize(myUserId);
+
+      // 스페이스를 불러오자
+      await spaceStore.fetchSpaces({
+        userId: myUserId,
+        isLocal: process.env.REACT_APP_ENV === 'local',
+      });
 
       // 룸을 불러오자
       const roomInfo = await roomStore.fetchRoom({ roomId, myUserId });
