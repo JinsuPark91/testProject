@@ -11,6 +11,11 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 const Wrapper = styled.div`
   height: 100%;
 `;
+const Container = styled.div`
+  padding-top: 2.88rem;
+  height: 100%;
+  overflow-y: scroll;
+`;
 
 const Loader = styled.div``;
 
@@ -47,7 +52,9 @@ const MobileMainPage = () => {
   return (
     <Wrapper>
       <Header />
-      <Content />
+      <Container>
+        <Content />
+      </Container>
     </Wrapper>
   );
 };
