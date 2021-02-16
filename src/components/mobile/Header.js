@@ -1,7 +1,9 @@
 import React from 'react';
 import { observer } from 'mobx-react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from 'antd';
+import { useCoreStores } from 'teespace-core';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import { AddRoomIcon } from './Icon';
 
@@ -46,7 +48,34 @@ const Header = observer(() => {
     );
   }
 
-  return <Wrapper>Talk</Wrapper>;
+  const history = useHistory();
+  const { roomStore, userStore } = useCoreStores();
+  const findRoom = () => {
+    return roomStore.getRoomMap().get(PlatformUIStore.resourceId);
+  };
+
+  const getRoomName = () => {
+    const found = findRoom();
+    if (found) {
+      if (found?.type === 'WKS0001') {
+        return userStore.myProfile.nick || userStore.myProfile.name;
+      }
+      if (found?.customName || found?.name) {
+        return found?.customName || found?.name;
+      }
+    }
+    return null;
+  };
+
+  const handleGoBack = () => {
+    history.goBack();
+  };
+
+  return (
+    <Wrapper>
+      <div>{getRoomName()}</div>
+    </Wrapper>
+  );
 });
 
 export default Header;
