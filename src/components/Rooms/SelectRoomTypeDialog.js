@@ -15,22 +15,32 @@ const VerticalBar = styled.div`
   height: 10rem;
   width: 1px;
   background: #ddd9d4;
-  margin: 0 1.53rem;
+  margin: 0 1rem;
 `;
 
 const SelectRoomType = styled.div`
   width: 100%;
-  padding: 3.13rem 2.19rem 2.5rem 2.19rem;
+  padding: 3.13rem 1.5rem 1.56rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
 const RoomInformation = styled.div`
-  width: 50%;
+  padding: 2rem 1.6rem;
   display: flex;
   flex-flow: column wrap;
   align-items: center;
+  cursor: pointer;
+  border-radius: 0.875rem;
+
+  &:hover {
+    background: #faf8f7;
+  }
+
+  &:active {
+    background: #f2efec;
+  }
 `;
 
 const StyledInfoTitle = styled(Title)`
@@ -41,7 +51,6 @@ const StyledInfoTitle = styled(Title)`
   margin-bottom: 0.63rem;
 `;
 const StyledInfoText = styled.p`
-  margin-bottom: 2.88rem;
   font-size: 0.75rem;
   color: #696969;
   white-space: pre-line;
@@ -64,6 +73,11 @@ const StyledButton = styled(Button)`
 const StyledModal = styled(Modal)`
   .ant-modal-body {
     padding: 0;
+  }
+
+  .ant-modal-close .ant-modal-close-x {
+    color: #7b7671;
+    font-size: 1.06rem;
   }
 `;
 
@@ -207,42 +221,28 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
         centered
       >
         <SelectRoomType>
-          <RoomInformation>
+          <RoomInformation onClick={handlePrivateRoomCreate}>
             <div style={{ marginBottom: '1.19rem' }}>
               <PrivateRoomIcon width={1.88} height={1.88} color="#232D3B" />
             </div>
             <StyledInfoTitle level={4}>프라이빗 룸</StyledInfoTitle>
             <StyledInfoText>
-              {`프라이빗 룸을 통해 간단한 대화를 
-              나누어 보세요. 구성원들만의
+              {`프라이빗 룸은 초대를 통해서만
+              참여할 수 있는 구성원들만의
               개인적인 공간입니다.`}
             </StyledInfoText>
-            <StyledButton
-              type="solid"
-              shape="default"
-              onClick={handlePrivateRoomCreate}
-            >
-              프라이빗 룸 만들기
-            </StyledButton>
           </RoomInformation>
           <VerticalBar />
-          <RoomInformation>
+          <RoomInformation onClick={handleOpenRoomCreate}>
             <div style={{ marginBottom: '1.19rem' }}>
               <OpenChatIcon width={1.88} height={1.88} color="#232D3B" />
             </div>
             <Title level={4}>오픈 룸</Title>
             <StyledInfoText>
-              {`오픈 룸을 통해 특정 주제, 프로젝트를 
-              진행해보세요. 누구나 검색을 통하여
-              자유롭게 참여할 수 있는 공간입니다.`}
+              {`오른 룸은 초대 뿐만 아니라
+              검색을 통해 누구나 자유롭게
+              참여할 수 있는 공간입니다.`}
             </StyledInfoText>
-            <StyledButton
-              type="solid"
-              shape="default"
-              onClick={handleOpenRoomCreate}
-            >
-              오픈 룸 만들기
-            </StyledButton>
           </RoomInformation>
         </SelectRoomType>
       </StyledModal>
