@@ -30,6 +30,10 @@ export const CustomTabs = styled(Tabs)`
     flex: 1;
     background-color: #232d3b;
   }
+
+  .ant-tabs-nav-operations {
+    display: none !important;
+  }
   .ant-tabs-tab {
     width: calc(100% / 3);
     justify-content: center;
