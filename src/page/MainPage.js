@@ -199,6 +199,15 @@ const MainPage = () => {
 
       history.push(`${history.location.pathname}?${queryString}`);
     });
+    const openMeetingHandler = EventBus.on('onMeetingOpen', ({ roomId }) => {
+      PlatformUIStore.openWindow({
+        id: roomId,
+        type: 'meeting',
+        name: null,
+        userCount: null,
+        handler: null,
+      });
+    });
 
     WWMS.addHandler('SYSTEM', 'platform_wwms', handleSystemMessage);
 
@@ -207,6 +216,7 @@ const MainPage = () => {
       EventBus.off('onLayoutExpand', expandHandler);
       EventBus.off('onLayoutCollapse', collapseHandler);
       EventBus.off('onLayoutClose', closeHandler);
+      EventBus.off('onLayoutClose', openMeetingHandler);
       WWMS.removeHandler('SYSTEM', 'platform_wwms');
     };
   }, []);
