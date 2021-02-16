@@ -65,7 +65,7 @@ function AddFriendsByInvitationLinkSend() {
   );
 
   const handleEmailSend = useCallback(() => {
-    friendStore.sendInviteMail({
+    friendStore.sendSpaceInviteMail({
       myUserId: authStore.user.id,
       users: users.filter(user => checkEmailValid(user)),
     });
