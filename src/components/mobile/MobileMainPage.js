@@ -60,10 +60,7 @@ const MobileMainPage = observer(() => {
   if (isRoomCreateVisible) {
     return (
       <Wrapper>
-        <MobileRoomCreatePage
-          onOk={handleToggleModal}
-          onCancel={handleToggleModal}
-        />
+        <MobileRoomCreatePage onCancel={handleToggleModal} />
       </Wrapper>
     );
   }
