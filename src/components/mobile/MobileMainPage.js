@@ -9,7 +9,7 @@ import MobileTalkHeader from './MobileTalkHeader';
 import MobileContent from './MobileContent';
 import LoadingImg from '../../assets/WAPL_Loading.gif';
 import PlatformUIStore from '../../stores/PlatformUIStore';
-import CreatePrivateRoomDialog from '../dialogs/CreatePrivateRoomDialog';
+import MobileRoomCreatePage from './MobileRoomCreatePage';
 
 const Wrapper = styled.div`
   height: 100%;
@@ -57,6 +57,17 @@ const MobileMainPage = observer(() => {
     );
   }
 
+  if (isRoomCreateVisible) {
+    return (
+      <Wrapper>
+        <MobileRoomCreatePage
+          onOk={handleToggleModal}
+          onCancel={handleToggleModal}
+        />
+      </Wrapper>
+    );
+  }
+
   return (
     <>
       <Wrapper>
@@ -69,11 +80,6 @@ const MobileMainPage = observer(() => {
           <MobileContent />
         </Container>
       </Wrapper>
-      <CreatePrivateRoomDialog
-        visible={isRoomCreateVisible}
-        onOk={handleToggleModal}
-        onCancel={handleToggleModal}
-      />
     </>
   );
 });

@@ -17,13 +17,10 @@ const MobileContent = observer(() => {
 
   const getChannelId = type => {
     const roomId = getRoomId();
-    if (PlatformUIStore.resourceType !== 'f') {
-      return roomStore
-        .getRoomMap()
-        .get(roomId)
-        ?.channelList?.find(channel => channel.type === type)?.id;
-    }
-    return null;
+    return roomStore
+      .getRoomMap()
+      .get(roomId)
+      ?.channelList?.find(channel => channel.type === type)?.id;
   };
 
   const handleSearchClose = () => {
