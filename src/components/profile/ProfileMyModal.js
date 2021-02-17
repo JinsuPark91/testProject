@@ -52,6 +52,7 @@ const ProfileMyModal = ({
   const [itemKey, setItemKey] = useState(SELECTED_TAB.GENERAL);
   const [settingDialogVisible, setSettingDialogVisible] = useState(false);
   const [spaceListVisible, setSpaceListVisible] = useState(false);
+  const [moreMenuDropDownVisible, setMoreMenuDropDownVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
@@ -103,6 +104,10 @@ const ProfileMyModal = ({
     setIsCreated(false);
   }, []);
 
+  const handleMoreMenuDropDownVisible = () => {
+    setMoreMenuDropDownVisible(!moreMenuDropDownVisible);
+  };
+
   const handleLogout = async () => {
     // Close dialog first
     if (onCancel) onCancel();
@@ -128,7 +133,8 @@ const ProfileMyModal = ({
 
   const handleCancel = useCallback(() => {
     setSpaceListVisible(false);
-    onCancel();
+    setMoreMenuDropDownVisible(false);
+    setTimeout(() => onCancel(), 1);
   }, [onCancel]);
 
   const handleCancelInviteMail = useCallback(() => {
@@ -292,9 +298,11 @@ const ProfileMyModal = ({
             </Button>
           </Tooltip>
           <Dropdown
+            visible={moreMenuDropDownVisible}
             trigger={['click']}
             overlay={moreMenu}
             placement="bottomRight"
+            onVisibleChange={handleMoreMenuDropDownVisible}
           >
             <Button className="btn-more">
               <Blind>설정</Blind>
