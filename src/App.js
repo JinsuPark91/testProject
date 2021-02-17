@@ -39,6 +39,7 @@ import KeycloakRedirectRoute from './libs/KeycloakRedirectRoute';
 import keycloak from './libs/keycloak';
 import { getCookieValue } from './utils/CookieUtil';
 import { getQueryParams } from './utils/UrlUtil';
+import initMonitoringLog from './libs/monitoringLog';
 
 // import i18next from './i18n';
 
@@ -112,6 +113,10 @@ function App() {
       logPageView(location);
     });
   }, [history]);
+
+  useEffect(() => {
+    initMonitoringLog();
+  }, []);
 
   if (!isHydrating) return <></>;
   return (
