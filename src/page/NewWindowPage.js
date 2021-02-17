@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Talk, talkRoomStore } from 'teespace-talk-app';
+import { App as MeetingApp } from 'teespace-meeting-app';
 import { useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import LoadingImg from '../assets/WAPL_Loading.gif';
@@ -28,7 +29,6 @@ const NewWindowPage = () => {
 
       // 룸을 불러오자
       const roomInfo = await roomStore.fetchRoom({ roomId, myUserId });
-      console.log('Room Info : ', roomInfo);
       const channelInfo = roomInfo.channelList.find(
         channel =>
           channel.type === (mainApp === 'talk' ? 'CHN0001' : 'CHN0005'),
@@ -43,8 +43,8 @@ const NewWindowPage = () => {
     init();
 
     // NOTE : 로딩중 닫으면 호출하지 않는다. (redirect 때문에 어렵다.)
+    // NOTE : interval 돌면서 유효하지 않은 window 검사한다.
     window.addEventListener('beforeunload', () => {
-      // NOTE : 부모가 새로고침, 닫기 구분 필요.
       window.opener.fromChild(roomId);
     });
   }, []);
@@ -66,21 +66,34 @@ const NewWindowPage = () => {
   const openSearch = () => setIsSearch(true);
   const closeSearch = () => setIsSearch(false);
 
-  return (
-    <Wrapper>
-      <Header roomId={roomId} onSearch={openSearch} />
-      <Content>
-        <Talk
+  switch (mainApp) {
+    case 'talk':
+      return (
+        <Wrapper>
+          <Header roomId={roomId} onSearch={openSearch} />
+          <Content>
+            <Talk
+              roomId={roomId}
+              channelId={channelId}
+              layoutState="expand"
+              isSearchInputVisible={isSearch}
+              onSearchClose={closeSearch}
+              isMini
+            />
+          </Content>
+        </Wrapper>
+      );
+    case 'meeting':
+      return (
+        <MeetingApp
           roomId={roomId}
           channelId={channelId}
           layoutState="expand"
-          isSearchInputVisible={isSearch}
-          onSearchClose={closeSearch}
-          isMini
         />
-      </Content>
-    </Wrapper>
-  );
+      );
+    default:
+      return null;
+  }
 };
 
 export default NewWindowPage;

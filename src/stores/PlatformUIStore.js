@@ -83,14 +83,10 @@ const PlatformUIStore = observable({
   openWindow(windowInfo, enableFocus = true) {
     const { id: windowId, type } = windowInfo;
     const targetMap = this._getMap(type);
-    if (enableFocus) {
-      const targetWindow = targetMap.get(windowId);
+    const targetWindow = targetMap.get(windowId);
 
-      if (targetWindow) {
-        this.focusWindow(type, windowId);
-      } else {
-        targetMap.set(windowId, windowInfo);
-      }
+    if (enableFocus && targetWindow) {
+      this.focusWindow(type, windowId);
     } else {
       targetMap.set(windowId, windowInfo);
     }

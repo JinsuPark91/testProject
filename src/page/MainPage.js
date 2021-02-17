@@ -14,7 +14,6 @@ import { talkRoomStore } from 'teespace-talk-app';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
 import { initApp as initMailApp, WindowMail } from 'teespace-mail-app';
 import { Prompt } from 'react-router';
-import NewWindow from 'react-new-window';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
 import { Loader, Wrapper } from './MainPageStyle';
@@ -22,8 +21,8 @@ import PlatformUIStore from '../stores/PlatformUIStore';
 import LoadingImg from '../assets/WAPL_Loading.gif';
 import FaviconChanger from '../components/common/FaviconChanger';
 import FloatingButton from '../components/common/FloatingButton';
-import PortalWindowManager from '../components/common/PortalWindowManager';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
+import { runWatcher, stopWatcher } from '../utils/Watcher';
 
 const MainPage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -307,7 +306,6 @@ const MainPage = () => {
     );
   }
 
-  // TODO : Talk Store 분리 끝나면 WindowManager 제거 후, PortalWindowManager로 통합.
   return (
     <Wrapper>
       <FaviconChanger />
@@ -319,7 +317,7 @@ const MainPage = () => {
       {leftSide}
       {mainSide}
       <WindowManager />
-      <PortalWindowManager />
+      {/* <PortalWindowManager /> */}
       <WindowMail />
     </Wrapper>
   );
@@ -329,51 +327,42 @@ export default MainPage;
 
 // [TODO] : 나중에 다른데로 옮기자.
 const Window = ({ windowInfo }) => {
-  const { id: windowId } = windowInfo;
-  const url = `/s/${windowId}/${windowInfo.type}?mini=true`;
-  const [handler, setHandler] = useState(null);
-  const features =
-    windowInfo.type === 'talk'
-      ? {
-          width: 600,
-          height: 800,
-        }
-      : {};
+  const { id: windowId, type: app } = windowInfo;
+  const url = `/s/${windowId}/${app}?mini=true`;
 
-  useEffect(() => {
-    if (handler) {
-      const info = PlatformUIStore.getWindow('talk', windowId);
-      info.handler = handler;
-    }
-  }, [handler]);
+  const getSpecs = appName => {
+    if (appName === 'meeting') return '';
 
-  const handleOpen = _handler => {
-    setHandler(_handler);
+    const width = 600;
+    const height = 800;
+    const options = {
+      width,
+      height,
+      top: (window.innerHeight - height) / 2 + window.screenY,
+      left: (window.innerWidth - width) / 2 + window.screenX,
+    };
+    return Object.entries(options)
+      .map(entry => entry.join('='))
+      .join(',');
   };
 
-  return (
-    <NewWindow
-      url={url}
-      name="_blank"
-      onOpen={handleOpen}
-      features={features}
-      copyStyles
-    />
-  );
+  useEffect(() => {
+    const handler = window.open(url, '_blank', getSpecs(app));
+    const info = PlatformUIStore.getWindow(app, windowId);
+    if (info) {
+      info.handler = handler;
+      handler.focus();
+    }
+  }, []);
+
+  return null;
 };
 
 const WindowManager = () => {
   useEffect(() => {
-    // NOTE : 부모가 새로고침, 닫기 구분 필요.
-    window.fromChild = windowId => {
-      // NOTE : 일단 새로고침 = 닫기로 둔다.
-      // childWindow.closed 보면 되지만, 닫히는 시점과 맞지 않아 delay 시켜야 함.
-      // console.log("Before ChildWindow : ", childWindow, childWindow.closed)
-      // setTimeout(() => {
-      //   console.log('After ChildWindow : ', childWindow, childWindow.closed);
-      // }, 1000)
-      PlatformUIStore.closeWindow('talk', windowId);
-    };
+    runWatcher();
+
+    return () => stopWatcher();
   }, []);
 
   return (
@@ -386,11 +375,10 @@ const WindowManager = () => {
         return (
           <>
             {PlatformUIStore.getWindows('talk').map(window => (
-              <Window
-                key={window.id}
-                windowInfo={window}
-                handler={window.handler}
-              />
+              <Window key={window.id} windowInfo={window} />
+            ))}
+            {PlatformUIStore.getWindows('meeting').map(window => (
+              <Window key={window.id} windowInfo={window} />
             ))}
             <FloatingButton
               visible={false}
