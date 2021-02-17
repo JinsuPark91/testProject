@@ -117,6 +117,8 @@ const Profile = observer(
     const isValidInputData = () => !!name;
 
     useEffect(() => {
+      setLocalProfilePhoto(undefined);
+      setLocalBackgroundPhoto(undefined);
       setEditMode(editOnlyMode);
       (async () => {
         const userProfile = userStore.userProfiles[userId];

@@ -71,10 +71,10 @@ const insertLog = () => {
   API.post('Monitoring/SessionDurationLog', inputData);
 };
 
-(function initMonitoringLog() {
+export default function initMonitoringLog() {
   if (!window.MONITORING_LOG_INITIALIZED) {
     currentState.timer = setInterval(countFunction, 1000);
     currentState.insertTimer = setInterval(insertLog, INSERT_INTERVAL_TIME);
     window.MONITORING_LOG_INITIALIZED = true;
   }
-})();
+}
