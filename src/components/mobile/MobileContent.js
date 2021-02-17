@@ -5,7 +5,7 @@ import { useCoreStores } from 'teespace-core';
 import MobileRoomItem from './MobileRoomItem';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
-const Content = observer(() => {
+const MobileContent = observer(() => {
   const { roomStore } = useCoreStores();
 
   const roomFilter = room => room.isVisible;
@@ -59,4 +59,4 @@ const Content = observer(() => {
   );
 });
 
-export default Content;
+export default MobileContent;

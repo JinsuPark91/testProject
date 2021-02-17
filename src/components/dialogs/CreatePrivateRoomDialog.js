@@ -73,6 +73,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
     >
       <>
         <ItemSelector
+          showTagList={false}
           isVisibleRoom={false}
           onSelectChange={handleSelectedUserChange}
           disabledIds={disabledIds}
@@ -92,7 +93,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
             <ConfigTitleText>룸 이름 설정하기</ConfigTitleText>
           </ConfigTitle>
 
-          <ConfigDescriptionText>
+          {/* <ConfigDescriptionText>
             {`초기 설정하지 않을 시, 구성원 이름으로 나열된 룸이 개설되며,
             이후 변경한 룸 이름은 개인에게만 적용됩니다.`}
           </ConfigDescriptionText>
@@ -103,9 +104,9 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
             onChange={handleChangeName}
             placeholder="목적, 토픽 등이 있다면 입력해 주세요."
             disabled={selectedUsers.length < 2 || !options.isChangeName}
-          />
+          /> */}
 
-          <ConfigTitle>
+          {/* <ConfigTitle>
             <Checkbox
               className="check-round"
               checked={options.isStartMeeting}
@@ -114,10 +115,10 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
             <ConfigTitleText>
               초대 구성원과 바로 Meeting 시작하기
             </ConfigTitleText>
-          </ConfigTitle>
+          </ConfigTitle> */}
         </ConfigWrapper>
 
-        <ButtonContainer>
+        {/* <ButtonContainer>
           <Button
             type="solid"
             shape="default"
@@ -130,7 +131,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
           <Button type="outlined" shape="default" onClick={handleCancel}>
             취소
           </Button>
-        </ButtonContainer>
+        </ButtonContainer> */}
       </>
     </FlexModal>
   );

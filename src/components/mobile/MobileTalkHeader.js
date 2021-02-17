@@ -1,11 +1,8 @@
 import React from 'react';
-import { observer } from 'mobx-react';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button } from 'antd';
+import { useHistory } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
 import PlatformUIStore from '../../stores/PlatformUIStore';
-import { AddRoomIcon } from './Icon';
 
 const Wrapper = styled.div`
   display: flex;
@@ -20,34 +17,7 @@ const Wrapper = styled.div`
   left: 0;
 `;
 
-const HeaderTitle = styled.h3`
-  font-size: 1.13rem;
-  line-height: 1.63rem;
-  color: #232d3b;
-`;
-
-const ButtonBox = styled.div`
-  margin-left: auto;
-`;
-
-const IconButton = styled(Button)`
-  width: 1.25rem;
-  height: 1.25rem;
-  background-color: transparent;
-`;
-
-const Header = observer(() => {
-  if (PlatformUIStore.resourceType === 'room') {
-    return (
-      <Wrapper>
-        <HeaderTitle>룸</HeaderTitle>
-        <ButtonBox>
-          <IconButton type="ghost" icon={<AddRoomIcon />} />
-        </ButtonBox>
-      </Wrapper>
-    );
-  }
-
+const MobileTalkHeader = () => {
   const history = useHistory();
   const { roomStore, userStore } = useCoreStores();
   const findRoom = () => {
@@ -71,11 +41,13 @@ const Header = observer(() => {
     history.goBack();
   };
 
+  // component 완성 후 수정
   return (
     <Wrapper>
+      <div onClick={handleGoBack}>뒤로가기</div>
       <div>{getRoomName()}</div>
     </Wrapper>
   );
-});
+};
 
-export default Header;
+export default MobileTalkHeader;
