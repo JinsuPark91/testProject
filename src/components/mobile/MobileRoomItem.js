@@ -62,7 +62,7 @@ const MessageCount = styled.div`
   border-radius: 0.56rem;
 `;
 
-const MobileRoomItem = ({ roomInfo, onClick }) => {
+const MobileRoomItem = ({ roomInfo }) => {
   const history = useHistory();
   const { userStore } = useCoreStores();
   const isMyRoom = roomInfo.type === 'WKS0001';

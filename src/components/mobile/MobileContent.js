@@ -5,7 +5,7 @@ import { useCoreStores } from 'teespace-core';
 import MobileRoomItem from './MobileRoomItem';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
-const Content = observer(() => {
+const MobileContent = observer(() => {
   const { roomStore } = useCoreStores();
 
   const roomFilter = room => room.isVisible;
@@ -17,13 +17,10 @@ const Content = observer(() => {
 
   const getChannelId = type => {
     const roomId = getRoomId();
-    if (PlatformUIStore.resourceType !== 'f') {
-      return roomStore
-        .getRoomMap()
-        .get(roomId)
-        ?.channelList?.find(channel => channel.type === type)?.id;
-    }
-    return null;
+    return roomStore
+      .getRoomMap()
+      .get(roomId)
+      ?.channelList?.find(channel => channel.type === type)?.id;
   };
 
   const handleSearchClose = () => {
@@ -59,4 +56,4 @@ const Content = observer(() => {
   );
 });
 
-export default Content;
+export default MobileContent;
