@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useCoreStores, Toast, Chip, Message } from 'teespace-core';
+import { useCoreStores, Toast, Chip, Message, logEvent } from 'teespace-core';
 import styled from 'styled-components';
 import { Button, Input, Modal } from 'antd';
 import sendMailIcon from '../../assets/invite_send.svg';
@@ -133,8 +133,9 @@ function AddFriendsByInvitationDialog({
 
   const handleCopyInviteLink = async () => {
     try {
-      const response = await friendStore.fetchUserInvitationLink({
+      const response = await friendStore.fetchSpaceInvitationLink({
         myUserId,
+        grade: 'member',
       });
       const el = document.createElement('textarea');
       el.value = response;
@@ -144,6 +145,7 @@ function AddFriendsByInvitationDialog({
       document.body.removeChild(el);
       setToastText('복사한 초대 링크는 24시간 이후 만료됩니다.');
       handleToggleToast();
+      logEvent('member', 'clickCopyInvitationLinkBtn');
     } catch (e) {
       console.log('Copy Error...');
     }
@@ -208,7 +210,7 @@ function AddFriendsByInvitationDialog({
         sendChipSet.add(mailAddress);
       }
 
-      friendStore.sendInvitationMail({
+      friendStore.sendSpaceInvitationMail({
         myUserId,
         userEmailList: Array.from(sendChipSet),
         domainName: spaceStore.currentSpace?.name,
@@ -219,6 +221,7 @@ function AddFriendsByInvitationDialog({
       setChipList([]);
       setToastText('발송한 초대장은 24시간 이후 만료됩니다.');
       handleToggleToast();
+      logEvent('member', 'clickSendInvitationBtn');
       // onSendInviteMail();
     } catch (e) {
       console.log(`Just Error is ${e}`);

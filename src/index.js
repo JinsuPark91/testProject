@@ -8,6 +8,7 @@ import {
   initGA,
 } from 'teespace-core';
 import { createGlobalStyle } from 'styled-components';
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { setEnv, getEnv } from './env';
@@ -17,6 +18,13 @@ const GlobalStyle = createGlobalStyle`
     font-size: ${global.screen.width / 16}%}
   }
 `;
+
+if (process.env.NODE_ENV !== 'development') {
+  console.log = () => {};
+  console.error = () => {};
+  console.info = () => {};
+  console.warn = () => {};
+}
 
 const legacyDomainURL = `${window.location.protocol}//${
   process.env.REACT_APP_DEV_SERVICE_DOMAIN || window.location.hostname
@@ -74,7 +82,9 @@ ReactDOM.render(
   <CoreStoreProvider config={getEnv()}>
     <GlobalStyle />
     <GlobalCommonStyles />
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </CoreStoreProvider>,
   document.getElementById('root'),
 );

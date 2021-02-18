@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Modal } from 'antd';
 import { talkRoomStore } from 'teespace-talk-app';
-import { useCoreStores, Message } from 'teespace-core';
+import { useCoreStores, Message, logEvent } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -207,6 +207,7 @@ function OpenRoomHome({ visible, onCancel }) {
       if (res?.roomId) {
         history.push(`/s/${currentOpenRoom.id}/talk`);
       }
+      logEvent('room', 'clickEnterOpenRoomBtn');
     } catch (err) {
       console.error('ROOM ENTER ERROR : ', err);
     }
@@ -315,9 +316,13 @@ function OpenRoomHome({ visible, onCancel }) {
         mask={false}
         footer={false}
         onCancel={closeHomeModal}
-        width="24.38rem"
+        width="100%"
         destroyOnClose
-        style={{ top: '3.75rem', left: '16.81rem', margin: 'unset' }}
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          margin: 'unset',
+        }}
       >
         <OpenHomeForm>
           <Search
@@ -437,6 +442,10 @@ function OpenRoomHome({ visible, onCancel }) {
 const StyledModal = styled(Modal)`
   .ant-modal-body {
     padding: 0;
+  }
+
+  .ant-modal-content {
+    width: 24.38rem;
   }
 `;
 const OpenHomeForm = styled.div`

@@ -208,18 +208,13 @@ const RoomItemContent = ({
   const handleExport = e => {
     e.stopPropagation();
 
-    const isOpened = PlatformUIStore.getWindow(roomInfo.id);
-    if (!isOpened) {
-      PlatformUIStore.openWindow({
-        id: roomInfo.id,
-        type: 'talk',
-        name: roomInfo.name,
-        userCount: roomInfo.userCount,
-        handler: null,
-      });
-    } else {
-      PlatformUIStore.focusWindow(roomInfo.id);
-    }
+    PlatformUIStore.openWindow({
+      id: roomInfo.id,
+      type: 'talk',
+      name: roomInfo.name,
+      userCount: roomInfo.userCount,
+      handler: null,
+    });
   };
 
   const handleMenuClick = _roomInfo => {

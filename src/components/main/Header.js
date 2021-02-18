@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-import { useCoreStores, ProfileInfoModal } from 'teespace-core';
+import { useCoreStores, ProfileInfoModal, logEvent } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { Tooltip } from 'antd';
 import {
@@ -109,7 +109,7 @@ const apps = [
 
 const AppIcon = React.memo(
   ({
-    subApp,
+    isActive,
     appName,
     onClick,
     defaultIcon,
@@ -126,7 +126,7 @@ const AppIcon = React.memo(
     if (disabled) {
       icon = disabledIcon;
     } else {
-      icon = subApp === appName ? activeIcon : defaultIcon;
+      icon = isActive ? activeIcon : defaultIcon;
     }
 
     return (
@@ -217,18 +217,13 @@ const Header = observer(() => {
   const handleExport = () => {
     const roomInfo = findRoom();
 
-    const isOpened = PlatformUIStore.getWindow(roomInfo.id);
-    if (!isOpened) {
-      PlatformUIStore.openWindow({
-        id: roomInfo.id,
-        type: 'talk',
-        name: roomInfo.name,
-        userCount: roomInfo.userCount,
-        handler: null,
-      });
-    } else {
-      PlatformUIStore.focusWindow(roomInfo.id);
-    }
+    PlatformUIStore.openWindow({
+      id: roomInfo.id,
+      type: 'talk',
+      name: roomInfo.name,
+      userCount: roomInfo.userCount,
+      handler: null,
+    });
   };
 
   const handleSearch = () => {
@@ -271,34 +266,26 @@ const Header = observer(() => {
     PlatformUIStore.openWindow({
       id: roomInfo.id,
       type: 'meeting',
-      name: roomInfo.name,
-      userCount: roomInfo.userCount,
+      name: null,
+      userCount: null,
       handler: null,
     });
-    // const isOpened = PlatformUIStore.getWindow(roomInfo.id);
-    // if (!isOpened) {
-    //   PlatformUIStore.openWindow({
-    //     id: roomInfo.id,
-    //     type: 'meeting',
-    //     name: roomInfo.name,
-    //     userCount: roomInfo.userCount,
-    //     handler: null,
-    //   });
-    // } else {
-    //   PlatformUIStore.focusWindow(roomInfo.id);
-    // }
   };
 
   const handleAppClick = async appName => {
-    if (PlatformUIStore.subApp !== appName) {
-      if (appName === 'meeting') {
+    if (appName === 'meeting') {
+      const { id } = findRoom();
+      const meetingWindow = PlatformUIStore.getWindow('meeting', id);
+      if (meetingWindow) {
+        PlatformUIStore.focusWindow('meeting', id);
+      } else {
         const meetingAppConfirm = (
           <MeetingApp.ConfirmLaunchApp
             onConfirm={() => {
               setAppConfirm(null);
-              // openMeeting();
+              openMeeting();
 
-              openSubApp(appName);
+              // openSubApp(appName);
             }}
             onCancel={() => {
               setAppConfirm(null);
@@ -306,11 +293,32 @@ const Header = observer(() => {
           />
         );
         setAppConfirm(meetingAppConfirm);
-      } else {
-        openSubApp(appName);
       }
+    } else if (PlatformUIStore.subApp !== appName) {
+      openSubApp(appName);
     } else {
       closeSubApp();
+    }
+
+    // 최대한 기존 코드 안 건드리려고 했는데, 수정해도 무방함
+    switch (appName) {
+      case 'drive':
+        logEvent('gnb', 'clickTeeDriveBtn');
+        break;
+      case 'calendar':
+        logEvent('gnb', 'clickTeeCalendarBtn');
+        break;
+      case 'note':
+        logEvent('gnb', 'clickTeeNoteBtn');
+        break;
+      case 'meeting':
+        logEvent('gnb', 'clickTeeMeetingBtn');
+        break;
+      case 'files':
+        logEvent('gnb', 'clickPlusBtn');
+        break;
+      default:
+        break;
     }
   };
 
@@ -347,6 +355,15 @@ const Header = observer(() => {
       <ProfileInfoModal
         userId={userStore.myProfile.id}
         visible={isRoomProfileVisible}
+        onClickMeeting={_roomId => {
+          PlatformUIStore.openWindow({
+            id: _roomId,
+            type: 'meeting',
+            name: null,
+            userCount: null,
+            handler: null,
+          });
+        }}
         onClose={handleCancelRoomMemeberModal}
         position={{ top: '3.5rem', left: '17rem' }}
       />
@@ -361,6 +378,15 @@ const Header = observer(() => {
         userId={dmUserId}
         visible={isRoomProfileVisible}
         onClose={handleCancelRoomMemeberModal}
+        onClickMeeting={_roomId => {
+          PlatformUIStore.openWindow({
+            id: _roomId,
+            type: 'meeting',
+            name: null,
+            userCount: null,
+            handler: null,
+          });
+        }}
         position={{ top: '3.5rem', left: '17rem' }}
       />
     );
@@ -440,7 +466,12 @@ const Header = observer(() => {
               {isSeperated ? <VerticalBar /> : null}
               <AppIcon
                 key={name}
-                subApp={PlatformUIStore.subApp}
+                // isActive={PlatformUIStore.subApp === name}
+                isActive={
+                  name !== 'meeting'
+                    ? PlatformUIStore.subApp === name
+                    : !!PlatformUIStore.getWindow('meeting', findRoom()?.id)
+                }
                 appName={name}
                 onClick={handleAppClick}
                 defaultIcon={icons.default}

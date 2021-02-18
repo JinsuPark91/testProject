@@ -154,6 +154,15 @@ const FriendsLNBContent = React.forwardRef(
             <ProfileInfoModal
               userId={selectedId}
               visible={infoModalVisible}
+              onClickMeeting={_roomId => {
+                PlatformUIStore.openWindow({
+                  id: _roomId,
+                  type: 'meeting',
+                  name: null,
+                  userCount: null,
+                  handler: null,
+                });
+              }}
               onClose={() => setInfoModalVisible(false)}
               position={{ left: '16.81rem' }}
             />

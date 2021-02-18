@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import { useCoreStores, Message, Toast } from 'teespace-core';
 import { LockLineIcon, CameraIcon } from './Icons';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
+import PlatformUIStore from '../stores/PlatformUIStore';
 import { handleProfileMenuClick, toBase64, toBlob } from '../utils/ProfileUtil';
 import {
   Wrapper,
@@ -66,10 +67,10 @@ const Profile = observer(
     const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(undefined);
     const [localProfilePhoto, setLocalProfilePhoto] = useState(undefined);
 
-    // get profile from store
-    const profile = userStore.userProfiles[userId];
-
     const isMyId = () => userId === userStore.myProfile.id;
+    const profile = isMyId()
+      ? userStore.myProfile
+      : userStore.userProfiles[userId];
     const getBackPhoto = () => {
       return userStore.getBackgroundPhotoURL(userId);
     };
@@ -116,6 +117,10 @@ const Profile = observer(
     const isValidInputData = () => !!name;
 
     useEffect(() => {
+      if (isEditMode) {
+        setLocalProfilePhoto(undefined);
+        setLocalBackgroundPhoto(undefined);
+      }
       setEditMode(editOnlyMode);
       (async () => {
         const userProfile = userStore.userProfiles[userId];
@@ -157,16 +162,33 @@ const Profile = observer(
 
     const handleMeetingClick = async () => {
       const myUserId = userStore.myProfile.id;
-      const queryParams = { ...getQueryParams(), sub: 'meeting' };
-      const queryString = getQueryString(queryParams);
+      // const queryParams = { ...getQueryParams(), sub: 'meeting' };
+      const queryString = getQueryString(getQueryParams());
+      const openMeeting = roomInfo => {
+        PlatformUIStore.openWindow({
+          id: roomInfo.id,
+          type: 'meeting',
+          name: null,
+          userCount: null,
+          handler: null,
+        });
+      };
       handleProfileMenuClick(
         roomStore,
         myUserId,
         userId,
-        roomInfo => history.push(`/s/${roomInfo.id}/talk?${queryString}`),
-        roomInfo => history.push(`/s/${roomInfo.id}/talk?${queryString}`),
-        newRoomInfo =>
-          history.push(`/s/${newRoomInfo?.id}/talk?${queryString}`),
+        roomInfo => {
+          openMeeting(roomInfo);
+          history.push(`/s/${roomInfo.id}/talk?${queryString}`);
+        },
+        roomInfo => {
+          openMeeting(roomInfo);
+          history.push(`/s/${roomInfo.id}/talk?${queryString}`);
+        },
+        newRoomInfo => {
+          openMeeting(newRoomInfo);
+          history.push(`/s/${newRoomInfo?.id}/talk?${queryString}`);
+        },
       );
     };
 

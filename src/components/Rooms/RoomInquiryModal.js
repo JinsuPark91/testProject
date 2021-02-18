@@ -8,6 +8,7 @@ import Photos from '../Photos';
 import Input from '../Input';
 import RoomAddMemberModal from './RoomAddMemberModal';
 import { getQueryString, getQueryParams } from '../../utils/UrlUtil';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 import { AddAcountIcon, ChattingIcon, EditIcon, MeetingIcon } from '../Icons';
 
 const AddButton = styled.button`
@@ -263,8 +264,16 @@ function RoomInquiryModal({
     onCancel(e);
   };
   const handleMeeting = e => {
-    const queryParams = { ...getQueryParams(), sub: 'meeting' };
-    const queryString = getQueryString(queryParams);
+    // const queryParams = { ...getQueryParams(), sub: 'meeting' };
+    const queryString = getQueryString(getQueryParams());
+    PlatformUIStore.openWindow({
+      id: roomInfo.id,
+      type: 'meeting',
+      name: null,
+      userCount: null,
+      handler: null,
+    });
+
     history.push(`/s/${roomInfo.id}/talk?${queryString}`);
     onCancel(e);
   };
@@ -320,13 +329,24 @@ function RoomInquiryModal({
     }, 0);
   }, [onCancel]);
 
-  const handleClickProfileMeeting = useCallback(() => {
-    setIsProfileModalVisible(false);
-    // NOTE. 프로파일 다이얼로그 닫힌 다음 룸 정보 다이얼로그를 닫게 하기 위해 이벤트 시차를 둠.
-    setTimeout(() => {
-      onCancel();
-    }, 0);
-  }, [onCancel]);
+  const handleClickProfileMeeting = useCallback(
+    _roomId => {
+      PlatformUIStore.openWindow({
+        id: _roomId,
+        type: 'meeting',
+        name: null,
+        userCount: null,
+        handler: null,
+      });
+
+      setIsProfileModalVisible(false);
+      // NOTE. 프로파일 다이얼로그 닫힌 다음 룸 정보 다이얼로그를 닫게 하기 위해 이벤트 시차를 둠.
+      setTimeout(() => {
+        onCancel();
+      }, 0);
+    },
+    [onCancel],
+  );
 
   const userContent = (
     <>

@@ -10,11 +10,12 @@ import {
 } from 'react-router-dom';
 import './App.less';
 import { create } from 'mobx-persist';
-import { PortalProvider, useCoreStores } from 'teespace-core';
+import { logPageView, PortalProvider, useCoreStores } from 'teespace-core';
 import { initApp as initTalkApp } from 'teespace-talk-app';
 import { initApp as initDriveApp } from 'teespace-drive-app';
 import { initApp as initNoteApp } from 'teespace-note-app';
 import { initApp as initMeetingApp } from 'teespace-meeting-app';
+import { initApp as initMailApp, WindowMail } from 'teespace-mail-app';
 import {
   initApp as initCalendarApp,
   initializeApp as initializeCalendarApp,
@@ -29,6 +30,7 @@ import SignUpFormPage from './page/SignUpFormPage';
 import SignUpCompletePage from './page/SignUpCompletePage';
 import DriveSharedFilePage from './page/DriveSharedFilePage';
 import OfficeFilePage from './page/OffiveFilePage';
+import NewWindowPage from './page/NewWindowPage';
 import LogoutPage from './page/LogoutPage';
 import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
@@ -36,11 +38,8 @@ import PrivateRoute from './libs/PrivateRoute';
 import KeycloakRedirectRoute from './libs/KeycloakRedirectRoute';
 import keycloak from './libs/keycloak';
 import { getCookieValue } from './utils/CookieUtil';
-
-// MiniTalk 임시.
 import { getQueryParams } from './utils/UrlUtil';
-import NewWindowPage from './page/NewWindowPage';
-// MiniTalk 임시.
+import initMonitoringLog from './libs/monitoringLog';
 
 // import i18next from './i18n';
 
@@ -94,7 +93,7 @@ function App() {
     initializeCalendarApp();
     initNoteApp();
     initMeetingApp();
-    // initMailApp();
+    initMailApp();
   }, []);
 
   // hydrate mobx stores
@@ -108,74 +107,84 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // GA 페이지뷰 로그 수집
+  useEffect(() => {
+    return history.listen(location => {
+      logPageView(location);
+    });
+  }, [history]);
+
+  useEffect(() => {
+    initMonitoringLog();
+  }, []);
+
   if (!isHydrating) return <></>;
   return (
     <DndProvider backend={HTML5Backend}>
-      <BrowserRouter>
-        <Switch>
-          <Route exact path="/">
-            <Redirect to="/login" />
-          </Route>
-          <Route exact path="/drive/files/:fileId">
-            <DriveSharedFilePage />
-          </Route>
-          <Route>
-            <ReactKeycloakProvider
-              authClient={keycloak}
-              onEvent={eventLogger}
-              LoadingComponent={<></>}
-              initOptions={{
-                onLoad: 'login-required',
-                redirectUri: '',
-              }}
-            >
-              <PortalProvider>
-                {/* <I18nextProvider i18n={i18next}> */}
-                <BrowserRouter>
-                  <Switch>
-                    <Route exact path="/logout" component={LogoutPage} />
-                    <KeycloakRedirectRoute
-                      exact
-                      path="/login"
-                      component={MainPage}
-                    />
-                    <PrivateRoute
-                      path="/office/:fileId"
-                      component={OfficeFilePage}
-                    />
-                    <RedirectablePublicRoute
-                      exact
-                      path="/register"
-                      component={<SignUpPage />}
-                    />
-                    <RedirectablePublicRoute
-                      exact
-                      path="/registerForm"
-                      component={<SignUpFormPage />}
-                    />
-                    <RedirectablePublicRoute
-                      exact
-                      path="/registerComplete"
-                      component={<SignUpCompletePage />}
-                    />
-                    <PrivateRoute
-                      path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
-                      component={isMini ? NewWindowPage : MainPage}
-                    />
-                    <PrivateRoute path="/admin" component={AdminPage} />
-                    <Route component={NotFoundPage} />
-                  </Switch>
-                  {/* <PrivateRoute
+      <Switch>
+        <Route exact path="/">
+          <Redirect to="/login" />
+        </Route>
+        <Route exact path="/drive/files/:fileId">
+          <DriveSharedFilePage />
+        </Route>
+        <Route>
+          <ReactKeycloakProvider
+            authClient={keycloak}
+            onEvent={eventLogger}
+            LoadingComponent={<></>}
+            initOptions={{
+              onLoad: 'login-required',
+              redirectUri: '',
+            }}
+          >
+            <PortalProvider>
+              {/* <I18nextProvider i18n={i18next}> */}
+              <BrowserRouter>
+                <Switch>
+                  <Route exact path="/logout" component={LogoutPage} />
+                  <KeycloakRedirectRoute
+                    exact
+                    path="/login"
+                    component={MainPage}
+                  />
+                  <PrivateRoute
+                    path="/office/:fileId"
+                    component={OfficeFilePage}
+                  />
+                  <RedirectablePublicRoute
+                    exact
+                    path="/register"
+                    component={<SignUpPage />}
+                  />
+                  <RedirectablePublicRoute
+                    exact
+                    path="/registerForm"
+                    component={<SignUpFormPage />}
+                  />
+                  <RedirectablePublicRoute
+                    exact
+                    path="/registerComplete"
+                    component={<SignUpCompletePage />}
+                  />
+                  <PrivateRoute
+                    path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
+                    component={isMini ? NewWindowPage : MainPage}
+                    // component={MainPage}
+                  />
+                  <PrivateRoute path="/admin" component={AdminPage} />
+                  <Route component={NotFoundPage} />
+                </Switch>
+                {/* <PrivateRoute
             path="/users"
             component={MainPage}
           /> */}
-                </BrowserRouter>
-                {/* </I18nextProvider> */}
-              </PortalProvider>
-            </ReactKeycloakProvider>
-          </Route>
-        </Switch>
-      </BrowserRouter>
+              </BrowserRouter>
+              {/* </I18nextProvider> */}
+            </PortalProvider>
+          </ReactKeycloakProvider>
+        </Route>
+      </Switch>
     </DndProvider>
   );
 }

@@ -7,11 +7,13 @@ import {
   Message,
   ProfileInfoModal,
   ProfileModal,
+  logEvent,
 } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import { useObserver } from 'mobx-react';
 // import { useTranslation } from 'react-i18next';
 import { useKeycloak } from '@react-keycloak/web';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 import SettingDialog from '../usersettings/SettingDialog';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import convertSpaceIcon from '../../assets/convert space.svg';
@@ -50,6 +52,7 @@ const ProfileMyModal = ({
   const [itemKey, setItemKey] = useState(SELECTED_TAB.GENERAL);
   const [settingDialogVisible, setSettingDialogVisible] = useState(false);
   const [spaceListVisible, setSpaceListVisible] = useState(false);
+  const [moreMenuDropDownVisible, setMoreMenuDropDownVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
@@ -101,6 +104,10 @@ const ProfileMyModal = ({
     setIsCreated(false);
   }, []);
 
+  const handleMoreMenuDropDownVisible = () => {
+    setMoreMenuDropDownVisible(!moreMenuDropDownVisible);
+  };
+
   const handleLogout = async () => {
     // Close dialog first
     if (onCancel) onCancel();
@@ -126,7 +133,8 @@ const ProfileMyModal = ({
 
   const handleCancel = useCallback(() => {
     setSpaceListVisible(false);
-    onCancel();
+    setMoreMenuDropDownVisible(false);
+    setTimeout(() => onCancel(), 1);
   }, [onCancel]);
 
   const handleCancelInviteMail = useCallback(() => {
@@ -135,19 +143,25 @@ const ProfileMyModal = ({
 
   const handleInviteDialog = useCallback(() => {
     setIsInviteDialogOpen(true);
+    logEvent('threedot', 'clickInviteMemberBtn');
   }, []);
 
   const handleMemberList = useCallback(async () => {
-    await handleFriendsDialogType(
-      orgStore,
-      userStore.myProfile,
-      authStore.sessionInfo.domainKey,
-      () => setIsOrgExist(true),
-      res => setSpaceMemberList(res),
-    );
-    setIsViewMode(true);
-    setModalTitle(spaceStore.currentSpace?.name);
-    setIsFriendMemViewOpen(true);
+    try {
+      await handleFriendsDialogType(
+        orgStore,
+        userStore.myProfile,
+        authStore.sessionInfo.domainKey,
+        () => setIsOrgExist(true),
+        res => setSpaceMemberList(res),
+      );
+      setIsViewMode(true);
+      setModalTitle(spaceStore.currentSpace?.name);
+      setIsFriendMemViewOpen(true);
+      logEvent('threedot', 'clickShowMemberList');
+    } catch (e) {
+      console.log('service Error...');
+    }
   }, [orgStore, userStore, authStore, spaceStore]);
 
   const handleAddFriend = useCallback(async () => {
@@ -176,7 +190,7 @@ const ProfileMyModal = ({
   }, []);
 
   const handleMoveAccountPage = useCallback(() => {
-    MovePage('account');
+    MovePage('account?open=password');
   }, []);
 
   const handleOpenSupport = () => {
@@ -255,6 +269,15 @@ const ProfileMyModal = ({
       visible={isEditMode}
       onClose={toggleEditMode}
       profilePhoto={thumbPhoto}
+      onClickMeeting={roomId => {
+        PlatformUIStore.openWindow({
+          id: roomId,
+          type: 'meeting',
+          name: null,
+          userCount: null,
+          handler: null,
+        });
+      }}
       editMode
     />
   );
@@ -275,9 +298,11 @@ const ProfileMyModal = ({
             </Button>
           </Tooltip>
           <Dropdown
+            visible={moreMenuDropDownVisible}
             trigger={['click']}
             overlay={moreMenu}
             placement="bottomRight"
+            onVisibleChange={handleMoreMenuDropDownVisible}
           >
             <Button className="btn-more">
               <Blind>설정</Blind>

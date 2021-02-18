@@ -309,18 +309,13 @@ const FriendAction = React.memo(
 
 const OpenMiniTalk = roomInfo => {
   //  FIXME: 안정화 후 함수로 묶기
-  const isOpened = PlatformUIStore.getWindow(roomInfo.id);
-  if (!isOpened) {
-    PlatformUIStore.openWindow({
-      id: roomInfo.id,
-      type: 'talk',
-      name: roomInfo.name,
-      userCount: roomInfo.userCount,
-      handler: null,
-    });
-  } else {
-    PlatformUIStore.focusWindow(roomInfo.id);
-  }
+  PlatformUIStore.openWindow({
+    id: roomInfo.id,
+    type: 'talk',
+    name: roomInfo.name,
+    userCount: roomInfo.userCount,
+    handler: null,
+  });
 };
 
 const MeAction = React.memo(({ mode, itemId }) => {
@@ -493,12 +488,12 @@ const FriendItem = observer(
 
     // const [{ canDrop, isOver }, drop] = useDrop({
     //   accept: ACCEPT_ITEMS,
-    //   drop: async item => {
+    //   drop: item => {
     //     let targetRoomInfo = {};
     //     const setRoomInfo = roomInfo => {
     //       targetRoomInfo = roomInfo;
     //     };
-    //     await handleProfileMenuClick(
+    //     handleProfileMenuClick(
     //       roomStore,
     //       myUserId,
     //       itemId,
@@ -506,7 +501,6 @@ const FriendItem = observer(
     //       roomInfo => setRoomInfo(roomInfo),
     //       roomInfo => setRoomInfo(roomInfo),
     //     );
-
     //     if (TALK_ACCEPT_ITEMS.includes(item.type)) {
     //       const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
     //         item.type.toLowerCase(),
@@ -522,7 +516,7 @@ const FriendItem = observer(
     //     return {
     //       source: item.type,
     //       sourceData: item.data,
-    //       target: 'Platform:Friend',
+    //       target: 'Platform:Room', // 프렌즈 리스트에 drop이지만 Room에 drop과 사실상 동일해 보인다.
     //       targetData: targetRoomInfo,
     //     };
     //   },
