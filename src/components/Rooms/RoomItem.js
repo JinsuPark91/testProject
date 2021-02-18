@@ -512,6 +512,7 @@ const StyleRoomMessage = styled.span`
 const RoomNameText = styled.span`
   font-size: 0.81rem;
   font-weight: 500;
+  line-height: 1.19rem;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;

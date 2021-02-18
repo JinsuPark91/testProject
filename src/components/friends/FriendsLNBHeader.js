@@ -15,6 +15,7 @@ import FriendAddIcon from '../../assets/add_friends.svg';
 
 const SearchBox = styled.div`
   display: flex;
+  align-items: center;
   padding: 0.63rem 0.75rem;
   .anticon {
     color: #bdc6d3;
