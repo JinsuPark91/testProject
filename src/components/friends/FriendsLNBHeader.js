@@ -44,8 +44,8 @@ const FriendSearch = styled(WaplSearch)`
 const FriendAddButton = styled.div`
   display: flex;
   cursor: pointer;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 2rem;
+  height: 2rem;
   justify-content: center;
   align-items: center;
   border-radius: 50%;
@@ -56,8 +56,8 @@ const FriendAddButton = styled.div`
     box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
   }
   & > img {
-    width: 1.21rem;
-    height: 1.21rem;
+    width: 1.34rem;
+    height: 1.34rem;
   }
 `;
 
