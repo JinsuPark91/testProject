@@ -10,10 +10,8 @@ import {
   logEvent,
 } from 'teespace-core';
 import { Tooltip } from 'antd';
-import { WaplLogo, AddRoomIcon, OpenChatIcon, SearchIcon } from '../Icons';
-import EmptyRoomIllust from '../../assets/space_make.svg';
+import { WaplLogo, AddRoomIcon } from '../Icons';
 import RoomItem from './RoomItem';
-import OpenRoomHome from './OpenRoomHome';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
@@ -22,7 +20,6 @@ import Search from '../common/Search';
 function RoomList() {
   const history = useHistory();
   const [keyword, setKeyword] = useState('');
-  const [openRoomDialogVisible, setOpenRoomDialogVisible] = useState(false);
   const [targetRoom, setTargetRoom] = useState(null);
   const [exitTargetRoom, setExitTargetRoom] = useState(null);
   const [isRoomMemberModalVisible, setIsRoomMemberModalVisible] = useState(
@@ -49,11 +46,6 @@ function RoomList() {
     setVisible({ ...visible, selectRoomType: true });
     logEvent('main', 'clickRoomCreateBtn');
   };
-
-  const handleOpenChat = useCallback(() => {
-    setOpenRoomDialogVisible(true);
-    logEvent('main', 'clickOpenRoomHomeBtn');
-  }, []);
 
   const handleSelectRoom = useCallback(
     roomInfo => {
@@ -121,10 +113,6 @@ function RoomList() {
       default:
     }
   }, []);
-
-  const handleOpenRoomModalCancel = () => {
-    setOpenRoomDialogVisible(false);
-  };
 
   const handleClickRoomPhoto = useCallback(
     roomInfo => {
@@ -315,15 +303,11 @@ function RoomList() {
             type="underline"
           />
         </InputWrapper>
-        <Tooltip placement="bottomLeft" title="오픈 룸 홈" color="#232D3B">
-          <OpenChatIconWrapper onClick={handleOpenChat}>
-            <OpenChatIcon color="rgb(0, 73, 61)" />
-          </OpenChatIconWrapper>
+        <Tooltip title="룸 만들기" placement="top" color="#232D3B">
+          <AddRoomIconWrapper onClick={handleCreateRoom}>
+            <AddRoomIcon width={1.38} height={1.38} color="#232D3B" />
+          </AddRoomIconWrapper>
         </Tooltip>
-        <OpenRoomHome
-          visible={openRoomDialogVisible}
-          onCancel={handleOpenRoomModalCancel}
-        />
       </TopWrapper>
       <RoomContainer>
         <Observer>
@@ -347,11 +331,6 @@ function RoomList() {
       </RoomContainer>
       <ButtomWrapper>
         <WaplLogo />
-        <Tooltip title="룸 만들기" placement="top" color="#232D3B">
-          <AddRoomIconWrapper onClick={handleCreateRoom}>
-            <AddRoomIcon width={1.38} height={1.38} color="#232D3B" />
-          </AddRoomIconWrapper>
-        </Tooltip>
         <Toast
           visible={isToastVisible}
           timeoutMs={1000}

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { Typography, Button, Modal } from 'antd';
-import { useCoreStores } from 'teespace-core';
+import { Typography, Modal } from 'antd';
+import { useCoreStores, logEvent } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import { PrivateRoomIcon, OpenChatIcon } from '../Icons';
 import CreatePrivateRoomDialog from '../dialogs/CreatePrivateRoomDialog';
 import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
 import PlatformUIStore from '../../stores/PlatformUIStore';
+import OpenRoomHome from './OpenRoomHome';
 
 const { Title } = Typography;
 
@@ -59,17 +60,6 @@ const StyledInfoText = styled.p`
   line-height: 1rem;
 `;
 
-const StyledButton = styled(Button)`
-  &.ant-btn {
-    width: 8.38rem;
-    height: 1.88rem;
-    padding: 0 0.5rem;
-    font-size: 0.75rem;
-    color: #fff;
-    text-align: center;
-  }
-`;
-
 const StyledModal = styled(Modal)`
   .ant-modal-body {
     padding: 0;
@@ -88,6 +78,7 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
   const [isVisible, setIsVisible] = useState({
     createPrivateRoom: false,
     createPublicRoom: false,
+    openRoomDialog: false,
   });
 
   const handleCancel = () => {
@@ -101,7 +92,13 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
 
   const handleOpenRoomCreate = () => {
     onCancel();
-    setIsVisible({ ...isVisible, createPublicRoom: true });
+    setIsVisible({ ...isVisible, openRoomDialog: true });
+    logEvent('main', 'clickOpenRoomHomeBtn');
+    // setIsVisible({ ...isVisible, createPublicRoom: true });
+  };
+
+  const handleOpenRoomModalCancel = () => {
+    setIsVisible({ ...isVisible, openRoomDialog: false });
   };
 
   // Private Room
@@ -202,6 +199,10 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
 
   return (
     <>
+      <OpenRoomHome
+        visible={isVisible.openRoomDialog}
+        onCancel={handleOpenRoomModalCancel}
+      />
       <CreatePrivateRoomDialog
         visible={isVisible.createPrivateRoom}
         onOk={handleCreatePrivateRoomOk}
