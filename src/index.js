@@ -14,9 +14,6 @@ import * as serviceWorker from './serviceWorker';
 import { setEnv, getEnv } from './env';
 
 const GlobalStyle = createGlobalStyle`
-  html {
-    font-size: ${global.screen.width / 16}%}
-  }
 `;
 
 const legacyDomainURL = `${window.location.protocol}//${

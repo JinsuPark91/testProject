@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   height: 100%;
 `;
 const Container = styled.div`
-  padding-top: 2.88rem;
+  padding-top: 3.1rem;
   height: 100%;
   overflow-y: scroll;
 `;

@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
 import PlatformUIStore from '../../stores/PlatformUIStore';
+import { Button } from 'antd';
+import { ArrowBackIcon } from './Icon';
 
 const Wrapper = styled.div`
   display: flex;
@@ -15,6 +17,24 @@ const Wrapper = styled.div`
   top: 0;
   right: 0;
   left: 0;
+`;
+
+const ButtonBox = styled.div`
+  margin-right: 0.75rem;
+  display: flex;
+`;
+const IconButton = styled(Button)`
+  &.ant-btn {
+    width: 1.25rem;
+    height: 1.25rem;
+    background-color: transparent;
+  }
+`;
+
+const Title = styled.h3`
+  font-size: 1.13rem;
+  line-height: 1.63rem;
+  color: #205855;
 `;
 
 const MobileTalkHeader = () => {
@@ -44,8 +64,10 @@ const MobileTalkHeader = () => {
   // component 완성 후 수정
   return (
     <Wrapper>
-      <div onClick={handleGoBack}>뒤로가기</div>
-      <div>{getRoomName()}</div>
+      <ButtonBox onClick={handleGoBack}>
+        <IconButton type="ghost" icon={<ArrowBackIcon />} />
+      </ButtonBox>
+      <Title>{getRoomName()}</Title>
     </Wrapper>
   );
 };
