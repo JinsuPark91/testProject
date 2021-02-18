@@ -1,5 +1,7 @@
 import React, { useState, useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
 import { MobileItemSelector, useCoreStores } from 'teespace-core';
+import { talkRoomStore } from 'teespace-talk-app';
 import styled from 'styled-components';
 import { Button } from 'antd';
 import { ArrowBackIcon } from './Icon';
@@ -48,13 +50,33 @@ const InviteButton = styled(Button)`
 `;
 
 const MobileRoomCreatePage = ({ onCancel }) => {
-  const { userStore } = useCoreStores();
+  const history = useHistory();
+  const { userStore, roomStore } = useCoreStores();
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const disabledIds = [userStore.myProfile.id];
+  const myUserId = userStore.myProfile.id;
+  const disabledIds = [myUserId];
 
-  const handleCreateRoom = () => {
-    console.log(`selected user is${selectedUsers}`);
-    onCancel();
+  const handleCreateRoom = async () => {
+    if (selectedUsers.length === 0) return;
+    const userList = selectedUsers.map(elem => ({
+      userId: elem.friendId || elem.id,
+    }));
+    const { roomId } = await roomStore.createRoom({
+      creatorId: myUserId,
+      userList,
+      type: 'private',
+    });
+    const checkRoom = roomStore.getRoomMap().get(roomId);
+    console.log(JSON.stringify(checkRoom));
+    if (checkRoom && !checkRoom.isVisible) {
+      await roomStore.updateRoomMemberSetting({
+        roomId,
+        myUserId,
+        newIsVisible: true,
+      });
+    }
+    await talkRoomStore.initialize(myUserId, roomId);
+    history.push(`/talk/${roomId}`);
   };
 
   const handleSelectedUserChange = useCallback(({ userArray }) => {
@@ -72,7 +94,9 @@ const MobileRoomCreatePage = ({ onCancel }) => {
           <IconButton type="ghost" icon={<ArrowBackIcon />} />
         </ButtonBox>
         <Title>프라이빗 룸 만들기</Title>
-        <InviteButton type="text">초대 N</InviteButton>
+        <InviteButton onClick={handleCreateRoom} type="text">
+          초대 {selectedUsers.length || ''}
+        </InviteButton>
       </Header>
       <MobileItemSelector
         isVisibleRoom={false}
