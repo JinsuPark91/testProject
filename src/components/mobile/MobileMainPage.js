@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
@@ -22,6 +22,7 @@ const Container = styled.div`
 const Loader = styled.div``;
 
 const MobileMainPage = observer(() => {
+  const history = useHistory();
   const { resourceType, resourceId } = useParams();
   const { userStore, friendStore, roomStore } = useCoreStores();
   const [isLoading, setIsLoading] = useState(true);
@@ -44,9 +45,12 @@ const MobileMainPage = observer(() => {
     PlatformUIStore.resourceId = resourceId;
   }, [resourceType, resourceId]);
 
-  const [isRoomCreateVisible, setIsRoomCreateVisible] = useState(false);
-  const handleToggleModal = () => {
-    setIsRoomCreateVisible(!isRoomCreateVisible);
+  const handleCreateRoom = () => {
+    history.push(`/create/${myUserId}`);
+  };
+
+  const handleCancelRoom = () => {
+    history.push(`/room/${myUserId}`);
   };
 
   if (isLoading) {
@@ -57,10 +61,10 @@ const MobileMainPage = observer(() => {
     );
   }
 
-  if (isRoomCreateVisible) {
+  if (PlatformUIStore.resourceType === 'create') {
     return (
       <Wrapper>
-        <MobileRoomCreatePage onCancel={handleToggleModal} />
+        <MobileRoomCreatePage onCancel={handleCancelRoom} />
       </Wrapper>
     );
   }
@@ -69,7 +73,7 @@ const MobileMainPage = observer(() => {
     <>
       <Wrapper>
         {PlatformUIStore.resourceType === 'room' ? (
-          <MobileRoomHeader onRoomCreate={() => setIsRoomCreateVisible(true)} />
+          <MobileRoomHeader onRoomCreate={handleCreateRoom} />
         ) : (
           <MobileTalkHeader />
         )}

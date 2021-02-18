@@ -58,7 +58,7 @@ const MobileTalkHeader = () => {
   };
 
   const handleGoBack = () => {
-    history.goBack();
+    history.push(`/room/${userStore.myProfile.id}`);
   };
 
   // component 완성 후 수정

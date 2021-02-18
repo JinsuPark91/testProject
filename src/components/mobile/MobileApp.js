@@ -15,6 +15,7 @@ import SignUpFormPage from '../../page/SignUpFormPage';
 import SignUpCompletePage from '../../page/SignUpCompletePage';
 import LogoutPage from '../../page/LogoutPage';
 import MobileMainPage from './MobileMainPage';
+import MobileRoomCreatePage from './MobileRoomCreatePage';
 import RedirectablePublicRoute from '../../libs/RedirectablePublicRoute';
 import PrivateRoute from '../../libs/PrivateRoute';
 import KeycloakRedirectRoute from '../../libs/KeycloakRedirectRoute';
@@ -113,7 +114,7 @@ const MobileApp = () => {
                       component={<SignUpCompletePage />}
                     />
                     <PrivateRoute
-                      path="/:resourceType(room|talk)/:resourceId"
+                      path="/:resourceType(room|create|talk)/:resourceId"
                       component={MobileMainPage}
                     />
                     <Route component={NotFoundPage} />
