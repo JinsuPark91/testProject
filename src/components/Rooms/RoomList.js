@@ -362,7 +362,6 @@ const TopWrapper = styled.div`
 `;
 
 const RoomContainer = styled.div`
-  position: relative;
   overflow: hidden auto;
   flex: 1;
 `;
