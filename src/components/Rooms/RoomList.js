@@ -354,6 +354,7 @@ const Wrapper = styled.div`
 
 const TopWrapper = styled.div`
   display: flex;
+  align-items: center;
   padding: 0.63rem 0.75rem;
   input {
     width: 100%;
@@ -361,6 +362,7 @@ const TopWrapper = styled.div`
 `;
 
 const RoomContainer = styled.div`
+  position: relative;
   overflow: hidden auto;
   flex: 1;
 `;
@@ -428,6 +430,8 @@ const ButtomWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0.63rem 0.94rem;
+  box-shadow: 0 -0.8125rem 0.75rem -0.1875rem #fff;
+  z-index: 5;
 `;
 
 export default RoomList;
