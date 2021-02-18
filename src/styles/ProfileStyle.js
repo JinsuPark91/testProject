@@ -412,11 +412,11 @@ export const TopButton = styled.button`
       background: url(${starLineIcon}) no-repeat 50% 50%;
       background-size: 1.13rem 1.13rem;
       &:hover {
-        background-color: rgba(255, 255, 255, 0.3);
+        background-color: rgba(255, 255, 255, 0.2);
       }
       &:active {
         background-image: url(${starIcon});
-        background-color: rgba(90, 95, 255, 0.8);
+        background-color: #205855;
       }
       ${props.isFav
         ? `background-image: url(${starIcon});`
