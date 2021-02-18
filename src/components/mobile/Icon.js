@@ -34,3 +34,36 @@ export const AddRoomIcon = React.memo(
     );
   },
 );
+
+export const ArrowBackIcon = React.memo(
+  ({ width = 1.25, height = 1.25, color = '#000000' }) => {
+    const defaultWidth = 24;
+    const defaultHeight = 24;
+
+    return (
+      <svg
+        width={`${width}rem`}
+        height={`${height}rem`}
+        viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
+        version="1.1"
+      >
+        <g
+          id="Icon/common/arrow_back_2"
+          stroke="none"
+          strokeWidth="1"
+          fill="none"
+          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
+            (height * REM_UNIT) / defaultHeight
+          })`}
+          fillRule="evenodd"
+        >
+          <path
+            d="M22.002,11.9913 C22.002,11.4393 21.554,10.9913 21.002,10.9913 L5.206,10.9913 L11.683,4.7183 C12.079,4.3343 12.089,3.7013 11.705,3.3043 C11.321,2.9073 10.688,2.8973 10.291,3.2823 L2.49,10.8373 C2.175,11.1413 2.002,11.5503 1.99998265,11.9863 C1.998,12.4213 2.169,12.8303 2.486,13.1413 L10.29,20.7183 C10.484,20.9063 10.736,21.0003 10.987,21.0003 C11.248,21.0003 11.508,20.8983 11.704,20.6963 C12.089,20.3003 12.08,19.6673 11.684,19.2823 L5.203,12.9913 L21.002,12.9913 C21.554,12.9913 22.002,12.5433 22.002,11.9913"
+            id="Fill-1"
+            fill={color}
+          ></path>
+        </g>
+      </svg>
+    );
+  },
+);

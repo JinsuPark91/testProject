@@ -22,6 +22,7 @@ const HeaderTitle = styled.h3`
 `;
 const ButtonBox = styled.div`
   margin-left: auto;
+  display: flex;
 `;
 const IconButton = styled(Button)`
   width: 1.25rem;
