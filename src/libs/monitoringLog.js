@@ -10,12 +10,12 @@ const currentState = {
   stack: [],
 };
 
-const getMainApp = () => {
-  if (window.location.href.includes('talk')) return 'talk';
-  if (window.location.href.includes('mail')) return 'mail';
-  if (window.location.href.includes('support')) return 'support';
-  return undefined;
-};
+// const getMainApp = () => {
+//   if (window.location.href.includes('talk')) return 'talk';
+//   if (window.location.href.includes('mail')) return 'mail';
+//   if (window.location.href.includes('support')) return 'support';
+//   return undefined;
+// };
 
 const getSubApp = () => {
   return window.location.href.split('sub=')[1];
@@ -23,7 +23,8 @@ const getSubApp = () => {
 
 const getCurrentAppName = () => {
   if (window.location.href.includes('sub')) return getSubApp();
-  return getMainApp();
+  // return getMainApp();
+  return undefined;
 };
 
 // 현재 사용하고 있는 앱이 무엇인지 확인하고, 앱에 대한 카운트를 올림
