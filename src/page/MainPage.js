@@ -84,6 +84,7 @@ const MainPage = () => {
 
         const [, , , , histories, alarmList] = res;
         AlarmSetting.initAlarmSet(alarmList);
+
         const lastUrl = histories?.[0]?.lastUrl;
         return Promise.resolve(lastUrl);
       })
@@ -368,10 +369,7 @@ const WindowManager = () => {
   return (
     <Observer>
       {() => {
-        const activeTalkWindows = PlatformUIStore.getWindows('talk').filter(
-          windowInfo => windowInfo.handler,
-        );
-
+        const talkWindows = PlatformUIStore.getWindows('talk');
         return (
           <>
             {PlatformUIStore.getWindows('talk').map(window => (
@@ -381,13 +379,14 @@ const WindowManager = () => {
               <Window key={window.id} windowInfo={window} />
             ))}
             <FloatingButton
-              visible={false}
-              rooms={activeTalkWindows}
+              visible={talkWindows.length}
+              rooms={talkWindows}
               count={5}
               onItemClick={roomInfo => {
                 PlatformUIStore.focusWindow('talk', roomInfo.id);
               }}
               onItemClose={roomInfo => {
+                console.log('ROOM INFO : ', roomInfo);
                 PlatformUIStore.closeWindow('talk', roomInfo.id);
               }}
               onCloseAll={() => {
