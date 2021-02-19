@@ -6,7 +6,13 @@ import { useCoreStores, Message, Toast } from 'teespace-core';
 import { LockLineIcon, CameraIcon } from './Icons';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 import PlatformUIStore from '../stores/PlatformUIStore';
-import { handleProfileMenuClick, toBase64, toBlob } from '../utils/ProfileUtil';
+import {
+  handleProfileMenuClick,
+  toBase64,
+  toBlob,
+  getCompanyNumber,
+  getMobileNumber,
+} from '../utils/ProfileUtil';
 import {
   Wrapper,
   Sidebar,
@@ -476,11 +482,7 @@ const Profile = observer(
                       />
                     ) : profile?.companyNum ? (
                       <UserInfoText>
-                        <span>
-                          {`${profile?.nationalCode || ''} ${
-                            profile?.companyNum
-                          }`}
-                        </span>
+                        <span>{getCompanyNumber(profile)}</span>
                       </UserInfoText>
                     ) : (
                       <UserInfoText>-</UserInfoText>
@@ -502,11 +504,7 @@ const Profile = observer(
                     />
                   ) : (
                     <UserInfoText>
-                      <span>
-                        {profile?.phone
-                          ? `${profile?.nationalCode || ''} ${profile?.phone}`
-                          : `-`}
-                      </span>
+                      <span>{getMobileNumber(profile)}</span>
                     </UserInfoText>
                   )}
                 </UserInfoItem>

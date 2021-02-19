@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import { Input, useCoreStores } from 'teespace-core';
+import { getMobileNumber } from '../../utils/ProfileUtil';
 import {
   InnerItem,
   Name,
@@ -25,11 +26,7 @@ const SettingDialogPhone = props => {
               onChange={e => onInputChange(e.target.value)}
             />
           ) : (
-            <p>
-              {authStore.user.phone
-                ? `${authStore.user.nationalCode || ''} ${authStore.user.phone}`
-                : '-'}
-            </p>
+            <p>{getMobileNumber(authStore.user)}</p>
           )}
         </TextArea>
         <ButtonArea>
