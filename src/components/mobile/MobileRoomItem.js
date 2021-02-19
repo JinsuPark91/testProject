@@ -30,6 +30,10 @@ const Name = styled.p`
   font-size: 0.81rem;
   line-height: 1.19rem;
   color: #000;
+  width: 15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 const LastDate = styled.p`
   font-size: 0.69rem;
@@ -47,6 +51,10 @@ const LastMessage = styled.p`
   font-size: 0.69rem;
   line-height: 1.06rem;
   color: #9a9a9a;
+  width: 15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 const MessageCount = styled.div`
   display: flex;
