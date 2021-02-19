@@ -373,24 +373,6 @@ const InputWrapper = styled.div`
   margin-right: 0.56rem;
 `;
 
-const StyledInfoTitle = styled.p`
-  margin-bottom: 0.94rem;
-  font-size: 0.94rem;
-  color: #523dc7;
-  letter-spacing: 0;
-  text-align: center;
-  line-height: 1.38rem;
-`;
-
-const StyledSubInfo = styled.p`
-  margin-bottom: 1.25rem;
-  font-size: 0.75rem;
-  color: #6c56e5;
-  letter-spacing: 0;
-  text-align: center;
-  line-height: 1.06rem;
-`;
-
 const AddRoomIconWrapper = styled.div`
   display: flex;
   cursor: pointer;
