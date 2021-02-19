@@ -67,10 +67,10 @@ const Profile = observer(
     const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(undefined);
     const [localProfilePhoto, setLocalProfilePhoto] = useState(undefined);
 
-    // get profile from store
-    const profile = userStore.userProfiles[userId];
-
     const isMyId = () => userId === userStore.myProfile.id;
+    const profile = isMyId()
+      ? userStore.myProfile
+      : userStore.userProfiles[userId];
     const getBackPhoto = () => {
       return userStore.getBackgroundPhotoURL(userId);
     };
@@ -117,8 +117,10 @@ const Profile = observer(
     const isValidInputData = () => !!name;
 
     useEffect(() => {
-      setLocalProfilePhoto(undefined);
-      setLocalBackgroundPhoto(undefined);
+      if (isEditMode) {
+        setLocalProfilePhoto(undefined);
+        setLocalBackgroundPhoto(undefined);
+      }
       setEditMode(editOnlyMode);
       (async () => {
         const userProfile = userStore.userProfiles[userId];
