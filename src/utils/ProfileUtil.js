@@ -49,3 +49,61 @@ export const toBlob = async file => {
   const result = await fetch(file).then(r => r.blob());
   return result;
 };
+
+// 휴대폰 번호 얻기
+export const getMobileNumber = (profile, isMobile = true) => {
+  const nCode = profile?.nationalCode || '';
+  let number = isMobile ? profile?.phone : profile?.companyNum;
+  if (!number) return '-';
+
+  // 010 - 1234 - 5678
+  let firstNum = ''; // 010
+  let secondNum = ''; // 1234
+  let thirdNum = ''; // 5678
+
+  if (number.length <= 10) {
+    firstNum = nCode ? number.substring(1, 3) : number.substring(0, 3);
+    secondNum = number.substring(3, 6) ? `-${number.substring(3, 6)}` : '';
+    thirdNum = number.substring(6) ? `-${number.substring(6)}` : '';
+  } else if (number.length === 11) {
+    firstNum = nCode ? number.substring(1, 3) : number.substring(0, 3);
+    secondNum = `-${number.substring(3, 7)}`;
+    thirdNum = `-${number.substring(7)}`;
+  } else if (number.length >= 12 && nCode) {
+    number = number.substring(1);
+  }
+
+  if (firstNum) number = firstNum + secondNum + thirdNum;
+  return `${nCode} ${number}`;
+};
+
+// 회사 번호 얻기
+export const getCompanyNumber = profile => {
+  const nCode = profile?.nationalCode || '';
+  let number = profile?.companyNum;
+  if (!number) return '-';
+
+  let firstNum = '';
+  let secondNum = '';
+  let thirdNum = '';
+
+  if (number.substring(0, 2) === '02') {
+    if (number.length <= 9) {
+      firstNum = nCode ? '2' : '02';
+      secondNum = number.substring(2, 5) ? `-${number.substring(2, 5)}` : '';
+      thirdNum = number.substring(5) ? `-${number.substring(5)}` : '';
+    } else if (number.length === 10) {
+      firstNum = nCode ? '2' : '02';
+      secondNum = `-${number.substring(2, 6)}`;
+      thirdNum = `-${number.substring(6)}`;
+    } else if (number.length >= 11 && nCode) {
+      number = number.substring(1);
+    }
+
+    if (firstNum) number = firstNum + secondNum + thirdNum;
+    return `${nCode} ${number}`;
+  }
+
+  // 지역번호가 02가 아니면 모바일 번호 양식이랑 기획이 같음
+  return getMobileNumber(profile, false);
+};
