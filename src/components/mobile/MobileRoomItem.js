@@ -109,7 +109,7 @@ const MobileRoomItem = ({ roomInfo }) => {
         </Header>
         <Bottom>
           <LastMessage>{roomInfo.metadata?.lastMessage}</LastMessage>
-          {roomInfo.metadata?.count && (
+          {roomInfo.metadata?.count > 0 && (
             <MessageCount>
               {roomInfo.metadata?.count > 99 ? '99+' : roomInfo.metadata?.count}
             </MessageCount>
