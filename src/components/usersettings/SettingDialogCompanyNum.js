@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import { Input, useCoreStores } from 'teespace-core';
+import { getCompanyNumber } from '../../utils/ProfileUtil';
 import {
   InnerItem,
   Name,
@@ -31,13 +32,7 @@ const SettingDialogCompanyNum = props => {
               onChange={e => onInputChange(e.target.value)}
             />
           ) : (
-            <p>
-              {authStore.user.companyNum
-                ? `${authStore.user.nationalCode || ''} ${
-                    authStore.user.companyNum
-                  }`
-                : '-'}
-            </p>
+            <p>{getCompanyNumber(authStore.user)}</p>
           )}
         </TextArea>
         <ButtonArea>
