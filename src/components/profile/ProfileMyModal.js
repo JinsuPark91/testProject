@@ -142,11 +142,13 @@ const ProfileMyModal = ({
   }, []);
 
   const handleInviteDialog = useCallback(() => {
+    setMoreMenuDropDownVisible(false);
     setIsInviteDialogOpen(true);
     logEvent('threedot', 'clickInviteMemberBtn');
   }, []);
 
   const handleMemberList = useCallback(async () => {
+    setMoreMenuDropDownVisible(false);
     try {
       await handleFriendsDialogType(
         orgStore,
@@ -178,10 +180,12 @@ const ProfileMyModal = ({
   }, [orgStore, userStore, authStore]);
 
   const handleSpaceEditDialog = useCallback(() => {
+    setMoreMenuDropDownVisible(false);
     setIsSpaceEditDialogVisible(true);
   }, []);
 
   const handleAdminPage = useCallback(() => {
+    setMoreMenuDropDownVisible(false);
     window.open(`${window.location.origin}/admin`);
   }, []);
 
