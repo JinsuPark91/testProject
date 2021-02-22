@@ -69,8 +69,10 @@ const FriendsLNBContent = React.forwardRef(
               key={friendInfo.friendId}
               mode="friend"
               onClick={onClick}
-              isActive={PlatformUIStore.resourceId === friendInfo.friendId}
-              // isActive={activeFriendId === friendInfo.friendId}
+              isActive={
+                PlatformUIStore.resourceType === 'f' &&
+                activeFriendId === friendInfo.friendId
+              }
               openToast={handleOpenToast}
               setToastText={handleSetText}
               setSelectedId={targetId => setSelectedId(targetId)}
@@ -141,8 +143,10 @@ const FriendsLNBContent = React.forwardRef(
               tooltipPopupContainer={meTooltipPopupContainer}
               friendInfo={userStore.myProfile}
               onClick={handleFriendActive}
-              // isActive={friendActiveId === userStore.myProfile.id}
-              isActive={PlatformUIStore.resourceId === userStore.myProfile.id}
+              isActive={
+                PlatformUIStore.resourceType === 'f' &&
+                friendActiveId === userStore.myProfile.id
+              }
               setSelectedId={targetId => setSelectedId(targetId)}
               toggleInfoModal={() => setInfoModalVisible(!infoModalVisible)}
               setyPosition={yCoord => setyPosition(yCoord)}
