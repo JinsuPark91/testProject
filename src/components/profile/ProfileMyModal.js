@@ -28,8 +28,6 @@ import SpaceEditModal from './SpaceEditModal';
 import MovePage from '../../utils/MovePage';
 import { SELECTED_TAB } from '../usersettings/SettingConstants';
 import { getMainWaplURL } from '../../utils/UrlUtil';
-
-import keycloak from '../../libs/keycloak';
 import { handleFriendsDialogType } from '../../utils/FriendsUtil';
 
 const ProfileMyModal = ({
@@ -39,13 +37,7 @@ const ProfileMyModal = ({
   visible = false,
   created = false,
 }) => {
-  const {
-    userStore,
-    waplUserStore,
-    authStore,
-    spaceStore,
-    orgStore,
-  } = useCoreStores();
+  const { userStore, authStore, spaceStore, orgStore } = useCoreStores();
   const history = useHistory();
   const [isCreated, setIsCreated] = useState(created);
   const [profile, setProfile] = useState(null);
@@ -75,7 +67,6 @@ const ProfileMyModal = ({
     setIsNewSpaceErrorMessageVisible,
   ] = useState(false);
 
-  const { keycloak } = useKeycloak();
   const isAdmin = userStore.myProfile.grade === 'admin';
 
   // 1월 업데이트
@@ -168,16 +159,13 @@ const ProfileMyModal = ({
 
   const handleAddFriend = useCallback(async () => {
     await handleFriendsDialogType(
-      orgStore,
-      userStore.myProfile,
-      authStore.sessionInfo.domainKey,
       () => setIsOrgExist(true),
       res => setSpaceMemberList(res),
     );
     setIsViewMode(false);
     setModalTitle('프렌즈 추가');
     setIsFriendMemViewOpen(true);
-  }, [orgStore, userStore, authStore]);
+  }, []);
 
   const handleSpaceEditDialog = useCallback(() => {
     setMoreMenuDropDownVisible(false);
