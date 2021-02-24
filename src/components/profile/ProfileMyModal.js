@@ -13,6 +13,7 @@ import { useHistory } from 'react-router-dom';
 import { useObserver } from 'mobx-react';
 // import { useTranslation } from 'react-i18next';
 import { useKeycloak } from '@react-keycloak/web';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 import SettingDialog from '../usersettings/SettingDialog';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import convertSpaceIcon from '../../assets/convert space.svg';
@@ -51,6 +52,7 @@ const ProfileMyModal = ({
   const [itemKey, setItemKey] = useState(SELECTED_TAB.GENERAL);
   const [settingDialogVisible, setSettingDialogVisible] = useState(false);
   const [spaceListVisible, setSpaceListVisible] = useState(false);
+  const [moreMenuDropDownVisible, setMoreMenuDropDownVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
@@ -102,6 +104,10 @@ const ProfileMyModal = ({
     setIsCreated(false);
   }, []);
 
+  const handleMoreMenuDropDownVisible = () => {
+    setMoreMenuDropDownVisible(!moreMenuDropDownVisible);
+  };
+
   const handleLogout = async () => {
     // Close dialog first
     if (onCancel) onCancel();
@@ -127,7 +133,8 @@ const ProfileMyModal = ({
 
   const handleCancel = useCallback(() => {
     setSpaceListVisible(false);
-    onCancel();
+    setMoreMenuDropDownVisible(false);
+    setTimeout(() => onCancel(), 1);
   }, [onCancel]);
 
   const handleCancelInviteMail = useCallback(() => {
@@ -135,11 +142,13 @@ const ProfileMyModal = ({
   }, []);
 
   const handleInviteDialog = useCallback(() => {
+    setMoreMenuDropDownVisible(false);
     setIsInviteDialogOpen(true);
     logEvent('threedot', 'clickInviteMemberBtn');
   }, []);
 
   const handleMemberList = useCallback(async () => {
+    setMoreMenuDropDownVisible(false);
     try {
       await handleFriendsDialogType(
         orgStore,
@@ -171,10 +180,12 @@ const ProfileMyModal = ({
   }, [orgStore, userStore, authStore]);
 
   const handleSpaceEditDialog = useCallback(() => {
+    setMoreMenuDropDownVisible(false);
     setIsSpaceEditDialogVisible(true);
   }, []);
 
   const handleAdminPage = useCallback(() => {
+    setMoreMenuDropDownVisible(false);
     window.open(`${window.location.origin}/admin`);
   }, []);
 
@@ -262,6 +273,15 @@ const ProfileMyModal = ({
       visible={isEditMode}
       onClose={toggleEditMode}
       profilePhoto={thumbPhoto}
+      onClickMeeting={roomId => {
+        PlatformUIStore.openWindow({
+          id: roomId,
+          type: 'meeting',
+          name: null,
+          userCount: null,
+          handler: null,
+        });
+      }}
       editMode
     />
   );

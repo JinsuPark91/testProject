@@ -30,6 +30,7 @@ import SignUpFormPage from './page/SignUpFormPage';
 import SignUpCompletePage from './page/SignUpCompletePage';
 import DriveSharedFilePage from './page/DriveSharedFilePage';
 import OfficeFilePage from './page/OffiveFilePage';
+import NewWindowPage from './page/NewWindowPage';
 import LogoutPage from './page/LogoutPage';
 import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
@@ -37,11 +38,8 @@ import PrivateRoute from './libs/PrivateRoute';
 import KeycloakRedirectRoute from './libs/KeycloakRedirectRoute';
 import keycloak from './libs/keycloak';
 import { getCookieValue } from './utils/CookieUtil';
-
-// MiniTalk 임시.
 import { getQueryParams } from './utils/UrlUtil';
-import NewWindowPage from './page/NewWindowPage';
-// MiniTalk 임시.
+import initMonitoringLog from './libs/monitoringLog';
 
 // import i18next from './i18n';
 
@@ -116,6 +114,10 @@ function App() {
     });
   }, [history]);
 
+  useEffect(() => {
+    initMonitoringLog();
+  }, []);
+
   if (!isHydrating) return <></>;
   return (
     <DndProvider backend={HTML5Backend}>
@@ -168,6 +170,7 @@ function App() {
                   <PrivateRoute
                     path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
                     component={isMini ? NewWindowPage : MainPage}
+                    // component={MainPage}
                   />
                   <PrivateRoute path="/admin" component={AdminPage} />
                   <Route component={NotFoundPage} />

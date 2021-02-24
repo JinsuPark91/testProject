@@ -3,6 +3,7 @@ import { useObserver } from 'mobx-react';
 import { useCoreStores, Toast, ProfileInfoModal } from 'teespace-core';
 import { FixedSizeList as List } from 'react-window';
 import styled, { css } from 'styled-components';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 import mySign from '../../assets/wapl_me.svg';
 import AddFriendImg from '../../assets/add_friends.svg';
 
@@ -239,6 +240,15 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
         <ProfileInfoModal
           userId={profileId}
           visible={isProfileModalVisible}
+          onClickMeeting={_roomId => {
+            PlatformUIStore.openWindow({
+              id: _roomId,
+              type: 'meeting',
+              name: null,
+              userCount: null,
+              handler: null,
+            });
+          }}
           onClose={() => setIsProfileModalVisible(false)}
           position={{ left: '17rem' }}
         />

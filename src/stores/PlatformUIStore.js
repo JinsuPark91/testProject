@@ -54,41 +54,62 @@ const PlatformUIStore = observable({
   },
 
   // windows 관련
-  windowMap: new Map(),
+  talkWindowMap: new Map(),
+  meetingWindowMap: new Map(),
+
+  _getMap(type) {
+    switch (type) {
+      case 'talk':
+        return this.talkWindowMap;
+      case 'meeting':
+        return this.meetingWindowMap;
+      default:
+        return null;
+    }
+  },
 
   getWindows(type) {
-    const windowArr = values(this.windowMap);
-    if (type) {
-      return windowArr.filter(windowInfo => windowInfo.type === type);
+    const targetMap = this._getMap(type);
+    if (targetMap) return values(targetMap);
+    return null;
+  },
+
+  getWindow(type, windowId) {
+    const targetMap = this._getMap(type);
+    if (targetMap) return targetMap.get(windowId);
+    return null;
+  },
+
+  openWindow(windowInfo, enableFocus = true) {
+    const { id: windowId, type } = windowInfo;
+    const targetMap = this._getMap(type);
+    const targetWindow = targetMap.get(windowId);
+
+    if (enableFocus && targetWindow) {
+      this.focusWindow(type, windowId);
+    } else {
+      targetMap.set(windowId, windowInfo);
     }
-    return windowArr;
   },
 
-  getWindow(windowId) {
-    return this.windowMap.get(windowId);
-  },
-
-  openWindow(windowInfo) {
-    const { id: windowId } = windowInfo;
-    this.windowMap.set(windowId, windowInfo);
-  },
-
-  focusWindow(windowId) {
-    const handler = this.getWindow(windowId)?.handler;
+  focusWindow(type, windowId) {
+    const handler = this.getWindow(type, windowId)?.handler;
 
     if (handler && !handler.closed) {
       handler.focus();
     }
   },
 
-  closeWindow(windowId) {
-    this.windowMap.delete(windowId);
+  closeWindow(type, windowId) {
+    const targetMap = this._getMap(type);
+    if (targetMap) targetMap.delete(windowId);
   },
 
   closeAllWindow(type) {
     this.getWindows(type).forEach(window => {
       const { id: windowId } = window;
-      this.windowMap.delete(windowId);
+      const targetMap = this._getMap(type);
+      if (targetMap) targetMap.delete(windowId);
     });
   },
 });
