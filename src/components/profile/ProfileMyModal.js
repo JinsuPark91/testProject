@@ -663,7 +663,6 @@ const Info = styled.p`
   margin: 0 0.625rem;
   font-size: 0.6875rem;
   color: #777;
-  line-height: 0.8125rem;
   white-space: nowrap;
   text-overflow: ellipsis;
 `;
