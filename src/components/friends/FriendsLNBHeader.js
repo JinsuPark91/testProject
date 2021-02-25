@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useObserver } from 'mobx-react';
 import { useCoreStores, logEvent, WaplSearch } from 'teespace-core';
 import { Tooltip } from 'antd';
+import { useTranslation } from 'react-i18next';
 import AddFriendsBySearch from './AddFriendsBySearch';
 import { handleFriendsDialogType } from '../../utils/FriendsUtil';
 import FriendAddIcon from '../../assets/add_friends.svg';
@@ -63,6 +64,7 @@ const FriendAddButton = styled.div`
 `;
 
 function FriendsLNBHeader({ handleInputChange, handleInputClear }) {
+  const { t } = useTranslation();
   const { orgStore, userStore, spaceStore, authStore } = useCoreStores();
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isOrgExist, setIsOrgExist] = useState(false);
@@ -97,10 +99,14 @@ function FriendsLNBHeader({ handleInputChange, handleInputClear }) {
         clearIconColor={{ active: '#17202B', default: '#C6CED6' }}
         onChange={handleInputChange}
         onClear={handleInputClear}
-        placeholder="프렌즈 검색"
+        placeholder={t('WEB_COMMON_B2C_LNB_EMPTY_PAGE_06')}
         isCountExist={false}
       />
-      <Tooltip title="프렌즈 추가" placement="bottomLeft" color="#232D3B">
+      <Tooltip
+        title={t('WEB_COMMON_B2C_LNB_EMPTY_PAGE_02')}
+        placement="bottomLeft"
+        color="#232D3B"
+      >
         <FriendAddButton onClick={handleOpenAddFriendsDialog}>
           <img alt="friend" src={FriendAddIcon} />
         </FriendAddButton>
@@ -109,7 +115,7 @@ function FriendsLNBHeader({ handleInputChange, handleInputClear }) {
         visible={isDialogVisible}
         onCancelAddFriends={handleCloseAddFriendsDialog}
         isOrgExist={isOrgExist}
-        title="프렌즈 추가"
+        title={t('WEB_COMMON_B2C_LNB_EMPTY_PAGE_02')}
         isViewMode={false}
         spaceInfo={spaceStore.currentSpace}
         spaceMemberList={spaceMemberList}
