@@ -1,24 +1,20 @@
-// default로 public/loacles/{{lng}}/translation.json 을 load합니다.
-import i18next from 'i18next';
+import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import Backend from 'i18next-http-backend';
+import ko from './locales/ko.json';
+import en from './locales/en.json';
 
-i18next
-  .use(Backend)
-  .use(initReactI18next)
-  .init({
-    initImmediate: false,
-    debug: true, // 배포시 false로 변경 필요
+const resources = {
+  ko: { translation: ko },
+  en: { translation: en },
+};
+
+const initI18n = () => {
+  return i18n.use(initReactI18next).init({
+    resources,
     lng: 'ko',
-    fallbackLng: 'ko',
-    interpolation: {
-      escapeValue: false,
-    },
-    react: {
-      useSuspense: true,
-    },
-    backend: {
-      loadPath: 'locales/{{lng}}/{{ns}}.json', // 로드 할 경로를 변경할 수 있습니다.
-    },
+    keySeparator: false,
+    interpolation: { escapeValue: false },
   });
-export default i18next;
+};
+
+export { initI18n };

@@ -15,12 +15,11 @@ import { initApp as initTalkApp } from 'teespace-talk-app';
 import { initApp as initDriveApp } from 'teespace-drive-app';
 import { initApp as initNoteApp } from 'teespace-note-app';
 import { initApp as initMeetingApp } from 'teespace-meeting-app';
-import { initApp as initMailApp, WindowMail } from 'teespace-mail-app';
+import { initApp as initMailApp } from 'teespace-mail-app';
 import {
   initApp as initCalendarApp,
   initializeApp as initializeCalendarApp,
 } from 'teespace-calendar-app';
-// import { I18nextProvider } from 'react-i18next';
 import { ReactKeycloakProvider } from '@react-keycloak/web';
 import Cookies from 'js-cookie';
 import AdminPage from './page/AdminPage';
@@ -37,25 +36,20 @@ import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
 import PrivateRoute from './libs/PrivateRoute';
 import KeycloakRedirectRoute from './libs/KeycloakRedirectRoute';
 import keycloak from './libs/keycloak';
-import { getCookieValue } from './utils/CookieUtil';
 import { getQueryParams } from './utils/UrlUtil';
 import initMonitoringLog from './libs/monitoringLog';
-
-// import i18next from './i18n';
+import { initI18n } from './i18n';
 
 const hydrate = create();
 
 function App() {
   const [isHydrating, setIsHydrating] = useState(false);
-  const { authStore, userStore } = useCoreStores();
+  const { userStore } = useCoreStores();
   const history = useHistory();
   const url = window.location.origin; //  http://xxx.dev.teespace.net
-  const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
-  const subURL = url.split(`//`)[1].split(`.`)[0]; //  xxx
-  const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
   const isLocal = process.env.REACT_APP_ENV === 'local';
 
-  const eventLogger = (event, error) => {
+  const eventLogger = event => {
     switch (event) {
       case 'onAuthSuccess':
       case 'onAuthRefreshSuccess': {
@@ -98,7 +92,7 @@ function App() {
 
   // hydrate mobx stores
   useEffect(() => {
-    Promise.all([hydrate('user', userStore)])
+    Promise.all([hydrate('user', userStore), initI18n()])
       .then(() => {
         userStore.initHydratedMyProfile({});
         setIsHydrating(true);
@@ -139,7 +133,6 @@ function App() {
             }}
           >
             <PortalProvider>
-              {/* <I18nextProvider i18n={i18next}> */}
               <BrowserRouter>
                 <Switch>
                   <Route exact path="/logout" component={LogoutPage} />
@@ -170,17 +163,11 @@ function App() {
                   <PrivateRoute
                     path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
                     component={isMini ? NewWindowPage : MainPage}
-                    // component={MainPage}
                   />
                   <PrivateRoute path="/admin" component={AdminPage} />
                   <Route component={NotFoundPage} />
                 </Switch>
-                {/* <PrivateRoute
-            path="/users"
-            component={MainPage}
-          /> */}
               </BrowserRouter>
-              {/* </I18nextProvider> */}
             </PortalProvider>
           </ReactKeycloakProvider>
         </Route>
