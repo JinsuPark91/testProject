@@ -302,11 +302,9 @@ const ProfileMyModal = ({
             </Button>
           </Tooltip>
           <Dropdown
-            visible={moreMenuDropDownVisible}
             trigger={['click']}
             overlay={moreMenu}
             placement="bottomRight"
-            onVisibleChange={handleMoreMenuDropDownVisible}
           >
             <Button className="btn-more">
               <Blind>설정</Blind>
