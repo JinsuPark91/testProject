@@ -302,14 +302,6 @@ const ProfileMyModal = ({
           </Dropdown>
         </DataBox>
       </UserSpaceArea>
-      <UserSubArea>
-        <SubInfo tabIndex="-1" onClick={handleMoveSpacePage}>
-          <LinkIcon>
-            <SquareSpaceIcon />
-          </LinkIcon>
-          스페이스 목록으로 이동
-        </SubInfo>
-      </UserSubArea>
       {/* 1월 업데이트 */}
       {/* <UserSubArea>
         <SubInfo tabIndex="-1" onClick={handleToggleLngList}>
@@ -365,14 +357,20 @@ const ProfileMyModal = ({
                     <ItemText>{elem?.name}</ItemText>
                   </ConvertItem>
                 ))}
+              <ConvertItem onClick={() => handleClickNewSpace()}>
+                <AddBox>+</AddBox>
+                <ItemText addSpace>새 스페이스 생성</ItemText>
+              </ConvertItem>
             </ConvertList>
           )}
           {
-            <ConvertAdd onClick={() => handleClickNewSpace()}>
+            <ConvertMove onClick={() => handleMoveSpacePage()}>
               <AddButton href="#">
-                <span>+</span> 새 스페이스 생성
+                <LinkIcon>
+                  <SquareSpaceIcon /> 스페이스 목록으로 이동
+                </LinkIcon>
               </AddButton>
-            </ConvertAdd>
+            </ConvertMove>
           }
         </ConvertDropdown>
       )}
@@ -709,12 +707,12 @@ const SubInfo = styled.p`
   }
 `;
 const LinkIcon = styled.span`
-  margin-right: 0.625rem;
   line-height: 0;
-  color: #75757f;
+  color: #205855;
   svg {
-    width: 1.25rem;
-    height: 1.25rem;
+    margin-right: 0.4rem;
+    width: 1rem;
+    height: 1rem;
   }
 `;
 // eslint-disable-next-line no-unused-vars
@@ -806,6 +804,17 @@ const LogoSmall = styled(Logo)`
       border: 1px solid #0a1e3a;
     `}
 `;
+const AddBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #49423a;
+  height: 1.88rem;
+  width: 1.88rem;
+  background-color: #faf8f7;
+  border-radius: 0.25rem;
+  margin-right: 0.375rem;
+`;
 const NowInfo = styled(Info)`
   margin: 0 0.375rem;
   font-size: 0.625rem;
@@ -829,20 +838,25 @@ const ConvertItem = styled.li`
   .ant-avatar {
     margin-right: 0.375rem;
   }
+  &:hover {
+    background-color: #faf8f7;
+  }
 `;
 const ItemText = styled.p`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 0.75rem;
+  color: ${props => (props.addSpace ? '#666666' : '#000000')};
 `;
-const ConvertAdd = styled.div`
-  margin: 0 0.6875rem;
+const ConvertMove = styled.div`
+  cursor: pointer;
   padding: 0.5rem 0;
   border-top: 1px solid #eeedeb;
 `;
 const AddButton = styled.a`
   display: inline-block;
+  margin-left: 1.13rem;
   font-size: 0.75rem;
   font-weight: bold;
   line-height: 1.25rem;
