@@ -1,13 +1,14 @@
 // 프로필에서 1:1 Talk, 1:1 Meeting, Mini Talk Open 할 때
+import { RoomStore } from 'teespace-core';
+
 export const handleProfileMenuClick = async (
-  roomStore,
   myUserId,
   targetUserId,
   visibleRoomFunction,
   hiddenRoomFunction,
   noRoomFunction,
 ) => {
-  const { roomInfo } = roomStore.getDMRoom(myUserId, targetUserId);
+  const { roomInfo } = RoomStore.getDMRoom(myUserId, targetUserId);
   // 이미 룸리스트에 있는 경우
   try {
     if (roomInfo && roomInfo.isVisible) {
@@ -16,7 +17,7 @@ export const handleProfileMenuClick = async (
     }
     // 방은 있지만 룸리스트에 없는 경우 (나간경우)
     if (roomInfo && !roomInfo.isVisible) {
-      await roomStore.updateRoomMemberSetting({
+      await RoomStore.updateRoomMemberSetting({
         roomId: roomInfo.id,
         myUserId,
         newIsVisible: true,
@@ -25,11 +26,11 @@ export const handleProfileMenuClick = async (
       return;
     }
     // 아예 방이 없는 경우 (한번도 대화한적이 없음)
-    await roomStore.createRoom({
+    await RoomStore.createRoom({
       creatorId: myUserId,
       userList: [{ userId: targetUserId }],
     });
-    const newRoomInfo = roomStore.getDMRoom(myUserId, targetUserId)?.roomInfo;
+    const newRoomInfo = RoomStore.getDMRoom(myUserId, targetUserId)?.roomInfo;
     noRoomFunction(newRoomInfo);
   } catch (e) {
     console.error(`Error is${e}`);

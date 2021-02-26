@@ -106,12 +106,11 @@ const OpenMiniTalk = roomInfo => {
 };
 
 const MeAction = React.memo(({ mode, itemId }) => {
-  const { userStore, roomStore } = useCoreStores();
+  const { userStore } = useCoreStores();
   const handleExport = async e => {
     e.stopPropagation();
     const myUserId = userStore.myProfile.id;
     handleProfileMenuClick(
-      roomStore,
       myUserId,
       itemId,
       roomInfo => OpenMiniTalk(roomInfo),

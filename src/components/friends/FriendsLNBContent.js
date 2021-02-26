@@ -43,12 +43,6 @@ const FriendsLNBContent = React.forwardRef(
       setToastText(text);
     };
 
-    const filteredFriendList = friendStore.friendInfoList.filter(friendInfo =>
-      friendInfo.displayName
-        .toLowerCase()
-        .includes(searchKeyword.toLowerCase()),
-    );
-
     const handleFavFriendActive = friendId => {
       setFavFriendActiveId(friendId);
       setFriendActiveId('');
@@ -57,6 +51,12 @@ const FriendsLNBContent = React.forwardRef(
       setFavFriendActiveId('');
       setFriendActiveId(friendId);
     };
+
+    const filteredFriendList = friendStore.friendInfoList.filter(friendInfo =>
+      friendInfo.displayName
+        .toLowerCase()
+        .includes(searchKeyword.toLowerCase()),
+    );
 
     const FriendList = ({ friendList, onClick, activeFriendId }) => {
       return (
