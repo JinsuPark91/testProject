@@ -294,9 +294,11 @@ const ProfileMyModal = ({
             overlay={moreMenu}
             placement="bottomRight"
           >
-            <Button className="btn-more">
-              <Blind>설정</Blind>
-            </Button>
+            <Tooltip placement="topLeft" color="#232D3B" title="더 보기">
+              <Button className="btn-more">
+                <Blind>설정</Blind>
+              </Button>
+            </Tooltip>
           </Dropdown>
         </DataBox>
       </UserSpaceArea>
