@@ -109,7 +109,7 @@ const apps = [
 
 const AppIcon = React.memo(
   ({
-    subApp,
+    isActive,
     appName,
     onClick,
     defaultIcon,
@@ -126,7 +126,7 @@ const AppIcon = React.memo(
     if (disabled) {
       icon = disabledIcon;
     } else {
-      icon = subApp === appName ? activeIcon : defaultIcon;
+      icon = isActive ? activeIcon : defaultIcon;
     }
 
     return (
@@ -217,18 +217,13 @@ const Header = observer(() => {
   const handleExport = () => {
     const roomInfo = findRoom();
 
-    const isOpened = PlatformUIStore.getWindow(roomInfo.id);
-    if (!isOpened) {
-      PlatformUIStore.openWindow({
-        id: roomInfo.id,
-        type: 'talk',
-        name: roomInfo.name,
-        userCount: roomInfo.userCount,
-        handler: null,
-      });
-    } else {
-      PlatformUIStore.focusWindow(roomInfo.id);
-    }
+    PlatformUIStore.openWindow({
+      id: roomInfo.id,
+      type: 'talk',
+      name: roomInfo.name,
+      userCount: roomInfo.userCount,
+      handler: null,
+    });
   };
 
   const handleSearch = () => {
@@ -271,34 +266,26 @@ const Header = observer(() => {
     PlatformUIStore.openWindow({
       id: roomInfo.id,
       type: 'meeting',
-      name: roomInfo.name,
-      userCount: roomInfo.userCount,
+      name: null,
+      userCount: null,
       handler: null,
     });
-    // const isOpened = PlatformUIStore.getWindow(roomInfo.id);
-    // if (!isOpened) {
-    //   PlatformUIStore.openWindow({
-    //     id: roomInfo.id,
-    //     type: 'meeting',
-    //     name: roomInfo.name,
-    //     userCount: roomInfo.userCount,
-    //     handler: null,
-    //   });
-    // } else {
-    //   PlatformUIStore.focusWindow(roomInfo.id);
-    // }
   };
 
   const handleAppClick = async appName => {
-    if (PlatformUIStore.subApp !== appName) {
-      if (appName === 'meeting') {
+    if (appName === 'meeting') {
+      const { id } = findRoom();
+      const meetingWindow = PlatformUIStore.getWindow('meeting', id);
+      if (meetingWindow) {
+        PlatformUIStore.focusWindow('meeting', id);
+      } else {
         const meetingAppConfirm = (
           <MeetingApp.ConfirmLaunchApp
             onConfirm={() => {
               setAppConfirm(null);
-              // openMeeting();
+              openMeeting();
 
-              openSubApp(appName);
+              // openSubApp(appName);
             }}
             onCancel={() => {
               setAppConfirm(null);
@@ -306,9 +293,9 @@ const Header = observer(() => {
           />
         );
         setAppConfirm(meetingAppConfirm);
-      } else {
-        openSubApp(appName);
       }
+    } else if (PlatformUIStore.subApp !== appName) {
+      openSubApp(appName);
     } else {
       closeSubApp();
     }
@@ -368,6 +355,15 @@ const Header = observer(() => {
       <ProfileInfoModal
         userId={userStore.myProfile.id}
         visible={isRoomProfileVisible}
+        onClickMeeting={_roomId => {
+          PlatformUIStore.openWindow({
+            id: _roomId,
+            type: 'meeting',
+            name: null,
+            userCount: null,
+            handler: null,
+          });
+        }}
         onClose={handleCancelRoomMemeberModal}
         position={{ top: '3.5rem', left: '17rem' }}
       />
@@ -382,6 +378,15 @@ const Header = observer(() => {
         userId={dmUserId}
         visible={isRoomProfileVisible}
         onClose={handleCancelRoomMemeberModal}
+        onClickMeeting={_roomId => {
+          PlatformUIStore.openWindow({
+            id: _roomId,
+            type: 'meeting',
+            name: null,
+            userCount: null,
+            handler: null,
+          });
+        }}
         position={{ top: '3.5rem', left: '17rem' }}
       />
     );
@@ -461,7 +466,12 @@ const Header = observer(() => {
               {isSeperated ? <VerticalBar /> : null}
               <AppIcon
                 key={name}
-                subApp={PlatformUIStore.subApp}
+                // isActive={PlatformUIStore.subApp === name}
+                isActive={
+                  name !== 'meeting'
+                    ? PlatformUIStore.subApp === name
+                    : !!PlatformUIStore.getWindow('meeting', findRoom()?.id)
+                }
                 appName={name}
                 onClick={handleAppClick}
                 defaultIcon={icons.default}

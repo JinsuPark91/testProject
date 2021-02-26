@@ -133,8 +133,9 @@ function AddFriendsByInvitationDialog({
 
   const handleCopyInviteLink = async () => {
     try {
-      const response = await friendStore.fetchUserInvitationLink({
+      const response = await friendStore.fetchSpaceInvitationLink({
         myUserId,
+        grade: 'member',
       });
       const el = document.createElement('textarea');
       el.value = response;
@@ -209,7 +210,7 @@ function AddFriendsByInvitationDialog({
         sendChipSet.add(mailAddress);
       }
 
-      friendStore.sendInvitationMail({
+      friendStore.sendSpaceInvitationMail({
         myUserId,
         userEmailList: Array.from(sendChipSet),
         domainName: spaceStore.currentSpace?.name,

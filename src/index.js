@@ -16,6 +16,13 @@ import { setEnv, getEnv } from './env';
 const GlobalStyle = createGlobalStyle`
 `;
 
+if (process.env.NODE_ENV !== 'development') {
+  console.log = () => {};
+  console.error = () => {};
+  console.info = () => {};
+  console.warn = () => {};
+}
+
 const legacyDomainURL = `${window.location.protocol}//${
   process.env.REACT_APP_DEV_SERVICE_DOMAIN || window.location.hostname
 }`;
