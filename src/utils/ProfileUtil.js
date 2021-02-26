@@ -63,15 +63,21 @@ export const getMobileNumber = (profile, isMobile = true) => {
   let thirdNum = ''; // 5678
 
   if (number.length <= 10) {
-    firstNum = nCode ? number.substring(1, 3) : number.substring(0, 3);
+    firstNum =
+      nCode && number.substring(0, 1) === '0'
+        ? number.substring(1, 3)
+        : number.substring(0, 3);
     secondNum = number.substring(3, 6) ? `-${number.substring(3, 6)}` : '';
     thirdNum = number.substring(6) ? `-${number.substring(6)}` : '';
   } else if (number.length === 11) {
-    firstNum = nCode ? number.substring(1, 3) : number.substring(0, 3);
+    firstNum =
+      nCode && number.substring(0, 1) === '0'
+        ? number.substring(1, 3)
+        : number.substring(0, 3);
     secondNum = `-${number.substring(3, 7)}`;
     thirdNum = `-${number.substring(7)}`;
   } else if (number.length >= 12 && nCode) {
-    number = number.substring(1);
+    number = number.substring(0, 1) === '0' ? number.substring(1) : number;
   }
 
   if (firstNum) number = firstNum + secondNum + thirdNum;
