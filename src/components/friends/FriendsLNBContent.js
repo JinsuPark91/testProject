@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import { ProfileInfoModal, useCoreStores, Toast } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import FriendItem from './FriendItem';
 import {
   WelcomeWrapper,
@@ -31,6 +32,7 @@ const FriendsLNBContent = React.forwardRef(
     const [toastText, setToastText] = useState('');
     const [infoModalVisible, setInfoModalVisible] = useState(false);
     const [yPosition, setyPosition] = useState(0);
+    const { t } = useTranslation();
 
     useEffect(() => {
       setFriendActiveId(activeUserId);
@@ -113,7 +115,7 @@ const FriendsLNBContent = React.forwardRef(
           )}
           <FriendListBox>
             <StyleTitle>
-              프렌즈
+              {t('WEB_COMMON_COMMUNICATION_BAR_04')}
               <StyleText>{filteredFriendList.length}</StyleText>
             </StyleTitle>
             <FriendList
