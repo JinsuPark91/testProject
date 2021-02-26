@@ -26,7 +26,7 @@ const hydrate = create();
 const MobileApp = () => {
   const [isHydrating, setIsHydrating] = useState(false);
   const { userStore } = useCoreStores();
-  const isLocal = process.env.REACt_APP_ENV === 'local';
+  const isLocal = process.env.REACT_APP_ENV === 'local';
 
   const eventLogger = (event, error) => {
     switch (event) {
@@ -90,7 +90,7 @@ const MobileApp = () => {
               }}
             >
               <PortalProvider>
-                <BrowserRouter>
+                <BrowserRouter basename="/mobile">
                   <Switch>
                     <Route exact path="/logout" component={LogoutPage} />
                     <KeycloakRedirectRoute
@@ -114,10 +114,10 @@ const MobileApp = () => {
                       component={<SignUpCompletePage />}
                     />
                     <PrivateRoute
-                      path="/:resourceType(room|create|talk)/:resourceId"
+                      path="/:resourceType(room|create|talk)/:resourceId?"
                       component={MobileMainPage}
                     />
-                    <Route component={NotFoundPage} />
+                    <Redirect to="/room" />
                   </Switch>
                 </BrowserRouter>
               </PortalProvider>

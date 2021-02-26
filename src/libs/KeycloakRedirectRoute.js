@@ -75,10 +75,7 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
 
             if (res) {
               if (process.env.REACT_APP_ENV !== 'local') {
-                if (!authStore.sessionInfo.isHyperAuthTermAgree) {
-                  window.location.href = `${window.location.protocol}//${mainURL}/auth-first-login`;
-                  return null;
-                }else if (!authStore.sessionInfo.isTermAgree) {
+                if (!authStore.sessionInfo.isTermAgree) {
                   window.location.href = `${window.location.protocol}//${mainURL}/first-login`;
                   return null;
                 }
@@ -95,19 +92,14 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
                 }
               });
             }
-
-            // TEMP: prototype level에서는 일단 룸 목록으로 이동하자
-            // MobileApp.js Route by resourceId
-            history.push(`/room/${authStore.user.id}`);
-
             // NOTE. 이전 경로가 존재하면 해당 경로로 이동
-            // if (props.location.state?.from) {
-            //   history.push(
-            //     `${props.location.state?.from.pathname}${props.location.state?.from.search}`,
-            //   );
-            // } else {
-            //   history.push(`/f/${authStore.user.id}/profile`);
-            // }
+            if (props.location.state?.from) {
+              history.push(
+                `${props.location.state?.from.pathname}${props.location.state?.from.search}`,
+              );
+            } else {
+              history.push(`/f/${authStore.user.id}/profile`);
+            }
           } catch (e) {
             window.location.href = `${window.location.protocol}//${mainURL}/domain/${domainName}`;
             console.error(e);
