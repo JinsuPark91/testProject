@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import { ProfileInfoModal, useCoreStores, Toast } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,7 @@ import {
   FriendListBox,
   StyleTitle,
   StyleText,
-} from '../../styles/FriendsLNBContentStyle';
+} from '../../styles/friend/FriendsLNBContentStyle';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
 /**
@@ -41,9 +41,17 @@ const FriendsLNBContent = React.forwardRef(
     const handleOpenToast = () => {
       setIsToastVisible(true);
     };
-
     const handleSetText = text => {
       setToastText(text);
+    };
+
+    const handleFavFriendActive = friendId => {
+      setFavFriendActiveId(friendId);
+      setFriendActiveId('');
+    };
+    const handleFriendActive = friendId => {
+      setFavFriendActiveId('');
+      setFriendActiveId(friendId);
     };
 
     const filteredFriendList = friendStore.friendInfoList.filter(friendInfo =>
@@ -51,16 +59,6 @@ const FriendsLNBContent = React.forwardRef(
         .toLowerCase()
         .includes(searchKeyword.toLowerCase()),
     );
-
-    const handleFavFriendActive = useCallback(friendId => {
-      setFavFriendActiveId(friendId);
-      setFriendActiveId('');
-    }, []);
-
-    const handleFriendActive = useCallback(friendId => {
-      setFavFriendActiveId('');
-      setFriendActiveId(friendId);
-    }, []);
 
     const FriendList = ({ friendList, onClick, activeFriendId }) => {
       return (

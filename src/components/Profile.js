@@ -149,7 +149,6 @@ const Profile = observer(
     const handleTalkClick = async () => {
       const myUserId = userStore.myProfile.id;
       handleProfileMenuClick(
-        roomStore,
         myUserId,
         userId,
         async roomInfo => {
@@ -180,7 +179,6 @@ const Profile = observer(
         });
       };
       handleProfileMenuClick(
-        roomStore,
         myUserId,
         userId,
         roomInfo => {
