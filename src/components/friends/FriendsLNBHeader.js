@@ -19,6 +19,7 @@ import {
  */
 
 const FriendsLNBHeader = ({ handleInputChange, handleInputClear }) => {
+  const { t } = useTranslation();
   const { spaceStore } = useCoreStores();
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isOrgExist, setIsOrgExist] = useState(false);
