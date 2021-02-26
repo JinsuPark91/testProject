@@ -1,19 +1,16 @@
+import { OrgStore, UserStore, AuthStore } from 'teespace-core';
 import moment from 'moment';
 
-export const handleFriendsDialogType = async (
-  orgStore,
-  myProfile,
-  domainKey,
-  orgFunction,
-  noOrgFunction,
-) => {
+export const handleFriendsDialogType = async (orgFunction, noOrgFunction) => {
+  const { myProfile } = UserStore;
+  const domainKey = AuthStore.sessionInfo?.domainKey;
   const params = {
     orgType: 'ADM0021',
     publicType: 'ADM0011',
     showRootOrg: true,
   }; // 공개 조직만 조회
   try {
-    const response = await orgStore.getOrgTree(params);
+    const response = await OrgStore.getOrgTree(params);
     if (response && response.length) {
       orgFunction();
     } else {
@@ -21,7 +18,7 @@ export const handleFriendsDialogType = async (
       //  단 이후 페이지네이션을 적용하는 부분은 따로 고려해야 함.
       const useDomainKey =
         process.env.REACT_APP_ENV === 'local' ? domainKey : undefined;
-      const res = await orgStore.getUserOrgUserList(
+      const res = await OrgStore.getUserOrgUserList(
         myProfile?.companyCode,
         myProfile?.departmentCode,
         myProfile?.id,
@@ -30,7 +27,7 @@ export const handleFriendsDialogType = async (
       noOrgFunction(res);
     }
   } catch (e) {
-    console.log('getUserList Error...');
+    console.log('get OrgUserList Error');
   }
 };
 
