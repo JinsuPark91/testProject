@@ -10,6 +10,7 @@ import {
   logEvent,
 } from 'teespace-core';
 import { Tooltip } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { WaplLogo, AddRoomIcon } from '../Icons';
 import RoomItem from './RoomItem';
 import PlatformUIStore from '../../stores/PlatformUIStore';
@@ -19,6 +20,7 @@ import Search from '../common/Search';
 
 function RoomList() {
   const history = useHistory();
+  const { t, i18n } = useTranslation();
   const [keyword, setKeyword] = useState('');
   const [targetRoom, setTargetRoom] = useState(null);
   const [exitTargetRoom, setExitTargetRoom] = useState(null);
@@ -295,7 +297,7 @@ function RoomList() {
       <TopWrapper>
         <InputWrapper>
           <Search
-            placeholder="룸 이름, 구성원 검색"
+            placeholder={t('WEB_COMMON_B2C_LNB_EMPTY_PAGE_01')}
             onChange={handleChange}
             onClear={handleClear}
             searchIconColor={{ active: '#17202B', default: '#C6CED6' }}
@@ -334,7 +336,14 @@ function RoomList() {
         </Observer>
       </RoomContainer>
       <ButtomWrapper>
-        <WaplLogo />
+        <div
+          onClick={() => {
+            if (i18n.language === 'ko') i18n.changeLanguage('en');
+            else i18n.changeLanguage('ko');
+          }}
+        >
+          <WaplLogo />
+        </div>
         <Toast
           visible={isToastVisible}
           timeoutMs={1000}

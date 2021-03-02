@@ -28,8 +28,6 @@ import SpaceEditModal from './SpaceEditModal';
 import MovePage from '../../utils/MovePage';
 import { SELECTED_TAB } from '../usersettings/SettingConstants';
 import { getMainWaplURL } from '../../utils/UrlUtil';
-
-import keycloak from '../../libs/keycloak';
 import { handleFriendsDialogType } from '../../utils/FriendsUtil';
 
 const ProfileMyModal = ({
@@ -39,13 +37,7 @@ const ProfileMyModal = ({
   visible = false,
   created = false,
 }) => {
-  const {
-    userStore,
-    waplUserStore,
-    authStore,
-    spaceStore,
-    orgStore,
-  } = useCoreStores();
+  const { userStore, authStore, spaceStore, orgStore } = useCoreStores();
   const history = useHistory();
   const [isCreated, setIsCreated] = useState(created);
   const [profile, setProfile] = useState(null);
@@ -75,7 +67,6 @@ const ProfileMyModal = ({
     setIsNewSpaceErrorMessageVisible,
   ] = useState(false);
 
-  const { keycloak } = useKeycloak();
   const isAdmin = userStore.myProfile.grade === 'admin';
 
   // 1월 업데이트
@@ -142,11 +133,13 @@ const ProfileMyModal = ({
   }, []);
 
   const handleInviteDialog = useCallback(() => {
+    setMoreMenuDropDownVisible(false);
     setIsInviteDialogOpen(true);
     logEvent('threedot', 'clickInviteMemberBtn');
   }, []);
 
   const handleMemberList = useCallback(async () => {
+    setMoreMenuDropDownVisible(false);
     try {
       await handleFriendsDialogType(
         orgStore,
@@ -166,22 +159,21 @@ const ProfileMyModal = ({
 
   const handleAddFriend = useCallback(async () => {
     await handleFriendsDialogType(
-      orgStore,
-      userStore.myProfile,
-      authStore.sessionInfo.domainKey,
       () => setIsOrgExist(true),
       res => setSpaceMemberList(res),
     );
     setIsViewMode(false);
     setModalTitle('프렌즈 추가');
     setIsFriendMemViewOpen(true);
-  }, [orgStore, userStore, authStore]);
+  }, []);
 
   const handleSpaceEditDialog = useCallback(() => {
+    setMoreMenuDropDownVisible(false);
     setIsSpaceEditDialogVisible(true);
   }, []);
 
   const handleAdminPage = useCallback(() => {
+    setMoreMenuDropDownVisible(false);
     window.open(`${window.location.origin}/admin`);
   }, []);
 
@@ -298,11 +290,9 @@ const ProfileMyModal = ({
             </Button>
           </Tooltip>
           <Dropdown
-            visible={moreMenuDropDownVisible}
             trigger={['click']}
             overlay={moreMenu}
             placement="bottomRight"
-            onVisibleChange={handleMoreMenuDropDownVisible}
           >
             <Tooltip placement="bottomLeft" color="#232D3B" title="더 보기">
               <Button className="btn-more">
@@ -312,14 +302,6 @@ const ProfileMyModal = ({
           </Dropdown>
         </DataBox>
       </UserSpaceArea>
-      <UserSubArea>
-        <SubInfo tabIndex="-1" onClick={handleMoveSpacePage}>
-          <LinkIcon>
-            <SquareSpaceIcon />
-          </LinkIcon>
-          스페이스 목록으로 이동
-        </SubInfo>
-      </UserSubArea>
       {/* 1월 업데이트 */}
       {/* <UserSubArea>
         <SubInfo tabIndex="-1" onClick={handleToggleLngList}>
@@ -817,6 +799,9 @@ const ConvertItem = styled.li`
   cursor: pointer;
   .ant-avatar {
     margin-right: 0.375rem;
+  }
+  &:hover {
+    background-color: #faf8f7;
   }
 `;
 const ItemText = styled.p`

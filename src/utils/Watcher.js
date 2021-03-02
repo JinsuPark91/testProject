@@ -1,4 +1,4 @@
-import PlatformUIStore from './../stores/PlatformUIStore';
+import PlatformUIStore from '../stores/PlatformUIStore';
 
 let intervalId = null;
 const TIME = 1000;
@@ -9,13 +9,13 @@ const check = () => {
 
   // 유효하지 않은 윈도우 검사하여 끄기.
   talkWindows
-    .filter(windowInfo => windowInfo.handler.closed)
+    .filter(windowInfo => windowInfo.handler && windowInfo.handler.closed)
     .forEach(windowInfo =>
       PlatformUIStore.closeWindow(windowInfo.type, windowInfo.id),
     );
 
   meetingWindows
-    .filter(windowInfo => windowInfo.handler.closed)
+    .filter(windowInfo => windowInfo.handler && windowInfo.handler.closed)
     .forEach(windowInfo =>
       PlatformUIStore.closeWindow(windowInfo.type, windowInfo.id),
     );

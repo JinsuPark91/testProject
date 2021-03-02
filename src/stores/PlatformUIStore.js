@@ -102,14 +102,17 @@ const PlatformUIStore = observable({
 
   closeWindow(type, windowId) {
     const targetMap = this._getMap(type);
-    if (targetMap) targetMap.delete(windowId);
+    if (targetMap) {
+      const targetWindow = targetMap.get(windowId);
+      targetWindow.handler?.close();
+      targetMap.delete(windowId);
+    }
   },
 
   closeAllWindow(type) {
     this.getWindows(type).forEach(window => {
       const { id: windowId } = window;
-      const targetMap = this._getMap(type);
-      if (targetMap) targetMap.delete(windowId);
+      this.closeWindow(type, windowId);
     });
   },
 });

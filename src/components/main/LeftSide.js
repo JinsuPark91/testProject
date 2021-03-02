@@ -2,6 +2,7 @@ import React from 'react';
 import { observer, Observer } from 'mobx-react';
 import { useCoreStores, logEvent } from 'teespace-core';
 import { MailSideView } from 'teespace-mail-app';
+import { useTranslation } from 'react-i18next';
 import { ChattingIcon, MailIcon, PeopleIcon } from '../Icons';
 import FriendLnb from '../friends/FriendsLNB';
 import RoomList from '../Rooms/RoomList';
@@ -12,6 +13,7 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 const { TabPane } = CustomTabs;
 
 const LeftSide = observer(() => {
+  const { t } = useTranslation();
   const { roomStore, friendStore } = useCoreStores();
   const newFriendNum = friendStore.friendInfoList?.filter(elem =>
     handleCheckNewFriend(elem),
@@ -42,7 +44,7 @@ const LeftSide = observer(() => {
                 width={1.5}
                 height={1.5}
                 color={PlatformUIStore.tabType === 'f' ? '#232d3b' : '#ffffff'}
-                tooltipText="프렌즈 목록"
+                tooltipText={t('WEB_COMMON_COMMUNICATION_BAR_01')}
               />
             </IconWrapper>
           }
@@ -81,7 +83,7 @@ const LeftSide = observer(() => {
                 width={1.5}
                 height={1.5}
                 color={PlatformUIStore.tabType === 's' ? '#232d3b' : '#ffffff'}
-                tooltipText="룸 목록"
+                tooltipText={t('WEB_COMMON_COMMUNICATION_BAR_02')}
               />
             </IconWrapper>
           }
@@ -98,7 +100,7 @@ const LeftSide = observer(() => {
                 width={1.5}
                 height={1.5}
                 color={PlatformUIStore.tabType === 'm' ? '#232d3b' : '#ffffff'}
-                tooltipText="Mail"
+                tooltipText={t('WEB_COMMON_COMMUNICATION_BAR_03')}
               />
             </IconWrapper>
           }

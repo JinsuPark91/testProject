@@ -41,12 +41,6 @@ const NewWindowPage = () => {
 
   useEffect(() => {
     init();
-
-    // NOTE : 로딩중 닫으면 호출하지 않는다. (redirect 때문에 어렵다.)
-    // NOTE : interval 돌면서 유효하지 않은 window 검사한다.
-    window.addEventListener('beforeunload', () => {
-      window.opener.fromChild(roomId);
-    });
   }, []);
 
   useEffect(() => {
@@ -161,6 +155,8 @@ const Header = ({ roomId, onSearch }) => {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  min-width: 400px;
+  min-height: 600px;
   height: 100%;
 `;
 
