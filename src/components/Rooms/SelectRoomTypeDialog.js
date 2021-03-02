@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Typography, Modal } from 'antd';
 import { useCoreStores, logEvent } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
+import { useTranslation } from 'react-i18next';
 import { PrivateRoomIcon, OpenChatIcon } from '../Icons';
 import CreatePrivateRoomDialog from '../dialogs/CreatePrivateRoomDialog';
 import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
@@ -28,7 +29,8 @@ const SelectRoomType = styled.div`
 `;
 
 const RoomInformation = styled.div`
-  padding: 2rem 1.6rem;
+  width: 12.81rem;
+  padding: 2rem 1rem;
   display: flex;
   flex-flow: column wrap;
   align-items: center;
@@ -73,6 +75,7 @@ const StyledModal = styled(Modal)`
 
 function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
   const { userStore, roomStore } = useCoreStores();
+  const { t } = useTranslation();
   const history = useHistory();
   // Private Room
   const [isVisible, setIsVisible] = useState({
@@ -226,11 +229,11 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
             <div style={{ marginBottom: '1.19rem' }}>
               <PrivateRoomIcon width={1.88} height={1.88} color="#232D3B" />
             </div>
-            <StyledInfoTitle level={4}>프라이빗 룸</StyledInfoTitle>
+            <StyledInfoTitle level={4}>
+              {t('WEB_COMMON_CREATE_ROOM_OPTION_01')}
+            </StyledInfoTitle>
             <StyledInfoText>
-              {`프라이빗 룸은 초대를 통해서만
-              참여할 수 있는 구성원들만의
-              개인적인 공간입니다.`}
+              {t('WEB_COMMON_CREATE_ROOM_OPTION_02')}
             </StyledInfoText>
           </RoomInformation>
           <VerticalBar />
@@ -238,11 +241,9 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
             <div style={{ marginBottom: '1.19rem' }}>
               <OpenChatIcon width={1.88} height={1.88} color="#232D3B" />
             </div>
-            <Title level={4}>오픈 룸</Title>
+            <Title level={4}> {t('WEB_COMMON_CREATE_ROOM_OPTION_04')}</Title>
             <StyledInfoText>
-              {`오른 룸은 초대 뿐만 아니라
-              검색을 통해 누구나 자유롭게
-              참여할 수 있는 공간입니다.`}
+              {t('WEB_COMMON_CREATE_ROOM_OPTION_05')}
             </StyledInfoText>
           </RoomInformation>
         </SelectRoomType>

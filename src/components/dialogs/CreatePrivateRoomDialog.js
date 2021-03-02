@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { ItemSelector, useCoreStores, logEvent } from 'teespace-core';
 import { Checkbox, Button } from 'antd';
+import { useTranslation } from 'react-i18next';
 import {
   ConfigTitle,
   ConfigTitleText,
@@ -12,6 +13,7 @@ import {
 import Input from '../Input';
 
 const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
+  const { t } = useTranslation();
   const { userStore } = useCoreStores();
   const initialOptions = {
     isChangeName: false,
@@ -66,7 +68,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
       visible={visible}
       onCancel={handleCancel}
       onOk={handleOk}
-      title="프라이빗 룸 만들기"
+      title={t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_02')}
       footer={null}
       width="fit-content"
       destroyOnClose
@@ -89,19 +91,20 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
               checked={options.isChangeName}
               onChange={handleChangeNameChange}
             />
-            <ConfigTitleText>룸 이름 설정하기</ConfigTitleText>
+            <ConfigTitleText>
+              {t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_06')}
+            </ConfigTitleText>
           </ConfigTitle>
 
           <ConfigDescriptionText>
-            {`초기 설정하지 않을 시, 구성원 이름으로 나열된 룸이 개설되며,
-            이후 변경한 룸 이름은 개인에게만 적용됩니다.`}
+            {t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_07')}
           </ConfigDescriptionText>
 
           <Input
             maxLength={50}
             value={options.roomName}
             onChange={handleChangeName}
-            placeholder="목적, 토픽 등이 있다면 입력해 주세요."
+            placeholder={t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_08')}
             disabled={selectedUsers.length < 2 || !options.isChangeName}
           />
 
@@ -112,7 +115,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
               onChange={handleStartMeetingChange}
             />
             <ConfigTitleText>
-              초대 구성원과 바로 Meeting 시작하기
+              {t('WEB_COMMON_CREATE_PRIVATE_ROOM_04')}
             </ConfigTitleText>
           </ConfigTitle>
         </ConfigWrapper>
@@ -123,12 +126,13 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
             shape="default"
             onClick={handleOk}
             disabled={!selectedUsers.length}
-          >{`초대 ${
-            selectedUsers.length > 99 ? '99+' : selectedUsers.length
-          }`}</Button>
-
+          >
+            {t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_09', {
+              value: selectedUsers.length > 99 ? '99+' : selectedUsers.length,
+            })}
+          </Button>
           <Button type="outlined" shape="default" onClick={handleCancel}>
-            취소
+            {t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_10')}
           </Button>
         </ButtonContainer>
       </>
