@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Dropdown, Menu, Tooltip } from 'antd';
+import { Button, Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
 import { useCoreStores, Message, Toast } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import { LockLineIcon, CameraIcon } from './Icons';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 import PlatformUIStore from '../stores/PlatformUIStore';
@@ -36,8 +37,6 @@ import {
   StyleOfficeIcon,
   EditNameInput,
   StyleInput,
-  StyleBgImgIcon,
-  UserStatusMsg,
   TopButton,
   Blind,
   LockIconBox,
@@ -55,7 +54,9 @@ const Profile = observer(
     onClickCancelBtn = () => {},
   }) => {
     const history = useHistory();
-    const { roomStore, userStore, friendStore, authStore } = useCoreStores();
+    const { t } = useTranslation();
+
+    const { userStore, friendStore, authStore } = useCoreStores();
     const [isEditMode, setEditMode] = useState(editOnlyMode);
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [toastText, setToastText] = useState('');
@@ -312,12 +313,16 @@ const Profile = observer(
             <Sidebar>
               <StyledButton onClick={handleTalkClick}>
                 <FriendsIcon />
-                <Text>{isMyId() ? `나와의 Talk` : `1:1 Talk`}</Text>
+                <Text>
+                  {isMyId()
+                    ? `${t(`WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_13`)}`
+                    : `1:1 Talk`}
+                </Text>
               </StyledButton>
               {isMyId() ? (
                 <StyledButton onClick={handleChangetoEditMode}>
                   <StyleIcon iconimg="profile" />
-                  <Text>프로필 편집</Text>
+                  <Text>{t('WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_14')}</Text>
                 </StyledButton>
               ) : (
                 <StyledButton onClick={handleMeetingClick}>

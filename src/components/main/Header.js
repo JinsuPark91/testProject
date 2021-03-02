@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useCoreStores, ProfileInfoModal, logEvent } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { Tooltip } from 'antd';
+import { useTranslation } from 'react-i18next';
 import {
   Wrapper,
   TitleWrapper,
@@ -51,6 +52,7 @@ const getIconStyle = (isDisabled = false) => {
 const apps = [
   {
     name: 'drive',
+    i18n: 'WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_18',
     icons: {
       active: <DriveActiveIcon {...getIconStyle()} />,
       disabled: <DriveIcon {...getIconStyle(true)} />,
@@ -62,6 +64,7 @@ const apps = [
   },
   {
     name: 'calendar',
+    i18n: 'WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_17',
     icons: {
       active: <CalendarActiveIcon {...getIconStyle()} />,
       disabled: <CalendarIcon {...getIconStyle(true)} />,
@@ -73,6 +76,7 @@ const apps = [
   },
   {
     name: 'note',
+    i18n: 'WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_19',
     icons: {
       active: <NoteActiveIcon {...getIconStyle()} />,
       disabled: <NoteIcon {...getIconStyle(true)} />,
@@ -85,6 +89,7 @@ const apps = [
 
   {
     name: 'meeting',
+    i18n: 'WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_20',
     icons: {
       active: <MeetingActiveIcon {...getIconStyle()} />,
       disabled: <MeetingIcon {...getIconStyle(true)} />,
@@ -96,6 +101,7 @@ const apps = [
   },
   {
     name: 'files',
+    i18n: 'WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_16',
     icons: {
       active: <ViewFileActiveIcon {...getIconStyle()} />,
       disabled: <ViewFileIcon {...getIconStyle(true)} />,
@@ -111,13 +117,14 @@ const AppIcon = React.memo(
   ({
     isActive,
     appName,
+    i18n,
     onClick,
     defaultIcon,
     activeIcon,
     disabledIcon,
     disabled,
   }) => {
-    const AppToolTipName = appName.charAt(0).toUpperCase() + appName.slice(1);
+    const { t } = useTranslation();
     const handleAppClick = () => {
       onClick(appName);
     };
@@ -130,13 +137,7 @@ const AppIcon = React.memo(
     }
 
     return (
-      <Tooltip
-        placement="bottom"
-        title={
-          AppToolTipName.toLowerCase() === 'files' ? '모아보기' : AppToolTipName
-        }
-        color="#232D3B"
-      >
+      <Tooltip placement="bottom" title={t(i18n)} color="#232D3B">
         <AppIconInner
           key={appName}
           onClick={handleAppClick}
@@ -461,7 +462,14 @@ const Header = observer(() => {
       <AppIconContainer>
         {appConfirm}
         {apps.map(
-          ({ name, icons, isUsedInMyRoom, isSeperated, isUsedInProfile }) => (
+          ({
+            name,
+            i18n,
+            icons,
+            isUsedInMyRoom,
+            isSeperated,
+            isUsedInProfile,
+          }) => (
             <AppIconbutton key={name}>
               {isSeperated ? <VerticalBar /> : null}
               <AppIcon
@@ -473,6 +481,7 @@ const Header = observer(() => {
                     : !!PlatformUIStore.getWindow('meeting', findRoom()?.id)
                 }
                 appName={name}
+                i18n={i18n}
                 onClick={handleAppClick}
                 defaultIcon={icons.default}
                 activeIcon={icons.active}
