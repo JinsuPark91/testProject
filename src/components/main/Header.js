@@ -427,20 +427,36 @@ const Header = observer(() => {
                     <IconWrapper onClick={handleExport}>
                       <ExportIcon width={1.25} height={1.25} color="#232D3B" />
                     </IconWrapper>
-                    <IconWrapper onClick={handleSearch}>
-                      <SearchIcon width={1.25} height={1.25} color="#232D3B" />
-                    </IconWrapper>
+                    <Tooltip
+                      placement="bottom"
+                      title="대화 내용 검색"
+                      color="#232D3B"
+                    >
+                      <IconWrapper onClick={handleSearch}>
+                        <SearchIcon
+                          width={1.25}
+                          height={1.25}
+                          color="#232D3B"
+                        />
+                      </IconWrapper>
+                    </Tooltip>
                   </>
                 )}
                 {!isMyRoom() && (
                   <>
-                    <IconWrapper onClick={handleAddMember}>
-                      <AddAcountIcon
-                        width={1.25}
-                        height={1.25}
-                        color="#232D3B"
-                      />
-                    </IconWrapper>
+                    <Tooltip
+                      placement="bottom"
+                      title="룸 구성원 초대"
+                      color="#232D3B"
+                    >
+                      <IconWrapper onClick={handleAddMember}>
+                        <AddAcountIcon
+                          width={1.25}
+                          height={1.25}
+                          color="#232D3B"
+                        />
+                      </IconWrapper>
+                    </Tooltip>
                     {isAddMemberVisible && (
                       <RoomAddMemberModal
                         visible={isAddMemberVisible}
