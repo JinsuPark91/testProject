@@ -284,7 +284,7 @@ const ProfileMyModal = ({
             <Title>{spaceStore.currentSpace?.name}</Title>
             {spaceStore.currentSpace?.domain}
           </Info>
-          <Tooltip placement="bottomLeft" color="#232D3B" title="스페이스 전환">
+          <Tooltip placement="topLeft" color="#232D3B" title="스페이스 전환">
             <Button className="btn-convert" onClick={handleSpaceList}>
               <Blind>스페이스 전환</Blind>
             </Button>
@@ -294,7 +294,7 @@ const ProfileMyModal = ({
             overlay={moreMenu}
             placement="bottomRight"
           >
-            <Tooltip placement="bottomLeft" color="#232D3B" title="더 보기">
+            <Tooltip placement="topLeft" color="#232D3B" title="더 보기">
               <Button className="btn-more">
                 <Blind>설정</Blind>
               </Button>
