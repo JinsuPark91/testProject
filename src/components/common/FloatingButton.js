@@ -18,6 +18,8 @@ const remToPixel = rem => {
 };
 
 const ChildItem = ({ roomInfo, onItemClick, onItemClose }) => {
+  const { t } = useTranslation();
+
   const handleClick = () => {
     onItemClick(roomInfo);
   };
@@ -35,9 +37,15 @@ const ChildItem = ({ roomInfo, onItemClick, onItemClose }) => {
       <div style={{ height: '1rem' }}>
         {roomInfo.userCount > 3 ? roomInfo.userCount : ''}
       </div>
-      <div className="close-button" onClick={handleClose}>
-        <CancelIcon width={0.8} height={0.8} color="#ffffff" />
-      </div>
+      <Tooltip
+        placement="bottom"
+        title={t('WEB_COMMON_POPUP_TALK_MULTI_02')}
+        color="#232D3B"
+      >
+        <div className="close-button" onClick={handleClose}>
+          <CancelIcon width={0.8} height={0.8} color="#ffffff" />
+        </div>
+      </Tooltip>
     </ChildItemWrapper>
   );
 };
