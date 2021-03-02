@@ -424,9 +424,19 @@ const Header = observer(() => {
               <SystemIconContainer>
                 {PlatformUIStore.layout !== 'expand' && (
                   <>
-                    <IconWrapper onClick={handleExport}>
-                      <ExportIcon width={1.25} height={1.25} color="#232D3B" />
-                    </IconWrapper>
+                    <Tooltip
+                      placement="bottom"
+                      title="미니 채팅"
+                      color="#232D3B"
+                    >
+                      <IconWrapper onClick={handleExport}>
+                        <ExportIcon
+                          width={1.25}
+                          height={1.25}
+                          color="#232D3B"
+                        />
+                      </IconWrapper>
+                    </Tooltip>
                     <Tooltip
                       placement="bottom"
                       title="대화 내용 검색"
