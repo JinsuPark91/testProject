@@ -16,10 +16,10 @@ import { useKeycloak } from '@react-keycloak/web';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SettingDialog from '../usersettings/SettingDialog';
 import ProfileSpaceModal from './ProfileSpaceModal';
-import convertSpaceIcon from '../../assets/convert space.svg';
+import convertSpaceIcon from '../../assets/convert_space.svg';
 import moreSpaceIcon from '../../assets/view_more.svg';
 import checkekIcon from '../../assets/ts_check.svg';
-import { ReactComponent as SquareSpaceIcon } from '../../assets/thumbnail.svg';
+import { ReactComponent as SquareSpaceIcon } from '../../assets/card_view.svg';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
 import AddFriendsBySearch from '../friends/AddFriendsBySearch';
 import SpaceMemberListModal from '../space/SpaceMemberListModal';
@@ -305,9 +305,7 @@ const ProfileMyModal = ({
       {/* 1월 업데이트 */}
       {/* <UserSubArea>
         <SubInfo tabIndex="-1" onClick={handleToggleLngList}>
-          <LinkIcon>
-            <LangSpaceIcon />
-          </LinkIcon>
+          <LangSpaceIcon />
           Language : {i18n.language === 'ko' ? '한국어' : 'English'}
           <LangIcon>
             <ArrowRightIcon />
@@ -342,36 +340,33 @@ const ProfileMyModal = ({
             </NowInfo>
             <Checkbox checked className="check-round" />
           </ConvertNow>
-          {spaceStore.spaceList.length > 1 && (
-            <ConvertList>
-              {spaceStore.spaceList
-                .filter(elem => elem?.id !== spaceStore.currentSpace?.id)
-                .map(elem => (
-                  <ConvertItem
-                    onClick={() => {
-                      window.location.href = `${window.location.protocol}//${elem.domain}`;
-                    }}
-                    key={elem}
-                  >
-                    <LogoSmall shape="square">{elem?.name[0]}</LogoSmall>
-                    <ItemText>{elem?.name}</ItemText>
-                  </ConvertItem>
-                ))}
-              <ConvertItem onClick={() => handleClickNewSpace()}>
-                <AddBox>+</AddBox>
-                <ItemText addSpace>새 스페이스 생성</ItemText>
-              </ConvertItem>
-            </ConvertList>
-          )}
-          {
-            <ConvertMove onClick={() => handleMoveSpacePage()}>
-              <AddButton href="#">
-                <LinkIcon>
-                  <SquareSpaceIcon /> 스페이스 목록으로 이동
-                </LinkIcon>
-              </AddButton>
-            </ConvertMove>
-          }
+          <ConvertBox>
+            {spaceStore.spaceList.length > 1 && (
+              <ConvertList>
+                {spaceStore.spaceList
+                  .filter(elem => elem?.id !== spaceStore.currentSpace?.id)
+                  .map(elem => (
+                    <ConvertItem
+                      onClick={() => {
+                        window.location.href = `${window.location.protocol}//${elem.domain}`;
+                      }}
+                      key={elem}
+                    >
+                      <LogoSmall shape="square">{elem?.name[0]}</LogoSmall>
+                      <ItemText>{elem?.name}</ItemText>
+                    </ConvertItem>
+                  ))}
+              </ConvertList>
+            )}
+            <ConvertAdd onClick={() => handleClickNewSpace()}>
+              <AddBox>+</AddBox>
+              <AddText addSpace>새 스페이스 생성</AddText>
+            </ConvertAdd>
+          </ConvertBox>
+          <ConvertMove onClick={() => handleMoveSpacePage()}>
+            <SquareSpaceIcon />
+            스페이스 목록으로 이동
+          </ConvertMove>
         </ConvertDropdown>
       )}
       {isCreated && (
@@ -614,6 +609,7 @@ const DataBox = styled.div`
     background-color: transparent;
     background-repeat: no-repeat;
     background-position: center;
+    background-size: 1rem 1rem;
     &:hover {
       background-color: #f2efec;
     }
@@ -621,12 +617,6 @@ const DataBox = styled.div`
     &:focus {
       background-color: #f2efec;
     }
-  }
-  .ant-btn-circle {
-    width: 1.5rem;
-    height: 1.5rem;
-    border: 0;
-    background-size: 1rem 1rem;
   }
   .btn-convert {
     background-image: url('${convertSpaceIcon}');
@@ -653,7 +643,6 @@ const Info = styled.p`
   margin: 0 0.625rem;
   font-size: 0.6875rem;
   color: #777;
-  line-height: 0.8125rem;
   white-space: nowrap;
   text-overflow: ellipsis;
 `;
@@ -704,15 +693,6 @@ const SubInfo = styled.p`
     svg {
       color: #43434a;
     }
-  }
-`;
-const LinkIcon = styled.span`
-  line-height: 0;
-  color: #205855;
-  svg {
-    margin-right: 0.4rem;
-    width: 1rem;
-    height: 1rem;
   }
 `;
 // eslint-disable-next-line no-unused-vars
@@ -785,12 +765,6 @@ const ConvertNow = styled.div`
   margin: 0 0.75rem;
   padding: 0.75rem 0;
   border-bottom: 1px solid #eeedeb;
-  &:only-child {
-    border-bottom: none;
-  }
-  & + div {
-    border-top: 0;
-  }
 `;
 const LogoSmall = styled(Logo)`
   width: 1.875rem;
@@ -804,17 +778,6 @@ const LogoSmall = styled(Logo)`
       border: 1px solid #0a1e3a;
     `}
 `;
-const AddBox = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #49423a;
-  height: 1.88rem;
-  width: 1.88rem;
-  background-color: #faf8f7;
-  border-radius: 0.25rem;
-  margin-right: 0.375rem;
-`;
 const NowInfo = styled(Info)`
   margin: 0 0.375rem;
   font-size: 0.625rem;
@@ -827,7 +790,6 @@ const NowTitle = styled(Title)`
 const ConvertList = styled.ul`
   overflow-y: auto;
   max-height: 11.25rem;
-  padding: 0.625rem 0;
 `;
 const ConvertItem = styled.li`
   display: flex;
@@ -847,22 +809,46 @@ const ItemText = styled.p`
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 0.75rem;
+  font-weight: 500;
   color: ${props => (props.addSpace ? '#666666' : '#000000')};
 `;
-const ConvertMove = styled.div`
-  cursor: pointer;
-  padding: 0.5rem 0;
-  border-top: 1px solid #eeedeb;
+const ConvertBox = styled.div`
+  padding: 0.31rem 0;
 `;
-const AddButton = styled.a`
-  display: inline-block;
-  margin-left: 1.13rem;
+const ConvertAdd = styled.div`
+  display: flex;
+  padding: 0.3125rem 0.6875rem;
+  align-items: center;
+  font-weight: 500;
+  cursor: pointer;
+`;
+const AddBox = styled.span`
+  height: 1.88rem;
+  width: 1.88rem;
+  background-color: #faf8f7;
+  border-radius: 0.25rem;
+  margin-right: 0.375rem;
+  font-size: 0.88rem;
+  line-height: 1.75rem;
+  color: #49423a;
+  text-align: center;
+`;
+const AddText = styled.span`
   font-size: 0.75rem;
-  font-weight: bold;
-  line-height: 1.25rem;
+  color: #666;
+`;
+const ConvertMove = styled.div`
+  padding: 0.63rem 1.13rem;
+  border-top: 1px solid #eeedeb;
+  font-size: 0.69rem;
+  font-weight: 500;
   color: #00493d;
-  &:hover {
-    color: #00493d;
+  cursor: pointer;
+  svg {
+    margin-right: 0.4rem;
+    width: 1rem;
+    height: 1rem;
+    vertical-align: top;
   }
 `;
 const UserSettingArea = styled.div`

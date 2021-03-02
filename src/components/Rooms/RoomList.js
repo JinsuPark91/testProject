@@ -307,7 +307,7 @@ function RoomList() {
         </InputWrapper>
         <Tooltip
           title={t('WEB_COMMON_B2C_LNB_EMPTY_PAGE_05')}
-          placement="top"
+          placement="bottomLeft"
           color="#232D3B"
         >
           <AddRoomIconWrapper onClick={handleCreateRoom}>
@@ -386,24 +386,6 @@ const InputWrapper = styled.div`
   margin-right: 0.56rem;
 `;
 
-const StyledInfoTitle = styled.p`
-  margin-bottom: 0.94rem;
-  font-size: 0.94rem;
-  color: #523dc7;
-  letter-spacing: 0;
-  text-align: center;
-  line-height: 1.38rem;
-`;
-
-const StyledSubInfo = styled.p`
-  margin-bottom: 1.25rem;
-  font-size: 0.75rem;
-  color: #6c56e5;
-  letter-spacing: 0;
-  text-align: center;
-  line-height: 1.06rem;
-`;
-
 const AddRoomIconWrapper = styled.div`
   display: flex;
   cursor: pointer;
@@ -421,27 +403,11 @@ const AddRoomIconWrapper = styled.div`
   }
 `;
 
-const OpenChatIconWrapper = styled.div`
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 0 0 1.75rem;
-  height: 1.75rem;
-  border: 1px solid #faf8f7;
-  border-radius: 50%;
-  background: #ffffff;
-
-  &:hover {
-    background: #eae6e0;
-  }
-`;
-
 const ButtomWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.63rem 0.94rem;
+  padding: 0.69rem 0.94rem;
   box-shadow: 0 -0.8125rem 0.75rem -0.1875rem #fff;
   z-index: 5;
 `;
