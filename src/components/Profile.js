@@ -525,14 +525,14 @@ const Profile = observer(
                       disabled={!isChange || !isValidInputData()}
                       onClick={handleConfirm}
                     >
-                      저장
+                      {t('WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_27')}
                     </Button>
                     <Button
                       type="outlined"
                       onClick={handleCancel}
                       style={{ backgroundColor: '#fff', color: '#3b3b3b' }}
                     >
-                      취소
+                      {t('WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_28')}
                     </Button>
                   </>
                 )}

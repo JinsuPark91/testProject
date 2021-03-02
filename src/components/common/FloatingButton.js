@@ -7,6 +7,7 @@ import {
 import styled from 'styled-components';
 import Draggable from 'react-draggable';
 import { Tooltip } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 import { MiniChatIcon, CancelIcon, ArrowDownIcon, ArrowUpIcon } from '../Icons';
 
@@ -76,6 +77,7 @@ const FloatingButton = ({
   onItemClick = () => {},
   onItemClose = () => {},
 }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isDrag, setIsDrag] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
@@ -134,7 +136,9 @@ const FloatingButton = ({
     <Draggable bounds="parent" onDrag={handleDrag}>
       <Wrapper>
         {isOpen && (
-          <AllCloseButton onClick={handleAllClose}>모두 종료</AllCloseButton>
+          <AllCloseButton onClick={handleAllClose}>
+            {t('WEB_COMMON_POPUP_TALK_MULTI_01')}
+          </AllCloseButton>
         )}
         <CustomFloatingMenu
           spacing={remToPixel(0.63)}
