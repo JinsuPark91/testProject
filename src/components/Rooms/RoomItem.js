@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { List, Menu, Dropdown } from 'antd';
+import { List, Menu, Dropdown, Tooltip } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
 import { isEqual } from 'lodash';
@@ -350,9 +350,11 @@ const RoomItemContent = ({
           </IconWrapper>
         </RoomDropdown>
       )}
-      <IconWrapper className="room-item__icon" onClick={handleExport}>
-        <ExportIcon width={1} height={1} color="#49423A" />
-      </IconWrapper>
+      <Tooltip placement="top" title="미니 채팅" color="#232D3B">
+        <IconWrapper className="room-item__icon" onClick={handleExport}>
+          <ExportIcon width={1} height={1} color="#49423A" />
+        </IconWrapper>
+      </Tooltip>
     </>
   );
 };
