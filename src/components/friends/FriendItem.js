@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { talkOnDrop, Talk } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
 import { observer } from 'mobx-react';
-import { Button } from 'antd';
+import { Button, Tooltip } from 'antd';
 import {
   useCoreStores,
   Dropdown,
@@ -120,9 +120,11 @@ const MeAction = React.memo(({ mode, itemId }) => {
   };
 
   return (
-    <MoreIconWrapper className="friend-export-icon" onClick={handleExport}>
-      <ExportIcon />
-    </MoreIconWrapper>
+    <Tooltip placement="top" title="미니 채팅" color="#232D3B">
+      <MoreIconWrapper className="friend-export-icon" onClick={handleExport}>
+        <ExportIcon />
+      </MoreIconWrapper>
+    </Tooltip>
   );
 });
 
