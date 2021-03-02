@@ -326,7 +326,7 @@ function OpenRoomHome({ visible, onCancel }) {
       >
         <OpenHomeForm>
           <Search
-            placeholder="전체검색"
+            placeholder="전체 검색"
             onChange={handleKeywordChange}
             onClear={handleKeywordClear}
             searchIconColor={{ active: '#48423B', default: '#48423B' }}
