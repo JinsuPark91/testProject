@@ -303,7 +303,11 @@ function RoomList() {
             type="underline"
           />
         </InputWrapper>
-        <Tooltip title="룸 만들기" placement="top" color="#232D3B">
+        <Tooltip
+          title={t('WEB_COMMON_B2C_LNB_EMPTY_PAGE_05')}
+          placement="bottomLeft"
+          color="#232D3B"
+        >
           <AddRoomIconWrapper onClick={handleCreateRoom}>
             <AddRoomIcon width={1.38} height={1.38} color="#232D3B" />
           </AddRoomIconWrapper>
@@ -390,27 +394,11 @@ const AddRoomIconWrapper = styled.div`
   }
 `;
 
-const OpenChatIconWrapper = styled.div`
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 0 0 1.75rem;
-  height: 1.75rem;
-  border: 1px solid #faf8f7;
-  border-radius: 50%;
-  background: #ffffff;
-
-  &:hover {
-    background: #eae6e0;
-  }
-`;
-
 const ButtomWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.63rem 0.94rem;
+  padding: 0.69rem 0.94rem;
   box-shadow: 0 -0.8125rem 0.75rem -0.1875rem #fff;
   z-index: 5;
 `;
