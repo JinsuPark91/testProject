@@ -5,14 +5,12 @@ import { useCoreStores } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import styled from 'styled-components';
 import { Tabs } from 'antd';
-import MobileRoomHeader from './MobileRoomHeader';
-import MobileTalkHeader from './MobileTalkHeader';
+import MobileHeader from './MobileHeader';
 import MobileContent from './MobileContent';
 import LoadingImg from '../../assets/WAPL_Loading.gif';
 import PlatformUIStore from '../../stores/PlatformUIStore';
-import MobileRoomCreatePage from './MobileRoomCreatePage';
 import { IconWrapper, UnreadCount } from '../main/LeftSideStyle';
-import { ChattingIcon, PeopleIcon } from '../Icons';
+import { ChattingIcon } from '../Icons';
 
 const Wrapper = styled.div`
   height: 100%;
@@ -48,7 +46,7 @@ const FooterTab = styled(Tabs)`
     display: none !important;
   }
   .ant-tabs-tab {
-    width: calc(100% / 4);
+    width: calc(100% / 2);
     justify-content: center;
     margin: 0;
     padding: 0;
@@ -95,26 +93,8 @@ const MobileMainPage = observer(() => {
     PlatformUIStore.resourceId = resourceId;
   }, [resourceType, resourceId]);
 
-  const handleCreateRoom = () => {
-    history.push(`/create/${myUserId}`);
-  };
-
-  const handleCancelRoom = () => {
-    history.push(`/room/${myUserId}`);
-  };
-
-  const getAppHeader = appType => {
-    switch (appType) {
-      case 'room':
-        return <MobileRoomHeader onRoomCreate={handleCreateRoom} />;
-      case 'talk':
-        return <MobileTalkHeader />;
-      default:
-        return null;
-    }
-  };
-
   const handleSelectTab = key => {
+    history.push(`/${key}/${myUserId}`);
     PlatformUIStore.resourceType = key;
   };
 
@@ -126,35 +106,15 @@ const MobileMainPage = observer(() => {
     );
   }
 
-  if (PlatformUIStore.resourceType === 'create') {
-    return (
-      <Wrapper>
-        <MobileRoomCreatePage onCancel={handleCancelRoom} />
-      </Wrapper>
-    );
-  }
-
   return (
     <>
       <Wrapper>
-        {getAppHeader(PlatformUIStore.resourceType)}
         <Container>
+          <MobileHeader />
           <MobileContent />
         </Container>
         <Footer>
-          <FooterTab
-            activeKey={PlatformUIStore.tabType}
-            onTabClick={handleSelectTab}
-            animated={false}
-          >
-            <TabPane
-              key="friend"
-              tab={
-                <IconWrapper className="lnb__icon-wrapper">
-                  <PeopleIcon width={1.5} height={1.5} color="#ffffff" />
-                </IconWrapper>
-              }
-            />
+          <FooterTab onTabClick={handleSelectTab} animated={false}>
             <TabPane
               key="room"
               tab={
@@ -182,7 +142,38 @@ const MobileMainPage = observer(() => {
                     }}
                   </Observer>
 
-                  <ChattingIcon width={1.5} height={1.5} color="#ffffff" />
+                  <ChattingIcon width={1.5} height={1.5} />
+                </IconWrapper>
+              }
+            />
+            <TabPane
+              key="select"
+              tab={
+                <IconWrapper className="lnb__icon-wrapper">
+                  <Observer>
+                    {() => {
+                      PlatformUIStore.totalUnreadCount = roomStore
+                        .getRoomArray()
+                        .filter(roomInfo => roomInfo.isVisible)
+                        .reduce(
+                          (accumulator, roomInfo) =>
+                            accumulator +
+                            parseInt(roomInfo.metadata.count ?? '0', 10),
+                          0,
+                        );
+                      return (
+                        <UnreadCount
+                          isVisible={PlatformUIStore.totalUnreadCount > 0}
+                        >
+                          {PlatformUIStore.totalUnreadCount > 99
+                            ? '99+'
+                            : PlatformUIStore.totalUnreadCount}
+                        </UnreadCount>
+                      );
+                    }}
+                  </Observer>
+
+                  <ChattingIcon width={1.5} height={1.5} />
                 </IconWrapper>
               }
             />

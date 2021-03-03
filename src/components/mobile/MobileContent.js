@@ -1,14 +1,18 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { Talk } from 'teespace-talk-app';
 import { NoteApp } from 'teespace-note-app';
 import { CalendarApp } from 'teespace-calendar-app';
 import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
+import MobileRoomCreatePage from './MobileRoomCreatePage';
 import MobileRoomItem from './MobileRoomItem';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const MobileContent = observer(() => {
-  const { roomStore } = useCoreStores();
+  const history = useHistory();
+  const { roomStore, userStore } = useCoreStores();
+  const myUserId = userStore.myProfile.id;
 
   const roomFilter = room => room.isVisible;
   const getRoomArray = () => {
@@ -39,9 +43,17 @@ const MobileContent = observer(() => {
     PlatformUIStore.isSearchVisible = false;
   };
 
+  const handleCreateRoom = () => {
+    history.push(`/create/${myUserId}`);
+  };
+
   switch (PlatformUIStore.resourceType) {
     case 'room':
       return <RoomList roomList={getRoomArray()} />;
+    case 'create':
+      return <MobileRoomCreatePage />;
+    case 'select':
+      return <></>;
     case 'talk':
       return (
         <Talk
