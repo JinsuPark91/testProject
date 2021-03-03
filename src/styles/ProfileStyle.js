@@ -3,8 +3,8 @@ import Upload from 'rc-upload';
 import { Input } from 'antd';
 import InputCounter from '../components/Input';
 import friendsIcon from '../assets/profile_talk.svg';
-import profileEditIcon from '../assets/ts_profile_edit.svg';
-import teeMeetingIcon from '../assets/ts_TeeMeeting.svg';
+import profileEditIcon from '../assets/profile_edit.svg';
+import meetingIcon from '../assets/meeting.svg';
 import OfficeIcon from '../assets/office.svg';
 import CallIcon from '../assets/call.svg';
 import PhoneIcon from '../assets/phone.svg';
@@ -268,7 +268,7 @@ export const StyleIcon = styled.span`
 
       case 'meeting':
         return css`
-          background-image: url(${teeMeetingIcon});
+          background-image: url(${meetingIcon});
         `;
     }
   }}

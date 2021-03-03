@@ -12,11 +12,9 @@ export const ContentWrapper = styled.div`
 `;
 
 export const WelcomeWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  justify-content: flex-end;
+  margin: auto auto 3.13rem;
   text-align: center;
+  color: #232D3B;
 `;
 
 export const FriendListBox = styled.div`
@@ -52,17 +50,10 @@ export const StyleText = styled(Text)`
 export const StyledInfoTitle = styled.p`
   margin-bottom: 0.94rem;
   font-size: 0.94rem;
-  color: #000000;
-  letter-spacing: 0;
-  text-align: center;
   line-height: 1.38rem;
 `;
 
 export const StyledSubInfo = styled.p`
-  margin-bottom: 1.25rem;
   font-size: 0.75rem;
-  color: #414141;
-  letter-spacing: 0;
-  text-align: center;
   line-height: 1.06rem;
 `;
