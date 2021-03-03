@@ -120,7 +120,7 @@ const MobileApp = () => {
                       component={<SignUpCompletePage />}
                     />
                     <PrivateRoute
-                      path="/:resourceType(room|create|talk)/:resourceId?"
+                      path="/:resourceType/:resourceId?"
                       component={MobileMainPage}
                     />
                     <Redirect to="/room" />
@@ -134,5 +134,7 @@ const MobileApp = () => {
     </DndProvider>
   );
 };
+
+// room|create|select|talk|note|calendar
 
 export default MobileApp;

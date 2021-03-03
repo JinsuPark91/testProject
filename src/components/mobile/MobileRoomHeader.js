@@ -1,20 +1,10 @@
 import React from 'react';
+import { useCoreStores } from 'teespace-core';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from 'antd';
 import { AddRoomIcon } from './Icon';
 
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  background-color: #fff;
-  z-index: 100;
-  padding: 0.63rem 1rem;
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-`;
 const HeaderTitle = styled.h3`
   font-size: 1.13rem;
   line-height: 1.63rem;
@@ -34,19 +24,21 @@ const IconButton = styled(Button)`
   background-color: transparent;
 `;
 
-const MobileRoomHeader = ({ onRoomCreate }) => {
-  const handleRoomCreate = () => {
-    onRoomCreate();
+const MobileRoomHeader = () => {
+  const history = useHistory();
+  const { userStore } = useCoreStores();
+  const myUserId = userStore.myProfile.id;
+
+  const handleCreateRoom = () => {
+    history.push(`/create/${myUserId}`);
   };
 
   return (
     <>
-      <Wrapper>
-        <HeaderTitle>룸</HeaderTitle>
-        <ButtonBox onClick={handleRoomCreate}>
-          <IconButton type="ghost" icon={<AddRoomIcon />} />
-        </ButtonBox>
-      </Wrapper>
+      <HeaderTitle>룸</HeaderTitle>
+      <ButtonBox onClick={handleCreateRoom}>
+        <IconButton type="ghost" icon={<AddRoomIcon />} />
+      </ButtonBox>
     </>
   );
 };

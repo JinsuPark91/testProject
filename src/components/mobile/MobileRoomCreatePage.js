@@ -49,7 +49,7 @@ const InviteButton = styled(Button)`
   }
 `;
 
-const MobileRoomCreatePage = ({ onCancel }) => {
+const MobileRoomCreatePage = () => {
   const history = useHistory();
   const { userStore, roomStore } = useCoreStores();
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -79,6 +79,10 @@ const MobileRoomCreatePage = ({ onCancel }) => {
     history.push(`/talk/${roomId}`);
   };
 
+  const handleCancel = () => {
+    history.push(`/room/${myUserId}`);
+  };
+
   const handleSelectedUserChange = useCallback(({ userArray }) => {
     const filteredUsers = userArray.filter(
       user => !disabledIds.includes(user.friendId || user.id),
@@ -90,7 +94,7 @@ const MobileRoomCreatePage = ({ onCancel }) => {
   return (
     <>
       <Header>
-        <ButtonBox onClick={onCancel}>
+        <ButtonBox onClick={handleCancel}>
           <IconButton type="ghost" icon={<ArrowBackIcon />} />
         </ButtonBox>
         <Title>프라이빗 룸 만들기</Title>
