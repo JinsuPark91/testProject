@@ -4,9 +4,11 @@ import styled from 'styled-components';
 import { Button } from 'antd';
 import { useCoreStores, Toast, Message } from 'teespace-core';
 import { DateTime } from 'luxon';
+import { useTranslation } from 'react-i18next';
 import Input from '../Input';
 
 const CommonSettingPage = ({ roomInfo = null }) => {
+  const { t } = useTranslation();
   const [value, setValue] = useState('');
   const [isChanged, setIsChanged] = useState(false);
   const [isPrivateRoom, setIsPrivateRoom] = useState(false);
@@ -33,8 +35,8 @@ const CommonSettingPage = ({ roomInfo = null }) => {
     if (timestamp) {
       return DateTime.fromFormat(timestamp, 'yyyy-MM-dd HH:mm:ss.S z')
         .toFormat('yyyy.MM.dd a hh:mm')
-        .replace('AM', '오전')
-        .replace('PM', '오후');
+        .replace('AM', t('TEMP_05'))
+        .replace('PM', t('TEMP_06'));
     }
     return '';
   };
@@ -50,14 +52,11 @@ const CommonSettingPage = ({ roomInfo = null }) => {
         setIsChanged(false);
         // NOTE : roomInfo.adminName 에 값이 없음.
         // const admin = await userStore.getProfile({ userId: roomInfo.adminId });
-        setToastMessage(
-          // `${admin.nick || admin.name} 님이 룸 이름을 변경했습니다.`,
-          `변경 사항이 저장되었습니다.`,
-        );
+        setToastMessage(t('WEB_COMMON_SETTING_GENERAL_11'));
         setIsToastVisible(true);
       } else throw Error(`result:${result}`);
     } catch (err) {
-      console.error(`[Platform] 룸 이름 변경 실패, ${err}`);
+      console.error(`[Platform] change name error, ${err}`);
     }
   };
 
@@ -74,7 +73,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
       if (result) setIsPrivateRoom(true);
       else throw Error(`result:${result}`);
     } catch (err) {
-      console.error(`[Platform] 프라이빗 룸 전환 실패, ${err}`);
+      console.error(`[Platform] private room failed, ${err}`);
     } finally {
       setIsWarningVisible(false);
     }

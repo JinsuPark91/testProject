@@ -1502,8 +1502,10 @@
   "WEB_COMMON_SETTING_CHANGE_INFO_COMPANY_18": "동의",
   "WEB_COMMON_SETTING_CHANGE_INFO_COMPANY_19": "동의하지 않음",
   "WEB_COMMON_ROOMTITLE_TOOLTIP_04": "프로필",
-  "TEMP_01" : "멤버",
-  "TEMP_02" : "어드민",
-  "TEMP_03" : "게스트",
-  "TEMP_04": "구성원 관리"
+  "TEMP_01": "멤버",
+  "TEMP_02": "어드민",
+  "TEMP_03": "게스트",
+  "TEMP_04": "구성원 관리",
+  "TEMP_05": "오전",
+  "TEMP_06": "오후"
 }

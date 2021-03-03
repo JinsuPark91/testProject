@@ -1505,5 +1505,7 @@
   "TEMP_01": "Member",
   "TEMP_02": "Admin",
   "TEMP_03": "Guest",
-  "TEMP_04": "Member Management"
+  "TEMP_04": "Member Mgt",
+  "TEMP_05": "AM",
+  "TEMP_06": "PM"
 }

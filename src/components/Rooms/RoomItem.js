@@ -161,11 +161,11 @@ const RoomDropdown = React.memo(
             </Menu.Item>
           ) : (
             <Menu.Item key="enableAlarm" onClick={handleAlarmEnable}>
-              {t('WEB_COMMON_CHANGE_NAME_04')}
+              {t('WEB_COMMON_NOTIFICATION_SETTING_01')}
             </Menu.Item>
           )}
           <Menu.Item key="member" onClick={handleViewMember}>
-            {t('WEB_COMMON_NOTIFICATION_SETTING_01')}
+            {t('WEB_COMMON_ROOM_CONTEXT_MENU_01')}
           </Menu.Item>
           {
             // NOTE. 마이룸과 1:1 룸은 룸설정 할 수 없음
