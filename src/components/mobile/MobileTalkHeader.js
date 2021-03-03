@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
 import { Button } from 'antd';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { getRoomName } from './MobileUtil';
 import { ArrowBackIcon } from './Icon';
 
 const ButtonBox = styled.div`
@@ -31,24 +31,8 @@ const Title = styled.h3`
 
 const MobileTalkHeader = () => {
   const history = useHistory();
-  const { roomStore, userStore } = useCoreStores();
+  const { userStore } = useCoreStores();
   const { myProfile } = userStore;
-  const findRoom = () => {
-    return roomStore.getRoomMap().get(PlatformUIStore.resourceId);
-  };
-
-  const getRoomName = () => {
-    const found = findRoom();
-    if (found) {
-      if (found?.type === 'WKS0001') {
-        return myProfile.displayName;
-      }
-      if (found?.customName || found?.name) {
-        return found?.customName || found?.name;
-      }
-    }
-    return null;
-  };
 
   const handleGoBack = () => {
     history.push(`/room/${myProfile.id}`);

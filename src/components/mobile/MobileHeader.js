@@ -2,6 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import styled from 'styled-components';
 import MobileRoomHeader from './MobileRoomHeader';
+import MobileSelectHeader from './MobileSelectHeader';
 import MobileTalkHeader from './MobileTalkHeader';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
@@ -30,7 +31,7 @@ const MobileHeader = observer(() => {
     case 'select':
       return (
         <Wrapper>
-          <div />
+          <MobileSelectHeader />
         </Wrapper>
       );
     case 'talk':
