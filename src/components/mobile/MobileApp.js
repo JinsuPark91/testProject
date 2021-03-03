@@ -7,15 +7,18 @@ import { create } from 'mobx-persist';
 import { PortalProvider, useCoreStores } from 'teespace-core';
 import { initApp as initTalkApp } from 'teespace-talk-app';
 import { initApp as initDriveApp } from 'teespace-drive-app';
+import {
+  initApp as initCalendarApp,
+  initializeApp as initializeCalendarApp,
+} from 'teespace-calendar-app';
+import { initApp as initNoteApp } from 'teespace-note-app';
 import { ReactKeycloakProvider } from '@react-keycloak/web';
 import Cookies from 'js-cookie';
-import NotFoundPage from '../../page/NotFoundPage';
 import SignUpPage from '../../page/SignUpPage';
 import SignUpFormPage from '../../page/SignUpFormPage';
 import SignUpCompletePage from '../../page/SignUpCompletePage';
 import LogoutPage from '../../page/LogoutPage';
 import MobileMainPage from './MobileMainPage';
-import MobileRoomCreatePage from './MobileRoomCreatePage';
 import RedirectablePublicRoute from '../../libs/RedirectablePublicRoute';
 import PrivateRoute from '../../libs/PrivateRoute';
 import KeycloakRedirectRoute from '../../libs/KeycloakRedirectRoute';
@@ -58,6 +61,9 @@ const MobileApp = () => {
   useEffect(() => {
     initTalkApp();
     initDriveApp();
+    initCalendarApp();
+    initializeCalendarApp();
+    initNoteApp();
   }, []);
 
   // hydrate mobx stores

@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
-import PlatformUIStore from '../../stores/PlatformUIStore';
 import { Button } from 'antd';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 import { ArrowBackIcon } from './Icon';
 
 const Wrapper = styled.div`
