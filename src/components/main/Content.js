@@ -136,9 +136,9 @@ const Content = () => {
           />
         );
       case 'mail':
-        return <MailMainView />;
+        return <MailMainView roomId={getRoomId()} />;
       case 'mailsub':
-        return <MailSubView />;
+        return <MailSubView roomId={getRoomId()} />;
       case 'profile':
         return <Profile userId={PlatformUIStore.resourceId} />;
       case 'setting':
