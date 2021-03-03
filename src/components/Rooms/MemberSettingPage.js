@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { Button, Checkbox } from 'antd';
+import { Button } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
 import { useCoreStores, Message } from 'teespace-core';
 import { useObserver } from 'mobx-react';
+import { useTranslation } from 'react-i18next';
 import { LeaderIcon } from '../Icons';
 
 const remToPixel = rem => {
@@ -25,6 +26,7 @@ const WIDTH = {
 };
 
 const TableRow = ({ style, memberInfo, onTransferClick }) => {
+  const { t } = useTranslation();
   const isAdmin = memberInfo.role === 'WKS0004';
 
   const handleClick = () => {
@@ -33,12 +35,12 @@ const TableRow = ({ style, memberInfo, onTransferClick }) => {
 
   const getMemberType = () => {
     switch (memberInfo.grade) {
-      case 'admin':
-        return '어드민';
       case 'member':
-        return '멤버';
+        return t('TEMP_01');
+      case 'admin':
+        return t('TEMP_02');
       case 'guest':
-        return '게스트';
+        return t('TEMP_03');
       default:
         return '';
     }
@@ -65,7 +67,7 @@ const TableRow = ({ style, memberInfo, onTransferClick }) => {
           onClick={handleClick}
           disabled={isAdmin}
         >
-          이양
+          {t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_GENERAL_10')}
         </Button>
       </Cell>
     </RowWrapper>
@@ -73,6 +75,7 @@ const TableRow = ({ style, memberInfo, onTransferClick }) => {
 };
 
 const MemberSettingPage = ({ members, roomId }) => {
+  const { t } = useTranslation();
   const { roomStore } = useCoreStores();
   const history = useHistory();
   const tableBodyRef = useRef(null);
@@ -115,21 +118,22 @@ const MemberSettingPage = ({ members, roomId }) => {
     <Wrapper style={{ height: '100%', padding: '0 0.75rem 0.75rem 0.75rem' }}>
       <Message
         visible={trasferVisible}
-        title={`${memberInfo?.name}님을 룸 관리자로 지정하시겠습니까?`}
-        subtitle={`기존의 룸 관리자는 멤버로 권한 변경되며
-            이후 룸 설정에 접근할 수 없습니다.`}
+        title={t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_AUTHORITY_01', {
+          value: memberInfo?.name,
+        })}
+        subtitle={t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_AUTHORITY_02')}
         type="error"
         btns={[
           {
             type: 'solid',
             shape: 'round',
-            text: '확인',
+            text: t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_AUTHORITY_03'),
             onClick: handleTransferOk,
           },
           {
             type: 'outlined',
             shape: 'round',
-            text: '취소',
+            text: t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_AUTHORITY_04'),
             onClick: handleTransferCancel,
           },
         ]}
@@ -138,13 +142,28 @@ const MemberSettingPage = ({ members, roomId }) => {
         <HeaderCell style={{ width: WIDTH.CHECKBOX }}>
           {/* <Checkbox className="check-round" /> */}
         </HeaderCell>
-        <HeaderCell style={{ width: WIDTH.NICK }}>별명</HeaderCell>
-        <HeaderCell style={{ width: WIDTH.LOGIN_ID }}>아이디</HeaderCell>
-        <HeaderCell style={{ width: WIDTH.TEAM }}>소속</HeaderCell>
-        <HeaderCell style={{ width: WIDTH.JOB }}>직위</HeaderCell>
-        <HeaderCell style={{ width: WIDTH.PHONE }}>휴대폰 번호</HeaderCell>
-        <HeaderCell style={{ width: WIDTH.ROLE }}>스페이스 권한</HeaderCell>
-        <HeaderCell style={{ width: WIDTH.BUTTON }}>룸 권한 이양</HeaderCell>
+        <HeaderCell style={{ width: WIDTH.NICK }}>
+          {t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_GENERAL_05')}
+        </HeaderCell>
+        <HeaderCell style={{ width: WIDTH.LOGIN_ID }}>
+          {' '}
+          {t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_GENERAL_06')}
+        </HeaderCell>
+        <HeaderCell style={{ width: WIDTH.TEAM }}>
+          {t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_COMPANY_07')}
+        </HeaderCell>
+        <HeaderCell style={{ width: WIDTH.JOB }}>
+          {t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_COMPANY_08')}
+        </HeaderCell>
+        <HeaderCell style={{ width: WIDTH.PHONE }}>
+          {t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_GENERAL_07')}
+        </HeaderCell>
+        <HeaderCell style={{ width: WIDTH.ROLE }}>
+          {t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_GENERAL_08')}
+        </HeaderCell>
+        <HeaderCell style={{ width: WIDTH.BUTTON }}>
+          {t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_GENERAL_09')}
+        </HeaderCell>
       </TableHeader>
       <TableBody ref={tableBodyRef}>
         <List

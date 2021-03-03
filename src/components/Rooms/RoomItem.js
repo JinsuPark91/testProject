@@ -7,6 +7,7 @@ import { isEqual } from 'lodash';
 import { useCoreStores } from 'teespace-core';
 import { talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
+import { useTranslation } from 'react-i18next';
 import { ACCEPT_ITEMS, TALK_ACCEPT_ITEMS } from '../../utils/DndConstant';
 import Photos from '../Photos';
 import {
@@ -22,6 +23,7 @@ import mySign from '../../assets/wapl_me.svg';
 const RoomDropdown = React.memo(
   ({ children, roomInfo, onMenuClick, onClickMenuItem }) => {
     const { roomStore, userStore } = useCoreStores();
+    const { t } = useTranslation();
     const { id: roomId } = roomInfo;
     const myUserId = userStore.myProfile.id;
     const [visible, setVisible] = useState(false);
@@ -140,42 +142,42 @@ const RoomDropdown = React.memo(
             // NOTE. 마이름은 메뉴 자체가 없다. (체크할 필요 없음)
             !isDMRoom && (
               <Menu.Item key="changeName" onClick={handleNameChange}>
-                이름 변경
+                {t('WEB_COMMON_CHANGE_NAME_02')}
               </Menu.Item>
             )
           }
           {roomInfo.isRoomBookmarked ? (
             <Menu.Item key="disableBookmark" onClick={handleBookmarkDisable}>
-              룸 상단 고정 해제
+              {t('WEB_COMMON_FIX_TOP_ROOM_03')}
             </Menu.Item>
           ) : (
             <Menu.Item key="enableBookmark" onClick={handleBookmarkEnable}>
-              룸 상단 고정
+              {t('WEB_COMMON_CHANGE_NAME_03')}
             </Menu.Item>
           )}
           {roomInfo.isAlarmUsed ? (
             <Menu.Item key="disableAlarm" onClick={handleAlarmDisable}>
-              알림 끄기
+              {t('WEB_COMMON_CHANGE_NAME_04')}
             </Menu.Item>
           ) : (
             <Menu.Item key="enableAlarm" onClick={handleAlarmEnable}>
-              알림 켜기
+              {t('WEB_COMMON_CHANGE_NAME_04')}
             </Menu.Item>
           )}
           <Menu.Item key="member" onClick={handleViewMember}>
-            룸 구성원 보기
+            {t('WEB_COMMON_NOTIFICATION_SETTING_01')}
           </Menu.Item>
           {
             // NOTE. 마이룸과 1:1 룸은 룸설정 할 수 없음
             // NOTE. 1:1 방이 아니고, 내가 관리자면 세팅페이지를 볼수 있다.
             !isDMRoom && isAdmin && (
               <Menu.Item key="setting" onClick={handleSetting}>
-                룸 설정
+                {t('WEB_COMMON_ROOM_CONTEXT_MENU_02')}
               </Menu.Item>
             )
           }
           <Menu.Item key="exit" onClick={handleExit}>
-            나가기
+            {t('WEB_COMMON_DELETE_ROOM_GROUP_03')}
           </Menu.Item>
         </StyledMenu>
       );
@@ -384,7 +386,6 @@ const RoomItem = ({
       // Item Type에 따라서 처리해야 될 일들
       //
       if (TALK_ACCEPT_ITEMS.includes(item.type)) {
-        console.log('TALK 로 아이템 전달. ', item.data);
         const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
           item.type.toLowerCase(),
         );

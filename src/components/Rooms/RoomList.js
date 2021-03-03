@@ -245,17 +245,17 @@ function RoomList() {
 
       <Message
         visible={isExitNormalModalVisible}
-        title="룸에서 나가시겠습니까?"
-        subtitle="룸을 나가면, 모바일 WAPL에서도 룸이 삭제됩니다. 중요한 데이터는 미리 백업해 주세요."
+        title={t('WEB_COMMON_DELETE_ROOM_GROUP_01')}
+        subtitle={t('WEB_COMMON_DELETE_ROOM_GROUP_02')}
         type="error"
         btns={[
           {
-            text: '나가기',
+            text: t('WEB_COMMON_DELETE_ROOM_GROUP_03'),
             type: 'solid',
             onClick: handleConfirmExitNormalModal,
           },
           {
-            text: '취소',
+            text: t('WEB_COMMON_DELETE_ROOM_GROUP_04'),
             type: 'outlined',
             onClick: handleCloseExitNormalModal,
           },
@@ -264,17 +264,17 @@ function RoomList() {
 
       <Message
         visible={isExitAdminModalVisible}
-        title="룸 관리자는 룸을 나갈 수 없습니다"
-        subtitle="룸을 나가시려면, 먼저 룸 설정에서 다른 멤버에게 룸 관리자 권한을 이양해주세요."
+        title={t('WEB_COMMON_DELETE_ROOM_GROUP_05')}
+        subtitle={t('WEB_COMMON_DELETE_ROOM_GROUP_06')}
         type="warning"
         btns={[
           {
-            text: '룸 설정으로 이동',
+            text: t('WEB_COMMON_DELETE_ROOM_GROUP_07'),
             type: 'solid',
             onClick: handleConfirmExitAdminModal,
           },
           {
-            text: '취소',
+            text: t('WEB_COMMON_DELETE_ROOM_GROUP_08'),
             type: 'outlined',
             onClick: handleCloseExitAdminModal,
           },
@@ -288,7 +288,9 @@ function RoomList() {
           if (isNewRoom) {
             setIsToastVisible(true);
             setToastText(
-              `${selectedUsers.length}명의 구성원이 초대되었습니다.`,
+              t('WEB_COMMON_CREATE_PRIVATE_ROOM_07', {
+                value: selectedUsers.length,
+              }),
             );
           }
         }}

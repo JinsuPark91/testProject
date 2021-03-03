@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Tabs } from 'antd';
 import { useCoreStores } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeftIcon, CancelIcon } from '../Icons';
 import MemberSettingPage from './MemberSettingPage';
 import CommonSettingPage from './CommonSettingPage';
@@ -10,6 +11,7 @@ import CommonSettingPage from './CommonSettingPage';
 const { TabPane } = Tabs;
 
 const RoomSetting = ({ roomInfo = null }) => {
+  const { t } = useTranslation();
   const history = useHistory();
   const { userStore, roomStore } = useCoreStores();
   const [members, setMembers] = useState([]);
@@ -39,7 +41,9 @@ const RoomSetting = ({ roomInfo = null }) => {
           <IconWrapper onClick={handleClose}>
             <ArrowLeftIcon width={1} height={1} color="#000000" />
           </IconWrapper>
-          <TitleText style={{ marginLeft: '0.5rem' }}>룸 설정</TitleText>
+          <TitleText style={{ marginLeft: '0.5rem' }}>
+            {t('WEB_COMMON_ROOM_CONTEXT_MENU_02')}
+          </TitleText>
         </Centered>
         <Centered
           style={{ borderLeft: '1px solid #E3E7EB', paddingLeft: '0.7rem' }}
@@ -51,11 +55,11 @@ const RoomSetting = ({ roomInfo = null }) => {
       </Header>
       <Content>
         <StyledTabs className="default">
-          <TabPane key="common" tab="기본 정보 설정">
+          <TabPane key="common" tab={t('WEB_COMMON_ROOM_SETTING_BASIC_01')}>
             <CommonSettingPage roomInfo={roomInfo} />
           </TabPane>
 
-          <TabPane key="member" tab="구성원 관리">
+          <TabPane key="member" tab={t('TEMP_04')}>
             <MemberSettingPage members={members} roomId={roomInfo?.id} />
           </TabPane>
         </StyledTabs>
