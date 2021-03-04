@@ -1,8 +1,17 @@
 import { RoomStore, UserStore } from 'teespace-core';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
+export const getRoomId = () => {
+  const targetId =
+    PlatformUIStore.resourceId === UserStore.myProfile.id
+      ? RoomStore.getRoomArray()[0].id
+      : PlatformUIStore.resourceId;
+  return targetId;
+};
+
 const findRoom = () => {
-  return RoomStore.getRoomMap().get(PlatformUIStore.resourceId);
+  const targetId = getRoomId();
+  return RoomStore.getRoomMap().get(targetId);
 };
 
 export const getRoomName = () => {
@@ -16,7 +25,5 @@ export const getRoomName = () => {
       return found?.customName || found?.name;
     }
   }
-  return myProfile.displayName;
+  return null;
 };
-
-export const extraFunction = () => {};
