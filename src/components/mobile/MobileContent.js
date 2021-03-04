@@ -1,18 +1,17 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { Talk } from 'teespace-talk-app';
 import { NoteApp } from 'teespace-note-app';
 import { CalendarApp } from 'teespace-calendar-app';
 import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
-import MobileRoomCreatePage from './MobileRoomCreatePage';
 import MobileRoomItem from './MobileRoomItem';
+import MobileRoomCreatePage from './MobileRoomCreatePage';
+import MobileSelectPage from './MobileSelectPage';
 import PlatformUIStore from '../../stores/PlatformUIStore';
+import { getRoomId } from './MobileUtil';
 
 const MobileContent = observer(() => {
-  const history = useHistory();
-  const { roomStore, userStore } = useCoreStores();
-  const myUserId = userStore.myProfile.id;
+  const { roomStore } = useCoreStores();
 
   const roomFilter = room => room.isVisible;
   const getRoomArray = () => {
@@ -28,9 +27,6 @@ const MobileContent = observer(() => {
     );
   };
 
-  const getRoomId = () => {
-    return PlatformUIStore.resourceId;
-  };
   const getChannelId = type => {
     const roomId = getRoomId();
     return roomStore
@@ -43,17 +39,13 @@ const MobileContent = observer(() => {
     PlatformUIStore.isSearchVisible = false;
   };
 
-  const handleCreateRoom = () => {
-    history.push(`/create/${myUserId}`);
-  };
-
   switch (PlatformUIStore.resourceType) {
     case 'room':
       return <RoomList roomList={getRoomArray()} />;
     case 'create':
       return <MobileRoomCreatePage />;
     case 'select':
-      return <></>;
+      return <MobileSelectPage />;
     case 'talk':
       return (
         <Talk
@@ -66,10 +58,20 @@ const MobileContent = observer(() => {
       );
     case 'calendar':
       return (
-        <CalendarApp roomId={getRoomId()} channel={getChannelId('CHN0005')} />
+        <CalendarApp
+          roomId={getRoomId()}
+          channelId={getChannelId('CHN0005')}
+          layoutState="collapse"
+        />
       );
     case 'note':
-      return <NoteApp roomId={getRoomId()} channel={getChannelId('CHN0003')} />;
+      return (
+        <NoteApp
+          roomId={getRoomId()}
+          channelId={getChannelId('CHN0003')}
+          layoutState="collapse"
+        />
+      );
     default:
       return null;
   }
