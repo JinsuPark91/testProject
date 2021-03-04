@@ -22,6 +22,7 @@ const LogoutPage = () => {
 
       wwms.disconnect();
       Cookies.remove('ACCESS_TOKEN');
+      Cookies.remove('DEVICE_TYPE');
       await keycloak.logout({
         redirectUri: redirectURL,
       });
