@@ -38,6 +38,7 @@ import {
   ViewFileActiveIcon,
   MeetingIcon,
   MeetingActiveIcon,
+  OpenChatIcon,
 } from '../Icons';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 
@@ -414,6 +415,15 @@ const Header = observer(() => {
                 srcList={getUserPhotos()}
                 onClick={handleClickRoomPhoto}
               />
+              {findRoom().type === 'WKS0003' && (
+                <div style={{ display: 'flex', marginRight: '0.25rem' }}>
+                  <OpenChatIcon
+                    width={0.9}
+                    height={0.9}
+                    color="rgb(0, 73, 61)"
+                  />
+                </div>
+              )}
               <TitleText>{getRoomName()}</TitleText>
               {!(isMyRoom() || isDMRoom()) ? (
                 <UserCountText>{getUserCount()}</UserCountText>
