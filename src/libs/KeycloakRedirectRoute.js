@@ -68,12 +68,22 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
             ) {
               await authStore.logout().then(() => {
                 Cookies.remove('ACCESS_TOKEN');
+                Cookies.remove('DEVICE_TYPE');
               });
             }
 
             const res = await authStore.login(loginInfo);
 
             if (res) {
+              Cookies.set(
+                'DEVICE_TYPE',
+                'PC',
+                process.env.REACT_APP_ENV === 'local'
+                  ? {}
+                  : {
+                      domain: `.${window.location.host}`,
+                    },
+              );
               if (process.env.REACT_APP_ENV !== 'local') {
                 if (!authStore.sessionInfo.isTermAgree) {
                   window.location.href = `${window.location.protocol}//${mainURL}/first-login`;
