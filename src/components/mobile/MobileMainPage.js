@@ -41,9 +41,7 @@ const MobileMainPage = observer(() => {
 
   useEffect(() => {
     PlatformUIStore.resourceType = resourceType;
-    if (resourceId) PlatformUIStore.resourceId = resourceId;
-    // 임시... route 고민
-    else PlatformUIStore.resourceId = myUserId;
+    PlatformUIStore.resourceId = resourceId;
   }, [resourceType, resourceId, myUserId]);
 
   if (isLoading) {
