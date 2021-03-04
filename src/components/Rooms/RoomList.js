@@ -338,12 +338,7 @@ function RoomList() {
         </Observer>
       </RoomContainer>
       <ButtomWrapper>
-        <div
-          onClick={() => {
-            if (i18n.language === 'ko') i18n.changeLanguage('en');
-            else i18n.changeLanguage('ko');
-          }}
-        >
+        <div>
           <WaplLogo />
         </div>
         <Toast
