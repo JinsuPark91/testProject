@@ -1,6 +1,7 @@
 import moment from 'moment-timezone';
 
 export const getMessageTime = timeStampWithTimeZone => {
+  if (!timeStampWithTimeZone) return null;
   const time = timeStampWithTimeZone.substring(
     0,
     timeStampWithTimeZone.lastIndexOf(' '),

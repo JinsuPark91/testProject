@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import styled from 'styled-components';
-import MobileRoomHeader from './MobileRoomHeader';
-import MobileTalkHeader from './MobileTalkHeader';
+import MobileHeader from './MobileHeader';
 import MobileContent from './MobileContent';
+import MobileFooter from './MobileFooter';
 import LoadingImg from '../../assets/WAPL_Loading.gif';
 import PlatformUIStore from '../../stores/PlatformUIStore';
-import MobileRoomCreatePage from './MobileRoomCreatePage';
 
 const Wrapper = styled.div`
   height: 100%;
 `;
 const Container = styled.div`
   padding-top: 3.1rem;
-  height: 100%;
+  height: 95%;
   overflow-y: scroll;
 `;
+
 const Loader = styled.div``;
 
 const MobileMainPage = observer(() => {
-  const history = useHistory();
   const { resourceType, resourceId } = useParams();
   const { userStore, friendStore, roomStore } = useCoreStores();
   const [isLoading, setIsLoading] = useState(true);
@@ -43,15 +42,7 @@ const MobileMainPage = observer(() => {
   useEffect(() => {
     PlatformUIStore.resourceType = resourceType;
     PlatformUIStore.resourceId = resourceId;
-  }, [resourceType, resourceId]);
-
-  const handleCreateRoom = () => {
-    history.push(`/create/${myUserId}`);
-  };
-
-  const handleCancelRoom = () => {
-    history.push(`/room/${myUserId}`);
-  };
+  }, [resourceType, resourceId, myUserId]);
 
   if (isLoading) {
     return (
@@ -61,25 +52,14 @@ const MobileMainPage = observer(() => {
     );
   }
 
-  if (PlatformUIStore.resourceType === 'create') {
-    return (
-      <Wrapper>
-        <MobileRoomCreatePage onCancel={handleCancelRoom} />
-      </Wrapper>
-    );
-  }
-
   return (
     <>
       <Wrapper>
-        {PlatformUIStore.resourceType === 'room' ? (
-          <MobileRoomHeader onRoomCreate={handleCreateRoom} />
-        ) : (
-          <MobileTalkHeader />
-        )}
         <Container>
+          <MobileHeader />
           <MobileContent />
         </Container>
+        <MobileFooter />
       </Wrapper>
     </>
   );
