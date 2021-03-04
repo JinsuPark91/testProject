@@ -75,10 +75,7 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
 
             if (res) {
               if (process.env.REACT_APP_ENV !== 'local') {
-                if (!authStore.sessionInfo.isHyperAuthTermAgree) {
-                  window.location.href = `${window.location.protocol}//${mainURL}/auth-first-login`;
-                  return null;
-                }else if (!authStore.sessionInfo.isTermAgree) {
+                if (!authStore.sessionInfo.isTermAgree) {
                   window.location.href = `${window.location.protocol}//${mainURL}/first-login`;
                   return null;
                 }

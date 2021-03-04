@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { ItemSelector, useCoreStores, logEvent } from 'teespace-core';
 import { Checkbox, Button } from 'antd';
-import { useTranslation } from 'react-i18next';
 import {
   ConfigTitle,
   ConfigTitleText,
@@ -10,10 +9,9 @@ import {
   ButtonContainer,
   FlexModal,
 } from './CreatePrivateRoomDialogStyle';
-import Input from '../Input';
+import Input from '../../Input';
 
 const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
-  const { t } = useTranslation();
   const { userStore } = useCoreStores();
   const initialOptions = {
     isChangeName: false,
@@ -68,13 +66,14 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
       visible={visible}
       onCancel={handleCancel}
       onOk={handleOk}
-      title={t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_02')}
+      title="프라이빗 룸 만들기"
       footer={null}
       width="fit-content"
       destroyOnClose
     >
       <>
         <ItemSelector
+          showTagList={false}
           isVisibleRoom={false}
           onSelectChange={handleSelectedUserChange}
           disabledIds={disabledIds}
@@ -91,50 +90,48 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
               checked={options.isChangeName}
               onChange={handleChangeNameChange}
             />
-            <ConfigTitleText>
-              {t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_06')}
-            </ConfigTitleText>
+            <ConfigTitleText>룸 이름 설정하기</ConfigTitleText>
           </ConfigTitle>
 
-          <ConfigDescriptionText>
-            {t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_07')}
+          {/* <ConfigDescriptionText>
+            {`초기 설정하지 않을 시, 구성원 이름으로 나열된 룸이 개설되며,
+            이후 변경한 룸 이름은 개인에게만 적용됩니다.`}
           </ConfigDescriptionText>
 
           <Input
             maxLength={50}
             value={options.roomName}
             onChange={handleChangeName}
-            placeholder={t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_08')}
+            placeholder="목적, 토픽 등이 있다면 입력해 주세요."
             disabled={selectedUsers.length < 2 || !options.isChangeName}
-          />
+          /> */}
 
-          <ConfigTitle>
+          {/* <ConfigTitle>
             <Checkbox
               className="check-round"
               checked={options.isStartMeeting}
               onChange={handleStartMeetingChange}
             />
             <ConfigTitleText>
-              {t('WEB_COMMON_CREATE_PRIVATE_ROOM_04')}
+              초대 구성원과 바로 Meeting 시작하기
             </ConfigTitleText>
-          </ConfigTitle>
+          </ConfigTitle> */}
         </ConfigWrapper>
 
-        <ButtonContainer>
+        {/* <ButtonContainer>
           <Button
             type="solid"
             shape="default"
             onClick={handleOk}
             disabled={!selectedUsers.length}
-          >
-            {t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_09', {
-              value: selectedUsers.length > 99 ? '99+' : selectedUsers.length,
-            })}
-          </Button>
+          >{`초대 ${
+            selectedUsers.length > 99 ? '99+' : selectedUsers.length
+          }`}</Button>
+
           <Button type="outlined" shape="default" onClick={handleCancel}>
-            {t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_10')}
+            취소
           </Button>
-        </ButtonContainer>
+        </ButtonContainer> */}
       </>
     </FlexModal>
   );

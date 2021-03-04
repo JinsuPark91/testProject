@@ -8,8 +8,9 @@ import {
   initGA,
 } from 'teespace-core';
 import { createGlobalStyle } from 'styled-components';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
+import { BrowserRouter, Switch, Route, Router } from 'react-router-dom';
+import MobileApp from './components/mobile/MobileApp';
+import WebApp from './App';
 import * as serviceWorker from './serviceWorker';
 import { setEnv, getEnv } from './env';
 
@@ -80,10 +81,15 @@ initGA(global.env.PLATFORM_GA_ID);
 
 ReactDOM.render(
   <CoreStoreProvider config={getEnv()}>
-    <GlobalStyle />
     <GlobalCommonStyles />
     <BrowserRouter>
-      <App />
+      <Switch>
+        <Route path="/mobile" component={MobileApp} />
+        <Route path="/">
+          <GlobalStyle />
+          <WebApp />
+        </Route>
+      </Switch>
     </BrowserRouter>
   </CoreStoreProvider>,
   document.getElementById('root'),

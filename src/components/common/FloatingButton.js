@@ -7,8 +7,9 @@ import {
 import styled from 'styled-components';
 import Draggable from 'react-draggable';
 import { Tooltip } from 'antd';
+import { useTranslation } from 'react-i18next';
 
-import { ChattingIcon, CancelIcon, ArrowDownIcon, ArrowUpIcon } from '../Icons';
+import { MiniChatIcon, CancelIcon, ArrowDownIcon, ArrowUpIcon } from '../Icons';
 
 const remToPixel = rem => {
   return (
@@ -17,6 +18,8 @@ const remToPixel = rem => {
 };
 
 const ChildItem = ({ roomInfo, onItemClick, onItemClose }) => {
+  const { t } = useTranslation();
+
   const handleClick = () => {
     onItemClick(roomInfo);
   };
@@ -34,9 +37,15 @@ const ChildItem = ({ roomInfo, onItemClick, onItemClose }) => {
       <div style={{ height: '1rem' }}>
         {roomInfo.userCount > 3 ? roomInfo.userCount : ''}
       </div>
-      <div className="close-button" onClick={handleClose}>
-        <CancelIcon width={0.8} height={0.8} color="#ffffff" />
-      </div>
+      <Tooltip
+        placement="bottom"
+        title={t('WEB_COMMON_POPUP_TALK_MULTI_02')}
+        color="#232D3B"
+      >
+        <div className="close-button" onClick={handleClose}>
+          <CancelIcon width={0.8} height={0.8} color="#ffffff" />
+        </div>
+      </Tooltip>
     </ChildItemWrapper>
   );
 };
@@ -49,7 +58,7 @@ const MainItem = ({
 }) => {
   return (
     <MainItemWrapper visible={visible} onClick={handleMainClick}>
-      <ChattingIcon width={2.69} height={1.88} />
+      <MiniChatIcon width={1.5} height={1.5} color="#fff" />
       {/* {visibleCloseButton ? (
         <div className="close-button" onClick={handleAllClose}>
           <CancelIcon width={0.8} height={0.8} color="#ffffff" />
@@ -76,6 +85,7 @@ const FloatingButton = ({
   onItemClick = () => {},
   onItemClose = () => {},
 }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isDrag, setIsDrag] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
@@ -85,6 +95,12 @@ const FloatingButton = ({
       setStartIndex(0);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!visible) {
+      setIsOpen(false);
+    }
+  }, [visible]);
 
   const handleMainClick = () => {
     if (!isDrag) {
@@ -128,7 +144,9 @@ const FloatingButton = ({
     <Draggable bounds="parent" onDrag={handleDrag}>
       <Wrapper>
         {isOpen && (
-          <AllCloseButton onClick={handleAllClose}>모두 종료</AllCloseButton>
+          <AllCloseButton onClick={handleAllClose}>
+            {t('WEB_COMMON_POPUP_TALK_MULTI_01')}
+          </AllCloseButton>
         )}
         <CustomFloatingMenu
           spacing={remToPixel(0.63)}
@@ -211,29 +229,29 @@ const Wrapper = styled.div`
 
 const AllCloseButton = styled.div`
   display: flex;
-  width: 4.75rem;
+  width: 4.63rem;
   height: 1.88rem;
   justify-content: center;
   align-items: center;
   background: #ffffff;
-  border: 1px solid #c6ced6;
-  border-radius: 0.9rem;
+  border: 1px solid #d0ccc7;
+  border-radius: 0.25rem;
   font-size: 0.75rem;
   color: #3b3b3b;
   align-self: flex-end;
-  margin-right: 0.84rem;
+  margin-right: 0.97rem;
   position: absolute;
   right: 3.5rem;
   box-shadow: 0 0 5px 0 #c6ced6;
 
   &:hover {
-    background: #dcddff;
+    border: 1px solid #232d3b;
   }
 
   &:active {
-    background: #ffffff;
-    box-shadow: unset;
-    border: 1px solid #6c56e5;
+    color: #ffffff;
+    border: unset;
+    background: #17202b;
   }
 `;
 
@@ -286,29 +304,26 @@ const RoundButton = styled.div`
 `;
 
 const MainItemWrapper = styled(RoundButton)`
-  background: #0b1d41;
+  background: #232d3b;
 
   &:hover {
-    background: #151559;
+    background: #6a7076;
   }
 
   &:active {
-    background: #342f7d;
+    background: #17202b;
   }
-
-  // & .close-button:hover {
-  //   background: rgba(0, 0, 0, 0.4);
-  // }
 `;
 
 const ChildItemWrapper = styled(RoundButton)`
-  background: #6c56e5;
+  background: #205855;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
 
   &:hover {
-    background: rgba(86, 68, 183, 1);
+    background: #698c87;
   }
 
   & .close-button:hover {
-    background: rgba(0, 0, 0, 0.4);
+    background: #205855;
   }
 `;
