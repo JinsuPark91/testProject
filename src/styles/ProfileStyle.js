@@ -11,8 +11,8 @@ import PhoneIcon from '../assets/phone.svg';
 import MailIcon from '../assets/mail.svg';
 import EmailHoverIcon from '../assets/ts_export.svg';
 import tsBgImgIcon from '../assets/ts_photo.svg';
-import starLineIcon from '../assets/ts_star_line.svg';
-import starIcon from '../assets/ts_star.svg';
+import starLineIcon from '../assets/favorites_line.svg';
+import starIcon from '../assets/favorites.svg';
 
 export const Wrapper = styled.div`
   display: flex;
@@ -63,52 +63,23 @@ export const UserEmailText = styled(Text)`
   font-size: 0.875rem;
 `;
 
-export const ImageChangeButton = styled(Text)`
+export const ImageChangeButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 2rem;
   height: 2rem;
-  background: black;
+  border: none;
+  background-color: #000;
   border-radius: 50%;
-  position: absolute;
 
   &:hover {
-    background: gray;
-    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.2);
   }
 
-  &:active,
-  &:focus {
+  &:active {
     background-color: #205855;
   }
-
-  ${props => {
-    switch (props.position) {
-      case 'tl':
-      default:
-        return css`
-          top: 10px;
-          left: 10px;
-        `;
-
-      case 'tr':
-        return css`
-          top: 10px;
-          right: 10px;
-        `;
-      case 'bl':
-        return css`
-          bottom: 10px;
-          left: 10px;
-        `;
-      case 'br':
-        return css`
-          bottom: 10px;
-          right: 10px;
-        `;
-    }
-  }}
 `;
 
 export const StyledButton = styled(Text)`
@@ -146,7 +117,7 @@ export const ContentTop = styled.div`
   align-items: left;
   width: 100%;
   height: 8rem;
-  padding: 0.25rem 0.25rem 0;
+  padding: 0.94rem 0.94rem 0;
 `;
 
 export const ContentBody = styled.div`
@@ -400,24 +371,24 @@ export const UserStatusMsg = styled.p`
   text-align: center;
 `;
 
-export const TopButton = styled.button`
-  width: 3rem;
-  height: 3rem;
+export const BookMarkButton = styled.button`
+  width: 2rem;
+  height: 2rem;
   background-color: transparent;
   border-radius: 50%;
   border: 0;
-  cursor: pointer;
+  background: url(${starLineIcon}) no-repeat 50% 50%;
+  background-size: 1.13rem 1.13rem;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  &:active {
+    background-color: #205855;
+    background-image: url(${starIcon});
+  }
+
   ${props => {
     return css`
-      background: url(${starLineIcon}) no-repeat 50% 50%;
-      background-size: 1.13rem 1.13rem;
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-      }
-      &:active {
-        background-image: url(${starIcon});
-        background-color: #205855;
-      }
       ${props.isFav
         ? `background-image: url(${starIcon});`
         : `background-image: url(${starLineIcon});`}

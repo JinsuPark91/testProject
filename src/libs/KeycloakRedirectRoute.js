@@ -103,10 +103,15 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
               });
             }
             // NOTE. 이전 경로가 존재하면 해당 경로로 이동
-            if (props.location.state?.from) {
-              history.push(
-                `${props.location.state?.from.pathname}${props.location.state?.from.search}`,
-              );
+            const stateFrom = props.location.state?.from;
+            if (stateFrom) {
+              // TODO IMPORTANT: mobile에서 이렇게 해도 되는지 확인 필요
+              if (stateFrom.pathname === '/room')
+                history.push(`${stateFrom.pathname}/${authStore.user.id}`);
+              else
+                history.push(
+                  `${stateFrom.pathname}${props.location.state?.from.search}`,
+                );
             } else {
               history.push(`/f/${authStore.user.id}/profile`);
             }

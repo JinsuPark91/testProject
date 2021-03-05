@@ -81,19 +81,21 @@ const StyledLinkButton = styled(Button)`
   }
 `;
 
-const SendButton = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+const SendButton = styled.button`
   height: 1.88rem;
   width: 1.88rem;
+  line-height: 0;
   background-color: #f7f4ef;
   border-radius: 0.38rem;
-
-  & > img {
+  border: none;
+  &:hover {
+    background-color: #ebe6df;
+  }
+  &:active {
+    background-color: #ddd7cd;
+  }
+  img {
     width: 1.08rem;
-    height: ;
   }
 `;
 
