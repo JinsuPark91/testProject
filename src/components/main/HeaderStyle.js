@@ -95,7 +95,6 @@ export const UserCountText = styled.div`
 
 export const TitleText = styled.div`
   font-size: 0.875rem;
-  margin-left: 0.63rem;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -120,6 +119,7 @@ export const IconWrapper = styled.button`
 `;
 
 export const StyledPhotos = styled(Photos)`
+  margin-right: 0.63rem;
   flex-shrink: 0;
 `;
 
