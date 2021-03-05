@@ -37,7 +37,7 @@ import {
   StyleOfficeIcon,
   EditNameInput,
   StyleInput,
-  TopButton,
+  BookMarkButton,
   Blind,
   LockIconBox,
   ImageChange,
@@ -360,19 +360,18 @@ const Profile = observer(
                     </Menu>
                   }
                 >
-                  <ImageChangeButton position="tl">
+                  <ImageChangeButton>
                     <CameraIcon width="1.25" height="1.25" />
                   </ImageChangeButton>
                 </Dropdown>
               )}
               {!editEnabled && !(userId === userStore.myProfile.id) && (
-                <TopButton
-                  type="bookMark"
+                <BookMarkButton
                   isFav={friendStore.isFavoriteFriend(userId)}
                   onClick={handleToggleFavoriteFriend}
                 >
                   <Blind>즐겨찾기</Blind>
-                </TopButton>
+                </BookMarkButton>
               )}
             </ContentTop>
             <ContentBody>

@@ -128,6 +128,9 @@ const Wrapper = styled.div`
         return css`
           padding-left: 0.25rem;
           border-bottom: 0.09rem solid #17202b;
+          input::placeholder {
+            color: #bcbcbc;
+          }
         `;
       default:
       case 'border':
@@ -135,6 +138,9 @@ const Wrapper = styled.div`
           padding: 0 0.63rem;
           border: 1px solid #7b7671;
           border-radius: 0.375rem;
+          input::placeholder {
+            color: #c9c4be;
+          }
         `;
     }
   }}
@@ -152,11 +158,6 @@ const Wrapper = styled.div`
     font-size: 0.75rem;
     background-color: transparent;
     border: 0;
-
-    &::placeholder {
-      color: #bcbcbc;
-    }
-
     &:focus {
       outline: 0;
     }
@@ -164,9 +165,7 @@ const Wrapper = styled.div`
 `;
 
 const IconWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  line-height: 0;
   cursor: pointer;
 `;
 
