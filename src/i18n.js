@@ -1,20 +1,30 @@
-import i18n from 'i18next';
+import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import ko from './locales/ko.json';
-import en from './locales/en.json';
+import Backend from 'i18next-http-backend';
 
-const resources = {
-  ko: { translation: ko },
-  en: { translation: en },
-};
+const i18n = i18next.createInstance();
+i18n
+  .use(Backend)
+  .use(initReactI18next)
+  .init(
+    {
+      debug: true,
+      lng: 'ko',
+      fallbackLng: 'en',
+      ns: ['translation'],
+      defaultNS: 'translation',
+      keySeparator: false,
+      interpolation: { escapeValue: false },
+      backend: {
+        loadPath: `/locales/{{lng}}/{{ns}}.json`,
+      },
+      react: {
+        useSuspense: false,
+      },
+    },
+    (err, t) => {
+      if (err) return console.log(err);
+    },
+  );
 
-const initI18n = () => {
-  return i18n.use(initReactI18next).init({
-    resources,
-    lng: 'ko',
-    keySeparator: false,
-    interpolation: { escapeValue: false },
-  });
-};
-
-export { initI18n };
+export default i18n;

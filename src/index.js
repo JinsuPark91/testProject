@@ -7,8 +7,10 @@ import {
   API,
   initGA,
 } from 'teespace-core';
+import { I18nextProvider } from 'react-i18next';
 import { createGlobalStyle } from 'styled-components';
-import { BrowserRouter, Switch, Route, Router } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import i18n from './i18n';
 import MobileApp from './components/mobile/MobileApp';
 import WebApp from './App';
 import * as serviceWorker from './serviceWorker';
@@ -81,16 +83,18 @@ initGA(global.env.PLATFORM_GA_ID);
 
 ReactDOM.render(
   <CoreStoreProvider config={getEnv()}>
-    <GlobalCommonStyles />
-    <BrowserRouter>
-      <Switch>
-        <Route path="/mobile" component={MobileApp} />
-        <Route path="/">
-          <GlobalStyle />
-          <WebApp />
-        </Route>
-      </Switch>
-    </BrowserRouter>
+    <I18nextProvider i18n={i18n}>
+      <GlobalCommonStyles />
+      <BrowserRouter>
+        <Switch>
+          <Route path="/mobile" component={MobileApp} />
+          <Route path="/">
+            <GlobalStyle />
+            <WebApp />
+          </Route>
+        </Switch>
+      </BrowserRouter>
+    </I18nextProvider>
   </CoreStoreProvider>,
   document.getElementById('root'),
 );

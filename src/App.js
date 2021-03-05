@@ -38,7 +38,6 @@ import KeycloakRedirectRoute from './libs/KeycloakRedirectRoute';
 import keycloak from './libs/keycloak';
 import { getQueryParams } from './utils/UrlUtil';
 import initMonitoringLog from './libs/monitoringLog';
-import { initI18n } from './i18n';
 
 const hydrate = create();
 
@@ -92,7 +91,7 @@ function App() {
 
   // hydrate mobx stores
   useEffect(() => {
-    Promise.all([hydrate('user', userStore), initI18n()])
+    Promise.all([hydrate('user', userStore)])
       .then(() => {
         userStore.initHydratedMyProfile({});
         setIsHydrating(true);

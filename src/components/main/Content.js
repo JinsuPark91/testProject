@@ -8,6 +8,7 @@ import { MailMainView, MailSubView } from 'teespace-mail-app';
 import { DriveApp, DriveAllApp } from 'teespace-drive-app';
 import { App as MeetingApp } from 'teespace-meeting-app';
 import { useCoreStores, AppState } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import RoomSetting from '../Rooms/RoomSetting';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import { Wrapper, Splitter } from './ContentStyle';
@@ -26,6 +27,7 @@ const Content = () => {
   const splitRef = useRef(null);
   const contentRef = useRef(null);
   const myUserId = userStore.myProfile.id;
+  const { i18n } = useTranslation();
 
   useEffect(() => {
     if (contentRef) {
@@ -83,6 +85,7 @@ const Content = () => {
             layoutState={PlatformUIStore.layout}
             isSearchInputVisible={PlatformUIStore.isSearchVisible}
             onSearchClose={handleSearchClose}
+            language={i18n.language}
             isMini={false}
           />
         );
@@ -90,6 +93,7 @@ const Content = () => {
         return (
           <NoteApp
             roomId={getRoomId()}
+            language={i18n.language}
             channelId={getChannelId('CHN0003')}
             layoutState={PlatformUIStore.layout}
           />
@@ -99,6 +103,7 @@ const Content = () => {
           <DriveApp
             userId={myUserId}
             roomId={getRoomId()}
+            language={i18n.language}
             channelId={getChannelId('CHN0006')}
             layoutState={PlatformUIStore.layout}
           />
@@ -108,6 +113,7 @@ const Content = () => {
           <DriveAllApp
             userId={myUserId}
             roomId={getRoomId()}
+            language={i18n.language}
             channelId={getChannelId('CHN0006')}
             layoutState={PlatformUIStore.layout}
           />
@@ -116,6 +122,7 @@ const Content = () => {
         return (
           <CalendarApp
             roomId={getRoomId()}
+            language={i18n.language}
             channelId={getChannelId('CHN0005')}
             layoutState={PlatformUIStore.layout}
           />
@@ -124,6 +131,7 @@ const Content = () => {
         return (
           <MeetingApp
             roomId={getRoomId()}
+            language={i18n.language}
             channelId={getChannelId('CHN0005')}
             layoutState={PlatformUIStore.layout}
             appState={PlatformUIStore.subAppState}
@@ -136,9 +144,9 @@ const Content = () => {
           />
         );
       case 'mail':
-        return <MailMainView roomId={getRoomId()} />;
+        return <MailMainView roomId={getRoomId()} language={i18n.language} />;
       case 'mailsub':
-        return <MailSubView roomId={getRoomId()} />;
+        return <MailSubView roomId={getRoomId()} language={i18n.language} />;
       case 'profile':
         return <Profile userId={PlatformUIStore.resourceId} />;
       case 'setting':
