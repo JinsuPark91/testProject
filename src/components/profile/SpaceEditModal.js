@@ -9,8 +9,8 @@ import {
   SubTitle,
   NameInputBox,
   UrlInputBox,
-  ButtonContainer,
   ErrorIcon,
+  UrlText,
 } from '../../styles/SpaceEditModalStyle';
 
 const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
@@ -162,7 +162,22 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
         maskTransitionName=""
         maskClosable={false}
         title="스페이스 편집"
-        footer={null}
+        width="27.5rem"
+        footer={
+          <>
+            <Button
+              style={{ marginRight: '0.5rem' }}
+              type="solid"
+              onClick={handleConfirmEditSpace}
+              disabled={handleCheckDisable()}
+            >
+              저장
+            </Button>
+            <Button type="outlined" onClick={handleCancelEditSpace}>
+              취소
+            </Button>
+          </>
+        }
       >
         <SubTitle>스페이스 이름</SubTitle>
         <NameInputBox>
@@ -193,7 +208,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
           >
             <UrlInputBox disabled={isBasicPlan}>
               <input value={newAddress} disabled />
-              <div>{getMainURL()}</div>
+              <UrlText>{getMainURL()}</UrlText>
             </UrlInputBox>
           </Tooltip>
         ) : (
@@ -213,22 +228,9 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
                 <img alt="error" src={errorIcon} />
               </Tooltip>
             </ErrorIcon>
-            <div>{getMainURL()}</div>
+            <UrlText>{getMainURL()}</UrlText>
           </UrlInputBox>
         )}
-        <ButtonContainer>
-          <Button
-            style={{ marginRight: '0.5rem' }}
-            type="solid"
-            onClick={handleConfirmEditSpace}
-            disabled={handleCheckDisable()}
-          >
-            저장
-          </Button>
-          <Button type="outlined" onClick={handleCancelEditSpace}>
-            취소
-          </Button>
-        </ButtonContainer>
       </Wrapper>
       <Message
         visible={isWarningPopupVisible}
@@ -237,13 +239,11 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
         btns={[
           {
             type: 'solid',
-            shape: 'round',
             text: '나가기',
             onClick: handleExit,
           },
           {
             type: 'outlined',
-            shape: 'round',
             text: '취소',
             onClick: handleCancelExit,
           },

@@ -330,7 +330,6 @@ function OpenRoomHome({ visible, onCancel }) {
             onChange={handleKeywordChange}
             onClear={handleKeywordClear}
             searchIconColor={{ active: '#48423B', default: '#48423B' }}
-            clearIconColor={{ active: '#48423B', default: '#48423B' }}
             type="border"
           />
           {!keyword ? (

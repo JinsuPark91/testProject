@@ -2,10 +2,8 @@ import styled, { css } from 'styled-components';
 import { Modal } from 'antd';
 
 export const Wrapper = styled(Modal)`
-  width: 27.5rem;
-  height: 18.63rem;
   .ant-modal-body {
-    padding-top: 0rem;
+    padding: 0 1.25rem 2rem;
   }
 `;
 
@@ -95,13 +93,11 @@ export const UrlInputBox = styled.div`
   }
 `;
 
-export const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 2.25rem;
-`;
-
 export const ErrorIcon = styled.div`
   display: ${props => (props.visible ? 'flex' : 'none')};
   margin-right: 0.2rem;
+`;
+
+export const UrlText = styled.span`
+  font-size: 0.88rem;
 `;
