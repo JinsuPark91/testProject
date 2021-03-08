@@ -206,6 +206,12 @@ export const BigText = styled(Text)`
   font-size: 1.5rem;
 `;
 
+export const StatusText = styled(Text)`
+  margin-top: 0.56rem;
+  line-height: 2rem;
+  font-size: 1rem;
+`;
+
 export const ButtonContainer = styled.div`
   height: 50px;
   margin-top: 1.25rem;

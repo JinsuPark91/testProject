@@ -23,6 +23,8 @@ import {
   NewFriendBadge,
   StyledAvatar,
   MeWrapper,
+  MeTextWrapper,
+  StatusWrapper,
   MoreIconWrapper,
 } from '../../styles/friend/FriendItemStyle';
 import { ACCEPT_ITEMS, TALK_ACCEPT_ITEMS } from '../../utils/DndConstant';
@@ -198,7 +200,7 @@ const Action = React.memo(
 );
 
 const TextComponent = React.memo(
-  ({ displayName, fullCompanyJob, mode, orgName, position }) => {
+  ({ displayName, statusMsg, fullCompanyJob, mode, orgName, position }) => {
     const fullDisplayName = (() => {
       switch (mode) {
         // friends LNB
@@ -219,12 +221,19 @@ const TextComponent = React.memo(
 
     return (
       <>
-        {mode === 'me' && (
-          <MeWrapper>
-            <img src={mySign} alt="me" />
-          </MeWrapper>
+        <MeTextWrapper>
+          {mode === 'me' && (
+            <MeWrapper>
+              <img src={mySign} alt="me" />
+            </MeWrapper>
+          )}
+          <TitleForName>{fullDisplayName}</TitleForName>
+        </MeTextWrapper>
+        {!statusMsg && (
+          <StatusWrapper>
+            상태 메시지 상태 메시지 상태 메시지 상태 메시지
+          </StatusWrapper>
         )}
-        <TitleForName>{fullDisplayName}</TitleForName>
       </>
     );
   },
@@ -253,6 +262,7 @@ const FriendItem = observer(
   }) => {
     const {
       displayName,
+      statusMsg,
       friendFavorite = false,
       friendId = '',
       id: userId = '',
@@ -508,6 +518,7 @@ const FriendItem = observer(
           <TextWrapper>
             <TextComponent
               displayName={displayName}
+              statusMsg={statusMsg}
               fullCompanyJob={fullCompanyJob}
               mode={mode}
               orgName={orgName}
