@@ -415,7 +415,7 @@ const Header = observer(() => {
                 srcList={getUserPhotos()}
                 onClick={handleClickRoomPhoto}
               />
-              {findRoom().type === 'WKS0003' && (
+              {findRoom()?.type === 'WKS0003' && (
                 <div style={{ display: 'flex', marginRight: '0.25rem' }}>
                   <OpenChatIcon
                     width={0.9}
