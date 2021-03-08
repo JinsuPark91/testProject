@@ -97,6 +97,14 @@ const MobileFooter = () => {
         animated={false}
       >
         <TabPane
+          key="friend"
+          tab={
+            <IconWrapper className="lnb__icon-wrapper">
+              <ChattingIcon width={1.5} height={1.5} />
+            </IconWrapper>
+          }
+        />
+        <TabPane
           key="room"
           tab={
             <IconWrapper className="lnb__icon-wrapper">
@@ -127,14 +135,14 @@ const MobileFooter = () => {
             </IconWrapper>
           }
         />
-        <TabPane
+        {/* <TabPane
           key="select"
           tab={
             <IconWrapper className="lnb__icon-wrapper">
               <ChattingIcon width={1.5} height={1.5} />
             </IconWrapper>
           }
-        />
+        /> */}
       </FooterTab>
     </Wrapper>
   );

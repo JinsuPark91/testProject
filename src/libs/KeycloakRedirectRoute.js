@@ -106,7 +106,7 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
             const stateFrom = props.location.state?.from;
             if (stateFrom) {
               // TODO IMPORTANT: mobile에서 이렇게 해도 되는지 확인 필요
-              if (stateFrom.pathname === '/room')
+              if (stateFrom.pathname === '/friend')
                 history.push(`${stateFrom.pathname}/${authStore.user.id}`);
               else
                 history.push(
