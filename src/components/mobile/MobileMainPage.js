@@ -4,7 +4,6 @@ import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import styled from 'styled-components';
-import MobileHeader from './MobileHeader';
 import MobileContent from './MobileContent';
 import MobileFooter from './MobileFooter';
 import LoadingImg from '../../assets/WAPL_Loading.gif';
@@ -42,7 +41,7 @@ const MobileMainPage = observer(() => {
   useEffect(() => {
     PlatformUIStore.resourceType = resourceType;
     PlatformUIStore.resourceId = resourceId;
-  }, [resourceType, resourceId, myUserId]);
+  }, [resourceType, resourceId]);
 
   if (isLoading) {
     return (
@@ -53,15 +52,12 @@ const MobileMainPage = observer(() => {
   }
 
   return (
-    <>
-      <Wrapper>
-        <Container>
-          <MobileHeader />
-          <MobileContent />
-        </Container>
-        <MobileFooter />
-      </Wrapper>
-    </>
+    <Wrapper>
+      <Container>
+        <MobileContent />
+      </Container>
+      <MobileFooter />
+    </Wrapper>
   );
 });
 
