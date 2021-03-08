@@ -123,7 +123,7 @@ const MobileApp = () => {
                       path="/:resourceType/:resourceId?"
                       component={MobileMainPage}
                     />
-                    <Redirect to="/room" />
+                    <Redirect to="/friend" />
                   </Switch>
                 </BrowserRouter>
               </PortalProvider>
