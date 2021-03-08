@@ -120,7 +120,8 @@ export const TextWrapper = styled.div`
   margin-left: 0.4375rem;
   flex-grow: 1;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -208,6 +209,19 @@ export const MeWrapper = styled.div`
     width: 100%;
     height: 100%;
   }
+`;
+
+export const MeTextWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const StatusWrapper = styled.div`
+  font-size: 0.69rem;
+  line-height: 1.19rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 export const MoreIconWrapper = styled.div`

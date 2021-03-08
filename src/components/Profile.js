@@ -19,7 +19,6 @@ import {
   Sidebar,
   StyledUpload,
   Text,
-  UserEmailText,
   ImageChangeButton,
   StyledButton,
   Content,
@@ -30,6 +29,7 @@ import {
   UserInfoList,
   UserInfoItem,
   BigText,
+  StatusText,
   ButtonContainer,
   FriendsIcon,
   StyleIcon,
@@ -426,29 +426,23 @@ const Profile = observer(
                   profile?.nick || profile?.name
                 )}
               </BigText>
-              {!editEnabled && (
-                <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
-              )}
-              {/* NOTE 프로파일 상태 메시지는 추후에 지원함.
-              <UserStatusMsg>
+              <StatusText>
                 {editEnabled ? (
-                  <StyleInput
-                    className="type2"
+                  <EditNameInput
+                    maxLength={50}
+                    placeholder="상태 메시지를 입력해주세요."
                     onChange={e => {
                       setIsChange(true);
-                      setStatusMsg(e.target.value);
+                      setStatusMsg(e);
                     }}
                     value={
-                      statusMsg !== undefined
-                        ? statusMsg
-                        : profile?.profileStatusMsg
+                      statusMsg !== undefined ? statusMsg : profile?.statusMsg
                     }
                   />
                 ) : (
-                  profile?.profileStatusMsg
+                  profile?.statusMsg
                 )}
-              </UserStatusMsg>
-              */}
+              </StatusText>
               {/* <Tooltip placement="bottom" title="어드민만 변경 가능" color="#4C535D"></Tooltip> */}
               <UserInfoList>
                 {userType === 'USR0001' && (
@@ -482,12 +476,10 @@ const Profile = observer(
                         }
                         placeholder="회사 전화를 입력하세요."
                       />
-                    ) : profile?.companyNum ? (
+                    ) : (
                       <UserInfoText>
                         <span>{getCompanyNumber(profile)}</span>
                       </UserInfoText>
-                    ) : (
-                      <UserInfoText>-</UserInfoText>
                     )}
                   </UserInfoItem>
                 )}
