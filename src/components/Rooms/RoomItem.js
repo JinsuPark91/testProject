@@ -119,11 +119,13 @@ const RoomDropdown = React.memo(
 
     const handleExit = e => {
       e.domEvent.stopPropagation();
+
+      const isDMRoom = roomInfo.isDirectMsg;
+      const isAdmin = roomInfo.adminId === myUserId;
+      const isAlone = roomInfo.userCount === 1;
+
       setVisible(false);
-      if (
-        roomInfo.adminId === userStore.myProfile.id &&
-        !roomInfo.isDirectMsg
-      ) {
+      if (isAdmin && !isDMRoom && !isAlone) {
         onClickMenuItem({ key: 'exitAdmin', item: roomInfo });
       } else {
         onClickMenuItem({ key: 'exitNormal', item: roomInfo });
