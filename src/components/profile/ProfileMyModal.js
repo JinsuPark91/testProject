@@ -12,7 +12,6 @@ import {
 import { useHistory } from 'react-router-dom';
 import { useObserver } from 'mobx-react';
 // import { useTranslation } from 'react-i18next';
-import { useKeycloak } from '@react-keycloak/web';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SettingDialog from '../usersettings/SettingDialog';
 import ProfileSpaceModal from './ProfileSpaceModal';
@@ -219,6 +218,10 @@ const ProfileMyModal = ({
 
   const isTmaxDomain = !!/^(tmax)\./gi.exec(window.location.hostname);
 
+  const getBackPhoto = () => {
+    return userStore.getBackgroundPhotoURL(userId);
+  };
+
   // 이후 '현재 스페이스의 어드민'인지를 체크하도록 수정
   const moreMenu = (
     <Menu style={{ minWidth: '6.25rem' }}>
@@ -240,10 +243,11 @@ const ProfileMyModal = ({
       <UserImage>
         <img src={thumbPhoto} onLoad={revokeURL} alt="" />
       </UserImage>
-      <UserName>
-        {userStore.myProfile?.nick || userStore.myProfile?.name}
-      </UserName>
+      <UserName>{userStore.myProfile?.displayName}</UserName>
       <UserMail>{`(${userStore.myProfile?.loginId})`}</UserMail>
+      {userStore.myProfile?.profileStatusMsg && (
+        <UserStatus>{userStore.myProfile?.profileStatusMsg}</UserStatus>
+      )}
       <UserButtonBox>
         <Button type="link" onClick={toggleEditMode}>
           프로필 편집
@@ -293,6 +297,8 @@ const ProfileMyModal = ({
             trigger={['click']}
             overlay={moreMenu}
             placement="bottomRight"
+            visible={moreMenuDropDownVisible}
+            onVisibleChange={handleMoreMenuDropDownVisible}
           >
             <Tooltip placement="topLeft" color="#232D3B" title="더 보기">
               <Button className="btn-more">
@@ -458,6 +464,7 @@ const ProfileMyModal = ({
       onCancel={handleCancel}
       closable={false}
       outLine
+      backgroundPhotoURL={getBackPhoto()}
       width="17rem"
       type="user"
       userContent={userContent}
@@ -524,6 +531,14 @@ const UserMail = styled.span`
   opacity: 0.8;
   white-space: nowrap;
   text-overflow: ellipsis;
+`;
+const UserStatus = styled.span`
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
 `;
 const UserButtonBox = styled.div`
   display: flex;

@@ -84,6 +84,8 @@ const FriendAction = React.memo(
               overlay={menu}
               trigger={['click']}
               onClick={e => e.stopPropagation()}
+              visible={dropdownVisible}
+              onVisibleChange={handleDropdownVisible}
             >
               <MoreIconWrapper className="friend-more-icon">
                 <ViewMoreIcon />
