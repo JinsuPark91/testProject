@@ -1,13 +1,51 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Button } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
 
 const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  height: 3.25rem;
+  padding: 0 1rem;
+  cursor: pointer;
+`;
+
+const ImgBox = styled.div`
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
   & img {
-    width: 2rem;
-    height: 2rem;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
+  }
+`;
+
+const Name = styled.span`
+  font-size: 0.81rem;
+  line-height: 1.19rem;
+  color: #000000;
+  letter-spacing: 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  user-select: none;
+  margin-right: 1rem;
+`;
+const TextBtn = styled(Button)`
+  min-width: auto;
+  width: auto;
+  height: auto;
+  font-size: 0.81rem;
+  color: #7b7b7b;
+  letter-spacing: 0;
+  cursor: poniter;
+  margin-left: auto;
+  &.ant-btn-ghost {
+    padding: 0.5rem 0 0.5rem 0.5rem;
   }
 `;
 
@@ -34,12 +72,18 @@ const MobileFriendItem = ({ friendInfo, isMe, friendEditMode }) => {
 
   return (
     <Wrapper onClick={handleClickFriend}>
-      <img alt="profilePhoto" src={profilePhoto} />
+      <ImgBox>
+        <img alt="profilePhoto" src={profilePhoto} />
+      </ImgBox>
       <>
-        <span>
+        <Name>
           {friendInfo?.displayName} {fullCompanyJobTxt}
-        </span>
-        {friendEditMode && <span onClick={handleDeleteFriend}>해제</span>}
+        </Name>
+        {friendEditMode && (
+          <TextBtn type="ghost" onClick={handleDeleteFriend}>
+            해제
+          </TextBtn>
+        )}
       </>
     </Wrapper>
   );

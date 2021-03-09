@@ -9,6 +9,7 @@ import { ArrowBackIcon } from './Icon';
 const ButtonBox = styled.div`
   margin-right: 0.75rem;
   display: flex;
+  align-items: center;
 `;
 
 const IconButton = styled(Button)`

@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { LockLineIcon, CameraIcon } from '../Icons';
+import { CloseIcon, SettingIcon } from './Icon';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import {
@@ -21,6 +22,8 @@ import {
   StyledUpload,
   Text,
   UserEmailText,
+  ButtonBox,
+  IconButton,
   ImageChangeButton,
   StyledButton,
   Content,
@@ -249,12 +252,15 @@ const MobileProfile = observer(
               <span>저장</span>
             </>
           ) : (
-            <span onClick={() => history.goBack()}>X</span>
+            <ButtonBox onClick={() => history.goBack()}>
+              <IconButton type="ghost" icon={<CloseIcon color="#fff" />} />
+              <IconButton type="ghost" icon={<SettingIcon />} />
+            </ButtonBox>
           )}
         </Header>
         <Content>
-          <ContentTop>
-            {editEnabled && (
+          {editEnabled && (
+            <ContentTop>
               <Dropdown
                 trigger={['click']}
                 overlay={
@@ -284,8 +290,8 @@ const MobileProfile = observer(
                   <CameraIcon width="1.25" height="1.25" />
                 </ImageChangeButton>
               </Dropdown>
-            )}
-          </ContentTop>
+            </ContentTop>
+          )}
           <ContentBody>
             <UserImageWrapper position="br">
               <UserImage src={renderProfilePhoto} />

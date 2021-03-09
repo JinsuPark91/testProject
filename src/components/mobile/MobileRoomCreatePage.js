@@ -7,6 +7,10 @@ import { Button } from 'antd';
 import { ArrowBackIcon } from './Icon';
 
 const Header = styled.div`
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -19,6 +23,7 @@ const Header = styled.div`
 const ButtonBox = styled.div`
   margin-right: 0.75rem;
   display: flex;
+  align-items: center;
 `;
 const IconButton = styled(Button)`
   &.ant-btn {

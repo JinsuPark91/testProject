@@ -18,6 +18,7 @@ const HeaderTitle = styled.h3`
 const ButtonBox = styled.div`
   margin-left: auto;
   display: flex;
+  align-items: center;
 `;
 
 const IconButton = styled(Button)`
