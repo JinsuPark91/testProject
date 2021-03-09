@@ -42,6 +42,7 @@ import {
   LockIconBox,
   ImageChange,
   CameraBox,
+  UserEmailText,
 } from '../styles/ProfileStyle';
 
 const Profile = observer(
@@ -426,6 +427,9 @@ const Profile = observer(
                   profile?.nick || profile?.name
                 )}
               </BigText>
+              {!editEnabled && (
+                <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
+              )}
               <StatusText>
                 {editEnabled ? (
                   <EditNameInput
