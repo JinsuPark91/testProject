@@ -24,11 +24,50 @@ const Header = styled.div`
   justify-content: flex-start;
   background-color: #fff;
   z-index: 100;
-  padding: 0rem 1rem;
+  padding: 0.63rem 1rem;
   position: fixed;
   top: 0;
   right: 0;
   left: 0;
+`;
+
+const FriendListHeader = styled.div`
+  line-height: 0;
+  margin: 0 1rem 0.5rem;
+`;
+
+const FriendTitle = styled.p`
+  display: inline-block;
+  font-size: 0.69rem;
+  line-height: 1.06rem;
+  color: #48423b;
+  letter-spacing: 0;
+  margin-right: 0.25rem;
+  user-select: none;
+`;
+
+const Num = styled.span`
+  font-size: 0.75rem;
+  line-height: 1.13rem;
+  color: rgba(19, 19, 19, 0.5);
+  letter-spacing: 0;
+  user-select: none;
+`;
+
+const ListDivider = styled(Divider)`
+  background-color: #f1f2f4;
+  margin: 0.5rem 0.63rem;
+  width: auto;
+  min-width: auto;
+`;
+
+const RoomListBox = styled.div``;
+const FriendListBox = styled.div``;
+const MyInfoBox = styled.div`
+  margin-top: 0.5rem;
+`;
+const MyInfoItem = styled(MobileFriendItem)`
+  padding: 0 1rem;
 `;
 
 const MobileContent = observer(() => {
@@ -45,21 +84,28 @@ const MobileContent = observer(() => {
 
     return (
       <>
-        <MobileFriendItem key={myInfo?.id} friendInfo={myInfo} isMe />
-        <Divider />
+        <MyInfoBox>
+          <MyInfoItem key={myInfo?.id} friendInfo={myInfo} isMe />
+        </MyInfoBox>
+        <ListDivider />
         {noFriend ? (
           <div>프렌즈가 없습니다.</div>
         ) : (
           <>
-            <div>프렌즈 {friendNum}</div>
-            {friendList.map(friendInfo => (
-              <MobileFriendItem
-                key={friendInfo?.friendId || friendInfo?.id}
-                friendInfo={friendInfo}
-                isMe={false}
-                friendEditMode={friendEditMode}
-              />
-            ))}
+            <FriendListHeader>
+              <FriendTitle>프렌즈</FriendTitle>
+              <Num>{friendNum}</Num>
+            </FriendListHeader>
+            <FriendListBox>
+              {friendList.map(friendInfo => (
+                <MobileFriendItem
+                  key={friendInfo?.friendId || friendInfo?.id}
+                  friendInfo={friendInfo}
+                  isMe={false}
+                  friendEditMode={friendEditMode}
+                />
+              ))}
+            </FriendListBox>
           </>
         )}
       </>
@@ -103,11 +149,13 @@ const MobileContent = observer(() => {
               handleFriendEditMode={handleFriendEditMode}
             />
           </Header>
-          <FriendList
-            myInfo={userStore.myProfile}
-            friendList={friendStore.friendInfoList}
-            friendEditMode={friendEditMode}
-          />
+          <FriendListBox>
+            <FriendList
+              myInfo={userStore.myProfile}
+              friendList={friendStore.friendInfoList}
+              friendEditMode={friendEditMode}
+            />
+          </FriendListBox>
         </>
       );
     case 'profile':
@@ -118,7 +166,9 @@ const MobileContent = observer(() => {
           <Header>
             <MobileRoomHeader />
           </Header>
-          <RoomList roomList={getRoomArray()} />
+          <RoomListBox>
+            <RoomList roomList={getRoomArray()} />
+          </RoomListBox>
         </>
       );
     case 'create':

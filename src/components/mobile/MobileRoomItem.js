@@ -30,7 +30,7 @@ const Name = styled.p`
   font-size: 0.81rem;
   line-height: 1.19rem;
   color: #000;
-  width: 15rem;
+  max-width: 12rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
