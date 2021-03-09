@@ -470,18 +470,13 @@ function RoomInquiryModal({
           </AddButton>
         }
       />
-      {
-        // NOTE. 룸 정보가 제대로 존재해야하기 때문에 visible 상태를 보고 모달을 렌더하도록 함.
-        userSelectDialogVisible && (
-          <RoomAddMemberModal
-            visible={userSelectDialogVisible}
-            roomId={roomInfo.id}
-            roomMembers={members}
-            onInviteUsers={handleInviteUsers}
-            onCancel={handleCancelInviteUsers}
-          />
-        )
-      }
+
+      <RoomAddMemberModal
+        visible={userSelectDialogVisible}
+        roomId={roomInfo?.id}
+        onInviteUsers={handleInviteUsers}
+        onCancel={handleCancelInviteUsers}
+      />
     </>
   );
 }

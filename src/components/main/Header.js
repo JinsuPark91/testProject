@@ -213,9 +213,6 @@ const Header = observer(() => {
     return [];
   };
 
-  const roomId = findRoom()?.id;
-  const members = roomStore.roomMembers[roomId] || [];
-
   const handleExport = () => {
     const roomInfo = findRoom();
 
@@ -478,15 +475,13 @@ const Header = observer(() => {
                         />
                       </IconWrapper>
                     </Tooltip>
-                    {isAddMemberVisible && (
-                      <RoomAddMemberModal
-                        visible={isAddMemberVisible}
-                        roomId={findRoom()?.id}
-                        roomMembers={members}
-                        onInviteUsers={handleInviteUsers}
-                        onCancel={handleCancelInviteUsers}
-                      />
-                    )}
+
+                    <RoomAddMemberModal
+                      visible={isAddMemberVisible}
+                      roomId={findRoom()?.id}
+                      onInviteUsers={handleInviteUsers}
+                      onCancel={handleCancelInviteUsers}
+                    />
                   </>
                 )}
               </SystemIconContainer>

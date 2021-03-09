@@ -7,22 +7,23 @@ import { useCoreStores, ItemSelector } from 'teespace-core';
 function RoomAddMemberModal({
   visible = false,
   roomId,
-  roomMembers,
   onInviteUsers = () => {},
   onCancel = () => {},
 }) {
-  const [members, setMembers] = useState(roomMembers || []);
+  const [isLoaded, setisLoaded] = useState(false);
+  const [members, setMembers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const { roomStore, userStore } = useCoreStores();
 
   useEffect(() => {
-    if (!roomMembers && roomId && visible) {
+    if (roomId && visible) {
       const myUserId = userStore.myProfile.id;
-      roomStore
-        .fetchRoomMemberList({ myUserId, roomId })
-        .then(roomMembers0 => setMembers(roomMembers0));
+      roomStore.fetchRoomMemberList({ myUserId, roomId }).then(roomMembers => {
+        setMembers(roomMembers);
+        setisLoaded(true);
+      });
     }
-  }, [roomMembers, roomId, visible, roomStore, userStore]);
+  }, [roomId, visible]);
 
   const handleSelectedUserChange = useCallback(
     ({ userArray }) => {
@@ -32,7 +33,6 @@ function RoomAddMemberModal({
       const filteredUsers = userArray.filter(
         user => !originRoomMemberIds.includes(user.friendId || user.id),
       );
-      console.log('Filtered Users : ', filteredUsers);
       setSelectedUsers(filteredUsers);
     },
     [members],
@@ -67,47 +67,50 @@ function RoomAddMemberModal({
   };
 
   return (
-    <FlexModal
-      title={
-        <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>
-          룸 구성원 초대
-        </div>
-      }
-      visible={visible}
-      closable
-      onCancel={handleCancel}
-      footer={null}
-      destroyOnClose
-    >
-      <ItemSelector
-        isVisibleRoom={false}
-        onSelectChange={handleSelectedUserChange}
-        disabledIds={members.map(member => member.friendId || member.id)}
-        defaultSelectedUsers={members}
-        showMeOnFriendTab={false}
-        height={25} // rem
-      />
-      <ButtonContainer>
-        <Button
-          type="solid"
-          size="default"
-          shape="round"
-          onClick={handleInviteUsers}
-          style={{ marginRight: '0.38rem' }}
-          disabled={selectedUsers.length <= 0}
-        >
-          {`초대 ${selectedUsers.length > 99 ? '99+' : selectedUsers.length}`}
-        </Button>
-        <Button
-          type="outlined"
-          size="default"
-          shape="round"
-          onClick={handleCancel}
-        >
-          취소
-        </Button>
-      </ButtonContainer>
-    </FlexModal>
+    isLoaded && (
+      <FlexModal
+        title={
+          <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>
+            룸 구성원 초대
+          </div>
+        }
+        visible={visible}
+        closable
+        onCancel={handleCancel}
+        footer={null}
+        destroyOnClose
+      >
+        <ItemSelector
+          isVisibleRoom={false}
+          onSelectChange={handleSelectedUserChange}
+          disabledIds={members.map(member => member.friendId || member.id)}
+          defaultSelectedUsers={members}
+          showMeOnFriendTab={false}
+          height={25} // rem
+        />
+
+        <ButtonContainer>
+          <Button
+            type="solid"
+            size="default"
+            shape="round"
+            onClick={handleInviteUsers}
+            style={{ marginRight: '0.38rem' }}
+            disabled={selectedUsers.length <= 0}
+          >
+            {`초대 ${selectedUsers.length > 99 ? '99+' : selectedUsers.length}`}
+          </Button>
+          <Button
+            type="outlined"
+            size="default"
+            shape="round"
+            onClick={handleCancel}
+          >
+            취소
+          </Button>
+        </ButtonContainer>
+      </FlexModal>
+    )
   );
 }
 
