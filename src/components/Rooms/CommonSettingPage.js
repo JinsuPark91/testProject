@@ -7,7 +7,7 @@ import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
 import Input from '../Input';
 
-const CommonSettingPage = ({ roomInfo = null }) => {
+const CommonSettingPage = ({ roomId }) => {
   const { t } = useTranslation();
   const [value, setValue] = useState('');
   const [isChanged, setIsChanged] = useState(false);
@@ -20,6 +20,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
   const { roomStore, userStore } = useCoreStores();
   const history = useHistory();
   const myUserId = userStore.myProfile.id;
+  const roomInfo = roomStore.getRoom(roomId);
 
   useEffect(() => {
     if (roomInfo) {

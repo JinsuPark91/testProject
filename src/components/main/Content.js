@@ -150,9 +150,7 @@ const Content = () => {
       case 'profile':
         return <Profile userId={PlatformUIStore.resourceId} />;
       case 'setting':
-        return (
-          <RoomSetting roomInfo={roomStore.getRoomMap().get(getRoomId())} />
-        );
+        return <RoomSetting roomId={getRoomId()} />;
       default:
         return null;
     }

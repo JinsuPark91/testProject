@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Tabs } from 'antd';
-import { useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeftIcon, CancelIcon } from '../Icons';
 import MemberSettingPage from './MemberSettingPage';
@@ -10,29 +9,13 @@ import CommonSettingPage from './CommonSettingPage';
 
 const { TabPane } = Tabs;
 
-const RoomSetting = ({ roomInfo = null }) => {
+const RoomSetting = ({ roomId }) => {
   const { t } = useTranslation();
   const history = useHistory();
-  const { userStore, roomStore } = useCoreStores();
-  const [members, setMembers] = useState([]);
 
   const handleClose = () => {
-    history.push(`/s/${roomInfo.id}/talk`);
+    history.push(`/s/${roomId}/talk`);
   };
-
-  useEffect(() => {
-    if (roomInfo) {
-      const myUserId = userStore.myProfile.id;
-      const roomId = roomInfo.id;
-
-      roomStore
-        .fetchRoomMemberList({
-          myUserId,
-          roomId,
-        })
-        .then(res => setMembers(res));
-    }
-  }, [roomInfo]);
 
   return (
     <Wrapper>
@@ -56,11 +39,11 @@ const RoomSetting = ({ roomInfo = null }) => {
       <Content>
         <StyledTabs className="default">
           <TabPane key="common" tab={t('WEB_COMMON_ROOM_SETTING_BASIC_01')}>
-            <CommonSettingPage roomInfo={roomInfo} />
+            <CommonSettingPage roomId={roomId} />
           </TabPane>
 
           <TabPane key="member" tab={t('TEMP_04')}>
-            <MemberSettingPage members={members} roomId={roomInfo?.id} />
+            <MemberSettingPage roomId={roomId} />
           </TabPane>
         </StyledTabs>
       </Content>
@@ -130,6 +113,10 @@ const StyledTabs = styled(Tabs)`
   & .ant-tabs-tab {
     flex: none !important;
     width: 7rem;
+  }
+
+  & .ant-tabs-nav {
+    margin: 0 0 0.25rem 0;
   }
 
   & .ant-tabs-content {
