@@ -34,14 +34,12 @@ const HeaderTitle = styled.h3`
 const EditTitle = styled.h3`
   font-size: 1.13rem;
   color: #232d3b;
-  margin-left: 0.75rem;
   user-select: none;
 `;
 
 const ButtonBox = styled.div`
   display: flex;
   align-items: center;
-  margin-right: auto;
 `;
 const ButtonsBox = styled.div`
   display: flex;
@@ -50,8 +48,8 @@ const ButtonsBox = styled.div`
   margin-right: 0.5rem;
 `;
 const IconButton = styled(Button)`
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.75rem;
+  height: 2.75rem;
   background-color: transparent;
 `;
 const ProfileButton = styled(Button)`

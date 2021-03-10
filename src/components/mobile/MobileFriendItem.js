@@ -37,7 +37,6 @@ const Name = styled.span`
 `;
 const TextBtn = styled(Button)`
   min-width: auto;
-  width: auto;
   height: auto;
   font-size: 0.81rem;
   color: #7b7b7b;
@@ -45,7 +44,7 @@ const TextBtn = styled(Button)`
   cursor: poniter;
   margin-left: auto;
   &.ant-btn-ghost {
-    padding: 0.5rem 0 0.5rem 0.5rem;
+    padding: 0.5rem 0 0.5rem;
   }
 `;
 

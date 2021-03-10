@@ -17,11 +17,13 @@ import {
 } from '../../utils/ProfileUtil';
 import {
   Wrapper,
+  TextHeader,
   Header,
   Sidebar,
   StyledUpload,
   Text,
   UserEmailText,
+  EditTitle,
   ButtonBox,
   IconButton,
   ImageChangeButton,
@@ -42,6 +44,7 @@ import {
   StyleInput,
   LockIconBox,
   ImageChange,
+  TextButton,
   CameraBox,
 } from './MobileProfileStyle';
 
@@ -244,20 +247,30 @@ const MobileProfile = observer(
 
     return (
       <Wrapper imageSrc={renderBackgroundPhoto}>
-        <Header>
-          {editEnabled ? (
-            <>
-              <span onClick={() => setEditMode(false)}>뒤로가기</span>
-              <span>프로필 편집</span>
-              <span>저장</span>
-            </>
-          ) : (
-            <ButtonBox onClick={() => history.goBack()}>
-              <IconButton type="ghost" icon={<CloseIcon color="#fff" />} />
-              <IconButton type="ghost" icon={<SettingIcon />} />
-            </ButtonBox>
-          )}
-        </Header>
+        {editEnabled ? (
+          <>
+            <TextHeader>
+              <ButtonBox onClick={() => setEditMode(false)}>
+                <IconButton type="ghost" icon={<CloseIcon color="#fff" />} />
+              </ButtonBox>
+              <EditTitle>프로필 편집</EditTitle>
+              <ButtonBox onClick={() => setEditMode(false)}>
+                <TextButton type="ghost">저장</TextButton>
+              </ButtonBox>
+            </TextHeader>
+          </>
+        ) : (
+          <>
+            <Header>
+              <ButtonBox onClick={() => history.goBack()}>
+                <IconButton type="ghost" icon={<CloseIcon color="#fff" />} />
+              </ButtonBox>
+              <ButtonBox>
+                <IconButton type="ghost" icon={<SettingIcon />} />
+              </ButtonBox>
+            </Header>
+          </>
+        )}
         <Content>
           {editEnabled && (
             <ContentTop>
