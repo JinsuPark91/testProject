@@ -7,15 +7,14 @@ import { getRoomName } from './MobileUtil';
 import { ArrowBackIcon } from './Icon';
 
 const ButtonBox = styled.div`
-  margin-right: 0.75rem;
   display: flex;
   align-items: center;
 `;
 
 const IconButton = styled(Button)`
   &.ant-btn {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 2.75rem;
+    height: 2.75rem;
     background-color: transparent;
   }
 `;
