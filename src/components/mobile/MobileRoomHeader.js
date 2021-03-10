@@ -9,7 +9,6 @@ const HeaderTitle = styled.h3`
   font-size: 1.13rem;
   line-height: 1.63rem;
   color: #232d3b;
-  width: calc(100% - 5rem);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -22,8 +21,8 @@ const ButtonBox = styled.div`
 `;
 
 const IconButton = styled(Button)`
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 2.75rem;
+  height: 2.75rem;
   background-color: transparent;
 `;
 

@@ -31,7 +31,7 @@ const Header = styled.div`
   left: 0;
 `;
 const RoomHeader = styled(Header)`
-  padding: 0.63rem 1rem;
+  padding: 0.06rem 0.25rem 0.06rem 1rem;
 `;
 
 const FriendListHeader = styled.div`

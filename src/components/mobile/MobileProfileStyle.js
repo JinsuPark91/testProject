@@ -35,18 +35,36 @@ export const Wrapper = styled.div`
 export const Header = styled.div`
   width: 100%;
   height: 2.88rem;
-  padding: 0.81rem 1rem;
-  color: white;
+  padding: 0.06rem 0.25rem 0.06rem 0.25rem;
+  display: flex;
+  align-items: center;
+`;
+export const TextHeader = styled(Header)`
+  padding: 0.06rem 1rem 0.06rem 0.25rem;
 `;
 export const ButtonBox = styled.div`
   display: flex;
   align-items: center;
+  & ~ & {
+    margin-left: auto;
+  }
 `;
 export const IconButton = styled(Button)`
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 2.75rem;
+  height: 2.75rem;
   &:last-of-type {
     margin-left: auto;
+  }
+`;
+export const TextButton = styled(Button)`
+  min-width: auto;
+  height: auto;
+  padding: 0;
+  & span {
+    color: #fff;
+  }
+  &.ant-btn-ghost {
+    padding: 0.5rem 0 0.5rem;
   }
 `;
 
@@ -452,4 +470,10 @@ export const CameraBox = styled.span`
   line-height: 0;
   z-index: 5;
   cursor: pointer;
+`;
+
+export const EditTitle = styled.h3`
+  font-size: 1.13rem;
+  color: #fff;
+  user-select: none;
 `;
