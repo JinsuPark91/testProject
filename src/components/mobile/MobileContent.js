@@ -23,12 +23,15 @@ const Header = styled.div`
   align-items: center;
   justify-content: flex-start;
   background-color: #fff;
+  padding: 0.06rem 1rem 0.06rem 0.25rem;
   z-index: 100;
-  padding: 0.63rem 1rem;
   position: fixed;
   top: 0;
   right: 0;
   left: 0;
+`;
+const RoomHeader = styled(Header)`
+  padding: 0.63rem 1rem;
 `;
 
 const FriendListHeader = styled.div`
@@ -143,12 +146,10 @@ const MobileContent = observer(() => {
     case 'friend':
       return (
         <>
-          <Header>
-            <MobileFriendHeader
-              friendEditMode={friendEditMode}
-              handleFriendEditMode={handleFriendEditMode}
-            />
-          </Header>
+          <MobileFriendHeader
+            friendEditMode={friendEditMode}
+            handleFriendEditMode={handleFriendEditMode}
+          />
           <FriendListBox>
             <FriendList
               myInfo={userStore.myProfile}
@@ -163,9 +164,9 @@ const MobileContent = observer(() => {
     case 'room':
       return (
         <>
-          <Header>
+          <RoomHeader>
             <MobileRoomHeader />
-          </Header>
+          </RoomHeader>
           <RoomListBox>
             <RoomList roomList={getRoomArray()} />
           </RoomListBox>
