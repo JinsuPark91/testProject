@@ -23,7 +23,7 @@ import mySign from '../../assets/wapl_me.svg';
 const RoomDropdown = React.memo(
   ({ children, roomInfo, onMenuClick, onClickMenuItem }) => {
     const { roomStore, userStore } = useCoreStores();
-    const { t } = useTranslation();
+
     const { id: roomId } = roomInfo;
     const myUserId = userStore.myProfile.id;
     const [visible, setVisible] = useState(false);
@@ -144,42 +144,42 @@ const RoomDropdown = React.memo(
             // NOTE. 마이름은 메뉴 자체가 없다. (체크할 필요 없음)
             !isDMRoom && (
               <Menu.Item key="changeName" onClick={handleNameChange}>
-                {t('WEB_COMMON_CHANGE_NAME_02')}
+                이름 변경
               </Menu.Item>
             )
           }
           {roomInfo.isRoomBookmarked ? (
             <Menu.Item key="disableBookmark" onClick={handleBookmarkDisable}>
-              {t('WEB_COMMON_FIX_TOP_ROOM_03')}
+              룸 상단 해제
             </Menu.Item>
           ) : (
             <Menu.Item key="enableBookmark" onClick={handleBookmarkEnable}>
-              {t('WEB_COMMON_CHANGE_NAME_03')}
+              룸 상단 고정
             </Menu.Item>
           )}
           {roomInfo.isAlarmUsed ? (
             <Menu.Item key="disableAlarm" onClick={handleAlarmDisable}>
-              {t('WEB_COMMON_CHANGE_NAME_04')}
+              알림 끄기
             </Menu.Item>
           ) : (
             <Menu.Item key="enableAlarm" onClick={handleAlarmEnable}>
-              {t('WEB_COMMON_NOTIFICATION_SETTING_01')}
+              알림 켜기
             </Menu.Item>
           )}
           <Menu.Item key="member" onClick={handleViewMember}>
-            {t('WEB_COMMON_ROOM_CONTEXT_MENU_01')}
+            룸 구성원 보기
           </Menu.Item>
           {
             // NOTE. 마이룸과 1:1 룸은 룸설정 할 수 없음
             // NOTE. 1:1 방이 아니고, 내가 관리자면 세팅페이지를 볼수 있다.
             !isDMRoom && isAdmin && (
               <Menu.Item key="setting" onClick={handleSetting}>
-                {t('WEB_COMMON_ROOM_CONTEXT_MENU_02')}
+                룸 설정
               </Menu.Item>
             )
           }
           <Menu.Item key="exit" onClick={handleExit}>
-            {t('WEB_COMMON_DELETE_ROOM_GROUP_03')}
+            나가기
           </Menu.Item>
         </StyledMenu>
       );

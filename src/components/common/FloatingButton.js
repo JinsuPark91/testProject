@@ -18,8 +18,6 @@ const remToPixel = rem => {
 };
 
 const ChildItem = ({ roomInfo, onItemClick, onItemClose }) => {
-  const { t } = useTranslation();
-
   const handleClick = () => {
     onItemClick(roomInfo);
   };
@@ -37,11 +35,7 @@ const ChildItem = ({ roomInfo, onItemClick, onItemClose }) => {
       <div style={{ height: '1rem' }}>
         {roomInfo.userCount > 3 ? roomInfo.userCount : ''}
       </div>
-      <Tooltip
-        placement="bottom"
-        title={t('WEB_COMMON_POPUP_TALK_MULTI_02')}
-        color="#232D3B"
-      >
+      <Tooltip placement="bottom" title="종료" color="#232D3B">
         <div className="close-button" onClick={handleClose}>
           <CancelIcon width={0.8} height={0.8} color="#ffffff" />
         </div>
@@ -85,7 +79,6 @@ const FloatingButton = ({
   onItemClick = () => {},
   onItemClose = () => {},
 }) => {
-  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isDrag, setIsDrag] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
@@ -144,9 +137,7 @@ const FloatingButton = ({
     <Draggable bounds="parent" onDrag={handleDrag}>
       <Wrapper>
         {isOpen && (
-          <AllCloseButton onClick={handleAllClose}>
-            {t('WEB_COMMON_POPUP_TALK_MULTI_01')}
-          </AllCloseButton>
+          <AllCloseButton onClick={handleAllClose}>모두 종료</AllCloseButton>
         )}
         <CustomFloatingMenu
           spacing={remToPixel(0.63)}

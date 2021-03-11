@@ -54,7 +54,6 @@ const Profile = observer(
     onClickCancelBtn = () => {},
   }) => {
     const history = useHistory();
-    const { t } = useTranslation();
 
     const { userStore, friendStore, authStore } = useCoreStores();
     const [isEditMode, setEditMode] = useState(editOnlyMode);
@@ -313,16 +312,12 @@ const Profile = observer(
             <Sidebar>
               <StyledButton onClick={handleTalkClick}>
                 <FriendsIcon />
-                <Text>
-                  {isMyId()
-                    ? `${t(`WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_13`)}`
-                    : `1:1 Talk`}
-                </Text>
+                <Text>{isMyId() ? `나와의 Talk` : `1:1 Talk`}</Text>
               </StyledButton>
               {isMyId() ? (
                 <StyledButton onClick={handleChangetoEditMode}>
                   <StyleIcon iconimg="profile" />
-                  <Text>{t('WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_14')}</Text>
+                  <Text>프로필 편집</Text>
                 </StyledButton>
               ) : (
                 <StyledButton onClick={handleMeetingClick}>
@@ -524,14 +519,14 @@ const Profile = observer(
                       disabled={!isChange || !isValidInputData()}
                       onClick={handleConfirm}
                     >
-                      {t('WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_27')}
+                      저장
                     </Button>
                     <Button
                       type="outlined"
                       onClick={handleCancel}
                       style={{ backgroundColor: '#fff', color: '#3b3b3b' }}
                     >
-                      {t('WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_28')}
+                      취소
                     </Button>
                   </>
                 )}

@@ -13,7 +13,6 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 const { TabPane } = CustomTabs;
 
 const LeftSide = observer(() => {
-  const { t } = useTranslation();
   const { roomStore, friendStore } = useCoreStores();
   const newFriendNum = friendStore.friendInfoList?.filter(elem =>
     handleCheckNewFriend(elem),
@@ -44,7 +43,7 @@ const LeftSide = observer(() => {
                 width={1.5}
                 height={1.5}
                 color={PlatformUIStore.tabType === 'f' ? '#232d3b' : '#ffffff'}
-                tooltipText={t('WEB_COMMON_COMMUNICATION_BAR_01')}
+                tooltipText="프렌즈 목록"
               />
             </IconWrapper>
           }
@@ -83,7 +82,7 @@ const LeftSide = observer(() => {
                 width={1.5}
                 height={1.5}
                 color={PlatformUIStore.tabType === 's' ? '#232d3b' : '#ffffff'}
-                tooltipText={t('WEB_COMMON_COMMUNICATION_BAR_02')}
+                tooltipText="룸 목록"
               />
             </IconWrapper>
           }
@@ -100,7 +99,7 @@ const LeftSide = observer(() => {
                 width={1.5}
                 height={1.5}
                 color={PlatformUIStore.tabType === 'm' ? '#232d3b' : '#ffffff'}
-                tooltipText={t('WEB_COMMON_COMMUNICATION_BAR_03')}
+                tooltipText="Mail"
               />
             </IconWrapper>
           }

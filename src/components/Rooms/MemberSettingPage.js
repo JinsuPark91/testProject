@@ -34,7 +34,6 @@ const TableRow = ({
   onTransferClick,
   onCheckChange,
 }) => {
-  const { t } = useTranslation();
   const isAdmin = memberInfo.role === 'WKS0004';
 
   const handleClick = () => {
@@ -48,11 +47,11 @@ const TableRow = ({
   const getMemberType = () => {
     switch (memberInfo.grade) {
       case 'member':
-        return t('TEMP_01');
+        return '멤버';
       case 'admin':
-        return t('TEMP_02');
+        return '어드민';
       case 'guest':
-        return t('TEMP_03');
+        return '게스트';
       default:
         return '';
     }
@@ -84,7 +83,7 @@ const TableRow = ({
           onClick={handleClick}
           disabled={isAdmin}
         >
-          {t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_GENERAL_10')}
+          변경
         </Button>
       </Cell>
     </RowWrapper>
@@ -127,7 +126,6 @@ const Table = React.memo(
     onAllCheckChange,
     onCheckChange,
   }) => {
-    const { t } = useTranslation();
     const tableBodyRef = useRef(null);
     const { userStore } = useCoreStores();
     const myId = userStore.myProfile.id;
@@ -163,27 +161,13 @@ const Table = React.memo(
               onChange={onAllCheckChange}
             />
           </HeaderCell>
-          <HeaderCell style={{ width: WIDTH.NICK }}>
-            {t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_GENERAL_05')}
-          </HeaderCell>
-          <HeaderCell style={{ width: WIDTH.LOGIN_ID }}>
-            {t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_GENERAL_06')}
-          </HeaderCell>
-          <HeaderCell style={{ width: WIDTH.TEAM }}>
-            {t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_COMPANY_07')}
-          </HeaderCell>
-          <HeaderCell style={{ width: WIDTH.JOB }}>
-            {t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_COMPANY_08')}
-          </HeaderCell>
-          <HeaderCell style={{ width: WIDTH.PHONE }}>
-            {t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_GENERAL_07')}
-          </HeaderCell>
-          <HeaderCell style={{ width: WIDTH.ROLE }}>
-            {t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_GENERAL_08')}
-          </HeaderCell>
-          <HeaderCell style={{ width: WIDTH.BUTTON }}>
-            {t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_GENERAL_09')}
-          </HeaderCell>
+          <HeaderCell style={{ width: WIDTH.NICK }}>별명</HeaderCell>
+          <HeaderCell style={{ width: WIDTH.LOGIN_ID }}>아이디</HeaderCell>
+          <HeaderCell style={{ width: WIDTH.TEAM }}>소속</HeaderCell>
+          <HeaderCell style={{ width: WIDTH.JOB }}>직위</HeaderCell>
+          <HeaderCell style={{ width: WIDTH.PHONE }}>휴대폰 번호</HeaderCell>
+          <HeaderCell style={{ width: WIDTH.ROLE }}>스페이스 권한</HeaderCell>
+          <HeaderCell style={{ width: WIDTH.BUTTON }}>룸 권한 이양</HeaderCell>
         </TableHeader>
         <TableBody ref={tableBodyRef}>
           <List
@@ -209,7 +193,6 @@ const Table = React.memo(
 );
 
 const MemberPage = ({ roomId }) => {
-  const { t } = useTranslation();
   const { roomStore, userStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
   const history = useHistory();
@@ -420,22 +403,22 @@ const MemberPage = ({ roomId }) => {
 
       <Message
         visible={transferVisible}
-        title={t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_AUTHORITY_01', {
-          value: memberInfo?.name,
-        })}
-        subtitle={t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_AUTHORITY_02')}
+        title={`${memberInfo?.name}님을 룸 관리자로 지정하시겠습니까?`}
+        subtitle={
+          '기존의 룸 관리자는 멤버로 권한 변경되며\n이후 룸 설정에 접근할 수 없습니다'
+        }
         type="error"
         btns={[
           {
             type: 'solid',
             shape: 'round',
-            text: t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_AUTHORITY_03'),
+            text: '확인',
             onClick: handleTransferOk,
           },
           {
             type: 'outlined',
             shape: 'round',
-            text: t('WEB_COMMON_ROOM_SETTING_MANAGE_PEOPLE_01_AUTHORITY_04'),
+            text: '취소',
             onClick: handleTransferCancel,
           },
         ]}

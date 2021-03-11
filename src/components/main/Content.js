@@ -22,12 +22,12 @@ const remToPixel = rem => {
 };
 
 const Content = () => {
+  const { i18n } = useTranslation();
   const { userStore, roomStore } = useCoreStores();
   const history = useHistory();
   const splitRef = useRef(null);
   const contentRef = useRef(null);
   const myUserId = userStore.myProfile.id;
-  const { i18n } = useTranslation();
 
   useEffect(() => {
     if (contentRef) {

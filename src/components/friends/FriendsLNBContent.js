@@ -32,7 +32,6 @@ const FriendsLNBContent = React.forwardRef(
     const [toastText, setToastText] = useState('');
     const [infoModalVisible, setInfoModalVisible] = useState(false);
     const [yPosition, setyPosition] = useState(0);
-    const { t } = useTranslation();
 
     useEffect(() => {
       setFriendActiveId(activeUserId);
@@ -115,7 +114,7 @@ const FriendsLNBContent = React.forwardRef(
           )}
           <FriendListBox>
             <StyleTitle>
-              {t('WEB_COMMON_COMMUNICATION_BAR_04')}
+              프렌즈
               <StyleText>{filteredFriendList.length}</StyleText>
             </StyleTitle>
             <FriendList

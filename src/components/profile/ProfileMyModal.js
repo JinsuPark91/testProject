@@ -71,7 +71,7 @@ const ProfileMyModal = ({
 
   // 1월 업데이트
   // const [lngListVisible, setLngListVisible] = useState(false);
-  // const { i18n } = useTranslation();
+  //
 
   // eslint-disable-next-line no-unused-vars
   const handleSettingDialogOpen = useCallback(e => {

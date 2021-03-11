@@ -75,7 +75,7 @@ const StyledModal = styled(Modal)`
 
 function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
   const { userStore, roomStore } = useCoreStores();
-  const { t } = useTranslation();
+
   const history = useHistory();
   // Private Room
   const [isVisible, setIsVisible] = useState({
@@ -229,11 +229,11 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
             <div style={{ marginBottom: '1.19rem' }}>
               <PrivateRoomIcon width={1.88} height={1.88} color="#232D3B" />
             </div>
-            <StyledInfoTitle level={4}>
-              {t('WEB_COMMON_CREATE_ROOM_OPTION_01')}
-            </StyledInfoTitle>
+            <StyledInfoTitle level={4}>프라이빗 룸</StyledInfoTitle>
             <StyledInfoText>
-              {t('WEB_COMMON_CREATE_ROOM_OPTION_02')}
+              {
+                '프라이빗 룸은 초대를 통해서만\n참여할 수 있는 구성원들만의\n개인적인 공간입니다.'
+              }
             </StyledInfoText>
           </RoomInformation>
           <VerticalBar />
@@ -241,9 +241,11 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
             <div style={{ marginBottom: '1.19rem' }}>
               <OpenChatIcon width={1.88} height={1.88} color="#232D3B" />
             </div>
-            <Title level={4}> {t('WEB_COMMON_CREATE_ROOM_OPTION_04')}</Title>
+            <Title level={4}> 오픈 룸</Title>
             <StyledInfoText>
-              {t('WEB_COMMON_CREATE_ROOM_OPTION_05')}
+              {
+                '오픈 룸은 초대 뿐만 아니라\n검색을 통해 누구나 자유롭게\n참여할 수 있는 공간입니다.'
+              }
             </StyledInfoText>
           </RoomInformation>
         </SelectRoomType>

@@ -53,7 +53,7 @@ const getIconStyle = (isDisabled = false) => {
 const apps = [
   {
     name: 'drive',
-    i18n: 'WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_18',
+    i18n: 'Drive',
     icons: {
       active: <DriveActiveIcon {...getIconStyle()} />,
       disabled: <DriveIcon {...getIconStyle(true)} />,
@@ -65,7 +65,7 @@ const apps = [
   },
   {
     name: 'calendar',
-    i18n: 'WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_17',
+    i18n: 'Calendar',
     icons: {
       active: <CalendarActiveIcon {...getIconStyle()} />,
       disabled: <CalendarIcon {...getIconStyle(true)} />,
@@ -77,7 +77,7 @@ const apps = [
   },
   {
     name: 'note',
-    i18n: 'WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_19',
+    i18n: 'Note',
     icons: {
       active: <NoteActiveIcon {...getIconStyle()} />,
       disabled: <NoteIcon {...getIconStyle(true)} />,
@@ -90,7 +90,7 @@ const apps = [
 
   {
     name: 'meeting',
-    i18n: 'WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_20',
+    i18n: 'Meeting',
     icons: {
       active: <MeetingActiveIcon {...getIconStyle()} />,
       disabled: <MeetingIcon {...getIconStyle(true)} />,
@@ -102,7 +102,7 @@ const apps = [
   },
   {
     name: 'files',
-    i18n: 'WEB_COMMON_B2C_CONTENTS_AREA_EMPTY_PAGE_16',
+    i18n: '모아보기',
     icons: {
       active: <ViewFileActiveIcon {...getIconStyle()} />,
       disabled: <ViewFileIcon {...getIconStyle(true)} />,
@@ -125,7 +125,6 @@ const AppIcon = React.memo(
     disabledIcon,
     disabled,
   }) => {
-    const { t } = useTranslation();
     const handleAppClick = () => {
       onClick(appName);
     };
@@ -138,7 +137,7 @@ const AppIcon = React.memo(
     }
 
     return (
-      <Tooltip placement="bottom" title={t(i18n)} color="#232D3B">
+      <Tooltip placement="bottom" title={i18n} color="#232D3B">
         <AppIconInner
           key={appName}
           onClick={handleAppClick}

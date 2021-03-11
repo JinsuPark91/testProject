@@ -20,7 +20,6 @@ import Search from '../common/Search';
 
 function RoomList() {
   const history = useHistory();
-  const { t, i18n } = useTranslation();
   const [keyword, setKeyword] = useState('');
   const [targetRoom, setTargetRoom] = useState(null);
   const [exitTargetRoom, setExitTargetRoom] = useState(null);
@@ -245,17 +244,19 @@ function RoomList() {
 
       <Message
         visible={isExitNormalModalVisible}
-        title={t('WEB_COMMON_DELETE_ROOM_GROUP_01')}
-        subtitle={t('WEB_COMMON_DELETE_ROOM_GROUP_02')}
+        title="룸에서 나가시겠습니까?"
+        subtitle={
+          '룸을 나가면, 모바일 WAPL에서도 룸이 삭제됩니다.\n중요한 데이터는 미리 백업해 두세요.'
+        }
         type="error"
         btns={[
           {
-            text: t('WEB_COMMON_DELETE_ROOM_GROUP_03'),
+            text: '나가기',
             type: 'solid',
             onClick: handleConfirmExitNormalModal,
           },
           {
-            text: t('WEB_COMMON_DELETE_ROOM_GROUP_04'),
+            text: '취소',
             type: 'outlined',
             onClick: handleCloseExitNormalModal,
           },
@@ -264,17 +265,17 @@ function RoomList() {
 
       <Message
         visible={isExitAdminModalVisible}
-        title={t('WEB_COMMON_DELETE_ROOM_GROUP_05')}
-        subtitle={t('WEB_COMMON_DELETE_ROOM_GROUP_06')}
+        title="룸 관리자는 룸을 나갈 수 없습니다."
+        subtitle="룸을 나가시려면, 먼저 룸 설정에서 다른 멤버에게 룸 관리자 권한을 이양해주세요."
         type="warning"
         btns={[
           {
-            text: t('WEB_COMMON_DELETE_ROOM_GROUP_07'),
+            text: '룸 설정으로 이동',
             type: 'solid',
             onClick: handleConfirmExitAdminModal,
           },
           {
-            text: t('WEB_COMMON_DELETE_ROOM_GROUP_08'),
+            text: '취소',
             type: 'outlined',
             onClick: handleCloseExitAdminModal,
           },
@@ -288,9 +289,7 @@ function RoomList() {
           if (isNewRoom) {
             setIsToastVisible(true);
             setToastText(
-              t('WEB_COMMON_CREATE_PRIVATE_ROOM_07', {
-                value: selectedUsers.length,
-              }),
+              `${selectedUsers.length}명의 구성원이 초대되었습니다.`,
             );
           }
         }}
@@ -299,7 +298,7 @@ function RoomList() {
       <TopWrapper>
         <InputWrapper>
           <Search
-            placeholder={t('WEB_COMMON_B2C_LNB_EMPTY_PAGE_01')}
+            placeholder="룸 이름, 구성원 검색"
             onChange={handleChange}
             onClear={handleClear}
             searchIconColor={{ active: '#17202B', default: '#C6CED6' }}
@@ -307,11 +306,7 @@ function RoomList() {
             type="underline"
           />
         </InputWrapper>
-        <Tooltip
-          title={t('WEB_COMMON_B2C_LNB_EMPTY_PAGE_05')}
-          placement="bottomLeft"
-          color="#232D3B"
-        >
+        <Tooltip title="룸 만들기" placement="bottomLeft" color="#232D3B">
           <AddRoomIconWrapper onClick={handleCreateRoom}>
             <AddRoomIcon width={1.38} height={1.38} color="#232D3B" />
           </AddRoomIconWrapper>

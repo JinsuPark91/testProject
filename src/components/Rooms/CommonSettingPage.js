@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 import Input from '../Input';
 
 const CommonSettingPage = ({ roomId }) => {
-  const { t } = useTranslation();
   const [value, setValue] = useState('');
   const [isChanged, setIsChanged] = useState(false);
   const [isPrivateRoom, setIsPrivateRoom] = useState(false);
@@ -36,8 +35,8 @@ const CommonSettingPage = ({ roomId }) => {
     if (timestamp) {
       return DateTime.fromFormat(timestamp, 'yyyy-MM-dd HH:mm:ss.S z')
         .toFormat('yyyy.MM.dd a hh:mm')
-        .replace('AM', t('TEMP_05'))
-        .replace('PM', t('TEMP_06'));
+        .replace('AM', '오전')
+        .replace('PM', '오후');
     }
     return '';
   };
@@ -53,7 +52,7 @@ const CommonSettingPage = ({ roomId }) => {
         setIsChanged(false);
         // NOTE : roomInfo.adminName 에 값이 없음.
         // const admin = await userStore.getProfile({ userId: roomInfo.adminId });
-        setToastMessage(t('WEB_COMMON_SETTING_GENERAL_11'));
+        setToastMessage('변경 사항이 저장되었습니다.');
         setIsToastVisible(true);
       } else throw Error(`result:${result}`);
     } catch (err) {
