@@ -142,9 +142,6 @@ const ProfileMyModal = ({
     setMoreMenuDropDownVisible(false);
     try {
       await handleFriendsDialogType(
-        orgStore,
-        userStore.myProfile,
-        authStore.sessionInfo.domainKey,
         () => setIsOrgExist(true),
         res => setSpaceMemberList(res),
       );
@@ -155,7 +152,7 @@ const ProfileMyModal = ({
     } catch (e) {
       console.log('service Error...');
     }
-  }, [orgStore, userStore, authStore, spaceStore]);
+  }, [spaceStore]);
 
   const handleAddFriend = useCallback(async () => {
     await handleFriendsDialogType(
