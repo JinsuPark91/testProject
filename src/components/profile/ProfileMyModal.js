@@ -13,6 +13,7 @@ import { useHistory } from 'react-router-dom';
 import { useObserver } from 'mobx-react';
 // import { useTranslation } from 'react-i18next';
 import { useKeycloak } from '@react-keycloak/web';
+import { useTranslation } from 'react-i18next';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SettingDialog from '../usersettings/SettingDialog';
 import ProfileSpaceModal from './ProfileSpaceModal';
@@ -37,6 +38,7 @@ const ProfileMyModal = ({
   visible = false,
   created = false,
 }) => {
+  const { t } = useTranslation();
   const { userStore, authStore, spaceStore, orgStore } = useCoreStores();
   const history = useHistory();
   const [isCreated, setIsCreated] = useState(created);
@@ -160,7 +162,7 @@ const ProfileMyModal = ({
       res => setSpaceMemberList(res),
     );
     setIsViewMode(false);
-    setModalTitle('프렌즈 추가');
+    setModalTitle(t('CM_ADD_PHOTO_FRIENDS'));
     setIsFriendMemViewOpen(true);
   }, []);
 
@@ -220,14 +222,18 @@ const ProfileMyModal = ({
   const moreMenu = (
     <Menu style={{ minWidth: '6.25rem' }}>
       {!isTmaxDomain ? (
-        <Menu.Item onClick={handleInviteDialog}>구성원 초대</Menu.Item>
+        <Menu.Item onClick={handleInviteDialog}>
+          {t('CM_USER_INVITE')}
+        </Menu.Item>
       ) : null}
-      <Menu.Item onClick={handleMemberList}>구성원 목록</Menu.Item>
+      <Menu.Item onClick={handleMemberList}>{t('CM_USER_LIST')}</Menu.Item>
       {isAdmin && (
-        <Menu.Item onClick={handleSpaceEditDialog}>스페이스 편집</Menu.Item>
+        <Menu.Item onClick={handleSpaceEditDialog}>
+          {t('CM_SPACE_EDIT')}
+        </Menu.Item>
       )}
       {isAdmin && (
-        <Menu.Item onClick={handleAdminPage}>어드민 페이지</Menu.Item>
+        <Menu.Item onClick={handleAdminPage}>{t('CM_ADMIN_PAGE')}</Menu.Item>
       )}
     </Menu>
   );
@@ -243,14 +249,14 @@ const ProfileMyModal = ({
       <UserMail>{`(${userStore.myProfile?.loginId})`}</UserMail>
       <UserButtonBox>
         <Button type="link" onClick={toggleEditMode}>
-          프로필 편집
+          {t('CM_EDIT_PROFILE')}
         </Button>
         <UserBar />
         <Button type="link" onClick={handleMoveAccountPage}>
-          비밀번호 변경
+          {t('CM_PROFILE_MENU_08')}
         </Button>
       </UserButtonBox>
-      <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
+      <LogoutButton onClick={handleLogout}>{t('CM_LOGOUT_01')}</LogoutButton>
     </>
   ) : (
     <ProfileInfoModal
@@ -274,16 +280,20 @@ const ProfileMyModal = ({
   const subContent = (
     <>
       <UserSpaceArea isEdit={isEditMode}>
-        <DataName>현재 스페이스</DataName>
+        <DataName>{t('CM_SETTING_DELETE_SPACE_03')}</DataName>
         <DataBox>
           <Logo shape="square">{spaceStore.currentSpace?.name[0]}</Logo>
           <Info>
             <Title>{spaceStore.currentSpace?.name}</Title>
             {spaceStore.currentSpace?.domain}
           </Info>
-          <Tooltip placement="topLeft" color="#232D3B" title="스페이스 전환">
+          <Tooltip
+            placement="topLeft"
+            color="#232D3B"
+            title={t('CM_PROFILE_PROFILE_MENU_01')}
+          >
             <Button className="btn-convert" onClick={handleSpaceList}>
-              <Blind>스페이스 전환</Blind>
+              <Blind>{t('CM_PROFILE_PROFILE_MENU_01')}</Blind>
             </Button>
           </Tooltip>
           <Dropdown
@@ -291,9 +301,13 @@ const ProfileMyModal = ({
             overlay={moreMenu}
             placement="bottomRight"
           >
-            <Tooltip placement="topLeft" color="#232D3B" title="더 보기">
+            <Tooltip
+              placement="topLeft"
+              color="#232D3B"
+              title={t('CM_PROFILE_PROFILE_MENU_02')}
+            >
               <Button className="btn-more">
-                <Blind>설정</Blind>
+                <Blind>{t('CM_SETTING')}</Blind>
               </Button>
             </Tooltip>
           </Dropdown>
@@ -303,7 +317,7 @@ const ProfileMyModal = ({
       {/* <UserSubArea>
         <SubInfo tabIndex="-1" onClick={handleToggleLngList}>
           <LangSpaceIcon />
-          Language : {i18n.language === 'ko' ? '한국어' : 'English'}
+          Language : {i18n.language === 'ko' ? t('CM_KOREAN') : t('CM_ENGLISH')}
           <LangIcon>
             <ArrowRightIcon />
           </LangIcon>
@@ -314,13 +328,13 @@ const ProfileMyModal = ({
               checked={i18n.language === 'ko'}
               onClick={handleLanguage.bind(this, 'ko')}
             >
-              한국어
+              {t('CM_KOREAN')}
             </LangItem>
             <LangItem
               checked={i18n.language === 'en'}
               onClick={handleLanguage.bind(this, 'en')}
             >
-              English
+              {t('CM_ENGLISH')}
             </LangItem>
           </LngList>
         )}
@@ -333,7 +347,7 @@ const ProfileMyModal = ({
             </LogoSmall>
             <NowInfo>
               <NowTitle>{spaceStore.currentSpace?.name}</NowTitle>
-              현재 스페이스입니다.
+              {t('CM_SWITCH_SPACE_01')}
             </NowInfo>
             <Checkbox checked className="check-round" />
           </ConvertNow>
@@ -357,12 +371,12 @@ const ProfileMyModal = ({
             )}
             <ConvertAdd onClick={() => handleClickNewSpace()}>
               <AddBox>+</AddBox>
-              <AddText addSpace>새 스페이스 생성</AddText>
+              <AddText addSpace>{t('CM_CREATE_CONTENTS_AREA_02')}</AddText>
             </ConvertAdd>
           </ConvertBox>
           <ConvertMove onClick={() => handleMoveSpacePage()}>
             <SquareSpaceIcon />
-            스페이스 목록으로 이동
+            {t('CM_GO_SPACES')}
           </ConvertMove>
         </ConvertDropdown>
       )}
@@ -383,7 +397,7 @@ const ProfileMyModal = ({
       <AddFriendsByInvitationDialog
         visible={isInviteDialogOpen}
         onSendInviteMail={() => {
-          setToastText('발송한 초대장은 24시간 이후 만료됩니다.');
+          setToastText(t('CM_INVITE_PEOPLE_POPUP_07'));
           setIsToastOpen(true);
         }}
         onCancel={handleCancelInviteMail}
@@ -409,7 +423,9 @@ const ProfileMyModal = ({
         onCreateRoom={({ selectedUsers, isNewRoom }) => {
           if (isNewRoom) {
             setToastText(
-              `${selectedUsers.length}명의 구성원이 초대되었습니다.`,
+              t('CM_INVITE_MEMBER', {
+                num: selectedUsers.length,
+              }),
             );
             setIsToastOpen(true);
           }
@@ -419,7 +435,7 @@ const ProfileMyModal = ({
         visible={isSpaceEditDialogVisible}
         onClose={() => setIsSpaceEditDialogVisible(false)}
         onSuccess={() => {
-          setToastText('변경 사항이 저장되었습니다.');
+          setToastText(t('CM_CHANGE_SAVE'));
           setIsToastOpen(true);
         }}
       />
@@ -434,12 +450,12 @@ const ProfileMyModal = ({
       </Toast>
       <Message
         visible={isNewSpaceErrorMessagVisible}
-        title="스페이스는 최대 3개까지 생성할 수 있습니다."
+        title={t('CM_SPACE_CREATE_OPTION_ERROR_03')}
         btns={[
           {
             type: 'solid',
             shape: 'round',
-            text: '확인',
+            text: t('CM_LOGIN_POLICY_03'),
             onClick: () => setIsNewSpaceErrorMessageVisible(false),
           },
         ]}
@@ -465,11 +481,11 @@ const ProfileMyModal = ({
             type="text"
             onClick={() => handleSettingDialogOpen(SELECTED_TAB.ALARM)}
           >
-            설정
+            {t('CM_SETTING')}
           </SettingButton>
           <SettingBar />
           <SettingButton type="text" onClick={handleOpenSupport}>
-            고객지원
+            {t('CM_PROFILE_MENU_04')}
           </SettingButton>
         </UserSettingArea>
       }

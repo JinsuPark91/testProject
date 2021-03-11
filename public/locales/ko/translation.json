@@ -467,5 +467,7 @@
   "CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_07": "{{num}}명의 참여 요청이 승인 되었습니다.",
   "CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_08": "{{num}}명의 참여 요청이 거절 되었습니다.",
   "CM_SETTING_NOTI_14": "(@)멘션 별도 알림",
-  "CM_SETTING_NOTI_15": "나를 멘션한 메시지가 있을 경우 룸 알림이 꺼져 있어도 알림을 받습니다."
+  "CM_SETTING_NOTI_15": "나를 멘션한 메시지가 있을 경우 룸 알림이 꺼져 있어도 알림을 받습니다.",
+  "CM_TEMP_MINI_CHAT": "미니 채팅",
+  "CM_TEMP_MAIL": "Mail"
 }

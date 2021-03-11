@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { useCoreStores } from 'teespace-core';
 import { Button } from 'antd';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 const SpaceInformation = styled.div`
   position: absolute;
@@ -74,11 +75,12 @@ function ProfileSpaceModal({
   onAddFriend,
   onClose,
 }) {
+  const { t } = useTranslation();
   const { userStore, spaceStore } = useCoreStores();
   const isAdmin = userStore.myProfile.grade === 'admin';
   const title = isAdmin
-    ? '스페이스를 생성했습니다!'
-    : '스페이스에 참여했습니다!';
+    ? t('CM_SPACE_CREATE_COMPLETE_01')
+    : t('CM_INVITE_PEOPLE_MAIL_LINK_09');
 
   const handleAddMember = useCallback(() => {
     onClose();
@@ -104,40 +106,42 @@ function ProfileSpaceModal({
       <Title>{title}</Title>
       {isAdmin ? (
         <Description>
-          이제 {userName}님은 {spaceStore.currentSpace?.name}의 어드민입니다.
-          <br />
-          스페이스에 구성원을 초대하고, 어드민 페이지에서 관리할 수 있습니다.
+          {t('CM_SPACE_CREATE_COMPLETE_02', {
+            name1: userName,
+            name2: spaceStore.currentSpace?.name,
+          })}
         </Description>
       ) : (
         <Description>
-          이제 {userName}님은 {spaceStore.currentSpace?.name}의 멤버입니다.
-          <br />
-          멤버들과 Talk 중심의 다양한 앱을 사용해 보세요.
+          {t('CM_INVITE_PEOPLE_MAIL_LINK_10', {
+            name1: userName,
+            name2: spaceStore.currentSpace?.name,
+          })}
         </Description>
       )}
       <ButtonContainer>
         {isAdmin ? (
           <>
             <Button type="solid" onClick={handleAddMember}>
-              구성원 초대
+              {t('CM_USER_INVITE')}
             </Button>
             <Button type="solid" onClick={handleAdminPage}>
-              어드민 페이지
+              {t('CM_ADMIN_PAGE')}
             </Button>
           </>
         ) : (
           <>
             <Button type="solid" onClick={handleAddFriend}>
-              프렌즈 추가
+              {t('CM_ADD_PHOTO_FRIENDS')}
             </Button>
             <Button type="solid" onClick={handleCreateRoom}>
-              룸 만들기
+              {t('CM_CREATE_ROOM')}
             </Button>
           </>
         )}
       </ButtonContainer>
       <LinkButton type="link" onClick={onClose}>
-        다음에 하기
+        {t('CM_SKIP')}
       </LinkButton>
     </SpaceInformation>
   );

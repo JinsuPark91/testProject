@@ -14,6 +14,8 @@ import Input from '../Input';
 
 const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
   const { userStore } = useCoreStores();
+  const { t } = useTranslation();
+
   const initialOptions = {
     isChangeName: false,
     roomName: '',
@@ -67,7 +69,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
       visible={visible}
       onCancel={handleCancel}
       onOk={handleOk}
-      title="프라이빗 룸 만들기"
+      title={t('CM_CREATE_PRIVATE_ROOM_02')}
       footer={null}
       width="fit-content"
       destroyOnClose
@@ -90,20 +92,18 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
               checked={options.isChangeName}
               onChange={handleChangeNameChange}
             />
-            <ConfigTitleText>룸 이름 설정하기</ConfigTitleText>
+            <ConfigTitleText>{t('CM_ROOM_NAME_SETTING')}</ConfigTitleText>
           </ConfigTitle>
 
           <ConfigDescriptionText>
-            {
-              '초기 설정하지 않을 시, 구성원 별명으로 나열된 룸이 개설되며,\n이후 변경한 룸 이름은 개인에게만 적용됩니다.'
-            }
+            {t('CM_B2B_CREATE_ROOM_POPUP_FRIENDS_07')}
           </ConfigDescriptionText>
 
           <Input
             maxLength={50}
             value={options.roomName}
             onChange={handleChangeName}
-            placeholder="목적, 토픽 등이 있다면 입력해 주세요."
+            placeholder={t('CM_B2B_CREATE_ROOM_POPUP_FRIENDS_08')}
             disabled={selectedUsers.length < 2 || !options.isChangeName}
           />
 
@@ -113,9 +113,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
               checked={options.isStartMeeting}
               onChange={handleStartMeetingChange}
             />
-            <ConfigTitleText>
-              초대 구성원과 바로 Meeting 시작하기
-            </ConfigTitleText>
+            <ConfigTitleText>{t('CM_CREATE_PRIVATE_ROOM_04')}</ConfigTitleText>
           </ConfigTitle>
         </ConfigWrapper>
 
@@ -126,10 +124,12 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
             onClick={handleOk}
             disabled={!selectedUsers.length}
           >
-            {`초대 ${selectedUsers.length > 99 ? '99+' : selectedUsers.length}`}
+            {`${t('CM_B2B_CREATE_ROOM_POPUP_FRIENDS_09')} ${
+              selectedUsers.length > 99 ? '99+' : selectedUsers.length
+            }`}
           </Button>
           <Button type="outlined" shape="default" onClick={handleCancel}>
-            취소
+            {t('CM_CANCEL')}
           </Button>
         </ButtonContainer>
       </>

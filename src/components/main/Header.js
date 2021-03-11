@@ -53,7 +53,7 @@ const getIconStyle = (isDisabled = false) => {
 const apps = [
   {
     name: 'drive',
-    i18n: 'Drive',
+    i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_18',
     icons: {
       active: <DriveActiveIcon {...getIconStyle()} />,
       disabled: <DriveIcon {...getIconStyle(true)} />,
@@ -65,7 +65,7 @@ const apps = [
   },
   {
     name: 'calendar',
-    i18n: 'Calendar',
+    i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_17',
     icons: {
       active: <CalendarActiveIcon {...getIconStyle()} />,
       disabled: <CalendarIcon {...getIconStyle(true)} />,
@@ -77,7 +77,7 @@ const apps = [
   },
   {
     name: 'note',
-    i18n: 'Note',
+    i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_19',
     icons: {
       active: <NoteActiveIcon {...getIconStyle()} />,
       disabled: <NoteIcon {...getIconStyle(true)} />,
@@ -90,7 +90,7 @@ const apps = [
 
   {
     name: 'meeting',
-    i18n: 'Meeting',
+    i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_20',
     icons: {
       active: <MeetingActiveIcon {...getIconStyle()} />,
       disabled: <MeetingIcon {...getIconStyle(true)} />,
@@ -102,7 +102,7 @@ const apps = [
   },
   {
     name: 'files',
-    i18n: '모아보기',
+    i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_16',
     icons: {
       active: <ViewFileActiveIcon {...getIconStyle()} />,
       disabled: <ViewFileIcon {...getIconStyle(true)} />,
@@ -125,6 +125,8 @@ const AppIcon = React.memo(
     disabledIcon,
     disabled,
   }) => {
+    const { t } = useTranslation();
+
     const handleAppClick = () => {
       onClick(appName);
     };
@@ -137,7 +139,7 @@ const AppIcon = React.memo(
     }
 
     return (
-      <Tooltip placement="bottom" title={i18n} color="#232D3B">
+      <Tooltip placement="bottom" title={t(i18n)} color="#232D3B">
         <AppIconInner
           key={appName}
           onClick={handleAppClick}
@@ -152,6 +154,7 @@ const AppIcon = React.memo(
 
 const Header = observer(() => {
   const history = useHistory();
+  const { t } = useTranslation();
   const { roomStore, userStore } = useCoreStores();
   const [isRoomProfileVisible, setRoomProfileVisible] = useState(false);
   const [isAddMemberVisible, setAddMemberVisible] = useState(false);
@@ -433,7 +436,7 @@ const Header = observer(() => {
                   <>
                     <Tooltip
                       placement="bottom"
-                      title="미니 채팅"
+                      title={t('CM_TEMP_MINI_CHAT')}
                       color="#232D3B"
                     >
                       <IconWrapper onClick={handleExport}>
@@ -446,7 +449,7 @@ const Header = observer(() => {
                     </Tooltip>
                     <Tooltip
                       placement="bottom"
-                      title="대화 내용 검색"
+                      title={t('CM_ROOMTITLE_TOOLTIP_02')}
                       color="#232D3B"
                     >
                       <IconWrapper onClick={handleSearch}>
@@ -463,7 +466,7 @@ const Header = observer(() => {
                   <>
                     <Tooltip
                       placement="bottom"
-                      title="룸 구성원 초대"
+                      title={t('CM_ROOM_INVITE_USER')}
                       color="#232D3B"
                     >
                       <IconWrapper onClick={handleAddMember}>
