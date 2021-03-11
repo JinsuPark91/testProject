@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Modal } from 'antd';
 import styled from 'styled-components';
-
+import { useTranslation } from 'react-i18next';
 import { useCoreStores, ItemSelector } from 'teespace-core';
 
 function RoomAddMemberModal({
@@ -10,6 +10,7 @@ function RoomAddMemberModal({
   onInviteUsers = () => {},
   onCancel = () => {},
 }) {
+  const { t } = useTranslation();
   const [isLoaded, setisLoaded] = useState(false);
   const [members, setMembers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -71,7 +72,7 @@ function RoomAddMemberModal({
       <FlexModal
         title={
           <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>
-            룸 구성원 초대
+            {t('CM_ROOM_INVITE_USER')}
           </div>
         }
         visible={visible}
@@ -98,7 +99,9 @@ function RoomAddMemberModal({
             style={{ marginRight: '0.38rem' }}
             disabled={selectedUsers.length <= 0}
           >
-            {`초대 ${selectedUsers.length > 99 ? '99+' : selectedUsers.length}`}
+            {`${t('CM_B2B_CREATE_ROOM_POPUP_FRIENDS_09')} ${
+              selectedUsers.length > 99 ? '99+' : selectedUsers.length
+            }`}
           </Button>
           <Button
             type="outlined"
@@ -106,7 +109,7 @@ function RoomAddMemberModal({
             shape="round"
             onClick={handleCancel}
           >
-            취소
+            {t('CM_CANCEL')}
           </Button>
         </ButtonContainer>
       </FlexModal>

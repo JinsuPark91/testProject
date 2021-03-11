@@ -17,8 +17,10 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
 import Search from '../common/Search';
+import i18n from '../../i18n';
 
 function RoomList() {
+  const { t } = useTranslation();
   const history = useHistory();
   const [keyword, setKeyword] = useState('');
   const [targetRoom, setTargetRoom] = useState(null);
@@ -244,19 +246,17 @@ function RoomList() {
 
       <Message
         visible={isExitNormalModalVisible}
-        title="룸에서 나가시겠습니까?"
-        subtitle={
-          '룸을 나가면, 모바일 WAPL에서도 룸이 삭제됩니다.\n중요한 데이터는 미리 백업해 두세요.'
-        }
+        title={t('CM_Q_LEAVE_ROOM')}
+        subtitle={t('CM_DEL_ROOM_GUIDE')}
         type="error"
         btns={[
           {
-            text: '나가기',
+            text: t('CM_LEAVE'),
             type: 'solid',
             onClick: handleConfirmExitNormalModal,
           },
           {
-            text: '취소',
+            text: t('CM_CANCEL'),
             type: 'outlined',
             onClick: handleCloseExitNormalModal,
           },
@@ -265,17 +265,17 @@ function RoomList() {
 
       <Message
         visible={isExitAdminModalVisible}
-        title="룸 관리자는 룸을 나갈 수 없습니다."
-        subtitle="룸을 나가시려면, 먼저 룸 설정에서 다른 멤버에게 룸 관리자 권한을 이양해주세요."
+        title={t('CM_DEL_ROOM_GROUP_05')}
+        subtitle={t('CM_DEL_ROOM_GROUP_06')}
         type="warning"
         btns={[
           {
-            text: '룸 설정으로 이동',
+            text: t('CM_DEL_ROOM_GROUP_07'),
             type: 'solid',
             onClick: handleConfirmExitAdminModal,
           },
           {
-            text: '취소',
+            text: t('CM_CANCEL'),
             type: 'outlined',
             onClick: handleCloseExitAdminModal,
           },
@@ -289,7 +289,9 @@ function RoomList() {
           if (isNewRoom) {
             setIsToastVisible(true);
             setToastText(
-              `${selectedUsers.length}명의 구성원이 초대되었습니다.`,
+              t('CM_INVITE_MEMBER', {
+                num: selectedUsers.length,
+              }),
             );
           }
         }}
@@ -298,7 +300,7 @@ function RoomList() {
       <TopWrapper>
         <InputWrapper>
           <Search
-            placeholder="룸 이름, 구성원 검색"
+            placeholder={t('CM_SEARCH_NAME')}
             onChange={handleChange}
             onClear={handleClear}
             searchIconColor={{ active: '#17202B', default: '#C6CED6' }}
@@ -306,7 +308,11 @@ function RoomList() {
             type="underline"
           />
         </InputWrapper>
-        <Tooltip title="룸 만들기" placement="bottomLeft" color="#232D3B">
+        <Tooltip
+          title={t('CM_CREATE_ROOM')}
+          placement="bottomLeft"
+          color="#232D3B"
+        >
           <AddRoomIconWrapper onClick={handleCreateRoom}>
             <AddRoomIcon width={1.38} height={1.38} color="#232D3B" />
           </AddRoomIconWrapper>
@@ -333,7 +339,12 @@ function RoomList() {
         </Observer>
       </RoomContainer>
       <ButtomWrapper>
-        <div>
+        <div
+        // onClick={() => {
+        //   if (i18n.language === 'en') i18n.changeLanguage('ko');
+        //   else i18n.changeLanguage('en');
+        // }}
+        >
           <WaplLogo />
         </div>
         <Toast

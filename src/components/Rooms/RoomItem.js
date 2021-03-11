@@ -22,6 +22,7 @@ import mySign from '../../assets/wapl_me.svg';
 
 const RoomDropdown = React.memo(
   ({ children, roomInfo, onMenuClick, onClickMenuItem }) => {
+    const { t } = useTranslation();
     const { roomStore, userStore } = useCoreStores();
 
     const { id: roomId } = roomInfo;
@@ -144,42 +145,42 @@ const RoomDropdown = React.memo(
             // NOTE. 마이름은 메뉴 자체가 없다. (체크할 필요 없음)
             !isDMRoom && (
               <Menu.Item key="changeName" onClick={handleNameChange}>
-                이름 변경
+                {t('CM_CHANGE_NAME_02')}
               </Menu.Item>
             )
           }
           {roomInfo.isRoomBookmarked ? (
             <Menu.Item key="disableBookmark" onClick={handleBookmarkDisable}>
-              룸 상단 해제
+              {t('CM_FIX_TOP_ROOM_03')}
             </Menu.Item>
           ) : (
             <Menu.Item key="enableBookmark" onClick={handleBookmarkEnable}>
-              룸 상단 고정
+              {t('CM_CHANGE_NAME_03')}
             </Menu.Item>
           )}
           {roomInfo.isAlarmUsed ? (
             <Menu.Item key="disableAlarm" onClick={handleAlarmDisable}>
-              알림 끄기
+              {t('CM_CHANGE_NAME_04')}
             </Menu.Item>
           ) : (
             <Menu.Item key="enableAlarm" onClick={handleAlarmEnable}>
-              알림 켜기
+              {t('CM_NOTI_SETTING_01')}
             </Menu.Item>
           )}
           <Menu.Item key="member" onClick={handleViewMember}>
-            룸 구성원 보기
+            {t('CM_ROOM_CONTEXT_MENU_01')}
           </Menu.Item>
           {
             // NOTE. 마이룸과 1:1 룸은 룸설정 할 수 없음
             // NOTE. 1:1 방이 아니고, 내가 관리자면 세팅페이지를 볼수 있다.
             !isDMRoom && isAdmin && (
               <Menu.Item key="setting" onClick={handleSetting}>
-                룸 설정
+                {t('CM_ROOM_SETTING')}
               </Menu.Item>
             )
           }
           <Menu.Item key="exit" onClick={handleExit}>
-            나가기
+            {t('CM_LEAVE')}
           </Menu.Item>
         </StyledMenu>
       );
@@ -206,6 +207,7 @@ const RoomItemContent = ({
   onClickMenuItem,
   onClickRoomPhoto,
 }) => {
+  const { t } = useTranslation();
   const { userStore } = useCoreStores();
   const isDMRoom = roomInfo.isDirectMsg;
 
@@ -354,7 +356,7 @@ const RoomItemContent = ({
           </IconWrapper>
         </RoomDropdown>
       )}
-      <Tooltip placement="top" title="미니 채팅" color="#232D3B">
+      <Tooltip placement="top" title={t('CM_TEMP_MINI_CHAT')} color="#232D3B">
         <IconWrapper className="room-item__icon" onClick={handleExport}>
           <ExportIcon width={1} height={1} color="#49423A" />
         </IconWrapper>

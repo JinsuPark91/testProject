@@ -337,10 +337,6 @@
   "CM_ROOM_SETTING_MANAGE_PEOPLE_06": "The current room administrator will be granted member permissions,\nand will no longer be able to access room settings.",
   "CM_OPEN_ROOM_HOME_01": "Open Room Home",
   "CM_OPEN_ROOM_HOME_02": "Search All",
-  "CM_OPEN_ROOM_HOME_03": "My Open Rooms {{num}}",
-  "CM_OPEN_ROOM_HOME_04": "Recommended Open Rooms",
-  "CM_OPEN_ROOM_HOME_05": "{{result}}'\nNo search results found.",
-  "CM_OPEN_ROOM_HOME_06": "{{name}}\nDo you want to join the open room?",
   "CM_OPEN_ROOM_HOME_07": "Join",
   "CM_ADD_FRIENDS_EMPTY_01": "There are no friends to add.",
   "CM_ADD_FRIENDS_EMPTY_02": "Invite users first.",
@@ -469,5 +465,11 @@
   "CM_SETTING_NOTI_14": "",
   "CM_SETTING_NOTI_15": "",
   "CM_TEMP_MINI_CHAT": "Mini Chat",
-  "CM_TEMP_MAIL": "Mail"
+  "CM_TEMP_MAIL": "Mail",
+  "CM_TEMP_AM": "AM",
+  "CM_TEMP_PM": "PM",
+  "CM_TEMP_TALK": "Talk",
+  "CM_OPEN_ROOM_HOME_05": "No search results found.",
+  "CM_OPEN_ROOM_HOME_06": "Do you want to join the open room?",
+  "CM_OPEN_ROOM_HOME_03": "My Open Rooms"
 }

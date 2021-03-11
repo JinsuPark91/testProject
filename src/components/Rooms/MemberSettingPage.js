@@ -34,6 +34,7 @@ const TableRow = ({
   onTransferClick,
   onCheckChange,
 }) => {
+  const { t } = useTranslation();
   const isAdmin = memberInfo.role === 'WKS0004';
 
   const handleClick = () => {
@@ -47,11 +48,11 @@ const TableRow = ({
   const getMemberType = () => {
     switch (memberInfo.grade) {
       case 'member':
-        return '멤버';
+        return t('CM_USERS');
       case 'admin':
-        return '어드민';
+        return t('CM_ADMIN');
       case 'guest':
-        return '게스트';
+        return t('CM_GUEST');
       default:
         return '';
     }
@@ -83,7 +84,7 @@ const TableRow = ({
           onClick={handleClick}
           disabled={isAdmin}
         >
-          변경
+          {t('CM_CHANGE')}
         </Button>
       </Cell>
     </RowWrapper>
@@ -91,6 +92,8 @@ const TableRow = ({
 };
 
 const SubTab = React.memo(({ tabIndex, onChange }) => {
+  const { t } = useTranslation();
+
   return (
     <div style={{ marginBottom: '2rem', marginLeft: '6.5rem' }}>
       <SubTabItem
@@ -98,7 +101,7 @@ const SubTab = React.memo(({ tabIndex, onChange }) => {
         className={tabIndex === 0 ? 'sub-tab--active' : ''}
         onClick={onChange}
       >
-        참여 인원
+        {t('CM_ROOM_SETTING_MANAGE_PEOPLE_01')}
       </SubTabItem>
       <span
         style={{
@@ -112,7 +115,7 @@ const SubTab = React.memo(({ tabIndex, onChange }) => {
         className={tabIndex === 1 ? 'sub-tab--active' : ''}
         // onClick={onChange}
       >
-        참여 제한 인원
+        {t('CM_ROOM_SETTING_BLOCK_MANAGE_PEOPLE_01')}
       </SubTabItem>
     </div>
   );
@@ -126,6 +129,7 @@ const Table = React.memo(
     onAllCheckChange,
     onCheckChange,
   }) => {
+    const { t } = useTranslation();
     const tableBodyRef = useRef(null);
     const { userStore } = useCoreStores();
     const myId = userStore.myProfile.id;
@@ -161,13 +165,25 @@ const Table = React.memo(
               onChange={onAllCheckChange}
             />
           </HeaderCell>
-          <HeaderCell style={{ width: WIDTH.NICK }}>별명</HeaderCell>
-          <HeaderCell style={{ width: WIDTH.LOGIN_ID }}>아이디</HeaderCell>
-          <HeaderCell style={{ width: WIDTH.TEAM }}>소속</HeaderCell>
-          <HeaderCell style={{ width: WIDTH.JOB }}>직위</HeaderCell>
-          <HeaderCell style={{ width: WIDTH.PHONE }}>휴대폰 번호</HeaderCell>
-          <HeaderCell style={{ width: WIDTH.ROLE }}>스페이스 권한</HeaderCell>
-          <HeaderCell style={{ width: WIDTH.BUTTON }}>룸 권한 이양</HeaderCell>
+          <HeaderCell style={{ width: WIDTH.NICK }}>
+            {t('CM_NICKNAME')}
+          </HeaderCell>
+          <HeaderCell style={{ width: WIDTH.LOGIN_ID }}>
+            {t('CM_ID')}
+          </HeaderCell>
+          <HeaderCell style={{ width: WIDTH.TEAM }}>{t('CM_TEAM')}</HeaderCell>
+          <HeaderCell style={{ width: WIDTH.JOB }}>
+            {t('CM_TITLE_POSITION')}
+          </HeaderCell>
+          <HeaderCell style={{ width: WIDTH.PHONE }}>
+            {t('CM_MOBILE_NUMBER')}
+          </HeaderCell>
+          <HeaderCell style={{ width: WIDTH.ROLE }}>
+            {t('CM_SPACE_PERMISSION')}
+          </HeaderCell>
+          <HeaderCell style={{ width: WIDTH.BUTTON }}>
+            {t('CM_ROOM_PERMISSION_TRANSFER')}
+          </HeaderCell>
         </TableHeader>
         <TableBody ref={tableBodyRef}>
           <List
@@ -193,6 +209,7 @@ const Table = React.memo(
 );
 
 const MemberPage = ({ roomId }) => {
+  const { t } = useTranslation();
   const { roomStore, userStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
   const history = useHistory();
@@ -403,22 +420,22 @@ const MemberPage = ({ roomId }) => {
 
       <Message
         visible={transferVisible}
-        title={`${memberInfo?.name}님을 룸 관리자로 지정하시겠습니까?`}
-        subtitle={
-          '기존의 룸 관리자는 멤버로 권한 변경되며\n이후 룸 설정에 접근할 수 없습니다'
-        }
+        title={t('CM_ROOM_SETTING_MANAGE_PEOPLE_05', {
+          name: memberInfo?.name,
+        })}
+        subtitle={t('CM_ROOM_SETTING_MANAGE_PEOPLE_06')}
         type="error"
         btns={[
           {
             type: 'solid',
             shape: 'round',
-            text: '확인',
+            text: t('CM_LOGIN_POLICY_03'),
             onClick: handleTransferOk,
           },
           {
             type: 'outlined',
             shape: 'round',
-            text: '취소',
+            text: t('CM_CANCEL'),
             onClick: handleTransferCancel,
           },
         ]}
@@ -426,20 +443,20 @@ const MemberPage = ({ roomId }) => {
 
       <Message
         visible={kickoutVisible}
-        title="해당 인원을 강제 퇴장시키시겠습니까?"
-        subtitle="강제 퇴장 멤버는 참여 제한 인원에서 관리할 수 있습니다."
+        title={t('CM_ROOM_SETTING_FORCED_EXIT_01')}
+        subtitle={t('CM_ROOM_SETTING_FORCED_EXIT_02')}
         type="error"
         btns={[
           {
             type: 'solid',
             shape: 'round',
-            text: '확인',
+            text: t('CM_LOGIN_POLICY_03'),
             onClick: handleKickoutOK,
           },
           {
             type: 'outlined',
             shape: 'round',
-            text: '취소',
+            text: t('CM_CANCEL'),
             onClick: handleKickoutCancel,
           },
         ]}
@@ -461,11 +478,11 @@ const MemberPage = ({ roomId }) => {
               margin: '0 1.25rem',
             }}
           >
-            참여{' '}
+            {`${t('CM_OPEN_ROOM_HOME_07')} `}
             <span style={{ color: 'rgb(87, 66, 200)' }}>
               {filteredMembers.length}
             </span>
-            명
+            {/* 명 */}
           </span>
           <Button
             type="solid"
@@ -473,7 +490,7 @@ const MemberPage = ({ roomId }) => {
             style={{ backgroundColor: '#205855', marginRight: '0.5rem' }}
             onClick={handleInvite}
           >
-            + 룸 구성원 초대
+            {`+ ${t('CM_ROOM_INVITE_USER')}`}
           </Button>
           <Button
             type="outlined"
@@ -481,14 +498,14 @@ const MemberPage = ({ roomId }) => {
             onClick={handleKickout}
             disabled={!selectedMembers.size}
           >
-            강제 퇴장
+            {t('CM_REMOVE')}
           </Button>
         </div>
         <div style={{ width: '13.31rem' }}>
           <WaplSearch
             type="default"
             searchIconColor={{ active: '#7C7670', default: '#CAC4BD' }}
-            placeholder="별명, 소속, 직위 검색"
+            placeholder={t('CM_NICKNAME_TEAM_TITLE_SEARCH')}
             onClear={handleSearchClear}
             onEnterDown={handleSearchEnterPress}
             isCountExist={false}

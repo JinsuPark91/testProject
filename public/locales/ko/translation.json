@@ -337,10 +337,6 @@
   "CM_ROOM_SETTING_MANAGE_PEOPLE_06": "기존의 룸 관리자는 멤버로 권한 변경되며\n이후 룸 설정에 접근할 수 없습니다",
   "CM_OPEN_ROOM_HOME_01": "오픈 룸 홈",
   "CM_OPEN_ROOM_HOME_02": "전체 검색",
-  "CM_OPEN_ROOM_HOME_03": "내 오픈 룸 {{num}}",
-  "CM_OPEN_ROOM_HOME_04": "전체 오픈 룸",
-  "CM_OPEN_ROOM_HOME_05": "{{result}}'\n검색 결과가 없습니다.",
-  "CM_OPEN_ROOM_HOME_06": "{{name}}\n오픈 룸에 참여하시겠습니까?",
   "CM_OPEN_ROOM_HOME_07": "참여",
   "CM_ADD_FRIENDS_EMPTY_01": "추가할 프렌즈가 없습니다.",
   "CM_ADD_FRIENDS_EMPTY_02": "먼저 구성원을 초대해 보세요.",
@@ -469,5 +465,12 @@
   "CM_SETTING_NOTI_14": "(@)멘션 별도 알림",
   "CM_SETTING_NOTI_15": "나를 멘션한 메시지가 있을 경우 룸 알림이 꺼져 있어도 알림을 받습니다.",
   "CM_TEMP_MINI_CHAT": "미니 채팅",
-  "CM_TEMP_MAIL": "Mail"
+  "CM_TEMP_MAIL": "Mail",
+  "CM_TEMP_AM": "오전",
+  "CM_TEMP_PM": "오후",
+  "CM_TEMP_TALK" : "Talk",
+  "CM_OPEN_ROOM_HOME_05": "검색 결과가 없습니다.",
+  "CM_OPEN_ROOM_HOME_06": "오픈 룸에 참여하시겠습니까?",
+  "CM_OPEN_ROOM_HOME_03": "내 오픈 룸",
+  "CM_OPEN_ROOM_HOME_04": "추천 오픈 룸"
 }

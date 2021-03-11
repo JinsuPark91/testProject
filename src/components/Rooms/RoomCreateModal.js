@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Button, Modal } from 'antd';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 import Input from '../Input';
 
 const StyledModal = styled(Modal)`
@@ -40,6 +41,8 @@ const Count = styled.span`
 `;
 
 function RoomCreateModal({ visible, onCancel, onOk }) {
+  const { t } = useTranslation();
+
   const initialStates = {
     roomName: '',
   };
@@ -66,7 +69,7 @@ function RoomCreateModal({ visible, onCancel, onOk }) {
   return (
     <StyledModal
       visible={visible}
-      title="오픈 룸 만들기"
+      title={t('CM_CREATE_OPEN_ROOM')}
       width="24.38rem"
       onCancel={onCancel}
       footer={[
@@ -77,26 +80,24 @@ function RoomCreateModal({ visible, onCancel, onOk }) {
           onClick={createOpenRoom}
           disabled={!roomName}
         >
-          생성
+          {t('CM_CREATE_OPEN_ROOM_05')}
         </Button>,
         <Button shape="default" key="c" onClick={cancelCreateRoom}>
-          취소
+          {t('CM_CANCEL')}
         </Button>,
       ]}
     >
-      <Title>룸 이름 설정하기</Title>
+      <Title>{t('CM_ROOM_NAME_SETTING')}</Title>
       <InputBox>
         <Input
-          placeholder="목적, 토픽 등이 있다면 입력해 주세요."
+          placeholder={t('CM_B2B_CREATE_ROOM_POPUP_FRIENDS_08')}
           maxLength={50}
           value={roomName}
           onChange={e => setRoomName(e.target.value)}
         />
         <Count>0/50</Count>
       </InputBox>
-      <Notification>
-        누구나 검색을 통하여 자유롭게 참여할 수 있는 공간입니다.
-      </Notification>
+      <Notification>{t('CM_CREATE_OPEN_ROOM_04')}</Notification>
     </StyledModal>
   );
 }
