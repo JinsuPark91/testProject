@@ -10,6 +10,7 @@ import CommonSettingPage from './CommonSettingPage';
 const { TabPane } = Tabs;
 
 const RoomSetting = ({ roomId }) => {
+  const { t } = useTranslation();
   const history = useHistory();
 
   const handleClose = () => {
@@ -23,7 +24,9 @@ const RoomSetting = ({ roomId }) => {
           <IconWrapper onClick={handleClose}>
             <ArrowLeftIcon width={1} height={1} color="#000000" />
           </IconWrapper>
-          <TitleText style={{ marginLeft: '0.5rem' }}>룸 설정</TitleText>
+          <TitleText style={{ marginLeft: '0.5rem' }}>
+            {t('CM_ROOM_SETTING')}
+          </TitleText>
         </Centered>
         <Centered
           style={{ borderLeft: '1px solid #E3E7EB', paddingLeft: '0.7rem' }}
@@ -35,11 +38,11 @@ const RoomSetting = ({ roomId }) => {
       </Header>
       <Content>
         <StyledTabs className="default">
-          <TabPane key="common" tab="기본 정보 설정">
+          <TabPane key="common" tab={t('CM_ROOM_SETTING_BAISC_01')}>
             <CommonSettingPage roomId={roomId} />
           </TabPane>
 
-          <TabPane key="member" tab="구성원 관리">
+          <TabPane key="member" tab={t('CM_TEMP_USER_MANAGEMENT')}>
             <MemberSettingPage roomId={roomId} />
           </TabPane>
         </StyledTabs>

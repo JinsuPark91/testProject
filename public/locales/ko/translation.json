@@ -469,6 +469,7 @@
   "CM_TEMP_AM": "오전",
   "CM_TEMP_PM": "오후",
   "CM_TEMP_TALK" : "Talk",
+  "CM_TEMP_USER_MANAGEMENT" : "구성원 관리",
   "CM_OPEN_ROOM_HOME_05": "검색 결과가 없습니다.",
   "CM_OPEN_ROOM_HOME_06": "오픈 룸에 참여하시겠습니까?",
   "CM_OPEN_ROOM_HOME_03": "내 오픈 룸",
