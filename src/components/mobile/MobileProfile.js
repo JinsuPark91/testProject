@@ -3,10 +3,8 @@ import { useHistory } from 'react-router-dom';
 import { Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
-import { useTranslation } from 'react-i18next';
 import { LockLineIcon, CameraIcon } from '../Icons';
-import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { CloseIcon, SettingIcon } from './Icon';
 import {
   handleProfileMenuClick,
   toBase64,
@@ -16,11 +14,15 @@ import {
 } from '../../utils/ProfileUtil';
 import {
   Wrapper,
+  TextHeader,
   Header,
   Sidebar,
   StyledUpload,
   Text,
   UserEmailText,
+  EditTitle,
+  ButtonBox,
+  IconButton,
   ImageChangeButton,
   StyledButton,
   Content,
@@ -39,6 +41,7 @@ import {
   StyleInput,
   LockIconBox,
   ImageChange,
+  TextButton,
   CameraBox,
 } from './MobileProfileStyle';
 
@@ -51,7 +54,7 @@ const MobileProfile = observer(
     onClickCancelBtn = () => {},
   }) => {
     const history = useHistory();
-    const { userStore, friendStore, authStore } = useCoreStores();
+    const { userStore, authStore } = useCoreStores();
     const [isEditMode, setEditMode] = useState(editOnlyMode);
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [toastText, setToastText] = useState('');
@@ -236,25 +239,45 @@ const MobileProfile = observer(
       }
     };
 
+    // FIXME: 추후 Talk에서의 프로필 고려 필요
+    const handleMoveFriend = () => {
+      history.push(`/friend/${userStore.myProfile.id}`);
+    };
+
     // check edit mode
     const editEnabled = editOnlyMode || isEditMode;
 
     return (
       <Wrapper imageSrc={renderBackgroundPhoto}>
-        <Header>
-          {editEnabled ? (
-            <>
-              <span onClick={() => setEditMode(false)}>뒤로가기</span>
-              <span>프로필 편집</span>
-              <span>저장</span>
-            </>
-          ) : (
-            <span onClick={() => history.goBack()}>X</span>
-          )}
-        </Header>
+        {editEnabled ? (
+          <>
+            <TextHeader>
+              <ButtonBox onClick={handleExit}>
+                <IconButton type="ghost" icon={<CloseIcon color="#fff" />} />
+              </ButtonBox>
+              <EditTitle>프로필 편집</EditTitle>
+              <ButtonBox>
+                <TextButton onClick={handleConfirm} type="ghost">
+                  저장
+                </TextButton>
+              </ButtonBox>
+            </TextHeader>
+          </>
+        ) : (
+          <>
+            <Header>
+              <ButtonBox onClick={handleMoveFriend}>
+                <IconButton type="ghost" icon={<CloseIcon color="#fff" />} />
+              </ButtonBox>
+              {/* <ButtonBox>
+                <IconButton type="ghost" icon={<SettingIcon />} />
+              </ButtonBox> */}
+            </Header>
+          </>
+        )}
         <Content>
-          <ContentTop>
-            {editEnabled && (
+          {editEnabled && (
+            <ContentTop>
               <Dropdown
                 trigger={['click']}
                 overlay={
@@ -284,8 +307,8 @@ const MobileProfile = observer(
                   <CameraIcon width="1.25" height="1.25" />
                 </ImageChangeButton>
               </Dropdown>
-            )}
-          </ContentTop>
+            </ContentTop>
+          )}
           <ContentBody>
             <UserImageWrapper position="br">
               <UserImage src={renderProfilePhoto} />
@@ -335,9 +358,12 @@ const MobileProfile = observer(
                   value={name !== undefined ? name : profile?.displayName}
                 />
               ) : (
-                profile?.nick || profile?.name
+                profile?.displayName
               )}
             </BigText>
+            {!editEnabled && (
+              <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
+            )}
             <UserInfoList>
               {userType === 'USR0001' && (
                 <UserInfoItem style={{ alignItems: 'flex-start' }}>
