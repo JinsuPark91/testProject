@@ -6,25 +6,20 @@ const i18n = i18next.createInstance();
 i18n
   .use(Backend)
   .use(initReactI18next)
-  .init(
-    {
-      debug: false,
-      lng: 'ko',
-      fallbackLng: 'en',
-      ns: ['translation'],
-      defaultNS: 'translation',
-      keySeparator: false,
-      interpolation: { escapeValue: false },
-      backend: {
-        loadPath: `/locales/{{lng}}/{{ns}}.json`,
-      },
-      react: {
-        useSuspense: false,
-      },
+  .init({
+    debug: false,
+    lng: 'ko',
+    fallbackLng: 'en',
+    ns: ['translation'],
+    defaultNS: 'translation',
+    keySeparator: false,
+    interpolation: { escapeValue: false },
+    backend: {
+      loadPath: `/locales/{{lng}}/{{ns}}.json`,
     },
-    (err, t) => {
-      if (err) return console.log(err);
+    react: {
+      useSuspense: false,
     },
-  );
+  });
 
 export default i18n;
