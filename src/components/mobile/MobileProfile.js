@@ -3,11 +3,8 @@ import { useHistory } from 'react-router-dom';
 import { Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
-import { useTranslation } from 'react-i18next';
 import { LockLineIcon, CameraIcon } from '../Icons';
 import { CloseIcon, SettingIcon } from './Icon';
-import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
-import PlatformUIStore from '../../stores/PlatformUIStore';
 import {
   handleProfileMenuClick,
   toBase64,
@@ -57,7 +54,7 @@ const MobileProfile = observer(
     onClickCancelBtn = () => {},
   }) => {
     const history = useHistory();
-    const { userStore, friendStore, authStore } = useCoreStores();
+    const { userStore, authStore } = useCoreStores();
     const [isEditMode, setEditMode] = useState(editOnlyMode);
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [toastText, setToastText] = useState('');
@@ -242,6 +239,11 @@ const MobileProfile = observer(
       }
     };
 
+    // FIXME: 추후 Talk에서의 프로필 고려 필요
+    const handleMoveFriend = () => {
+      history.push(`/friend/${userStore.myProfile.id}`);
+    };
+
     // check edit mode
     const editEnabled = editOnlyMode || isEditMode;
 
@@ -250,24 +252,26 @@ const MobileProfile = observer(
         {editEnabled ? (
           <>
             <TextHeader>
-              <ButtonBox onClick={() => setEditMode(false)}>
+              <ButtonBox onClick={handleExit}>
                 <IconButton type="ghost" icon={<CloseIcon color="#fff" />} />
               </ButtonBox>
               <EditTitle>프로필 편집</EditTitle>
-              <ButtonBox onClick={() => setEditMode(false)}>
-                <TextButton type="ghost">저장</TextButton>
+              <ButtonBox>
+                <TextButton onClick={handleConfirm} type="ghost">
+                  저장
+                </TextButton>
               </ButtonBox>
             </TextHeader>
           </>
         ) : (
           <>
             <Header>
-              <ButtonBox onClick={() => history.goBack()}>
+              <ButtonBox onClick={handleMoveFriend}>
                 <IconButton type="ghost" icon={<CloseIcon color="#fff" />} />
               </ButtonBox>
-              <ButtonBox>
+              {/* <ButtonBox>
                 <IconButton type="ghost" icon={<SettingIcon />} />
-              </ButtonBox>
+              </ButtonBox> */}
             </Header>
           </>
         )}
@@ -354,9 +358,12 @@ const MobileProfile = observer(
                   value={name !== undefined ? name : profile?.displayName}
                 />
               ) : (
-                profile?.nick || profile?.name
+                profile?.displayName
               )}
             </BigText>
+            {!editEnabled && (
+              <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
+            )}
             <UserInfoList>
               {userType === 'USR0001' && (
                 <UserInfoItem style={{ alignItems: 'flex-start' }}>

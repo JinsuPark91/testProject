@@ -7,6 +7,7 @@ import { Tabs } from 'antd';
 import { ChattingIcon } from '../Icons';
 import { FriendsIcon } from './Icon';
 import PlatformUIStore from '../../stores/PlatformUIStore';
+import { handleCheckNewFriend } from '../../utils/FriendsUtil';
 
 const Wrapper = styled.div`
   position: fixed;
@@ -15,7 +16,7 @@ const Wrapper = styled.div`
   bottom: 0;
 `;
 
-const UnreadCount = styled.div`
+const NewBadge = styled.div`
   display: ${({ isVisible }) => (isVisible ? 'flex' : 'none')};
   align-items: center;
   justify-content: center;
@@ -72,13 +73,13 @@ const FooterTab = styled(Tabs)`
     background-color: #f2ede6;
     font-size: 0;
     &:hover:not(.ant-tabs-tab-active) {
-      .lnb__icon-wrapper {
+      .icon-wrapper {
         background-color: #f2ede6;
       }
     }
   }
 
-  .ant-tabs-tab-active .lnb__icon-wrapper {
+  .ant-tabs-tab-active .icon-wrapper {
     background-color: #f2ede6;
   }
 `;
@@ -87,12 +88,17 @@ const { TabPane } = FooterTab;
 
 const MobileFooter = () => {
   const history = useHistory();
-  const { userStore, roomStore } = useCoreStores();
+  const { userStore, friendStore, roomStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
 
   const handleSelectTab = key => {
     history.push(`/${key}/${myUserId}`);
-    PlatformUIStore.resourceType = key;
+  };
+
+  const newBadgeView = number => {
+    return (
+      <NewBadge isVisible={number > 0}>{number > 99 ? '99+' : number}</NewBadge>
+    );
   };
 
   return (
@@ -105,7 +111,15 @@ const MobileFooter = () => {
         <TabPane
           key="friend"
           tab={
-            <IconWrapper className="lnb__icon-wrapper">
+            <IconWrapper className="icon-wrapper">
+              <Observer>
+                {() => {
+                  const newFriendNum = friendStore.friendInfoList?.filter(
+                    elem => handleCheckNewFriend(elem),
+                  ).length;
+                  return newBadgeView(newFriendNum);
+                }}
+              </Observer>
               <FriendsIcon width={1.75} height={1.75} />
             </IconWrapper>
           }
@@ -113,7 +127,7 @@ const MobileFooter = () => {
         <TabPane
           key="room"
           tab={
-            <IconWrapper className="lnb__icon-wrapper">
+            <IconWrapper className="icon-wrapper">
               <Observer>
                 {() => {
                   PlatformUIStore.totalUnreadCount = roomStore
@@ -125,26 +139,17 @@ const MobileFooter = () => {
                         parseInt(roomInfo.metadata.count ?? '0', 10),
                       0,
                     );
-                  return (
-                    <UnreadCount
-                      isVisible={PlatformUIStore.totalUnreadCount > 0}
-                    >
-                      {PlatformUIStore.totalUnreadCount > 99
-                        ? '99+'
-                        : PlatformUIStore.totalUnreadCount}
-                    </UnreadCount>
-                  );
+                  return newBadgeView(PlatformUIStore.totalUnreadCount);
                 }}
               </Observer>
-
-              <ChattingIcon width={1.5} height={1.5} color={'#7B7671'} />
+              <ChattingIcon width={1.5} height={1.5} color="#7B7671" />
             </IconWrapper>
           }
         />
         {/* <TabPane
           key="select"
           tab={
-            <IconWrapper className="lnb__icon-wrapper">
+            <IconWrapper className="icon-wrapper">
               <ChattingIcon width={1.5} height={1.5} />
             </IconWrapper>
           }

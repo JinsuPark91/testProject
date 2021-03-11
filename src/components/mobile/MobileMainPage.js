@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import styled from 'styled-components';
@@ -18,10 +17,9 @@ const Container = styled.div`
   height: 100%;
   overflow-y: scroll;
 `;
-
 const Loader = styled.div``;
 
-const MobileMainPage = observer(() => {
+const MobileMainPage = () => {
   const { resourceType, resourceId } = useParams();
   const { userStore, friendStore, roomStore } = useCoreStores();
   const [isLoading, setIsLoading] = useState(true);
@@ -60,6 +58,6 @@ const MobileMainPage = observer(() => {
       <MobileFooter />
     </Wrapper>
   );
-});
+};
 
 export default MobileMainPage;

@@ -1,10 +1,9 @@
 import React from 'react';
 import { useCoreStores } from 'teespace-core';
-import { useObserver } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import Photos from '../Photos';
-import { getMessageTime } from '../../utils/TimeUtil';
+import Photos from '../../Photos';
+import { getMessageTime } from '../../../utils/TimeUtil';
 
 const Wrapper = styled.div`
   display: flex;
@@ -70,7 +69,7 @@ const MessageCount = styled.div`
   border-radius: 0.56rem;
 `;
 
-const MobileRoomItem = ({ roomInfo }) => {
+const MobileRoomItem = ({ roomInfo, roomEditMode, handleRoomIdList }) => {
   const history = useHistory();
   const { userStore } = useCoreStores();
   const isMyRoom = roomInfo.type === 'WKS0001';
@@ -101,7 +100,14 @@ const MobileRoomItem = ({ roomInfo }) => {
     history.push(`/talk/${roomInfo?.id}`);
   };
 
-  return useObserver(() => (
+  const handleClickCheckBox = e => {
+    e.stopPropagation();
+  };
+  const handleCheckDelete = () => {
+    handleRoomIdList(roomInfo.id);
+  };
+
+  return (
     <Wrapper onClick={handleClickRoom}>
       {getRoomPhoto()}
       <Content>
@@ -111,9 +117,16 @@ const MobileRoomItem = ({ roomInfo }) => {
               ? userStore.myProfile.displayName
               : roomInfo.customName || roomInfo.name}
           </Name>
-          <LastDate>
-            {getMessageTime(roomInfo.metadata?.lastMessageDate)}
-          </LastDate>
+          {!roomEditMode && (
+            <LastDate>
+              {getMessageTime(roomInfo.metadata?.lastMessageDate)}
+            </LastDate>
+          )}
+          {!isMyRoom && roomEditMode && (
+            <div onClick={handleClickCheckBox}>
+              <input type="checkbox" onChange={handleCheckDelete} />
+            </div>
+          )}
         </Header>
         <Bottom>
           <LastMessage>{roomInfo.metadata?.lastMessage}</LastMessage>
@@ -125,7 +138,7 @@ const MobileRoomItem = ({ roomInfo }) => {
         </Bottom>
       </Content>
     </Wrapper>
-  ));
+  );
 };
 
 export default MobileRoomItem;

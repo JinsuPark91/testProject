@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Button } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
+import { handleCheckNewFriend } from '../../../utils/FriendsUtil';
 
 const Wrapper = styled.div`
   display: flex;
@@ -35,6 +36,7 @@ const Name = styled.span`
   user-select: none;
   margin-right: 1rem;
 `;
+
 const TextBtn = styled(Button)`
   min-width: auto;
   height: auto;
@@ -48,25 +50,41 @@ const TextBtn = styled(Button)`
   }
 `;
 
+const NewBadge = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.63rem;
+  padding: 0.1rem;
+  margin-left: auto;
+  color: #fff;
+  font-weight: 400;
+  border-radius: 50%;
+  background-color: #dc4547;
+`;
+
 const MobileFriendItem = ({ friendInfo, isMe, friendEditMode }) => {
   const history = useHistory();
-  const { userStore } = useCoreStores();
-  const userId = isMe
-    ? userStore.myProfile.id
-    : friendInfo.friendId || friendInfo.id;
+  const { userStore, friendStore } = useCoreStores();
+  const myUserId = userStore.myProfile.id;
+  const userId = isMe ? myUserId : friendInfo.friendId || friendInfo.id;
 
   const profilePhoto = userStore.getProfilePhotoURL(userId, 'small');
   const fullCompanyJob = friendInfo.getFullCompanyJob({ format: 'friend' });
   const fullCompanyJobTxt = fullCompanyJob ? `(${fullCompanyJob})` : '';
+  const isNewFriend = handleCheckNewFriend(friendInfo);
 
   const handleClickFriend = () => {
-    history.push(`/profile/${userId}`);
+    if (!friendEditMode) history.push(`/profile/${userId}`);
   };
 
-  const handleDeleteFriend = e => {
+  const handleDeleteFriend = async e => {
     e.stopPropagation();
-    // 따로 추가 Modal이 필요한지 확인 필요
-    console.log('프렌즈 삭제하기');
+    // modal 추가 필요한지 확인
+    await friendStore.deleteFriend({
+      myUserId,
+      friendId: userId,
+    });
   };
 
   return (
@@ -78,9 +96,12 @@ const MobileFriendItem = ({ friendInfo, isMe, friendEditMode }) => {
         <Name>
           {friendInfo?.displayName} {fullCompanyJobTxt}
         </Name>
-        {friendEditMode && (
+        {isNewFriend && !friendEditMode && (
+          <NewBadge className="friend-new-icon">N</NewBadge>
+        )}
+        {!isMe && friendEditMode && (
           <TextBtn type="ghost" onClick={handleDeleteFriend}>
-            해제
+            삭제
           </TextBtn>
         )}
       </>

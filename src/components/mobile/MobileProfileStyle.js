@@ -112,6 +112,7 @@ export const ImageChangeButton = styled.button`
   border: none;
   background-color: #000;
   border-radius: 50%;
+  z-index: 5;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.2);
