@@ -97,6 +97,7 @@ const MobileRoomItem = ({ roomInfo, roomEditMode, handleRoomIdList }) => {
   };
 
   const handleClickRoom = () => {
+    if (roomEditMode) return;
     history.push(`/talk/${roomInfo?.id}`);
   };
 

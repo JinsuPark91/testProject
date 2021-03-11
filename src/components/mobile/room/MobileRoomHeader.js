@@ -36,12 +36,13 @@ const MobileRoomHeader = ({
   const myUserId = userStore.myProfile.id;
 
   const handleCreateRoom = () => {
-    history.push(`/create/${myUserId}`);
+    history.push(`/addroom/${myUserId}`);
   };
 
   const handleDeleteRoom = async () => {
     // TODO: 룸 한번에 나가는 서비스 있는지 확인
     // 일단은 먼저 화면 전환하는게 깔끔해 보임
+    if (!roomIdDeleteList.length) return;
     handleRoomEditMode();
     const promises = roomIdDeleteList.map(roomId =>
       roomStore.deleteRoomMember({
