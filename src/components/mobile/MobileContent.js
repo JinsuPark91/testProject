@@ -50,7 +50,7 @@ const MobileContent = observer(() => {
       return <MobileProfile userId={PlatformUIStore.resourceId} />;
     case 'room':
       return <MobileRoom />;
-    case 'create':
+    case 'addroom':
       return <MobileRoomCreatePage />;
     case 'select':
       return (
