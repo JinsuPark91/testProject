@@ -13,7 +13,7 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 const { TabPane } = CustomTabs;
 
 const LeftSide = observer(() => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { roomStore, friendStore } = useCoreStores();
   const newFriendNum = friendStore.friendInfoList?.filter(elem =>
     handleCheckNewFriend(elem),
@@ -105,7 +105,7 @@ const LeftSide = observer(() => {
             </IconWrapper>
           }
         >
-          <MailSideView />
+          <MailSideView language={i18n.language} />
         </TabPane>
       </CustomTabs>
     </Wrapper>
