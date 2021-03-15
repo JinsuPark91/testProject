@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useObserver } from 'mobx-react';
+import { Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import MobileRoomHeader from './MobileRoomHeader';
@@ -28,9 +28,10 @@ const RoomListBox = styled.div``;
 const RoomList = ({ roomList, isRoomEditMode, handleRoomIdList }) => {
   return (
     <>
-      {roomList.map(roomInfo => (
+      {roomList.map((roomInfo, index) => (
         <MobileRoomItem
           key={roomInfo?.id}
+          index={index}
           roomInfo={roomInfo}
           roomEditMode={isRoomEditMode}
           handleRoomIdList={handleRoomIdList}
@@ -65,7 +66,7 @@ const MobileRoom = () => {
     setRoomIdDeleteList(Array.from(roomIdSet));
   };
 
-  return useObserver(() => (
+  return (
     <>
       <RoomHeader>
         <MobileRoomHeader
@@ -75,14 +76,18 @@ const MobileRoom = () => {
         />
       </RoomHeader>
       <RoomListBox>
-        <RoomList
-          roomList={getRoomArray()}
-          isRoomEditMode={roomEditMode}
-          handleRoomIdList={handleRoomIdList}
-        />
+        <Observer>
+          {() => (
+            <RoomList
+              roomList={getRoomArray()}
+              isRoomEditMode={roomEditMode}
+              handleRoomIdList={handleRoomIdList}
+            />
+          )}
+        </Observer>
       </RoomListBox>
     </>
-  ));
+  );
 };
 
 export default MobileRoom;

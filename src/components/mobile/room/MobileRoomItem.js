@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import Photos from '../../Photos';
 import { getMessageTime } from '../../../utils/TimeUtil';
+import CheckIcon from '../../../assets/check.svg';
 
 const Wrapper = styled.div`
   display: flex;
@@ -34,6 +35,11 @@ const Name = styled.p`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
+const UserCount = styled.p`
+  font-size: 0.81rem;
+  color: #7f7f7f;
+  margin-left: 0.25rem;
+`;
 const LastDate = styled.p`
   font-size: 0.69rem;
   line-height: 1.06rem;
@@ -45,6 +51,11 @@ const Bottom = styled.div`
   align-items: center;
   justify-content: flex-start;
   height: 100%;
+`;
+const Side = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 `;
 const LastMessage = styled.p`
   font-size: 0.69rem;
@@ -68,8 +79,39 @@ const MessageCount = styled.div`
   background-color: #dc4547;
   border-radius: 0.56rem;
 `;
-
-const MobileRoomItem = ({ roomInfo, roomEditMode, handleRoomIdList }) => {
+const CheckBox = styled.div`
+  width: 1.13rem;
+  height: 1.13rem;
+`;
+const CheckboxInput = styled.input`
+  display: none;
+  & + label {
+    cursor: pointer;
+    background-repeat: no-repeat;
+  }
+  &:checked + label {
+    background-image: url('${CheckIcon}');
+    background-size: 0.88rem 0.88rem;
+    background-position: center center;
+    background-color: #232d3b;
+    border-color: #232d3b;
+  }
+  &:disabled + label {
+  }
+`;
+const CheckboxLabel = styled.label`
+  width: 100%;
+  height: 100%;
+  border: 1px solid #d0ccc7;
+  border-radius: 50%;
+  margin: 0;
+`;
+const MobileRoomItem = ({
+  index,
+  roomInfo,
+  roomEditMode,
+  handleRoomIdList,
+}) => {
   const history = useHistory();
   const { userStore } = useCoreStores();
   const isMyRoom = roomInfo.type === 'WKS0001';
@@ -118,26 +160,37 @@ const MobileRoomItem = ({ roomInfo, roomEditMode, handleRoomIdList }) => {
               ? userStore.myProfile.displayName
               : roomInfo.customName || roomInfo.name}
           </Name>
+          {!isMyRoom && !isDMRoom && (
+            <UserCount>{roomInfo.userCount}</UserCount>
+          )}
           {!roomEditMode && (
             <LastDate>
               {getMessageTime(roomInfo.metadata?.lastMessageDate)}
             </LastDate>
           )}
-          {!isMyRoom && roomEditMode && (
-            <div onClick={handleClickCheckBox}>
-              <input type="checkbox" onChange={handleCheckDelete} />
-            </div>
-          )}
         </Header>
         <Bottom>
           <LastMessage>{roomInfo.metadata?.lastMessage}</LastMessage>
-          {roomInfo.metadata?.count > 0 && (
+          {roomInfo.metadata?.count > 0 && !roomEditMode && (
             <MessageCount>
               {roomInfo.metadata?.count > 99 ? '99+' : roomInfo.metadata?.count}
             </MessageCount>
           )}
         </Bottom>
       </Content>
+      <Side>
+        {!isMyRoom && roomEditMode && (
+          <CheckBox onClick={handleClickCheckBox}>
+            <CheckboxInput
+              type="checkbox"
+              name="checker"
+              id={`room-edit__check${index}`}
+              onChange={handleCheckDelete}
+            />
+            <CheckboxLabel htmlFor={`room-edit__check${index}`} />
+          </CheckBox>
+        )}
+      </Side>
     </Wrapper>
   );
 };
