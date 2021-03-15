@@ -552,6 +552,8 @@ const UserStatus = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   word-wrap: break-word;
+  font-size: 0.63rem;
+  color: white;
 `;
 const UserButtonBox = styled.div`
   display: flex;

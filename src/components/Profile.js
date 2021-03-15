@@ -435,11 +435,14 @@ const Profile = observer(
                       setStatusMsg(e);
                     }}
                     value={
-                      statusMsg !== undefined ? statusMsg : profile?.statusMsg
+                      statusMsg !== undefined
+                        ? statusMsg
+                        : profile?.profileStatusMsg
                     }
+                    isStatusMsg
                   />
                 ) : (
-                  profile?.statusMsg
+                  profile?.profileStatusMsg
                 )}
               </StatusText>
               {/* <Tooltip placement="bottom" title="어드민만 변경 가능" color="#4C535D"></Tooltip> */}

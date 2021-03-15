@@ -231,11 +231,7 @@ const TextComponent = React.memo(
           )}
           <TitleForName>{fullDisplayName}</TitleForName>
         </MeTextWrapper>
-        {!statusMsg && (
-          <StatusWrapper>
-            상태 메시지 상태 메시지 상태 메시지 상태 메시지
-          </StatusWrapper>
-        )}
+        {statusMsg && <StatusWrapper>{statusMsg}</StatusWrapper>}
       </>
     );
   },
@@ -264,7 +260,7 @@ const FriendItem = observer(
   }) => {
     const {
       displayName,
-      statusMsg,
+      profileStatusMsg,
       friendFavorite = false,
       friendId = '',
       id: userId = '',
@@ -520,7 +516,7 @@ const FriendItem = observer(
           <TextWrapper>
             <TextComponent
               displayName={displayName}
-              statusMsg={statusMsg}
+              statusMsg={profileStatusMsg}
               fullCompanyJob={fullCompanyJob}
               mode={mode}
               orgName={orgName}

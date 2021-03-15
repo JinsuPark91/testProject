@@ -209,7 +209,13 @@ export const BigText = styled(Text)`
 export const StatusText = styled(Text)`
   margin-top: 0.56rem;
   line-height: 2rem;
-  font-size: 1rem;
+  font-size: 0.75rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
 `;
 
 export const ButtonContainer = styled.div`
@@ -323,9 +329,9 @@ export const EditNameInput = styled(InputCounter)`
   input {
     height: 2.25rem;
     margin: 0;
-    padding-bottom: 0.56rem;
+    padding-bottom: ${props => (props.isStatusMsg ? '0rem' : '0.56rem')};
     border-bottom: 1px solid #fff;
-    font-size: 1.5rem;
+    font-size: ${props => (props.isStatusMsg ? '1rem' : '1.5rem')};
     text-align: center;
   }
   .input-counter {
