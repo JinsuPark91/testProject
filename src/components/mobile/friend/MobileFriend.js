@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useObserver } from 'mobx-react';
+import { Observer } from 'mobx-react';
 import styled from 'styled-components';
 import { Divider } from 'antd';
 import { useCoreStores } from 'teespace-core';
@@ -91,21 +91,25 @@ const MobileFriend = () => {
     setFriendEditMode(!friendEditMode);
   };
 
-  return useObserver(() => (
+  return (
     <>
       <MobileFriendHeader
         friendEditMode={friendEditMode}
         handleFriendEditMode={handleFriendEditMode}
       />
       <FriendListBox>
-        <FriendList
-          myInfo={userStore.myProfile}
-          friendList={friendStore.friendInfoList}
-          isFriendEditMode={friendEditMode}
-        />
+        <Observer>
+          {() => (
+            <FriendList
+              myInfo={userStore.myProfile}
+              friendList={friendStore.friendInfoList}
+              isFriendEditMode={friendEditMode}
+            />
+          )}
+        </Observer>
       </FriendListBox>
     </>
-  ));
+  );
 };
 
 export default MobileFriend;

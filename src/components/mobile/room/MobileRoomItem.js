@@ -35,6 +35,11 @@ const Name = styled.p`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
+const UserCount = styled.p`
+  font-size: 0.81rem;
+  color: #7f7f7f;
+  margin-left: 0.25rem;
+`;
 const LastDate = styled.p`
   font-size: 0.69rem;
   line-height: 1.06rem;
@@ -101,7 +106,12 @@ const CheckboxLabel = styled.label`
   border-radius: 50%;
   margin: 0;
 `;
-const MobileRoomItem = ({ roomInfo, roomEditMode, handleRoomIdList }) => {
+const MobileRoomItem = ({
+  index,
+  roomInfo,
+  roomEditMode,
+  handleRoomIdList,
+}) => {
   const history = useHistory();
   const { userStore } = useCoreStores();
   const isMyRoom = roomInfo.type === 'WKS0001';
@@ -150,6 +160,9 @@ const MobileRoomItem = ({ roomInfo, roomEditMode, handleRoomIdList }) => {
               ? userStore.myProfile.displayName
               : roomInfo.customName || roomInfo.name}
           </Name>
+          {!isMyRoom && !isDMRoom && (
+            <UserCount>{roomInfo.userCount}</UserCount>
+          )}
           {!roomEditMode && (
             <LastDate>
               {getMessageTime(roomInfo.metadata?.lastMessageDate)}
@@ -158,7 +171,7 @@ const MobileRoomItem = ({ roomInfo, roomEditMode, handleRoomIdList }) => {
         </Header>
         <Bottom>
           <LastMessage>{roomInfo.metadata?.lastMessage}</LastMessage>
-          {roomInfo.metadata?.count > 0 && (
+          {roomInfo.metadata?.count > 0 && !roomEditMode && (
             <MessageCount>
               {roomInfo.metadata?.count > 99 ? '99+' : roomInfo.metadata?.count}
             </MessageCount>
@@ -171,10 +184,10 @@ const MobileRoomItem = ({ roomInfo, roomEditMode, handleRoomIdList }) => {
             <CheckboxInput
               type="checkbox"
               name="checker"
-              id="checker1"
+              id={`room-edit__check${index}`}
               onChange={handleCheckDelete}
             />
-            <CheckboxLabel for="checker1"></CheckboxLabel>
+            <CheckboxLabel htmlFor={`room-edit__check${index}`} />
           </CheckBox>
         )}
       </Side>

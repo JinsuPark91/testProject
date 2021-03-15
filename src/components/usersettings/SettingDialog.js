@@ -15,8 +15,6 @@ import SettingDialogPhone from './SettingDialogPhone';
 import SettingDialogBirthDate from './SettingDialogBirthDate';
 import ContentSpaceSecession from './ContentSpaceSecession';
 import Contentcommon from './Contentcommon';
-import Contentpassword from './Contentpassword';
-import SettingContentpasswordedit from './SettingContentpasswordedit';
 import Settingsave from './Settingsave';
 import TermsFooter from '../login/TermsFooter';
 import { SELECTED_TAB } from './SettingConstants';
@@ -297,6 +295,7 @@ function SettingDialog(props) {
     <DialogWrap
       onCancel={handleCancel}
       visible={visible}
+      centered
       width="59.38rem"
       title="설정"
       style={{ top: 20, minWidth: '50rem' }}
@@ -407,15 +406,6 @@ function SettingDialog(props) {
               </InnerList>
             </>
           )}
-          {/* {selectedKey === '5' && (
-            <Contentpassword onClick={() => setSelectedKey('6')} />
-          )}
-          {selectedKey === '6' && (
-            <SettingContentpasswordedit
-              form={form}
-              passwordChange={() => setSelectedKey('5')}
-            />
-          )} */}
           {selectedKey === '7' && (
             <ContentSpaceSecession
               isContinue={isSecessionContinue}
