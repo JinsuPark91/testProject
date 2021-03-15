@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from 'antd';
 import { useHistory } from 'react-router-dom';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, MobileMessage } from 'teespace-core';
 import { handleCheckNewFriend } from '../../../utils/FriendsUtil';
 
 const Wrapper = styled.div`
@@ -66,6 +66,8 @@ const NewBadge = styled.div`
 const MobileFriendItem = ({ friendInfo, isMe, friendEditMode }) => {
   const history = useHistory();
   const { userStore, friendStore } = useCoreStores();
+  const [isMessageVisible, setIsMessageVisible] = useState(false);
+
   const myUserId = userStore.myProfile.id;
   const userId = isMe ? myUserId : friendInfo.friendId || friendInfo.id;
 
@@ -78,9 +80,16 @@ const MobileFriendItem = ({ friendInfo, isMe, friendEditMode }) => {
     if (!friendEditMode) history.push(`/profile/${userId}`);
   };
 
-  const handleDeleteFriend = async e => {
+  const handleClickDelete = e => {
     e.stopPropagation();
-    // modal 추가 필요한지 확인
+    setIsMessageVisible(true);
+  };
+  const handleCloseMessage = () => {
+    setIsMessageVisible(false);
+  };
+
+  const handleDeleteFriend = async () => {
+    handleCloseMessage();
     await friendStore.deleteFriend({
       myUserId,
       friendId: userId,
@@ -88,24 +97,45 @@ const MobileFriendItem = ({ friendInfo, isMe, friendEditMode }) => {
   };
 
   return (
-    <Wrapper onClick={handleClickFriend}>
-      <ImgBox>
-        <img alt="profilePhoto" src={profilePhoto} />
-      </ImgBox>
-      <>
-        <Name>
-          {friendInfo?.displayName} {fullCompanyJobTxt}
-        </Name>
-        {isNewFriend && !friendEditMode && (
-          <NewBadge className="friend-new-icon">N</NewBadge>
-        )}
-        {!isMe && friendEditMode && (
-          <TextBtn type="ghost" onClick={handleDeleteFriend}>
-            삭제
-          </TextBtn>
-        )}
-      </>
-    </Wrapper>
+    <>
+      <Wrapper onClick={handleClickFriend}>
+        <ImgBox>
+          <img alt="profilePhoto" src={profilePhoto} />
+        </ImgBox>
+        <>
+          <Name>
+            {friendInfo?.displayName} {fullCompanyJobTxt}
+          </Name>
+          {isNewFriend && !friendEditMode && (
+            <NewBadge className="friend-new-icon">N</NewBadge>
+          )}
+          {!isMe && friendEditMode && (
+            <TextBtn type="ghost" onClick={handleClickDelete}>
+              삭제
+            </TextBtn>
+          )}
+        </>
+      </Wrapper>
+      <MobileMessage
+        visible={isMessageVisible}
+        title={`${friendInfo?.displayName}님을 프렌즈 목록에서 삭제하시겠습니까?`}
+        type="warning"
+        btns={[
+          {
+            type: 'outlined',
+            shape: 'round',
+            text: '취소',
+            onClick: handleCloseMessage,
+          },
+          {
+            type: 'solid',
+            shape: 'round',
+            text: '확인',
+            onClick: handleDeleteFriend,
+          },
+        ]}
+      />
+    </>
   );
 };
 

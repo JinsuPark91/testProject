@@ -4,7 +4,7 @@ import { MobileItemSelector, useCoreStores } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import styled from 'styled-components';
 import { Button } from 'antd';
-import { ArrowBackIcon } from './Icon';
+import { ArrowBackIcon } from '../Icon';
 
 const Header = styled.div`
   position: fixed;

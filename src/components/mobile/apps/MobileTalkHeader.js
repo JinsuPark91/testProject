@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
 import { Button } from 'antd';
-import { getRoomName } from './MobileUtil';
-import { ArrowBackIcon } from './Icon';
+import { getRoomName } from '../MobileUtil';
+import { ArrowBackIcon } from '../Icon';
 
 const ButtonBox = styled.div`
   display: flex;

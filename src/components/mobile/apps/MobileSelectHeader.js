@@ -1,5 +1,5 @@
 import React from 'react';
-import { getRoomName } from './MobileUtil';
+import { getRoomName } from '../MobileUtil';
 
 const MobileSelectHeader = () => {
   return <div>{getRoomName()}</div>;

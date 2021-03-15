@@ -73,6 +73,10 @@ const MobileFriendHeader = ({ friendEditMode, handleFriendEditMode }) => {
     history.push(`/profile/${myUserId}`);
   };
 
+  const handleAddFriend = () => {
+    history.push(`/addfriend/${myUserId}`);
+  };
+
   if (friendEditMode) {
     return (
       <Header>
@@ -89,7 +93,11 @@ const MobileFriendHeader = ({ friendEditMode, handleFriendEditMode }) => {
       <HeaderTitle>프렌즈</HeaderTitle>
       <ButtonsBox>
         {/* <IconButton type="ghost" icon={<AddRoomIcon />} /> */}
-        <IconButton type="ghost" icon={<AddFriendsIcon />} />
+        <IconButton
+          onClick={handleAddFriend}
+          type="ghost"
+          icon={<AddFriendsIcon />}
+        />
         <IconButton
           onClick={handleFriendEditMode}
           type="ghost"
