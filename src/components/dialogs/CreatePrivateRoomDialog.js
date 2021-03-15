@@ -13,8 +13,9 @@ import {
 import Input from '../Input';
 
 const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
-  const { t } = useTranslation();
   const { userStore } = useCoreStores();
+  const { t } = useTranslation();
+
   const initialOptions = {
     isChangeName: false,
     roomName: '',
@@ -68,7 +69,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
       visible={visible}
       onCancel={handleCancel}
       onOk={handleOk}
-      title={t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_02')}
+      title={t('CM_CREATE_PRIVATE_ROOM_02')}
       footer={null}
       width="fit-content"
       destroyOnClose
@@ -91,20 +92,18 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
               checked={options.isChangeName}
               onChange={handleChangeNameChange}
             />
-            <ConfigTitleText>
-              {t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_06')}
-            </ConfigTitleText>
+            <ConfigTitleText>{t('CM_ROOM_NAME_SETTING')}</ConfigTitleText>
           </ConfigTitle>
 
           <ConfigDescriptionText>
-            {t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_07')}
+            {t('CM_B2B_CREATE_ROOM_POPUP_FRIENDS_07')}
           </ConfigDescriptionText>
 
           <Input
             maxLength={50}
             value={options.roomName}
             onChange={handleChangeName}
-            placeholder={t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_08')}
+            placeholder={t('CM_B2B_CREATE_ROOM_POPUP_FRIENDS_08')}
             disabled={selectedUsers.length < 2 || !options.isChangeName}
           />
 
@@ -114,9 +113,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
               checked={options.isStartMeeting}
               onChange={handleStartMeetingChange}
             />
-            <ConfigTitleText>
-              {t('WEB_COMMON_CREATE_PRIVATE_ROOM_04')}
-            </ConfigTitleText>
+            <ConfigTitleText>{t('CM_CREATE_PRIVATE_ROOM_04')}</ConfigTitleText>
           </ConfigTitle>
         </ConfigWrapper>
 
@@ -127,12 +124,12 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
             onClick={handleOk}
             disabled={!selectedUsers.length}
           >
-            {t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_09', {
-              value: selectedUsers.length > 99 ? '99+' : selectedUsers.length,
-            })}
+            {`${t('CM_B2B_CREATE_ROOM_POPUP_FRIENDS_09')} ${
+              selectedUsers.length > 99 ? '99+' : selectedUsers.length
+            }`}
           </Button>
           <Button type="outlined" shape="default" onClick={handleCancel}>
-            {t('WEB_COMMON_B2B_CREATE_ROOM_POPUP_FRIENDS_10')}
+            {t('CM_CANCEL')}
           </Button>
         </ButtonContainer>
       </>

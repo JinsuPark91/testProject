@@ -44,7 +44,7 @@ const LeftSide = observer(() => {
                 width={1.5}
                 height={1.5}
                 color={PlatformUIStore.tabType === 'f' ? '#232d3b' : '#ffffff'}
-                tooltipText={t('WEB_COMMON_COMMUNICATION_BAR_01')}
+                tooltipText={t('CM_FRIENDS_LIST')}
               />
             </IconWrapper>
           }
@@ -83,7 +83,7 @@ const LeftSide = observer(() => {
                 width={1.5}
                 height={1.5}
                 color={PlatformUIStore.tabType === 's' ? '#232d3b' : '#ffffff'}
-                tooltipText={t('WEB_COMMON_COMMUNICATION_BAR_02')}
+                tooltipText={t('CM_COMMUNICATION_BAR_02')}
               />
             </IconWrapper>
           }
@@ -100,7 +100,7 @@ const LeftSide = observer(() => {
                 width={1.5}
                 height={1.5}
                 color={PlatformUIStore.tabType === 'm' ? '#232d3b' : '#ffffff'}
-                tooltipText={t('WEB_COMMON_COMMUNICATION_BAR_03')}
+                tooltipText={t('CM_TEMP_MAIL')}
               />
             </IconWrapper>
           }

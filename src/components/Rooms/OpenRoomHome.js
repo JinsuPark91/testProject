@@ -8,6 +8,7 @@ import { Observer } from 'mobx-react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { useTranslation } from 'react-i18next';
 import Photos from '../Photos';
 import NextArrowIcon from '../../assets/arrow_right_line.svg';
 import PrevArrowIcon from '../../assets/arrow_left_line.svg';
@@ -23,7 +24,6 @@ const RoomButton = ({ roomInfo, onClick, disabled }) => {
 
   return (
     <RoomJoinBtn onClick={handleClick} disabled={disabled}>
-      <span>방 참여하기</span>
       <OpenChatIcon width={1} height={1} color="#75757f" />
     </RoomJoinBtn>
   );
@@ -56,6 +56,8 @@ const OpenRoomItem = ({ roomInfo, photo, onClick, onSettingClick }) => {
 };
 
 function OpenRoomHome({ visible, onCancel }) {
+  const { t } = useTranslation();
+
   const initialStates = {
     createModalVisible: false,
     enterModalVisible: false,
@@ -253,12 +255,16 @@ function OpenRoomHome({ visible, onCancel }) {
                   <RecomRoomTitle>
                     {roomInfo.customName || roomInfo.name}
                   </RecomRoomTitle>
-                  <AdminText>{`관리자 ${roomInfo.adminName}`}</AdminText>
+                  <AdminText>{`${t('CM_ROOM_ADMIN')} ${
+                    roomInfo.adminName
+                  }`}</AdminText>
                 </div>
               )}
             </Observer>
 
-            <JoinedText>{roomInfo.isJoined ? '(참여 중)' : ''}</JoinedText>
+            <JoinedText>
+              {roomInfo.isJoined ? t('CM_OPEN_ROOM_HOME_10') : ''}
+            </JoinedText>
             <RoomButton roomInfo={roomInfo} onClick={handleJoin} />
           </RoomListItem>
         );
@@ -268,7 +274,7 @@ function OpenRoomHome({ visible, onCancel }) {
     return (
       <RoomSearchForm>
         <SearchTitle>{keyword}</SearchTitle>
-        <SearchSubText>검색 결과가 없습니다.</SearchSubText>
+        <SearchSubText>{t('CM_OPEN_ROOM_HOME_05')}</SearchSubText>
       </RoomSearchForm>
     );
   };
@@ -279,7 +285,7 @@ function OpenRoomHome({ visible, onCancel }) {
         <Message
           visible={enterModalVisible}
           title={currentOpenRoom.name}
-          subtitle="오픈 룸에 참여하시겠습니까?"
+          subtitle={t('CM_OPEN_ROOM_HOME_06')}
           type="custom"
           customBadge={
             <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -293,13 +299,13 @@ function OpenRoomHome({ visible, onCancel }) {
             {
               type: 'solid',
               shape: 'round',
-              text: '참여',
+              text: t('CM_OPEN_ROOM_HOME_07'),
               onClick: handleConfirmEnter,
             },
             {
               type: 'outlined',
               shape: 'round',
-              text: '취소',
+              text: t('CM_CANCEL'),
               onClick: handleCancelEnter,
             },
           ]}
@@ -311,7 +317,7 @@ function OpenRoomHome({ visible, onCancel }) {
         onCancel={handleCreatePublicRoomCancel}
       />
       <StyledModal
-        title="오픈 룸 홈"
+        title={t('CM_OPEN_ROOM_HOME_01')}
         visible={visible}
         mask={false}
         footer={false}
@@ -326,7 +332,7 @@ function OpenRoomHome({ visible, onCancel }) {
       >
         <OpenHomeForm>
           <Search
-            placeholder="전체 검색"
+            placeholder={t('CM_OPEN_ROOM_HOME_02')}
             onChange={handleKeywordChange}
             onClear={handleKeywordClear}
             searchIconColor={{ active: '#48423B', default: '#48423B' }}
@@ -353,7 +359,7 @@ function OpenRoomHome({ visible, onCancel }) {
                     return (
                       <>
                         <RoomTitle>
-                          내 오픈 룸 목록
+                          {t('CM_OPEN_ROOM_HOME_03')}
                           <RoomCount>{openRooms.length}</RoomCount>
                         </RoomTitle>
                         <StyledSlider
@@ -363,7 +369,7 @@ function OpenRoomHome({ visible, onCancel }) {
                           slidesToScroll={4}
                         >
                           <ItemAddBtn onClick={handleCreateRoom}>
-                            <span>오픈룸 생성</span>
+                            <span>{t('CM_CREATE_OPEN_ROOM')}</span>
                             <AddIcon
                               width="1.25"
                               height="1.25"
@@ -393,7 +399,7 @@ function OpenRoomHome({ visible, onCancel }) {
                 </Observer>
               </RoomListBox>
               <RecommendRoomListBox>
-                <RoomOpenTitle>추천 오픈 룸</RoomOpenTitle>
+                <RoomOpenTitle>{t('CM_OPEN_ROOM_HOME_04')}</RoomOpenTitle>
                 <Observer>
                   {() => (
                     <RoomList>
@@ -413,7 +419,7 @@ function OpenRoomHome({ visible, onCancel }) {
                             {roomInfo.customName || roomInfo.name}
                           </RecomRoomTitle>
                           <JoinedText>
-                            {roomInfo.isJoined ? '(참여 중)' : ''}
+                            {roomInfo.isJoined ? t('CM_OPEN_ROOM_HOME_10') : ''}
                           </JoinedText>
                           <RoomButton
                             roomInfo={roomInfo}

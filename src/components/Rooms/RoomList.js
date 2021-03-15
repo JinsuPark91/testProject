@@ -17,10 +17,11 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
 import Search from '../common/Search';
+import i18n from '../../i18n';
 
 function RoomList() {
+  const { t } = useTranslation();
   const history = useHistory();
-  const { t, i18n } = useTranslation();
   const [keyword, setKeyword] = useState('');
   const [targetRoom, setTargetRoom] = useState(null);
   const [exitTargetRoom, setExitTargetRoom] = useState(null);
@@ -245,17 +246,17 @@ function RoomList() {
 
       <Message
         visible={isExitNormalModalVisible}
-        title={t('WEB_COMMON_DELETE_ROOM_GROUP_01')}
-        subtitle={t('WEB_COMMON_DELETE_ROOM_GROUP_02')}
+        title={t('CM_Q_LEAVE_ROOM')}
+        subtitle={t('CM_DEL_ROOM_GUIDE')}
         type="error"
         btns={[
           {
-            text: t('WEB_COMMON_DELETE_ROOM_GROUP_03'),
+            text: t('CM_LEAVE'),
             type: 'solid',
             onClick: handleConfirmExitNormalModal,
           },
           {
-            text: t('WEB_COMMON_DELETE_ROOM_GROUP_04'),
+            text: t('CM_CANCEL'),
             type: 'outlined',
             onClick: handleCloseExitNormalModal,
           },
@@ -264,17 +265,17 @@ function RoomList() {
 
       <Message
         visible={isExitAdminModalVisible}
-        title={t('WEB_COMMON_DELETE_ROOM_GROUP_05')}
-        subtitle={t('WEB_COMMON_DELETE_ROOM_GROUP_06')}
+        title={t('CM_DEL_ROOM_GROUP_05')}
+        subtitle={t('CM_DEL_ROOM_GROUP_06')}
         type="warning"
         btns={[
           {
-            text: t('WEB_COMMON_DELETE_ROOM_GROUP_07'),
+            text: t('CM_DEL_ROOM_GROUP_07'),
             type: 'solid',
             onClick: handleConfirmExitAdminModal,
           },
           {
-            text: t('WEB_COMMON_DELETE_ROOM_GROUP_08'),
+            text: t('CM_CANCEL'),
             type: 'outlined',
             onClick: handleCloseExitAdminModal,
           },
@@ -288,8 +289,8 @@ function RoomList() {
           if (isNewRoom) {
             setIsToastVisible(true);
             setToastText(
-              t('WEB_COMMON_CREATE_PRIVATE_ROOM_07', {
-                value: selectedUsers.length,
+              t('CM_INVITE_MEMBER', {
+                num: selectedUsers.length,
               }),
             );
           }
@@ -299,7 +300,7 @@ function RoomList() {
       <TopWrapper>
         <InputWrapper>
           <Search
-            placeholder={t('WEB_COMMON_B2C_LNB_EMPTY_PAGE_01')}
+            placeholder={t('CM_SEARCH_NAME')}
             onChange={handleChange}
             onClear={handleClear}
             searchIconColor={{ active: '#17202B', default: '#C6CED6' }}
@@ -308,7 +309,7 @@ function RoomList() {
           />
         </InputWrapper>
         <Tooltip
-          title={t('WEB_COMMON_B2C_LNB_EMPTY_PAGE_05')}
+          title={t('CM_CREATE_ROOM')}
           placement="bottomLeft"
           color="#232D3B"
         >
@@ -338,7 +339,12 @@ function RoomList() {
         </Observer>
       </RoomContainer>
       <ButtomWrapper>
-        <div>
+        <div
+        // onClick={() => {
+        //   if (i18n.language === 'en') i18n.changeLanguage('ko');
+        //   else i18n.changeLanguage('en');
+        // }}
+        >
           <WaplLogo />
         </div>
         <Toast

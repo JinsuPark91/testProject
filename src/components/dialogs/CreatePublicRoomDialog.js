@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ItemSelector, useCoreStores, logEvent } from 'teespace-core';
 import { Checkbox, Button } from 'antd';
+import { useTranslation } from 'react-i18next';
 import {
   FlexModal,
   Description,
@@ -20,6 +21,7 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
     isStartMeeting: false,
   };
 
+  const { t } = useTranslation();
   const [step, setStep] = useState(initialStates.step);
   const [roomName, setRoomName] = useState(initialStates.roomName);
   const [isStartMeeting, setIsStartMeeting] = useState(
@@ -81,7 +83,7 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
   };
   return (
     <FlexModal
-      title={step === 0 ? '오픈 룸 만들기' : '룸 구성원 초대'}
+      title={step === 0 ? t('CM_CREATE_OPEN_ROOM') : t('CM_ROOM_INVITE_USER')}
       visible={visible}
       onCancel={handleCancel}
       footer={null}
@@ -90,18 +92,16 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
       {step === 0 ? (
         <>
           <InfoContainer>
-            <Title>룸 이름 설정하기</Title>
+            <Title>{t('CM_ROOM_NAME_SETTING')}</Title>
             <Input
               maxLength={50}
               value={roomName}
               onChange={handleChangeName}
-              placeholder="목적, 토픽 등이 있다면 입력해 주세요."
+              placeholder={t('CM_B2B_CREATE_ROOM_POPUP_FRIENDS_08')}
               style={{ margin: '0.5rem 0' }}
             />
 
-            <Description>
-              누구나 검색을 통하여 자유롭게 참여할 수 있는 공간입니다.
-            </Description>
+            <Description>{t('CM_CREATE_OPEN_ROOM_04')}</Description>
           </InfoContainer>
           <ButtonContainer>
             <Button
@@ -110,10 +110,10 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
               onClick={handleOk}
               disabled={!roomName.length}
             >
-              생성
+              {t('CM_CREATE_OPEN_ROOM_05')}
             </Button>
             <Button type="outlined" shape="default" onClick={handleCancel}>
-              취소
+              {t('CM_CANCEL')}
             </Button>
           </ButtonContainer>
         </>
@@ -133,7 +133,7 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
               onChange={handleStartMeetingChange}
             />
             <Title onClick={handleToggle} style={{ marginLeft: '0.38rem' }}>
-              초대 구성원과 바로 Meeting 시작하기
+              {t('CM_CREATE_PRIVATE_ROOM_04')}
             </Title>
           </ConfigWrapper>
           <ButtonContainer>
@@ -145,15 +145,15 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
                   onClick={handleOk}
                   disabled={!selectedUsers.length}
                 >
-                  확인
+                  {t('CM_LOGIN_POLICY_03')}
                 </Button>
                 <Button type="outlined" shape="default" onClick={handleCancel}>
-                  취소
+                  {t('CM_CANCEL')}
                 </Button>
               </>
             ) : (
               <Button type="solid" shape="default" onClick={handleOk}>
-                건너뛰기
+                {t('CM_CREATE_OPEN_ROOM_07')}
               </Button>
             )}
           </ButtonContainer>

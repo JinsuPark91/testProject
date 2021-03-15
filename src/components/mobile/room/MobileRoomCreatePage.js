@@ -4,26 +4,30 @@ import { MobileItemSelector, useCoreStores } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import styled from 'styled-components';
 import { Button } from 'antd';
-import { ArrowBackIcon } from './Icon';
+import { ArrowBackIcon } from '../Icon';
 
 const Header = styled.div`
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   background-color: #fff;
   z-index: 100;
-  padding: 0.63rem 1rem;
+  padding: 0.06rem 1rem 0.06rem 0.25rem;
   height: 2.88rem;
 `;
 
 const ButtonBox = styled.div`
-  margin-right: 0.75rem;
   display: flex;
+  align-items: center;
 `;
 const IconButton = styled(Button)`
   &.ant-btn {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 2.75rem;
+    height: 2.75rem;
     background-color: transparent;
   }
 `;
@@ -35,9 +39,11 @@ const Title = styled.h3`
 `;
 
 const InviteButton = styled(Button)`
+  min-width: auto;
   font-size: 0.88rem;
   line-height: 1.25rem;
   color: #205855;
+  padding: 0.5rem 0;
   margin-left: auto;
   &.ant-btn-text {
     height: auto;

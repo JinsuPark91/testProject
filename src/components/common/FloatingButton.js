@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import Draggable from 'react-draggable';
 import { Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
-
 import { MiniChatIcon, CancelIcon, ArrowDownIcon, ArrowUpIcon } from '../Icons';
 
 const remToPixel = rem => {
@@ -19,7 +18,6 @@ const remToPixel = rem => {
 
 const ChildItem = ({ roomInfo, onItemClick, onItemClose }) => {
   const { t } = useTranslation();
-
   const handleClick = () => {
     onItemClick(roomInfo);
   };
@@ -39,7 +37,7 @@ const ChildItem = ({ roomInfo, onItemClick, onItemClose }) => {
       </div>
       <Tooltip
         placement="bottom"
-        title={t('WEB_COMMON_POPUP_TALK_MULTI_02')}
+        title={t('CM_POPUP_TALK_MULTI_02')}
         color="#232D3B"
       >
         <div className="close-button" onClick={handleClose}>
@@ -145,7 +143,7 @@ const FloatingButton = ({
       <Wrapper>
         {isOpen && (
           <AllCloseButton onClick={handleAllClose}>
-            {t('WEB_COMMON_POPUP_TALK_MULTI_01')}
+            {t('CM_CLOSE_ALL')}
           </AllCloseButton>
         )}
         <CustomFloatingMenu

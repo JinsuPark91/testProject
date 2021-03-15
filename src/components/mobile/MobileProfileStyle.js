@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import Upload from 'rc-upload';
-import { Input } from 'antd';
+import { Input, Button } from 'antd';
 import InputCounter from '../Input';
 import friendsIcon from '../../assets/profile_talk.svg';
 import profileEditIcon from '../../assets/profile_edit.svg';
@@ -15,6 +15,12 @@ import starLineIcon from '../../assets/favorites_line.svg';
 import starIcon from '../../assets/favorites.svg';
 
 export const Wrapper = styled.div`
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -28,8 +34,38 @@ export const Wrapper = styled.div`
 
 export const Header = styled.div`
   width: 100%;
-  height: 10%;
-  color: white;
+  height: 2.88rem;
+  padding: 0.06rem 0.25rem 0.06rem 0.25rem;
+  display: flex;
+  align-items: center;
+`;
+export const TextHeader = styled(Header)`
+  padding: 0.06rem 1rem 0.06rem 0.25rem;
+`;
+export const ButtonBox = styled.div`
+  display: flex;
+  align-items: center;
+  & ~ & {
+    margin-left: auto;
+  }
+`;
+export const IconButton = styled(Button)`
+  width: 2.75rem;
+  height: 2.75rem;
+  &:last-of-type {
+    margin-left: auto;
+  }
+`;
+export const TextButton = styled(Button)`
+  min-width: auto;
+  height: auto;
+  padding: 0;
+  & span {
+    color: #fff;
+  }
+  &.ant-btn-ghost {
+    padding: 0.5rem 0 0.5rem;
+  }
 `;
 
 export const Sidebar = styled.div`
@@ -76,6 +112,7 @@ export const ImageChangeButton = styled.button`
   border: none;
   background-color: #000;
   border-radius: 50%;
+  z-index: 5;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.2);
@@ -127,7 +164,7 @@ export const ContentBody = styled.div`
   display: flex;
   position: relative;
   width: 100%;
-  height: 80%;
+  padding-top: 5.75rem;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -135,8 +172,8 @@ export const ContentBody = styled.div`
 
 export const UserImageWrapper = styled.div`
   position: relative;
-  width: 6.88rem;
-  height: 6.88rem;
+  width: 7rem;
+  height: 7rem;
   background: #fff;
   border-radius: 50%;
   &:after {
@@ -159,7 +196,8 @@ export const UserImage = styled.img`
 `;
 
 export const UserInfoList = styled.div`
-  width: 14.69rem;
+  width: 100%;
+  padding: 4.38rem 5rem 3rem 5rem;
   display: flex;
   flex-direction: column;
 `;
@@ -167,9 +205,9 @@ export const UserInfoList = styled.div`
 export const UserInfoItem = styled.div`
   display: flex;
   align-items: center;
-  margin-top: 0.94rem;
+  margin-top: 1.25rem;
   &:first-of-type {
-    margin-top: 3.75rem;
+    margin-top: 0;
   }
   em + em {
     display: none;
@@ -204,9 +242,9 @@ export const UserInfoItem = styled.div`
 `;
 
 export const BigText = styled(Text)`
-  margin-top: 1.56rem;
-  line-height: 2.25rem;
-  font-size: 1.5rem;
+  margin-top: 1rem;
+  line-height: 1.5rem;
+  font-size: 1rem;
 `;
 
 export const ButtonContainer = styled.div`
@@ -433,4 +471,10 @@ export const CameraBox = styled.span`
   line-height: 0;
   z-index: 5;
   cursor: pointer;
+`;
+
+export const EditTitle = styled.h3`
+  font-size: 1.13rem;
+  color: #fff;
+  user-select: none;
 `;

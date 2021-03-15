@@ -4,6 +4,7 @@ import { Observer } from 'mobx-react';
 import styled from 'styled-components';
 import { Button } from 'antd';
 import { useCoreStores, ProfileInfoModal, ProfileModal } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import Photos from '../Photos';
 import Input from '../Input';
 import RoomAddMemberModal from './RoomAddMemberModal';
@@ -158,6 +159,7 @@ function RoomInquiryModal({
   top = '0',
   left = '0',
 }) {
+  const { t } = useTranslation();
   const history = useHistory();
 
   const initialStates = {
@@ -384,14 +386,14 @@ function RoomInquiryModal({
               onClick={handleChangeNameOK}
               disabled={!isChanged}
             >
-              저장
+              {t('CM_SAVE')}
             </Button>
             <Button
               type="outlined"
               shape="round"
               onClick={handleChangeNameCancel}
             >
-              취소
+              {t('CM_CANCEL')}
             </Button>
           </>
         ) : (
@@ -400,19 +402,19 @@ function RoomInquiryModal({
               <ButtonIcon>
                 <EditIcon width="1.5" height="1.5" />
               </ButtonIcon>
-              이름 변경
+              {t('CM_CHANGE_NAME_02')}
             </SettingButton>
             <SettingButton onClick={handleTalk}>
               <ButtonIcon>
                 <ChattingIcon width="1.5" height="1.5" />
               </ButtonIcon>
-              Talk
+              {t('CM_TEMP_TALK')}
             </SettingButton>
             <SettingButton onClick={handleMeeting}>
               <ButtonIcon>
                 <MeetingIcon width="1.5" height="1.5" color="#fff" />
               </ButtonIcon>
-              Meeting
+              {t('CM_B2C_CONTENTS_AREA_EMPTY_PAGE_20')}
             </SettingButton>
           </>
         )}
@@ -465,23 +467,18 @@ function RoomInquiryModal({
         subContent={subContent}
         footer={
           <AddButton onClick={handleInvite}>
-            <AddAcountIcon width="1.25" height="1.25" color="#232D3B" />룸
-            구성원 초대
+            <AddAcountIcon width="1.25" height="1.25" color="#232D3B" />
+            {t('CM_ROOM_INVITE_USER')}
           </AddButton>
         }
       />
-      {
-        // NOTE. 룸 정보가 제대로 존재해야하기 때문에 visible 상태를 보고 모달을 렌더하도록 함.
-        userSelectDialogVisible && (
-          <RoomAddMemberModal
-            visible={userSelectDialogVisible}
-            roomId={roomInfo.id}
-            roomMembers={members}
-            onInviteUsers={handleInviteUsers}
-            onCancel={handleCancelInviteUsers}
-          />
-        )
-      }
+
+      <RoomAddMemberModal
+        visible={userSelectDialogVisible}
+        roomId={roomInfo?.id}
+        onInviteUsers={handleInviteUsers}
+        onCancel={handleCancelInviteUsers}
+      />
     </>
   );
 }

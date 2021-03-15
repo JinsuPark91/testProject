@@ -3,18 +3,18 @@ import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
 import { Button } from 'antd';
-import { getRoomName } from './MobileUtil';
-import { ArrowBackIcon } from './Icon';
+import { getRoomName } from '../MobileUtil';
+import { ArrowBackIcon } from '../Icon';
 
 const ButtonBox = styled.div`
-  margin-right: 0.75rem;
   display: flex;
+  align-items: center;
 `;
 
 const IconButton = styled(Button)`
   &.ant-btn {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 2.75rem;
+    height: 2.75rem;
     background-color: transparent;
   }
 `;

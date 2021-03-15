@@ -7,7 +7,7 @@ import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
 import Input from '../Input';
 
-const CommonSettingPage = ({ roomInfo = null }) => {
+const CommonSettingPage = ({ roomId }) => {
   const { t } = useTranslation();
   const [value, setValue] = useState('');
   const [isChanged, setIsChanged] = useState(false);
@@ -20,6 +20,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
   const { roomStore, userStore } = useCoreStores();
   const history = useHistory();
   const myUserId = userStore.myProfile.id;
+  const roomInfo = roomStore.getRoom(roomId);
 
   useEffect(() => {
     if (roomInfo) {
@@ -35,8 +36,8 @@ const CommonSettingPage = ({ roomInfo = null }) => {
     if (timestamp) {
       return DateTime.fromFormat(timestamp, 'yyyy-MM-dd HH:mm:ss.S z')
         .toFormat('yyyy.MM.dd a hh:mm')
-        .replace('AM', t('TEMP_05'))
-        .replace('PM', t('TEMP_06'));
+        .replace('AM', t('CM_TEMP_AM'))
+        .replace('PM', t('CM_TEMP_PM'));
     }
     return '';
   };
@@ -52,7 +53,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
         setIsChanged(false);
         // NOTE : roomInfo.adminName 에 값이 없음.
         // const admin = await userStore.getProfile({ userId: roomInfo.adminId });
-        setToastMessage(t('WEB_COMMON_SETTING_GENERAL_11'));
+        setToastMessage(t('CM_CHANGE_SAVE'));
         setIsToastVisible(true);
       } else throw Error(`result:${result}`);
     } catch (err) {
@@ -123,20 +124,20 @@ const CommonSettingPage = ({ roomInfo = null }) => {
     <Wrapper style={{ padding: '2.56rem 3.75rem' }}>
       <Message
         visible={isDeleteWarningVisible}
-        title="해당 룸을 삭제하시겠습니까?"
-        subtitle="한 번 삭제한 룸은 복구할 수 없습니다."
+        title={t('CM_ROOM_SETTING_BAISC_10')}
+        subtitle={t('CM_ROOM_SETTING_BAISC_11')}
         type="error"
         btns={[
           {
             type: 'solid',
             shape: 'default',
-            text: '삭제',
+            text: t('CM_DEL'),
             onClick: handleDeleteOk,
           },
           {
             type: 'outlined',
             shape: 'default',
-            text: '취소',
+            text: t('CM_CANCEL'),
             onClick: handleDeleteCancel,
           },
         ]}
@@ -150,10 +151,10 @@ const CommonSettingPage = ({ roomInfo = null }) => {
       </Toast>
       <SettingWrapper>
         <SettingTitleText style={{ marginBottom: '0.31rem' }}>
-          Room 이름
+          {t('CM_ROOM_SETTING_BAISC_02')}
         </SettingTitleText>
         <SettingDescriptionText style={{ marginBottom: '0.81rem' }}>
-          구성원이 따로 이름 변경하여 보는 룸 이름에는 영향을 주지 않습니다.
+          {t('CM_ROOM_SETTING_BAISC_03')}
         </SettingDescriptionText>
         <Input
           maxLength={50}
@@ -168,43 +169,43 @@ const CommonSettingPage = ({ roomInfo = null }) => {
           style={{ marginTop: '0.63rem', alignSelf: 'flex-end' }}
           onClick={handleSave}
         >
-          저장
+          {t('CM_SAVE')}
         </Button>
       </SettingWrapper>
       {(isPrivateRoom && roomInfo?.typeModifiedDate) || !isPrivateRoom ? (
         <SettingWrapper>
           {isPrivateRoom && roomInfo?.typeModifiedDate ? (
             <SettingTitleText style={{ color: '#777' }}>
-              프라이빗 룸으로 전환됨
+              {t('CM_ROOM_SETTING_BAISC_12')}
               <SettingDescriptionText style={{ marginLeft: '0.5rem' }}>
                 {getConvertedTime(roomInfo?.typeModifiedDate)}
               </SettingDescriptionText>
             </SettingTitleText>
           ) : null}
           {!isPrivateRoom ? (
-            <SettingTitleText>프라이빗 룸으로 전환</SettingTitleText>
+            <SettingTitleText>{t('CM_ROOM_SETTING_BAISC_04')}</SettingTitleText>
           ) : null}
           <SettingDescriptionText style={{ marginBottom: '0.81rem' }}>
-            프라이빗 룸으로 전환 할 경우, 다시 오픈 룸으로 전환할 수 없습니다.
+            {t('CM_ROOM_SETTING_BAISC_05')}
           </SettingDescriptionText>
           {!isPrivateRoom && (
             <>
               <Message
                 visible={isWarningVisible}
-                title="프라이빗 룸으로 전환하시겠습니까?"
-                subtitle="한 번 변경하면 다시 오픈 룸으로 전환 할 수 없습니다."
+                title={t('CM_ROOM_SETTING_BAISC_06')}
+                subtitle={t('CM_ROOM_SETTING_BAISC_07')}
                 type="error"
                 btns={[
                   {
                     type: 'solid',
                     shape: 'default',
-                    text: '전환',
+                    text: t('CM_CHANGE_02'),
                     onClick: handleConfirmModeChange,
                   },
                   {
                     type: 'outlined',
                     shape: 'default',
-                    text: '취소',
+                    text: t('CM_CANCEL'),
                     onClick: handleCancelModeChange,
                   },
                 ]}
@@ -215,7 +216,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
                 style={{ marginTop: '0.81rem', alignSelf: 'flex-end' }}
                 onClick={handleClickModeChange}
               >
-                전환
+                {t('CM_CHANGE_02')}
               </Button>
             </>
           )}
@@ -223,10 +224,9 @@ const CommonSettingPage = ({ roomInfo = null }) => {
       ) : null}
 
       <SettingWrapper>
-        <SettingTitleText>룸 삭제하기</SettingTitleText>
+        <SettingTitleText>{t('CM_ROOM_SETTING_BAISC_08')}</SettingTitleText>
         <SettingDescriptionText style={{ marginBottom: '0.81rem' }}>
-          삭제할 경우, 대화 내용과 데이터가 모두 삭제되며 룸 목록에서도
-          삭제됩니다.
+          {t('CM_ROOM_SETTING_BAISC_09')}
         </SettingDescriptionText>
         <Button
           type="outlined"
@@ -234,7 +234,7 @@ const CommonSettingPage = ({ roomInfo = null }) => {
           style={{ marginTop: '0.81rem', alignSelf: 'flex-end' }}
           onClick={handleDelete}
         >
-          삭제
+          {t('CM_DEL')}
         </Button>
       </SettingWrapper>
     </Wrapper>

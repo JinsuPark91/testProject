@@ -22,12 +22,12 @@ const remToPixel = rem => {
 };
 
 const Content = () => {
+  const { i18n } = useTranslation();
   const { userStore, roomStore } = useCoreStores();
   const history = useHistory();
   const splitRef = useRef(null);
   const contentRef = useRef(null);
   const myUserId = userStore.myProfile.id;
-  const { i18n } = useTranslation();
 
   useEffect(() => {
     if (contentRef) {
@@ -150,9 +150,7 @@ const Content = () => {
       case 'profile':
         return <Profile userId={PlatformUIStore.resourceId} />;
       case 'setting':
-        return (
-          <RoomSetting roomInfo={roomStore.getRoomMap().get(getRoomId())} />
-        );
+        return <RoomSetting roomId={getRoomId()} />;
       default:
         return null;
     }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Message, useCoreStores } from 'teespace-core';
 import { Button, Tooltip } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { handleCheckValidUrl, handleCheckValidEngUrl } from '../../libs/Regex';
 import { getMainURL } from '../../utils/UrlUtil';
 import errorIcon from '../../assets/ts_error.svg';
@@ -14,6 +15,7 @@ import {
 } from '../../styles/SpaceEditModalStyle';
 
 const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
+  const { t } = useTranslation();
   const { userStore, spaceStore } = useCoreStores();
   const inputRef = useRef(null);
   const { currentSpace } = spaceStore;
@@ -70,7 +72,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
   };
   const handleBlurSpaceUrl = () => {
     if (!newAddress) {
-      setUrlWarningText('웹 주소로 사용할 URL을 입력해 주세요.');
+      setUrlWarningText(t('CM_ENTER_SPACE_URL'));
       setIsUrlWarningVisible(true);
     }
   };
@@ -101,13 +103,13 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
 
   const handleConfirmEditSpace = async () => {
     if (handleCheckValidUrl(newAddress)) {
-      setUrlWarningText('영문, 숫자, 하이픈(-)만 입력할 수 있습니다.');
+      setUrlWarningText(t('CM_LOGIN_POLICY_HYPHEN'));
       setIsUrlWarningVisible(true);
       return;
     }
 
     if (!handleCheckValidEngUrl(newAddress)) {
-      setUrlWarningText('영문은 최소 3자 포함해 주세요.');
+      setUrlWarningText(t('CM_POLICY_ALPHABET'));
       setIsUrlWarningVisible(true);
       return;
     }
@@ -121,7 +123,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
         domain: newAddress,
       });
       if (res) {
-        setUrlWarningText('이미 사용중인 URL 입니다.');
+        setUrlWarningText(t('CM_PROFILE_SPACE_STANDARD'));
         setIsUrlWarningVisible(true);
         return;
       }
@@ -161,7 +163,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
         mask
         maskTransitionName=""
         maskClosable={false}
-        title="스페이스 편집"
+        title={t('CM_SPACE_EDIT')}
         width="27.5rem"
         footer={
           <>
@@ -171,19 +173,19 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
               onClick={handleConfirmEditSpace}
               disabled={handleCheckDisable()}
             >
-              저장
+              {t('CM_SAVE')}
             </Button>
             <Button type="outlined" onClick={handleCancelEditSpace}>
-              취소
+              {t('CM_CANCEL')}
             </Button>
           </>
         }
       >
-        <SubTitle>스페이스 이름</SubTitle>
+        <SubTitle>{t('CM_SPACE_NAME')}</SubTitle>
         <NameInputBox>
           <input
             ref={inputRef}
-            placeholder="회사, 모임, 조직 이름 입력"
+            placeholder={t('CM_COMPANY_GROUP_MEETING_NAME')}
             value={newSpaceName}
             onChange={handleChangeName}
             onBlur={handleBlurSpaceName}
@@ -191,7 +193,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
           />
           <ErrorIcon visible={isNameWarningVisible}>
             <Tooltip
-              title="스페이스 이름을 입력해 주세요."
+              title={t('CM_ENTER_SPACE_NAME')}
               placement="top"
               visible={isNameWarningVisible}
             >
@@ -202,7 +204,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
         <SubTitle>URL</SubTitle>
         {isBasicPlan ? (
           <Tooltip
-            title="URL을 변경하시려면, 플랜을 업그레이드해 주세요."
+            title={t('CM_PROFILE_SPACE_BASIC')}
             placement="bottomLeft"
             color="#232D3B"
           >
@@ -234,17 +236,17 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
       </Wrapper>
       <Message
         visible={isWarningPopupVisible}
-        title="변경 사항을 저장하지 않고 나가시겠습니까?"
+        title={t('CM_Q_EXIT_SAVE')}
         type="warning"
         btns={[
           {
             type: 'solid',
-            text: '나가기',
+            text: t('CM_LEAVE'),
             onClick: handleExit,
           },
           {
             type: 'outlined',
-            text: '취소',
+            text: t('CM_CANCEL'),
             onClick: handleCancelExit,
           },
         ]}

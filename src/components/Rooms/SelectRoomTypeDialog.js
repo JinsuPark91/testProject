@@ -74,8 +74,9 @@ const StyledModal = styled(Modal)`
 `;
 
 function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
-  const { userStore, roomStore } = useCoreStores();
   const { t } = useTranslation();
+  const { userStore, roomStore } = useCoreStores();
+
   const history = useHistory();
   // Private Room
   const [isVisible, setIsVisible] = useState({
@@ -230,21 +231,17 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
               <PrivateRoomIcon width={1.88} height={1.88} color="#232D3B" />
             </div>
             <StyledInfoTitle level={4}>
-              {t('WEB_COMMON_CREATE_ROOM_OPTION_01')}
+              {t('CM_CREATE_ROOM_OPTION_01')}
             </StyledInfoTitle>
-            <StyledInfoText>
-              {t('WEB_COMMON_CREATE_ROOM_OPTION_02')}
-            </StyledInfoText>
+            <StyledInfoText>{t('CM_CREATE_ROOM_OPTION_02')}</StyledInfoText>
           </RoomInformation>
           <VerticalBar />
           <RoomInformation onClick={handleOpenRoomCreate}>
             <div style={{ marginBottom: '1.19rem' }}>
               <OpenChatIcon width={1.88} height={1.88} color="#232D3B" />
             </div>
-            <Title level={4}> {t('WEB_COMMON_CREATE_ROOM_OPTION_04')}</Title>
-            <StyledInfoText>
-              {t('WEB_COMMON_CREATE_ROOM_OPTION_05')}
-            </StyledInfoText>
+            <Title level={4}>{t('CM_CREATE_ROOM_OPTION_03')}</Title>
+            <StyledInfoText>{t('CM_CREATE_ROOM_OPTION_04')}</StyledInfoText>
           </RoomInformation>
         </SelectRoomType>
       </StyledModal>

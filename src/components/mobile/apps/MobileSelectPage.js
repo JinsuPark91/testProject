@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
-import { getRoomId } from './MobileUtil';
+import { getRoomId } from '../MobileUtil';
 
 const MobileSelectPage = () => {
   const history = useHistory();
