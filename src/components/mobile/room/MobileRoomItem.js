@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import Photos from '../../Photos';
 import { getMessageTime } from '../../../utils/TimeUtil';
+import CheckIcon from '../../../assets/check.svg';
 
 const Wrapper = styled.div`
   display: flex;
@@ -46,6 +47,11 @@ const Bottom = styled.div`
   justify-content: flex-start;
   height: 100%;
 `;
+const Side = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+`;
 const LastMessage = styled.p`
   font-size: 0.69rem;
   line-height: 1.06rem;
@@ -68,7 +74,33 @@ const MessageCount = styled.div`
   background-color: #dc4547;
   border-radius: 0.56rem;
 `;
-
+const CheckBox = styled.div`
+  width: 1.13rem;
+  height: 1.13rem;
+`;
+const CheckboxInput = styled.input`
+  display: none;
+  & + label {
+    cursor: pointer;
+    background-repeat: no-repeat;
+  }
+  &:checked + label {
+    background-image: url('${CheckIcon}');
+    background-size: 0.88rem 0.88rem;
+    background-position: center center;
+    background-color: #232d3b;
+    border-color: #232d3b;
+  }
+  &:disabled + label {
+  }
+`;
+const CheckboxLabel = styled.label`
+  width: 100%;
+  height: 100%;
+  border: 1px solid #d0ccc7;
+  border-radius: 50%;
+  margin: 0;
+`;
 const MobileRoomItem = ({ roomInfo, roomEditMode, handleRoomIdList }) => {
   const history = useHistory();
   const { userStore } = useCoreStores();
@@ -123,11 +155,6 @@ const MobileRoomItem = ({ roomInfo, roomEditMode, handleRoomIdList }) => {
               {getMessageTime(roomInfo.metadata?.lastMessageDate)}
             </LastDate>
           )}
-          {!isMyRoom && roomEditMode && (
-            <div onClick={handleClickCheckBox}>
-              <input type="checkbox" onChange={handleCheckDelete} />
-            </div>
-          )}
         </Header>
         <Bottom>
           <LastMessage>{roomInfo.metadata?.lastMessage}</LastMessage>
@@ -138,6 +165,19 @@ const MobileRoomItem = ({ roomInfo, roomEditMode, handleRoomIdList }) => {
           )}
         </Bottom>
       </Content>
+      <Side>
+        {!isMyRoom && roomEditMode && (
+          <CheckBox onClick={handleClickCheckBox}>
+            <CheckboxInput
+              type="checkbox"
+              name="checker"
+              id="checker1"
+              onChange={handleCheckDelete}
+            />
+            <CheckboxLabel for="checker1"></CheckboxLabel>
+          </CheckBox>
+        )}
+      </Side>
     </Wrapper>
   );
 };

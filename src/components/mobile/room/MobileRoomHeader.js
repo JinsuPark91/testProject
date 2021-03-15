@@ -3,7 +3,20 @@ import { useCoreStores } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from 'antd';
-import { EditIcon, AddRoomIcon } from '../Icon';
+import { EditIcon, AddRoomIcon, CloseIcon } from '../Icon';
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #fff;
+  padding: 0.06rem 1rem 0.06rem 0.25rem;
+  z-index: 100;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+`;
 
 const HeaderTitle = styled.h3`
   font-size: 1.13rem;
@@ -19,11 +32,40 @@ const ButtonBox = styled.div`
   display: flex;
   align-items: center;
 `;
+const IconButtonBox = styled.div`
+  display: flex;
+  align-items: center;
+  & ~ & {
+    margin-left: auto;
+  }
+`;
+
+const EditTitle = styled.h3`
+  font-size: 1.13rem;
+  line-height: 1.63rem;
+  color: #232d3b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none;
+`;
 
 const IconButton = styled(Button)`
   width: 2.75rem;
   height: 2.75rem;
   background-color: transparent;
+`;
+
+const TextButton = styled(Button)`
+  min-width: auto;
+  height: auto;
+  padding: 0;
+  & span {
+    color: #205855;
+  }
+  &.ant-btn-ghost {
+    padding: 0.5rem 0 0.5rem;
+  }
 `;
 
 const MobileRoomHeader = ({
@@ -55,11 +97,17 @@ const MobileRoomHeader = ({
 
   if (roomEditMode) {
     return (
-      <>
-        <div onClick={handleRoomEditMode}>돌아가기</div>
-        <div>편집</div>
-        <div onClick={handleDeleteRoom}>나가기</div>
-      </>
+      <Header>
+        <IconButtonBox onClick={handleRoomEditMode}>
+          <IconButton type="ghost" icon={<CloseIcon />} />
+        </IconButtonBox>
+        <EditTitle>편집</EditTitle>
+        <IconButtonBox>
+          <TextButton onClick={handleDeleteRoom} type="ghost">
+            나가기
+          </TextButton>
+        </IconButtonBox>
+      </Header>
     );
   }
 
