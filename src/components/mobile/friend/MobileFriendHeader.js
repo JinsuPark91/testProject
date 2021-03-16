@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useCoreStores } from 'teespace-core';
 import { Button } from 'antd';
 import { AddRoomIcon, AddFriendsIcon, EditIcon, CloseIcon } from '../Icon';
+import settingicon from '../../../assets/setting_2.svg';
 
 const Header = styled.div`
   display: flex;
@@ -19,12 +20,11 @@ const Header = styled.div`
 `;
 
 const FriendHeader = styled(Header)`
-  padding: 0.31rem 1rem;
+  padding: 0.06rem 0.25rem 0.06rem 1rem;
 `;
 
 const HeaderTitle = styled.h3`
   font-size: 1.13rem;
-  line-height: 1.63rem;
   color: #232d3b;
   white-space: nowrap;
   overflow: hidden;
@@ -45,7 +45,6 @@ const ButtonsBox = styled.div`
   display: flex;
   align-items: center;
   margin-left: auto;
-  margin-right: 0.5rem;
 `;
 const IconButton = styled(Button)`
   width: 2.75rem;
@@ -53,13 +52,33 @@ const IconButton = styled(Button)`
   background-color: transparent;
 `;
 const ProfileButton = styled(Button)`
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
   background-color: transparent;
   img {
-    width: 100%;
-    height: 100%;
+    width: 1.5rem;
+    height: 1.5rem;
     border-radius: 50%;
+  }
+`;
+const ProfileImgBox = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  &:after {
+    content: '';
+    display: inline-block;
+    background-color: #fff;
+    position: absolute;
+    border-radius: 50%;
+    top: 0.81rem;
+    right: -0.13rem;
+    width: 0.94rem;
+    height: 0.94rem;
+    background-image: url(${settingicon});
+    background-repeat: no-repeat;
+    background-size: 0.81rem 0.81rem;
+    background-position: center center;
   }
 `;
 
@@ -107,7 +126,11 @@ const MobileFriendHeader = ({ friendEditMode, handleFriendEditMode }) => {
       <ProfileButton
         onClick={handleClickMyProfile}
         type="ghost"
-        icon={<img alt="profilePhoto" src={profilePhoto} />}
+        icon={
+          <ProfileImgBox>
+            <img alt="profilePhoto" src={profilePhoto} />
+          </ProfileImgBox>
+        }
       />
     </FriendHeader>
   );

@@ -15,6 +15,13 @@ const StyledAvatar = styled(Avatar)`
     box-shadow: 0 0 5px 2px rgba(0,0,0,0.20);
 }
 `;
+const MyUserIdText = styled(Title)`
+   
+      color: rgba(0,0,0,0.5);
+      font-size: 0.75rem;
+      line-height: 1.13rem;
+}
+`;
 
 function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
   const { friendStore, authStore, userStore } = useCoreStores();
@@ -68,7 +75,7 @@ function AddFriendsByEmailContent({ userLoginId, searchedUser }) {
               <>
                 <StyledAvatar src={profileSrc} />
                 <Title level={4}>{searchedUser.displayName}</Title>
-                <Title level={4}>(내계정)</Title>
+                <MyUserIdText level={4}>(가르르르)</MyUserIdText>
                 <Button type="solid">나와의 Talk</Button>
               </>
             )}

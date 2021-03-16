@@ -21,11 +21,12 @@ export const Wrapper = styled.div`
   right: 0;
   bottom: 0;
   z-index: 100;
+`;
+export const Container = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
   width: 100%;
-  height: 100%;
   background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
     url('${props => props.imageSrc}');
   background-repeat: no-repeat;
