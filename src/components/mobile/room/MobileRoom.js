@@ -23,7 +23,10 @@ const RoomHeader = styled(Header)`
   padding: 0.06rem 0.25rem 0.06rem 1rem;
 `;
 
-const RoomListBox = styled.div``;
+const RoomListBox = styled.div`
+  overflow-y: auto;
+  height: 100%;
+`;
 
 const RoomList = ({ roomList, isRoomEditMode, handleRoomIdList }) => {
   return (
