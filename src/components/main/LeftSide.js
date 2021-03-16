@@ -100,7 +100,7 @@ const LeftSide = observer(() => {
                 width={1.5}
                 height={1.5}
                 color={PlatformUIStore.tabType === 'm' ? '#232d3b' : '#ffffff'}
-                tooltipText={t('CM_TEMP_MAIL')}
+                tooltipText={t('CM_COMMUNICATION_BAR_03')}
               />
             </IconWrapper>
           }

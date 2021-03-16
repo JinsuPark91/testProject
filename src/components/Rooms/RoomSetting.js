@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
+import { Observer } from 'mobx-react';
 import { Tabs } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeftIcon, CancelIcon } from '../Icons';
+import { RoomSettingStore as store } from '../../stores/RoomSettingStore';
 import MemberSettingPage from './MemberSettingPage';
 import CommonSettingPage from './CommonSettingPage';
 
@@ -13,8 +15,19 @@ const RoomSetting = ({ roomId }) => {
   const { t } = useTranslation();
   const history = useHistory();
 
+  useEffect(() => {
+    return () => {
+      store.tabKey = 'common';
+      store.subTabKey = 'member';
+    };
+  }, []);
+
   const handleClose = () => {
     history.push(`/s/${roomId}/talk`);
+  };
+
+  const handleTabChange = key => {
+    store.changeTab(key);
   };
 
   return (
@@ -37,15 +50,23 @@ const RoomSetting = ({ roomId }) => {
         </Centered>
       </Header>
       <Content>
-        <StyledTabs className="default">
-          <TabPane key="common" tab={t('CM_ROOM_SETTING_BAISC_01')}>
-            <CommonSettingPage roomId={roomId} />
-          </TabPane>
+        <Observer>
+          {() => (
+            <StyledTabs
+              className="default"
+              activeKey={store.tabKey}
+              onChange={handleTabChange}
+            >
+              <TabPane key="common" tab={t('CM_ROOM_SETTING_BAISC_01')}>
+                <CommonSettingPage roomId={roomId} />
+              </TabPane>
 
-          <TabPane key="member" tab={t('CM_TEMP_USER_MANAGEMENT')}>
-            <MemberSettingPage roomId={roomId} />
-          </TabPane>
-        </StyledTabs>
+              <TabPane key="member" tab={t('CM_TEMP_USER_MANAGEMENT')}>
+                <MemberSettingPage roomId={roomId} />
+              </TabPane>
+            </StyledTabs>
+          )}
+        </Observer>
       </Content>
     </Wrapper>
   );
