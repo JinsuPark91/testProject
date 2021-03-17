@@ -14,7 +14,7 @@ export const ContentWrapper = styled.div`
 export const WelcomeWrapper = styled.div`
   margin: auto auto 3.13rem;
   text-align: center;
-  color: #232D3B;
+  color: #232d3b;
 `;
 
 export const FriendListBox = styled.div`
@@ -51,9 +51,11 @@ export const StyledInfoTitle = styled.p`
   margin-bottom: 0.94rem;
   font-size: 0.94rem;
   line-height: 1.38rem;
+  white-space: pre-line;
 `;
 
 export const StyledSubInfo = styled.p`
   font-size: 0.75rem;
   line-height: 1.06rem;
+  white-space: pre-line;
 `;

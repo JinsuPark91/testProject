@@ -54,7 +54,7 @@ const InviteButton = styled(Button)`
   }
 `;
 
-const MobileRoomCreatePage = () => {
+const MobileRoomCreatePage = ({ onTabChange }) => {
   const history = useHistory();
   const { userStore, roomStore } = useCoreStores();
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -110,10 +110,11 @@ const MobileRoomCreatePage = () => {
       <MobileItemSelector
         isVisibleRoom={false}
         onSelectChange={handleSelectedUserChange}
+        onTabChange={onTabChange}
         disabledIds={disabledIds}
         defaultSelectedUsers={[userStore.myProfile]}
         showMeOnFriendTab={false}
-        height={25} // rem
+        height={25} // 현재 사용하지 않음
       />
     </>
   );

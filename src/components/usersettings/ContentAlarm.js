@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCoreStores, Switch, Checkbox, AlarmSetting } from 'teespace-core';
 import { Button } from 'antd';
 import styled, { css } from 'styled-components';
@@ -14,7 +14,7 @@ const FormItemMain = styled.div`
 `;
 
 const AlarmList = styled.div`
-  width: 20rem;
+  width: 26rem;
 `;
 
 const FormItem = styled(FormItemMain)`
@@ -56,7 +56,7 @@ const ItemTitleBlack = styled(ItemTitle)`
 const ItemSub = styled.div`
   margin: 0.63rem 0 0.4375rem;
   color: ${props => (props.isEmail ? '#818181' : '#000000')};
-  font-size: 0.81rem;
+  font-size: ${props => (props.isSmall ? '0.75rem' : '0.81rem')};
   .ant-checkbox-wrapper {
     font-size: 0.81rem;
     & + .ant-checkbox-wrapper {
@@ -112,25 +112,15 @@ const SoundButton = styled(Button)`
     `}
 `;
 
-function ContentAlarm({
-  desktopAlarm,
-  soundAlarm,
-  messageAlarm,
-  messagePreviewAlarm,
-  meetingAlarm,
-  meetingStartAlarm,
-  meetingEndAlarm,
-  mailAlarm,
-  calendarAlarm,
-}) {
-  const { userStore, spaceStore } = useCoreStores();
-
+const ContentAlarm = () => {
+  const { spaceStore } = useCoreStores();
   const [isLoading, setIsLoading] = useState(true);
   const [isAlarmChecked, setIsAlarmChecked] = useState(true);
   const [isSoundChecked, setIsSoundChecked] = useState(true);
 
   const [isMessageNoticeChecked, setIsMessageNoticeChecked] = useState(true);
   const [isMessagePreviewChecked, setIsMessagePreviewChecked] = useState(true);
+  const [isMentionNoticeChecked, setIsMentionNoticeChecked] = useState(true);
 
   const [isMeetingNoticeChecked, setIsMeetingNoticeChecked] = useState(true);
   const [isMeetingStartChecked, setIsMeetingStartChecked] = useState(true);
@@ -145,47 +135,42 @@ function ContentAlarm({
         setIsAlarmChecked(false);
         break;
       }
-
       case ALARM_TYPE.SOUND: {
         setIsSoundChecked(false);
         break;
       }
-
       case ALARM_TYPE.TALK: {
         setIsMessageNoticeChecked(false);
         break;
       }
-
       case ALARM_TYPE.TALK_CONTENTS: {
         setIsMessagePreviewChecked(false);
         break;
       }
-
+      case ALARM_TYPE.TALK_MENTION: {
+        setIsMentionNoticeChecked(false);
+        break;
+      }
       case ALARM_TYPE.MEETING: {
         setIsMeetingNoticeChecked(false);
         break;
       }
-
       case ALARM_TYPE.MEETING_START: {
         setIsMeetingStartChecked(false);
         break;
       }
-
       case ALARM_TYPE.MEETING_END: {
         setIsMeetingEndChecked(false);
         break;
       }
-
       case ALARM_TYPE.MAIL: {
         setIsMailNoticeChecked(false);
         break;
       }
-
       case ALARM_TYPE.CALENDAR: {
         setIsCalendarNoticeChecked(false);
         break;
       }
-
       default:
         break;
     }
@@ -196,7 +181,7 @@ function ContentAlarm({
     const alarmArray = [...alarmSet.keys()];
     alarmArray.forEach(elem => handleInitState(elem));
     setIsLoading(false);
-  }, [userStore]);
+  }, []);
 
   const getOnOffText = value => {
     return value ? 'on' : 'off';
@@ -210,18 +195,11 @@ function ContentAlarm({
     } catch (e) {
       console.log(`Alarm Change All Failed${e}`);
     }
-    // await userStore.updateAlarm({
-    //   userId: userStore.myProfile.id,
-    //   type: value ? EDIT_TYPE.DELETE : EDIT_TYPE.INSERT,
-    //   alarmCode: ALARM_TYPE.DESKTOP,
-    // });
   };
-
   const handleAlarmSound = async value => {
     setIsSoundChecked(value);
     AlarmSetting.save(ALARM_TYPE_SEND.SOUND, getOnOffText(value));
   };
-
   const handleTalkMessage = value => {
     try {
       AlarmSetting.save(ALARM_TYPE_SEND.TALK, getOnOffText(value));
@@ -230,7 +208,6 @@ function ContentAlarm({
       console.log(`Alarm Change Talk Failed${e}`);
     }
   };
-
   const handleMessagePreview = () => {
     try {
       const value = !isMessagePreviewChecked;
@@ -240,7 +217,14 @@ function ContentAlarm({
       console.log(`Alarm Change Talk_Preview Failed${e}`);
     }
   };
-
+  const handleMention = value => {
+    try {
+      AlarmSetting.save(ALARM_TYPE_SEND.TALK_MENTION, getOnOffText(value));
+      setIsMentionNoticeChecked(value);
+    } catch (e) {
+      console.log(`Alarm Change Mention Failed${e}`);
+    }
+  };
   const handleMeetingNotice = value => {
     try {
       AlarmSetting.save(ALARM_TYPE_SEND.MEETING, getOnOffText(value));
@@ -249,7 +233,6 @@ function ContentAlarm({
       console.log(`Alarm Change Meeting Failed${e}`);
     }
   };
-
   const handleMeetingStart = () => {
     try {
       const value = !isMeetingStartChecked;
@@ -259,7 +242,6 @@ function ContentAlarm({
       console.log(`Alarm Change Meeting_Start Failed${e}`);
     }
   };
-
   const handleMeetingEnd = () => {
     try {
       const value = !isMeetingEndChecked;
@@ -269,7 +251,6 @@ function ContentAlarm({
       console.log(`Alarm Change Meeting_End Failed${e}`);
     }
   };
-
   const handleMailNotice = value => {
     try {
       AlarmSetting.save(ALARM_TYPE_SEND.MAIL, getOnOffText(value));
@@ -278,7 +259,6 @@ function ContentAlarm({
       console.log(`Alarm Change Mail Failed${e}`);
     }
   };
-
   const handleCalendarNotice = value => {
     try {
       AlarmSetting.save(ALARM_TYPE_SEND.CALENDAR, getOnOffText(value));
@@ -293,6 +273,7 @@ function ContentAlarm({
   const isBasicPlan = spaceStore.currentSpace?.plan === 'BASIC';
 
   if (isLoading) return null;
+
   return (
     <>
       <ContentTitle
@@ -360,6 +341,22 @@ function ContentAlarm({
             </FormItem>
             <FormItem>
               <ItemInfo>
+                <ItemTitle htmlFor="mentiontoggle">
+                  (@) 멘션 별도 알림
+                </ItemTitle>
+                <ItemSub isSmall>
+                  나를 멘션한 메시지가 있을 경우 룸 알림이 꺼져 있어도 알림을
+                  받습니다.
+                </ItemSub>
+              </ItemInfo>
+              <Switch
+                id="mentiontoggle"
+                defaultChecked={isMentionNoticeChecked}
+                onChange={handleMention}
+              />
+            </FormItem>
+            <FormItem>
+              <ItemInfo>
                 <ItemTitle htmlFor="Meetingtoggle">Meeting 회의 알림</ItemTitle>
                 {isMeetingNoticeChecked && (
                   <ItemSub>
@@ -421,6 +418,6 @@ function ContentAlarm({
       </form>
     </>
   );
-}
+};
 
 export default React.memo(ContentAlarm);

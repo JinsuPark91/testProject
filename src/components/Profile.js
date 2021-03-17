@@ -419,7 +419,7 @@ const Profile = observer(
                     value={name !== undefined ? name : profile?.displayName}
                   />
                 ) : (
-                  profile?.nick || profile?.name
+                  profile?.displayName
                 )}
               </BigText>
               {!editEnabled && (
