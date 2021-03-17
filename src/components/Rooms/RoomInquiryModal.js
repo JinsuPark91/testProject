@@ -377,7 +377,7 @@ function RoomInquiryModal({
       </Observer>
 
       <GroupNumber>
-        {t('CM_PPL_NUMBER', { num: roomInfo?.useCount })}
+        {t('CM_PPL_NUMBER', { num: roomInfo?.userCount })}
       </GroupNumber>
       <SettingBox>
         {isEditMode ? (
