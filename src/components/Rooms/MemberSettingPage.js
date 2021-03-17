@@ -3,12 +3,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { Observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
+import { useCoreStores } from 'teespace-core';
 import { RoomSettingStore as store } from '../../stores/RoomSettingStore';
 import SubMemberPage from './SubMemberPage';
 import SubWaitingMemberPage from './SubWaitingMemberPage';
 import SubBlockedMemberPage from './SubBlockedMemberPage';
 
-const SubTab = () => {
+const SubTab = ({ isOpenRoom = false }) => {
   const { t } = useTranslation();
 
   const handleTabChange = e => {
@@ -35,24 +36,30 @@ const SubTab = () => {
           margin: '0 0.63rem',
         }}
       />
-      <Observer>
-        {() => (
-          <SubTabItem
-            data-tab-key="waiting"
-            className={store.subTabKey === 'waiting' ? 'sub-tab--active' : ''}
-            onClick={handleTabChange}
-          >
-            {t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_01')}
-          </SubTabItem>
-        )}
-      </Observer>
-      <span
-        style={{
-          borderRight: '1px solid #D0CCC7',
-          height: '0.75rem',
-          margin: '0 0.63rem',
-        }}
-      />
+      {isOpenRoom ? (
+        <>
+          <Observer>
+            {() => (
+              <SubTabItem
+                data-tab-key="waiting"
+                className={
+                  store.subTabKey === 'waiting' ? 'sub-tab--active' : ''
+                }
+                onClick={handleTabChange}
+              >
+                {t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_01')}
+              </SubTabItem>
+            )}
+          </Observer>
+          <span
+            style={{
+              borderRight: '1px solid #D0CCC7',
+              height: '0.75rem',
+              margin: '0 0.63rem',
+            }}
+          />
+        </>
+      ) : null}
       <Observer>
         {() => (
           <SubTabItem
@@ -69,6 +76,9 @@ const SubTab = () => {
 };
 
 const MemberSettingPage = ({ roomId }) => {
+  const { roomStore } = useCoreStores();
+  const roomInfo = roomStore.getRoom(roomId);
+
   const subPage = () => {
     switch (store.subTabKey) {
       case 'member':
@@ -84,7 +94,7 @@ const MemberSettingPage = ({ roomId }) => {
 
   return (
     <Wrapper style={{ height: '100%', padding: '0 0.88rem 0.88rem 0.88rem' }}>
-      <SubTab />
+      <SubTab isOpenRoom={roomInfo.type === 'WKS0003'} />
 
       <Observer>{() => subPage()}</Observer>
     </Wrapper>
