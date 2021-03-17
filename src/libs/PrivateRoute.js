@@ -11,9 +11,9 @@ export default function PrivateRoute({ component, ...rest }) {
   useEffect(() => {
     // NOTE. 사용자 인증이 된 상태에서 웹소켓 연결을 시도
     if (!wwms.isConnected && authStore.isAuthenticated) {
-      wwms.connect(authStore.user.id);
+      wwms.connect(authStore.user.id, authStore.user.loginId);
     }
-  }, [authStore.user.id, authStore.isAuthenticated]);
+  }, [authStore.user.id, authStore.user.loginId, authStore.isAuthenticated]);
 
   return (
     <Route

@@ -120,7 +120,7 @@ const MeAction = React.memo(({ mode, itemId }) => {
   };
 
   return (
-    <Tooltip placement="top" title="미니 채팅" color="#232D3B">
+    <Tooltip placement="top" title="미니 채팅" color="#4C535D">
       <MoreIconWrapper className="friend-export-icon" onClick={handleExport}>
         <ExportIcon />
       </MoreIconWrapper>

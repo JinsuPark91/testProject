@@ -36,7 +36,10 @@ const ListDivider = styled(Divider)`
   min-width: auto;
 `;
 
-const FriendListBox = styled.div``;
+const FriendListBox = styled.div`
+  overflow-y: auto;
+  height: 100%;
+`;
 const MyInfoBox = styled.div`
   margin-top: 0.5rem;
 `;
@@ -67,7 +70,7 @@ const FriendList = ({ myInfo, friendList, isFriendEditMode }) => {
             <FriendTitle>프렌즈</FriendTitle>
             <Num>{friendNum}</Num>
           </FriendListHeader>
-          <FriendListBox>
+          <div>
             {friendList.map(friendInfo => (
               <MobileFriendItem
                 key={friendInfo?.friendId || friendInfo?.id}
@@ -76,7 +79,7 @@ const FriendList = ({ myInfo, friendList, isFriendEditMode }) => {
                 friendEditMode={isFriendEditMode}
               />
             ))}
-          </FriendListBox>
+          </div>
         </>
       )}
     </>

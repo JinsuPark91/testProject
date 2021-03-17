@@ -29,7 +29,7 @@ const ChildItem = ({ roomInfo, onItemClick, onItemClose }) => {
 
   return (
     <ChildItemWrapper onClick={handleClick}>
-      <Tooltip placement="top" title={roomInfo.name} color="#232D3B">
+      <Tooltip placement="top" title={roomInfo.name} color="#4C535D">
         <div>{roomInfo.name.slice(0, 4)}</div>
       </Tooltip>
       <div style={{ height: '1rem' }}>
@@ -38,7 +38,7 @@ const ChildItem = ({ roomInfo, onItemClick, onItemClose }) => {
       <Tooltip
         placement="bottom"
         title={t('CM_POPUP_TALK_MULTI_02')}
-        color="#232D3B"
+        color="#4C535D"
       >
         <div className="close-button" onClick={handleClose}>
           <CancelIcon width={0.8} height={0.8} color="#ffffff" />

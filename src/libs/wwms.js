@@ -2,11 +2,11 @@ import { WWMS } from 'teespace-core';
 import { getEnv } from '../env';
 
 const wwms = {
-  connect: userId => {
+  connect: (userId, loginUserId) => {
     const { websocketURL } = getEnv();
 
     WWMS.setConfig({
-      url: `${websocketURL}?USER_ID=${userId}&action=&CONNECTION_ID=undefined`,
+      url: `${websocketURL}?USER_ID=${userId}&USER_LOGIN_ID=${loginUserId}&action=&CONNECTION_ID=undefined`,
       isDebug: true,
 
       useInterval: false,

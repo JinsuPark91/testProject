@@ -1,5 +1,5 @@
-import React from 'react';
-import { useCoreStores } from 'teespace-core';
+import React, { useState } from 'react';
+import { useCoreStores, MobileMessage } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import Photos from '../../Photos';
@@ -112,21 +112,22 @@ const MobileRoomItem = ({
   roomEditMode,
   handleRoomIdList,
 }) => {
+  const [isMessageVisible, setIsMessageVisible] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
   const history = useHistory();
   const { userStore } = useCoreStores();
+  const myUserId = userStore.myProfile.id;
   const isMyRoom = roomInfo.type === 'WKS0001';
   const isDMRoom = roomInfo.isDirectMsg;
 
   const getRoomPhoto = () => {
     let roomPhoto = null;
     if (isMyRoom) {
-      roomPhoto = [
-        userStore.getProfilePhotoURL(userStore.myProfile.id, 'small'),
-      ];
+      roomPhoto = [userStore.getProfilePhotoURL(myUserId, 'small')];
     } else {
       let userIds = roomInfo.memberIdListString.split(',').splice(0, 4);
       if (isDMRoom) {
-        userIds = userIds.filter(userId => userId !== userStore.myProfile.id);
+        userIds = userIds.filter(userId => userId !== myUserId);
       }
       roomPhoto = userIds.map(userId =>
         userStore.getProfilePhotoURL(userId, 'small'),
@@ -147,51 +148,76 @@ const MobileRoomItem = ({
     e.stopPropagation();
   };
   const handleCheckDelete = () => {
+    const isAdmin = roomInfo.adminId === myUserId;
+    const isAlone = roomInfo.userCount === 1;
+    if (!isChecked && isAdmin && !isDMRoom && !isAlone) {
+      setIsMessageVisible(true);
+      return;
+    }
+    setIsChecked(!isChecked);
     handleRoomIdList(roomInfo.id);
   };
 
   return (
-    <Wrapper onClick={handleClickRoom}>
-      {getRoomPhoto()}
-      <Content>
-        <Header>
-          <Name>
-            {isMyRoom
-              ? userStore.myProfile.displayName
-              : roomInfo.customName || roomInfo.name}
-          </Name>
-          {!isMyRoom && !isDMRoom && (
-            <UserCount>{roomInfo.userCount}</UserCount>
+    <>
+      <Wrapper onClick={handleClickRoom}>
+        {getRoomPhoto()}
+        <Content>
+          <Header>
+            <Name>
+              {isMyRoom
+                ? userStore.myProfile.displayName
+                : roomInfo.customName || roomInfo.name}
+            </Name>
+            {!isMyRoom && !isDMRoom && (
+              <UserCount>{roomInfo.userCount}</UserCount>
+            )}
+            {!roomEditMode && (
+              <LastDate>
+                {getMessageTime(roomInfo.metadata?.lastMessageDate)}
+              </LastDate>
+            )}
+          </Header>
+          <Bottom>
+            <LastMessage>{roomInfo.metadata?.lastMessage}</LastMessage>
+            {roomInfo.metadata?.count > 0 && !roomEditMode && (
+              <MessageCount>
+                {roomInfo.metadata?.count > 99
+                  ? '99+'
+                  : roomInfo.metadata?.count}
+              </MessageCount>
+            )}
+          </Bottom>
+        </Content>
+        <Side>
+          {!isMyRoom && roomEditMode && (
+            <CheckBox onClick={handleClickCheckBox}>
+              <CheckboxInput
+                type="checkbox"
+                name="checker"
+                id={`room-edit__check${index}`}
+                checked={isChecked}
+                onChange={handleCheckDelete}
+              />
+              <CheckboxLabel htmlFor={`room-edit__check${index}`} />
+            </CheckBox>
           )}
-          {!roomEditMode && (
-            <LastDate>
-              {getMessageTime(roomInfo.metadata?.lastMessageDate)}
-            </LastDate>
-          )}
-        </Header>
-        <Bottom>
-          <LastMessage>{roomInfo.metadata?.lastMessage}</LastMessage>
-          {roomInfo.metadata?.count > 0 && !roomEditMode && (
-            <MessageCount>
-              {roomInfo.metadata?.count > 99 ? '99+' : roomInfo.metadata?.count}
-            </MessageCount>
-          )}
-        </Bottom>
-      </Content>
-      <Side>
-        {!isMyRoom && roomEditMode && (
-          <CheckBox onClick={handleClickCheckBox}>
-            <CheckboxInput
-              type="checkbox"
-              name="checker"
-              id={`room-edit__check${index}`}
-              onChange={handleCheckDelete}
-            />
-            <CheckboxLabel htmlFor={`room-edit__check${index}`} />
-          </CheckBox>
-        )}
-      </Side>
-    </Wrapper>
+        </Side>
+      </Wrapper>
+      <MobileMessage
+        visible={isMessageVisible}
+        title="룸 관리자인 룸은 나갈 수 없습니다."
+        type="warning"
+        btns={[
+          {
+            type: 'outlined',
+            shape: 'round',
+            text: '확인',
+            onClick: () => setIsMessageVisible(false),
+          },
+        ]}
+      />
+    </>
   );
 };
 

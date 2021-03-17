@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 // import { NoteApp } from 'teespace-note-app';
 // import { CalendarApp } from 'teespace-calendar-app';
-import { Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
+import styled from 'styled-components';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import MobileFriend from './friend/MobileFriend';
 import MobileAddFriend from './friend/MobileAddFriend';
@@ -13,8 +13,44 @@ import MobileTalk from './apps/MobileTalk';
 // import MobileSelect from './apps/MobileSelect';
 import { getRoomId } from './MobileUtil';
 
+const Container = styled.div`
+  padding-top: 2.88rem;
+  padding-bottom: 3.13rem;
+  height: 100%;
+  overflow-y: ${props =>
+    props.appType === 'addfriend' ||
+    (props.appType === 'addroom' && props.isMemberSelected)
+      ? ''
+      : 'auto'};
+`;
+
+//  ${props => {
+//   switch (props.appType) {
+//     case 'friend':
+//     case 'profile':
+//     case 'room':
+//     case 'talk': {
+//       return css`
+//         height: 100%;
+//         overflow-y: auto;
+//       `;
+//     }
+//     case 'addroom': {
+//       return css``;
+//     }
+//     case 'addfriend': {
+//       return css``;
+//     }
+//   }
+// }}
+
 const MobileContent = () => {
   const { roomStore } = useCoreStores();
+  const [isMemberSelected, setIsMemberSelected] = useState(false);
+
+  const handleToggleSelected = () => {
+    setIsMemberSelected(!isMemberSelected);
+  };
 
   const handleSearchClose = () => {
     PlatformUIStore.isSearchVisible = false;
@@ -39,7 +75,7 @@ const MobileContent = () => {
       case 'room':
         return <MobileRoom />;
       case 'addroom':
-        return <MobileRoomCreatePage />;
+        return <MobileRoomCreatePage onTabChange={handleToggleSelected} />;
       case 'talk':
         return (
           <MobileTalk
@@ -76,7 +112,12 @@ const MobileContent = () => {
   };
 
   return (
-    <Observer>{() => getApplication(PlatformUIStore.resourceType)}</Observer>
+    <Container
+      appType={PlatformUIStore.resourceType}
+      isMemberSelected={isMemberSelected}
+    >
+      {getApplication(PlatformUIStore.resourceType)}
+    </Container>
   );
 };
 

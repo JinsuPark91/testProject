@@ -54,10 +54,13 @@ const NewBadge = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 0.63rem;
-  padding: 0.1rem;
+  min-width: 1rem;
+  min-height: 1rem;
+  font-size: 0.56rem;
+  padding: 0 0.25rem;
   margin-left: auto;
   color: #fff;
+  line-height: 1;
   font-weight: 400;
   border-radius: 50%;
   background-color: #dc4547;

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { talkRoomStore } from 'teespace-talk-app';
 import styled from 'styled-components';
@@ -10,12 +11,6 @@ import LoadingImg from '../../assets/WAPL_Loading.gif';
 
 const Wrapper = styled.div`
   height: 100%;
-`;
-const Container = styled.div`
-  padding-top: 2.88rem;
-  padding-bottom: 3.13rem;
-  height: 100%;
-  overflow-y: scroll;
 `;
 const Loader = styled.div``;
 
@@ -53,12 +48,14 @@ const MobileMainPage = () => {
   }
 
   return (
-    <Wrapper>
-      <Container>
-        <MobileContent />
-      </Container>
-      <MobileFooter />
-    </Wrapper>
+    <Observer>
+      {() => (
+        <Wrapper>
+          <MobileContent />
+          {PlatformUIStore.resourceType !== 'profile' && <MobileFooter />}
+        </Wrapper>
+      )}
+    </Observer>
   );
 };
 

@@ -20,6 +20,7 @@ import {
 
 const FriendsLNBHeader = ({ handleInputChange, handleInputClear }) => {
   const { spaceStore } = useCoreStores();
+  const { t } = useTranslation();
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isOrgExist, setIsOrgExist] = useState(false);
   const [spaceMemberList, setSpaceMemberList] = useState([]);
@@ -50,10 +51,14 @@ const FriendsLNBHeader = ({ handleInputChange, handleInputClear }) => {
         clearIconColor={{ active: '#17202B', default: '#C6CED6' }}
         onChange={handleInputChange}
         onClear={handleInputClear}
-        placeholder="프렌즈 검색"
+        placeholder={t('CM_B2C_LNB_EMPTY_PAGE_06')}
         isCountExist={false}
       />
-      <Tooltip title="프렌즈 추가" placement="bottomLeft" color="#232D3B">
+      <Tooltip
+        title={t('CM_ADD_PHOTO_FRIENDS')}
+        placement="bottomLeft"
+        color="#232D3B"
+      >
         <FriendAddButton onClick={handleOpenAddFriendsDialog}>
           <img alt="friend" src={FriendAddIcon} />
         </FriendAddButton>
@@ -62,7 +67,7 @@ const FriendsLNBHeader = ({ handleInputChange, handleInputClear }) => {
         visible={isDialogVisible}
         onCancelAddFriends={handleCloseAddFriendsDialog}
         isOrgExist={isOrgExist}
-        title="프렌즈 추가"
+        title={t('CM_ADD_PHOTO_FRIENDS')}
         isViewMode={false}
         spaceInfo={spaceStore.currentSpace}
         spaceMemberList={spaceMemberList}
