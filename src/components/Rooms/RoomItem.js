@@ -356,7 +356,7 @@ const RoomItemContent = ({
           </IconWrapper>
         </RoomDropdown>
       )}
-      <Tooltip placement="top" title={t('CM_TEMP_MINI_CHAT')} color="#232D3B">
+      <Tooltip placement="top" title={t('CM_TEMP_MINI_CHAT')} color="#4C535D">
         <IconWrapper className="room-item__icon" onClick={handleExport}>
           <ExportIcon width={1} height={1} color="#49423A" />
         </IconWrapper>

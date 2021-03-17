@@ -311,7 +311,7 @@ function RoomList() {
         <Tooltip
           title={t('CM_CREATE_ROOM')}
           placement="bottomLeft"
-          color="#232D3B"
+          color="#4C535D"
         >
           <AddRoomIconWrapper onClick={handleCreateRoom}>
             <AddRoomIcon width={1.38} height={1.38} color="#232D3B" />
@@ -386,7 +386,7 @@ const InputWrapper = styled.div`
   display: flex;
   flex: 1;
   align-items: center;
-  margin-right: 0.56rem;
+  margin-right: 0.63rem;
 `;
 
 const AddRoomIconWrapper = styled.div`

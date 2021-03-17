@@ -37,7 +37,7 @@ export const ChattingIcon = React.memo(
 
     if (tooltipText) {
       return (
-        <Tooltip title={tooltipText} placement="bottom" color="#07142d">
+        <Tooltip title={tooltipText} placement="bottom" color="#4C535D">
           {icon}
         </Tooltip>
       );
@@ -79,7 +79,7 @@ export const MailIcon = React.memo(
 
     if (tooltipText) {
       return (
-        <Tooltip title={tooltipText} placement="bottom" color="#07142d">
+        <Tooltip title={tooltipText} placement="bottom" color="#4C535D">
           {icon}
         </Tooltip>
       );
@@ -120,7 +120,7 @@ export const PeopleIcon = React.memo(
 
     return useObserver(() => {
       return (
-        <Tooltip title={tooltipText} placement="bottom" color="#07142d">
+        <Tooltip title={tooltipText} placement="bottom" color="#4C535D">
           {icon}
         </Tooltip>
       );
