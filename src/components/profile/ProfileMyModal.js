@@ -38,7 +38,7 @@ const ProfileMyModal = ({
   created = false,
 }) => {
   const { t } = useTranslation();
-  const { userStore, authStore, spaceStore, orgStore } = useCoreStores();
+  const { userStore, spaceStore } = useCoreStores();
   const history = useHistory();
   const [isCreated, setIsCreated] = useState(created);
   const [profile, setProfile] = useState(null);
@@ -341,7 +341,12 @@ const ProfileMyModal = ({
       {spaceListVisible && (
         <ConvertDropdown>
           <ConvertNow>
-            <LogoSmall shape="square" checked>
+            <LogoSmall checked>
+              {spaceStore.currentSpace?.unreadSpaceCount && (
+                <LogoNumber>
+                  {spaceStore.currentSpace?.unreadSpaceCount}
+                </LogoNumber>
+              )}
               {spaceStore.currentSpace?.name[0]}
             </LogoSmall>
             <NowInfo>
@@ -362,7 +367,12 @@ const ProfileMyModal = ({
                       }}
                       key={elem}
                     >
-                      <LogoSmall shape="square">{elem?.name[0]}</LogoSmall>
+                      <LogoSmall>
+                        {elem?.unreadSpaceCount && (
+                          <LogoNumber>{elem.unreadSpaceCount}</LogoNumber>
+                        )}
+                        {elem?.name[0]}
+                      </LogoSmall>
                       <ItemText>{elem?.name}</ItemText>
                     </ConvertItem>
                   ))}
@@ -634,8 +644,8 @@ const DataBox = styled.div`
 `;
 const Logo = styled(Avatar)`
   flex-shrink: 0;
-  width: 2.375rem;
-  height: 2.375rem;
+  width: 2.64rem;
+  height: 2.64rem;
   font-size: 1.125rem;
   line-height: 2.375rem;
   font-weight: 500;
@@ -756,8 +766,8 @@ const LangItem = styled.li`
 `;
 const ConvertDropdown = styled.div`
   position: absolute;
-  left: -11.5rem;
-  width: 11rem;
+  left: -12.5rem;
+  width: 12rem;
   top: 15.63rem;
   border: 1px solid #c6ced6;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
@@ -768,15 +778,22 @@ const ConvertDropdown = styled.div`
 const ConvertNow = styled.div`
   display: flex;
   align-items: center;
-  margin: 0 0.75rem;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #eeedeb;
+  padding: 0.3125rem 0.6875rem;
+  margin-top: 0.44rem;
 `;
-const LogoSmall = styled(Logo)`
-  width: 1.875rem;
-  height: 1.875rem;
-  font-size: 0.875rem;
-  line-height: 1.875rem;
+const LogoSmall = styled.div`
+  position: relative;
+  width: 2.63rem;
+  height: 2.63rem;
+  font-size: 0.96rem;
+  line-height: 1.96rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.32rem;
+  background-color: #ebe6df;
+  color: #0a1e3a;
+  margin-right: 0.375rem;
   ${props =>
     props.checked &&
     css`
@@ -784,8 +801,23 @@ const LogoSmall = styled(Logo)`
       border: 1px solid #0a1e3a;
     `}
 `;
+const LogoNumber = styled.div`
+  position: absolute;
+  line-height: 1.4;
+  top: 0.15rem;
+  right: 0.15rem;
+  background-color: rgb(220, 69, 71);
+  color: rgb(255, 255, 255);
+  font-size: 0.52rem;
+  font-weight: 400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.4rem;
+  padding: 0 0.2rem;
+`;
 const NowInfo = styled(Info)`
-  margin: 0 0.375rem;
+  margin: 0 0.375rem 0 0;
   font-size: 0.625rem;
   line-height: 0.9375rem;
 `;
@@ -829,15 +861,17 @@ const ConvertAdd = styled.div`
   cursor: pointer;
 `;
 const AddBox = styled.span`
-  height: 1.88rem;
-  width: 1.88rem;
+  height: 2.63rem;
+  width: 2.63rem;
   background-color: #faf8f7;
-  border-radius: 0.25rem;
+  border-radius: 0.32rem;
   margin-right: 0.375rem;
   font-size: 0.88rem;
   line-height: 1.75rem;
   color: #49423a;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const AddText = styled.span`
   font-size: 0.75rem;

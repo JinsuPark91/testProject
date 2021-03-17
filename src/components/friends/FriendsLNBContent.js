@@ -23,6 +23,7 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const FriendsLNBContent = React.forwardRef(
   ({ searchKeyword, meTooltipPopupContainer, activeUserId }, ref) => {
+    const { t } = useTranslation();
     const { userStore, friendStore } = useCoreStores();
     const [favFriendActiveId, setFavFriendActiveId] = useState('');
     const [friendActiveId, setFriendActiveId] = useState('');
@@ -87,14 +88,11 @@ const FriendsLNBContent = React.forwardRef(
       const renderEmptyContent = (
         <WelcomeWrapper>
           <StyledInfoTitle>
-            {userStore.myProfile.displayName} 님, 환영합니다. <br />
-            프렌즈 목록을 만들어보세요!
+            {t('CM_B2C_LNB_EMPTY_PAGE_07', {
+              name: userStore.myProfile.displayName,
+            })}
           </StyledInfoTitle>
-          <StyledSubInfo>
-            자주 연락하는 사람들을
-            <br />
-            구성원 목록에서 추가할 수 있습니다.
-          </StyledSubInfo>
+          <StyledSubInfo>{t('CM_B2C_LNB_EMPTY_PAGE_08')}</StyledSubInfo>
         </WelcomeWrapper>
       );
 

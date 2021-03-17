@@ -33,6 +33,7 @@ const IconButton = styled(Button)`
 
 const Title = styled.h3`
   font-size: 1.13rem;
+  line-height: 1.63rem;
   color: #205855;
 `;
 
