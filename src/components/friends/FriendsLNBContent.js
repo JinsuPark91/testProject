@@ -134,7 +134,7 @@ const FriendsLNBContent = React.forwardRef(
       );
 
       return (
-        <ContentWrapper>
+        <ContentWrapper id="lnb__friend-container">
           <div ref={ref} />
           <FriendListBox noFriend={!friendStore.friendInfoList.length}>
             <FriendItem

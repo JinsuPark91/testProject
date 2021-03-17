@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled from 'styled-components';
@@ -44,6 +44,13 @@ function RoomList() {
   });
   const [toastText, setToastText] = useState('');
   const [isToastVisible, setIsToastVisible] = useState(false);
+
+  const containerRef = useRef(null);
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo(0, 0);
+    }
+  });
 
   const handleCreateRoom = () => {
     setVisible({ ...visible, selectRoomType: true });
@@ -318,7 +325,7 @@ function RoomList() {
           </AddRoomIconWrapper>
         </Tooltip>
       </TopWrapper>
-      <RoomContainer>
+      <RoomContainer id="lnb__room-container" ref={containerRef}>
         <Observer>
           {() => {
             return roomStore
@@ -339,12 +346,7 @@ function RoomList() {
         </Observer>
       </RoomContainer>
       <ButtomWrapper>
-        <div
-        // onClick={() => {
-        //   if (i18n.language === 'en') i18n.changeLanguage('ko');
-        //   else i18n.changeLanguage('en');
-        // }}
-        >
+        <div>
           <WaplLogo />
         </div>
         <Toast

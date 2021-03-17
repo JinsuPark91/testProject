@@ -38,6 +38,7 @@ export const FlexModal = styled(Modal)`
 `;
 
 export const ConfigWrapper = styled.div`
+  width: 32.5rem;
   padding: 0.19rem 1.88rem 1.19rem;
   border: solid #e3e7eb;
   border-width: 1px 0;

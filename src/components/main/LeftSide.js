@@ -19,11 +19,26 @@ const LeftSide = observer(() => {
     handleCheckNewFriend(elem),
   ).length;
 
+  const scrollTop = key => {
+    const idMap = {
+      f: 'lnb__friend-container',
+      s: 'lnb__room-container',
+      m: '',
+    };
+
+    const container = document.getElementById(idMap[key]);
+    if (container) {
+      container.scrollTo(0, 0);
+    }
+  };
+
   const handleSelectTab = key => {
     PlatformUIStore.tabType = key;
     if (key === 'm') {
       logEvent('gnb', 'clickTeeMailBtn');
     }
+
+    scrollTop(key);
   };
 
   return (
