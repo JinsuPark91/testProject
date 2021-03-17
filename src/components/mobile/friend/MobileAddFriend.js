@@ -45,6 +45,15 @@ const MobileAddFriend = () => {
     history.push(`/friend/${myUserId}`);
   };
 
+  const remToPixel = rem => {
+    return (
+      parseFloat(getComputedStyle(document.documentElement).fontSize, 10) * rem
+    );
+  };
+  // 3 + 0.76 + 0.76 + 1.88 + 3.25 + 3.13
+  const otherHeight = remToPixel(12.7);
+  const height = window.innerHeight - otherHeight;
+
   return (
     <>
       <Header>
@@ -53,7 +62,7 @@ const MobileAddFriend = () => {
         </ButtonBox>
         <Title>프렌즈 추가</Title>
       </Header>
-      <MobileMemberList height={25} isAddFriend />
+      <MobileMemberList height={height} isAddFriend />
     </>
   );
 };
