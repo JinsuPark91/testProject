@@ -23,7 +23,6 @@ import checkekIcon from '../../assets/ts_check.svg';
 import { ReactComponent as SquareSpaceIcon } from '../../assets/card_view.svg';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
 import AddFriendsBySearch from '../friends/AddFriendsBySearch';
-import SpaceMemberListModal from '../space/SpaceMemberListModal';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
 import SpaceEditModal from './SpaceEditModal';
 import MovePage from '../../utils/MovePage';
@@ -411,12 +410,6 @@ const ProfileMyModal = ({
         spaceInfo={spaceStore.currentSpace}
         spaceMemberList={spaceMemberList}
       />
-      {/* <SpaceMemberListModal
-        visible={isSpaceMemViewOpen}
-        onClose={toggleSpaceMemViewDialog}
-        spaceName={spaceStore.currentSpace?.name}
-        members={spaceMemberList}
-      /> */}
       <SelectRoomTypeDialog
         visible={isRoomDialogVisible}
         onCancel={() => setIsRoomDialogVisible(false)}
