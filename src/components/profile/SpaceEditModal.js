@@ -194,6 +194,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
           <ErrorIcon visible={isNameWarningVisible}>
             <Tooltip
               title={t('CM_ENTER_SPACE_NAME')}
+              color="#FF5151"
               placement="top"
               visible={isNameWarningVisible}
             >
@@ -206,7 +207,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
           <Tooltip
             title={t('CM_PROFILE_SPACE_BASIC')}
             placement="bottomLeft"
-            color="#232D3B"
+            color="#4C535D"
           >
             <UrlInputBox disabled={isBasicPlan}>
               <input value={newAddress} disabled />
@@ -224,6 +225,7 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
             <ErrorIcon visible={isUrlWarningVisible}>
               <Tooltip
                 title={urlWarningText}
+                color="#FF5151"
                 placement="top"
                 visible={isUrlWarningVisible}
               >

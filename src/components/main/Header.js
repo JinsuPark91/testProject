@@ -139,7 +139,7 @@ const AppIcon = React.memo(
     }
 
     return (
-      <Tooltip placement="bottom" title={t(i18n)} color="#232D3B">
+      <Tooltip placement="bottom" title={t(i18n)} color="#4C535D">
         <AppIconInner
           key={appName}
           onClick={handleAppClick}
@@ -437,7 +437,7 @@ const Header = observer(() => {
                     <Tooltip
                       placement="bottom"
                       title={t('CM_TEMP_MINI_CHAT')}
-                      color="#232D3B"
+                      color="#4C535D"
                     >
                       <IconWrapper onClick={handleExport}>
                         <ExportIcon
@@ -450,13 +450,13 @@ const Header = observer(() => {
                     <Tooltip
                       placement="bottom"
                       title={t('CM_ROOMTITLE_TOOLTIP_02')}
-                      color="#232D3B"
+                      color="#4C535D"
                     >
                       <IconWrapper onClick={handleSearch}>
                         <SearchIcon
                           width={1.25}
                           height={1.25}
-                          color="#232D3B"
+                          color="#4C535D"
                         />
                       </IconWrapper>
                     </Tooltip>
@@ -467,7 +467,7 @@ const Header = observer(() => {
                     <Tooltip
                       placement="bottom"
                       title={t('CM_ROOM_INVITE_USER')}
-                      color="#232D3B"
+                      color="#4C535D"
                     >
                       <IconWrapper onClick={handleAddMember}>
                         <AddAcountIcon

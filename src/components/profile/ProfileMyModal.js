@@ -288,7 +288,7 @@ const ProfileMyModal = ({
           </Info>
           <Tooltip
             placement="topLeft"
-            color="#232D3B"
+            color="#4C535D"
             title={t('CM_PROFILE_PROFILE_MENU_01')}
           >
             <Button className="btn-convert" onClick={handleSpaceList}>
@@ -302,7 +302,7 @@ const ProfileMyModal = ({
           >
             <Tooltip
               placement="topLeft"
-              color="#232D3B"
+              color="#4C535D"
               title={t('CM_PROFILE_PROFILE_MENU_02')}
             >
               <Button className="btn-more">

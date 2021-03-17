@@ -53,7 +53,7 @@ const FriendsLNBHeader = ({ handleInputChange, handleInputClear }) => {
         placeholder="프렌즈 검색"
         isCountExist={false}
       />
-      <Tooltip title="프렌즈 추가" placement="bottomLeft" color="#232D3B">
+      <Tooltip title="프렌즈 추가" placement="bottomLeft" color="#4C535D">
         <FriendAddButton onClick={handleOpenAddFriendsDialog}>
           <img alt="friend" src={FriendAddIcon} />
         </FriendAddButton>
