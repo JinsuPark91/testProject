@@ -3,7 +3,15 @@ import { observer, Observer } from 'mobx-react';
 import { useCoreStores, logEvent } from 'teespace-core';
 import { MailSideView } from 'teespace-mail-app';
 import { useTranslation } from 'react-i18next';
-import { ChattingIcon, MailIcon, PeopleIcon } from '../Icons';
+import { Tooltip } from 'antd';
+import {
+  ChattingIcon,
+  ChattingActiveIcon,
+  MailIcon,
+  MailActiveIcon,
+  PeopleIcon,
+  PeopleActiveIcon,
+} from '../Icons';
 import FriendLnb from '../friends/FriendsLNB';
 import RoomList from '../Rooms/RoomList';
 import { handleCheckNewFriend } from '../../utils/FriendsUtil';
@@ -36,17 +44,22 @@ const LeftSide = observer(() => {
         <TabPane
           key="f"
           tab={
-            <IconWrapper className="lnb__icon-wrapper">
-              <UnreadCount isVisible={newFriendNum > 0}>
-                {newFriendNum}
-              </UnreadCount>
-              <PeopleIcon
-                width={1.5}
-                height={1.5}
-                color={PlatformUIStore.tabType === 'f' ? '#232d3b' : '#ffffff'}
-                tooltipText={t('CM_FRIENDS_LIST')}
-              />
-            </IconWrapper>
+            <Tooltip
+              title={t('CM_FRIENDS_LIST')}
+              placement="bottom"
+              color="#07142d"
+            >
+              <IconWrapper className="lnb__icon-wrapper">
+                <UnreadCount isVisible={newFriendNum > 0}>
+                  {newFriendNum}
+                </UnreadCount>
+                {PlatformUIStore.tabType === 'f' ? (
+                  <PeopleActiveIcon width={1.5} height={1.5} />
+                ) : (
+                  <PeopleIcon width={1.5} height={1.5} />
+                )}
+              </IconWrapper>
+            </Tooltip>
           }
         >
           <FriendLnb />
@@ -55,37 +68,41 @@ const LeftSide = observer(() => {
         <TabPane
           key="s"
           tab={
-            <IconWrapper className="lnb__icon-wrapper">
-              <Observer>
-                {() => {
-                  PlatformUIStore.totalUnreadCount = roomStore
-                    .getRoomArray()
-                    .filter(roomInfo => roomInfo.isVisible)
-                    .reduce(
-                      (accumulator, roomInfo) =>
-                        accumulator +
-                        parseInt(roomInfo.metadata.count ?? '0', 10),
-                      0,
+            <Tooltip
+              title={t('CM_COMMUNICATION_BAR_02')}
+              placement="bottom"
+              color="#07142d"
+            >
+              <IconWrapper className="lnb__icon-wrapper">
+                <Observer>
+                  {() => {
+                    PlatformUIStore.totalUnreadCount = roomStore
+                      .getRoomArray()
+                      .filter(roomInfo => roomInfo.isVisible)
+                      .reduce(
+                        (accumulator, roomInfo) =>
+                          accumulator +
+                          parseInt(roomInfo.metadata.count ?? '0', 10),
+                        0,
+                      );
+                    return (
+                      <UnreadCount
+                        isVisible={PlatformUIStore.totalUnreadCount > 0}
+                      >
+                        {PlatformUIStore.totalUnreadCount > 99
+                          ? '99+'
+                          : PlatformUIStore.totalUnreadCount}
+                      </UnreadCount>
                     );
-                  return (
-                    <UnreadCount
-                      isVisible={PlatformUIStore.totalUnreadCount > 0}
-                    >
-                      {PlatformUIStore.totalUnreadCount > 99
-                        ? '99+'
-                        : PlatformUIStore.totalUnreadCount}
-                    </UnreadCount>
-                  );
-                }}
-              </Observer>
-
-              <ChattingIcon
-                width={1.5}
-                height={1.5}
-                color={PlatformUIStore.tabType === 's' ? '#232d3b' : '#ffffff'}
-                tooltipText={t('CM_COMMUNICATION_BAR_02')}
-              />
-            </IconWrapper>
+                  }}
+                </Observer>
+                {PlatformUIStore.tabType === 's' ? (
+                  <ChattingActiveIcon width={1.5} height={1.5} />
+                ) : (
+                  <ChattingIcon width={1.5} height={1.5} />
+                )}
+              </IconWrapper>
+            </Tooltip>
           }
         >
           <RoomList />
@@ -94,15 +111,20 @@ const LeftSide = observer(() => {
         <TabPane
           key="m"
           tab={
-            <IconWrapper className="lnb__icon-wrapper">
-              <UnreadCount isVisible={false}>N</UnreadCount>
-              <MailIcon
-                width={1.5}
-                height={1.5}
-                color={PlatformUIStore.tabType === 'm' ? '#232d3b' : '#ffffff'}
-                tooltipText={t('CM_COMMUNICATION_BAR_03')}
-              />
-            </IconWrapper>
+            <Tooltip
+              title={t('CM_COMMUNICATION_BAR_03')}
+              placement="bottom"
+              color="#07142d"
+            >
+              <IconWrapper className="lnb__icon-wrapper">
+                <UnreadCount isVisible={false}>N</UnreadCount>
+                {PlatformUIStore.tabType === 'm' ? (
+                  <MailActiveIcon width={1.5} height={1.5} />
+                ) : (
+                  <MailIcon width={1.5} height={1.5} />
+                )}
+              </IconWrapper>
+            </Tooltip>
           }
         >
           <MailSideView language={i18n.language} />
