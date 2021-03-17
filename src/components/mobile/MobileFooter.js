@@ -20,15 +20,17 @@ const NewBadge = styled.div`
   display: ${({ isVisible }) => (isVisible ? 'flex' : 'none')};
   align-items: center;
   justify-content: center;
-  padding: 0 0.25rem;
   position: absolute;
-  top: 0.31rem;
-  left: 50%;
-  margin-left: 0.75rem;
-  font-size: 0.69rem;
-  font-weight: 400;
+  top: 0.5rem;
+  right: 1.4rem;
+  padding: 0 0.25rem;
+  min-width: 1rem;
+  min-height: 1rem;
+  line-height: 1;
+  font-size: 0.56rem;
   color: #fff;
-  border-radius: 0.56rem;
+  font-weight: 400;
+  border-radius: 50%;
   background-color: #dc4547;
 `;
 
@@ -36,9 +38,9 @@ const IconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 5.13rem;
-  height: 2.75rem;
-  border-radius: 10px;
+  position: relative;
+  width: 5.63rem;
+  height: 3.13rem;
 `;
 
 const FooterTab = styled(Tabs)`
