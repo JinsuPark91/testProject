@@ -54,6 +54,7 @@ const Profile = observer(
     onClickCancelBtn = () => {},
   }) => {
     const history = useHistory();
+    const { t } = useTranslation();
 
     const { userStore, friendStore, authStore } = useCoreStores();
     const [isEditMode, setEditMode] = useState(editOnlyMode);
@@ -289,9 +290,9 @@ const Profile = observer(
           });
 
           if (isFav) {
-            setToastText('즐겨찾기가 설정되었습니다.');
+            setToastText(t('CM_BOOKMARK_03'));
           } else {
-            setToastText('즐겨찾기가 해제되었습니다.');
+            setToastText(t('CM_BOOKMARK_02'));
           }
           setIsToastVisible(true);
         } catch (e) {
@@ -312,12 +313,12 @@ const Profile = observer(
             <Sidebar>
               <StyledButton onClick={handleTalkClick}>
                 <FriendsIcon />
-                <Text>{isMyId() ? `나와의 Talk` : `1:1 Talk`}</Text>
+                <Text>{isMyId() ? t('CM_MY_TALK_13') : `1:1 Talk`}</Text>
               </StyledButton>
               {isMyId() ? (
                 <StyledButton onClick={handleChangetoEditMode}>
                   <StyleIcon iconimg="profile" />
-                  <Text>프로필 편집</Text>
+                  <Text>{t('CM_EDIT_PROFILE')}</Text>
                 </StyledButton>
               ) : (
                 <StyledButton onClick={handleMeetingClick}>
@@ -343,14 +344,14 @@ const Profile = observer(
                             handleChangeBackground(file)
                           }
                         >
-                          내 PC에서 배경 변경
+                          {t('CM_EDIT_PROFILE_04')}
                         </StyledUpload>
                       </Menu.Item>
                       <Menu.Item
                         disabled={isDefaultBackgroundPhotoUsed}
                         onClick={handleChangeDefaultBackground}
                       >
-                        기본 이미지로 변경
+                        {t('CM_EDIT_PROFILE_05')}
                       </Menu.Item>
                     </Menu>
                   }
@@ -365,7 +366,7 @@ const Profile = observer(
                   isFav={friendStore.isFavoriteFriend(userId)}
                   onClick={handleToggleFavoriteFriend}
                 >
-                  <Blind>즐겨찾기</Blind>
+                  <Blind>{t('CM_BOOKMARK')}</Blind>
                 </BookMarkButton>
               )}
             </ContentTop>
@@ -387,14 +388,14 @@ const Profile = observer(
                                 handleChangePhoto(file)
                               }
                             >
-                              프로필 사진 변경
+                              {t('CM_B2C_SETTING_CHANGE_INFO_22')}
                             </StyledUpload>
                           </Menu.Item>
                           <Menu.Item
                             disabled={isDefaultProfilePhotoUsed}
                             onClick={handleChangeDefaultPhoto}
                           >
-                            기본 이미지로 변경
+                            {t('CM_EDIT_PROFILE_05')}
                           </Menu.Item>
                         </Menu>
                       }
@@ -444,7 +445,7 @@ const Profile = observer(
                 )}
               </UserStatusMsg>
               */}
-              {/* <Tooltip placement="bottom" title="어드민만 변경 가능" color="#4C535D"></Tooltip> */}
+              {/* <Tooltip placement="bottom" title={t('CM_EDIT_ONLY_ADMIN')} color="#4C535D"></Tooltip> */}
               <UserInfoList>
                 {userType === 'USR0001' && (
                   <UserInfoItem style={{ alignItems: 'flex-start' }}>
@@ -475,7 +476,7 @@ const Profile = observer(
                             ? phone
                             : profile?.companyNum || ``
                         }
-                        placeholder="회사 전화를 입력하세요."
+                        placeholder={t('CM_B3C_CONTENTS_AREA_EMPTY_PAGE_30')}
                       />
                     ) : profile?.companyNum ? (
                       <UserInfoText>
@@ -497,7 +498,7 @@ const Profile = observer(
                       value={
                         mobile !== undefined ? mobile : profile?.phone || ``
                       }
-                      placeholder="휴대폰 번호를 입력하세요."
+                      placeholder={t('CM_B2C_CONTENTS_AREA_EMPTY_PAGE_35')}
                     />
                   ) : (
                     <UserInfoText>
@@ -519,14 +520,14 @@ const Profile = observer(
                       disabled={!isChange || !isValidInputData()}
                       onClick={handleConfirm}
                     >
-                      저장
+                      {t('CM_SAVE')}
                     </Button>
                     <Button
                       type="outlined"
                       onClick={handleCancel}
                       style={{ backgroundColor: '#fff', color: '#3b3b3b' }}
                     >
-                      취소
+                      {t('CM_CANCEL')}
                     </Button>
                   </>
                 )}
@@ -536,19 +537,19 @@ const Profile = observer(
         </Wrapper>
         <Message
           visible={cancelDialogVisible}
-          title="변경 사항을 저장하지 않고 나가시겠습니까?"
+          title={t('CM_Q_EXIT_SAVE')}
           type="error"
           btns={[
             {
               type: 'solid',
               shape: 'round',
-              text: '나가기',
+              text: t('CM_LEAVE'),
               onClick: handleExit,
             },
             {
               type: 'outlined',
               shape: 'round',
-              text: '취소',
+              text: t('CM_CANCEL'),
               onClick: handleExitCancel,
             },
           ]}
