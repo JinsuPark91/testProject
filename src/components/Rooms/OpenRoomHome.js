@@ -14,7 +14,7 @@ import NextArrowIcon from '../../assets/arrow_right_line.svg';
 import PrevArrowIcon from '../../assets/arrow_left_line.svg';
 import { SettingIcon, OpenChatIcon, AddIcon } from '../Icons';
 import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
-import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 import Search from '../common/Search';
 
 const RoomButton = ({ roomInfo, onClick, disabled }) => {
@@ -186,12 +186,17 @@ function OpenRoomHome({ visible, onCancel }) {
 
     await talkRoomStore.initialize(userStore.myProfile.id, roomId);
 
-    const queryParams = { ...getQueryParams() };
     if (isStartMeeting) {
-      queryParams.sub = 'meeting';
+      PlatformUIStore.openWindow({
+        id: roomId,
+        type: 'meeting',
+        name: null,
+        userCount: null,
+        handler: null,
+      });
     }
-    const queryString = getQueryString(queryParams);
-    history.push(`/s/${roomId}/talk?${queryString}`);
+
+    history.push(`/s/${roomId}/talk`);
   };
 
   const handleCreatePublicRoomCancel = () => {
