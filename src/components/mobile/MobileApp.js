@@ -17,6 +17,7 @@ import Cookies from 'js-cookie';
 import SignUpPage from '../../page/SignUpPage';
 import SignUpFormPage from '../../page/SignUpFormPage';
 import SignUpCompletePage from '../../page/SignUpCompletePage';
+import MobileCreateRoomPage from './MobileCreateRoomPage';
 import LogoutPage from '../../page/LogoutPage';
 import MobileMainPage from './MobileMainPage';
 import RedirectablePublicRoute from '../../libs/RedirectablePublicRoute';
@@ -118,6 +119,11 @@ const MobileApp = () => {
                       exact
                       path="/registerComplete"
                       component={<SignUpCompletePage />}
+                    />
+                    <PrivateRoute
+                      exact
+                      path="/room/:loginUserId/create"
+                      component={MobileCreateRoomPage}
                     />
                     <PrivateRoute
                       path="/:resourceType/:resourceId?"

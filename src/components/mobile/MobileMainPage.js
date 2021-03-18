@@ -27,7 +27,6 @@ const MobileMainPage = () => {
       roomStore.fetchRoomList({ myUserId }),
     ]).then(async () => {
       EventBus.dispatch('Platform:initLNB');
-      history.push(`/friend/${myUserId}`); // FIXME: 임시
       setIsLoading(false);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
