@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useObserver } from 'mobx-react';
 import { useCoreStores, Toast, ProfileInfoModal } from 'teespace-core';
 import { FixedSizeList as List } from 'react-window';
+import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import mySign from '../../assets/wapl_me.svg';
@@ -111,6 +112,7 @@ const remToPixel = rem => {
 };
 
 const AddFriendsItem = ({ friendAddList, isViewMode }) => {
+  const { t } = useTranslation();
   const { userStore, friendStore } = useCoreStores();
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [friendUserName, setFriendUserName] = useState('');
@@ -146,7 +148,7 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
     const isMe = userId === userStore.myProfile.id;
     const isFriend = friendStore.checkAlreadyFriend({ userId });
     if (isMe) {
-      return <MyAccountText>내 계정</MyAccountText>;
+      return <MyAccountText>{t('CM_MY_ACCOUNT')}</MyAccountText>;
     }
 
     if (!isFriend) {
@@ -155,14 +157,14 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
           isFriend={false}
           onClick={() => handleAddFriend(friendInfo)}
         >
-          <span>프렌즈 추가</span>
+          <span>{t('CM_ADD_PHOTO_FRIENDS')}</span>
         </FriendAddBtn>
       );
     }
 
     return (
       <FriendAddBtn isFriend>
-        <span>프렌즈 추가</span>
+        <span>{t('CM_ADD_PHOTO_FRIENDS')}</span>
       </FriendAddBtn>
     );
   };
@@ -179,6 +181,7 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
     const fullCompanyJobText = fullCompanyJob ? `(${fullCompanyJob})` : '';
     const isMe =
       friendInfo?.friendId || friendInfo.id === userStore.myProfile.id;
+
     return (
       <FriendItem style={style}>
         {isMe && (
@@ -234,7 +237,9 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
         timeoutMs={1000}
         onClose={() => setIsToastVisible(false)}
       >
-        {friendUserName}님이 프렌즈로 추가되었습니다.
+        {t('CM_ADD_FRIENDS_SPACE_04', {
+          name: friendUserName,
+        })}
       </Toast>
       {isProfileModalVisible && (
         <ProfileInfoModal
