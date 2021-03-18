@@ -103,6 +103,7 @@ const OpenMiniTalk = roomInfo => {
 };
 
 const MeAction = React.memo(({ mode, itemId }) => {
+  const { t } = useTranslation();
   const { userStore } = useCoreStores();
   const handleExport = async e => {
     e.stopPropagation();
@@ -117,7 +118,7 @@ const MeAction = React.memo(({ mode, itemId }) => {
   };
 
   return (
-    <Tooltip placement="top" title="미니 채팅" color="#4C535D">
+    <Tooltip placement="top" title={t('CM_TEMP_MINI_CHAT')} color="#4C535D">
       <MoreIconWrapper className="friend-export-icon" onClick={handleExport}>
         <ExportIcon />
       </MoreIconWrapper>
