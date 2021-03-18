@@ -1,5 +1,6 @@
 import React from 'react';
 import { useCoreStores } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'antd';
 import {
   InnerItem,
@@ -12,13 +13,14 @@ import {
 import { LockLineIcon } from '../Icons';
 
 const SettingDialogOrg = () => {
+  const { t } = useTranslation();
   const { authStore, userStore } = useCoreStores();
-  const isAdmin = userStore.myProfile.grade === 'admin';
-  const tooltipText = '어드민만 변경 가능';
+  // const isAdmin = userStore.myProfile.grade === 'admin';
+  // const tooltipText = '어드민만 변경 가능';
 
   return (
     <InnerItem>
-      <Name>부서/ 직책/ 직위</Name>
+      <Name>{t('CM_SETTING_CHANGE_INFO_COMPANY_04')}</Name>
       <Data>
         <TextArea>
           <p>
