@@ -31,6 +31,15 @@ export const Container = styled.div`
     url('${props => props.imageSrc}');
   background-repeat: no-repeat;
   background-size: 100% 100%;
+
+  ${props =>
+    props.isEditMode
+      ? css`
+          cursor: pointer;
+        `
+      : css`
+          cursor: auto;
+        `}
 `;
 
 export const Header = styled.div`
