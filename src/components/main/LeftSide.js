@@ -62,7 +62,7 @@ const LeftSide = observer(() => {
             <Tooltip
               title={t('CM_FRIENDS_LIST')}
               placement="bottom"
-              color="#07142d"
+              color="#4C535D"
             >
               <IconWrapper className="lnb__icon-wrapper">
                 <UnreadCount isVisible={newFriendNum > 0}>
@@ -86,7 +86,7 @@ const LeftSide = observer(() => {
             <Tooltip
               title={t('CM_COMMUNICATION_BAR_02')}
               placement="bottom"
-              color="#07142d"
+              color="#4C535D"
             >
               <IconWrapper className="lnb__icon-wrapper">
                 <Observer>
@@ -129,7 +129,7 @@ const LeftSide = observer(() => {
             <Tooltip
               title={t('CM_COMMUNICATION_BAR_03')}
               placement="bottom"
-              color="#07142d"
+              color="#4C535D"
             >
               <IconWrapper className="lnb__icon-wrapper">
                 <UnreadCount isVisible={false}>N</UnreadCount>

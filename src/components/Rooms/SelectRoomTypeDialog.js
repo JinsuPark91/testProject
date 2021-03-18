@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography, Modal } from 'antd';
 import { useCoreStores, logEvent } from 'teespace-core';
-import { talkRoomStore } from 'teespace-talk-app';
 import { useTranslation } from 'react-i18next';
 import { PrivateRoomIcon, OpenChatIcon } from '../Icons';
 import CreatePrivateRoomDialog from '../dialogs/CreatePrivateRoomDialog';
@@ -136,8 +135,6 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
         newIsVisible: true,
       });
     }
-
-    await talkRoomStore.initialize(userStore.myProfile.id, roomId);
 
     // NOTE. 룸 목록 컴포넌트에서 토스트를 띄우기 위해 전달
     onCreateRoom({

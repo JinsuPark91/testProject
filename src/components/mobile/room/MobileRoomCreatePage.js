@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { MobileItemSelector, useCoreStores } from 'teespace-core';
-import { talkRoomStore } from 'teespace-talk-app';
 import styled from 'styled-components';
 import { Button } from 'antd';
 import { ArrowBackIcon } from '../Icon';
@@ -80,7 +79,6 @@ const MobileRoomCreatePage = ({ onTabChange }) => {
         newIsVisible: true,
       });
     }
-    await talkRoomStore.initialize(myUserId, roomId);
     history.push(`/talk/${roomId}`);
   };
 

@@ -5,9 +5,6 @@ export const Wrapper = styled.div`
   .friend-export-icon {
     display: none;
   }
-  .friend-new-icon {
-    display: flex;
-  }
 
   &:hover {
     .friend-more-icon,
@@ -22,7 +19,7 @@ export const Wrapper = styled.div`
 
 export const FriendItemWrapper = styled.div`
   /* 조직도 조회, 추천친구 스타일 */
-  height: 3rem;
+  display: flex;
   white-space: nowrap;
   text-overflow: ellipsis;
   cursor: pointer;
@@ -30,8 +27,7 @@ export const FriendItemWrapper = styled.div`
     (props.mode === 'addFriend' || props.mode === 'recommended') &&
     css`
       width: calc(100% - 1.5rem + 8px);
-      display: flex;
-      flex-direction: row;
+      height: 3rem;
       background-color: transparent;
       border-bottom: 1px solid #e3e7eb;
       padding: 0 0.63rem;
@@ -55,14 +51,24 @@ export const FriendItemWrapper = styled.div`
       }
     `}
 
+  ${props =>
+    props.mode === 'me' &&
+    css`
+      padding: 0.69rem 0.38rem 0.69rem 0.5rem;
+    `}
+
+    ${props =>
+    props.mode === 'friend' &&
+    css`
+      padding: 0.56rem 0.38rem 0.56rem 0.5rem;
+    `}
+
   /* 내 프로필 아이템과 친구 아이템의 스타일 */
   ${props =>
     (props.mode === 'me' || props.mode === 'friend') &&
     css`
-      display: flex;
-      flex-direction: row;
       margin: 0 0.25rem;
-      padding: 0 0.38rem 0 0.5rem;
+      align-items: center;
 
       ${props.isActive
         ? css`
@@ -106,24 +112,26 @@ export const FriendItemWrapper = styled.div`
     `}
 `;
 
-export const ProfileWrapper = styled.div`
-  align-items: center;
-  display: flex;
-
-  /* me badge */
-  .ant-badge-count {
-    margin-left: -2.125rem;
-  }
+export const TextWrapper = styled.div`
+  overflow: hidden;
+  flex: 1 0;
+  margin-left: 0.4375rem;
 `;
 
-export const TextWrapper = styled.div`
-  margin-left: 0.4375rem;
-  flex-grow: 1;
+export const TextStatus = styled.div`
+  overflow: hidden;
+  margin-top: 0.125rem;
+  font-size: 0.69rem;
+  line-height: 1rem;
+  font-weight: 300;
+  color: #7f7f7f;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+export const TextComponentBox = styled.div`
   display: flex;
   align-items: center;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
 `;
 
 export const TitleForName = styled.span`
@@ -140,56 +148,57 @@ export const ActionWrapper = styled.div`
   align-items: center;
 `;
 
-export const StyledWrapper = styled.div`
-  position: relative;
-`;
-
 export const NewFriendBadge = styled.div`
   height: 1rem;
   width: 1rem;
-  line-height: 1rem;
+  margin: 0 0.125rem 0 0.25rem;
+  line-height: 0.94rem;
   font-size: 0.63rem;
   color: #fff;
   font-weight: 400;
-  justify-content: center;
   border-radius: 50%;
   background-color: #dc4547;
+  text-align: center;
 `;
 
 export const StyledAvatar = styled.div`
   position: relative;
+  flex-shrink: 0;
   ${props => {
     switch (props.mode) {
       case 'me':
         return css`
-          width: 2.25rem;
-          height: 2.25rem;
+          width: 2.13rem;
+          height: 2.13rem;
+          margin: 0.0652rem 0;
+          border: 1px solid #fff;
         `;
       case 'addFriend':
         return css`
           width: 2rem;
           height: 2rem;
+          &:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 50%;
+          }
         `;
       case 'friend':
       default:
         return css`
-          width: 2.125rem;
-          height: 2.125rem;
+          width: 2.13rem;
+          height: 2.13rem;
+          margin: 0.0652rem 0;
         `;
     }
   }}
   border-radius: 50%;
   background-color: #fff;
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 50%;
-  }
   img {
     width: 100%;
     height: 100%;

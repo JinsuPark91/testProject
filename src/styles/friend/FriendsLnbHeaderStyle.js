@@ -4,7 +4,7 @@ import { WaplSearch } from 'teespace-core';
 export const SearchBox = styled.div`
   display: flex;
   align-items: center;
-  padding: 0.63rem 0.75rem;
+  padding: 0.5rem 0.75rem;
   .anticon {
     color: #bdc6d3;
   }

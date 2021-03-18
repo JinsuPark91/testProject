@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { Observer } from 'mobx-react';
-import { useCoreStores } from 'teespace-core';
-import { talkRoomStore } from 'teespace-talk-app';
+import { EventBus, useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import MobileContent from './MobileContent';
@@ -27,7 +26,7 @@ const MobileMainPage = () => {
       friendStore.fetchFriends({ myUserId }),
       roomStore.fetchRoomList({ myUserId }),
     ]).then(async () => {
-      await talkRoomStore.initialize(myUserId);
+      EventBus.dispatch('Platform:initLNB');
       history.push(`/friend/${myUserId}`); // FIXME: 임시
       setIsLoading(false);
     });

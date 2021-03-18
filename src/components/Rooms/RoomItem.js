@@ -14,7 +14,7 @@ import {
   ViewMoreIcon,
   DisableAlarmIcon,
   PinIcon,
-  OpenChatIcon,
+  OpenChatBgIcon,
   ExportIcon,
 } from '../Icons';
 import PlatformUIStore from '../../stores/PlatformUIStore';
@@ -262,7 +262,7 @@ const RoomItemContent = ({
               }
               return (
                 <Photos
-                  defaultDiameter="2.25"
+                  defaultDiameter="2.13"
                   srcList={userPhotos}
                   onClick={handleClickRootPhoto}
                   className="photos"
@@ -277,13 +277,9 @@ const RoomItemContent = ({
               {() => (
                 <>
                   {roomInfo.type === 'WKS0003' && (
-                    <div style={{ display: 'flex', marginRight: '0.25rem' }}>
-                      <OpenChatIcon
-                        width={0.88}
-                        height={0.88}
-                        color="rgb(0, 73, 61)"
-                      />
-                    </div>
+                    <OpenChatIconBox>
+                      <OpenChatBgIcon width={0.88} height={0.88} />
+                    </OpenChatIconBox>
                   )}
                   <>
                     {isMyRoom ? (
@@ -381,6 +377,12 @@ const RoomItem = ({
   onClickMenuItem = () => {},
   onClickRoomPhoto = () => {},
 }) => {
+  const { componentStore } = useCoreStores();
+  const FileDndDialog = componentStore.get('Talk:FileDndDialog');
+  const [isDndDialogVisible, setDndDialogVisible] = useState(false);
+  const [dndTargetFiles, setDndTargetFiles] = useState([]);
+  const [dndTargetRoom, setDndTargetRoom] = useState(getRoomId());
+
   const isMyRoom = roomInfo.type === 'WKS0001';
 
   const [{ canDrop, isOver }, drop] = useDrop({
@@ -393,12 +395,23 @@ const RoomItem = ({
         const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
           item.type.toLowerCase(),
         );
-        talkOnDrop({
-          room: roomInfo,
-          data: item.data,
-          type: type[1] ? type[1] : 'unknown',
-          currentRoomId: getRoomId(),
-        });
+        switch (type[1]) {
+          case 'note':
+            talkOnDrop({
+              room: roomInfo,
+              data: item.data,
+              type: type[1] ? type[1] : 'unknown',
+              currentRoomId: getRoomId(),
+            });
+            break;
+          case 'drive':
+            setDndDialogVisible(true);
+            setDndTargetFiles(item.data);
+            setDndTargetRoom(roomInfo.id);
+            break;
+          default:
+            break;
+        }
       }
 
       // Drag 시작한 쪽이 정보를 알아야 하는 경우 고려
@@ -427,6 +440,10 @@ const RoomItem = ({
     onMenuClick(_roomInfo);
   };
 
+  const handleCloseDndDialog = useCallback(() => {
+    setDndDialogVisible(false);
+  }, []);
+
   return (
     <StyledItem ref={drop} onClick={handleRoomClick}>
       <ItemWrapper selected={selected} isActiveDropEffect={isActive}>
@@ -438,6 +455,12 @@ const RoomItem = ({
           onClickRoomPhoto={onClickRoomPhoto}
         />
       </ItemWrapper>
+      <FileDndDialog
+        visible={isDndDialogVisible}
+        targetRoomId={dndTargetRoom}
+        fileList={dndTargetFiles}
+        onClose={handleCloseDndDialog}
+      />
     </StyledItem>
   );
 };
@@ -458,7 +481,7 @@ const ItemWrapper = styled.div`
   display: flex;
   align-items: center;
   margin: 0 0.25rem;
-  padding: 0.56rem 0.38rem 0.56rem 0.5rem;
+  padding: 0.69rem 0.38rem 0.69rem 0.5rem;
   border-radius: 0.8125rem;
   ${({ selected }) =>
     selected &&
@@ -508,12 +531,10 @@ const StyledMenu = styled(Menu)`
 const Title = styled.div`
   display: flex;
   align-items: center;
-  font-size: 0.8125rem;
 `;
 
 const StyleRoomMessage = styled.span`
-  font-size: 0.69rem;
-  color: #414141;
+  color: #666;
 `;
 
 const RoomNameText = styled.span`
@@ -544,6 +565,12 @@ const StyledItem = styled.div`
   .ant-list-item-meta-avatar {
     margin-right: 0.4375rem;
     position: relative;
+    .photos > div {
+      border: 1px solid #fff;
+      &::after {
+        display: none;
+      }
+    }
   }
 
   .ant-list-item-meta-content {
@@ -559,9 +586,9 @@ const StyledItem = styled.div`
     line-height: 1.188rem;
   }
   .ant-list-item-meta-description {
+    margin-top: 0.125rem;
     font-size: 0.69rem;
-    line-height: 1.13rem;
-    color: #47474d;
+    line-height: 1rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -595,6 +622,10 @@ const IconWrapper = styled.div`
   &:hover {
     background: #eae6e0;
   }
+`;
+const OpenChatIconBox = styled.div`
+  margin-right: 0.25rem;
+  line-height: 0;
 `;
 
 export default React.memo(
