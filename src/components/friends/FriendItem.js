@@ -15,11 +15,11 @@ import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import {
   Wrapper,
   FriendItemWrapper,
-  ProfileWrapper,
   TextWrapper,
+  TextComponentBox,
+  TextStatus,
   TitleForName,
   ActionWrapper,
-  StyledWrapper,
   NewFriendBadge,
   StyledAvatar,
   MeWrapper,
@@ -52,22 +52,11 @@ const DropdownMenu = React.memo(
 );
 
 const Profile = React.memo(
-  ({ mode, tooltipPopupContainer, profilePhoto, itemId, handleClickPhoto }) => {
+  ({ mode, profilePhoto, itemId, handleClickPhoto }) => {
     return (
-      <>
-        {mode === 'me' && (
-          <StyledWrapper>
-            <StyledAvatar mode="me" onClick={e => handleClickPhoto(e, itemId)}>
-              <img src={profilePhoto} alt="" />
-            </StyledAvatar>
-          </StyledWrapper>
-        )}
-        {mode !== 'me' && (
-          <StyledAvatar mode={mode} onClick={e => handleClickPhoto(e, itemId)}>
-            <img src={profilePhoto} alt="" />
-          </StyledAvatar>
-        )}
-      </>
+      <StyledAvatar mode={mode} onClick={e => handleClickPhoto(e, itemId)}>
+        <img src={profilePhoto} alt="" />
+      </StyledAvatar>
     );
   },
 );
@@ -218,14 +207,14 @@ const TextComponent = React.memo(
     })();
 
     return (
-      <>
+      <TextComponentBox>
         {mode === 'me' && (
           <MeWrapper>
             <img src={mySign} alt="me" />
           </MeWrapper>
         )}
         <TitleForName>{fullDisplayName}</TitleForName>
-      </>
+      </TextComponentBox>
     );
   },
 );
@@ -496,15 +485,13 @@ const FriendItem = observer(
           mode={mode}
           className=""
         >
-          <ProfileWrapper>
-            <Profile
-              mode={mode}
-              tooltipPopupContainer={tooltipPopupContainer}
-              profilePhoto={userStore.getProfilePhotoURL(itemId, 'small')}
-              itemId={itemId}
-              handleClickPhoto={handleSelectPhoto}
-            />
-          </ProfileWrapper>
+          <Profile
+            mode={mode}
+            tooltipPopupContainer={tooltipPopupContainer}
+            profilePhoto={userStore.getProfilePhotoURL(itemId, 'small')}
+            itemId={itemId}
+            handleClickPhoto={handleSelectPhoto}
+          />
           <TextWrapper>
             <TextComponent
               displayName={displayName}
@@ -513,6 +500,7 @@ const FriendItem = observer(
               orgName={orgName}
               position={position}
             />
+            {/* <TextStatus>상태메세지영역입니다</TextStatus> */}
           </TextWrapper>
           <ActionWrapper>
             {isNewFriend && (

@@ -223,7 +223,7 @@ function RoomList() {
               onCancel={handleRoomMemeberModalCancel}
               width="17.5rem"
               top="calc(50% - 15rem)"
-              left="17rem"
+              left="16.81rem"
               isEdit={roomMemberAttr.isEdit}
             />
           );
@@ -245,7 +245,7 @@ function RoomList() {
                 });
               }}
               onClose={handleCloseProfileInfoModal}
-              position={{ left: '17rem' }}
+              position={{ left: '16.81rem' }}
             />
           ) : null;
         }}
@@ -373,7 +373,7 @@ const Wrapper = styled.div`
 const TopWrapper = styled.div`
   display: flex;
   align-items: center;
-  padding: 0.63rem 0.75rem;
+  padding: 0.5rem 0.75rem;
   input {
     width: 100%;
   }
