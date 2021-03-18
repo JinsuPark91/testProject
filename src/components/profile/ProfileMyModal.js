@@ -344,7 +344,9 @@ const ProfileMyModal = ({
             <LogoSmall checked>
               {spaceStore.currentSpace?.unreadSpaceCount && (
                 <LogoNumber>
-                  {spaceStore.currentSpace?.unreadSpaceCount}
+                  {spaceStore.currentSpace?.unreadSpaceCount > 99
+                    ? '99+'
+                    : spaceStore.currentSpace?.unreadSpaceCount}
                 </LogoNumber>
               )}
               {spaceStore.currentSpace?.name[0]}
@@ -369,7 +371,11 @@ const ProfileMyModal = ({
                     >
                       <LogoSmall>
                         {elem?.unreadSpaceCount && (
-                          <LogoNumber>{elem.unreadSpaceCount}</LogoNumber>
+                          <LogoNumber>
+                            {elem.unreadSpaceCount > 99
+                              ? '99+'
+                              : elem.unreadSpaceCount}
+                          </LogoNumber>
                         )}
                         {elem?.name[0]}
                       </LogoSmall>
