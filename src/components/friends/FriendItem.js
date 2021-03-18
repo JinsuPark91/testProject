@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { talkOnDrop, Talk } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
 import { observer } from 'mobx-react';
@@ -38,17 +39,24 @@ const DropdownMenu = React.memo(
     handleCancelBookmark,
     handleAddBookmark,
     handleRemoveFriendMessageOpen,
-  }) => (
-    <Menu>
-      {friendFavorite && (
-        <Menu.Item onClick={handleCancelBookmark}>즐겨찾기 해제</Menu.Item>
-      )}
-      {!friendFavorite && (
-        <Menu.Item onClick={handleAddBookmark}>즐겨찾기</Menu.Item>
-      )}
-      <Menu.Item onClick={handleRemoveFriendMessageOpen}>프렌즈 삭제</Menu.Item>
-    </Menu>
-  ),
+  }) => {
+    const { t } = useTranslation();
+    return (
+      <Menu>
+        {friendFavorite && (
+          <Menu.Item onClick={handleCancelBookmark}>
+            {t('CM_BOOKMARK_REMOVE')}
+          </Menu.Item>
+        )}
+        {!friendFavorite && (
+          <Menu.Item onClick={handleAddBookmark}>{t('CM_BOOKMARK')}</Menu.Item>
+        )}
+        <Menu.Item onClick={handleRemoveFriendMessageOpen}>
+          프렌즈 삭제
+        </Menu.Item>
+      </Menu>
+    );
+  },
 );
 
 const Profile = React.memo(
@@ -240,6 +248,7 @@ const FriendItem = observer(
     toggleInfoModal,
     setyPosition,
   }) => {
+    const { t } = useTranslation();
     const {
       displayName,
       friendFavorite = false,
@@ -291,7 +300,7 @@ const FriendItem = observer(
         const newRoomInfo = roomStore.getDMRoom(myUserId, itemId)?.roomInfo;
         return newRoomInfo;
       } catch (e) {
-        console.log('friend dnd error...' + e);
+        console.log(`friend dnd error...${e}`);
       }
     };
 
@@ -429,7 +438,7 @@ const FriendItem = observer(
           console.log(error);
         }
         setDropdownVisible(false);
-        setToastText('즐겨찾기가 설정되었습니다.');
+        setToastText(t('CM_BOOKMARK_03'));
         openToast();
       },
       [friendStore, itemId, setToastText, openToast, myUserId],
@@ -443,7 +452,7 @@ const FriendItem = observer(
           friendId: itemId,
           isFav: false,
         });
-        setToastText('즐겨찾기가 해제되었습니다.');
+        setToastText(t('CM_BOOKMARK_02'));
         setDropdownVisible(false);
         openToast();
       },
@@ -492,10 +501,13 @@ const FriendItem = observer(
     };
 
     const getRemoveFriendMessageTitle = () => {
-      if (fullCompanyJob) {
-        return `${displayName}(${fullCompanyJob}) \\n 님을 프렌즈 목록에서 삭제하시겠습니까?`;
-      }
-      return `${displayName} 님을 프렌즈 목록에서 \\n 삭제하시겠습니까?`;
+      const fullName = fullCompanyJob
+        ? `${displayName}(${fullCompanyJob})`
+        : displayName;
+
+      return t('CM_DEL_FRIENDS_01', {
+        name: fullName,
+      });
     };
 
     const handleRemoveFriendMessageOpen = useCallback(({ domEvent: e }) => {
@@ -560,7 +572,7 @@ const FriendItem = observer(
               isMe={isMe}
               itemId={itemId}
             />
-            {mode === 'addFriend' && isMe && <span>내 계정</span>}
+            {mode === 'addFriend' && isMe && <span>{t('CM_MY_ACCOUNT')}</span>}
           </ActionWrapper>
         </FriendItemWrapper>
         <Message
@@ -569,12 +581,12 @@ const FriendItem = observer(
           type="error"
           btns={[
             {
-              text: '삭제',
+              text: t('CM_DEL'),
               type: 'solid',
               onClick: handleRemoveFriend,
             },
             {
-              text: '취소',
+              text: t('CM_CANCEL'),
               type: 'outlined',
               onClick: handleRemoveFriendMessageClose,
             },
