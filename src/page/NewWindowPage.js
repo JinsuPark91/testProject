@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Talk, talkRoomStore } from 'teespace-talk-app';
+import { Talk } from 'teespace-talk-app';
 import { App as MeetingApp } from 'teespace-meeting-app';
-import { useCoreStores } from 'teespace-core';
+import { EventBus, useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import LoadingImg from '../assets/WAPL_Loading.gif';
 import Photos from '../components/Photos';
@@ -19,7 +19,7 @@ const NewWindowPage = () => {
 
   const init = async () => {
     try {
-      await talkRoomStore.initialize(myUserId);
+      // EventBus.dispatch('Platform:initLNB');
 
       // 스페이스를 불러오자
       await spaceStore.fetchSpaces({

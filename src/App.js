@@ -80,7 +80,7 @@ function App() {
 
   // initialize apps
   useEffect(() => {
-    initTalkApp();
+    initTalkApp(isMini);
     initDriveApp();
     initCalendarApp();
     initializeCalendarApp();

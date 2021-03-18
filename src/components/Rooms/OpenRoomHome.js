@@ -2,7 +2,6 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Modal } from 'antd';
-import { talkRoomStore } from 'teespace-talk-app';
 import { useCoreStores, Message, logEvent } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import Slider from 'react-slick';
@@ -183,8 +182,6 @@ function OpenRoomHome({ visible, onCancel }) {
     closeCreateModal();
 
     const { roomId } = await roomStore.createRoom(data);
-
-    await talkRoomStore.initialize(userStore.myProfile.id, roomId);
 
     if (isStartMeeting) {
       PlatformUIStore.openWindow({

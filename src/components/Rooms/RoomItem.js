@@ -381,6 +381,12 @@ const RoomItem = ({
   onClickMenuItem = () => {},
   onClickRoomPhoto = () => {},
 }) => {
+  const { componentStore } = useCoreStores();
+  const FileDndDialog = componentStore.get('Talk:FileDndDialog');
+  const [isDndDialogVisible, setDndDialogVisible] = useState(false);
+  const [dndTargetFiles, setDndTargetFiles] = useState([]);
+  const [dndTargetRoom, setDndTargetRoom] = useState(getRoomId());
+
   const isMyRoom = roomInfo.type === 'WKS0001';
 
   const [{ canDrop, isOver }, drop] = useDrop({
@@ -393,12 +399,23 @@ const RoomItem = ({
         const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
           item.type.toLowerCase(),
         );
-        talkOnDrop({
-          room: roomInfo,
-          data: item.data,
-          type: type[1] ? type[1] : 'unknown',
-          currentRoomId: getRoomId(),
-        });
+        switch (type[1]) {
+          case 'note':
+            talkOnDrop({
+              room: roomInfo,
+              data: item.data,
+              type: type[1] ? type[1] : 'unknown',
+              currentRoomId: getRoomId(),
+            });
+            break;
+          case 'drive':
+            setDndDialogVisible(true);
+            setDndTargetFiles(item.data);
+            setDndTargetRoom(roomInfo.id);
+            break;
+          default:
+            break;
+        }
       }
 
       // Drag 시작한 쪽이 정보를 알아야 하는 경우 고려
@@ -427,6 +444,10 @@ const RoomItem = ({
     onMenuClick(_roomInfo);
   };
 
+  const handleCloseDndDialog = useCallback(() => {
+    setDndDialogVisible(false);
+  }, []);
+
   return (
     <StyledItem ref={drop} onClick={handleRoomClick}>
       <ItemWrapper selected={selected} isActiveDropEffect={isActive}>
@@ -438,6 +459,12 @@ const RoomItem = ({
           onClickRoomPhoto={onClickRoomPhoto}
         />
       </ItemWrapper>
+      <FileDndDialog
+        visible={isDndDialogVisible}
+        targetRoomId={dndTargetRoom}
+        fileList={dndTargetFiles}
+        onClose={handleCloseDndDialog}
+      />
     </StyledItem>
   );
 };
