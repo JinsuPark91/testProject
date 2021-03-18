@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useCoreStores, Switch, Checkbox, AlarmSetting } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import { Button } from 'antd';
 import styled, { css } from 'styled-components';
 import ContentTitle from './ContentTitle';
@@ -113,6 +114,7 @@ const SoundButton = styled(Button)`
 `;
 
 const ContentAlarm = () => {
+  const { t } = useTranslation();
   const { spaceStore } = useCoreStores();
   const [isLoading, setIsLoading] = useState(true);
   const [isAlarmChecked, setIsAlarmChecked] = useState(true);
@@ -276,10 +278,7 @@ const ContentAlarm = () => {
 
   return (
     <>
-      <ContentTitle
-        title="알림"
-        subTitle="바탕화면 알림을 허용하면, 다른 작업 중에도 놓치지 않고 알림을 받아보실 수 있습니다."
-      />
+      <ContentTitle title={t('CM_NOTI')} subTitle={t('CM_SETTING_NOTI_03')} />
       <form>
         <FormItemMain valuePropName="alarmchecked">
           <ItemMain>
@@ -287,7 +286,7 @@ const ContentAlarm = () => {
               defaultChecked={isAlarmChecked}
               onChange={handleDeskTopNotification}
             />
-            <span>바탕화면 알림 허용</span>
+            <span>{t('CM_SETTING_NOTI_02')}</span>
           </ItemMain>
         </FormItemMain>
         {isAlarmChecked && (
@@ -319,7 +318,7 @@ const ContentAlarm = () => {
             <FormItem>
               <ItemInfo>
                 <ItemTitle htmlFor="newmessagetoggle">
-                  Talk 새 메시지 수신
+                  {t('CM_SETTING_NOTI_05')}
                 </ItemTitle>
                 {isMessageNoticeChecked && (
                   <ItemSub>
@@ -328,7 +327,7 @@ const ContentAlarm = () => {
                       onChange={handleMessagePreview}
                       shape="round"
                     >
-                      메시지 내용 미리보기
+                      {t('CM_SETTING_NOTI_06')}
                     </Checkbox>
                   </ItemSub>
                 )}
@@ -342,12 +341,9 @@ const ContentAlarm = () => {
             <FormItem>
               <ItemInfo>
                 <ItemTitle htmlFor="mentiontoggle">
-                  (@) 멘션 별도 알림
+                  {t('CM_SETTING_NOTI_14')}
                 </ItemTitle>
-                <ItemSub isSmall>
-                  나를 멘션한 메시지가 있을 경우 룸 알림이 꺼져 있어도 알림을
-                  받습니다.
-                </ItemSub>
+                <ItemSub isSmall>{t('CM_SETTING_NOTI_15')}</ItemSub>
               </ItemInfo>
               <Switch
                 id="mentiontoggle"
@@ -357,7 +353,9 @@ const ContentAlarm = () => {
             </FormItem>
             <FormItem>
               <ItemInfo>
-                <ItemTitle htmlFor="Meetingtoggle">Meeting 회의 알림</ItemTitle>
+                <ItemTitle htmlFor="Meetingtoggle">
+                  {t('CM_SETTING_NOTI_08')}
+                </ItemTitle>
                 {isMeetingNoticeChecked && (
                   <ItemSub>
                     <Checkbox
@@ -365,14 +363,14 @@ const ContentAlarm = () => {
                       onChange={handleMeetingStart}
                       shape="round"
                     >
-                      회의 시작
+                      {t('CM_SETTING_NOTI_09')}
                     </Checkbox>
                     <Checkbox
                       checked={isMeetingEndChecked}
                       onChange={handleMeetingEnd}
                       shape="round"
                     >
-                      회의 종료
+                      {t('CM_SETTING_NOTI_10')}
                     </Checkbox>
                   </ItemSub>
                 )}
@@ -386,12 +384,10 @@ const ContentAlarm = () => {
             <FormItem>
               <ItemInfo>
                 <ItemTitle htmlFor="Newlettertoggle">
-                  Mail 새 편지 수신
+                  {t('CM_SETTING_NOTI_07')}
                 </ItemTitle>
                 {isBasicPlan && (
-                  <ItemSub isMail>
-                    BASIC 플랜에서는 제공하지 않는 서비스 입니다.
-                  </ItemSub>
+                  <ItemSub isMail>{t('CM_SETTING_NOTI')}</ItemSub>
                 )}
               </ItemInfo>
               <Switch
@@ -404,7 +400,7 @@ const ContentAlarm = () => {
             <FormItem>
               <ItemInfo>
                 <ItemTitleBlack htmlFor="scheduletoggle">
-                  Calendar 일정 미리 알림
+                  {t('CM_SETTING_NOTI_11')}
                 </ItemTitleBlack>
               </ItemInfo>
               <Switch

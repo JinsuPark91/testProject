@@ -1,26 +1,12 @@
 import React, { useState, useCallback } from 'react';
-import styled from 'styled-components';
-import { useCoreStores, Toast, Message, Button } from 'teespace-core';
+import { useCoreStores, Message, Button } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import MovePage from '../../utils/MovePage';
 
-function Settingsave(props) {
-  const [cancelVisible, setCancelVisible] = useState(false);
-  const [savevisible, setsavevisible] = useState(false);
+const Settingsave = props => {
+  const { t } = useTranslation();
   const [isMessageOpen, setIsMessageOpen] = useState(false);
   const { userStore, authStore, spaceStore } = useCoreStores();
-  const { form, onClick, selectedKey } = props;
-
-  const saveOut = props => {
-    if (selectedKey === '3') props.saveaccountOut();
-
-    if (selectedKey === '6') props.savepasswordOut();
-  };
-
-  const saveChange = props => {
-    if (selectedKey === '3') props.saveaccountChange();
-
-    if (selectedKey === '6') props.savepasswordChange();
-  };
 
   const handleToggleMessage = () => {
     setIsMessageOpen(!isMessageOpen);
@@ -46,6 +32,8 @@ function Settingsave(props) {
     }
   };
 
+  const title = t('CM_INCORRECT_PWD').split('\n');
+
   return (
     <>
       <Button
@@ -54,64 +42,29 @@ function Settingsave(props) {
           props.toggleContinue();
           props.toggleFooter();
           props.toggleCheck();
-          // setsavevisible(true);
-          // form.current.submit();
-          // saveChange(props);
         }}
       >
-        이전
+        {t('CM_BACK')}
       </Button>
-      <Toast
-        visible={savevisible}
-        timeoutMs={3000}
-        onClose={() => setsavevisible(false)}
-      >
-        {' '}
-        변경사항이 저장되었습니다.
-      </Toast>
-
       <Button onClick={handleInputPassword} type="outlined">
         확인
       </Button>
       <Message
-        visible={cancelVisible}
-        type="error"
-        btns={[
-          {
-            onClick: () => {
-              saveOut(props);
-            },
-            text: '나가기',
-            type: 'solid',
-            shape: 'round',
-          },
-          {
-            onClick: () => {
-              setCancelVisible(false);
-            },
-            text: '취소',
-            type: 'outlined',
-            shape: 'round',
-          },
-        ]}
-        title="변경 사항을 저장하지 않고 나가시겠습니까?"
-      />
-      <Message
         visible={isMessageOpen}
-        title="입력하신 비밀번호가 올바르지 않습니다."
-        subtitle="비밀번호를 다시 확인해 주세요."
+        title={title[0]}
+        subtitle={title[1]}
         type="error"
         btns={[
           {
             type: 'solid',
             shape: 'round',
-            text: '확인',
+            text: t('CM_LOGIN_POLICY_03'),
             onClick: handleToggleMessage,
           },
         ]}
       />
     </>
   );
-}
+};
 
 export default Settingsave;

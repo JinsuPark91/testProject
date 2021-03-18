@@ -306,10 +306,6 @@ function SettingDialog(props) {
           <Settingsave
             form={form}
             selectedKey={selectedKey}
-            saveaccountOut={() => setSelectedKey('4')}
-            savepasswordOut={() => setSelectedKey('5')}
-            saveaccountChange={() => setSelectedKey('4')}
-            savepasswordChange={() => setSelectedKey('5')}
             isContinue={isSecessionContinue}
             toggleContinue={handleToggleContinue}
             toggleFooter={handleSecessionButton}
