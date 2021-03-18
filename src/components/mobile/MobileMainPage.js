@@ -47,14 +47,12 @@ const MobileMainPage = () => {
   }
 
   return (
-    <Observer>
-      {() => (
-        <Wrapper>
-          <MobileContent />
-          {PlatformUIStore.resourceType !== 'profile' && <MobileFooter />}
-        </Wrapper>
-      )}
-    </Observer>
+    <Wrapper>
+      <MobileContent />
+      <Observer>
+        {() => !PlatformUIStore.isProfileEditMode && <MobileFooter />}
+      </Observer>
+    </Wrapper>
   );
 };
 

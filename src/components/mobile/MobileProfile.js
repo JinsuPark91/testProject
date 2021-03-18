@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 import { LockLineIcon, CameraIcon } from '../Icons';
 import { CloseIcon, SettingIcon } from './Icon';
 import {
@@ -139,9 +140,7 @@ const MobileProfile = observer(
     }, [userId]);
 
     useEffect(() => {
-      if (onModeChange && typeof onModeChange === 'function')
-        onModeChange(isEditMode);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+      PlatformUIStore.isProfileEditMode = isEditMode;
     }, [isEditMode]);
 
     const handleMoveTalk = roomInfo => {
@@ -250,7 +249,7 @@ const MobileProfile = observer(
 
     return (
       <Wrapper>
-        <Container imageSrc={renderBackgroundPhoto}>
+        <Container imageSrc={renderBackgroundPhoto} isEditMode={isEditMode}>
           {editEnabled ? (
             <>
               <TextHeader>

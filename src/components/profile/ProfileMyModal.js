@@ -242,9 +242,7 @@ const ProfileMyModal = ({
       <UserImage>
         <img src={thumbPhoto} onLoad={revokeURL} alt="" />
       </UserImage>
-      <UserName>
-        {userStore.myProfile?.nick || userStore.myProfile?.name}
-      </UserName>
+      <UserName>{userStore.myProfile?.displayName}</UserName>
       <UserMail>{`(${userStore.myProfile?.loginId})`}</UserMail>
       <UserButtonBox>
         <Button type="link" onClick={toggleEditMode}>
