@@ -61,6 +61,7 @@ function OpenRoomHome({ visible, onCancel }) {
   const initialStates = {
     createModalVisible: false,
     enterModalVisible: false,
+    requestModalVisible: false,
     keyword: '',
     currentOpenRoom: null,
   };
@@ -70,6 +71,9 @@ function OpenRoomHome({ visible, onCancel }) {
   );
   const [enterModalVisible, setEnterModalVisible] = useState(
     initialStates.enterModalVisible,
+  );
+  const [requestModalVisible, setRequestModalVisible] = useState(
+    initialStates.requestModalVisible,
   );
   const [keyword, setKeyword] = useState(initialStates.keyword);
   const [currentOpenRoom, setCurrentOpenRoom] = useState(
@@ -101,6 +105,7 @@ function OpenRoomHome({ visible, onCancel }) {
     setCreateModalVisibie(initialStates.createModalVisible);
     setKeyword(initialStates.keyword);
     setEnterModalVisible(initialStates.enterModalVisible);
+    setRequestModalVisible(initialStates.requestModalVisible);
     setCurrentOpenRoom(initialStates.currentOpenRoom);
   };
 
@@ -125,6 +130,14 @@ function OpenRoomHome({ visible, onCancel }) {
     setEnterModalVisible(false);
   };
 
+  const openRequestModal = () => {
+    setRequestModalVisible(true);
+  };
+
+  const closeRequestModal = () => {
+    setRequestModalVisible(false);
+  };
+
   const handleCreateRoom = useCallback(() => {
     openCreateModel();
   }, []);
@@ -143,7 +156,16 @@ function OpenRoomHome({ visible, onCancel }) {
       history.push(`/s/${roomInfo.id}/talk`);
       closeHomeModal();
     } else {
-      openEnterModal();
+      // 바로 입장 가능
+      console.log('Is Joinable Open Room : ', roomInfo.isJoinable);
+      if (roomInfo.isJoinable) {
+        openEnterModal();
+      }
+
+      // 요청 후 입장 가능
+      else {
+        openRequestModal();
+      }
     }
   };
 
@@ -169,6 +191,7 @@ function OpenRoomHome({ visible, onCancel }) {
     roomName,
     selectedUsers,
     isStartMeeting,
+    isJoinable,
   }) => {
     const data = {
       name: roomName,
@@ -177,11 +200,13 @@ function OpenRoomHome({ visible, onCancel }) {
         userId: user.friendId || user.id,
       })),
       type: 'open',
+      isJoinable,
     };
 
     closeHomeModal();
     closeCreateModal();
 
+    console.log('Data : ', data);
     const { roomId } = await roomStore.createRoom(data);
 
     await talkRoomStore.initialize(userStore.myProfile.id, roomId);
@@ -205,6 +230,7 @@ function OpenRoomHome({ visible, onCancel }) {
 
   const handleConfirmEnter = async () => {
     const myUserId = userStore.myProfile.id;
+
     try {
       const res = await roomStore.enterRoom({
         myUserId,
@@ -225,6 +251,26 @@ function OpenRoomHome({ visible, onCancel }) {
 
   const handleCancelEnter = () => {
     closeEnterModal();
+  };
+
+  const handleRequestOK = async () => {
+    const myUserId = userStore.myProfile.id;
+
+    try {
+      await roomStore.requestEnterRoom({
+        myUserId,
+        roomId: currentOpenRoom.id,
+      });
+    } catch (err) {
+      console.log('입장 요청 에러');
+    }
+
+    closeRequestModal();
+    closeHomeModal();
+  };
+
+  const handleRequestCancel = () => {
+    closeRequestModal();
   };
 
   const getRoomItems = searchKeyword => {
@@ -287,34 +333,64 @@ function OpenRoomHome({ visible, onCancel }) {
   return (
     <>
       {currentOpenRoom && (
-        <Message
-          visible={enterModalVisible}
-          title={currentOpenRoom.name}
-          subtitle={t('CM_OPEN_ROOM_HOME_06')}
-          type="custom"
-          customBadge={
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <Photos
-                srcList={getUserPhotos(currentOpenRoom.memberIdListString)}
-                defaultDiameter="2.26"
-              />
-            </div>
-          }
-          btns={[
-            {
-              type: 'solid',
-              shape: 'round',
-              text: t('CM_OPEN_ROOM_HOME_07'),
-              onClick: handleConfirmEnter,
-            },
-            {
-              type: 'outlined',
-              shape: 'round',
-              text: t('CM_CANCEL'),
-              onClick: handleCancelEnter,
-            },
-          ]}
-        />
+        <>
+          <Message
+            visible={requestModalVisible}
+            title={currentOpenRoom.name}
+            subtitle={t('TEST_REQUEST')}
+            type="custom"
+            customBadge={
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Photos
+                  srcList={getUserPhotos(currentOpenRoom.memberIdListString)}
+                  defaultDiameter="2.26"
+                />
+              </div>
+            }
+            btns={[
+              {
+                type: 'solid',
+                shape: 'round',
+                text: t('TEST_REQUEST_OK'),
+                onClick: handleRequestOK,
+              },
+              {
+                type: 'outlined',
+                shape: 'round',
+                text: t('CM_CANCEL'),
+                onClick: handleRequestCancel,
+              },
+            ]}
+          />
+          <Message
+            visible={enterModalVisible}
+            title={currentOpenRoom.name}
+            subtitle={t('CM_OPEN_ROOM_HOME_06')}
+            type="custom"
+            customBadge={
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Photos
+                  srcList={getUserPhotos(currentOpenRoom.memberIdListString)}
+                  defaultDiameter="2.26"
+                />
+              </div>
+            }
+            btns={[
+              {
+                type: 'solid',
+                shape: 'round',
+                text: t('CM_OPEN_ROOM_HOME_07'),
+                onClick: handleConfirmEnter,
+              },
+              {
+                type: 'outlined',
+                shape: 'round',
+                text: t('CM_CANCEL'),
+                onClick: handleCancelEnter,
+              },
+            ]}
+          />
+        </>
       )}
       <CreatePublicRoomDialog
         visible={createModalVisible}

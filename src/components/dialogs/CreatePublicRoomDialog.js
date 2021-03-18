@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ItemSelector, useCoreStores, logEvent } from 'teespace-core';
-import { Checkbox, Button } from 'antd';
+import { Checkbox, Button, Switch } from 'antd';
 import { useTranslation } from 'react-i18next';
 import {
   FlexModal,
@@ -19,6 +19,7 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
     roomName: '',
     selectedUsers: [],
     isStartMeeting: false,
+    isJoinable: false,
   };
 
   const { t } = useTranslation();
@@ -27,6 +28,7 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
   const [isStartMeeting, setIsStartMeeting] = useState(
     initialStates.isStartMeeting,
   );
+  const [isJoinable, setIsJoinable] = useState(initialStates.isJoinable);
   const [selectedUsers, setSelectedUsers] = useState(
     initialStates.selectedUsers,
   );
@@ -37,6 +39,7 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
     setRoomName(initialStates.roomName);
     setSelectedUsers(initialStates.selectedUsers);
     setIsStartMeeting(initialStates.isStartMeeting);
+    setIsJoinable(initialStates.isJoinable);
   };
 
   useEffect(() => {
@@ -56,6 +59,7 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
         selectedUsers,
         roomName,
         isStartMeeting,
+        isJoinable: !isJoinable,
       });
     else {
       setStep(step + 1);
@@ -81,6 +85,11 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
   const handleToggle = () => {
     setIsStartMeeting(!isStartMeeting);
   };
+
+  const handleJoinableChange = checked => {
+    setIsJoinable(checked);
+  };
+
   return (
     <FlexModal
       title={step === 0 ? t('CM_CREATE_OPEN_ROOM') : t('CM_ROOM_INVITE_USER')}
@@ -102,6 +111,18 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
             />
 
             <Description>{t('CM_CREATE_OPEN_ROOM_04')}</Description>
+
+            <Title
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                margin: '1.25rem 0 0.25rem 0',
+              }}
+            >
+              <span>{t('CM_CREATE_OPEN_ROOM_POPUP_01')}</span>
+              <Switch checked={isJoinable} onChange={handleJoinableChange} />
+            </Title>
+            <Description>{t('CM_CREATE_OPEN_ROOM_POPUP_02')}</Description>
           </InfoContainer>
           <ButtonContainer>
             <Button

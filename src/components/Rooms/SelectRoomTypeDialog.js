@@ -7,7 +7,6 @@ import { talkRoomStore } from 'teespace-talk-app';
 import { useTranslation } from 'react-i18next';
 import { PrivateRoomIcon, OpenChatIcon } from '../Icons';
 import CreatePrivateRoomDialog from '../dialogs/CreatePrivateRoomDialog';
-import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import OpenRoomHome from './OpenRoomHome';
 
@@ -163,44 +162,6 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
     setIsVisible({ ...isVisible, createPrivateRoom: false });
   };
 
-  // Public Room
-  const handleCreatePublicRoomOk = async ({
-    roomName,
-    selectedUsers,
-    isStartMeeting,
-  }) => {
-    const data = {
-      name: roomName,
-      creatorId: userStore.myProfile.id,
-      userList: selectedUsers.map(user => ({
-        userId: user.friendId || user.id,
-      })),
-      type: 'open',
-    };
-
-    setIsVisible({ ...isVisible, createPublicRoom: false });
-    const { roomId } = await roomStore.createRoom(data);
-
-    await talkRoomStore.initialize(userStore.myProfile.id, roomId);
-
-    if (isStartMeeting) {
-      PlatformUIStore.openWindow({
-        id: roomId,
-        type: 'meeting',
-        name: null,
-        userCount: null,
-        handler: null,
-      });
-    }
-    history.push(`/s/${roomId}/talk`);
-
-    // history.push(`/s/${roomId}/talk${isStartMeeting ? '?sub=meeting' : ''}`);
-  };
-
-  const handleCreatePublicRoomCancel = () => {
-    setIsVisible({ ...isVisible, createPublicRoom: false });
-  };
-
   return (
     <>
       <OpenRoomHome
@@ -211,11 +172,6 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
         visible={isVisible.createPrivateRoom}
         onOk={handleCreatePrivateRoomOk}
         onCancel={handleCreatePrivateRoomCancel}
-      />
-      <CreatePublicRoomDialog
-        visible={isVisible.createPublicRoom}
-        onOk={handleCreatePublicRoomOk}
-        onCancel={handleCreatePublicRoomCancel}
       />
       <StyledModal
         visible={visible}
