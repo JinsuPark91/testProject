@@ -250,7 +250,16 @@ const FriendItem = observer(
     } = friendInfo;
     const fullCompanyJob = friendInfo.getFullCompanyJob({ format: 'friend' });
     const history = useHistory();
-    const { friendStore, userStore, roomStore } = useCoreStores();
+    const {
+      friendStore,
+      userStore,
+      roomStore,
+      componentStore,
+    } = useCoreStores();
+    const FileDndDialog = componentStore.get('Talk:FileDndDialog');
+    const [isDndDialogVisible, setDndDialogVisible] = useState(false);
+    const [dndTargetFiles, setDndTargetFiles] = useState([]);
+
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [
       visibleRemoveFriendMessage,
@@ -262,48 +271,73 @@ const FriendItem = observer(
     const isMe = itemId === myUserId;
     const isNewFriend = handleCheckNewFriend(friendInfo);
 
-    // const [{ canDrop, isOver }, drop] = useDrop({
-    //   accept: ACCEPT_ITEMS,
-    //   drop: item => {
-    //     let targetRoomInfo = {};
-    //     const setRoomInfo = roomInfo => {
-    //       targetRoomInfo = roomInfo;
-    //     };
-    //     handleProfileMenuClick(
-    //       roomStore,
-    //       myUserId,
-    //       itemId,
-    //       roomInfo => setRoomInfo(roomInfo),
-    //       roomInfo => setRoomInfo(roomInfo),
-    //       roomInfo => setRoomInfo(roomInfo),
-    //     );
-    //     if (TALK_ACCEPT_ITEMS.includes(item.type)) {
-    //       const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
-    //         item.type.toLowerCase(),
-    //       );
-    //       talkOnDrop({
-    //         room: targetRoomInfo,
-    //         data: item.data,
-    //         type: type[1] ? type[1] : 'unknown',
-    //         currentRoomId: targetRoomInfo?.id,
-    //       });
-    //     }
+    const findRoomInfo = async () => {
+      const { roomInfo } = roomStore.getDMRoom(myUserId, itemId);
+      try {
+        if (roomInfo && roomInfo.isVisible) return roomInfo;
+        if (roomInfo && !roomInfo.isVisible) {
+          await roomStore.updateRoomMemberSetting({
+            roomId: roomInfo.id,
+            myUserId,
+            newIsVisible: true,
+          });
+          return roomInfo;
+        }
 
-    //     return {
-    //       source: item.type,
-    //       sourceData: item.data,
-    //       target: 'Platform:Room', // 프렌즈 리스트에 drop이지만 Room에 drop과 사실상 동일해 보인다.
-    //       targetData: targetRoomInfo,
-    //     };
-    //   },
-    //   collect: monitor => {
-    //     return {
-    //       isOver: monitor.isOver(),
-    //       canDrop: monitor.canDrop(),
-    //     };
-    //   },
-    // });
-    const isDndHover = false; // canDrop && isOver;
+        await roomStore.createRoom({
+          creatorId: myUserId,
+          userList: [{ userId: itemId }],
+        });
+        const newRoomInfo = roomStore.getDMRoom(myUserId, itemId)?.roomInfo;
+        return newRoomInfo;
+      } catch (e) {
+        console.log('friend dnd error...' + e);
+      }
+    };
+
+    const [{ canDrop, isOver }, drop] = useDrop({
+      accept: ACCEPT_ITEMS,
+      drop: item => {
+        if (TALK_ACCEPT_ITEMS.includes(item.type)) {
+          const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
+            item.type.toLowerCase(),
+          );
+          switch (type[1]) {
+            case 'note':
+              talkOnDrop({
+                data: item.data,
+                type: type[1] ? type[1] : 'unknown',
+                target: 'Platform:Friend',
+                findRoom: findRoomInfo,
+              });
+              break;
+            case 'drive':
+              setDndDialogVisible(true);
+              setDndTargetFiles(item.data);
+              break;
+            default:
+              break;
+          }
+        }
+        return {
+          source: item.type,
+          sourceData: item.data,
+          target: 'Platform:Friend',
+          findRoom: findRoomInfo,
+        };
+      },
+      collect: monitor => {
+        return {
+          isOver: monitor.isOver(),
+          canDrop: monitor.canDrop(),
+        };
+      },
+    });
+    const isDndHover = canDrop && isOver;
+
+    const handleCloseDndDialog = () => {
+      setDndDialogVisible(false);
+    };
 
     const handleSelectPhoto = (e, id = '') => {
       setyPosition(e.clientY);
@@ -476,7 +510,7 @@ const FriendItem = observer(
     }, []);
 
     return (
-      <Wrapper>
+      <Wrapper ref={drop}>
         <FriendItemWrapper
           style={style}
           onClick={handleItemClick}
@@ -545,6 +579,13 @@ const FriendItem = observer(
               onClick: handleRemoveFriendMessageClose,
             },
           ]}
+        />
+        <FileDndDialog
+          visible={isDndDialogVisible}
+          target="Platform:Friend"
+          fileList={dndTargetFiles}
+          findRoom={findRoomInfo}
+          onClose={handleCloseDndDialog}
         />
       </Wrapper>
     );
