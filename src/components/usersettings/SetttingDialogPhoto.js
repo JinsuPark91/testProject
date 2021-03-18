@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useCoreStores } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import { Menu, Dropdown } from 'antd';
 import {
   InnerItem,
@@ -13,6 +14,7 @@ import {
 } from '../../styles/SettingDialogStyle';
 
 const SettingDialogPhoto = () => {
+  const { t } = useTranslation();
   const { userStore } = useCoreStores();
   const userId = userStore.myProfile.id;
   const profile = userStore.userProfiles[userId];
@@ -92,18 +94,18 @@ const SettingDialogPhoto = () => {
           accept={['.jpg,.jpeg,.png']}
           customRequest={({ file }) => handleChangePhoto(file)}
         >
-          프로필 사진 변경
+          {t('CM_B2C_SETTING_CHANGE_INFO_22')}
         </StyledUpload>
       </Menu.Item>
       <Menu.Item onClick={handleChangeToDefaultPhoto} disabled={isDefaultPhoto}>
-        기본 이미지로 변경
+        {t('CM_EDIT_PROFILE_05')}
       </Menu.Item>
     </Menu>
   );
 
   return (
     <InnerItem>
-      <Name>사진</Name>
+      <Name>{t('CM_PHOTO')}</Name>
       <Data>
         <TextArea>
           <ImageBox>
@@ -116,7 +118,7 @@ const SettingDialogPhoto = () => {
               <ImageIcon />
             </Dropdown>
           </ImageBox>
-          <Info>사진을 추가하여 스페이스 별로 설정할 수 있습니다.</Info>
+          <Info>{t('CM_ADD_PHOTO_EXPLAIN')}</Info>
         </TextArea>
       </Data>
     </InnerItem>

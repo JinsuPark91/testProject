@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import { Input, useCoreStores } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import { getCompanyNumber } from '../../utils/ProfileUtil';
 import {
   InnerItem,
@@ -18,11 +19,12 @@ const SettingDialogCompanyNum = props => {
     onCancel,
     onSuccess,
   } = props;
+  const { t } = useTranslation();
   const { authStore } = useCoreStores();
 
   return (
     <InnerItem>
-      <Name>회사 전화</Name>
+      <Name>{t('CM_B2B_SETTING_CHANGE_INFO_50')}</Name>
       <Data>
         <TextArea>
           {isCompanyNumEdit ? (
@@ -45,15 +47,15 @@ const SettingDialogCompanyNum = props => {
                 disabled={authStore.user.companyNum === companyNum}
                 onClick={onSuccess}
               >
-                저장
+                {t('CM_SAVE')}
               </Button>
               <Button size="small" type="outlined" onClick={onCancel}>
-                취소
+                {t('CM_CANCEL')}
               </Button>
             </>
           ) : (
             <Button size="small" type="outlined" onClick={onCancel}>
-              변경
+              {t('CM_CHANGE')}
             </Button>
           )}
         </ButtonArea>
