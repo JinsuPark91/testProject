@@ -1,6 +1,5 @@
 import React from 'react';
 import { Observer } from 'mobx-react';
-// import { talkRoomStore } from 'teespace-talk-app';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const FaviconChanger = () => {

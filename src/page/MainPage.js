@@ -10,7 +10,6 @@ import {
   AlarmSetting,
 } from 'teespace-core';
 import { Observer } from 'mobx-react';
-import { talkRoomStore } from 'teespace-talk-app';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
 import { initApp as initMailApp, WindowMail } from 'teespace-mail-app';
 import { Prompt } from 'react-router';
@@ -80,7 +79,7 @@ const MainPage = () => {
     ])
       .then(async res => {
         // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
-        await talkRoomStore.initialize(myUserId);
+        EventBus.dispatch('Platform:initLNB');
 
         const [, , , , histories, alarmList] = res;
         AlarmSetting.initAlarmSet(alarmList);
@@ -115,7 +114,8 @@ const MainPage = () => {
       ])
         .then(() => {
           // talk init (fetch room 이후.)
-          return talkRoomStore.updateRoomMetadataList(myUserId);
+          // NOTE: 이벤트명은 core에서 불릴 것 같지만, 플랫폼에서 불러줌
+          EventBus.dispatch('Platform:reconnectWebSocket');
         })
         .catch(err => {
           if (process.env.REACT_APP_ENV === 'local') {
