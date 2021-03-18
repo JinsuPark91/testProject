@@ -1,5 +1,6 @@
 import React from 'react';
 import { useCoreStores, Input } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import { Button, Checkbox, Avatar } from 'antd';
 import styled from 'styled-components';
 import ContentTitle from './ContentTitle';
@@ -32,8 +33,9 @@ const NoticeItem = styled.li`
   position: relative;
   padding-left: 0.875rem;
   font-size: 0.75rem;
-  line-height: 1.13rem;
+  line-height: 1.23rem;
   color: #4a4a4a;
+  white-space: pre-line;
   & + & {
     margin-top: 0.63rem;
   }
@@ -119,6 +121,7 @@ const InputWrap = styled.div`
 
 const InputName = styled.label`
   margin-right: 0.63rem;
+  margin-bottom: 0rem;
   font-size: 0.81rem;
   color: #000;
 `;
@@ -140,6 +143,7 @@ function ContentSpaceSecession({
   // handleChange(checked) {
   //   this.setState({ checked });
   // }
+  const { t } = useTranslation();
   const { spaceStore } = useCoreStores();
 
   const handlePasswordInput = inputText => {
@@ -149,11 +153,11 @@ function ContentSpaceSecession({
   return (
     <>
       <ContentTitle
-        title="스페이스 탈퇴"
-        subTitle="스페이스 탈퇴에 대한 유의사항을 꼭 확인해 주세요."
+        title={t('CM_SETTING_DELETE_SPACE_01')}
+        subTitle={t('CM_SETTING_DELETE_SPACE_02')}
       />
       <ContentGroup>
-        <GroupTitle>현재 스페이스</GroupTitle>
+        <GroupTitle>{t('CM_SETTING_DELETE_SPACE_03')}</GroupTitle>
         <SpaceBox>
           <SpaceLogo
             shape="square"
@@ -170,11 +174,9 @@ function ContentSpaceSecession({
       <ContentGroup>
         {isContinue ? (
           <>
-            <GroupTitleBlack>
-              정말로 탈퇴를 원하시면 계정 비밀번호를 입력해 주세요.
-            </GroupTitleBlack>
+            <GroupTitleBlack>{t('CM_SETTING_DELETE_SPACE_08')}</GroupTitleBlack>
             <InputWrap>
-              <InputName htmlFor="password">비밀번호</InputName>
+              <InputName htmlFor="password">{t('CM_PWD')}</InputName>
               <Input
                 id="password"
                 type="password"
@@ -184,23 +186,10 @@ function ContentSpaceSecession({
           </>
         ) : (
           <>
-            <GroupTitle>탈퇴 전 유의 사항</GroupTitle>
+            <GroupTitle>{t('CM_SETTING_DELETE_SPACE_04')}</GroupTitle>
             <NoticeList>
-              <NoticeItem>
-                현재 스페이스의 프로필, 별명 및 비밀번호,
-                <br />
-                그리고 보관 중인 메일 등 개인형 서비스 이용기록은 모두 삭제되며,
-                복구가 불가능합니다.
-              </NoticeItem>
-              <NoticeItem>
-                참여 중인 모든 룸에서 나가게 되고, 룸에서 주고받은 사진이나 파일
-                등 모든 데이터에 접근할 수 없게 됩니다.
-                <br />
-                단, 남아 있는 멤버들은 회원님이 남긴 메시지나 파일에 계속해서
-                접근할 수 있습니다.
-                <br />
-                중요한 데이터는 스페이스 탈퇴 전에 삭제하거나 백업해 주세요.
-              </NoticeItem>
+              <NoticeItem>{t('CM_SETTING_DELETE_SPACE_05')}</NoticeItem>
+              <NoticeItem>{t('CM_SETTING_DELETE_SPACE_06')}</NoticeItem>
             </NoticeList>
             <CheckboxWrap>
               <Checkbox
@@ -208,7 +197,7 @@ function ContentSpaceSecession({
                 // handleButtonDisabled={value => setChecked(value)}
                 onChange={toggleCheck}
               >
-                유의 사항을 모두 확인하였으며, 이에 동의합니다.
+                {t('CM_ALL_READ_AGREE_POLICY')}
               </Checkbox>
             </CheckboxWrap>
             <StyledButton
@@ -216,7 +205,7 @@ function ContentSpaceSecession({
               disabled={!isCheck}
               onClick={toggleContinue}
             >
-              탈퇴 계속
+              {t('CM_SETTING_DELETE_SPACE_07')}
             </StyledButton>
           </>
         )}
