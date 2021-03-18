@@ -2,6 +2,7 @@ import React, { useRef, useState, useCallback } from 'react';
 import { Search } from 'teespace-core';
 import styled from 'styled-components';
 import { Button, Modal, Avatar } from 'antd';
+import { useTranslation } from 'react-i18next';
 import AddFriendsByInvitationDialog from './AddFriendsByInvitationDialog';
 import NoFriendModalImg from '../../assets/no_friends.svg';
 // import OrganizationDropdown from '../components/friends/OrganizationDropdown';
@@ -118,6 +119,7 @@ function AddFriendsBySearch({
   spaceInfo,
   spaceMemberList,
 }) {
+  const { t } = useTranslation();
   const [isInviteDialogVisible, setIsInviteDialogVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [valueText, setValueText] = useState('');
@@ -184,10 +186,12 @@ function AddFriendsBySearch({
         {isSpaceEmpty && !isViewMode ? (
           <InvitationForm>
             <StyledInfoImg src={NoFriendModalImg} alt="" />
-            <StyledInfoText>추가할 프렌즈가 없습니다.</StyledInfoText>
-            <StyledSubInfoText>먼저 구성원을 초대해 보세요.</StyledSubInfoText>
+            <StyledInfoText>{t('CM_ADD_FRIENDS_EMPTY_01')}</StyledInfoText>
+            <StyledSubInfoText>
+              {t('CM_ADD_FRIENDS_EMPTY_02')}
+            </StyledSubInfoText>
             <StyledButton type="solid" onClick={handleInviteMember}>
-              구성원 초대
+              {t('CM_USER_INVITE')}
             </StyledButton>
           </InvitationForm>
         ) : (
@@ -195,7 +199,9 @@ function AddFriendsBySearch({
             <SearchBox>
               <StyledSearch
                 placeholder={
-                  isOrgExist ? '팀 이름, 구성원 검색' : '구성원 전체 검색'
+                  isOrgExist
+                    ? t('CM_SEARCH_TEAM_USER_NAME_04')
+                    : t('CM_USER_LIST_SEARCH')
                 }
                 style={{ width: '100%' }}
                 onPressEnter={handleSearch}

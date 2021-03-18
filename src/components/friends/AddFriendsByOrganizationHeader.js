@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { Divider } from 'antd';
 import styled from 'styled-components';
 import { Input } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import OrganizationDropdown from './OrganizationDropdown';
 
 const Wrapper = styled.div`
@@ -27,6 +28,7 @@ function AddFriendsByOrganizationHeader({
   defaultValue,
   timestamp,
 }) {
+  const { t } = useTranslation();
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -52,7 +54,11 @@ function AddFriendsByOrganizationHeader({
           overwrittenValue={overwrittenValue}
           defaultValue={defaultValue}
         />
-        <UserCounter>{orgUserSize}명</UserCounter>
+        <UserCounter>
+          {t('CM_PPL_NUMBER', {
+            num: orgUserSize,
+          })}
+        </UserCounter>
       </Wrapper>
     </>
   );
