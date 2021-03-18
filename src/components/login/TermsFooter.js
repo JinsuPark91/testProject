@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from 'antd';
 import styled from 'styled-components';
 import TmaxLogo from '../../assets/logo_footer_copyright.svg';
@@ -41,7 +42,9 @@ const LineBar = styled.span`
 `;
 
 const TermsFooter = () => {
+  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
+
   return (
     <CorpArea>
       <FlexRow>
@@ -49,11 +52,11 @@ const TermsFooter = () => {
           type="link"
           onClick={() => MovePage('term-and-conditions', true)}
         >
-          이용약관
+          {t('CM_TERMS_OF_USE')}
         </Button>
         <LineBar />
         <Button type="link" onClick={() => MovePage('privacy-policy', true)}>
-          개인정보처리방침
+          {t('CM_PRIVACY_POLICY')}
         </Button>
       </FlexRow>
       <Copyright>

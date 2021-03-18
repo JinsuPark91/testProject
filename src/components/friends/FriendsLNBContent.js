@@ -102,7 +102,7 @@ const FriendsLNBContent = React.forwardRef(
             <FriendListBox
               style={{ display: searchKeyword ? 'none' : 'block' }}
             >
-              <StyleTitle>즐겨찾기</StyleTitle>
+              <StyleTitle>{t('CM_BOOKMARK')}</StyleTitle>
               <FriendList
                 friendList={friendStore.favoriteFriendInfoList}
                 onClick={handleFavFriendActive}
@@ -112,7 +112,7 @@ const FriendsLNBContent = React.forwardRef(
           )}
           <FriendListBox>
             <StyleTitle>
-              프렌즈
+              {t('CM_FRIENDS')}
               <StyleText>{filteredFriendList.length}</StyleText>
             </StyleTitle>
             <FriendList
