@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import { useCoreStores } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import {
   InnerItem,
   Name,
@@ -11,12 +12,13 @@ import {
 } from '../../styles/SettingDialogStyle';
 
 const SettingDialogName = props => {
+  const { t } = useTranslation();
   const { name, isNameEdit, onInputChange, onCancel, onSuccess } = props;
   const { authStore } = useCoreStores();
 
   return (
     <InnerItem>
-      <Name>이름</Name>
+      <Name>{t('CM_NAME')}</Name>
       <Data>
         <TextArea>
           {isNameEdit ? (
@@ -42,15 +44,15 @@ const SettingDialogName = props => {
                 disabled={authStore.user.name === name}
                 onClick={onSuccess}
               >
-                저장
+                {t('CM_SAVE')}
               </Button>
               <Button size="small" type="outlined" onClick={onCancel}>
-                취소
+                {t('CM_CANCEL')}
               </Button>
             </>
           ) : (
             <Button size="small" type="outlined" onClick={onCancel}>
-              변경
+              {t('CM_CHANGE')}
             </Button>
           )}
         </ButtonArea>

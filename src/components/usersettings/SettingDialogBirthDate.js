@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import { Input, useCoreStores } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import {
   InnerItem,
   Name,
@@ -17,11 +18,12 @@ const SettingDialogBirthDate = props => {
     onCancel,
     onSuccess,
   } = props;
+  const { t } = useTranslation();
   const { authStore } = useCoreStores();
 
   return (
     <InnerItem>
-      <Name>생년월일</Name>
+      <Name>{t('CM_DATE_BIRTH')}</Name>
       <Data>
         <TextArea>
           {isBirthDateEdit ? (
@@ -29,7 +31,7 @@ const SettingDialogBirthDate = props => {
               type="number"
               maxLength={8}
               value={birthDate}
-              placeholder="8자리 형태로 입력 (YYYYMMDD)"
+              placeholder="YYYYMMDD"
               onChange={e => onInputChange(e.target.value)}
             />
           ) : (
@@ -46,15 +48,15 @@ const SettingDialogBirthDate = props => {
                 disabled={authStore.user.birthDate === birthDate}
                 onClick={onSuccess}
               >
-                저장
+                {t('CM_SAVE')}
               </Button>
               <Button size="small" type="outlined" onClick={onCancel}>
-                취소
+                {t('CM_CANCEL')}
               </Button>
             </>
           ) : (
             <Button size="small" type="outlined" onClick={onCancel}>
-              변경
+              {t('CM_CHANGE')}
             </Button>
           )}
         </ButtonArea>
