@@ -217,6 +217,10 @@ const ProfileMyModal = ({
 
   const isTmaxDomain = !!/^(tmax)\./gi.exec(window.location.hostname);
 
+  const getBackPhoto = () => {
+    return userStore.getBackgroundPhotoURL(userId);
+  };
+
   // 이후 '현재 스페이스의 어드민'인지를 체크하도록 수정
   const moreMenu = (
     <Menu style={{ minWidth: '6.25rem' }}>
@@ -478,6 +482,7 @@ const ProfileMyModal = ({
       onCancel={handleCancel}
       closable={false}
       outLine
+      backgroundPhotoURL={getBackPhoto()}
       width="17rem"
       type="user"
       userContent={userContent}
