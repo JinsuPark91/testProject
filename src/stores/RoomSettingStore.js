@@ -5,9 +5,11 @@ const RoomSettingStore = observable({
   // 유저 데이터 관련
   member: null,
   members: [],
-  waitingMembers: [],
-  blockedMemebers: [],
   selectedMembers: new Map(),
+
+  //
+  blockedMemebers: [],
+  //
 
   async fetchMembers({ roomId }) {
     try {
@@ -21,8 +23,79 @@ const RoomSettingStore = observable({
     }
   },
 
-  fetchWaitingMembers() {},
-  fetchBlockedMembers() {},
+  async fetchBlockedMembers({ roomId }) {
+    try {
+      const members = await RoomStore.getBanList({
+        roomId,
+      });
+      this.members = members;
+    } catch (err) {
+      console.log('블록 멤버 조회 에러 : ', err);
+    }
+  },
+
+  async fetchRequestMembers({ roomId }) {
+    try {
+      const requests = await RoomStore.getRequestList({ roomId });
+
+      const requestDateList = new Map();
+      const userIdList = [];
+      requests.forEach(request => {
+        userIdList.push(request.userId);
+        requestDateList.set(request.userId, request.reqRegDate);
+      });
+
+      if (userIdList.length) {
+        const profiles = await UserStore.fetchProfileList({ userIdList });
+        profiles.forEach(profile => {
+          if (!Object.prototype.hasOwnProperty.call(profile, 'reqRegDate')) {
+            Object.defineProperty(profile, 'reqRegDate', {
+              value: requestDateList.get(profile.id),
+            });
+          }
+        });
+        this.members = profiles;
+      } else {
+        this.members = [];
+      }
+    } catch (err) {
+      console.log('입장 요청 멤버 조회 에러 : ', err);
+    }
+  },
+
+  async acceptUsers({ roomId, userIdList }) {
+    try {
+      const result = await RoomStore.acceptEnterRequests({
+        roomId,
+        userIdList,
+      });
+
+      if (result) {
+        await this.fetchRequestMembers({ roomId });
+        return Promise.resolve(true);
+      }
+      return Promise.resolve(false);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+
+  async rejectUsers({ roomId, userIdList }) {
+    try {
+      const result = await RoomStore.rejectEnterRequests({
+        roomId,
+        userIdList,
+      });
+
+      if (result) {
+        await this.fetchRequestMembers({ roomId });
+        return Promise.resolve(true);
+      }
+      return Promise.resolve(false);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
 
   async transferAdmin({ roomId, userId }) {
     try {
@@ -38,19 +111,13 @@ const RoomSettingStore = observable({
     }
   },
 
-  async kickoutMembers({ roomId }) {
-    // // TODO : 벌크로 내쫒을수 있어야 함. 너무 느림
-    const serviceCalls = Array.from(this.selectedMembers.values()).map(member =>
-      RoomStore.deleteRoomMember({
-        userId: UserStore.myProfile.id,
-        roomId,
-        memberId: member.id,
-      }),
-    );
-
+  async kickoutMembers({ roomId, userIdList }) {
     try {
-      await Promise.all(serviceCalls);
-      return Promise.resolve();
+      const result = await RoomStore.createBanMembers({ roomId, userIdList });
+      console.log('result : ', result);
+
+      if (result) return Promise.resolve(true);
+      return Promise.resolve(false);
     } catch (err) {
       console.log('강퇴 실패 : ', err);
       return Promise.reject();
@@ -60,7 +127,9 @@ const RoomSettingStore = observable({
   // 검색 관련
   keyword: '',
   get filteredMembers() {
-    return this.members.filter(member => member.name.includes(this.keyword));
+    return this.members.filter(
+      member => !!member?.name?.includes(this.keyword),
+    );
   },
 
   get filteredMembersWithoutMe() {

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { WaplSearch, Toast } from 'teespace-core';
+import { WaplSearch, Toast, WWMS } from 'teespace-core';
 import styled from 'styled-components';
 import { Observer } from 'mobx-react';
 import { Button, Checkbox } from 'antd';
@@ -16,8 +16,8 @@ const remToPixel = rem => {
 const WIDTH = {
   CHECKBOX: '5%',
   NICK: '10%',
-  LOGIN_ID: '75%',
-  REQUEST_AT: '10%',
+  LOGIN_ID: '65%',
+  REQUEST_AT: '20%',
 };
 
 const TableRow = ({ style, member }) => {
@@ -52,7 +52,7 @@ const TableRow = ({ style, member }) => {
       </Observer>
       <Observer>
         {() => (
-          <Cell style={{ width: WIDTH.REQUEST_AT }}>{member.userType}</Cell>
+          <Cell style={{ width: WIDTH.REQUEST_AT }}>{member.reqRegDate}</Cell>
         )}
       </Observer>
     </RowWrapper>
@@ -125,53 +125,73 @@ const Table = () => {
 
 const SubWaitingMemberPage = ({ roomId }) => {
   const { t } = useTranslation();
-  // const handleSystemMessage = message => {
-  //   if (message.SPACE_ID !== roomId) return;
 
-  //   switch (message.NOTI_TYPE) {
-  //     case 'addMember':
-  //     case 'removeMember':
-  //       store.fetchMembers({ roomId });
+  const handleSystemMessage = message => {
+    console.log('setting page store : ', message);
+    if (message.SPACE_ID !== roomId) return;
 
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
+    switch (message.NOTI_TYPE) {
+      case 'memberRequest':
+        store.fetchRequestMembers({ roomId });
+
+        break;
+      default:
+        break;
+    }
+  };
 
   useEffect(() => {
-    // TODO : fetchRequests()
-    store.fetchMembers({ roomId });
-    // WWMS.addHandler('SYSTEM', 'room_setting', handleSystemMessage);
+    store.fetchRequestMembers({ roomId });
+    WWMS.addHandler('SYSTEM', 'room_setting', handleSystemMessage);
 
     return () => {
-      // TODO : waitingMembers = [];
       store.members = [];
       store.keyword = '';
       store.toastMessage = '';
+      store.toastVisible = false;
       store.selectedMembers.clear();
-      // WWMS.removeHandler('SYSTEM', 'room_setting');
+      WWMS.removeHandler('SYSTEM', 'room_setting');
     };
   }, []);
 
-  const handleAccept = () => {
-    store.open(
-      'toast',
-      t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_07', {
-        num: store.selectedMembers.size,
-      }),
-    );
-    store.selectedMembers.clear();
+  const handleAccept = async () => {
+    const userIdList = Array.from(store.selectedMembers.keys());
+
+    try {
+      const result = await store.acceptUsers({ roomId, userIdList });
+      if (result) {
+        store.open(
+          'toast',
+          t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_07', {
+            num: store.selectedMembers.size,
+          }),
+        );
+      }
+
+      store.selectedMembers.clear();
+    } catch (err) {
+      console.log('입장 허가 에러 : ', err);
+    }
   };
 
-  const handleReject = () => {
-    store.open(
-      'toast',
-      t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_08', {
-        num: store.selectedMembers.size,
-      }),
-    );
-    store.selectedMembers.clear();
+  const handleReject = async () => {
+    const userIdList = Array.from(store.selectedMembers.keys());
+
+    try {
+      const result = await store.rejectUsers({ roomId, userIdList });
+      if (result) {
+        store.open(
+          'toast',
+          t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_08', {
+            num: store.selectedMembers.size,
+          }),
+        );
+
+        store.selectedMembers.clear();
+      }
+    } catch (err) {
+      console.log('입장 거절 에러 : ', err);
+    }
   };
 
   const handleSearchClear = () => {

@@ -161,11 +161,12 @@ const MainPage = () => {
   }, [subApp, resourceId]);
 
   const handleSystemMessage = message => {
-    // console.log('WWMS Message : ', message);
     const resType = PlatformUIStore.resourceType;
     const resId = PlatformUIStore.resourceId;
 
     switch (message.NOTI_TYPE) {
+      // 강퇴 또는 나가기
+      case 'exitRoom':
       case 'deleteRoom': {
         const myRoomId = roomStore.getDMRoom(myUserId, myUserId)?.roomInfo?.id;
 

@@ -154,17 +154,12 @@ function OpenRoomHome({ visible, onCancel }) {
     if (roomInfo.isJoined) {
       history.push(`/s/${roomInfo.id}/talk`);
       closeHomeModal();
-    } else {
+    } else if (roomInfo.isJoinable) {
       // 바로 입장 가능
-      console.log('Is Joinable Open Room : ', roomInfo.isJoinable);
-      if (roomInfo.isJoinable) {
-        openEnterModal();
-      }
-
+      openEnterModal();
+    } else {
       // 요청 후 입장 가능
-      else {
-        openRequestModal();
-      }
+      openRequestModal();
     }
   };
 

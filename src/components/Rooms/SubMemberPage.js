@@ -207,8 +207,10 @@ const MemberPage = ({ roomId }) => {
     WWMS.addHandler('SYSTEM', 'room_setting', handleSystemMessage);
 
     return () => {
-      store.keyword = '';
       store.members = [];
+      store.keyword = '';
+      store.toastMessage = '';
+      store.toastVisible = '';
       store.selectedMembers.clear();
       WWMS.removeHandler('SYSTEM', 'room_setting');
     };
@@ -230,8 +232,13 @@ const MemberPage = ({ roomId }) => {
   };
 
   const handleKickoutOK = async () => {
-    await store.kickoutMembers({ roomId });
-    store.selectedMembers.clear();
+    try {
+      const userIdList = Array.from(store.selectedMembers.keys());
+      await store.kickoutMembers({ roomId, userIdList });
+      store.selectedMembers.clear();
+    } catch (err) {
+      console.log('강퇴 / 밴 실패 : ', err);
+    }
     store.close('kickout');
   };
 
