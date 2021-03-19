@@ -401,6 +401,7 @@ const RoomItem = ({
               room: roomInfo,
               data: item.data,
               type: type[1] ? type[1] : 'unknown',
+              target: 'Platform:Room',
               currentRoomId: getRoomId(),
             });
             break;
@@ -457,6 +458,7 @@ const RoomItem = ({
       </ItemWrapper>
       <FileDndDialog
         visible={isDndDialogVisible}
+        target="Platform:Room"
         targetRoomId={dndTargetRoom}
         fileList={dndTargetFiles}
         onClose={handleCloseDndDialog}

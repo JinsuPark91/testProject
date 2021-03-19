@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { talkOnDrop, Talk } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
 import { observer } from 'mobx-react';
@@ -38,17 +39,24 @@ const DropdownMenu = React.memo(
     handleCancelBookmark,
     handleAddBookmark,
     handleRemoveFriendMessageOpen,
-  }) => (
-    <Menu>
-      {friendFavorite && (
-        <Menu.Item onClick={handleCancelBookmark}>즐겨찾기 해제</Menu.Item>
-      )}
-      {!friendFavorite && (
-        <Menu.Item onClick={handleAddBookmark}>즐겨찾기</Menu.Item>
-      )}
-      <Menu.Item onClick={handleRemoveFriendMessageOpen}>프렌즈 삭제</Menu.Item>
-    </Menu>
-  ),
+  }) => {
+    const { t } = useTranslation();
+    return (
+      <Menu>
+        {friendFavorite && (
+          <Menu.Item onClick={handleCancelBookmark}>
+            {t('CM_BOOKMARK_REMOVE')}
+          </Menu.Item>
+        )}
+        {!friendFavorite && (
+          <Menu.Item onClick={handleAddBookmark}>{t('CM_BOOKMARK')}</Menu.Item>
+        )}
+        <Menu.Item onClick={handleRemoveFriendMessageOpen}>
+          프렌즈 삭제
+        </Menu.Item>
+      </Menu>
+    );
+  },
 );
 
 const Profile = React.memo(
@@ -95,6 +103,7 @@ const OpenMiniTalk = roomInfo => {
 };
 
 const MeAction = React.memo(({ mode, itemId }) => {
+  const { t } = useTranslation();
   const { userStore } = useCoreStores();
   const handleExport = async e => {
     e.stopPropagation();
@@ -109,7 +118,7 @@ const MeAction = React.memo(({ mode, itemId }) => {
   };
 
   return (
-    <Tooltip placement="top" title="미니 채팅" color="#4C535D">
+    <Tooltip placement="top" title={t('CM_TEMP_MINI_CHAT')} color="#4C535D">
       <MoreIconWrapper className="friend-export-icon" onClick={handleExport}>
         <ExportIcon />
       </MoreIconWrapper>
@@ -240,6 +249,7 @@ const FriendItem = observer(
     toggleInfoModal,
     setyPosition,
   }) => {
+    const { t } = useTranslation();
     const {
       displayName,
       friendFavorite = false,
@@ -247,10 +257,20 @@ const FriendItem = observer(
       id: userId = '',
       orgName,
       position,
+      profileStatusMsg,
     } = friendInfo;
     const fullCompanyJob = friendInfo.getFullCompanyJob({ format: 'friend' });
     const history = useHistory();
-    const { friendStore, userStore, roomStore } = useCoreStores();
+    const {
+      friendStore,
+      userStore,
+      roomStore,
+      componentStore,
+    } = useCoreStores();
+    const FileDndDialog = componentStore.get('Talk:FileDndDialog');
+    const [isDndDialogVisible, setDndDialogVisible] = useState(false);
+    const [dndTargetFiles, setDndTargetFiles] = useState([]);
+
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [
       visibleRemoveFriendMessage,
@@ -262,48 +282,73 @@ const FriendItem = observer(
     const isMe = itemId === myUserId;
     const isNewFriend = handleCheckNewFriend(friendInfo);
 
-    // const [{ canDrop, isOver }, drop] = useDrop({
-    //   accept: ACCEPT_ITEMS,
-    //   drop: item => {
-    //     let targetRoomInfo = {};
-    //     const setRoomInfo = roomInfo => {
-    //       targetRoomInfo = roomInfo;
-    //     };
-    //     handleProfileMenuClick(
-    //       roomStore,
-    //       myUserId,
-    //       itemId,
-    //       roomInfo => setRoomInfo(roomInfo),
-    //       roomInfo => setRoomInfo(roomInfo),
-    //       roomInfo => setRoomInfo(roomInfo),
-    //     );
-    //     if (TALK_ACCEPT_ITEMS.includes(item.type)) {
-    //       const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
-    //         item.type.toLowerCase(),
-    //       );
-    //       talkOnDrop({
-    //         room: targetRoomInfo,
-    //         data: item.data,
-    //         type: type[1] ? type[1] : 'unknown',
-    //         currentRoomId: targetRoomInfo?.id,
-    //       });
-    //     }
+    const findRoomInfo = async () => {
+      const { roomInfo } = roomStore.getDMRoom(myUserId, itemId);
+      try {
+        if (roomInfo && roomInfo.isVisible) return roomInfo;
+        if (roomInfo && !roomInfo.isVisible) {
+          await roomStore.updateRoomMemberSetting({
+            roomId: roomInfo.id,
+            myUserId,
+            newIsVisible: true,
+          });
+          return roomInfo;
+        }
 
-    //     return {
-    //       source: item.type,
-    //       sourceData: item.data,
-    //       target: 'Platform:Room', // 프렌즈 리스트에 drop이지만 Room에 drop과 사실상 동일해 보인다.
-    //       targetData: targetRoomInfo,
-    //     };
-    //   },
-    //   collect: monitor => {
-    //     return {
-    //       isOver: monitor.isOver(),
-    //       canDrop: monitor.canDrop(),
-    //     };
-    //   },
-    // });
-    const isDndHover = false; // canDrop && isOver;
+        await roomStore.createRoom({
+          creatorId: myUserId,
+          userList: [{ userId: itemId }],
+        });
+        const newRoomInfo = roomStore.getDMRoom(myUserId, itemId)?.roomInfo;
+        return newRoomInfo;
+      } catch (e) {
+        console.log(`friend dnd error...${e}`);
+      }
+    };
+
+    const [{ canDrop, isOver }, drop] = useDrop({
+      accept: ACCEPT_ITEMS,
+      drop: item => {
+        if (TALK_ACCEPT_ITEMS.includes(item.type)) {
+          const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
+            item.type.toLowerCase(),
+          );
+          switch (type[1]) {
+            case 'note':
+              talkOnDrop({
+                data: item.data,
+                type: type[1] ? type[1] : 'unknown',
+                target: 'Platform:Friend',
+                findRoom: findRoomInfo,
+              });
+              break;
+            case 'drive':
+              setDndDialogVisible(true);
+              setDndTargetFiles(item.data);
+              break;
+            default:
+              break;
+          }
+        }
+        return {
+          source: item.type,
+          sourceData: item.data,
+          target: 'Platform:Friend',
+          findRoom: findRoomInfo,
+        };
+      },
+      collect: monitor => {
+        return {
+          isOver: monitor.isOver(),
+          canDrop: monitor.canDrop(),
+        };
+      },
+    });
+    const isDndHover = canDrop && isOver;
+
+    const handleCloseDndDialog = () => {
+      setDndDialogVisible(false);
+    };
 
     const handleSelectPhoto = (e, id = '') => {
       setyPosition(e.clientY);
@@ -395,7 +440,7 @@ const FriendItem = observer(
           console.log(error);
         }
         setDropdownVisible(false);
-        setToastText('즐겨찾기가 설정되었습니다.');
+        setToastText(t('CM_BOOKMARK_03'));
         openToast();
       },
       [friendStore, itemId, setToastText, openToast, myUserId],
@@ -409,7 +454,7 @@ const FriendItem = observer(
           friendId: itemId,
           isFav: false,
         });
-        setToastText('즐겨찾기가 해제되었습니다.');
+        setToastText(t('CM_BOOKMARK_02'));
         setDropdownVisible(false);
         openToast();
       },
@@ -458,10 +503,13 @@ const FriendItem = observer(
     };
 
     const getRemoveFriendMessageTitle = () => {
-      if (fullCompanyJob) {
-        return `${displayName}(${fullCompanyJob}) \\n 님을 프렌즈 목록에서 삭제하시겠습니까?`;
-      }
-      return `${displayName} 님을 프렌즈 목록에서 \\n 삭제하시겠습니까?`;
+      const fullName = fullCompanyJob
+        ? `${displayName}(${fullCompanyJob})`
+        : displayName;
+
+      return t('CM_DEL_FRIENDS_01', {
+        name: fullName,
+      });
     };
 
     const handleRemoveFriendMessageOpen = useCallback(({ domEvent: e }) => {
@@ -476,7 +524,7 @@ const FriendItem = observer(
     }, []);
 
     return (
-      <Wrapper>
+      <Wrapper ref={drop}>
         <FriendItemWrapper
           style={style}
           onClick={handleItemClick}
@@ -526,7 +574,7 @@ const FriendItem = observer(
               isMe={isMe}
               itemId={itemId}
             />
-            {mode === 'addFriend' && isMe && <span>내 계정</span>}
+            {mode === 'addFriend' && isMe && <span>{t('CM_MY_ACCOUNT')}</span>}
           </ActionWrapper>
         </FriendItemWrapper>
         <Message
@@ -535,16 +583,23 @@ const FriendItem = observer(
           type="error"
           btns={[
             {
-              text: '삭제',
+              text: t('CM_DEL'),
               type: 'solid',
               onClick: handleRemoveFriend,
             },
             {
-              text: '취소',
+              text: t('CM_CANCEL'),
               type: 'outlined',
               onClick: handleRemoveFriendMessageClose,
             },
           ]}
+        />
+        <FileDndDialog
+          visible={isDndDialogVisible}
+          target="Platform:Friend"
+          fileList={dndTargetFiles}
+          findRoom={findRoomInfo}
+          onClose={handleCloseDndDialog}
         />
       </Wrapper>
     );

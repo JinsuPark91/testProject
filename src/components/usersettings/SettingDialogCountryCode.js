@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Select } from 'antd';
 import { useCoreStores } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import countryData from 'country-data';
 import {
   InnerItem,
@@ -11,6 +12,7 @@ import {
 } from '../../styles/SettingDialogStyle';
 
 const SettingDialogCountryCode = props => {
+  const { t } = useTranslation();
   const { isCountryCodeEdit, onCancel, onSuccess } = props;
   const { userStore, authStore } = useCoreStores();
   const [selectedCountryCode, setSelectedCountryCode] = useState(
@@ -56,7 +58,7 @@ const SettingDialogCountryCode = props => {
 
   return (
     <InnerItem>
-      <Name>국가 번호</Name>
+      <Name>{t('CM_COUNTRY_NUMBER')}</Name>
       <Data>
         <TextArea>
           {isCountryCodeEdit ? (
@@ -85,15 +87,15 @@ const SettingDialogCountryCode = props => {
                 disabled={selectedCountryCode === authStore.user.nationalCode}
                 onClick={handleSuccess}
               >
-                저장
+                {t('CM_SAVE')}
               </Button>
               <Button size="small" type="outlined" onClick={onCancel}>
-                취소
+                {t('CM_CANCEL')}
               </Button>
             </>
           ) : (
             <Button size="small" type="outlined" onClick={onCancel}>
-              변경
+              {t('CM_CHANGE')}
             </Button>
           )}
         </ButtonArea>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 // import { NoteApp } from 'teespace-note-app';
 // import { CalendarApp } from 'teespace-calendar-app';
 import { useCoreStores } from 'teespace-core';
+import { Observer } from 'mobx-react';
 import styled from 'styled-components';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import MobileFriend from './friend/MobileFriend';
@@ -112,12 +113,16 @@ const MobileContent = () => {
   };
 
   return (
-    <Container
-      appType={PlatformUIStore.resourceType}
-      isMemberSelected={isMemberSelected}
-    >
-      {getApplication(PlatformUIStore.resourceType)}
-    </Container>
+    <Observer>
+      {() => (
+        <Container
+          appType={PlatformUIStore.resourceType}
+          isMemberSelected={isMemberSelected}
+        >
+          {getApplication(PlatformUIStore.resourceType)}
+        </Container>
+      )}
+    </Observer>
   );
 };
 

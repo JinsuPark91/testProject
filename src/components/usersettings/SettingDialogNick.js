@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import { useCoreStores } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import {
   InnerItem,
   Name,
@@ -12,12 +13,13 @@ import {
 } from '../../styles/SettingDialogStyle';
 
 const SettingDialogNick = props => {
+  const { t } = useTranslation();
   const { nick, isNickEdit, onInputChange, onCancel, onSuccess } = props;
   const { authStore } = useCoreStores();
 
   return (
     <InnerItem>
-      <Name>별명</Name>
+      <Name>{t('CM_NICKNAME')}</Name>
       <Data>
         <TextArea>
           {isNickEdit ? (
@@ -32,7 +34,7 @@ const SettingDialogNick = props => {
           ) : (
             <p>{authStore.user.nick || '-'}</p>
           )}
-          <Info>스페이스에서 불리고 싶은 별명을 설정할 수 있습니다.</Info>
+          <Info>{t('CM_SETTING_NICKNAME_EXPLAIN')}</Info>
         </TextArea>
         <ButtonArea>
           {isNickEdit ? (
@@ -44,15 +46,15 @@ const SettingDialogNick = props => {
                 disabled={authStore.user.nick === nick}
                 onClick={onSuccess}
               >
-                저장
+                {t('CM_SAVE')}
               </Button>
               <Button size="small" type="outlined" onClick={onCancel}>
-                취소
+                {t('CM_CANCEL')}
               </Button>
             </>
           ) : (
             <Button size="small" type="outlined" onClick={onCancel}>
-              변경
+              {t('CM_CHANGE')}
             </Button>
           )}
         </ButtonArea>

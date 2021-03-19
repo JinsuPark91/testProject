@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import { Input, useCoreStores } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import { getMobileNumber } from '../../utils/ProfileUtil';
 import {
   InnerItem,
@@ -11,12 +12,13 @@ import {
 } from '../../styles/SettingDialogStyle';
 
 const SettingDialogPhone = props => {
+  const { t } = useTranslation();
   const { phone, isPhoneEdit, onInputChange, onCancel, onSuccess } = props;
   const { authStore } = useCoreStores();
 
   return (
     <InnerItem>
-      <Name>휴대폰 번호</Name>
+      <Name>{t('CM_MOBILE_NUMBER')}</Name>
       <Data>
         <TextArea>
           {isPhoneEdit ? (
@@ -39,15 +41,15 @@ const SettingDialogPhone = props => {
                 disabled={authStore.user.phone === phone}
                 onClick={onSuccess}
               >
-                저장
+                {t('CM_SAVE')}
               </Button>
               <Button size="small" type="outlined" onClick={onCancel}>
-                취소
+                {t('CM_CANCEL')}
               </Button>
             </>
           ) : (
             <Button size="small" type="outlined" onClick={onCancel}>
-              변경
+              {t('CM_CHANGE')}
             </Button>
           )}
         </ButtonArea>

@@ -94,6 +94,15 @@ const MobileRoomCreatePage = ({ onTabChange }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const remToPixel = rem => {
+    return (
+      parseFloat(getComputedStyle(document.documentElement).fontSize, 10) * rem
+    );
+  };
+  // 3 + 0.76 + 0.76 + 1.88 + 3.25 + 3.13 + 2.69
+  const otherHeight = remToPixel(15.4);
+  const height = window.innerHeight - otherHeight;
+
   return (
     <>
       <Header>
@@ -112,7 +121,7 @@ const MobileRoomCreatePage = ({ onTabChange }) => {
         disabledIds={disabledIds}
         defaultSelectedUsers={[userStore.myProfile]}
         showMeOnFriendTab={false}
-        height={25} // 현재 사용하지 않음
+        height={height}
       />
     </>
   );
