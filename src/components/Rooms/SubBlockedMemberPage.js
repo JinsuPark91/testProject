@@ -135,32 +135,17 @@ const Table = () => {
 
 const SubWaitingMemberPage = ({ roomId }) => {
   const { t } = useTranslation();
-  // const handleSystemMessage = message => {
-  //   if (message.SPACE_ID !== roomId) return;
-
-  //   switch (message.NOTI_TYPE) {
-  //     case 'addMember':
-  //     case 'removeMember':
-  //       store.fetchMembers({ roomId });
-
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
 
   useEffect(() => {
     // TODO : fetchRequests()
-    store.fetchMembers({ roomId });
-    // WWMS.addHandler('SYSTEM', 'room_setting', handleSystemMessage);
+    store.fetchBlockedMembers({ roomId });
 
     return () => {
-      // TODO : waitingMembers = [];
       store.members = [];
       store.keyword = '';
       store.toastMessage = '';
+      store.toastVisible = '';
       store.selectedMembers.clear();
-      // WWMS.removeHandler('SYSTEM', 'room_setting');
     };
   }, []);
 

@@ -7,7 +7,7 @@ i18n
   .use(Backend)
   .use(initReactI18next)
   .init({
-    debug: true,
+    debug: false,
     lng: 'ko',
     fallbackLng: 'en',
     ns: ['translation'],
