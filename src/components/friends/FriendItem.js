@@ -549,7 +549,7 @@ const FriendItem = observer(
               orgName={orgName}
               position={position}
             />
-            {/* <TextStatus>상태메세지영역입니다</TextStatus> */}
+            {profileStatusMsg && <TextStatus>{profileStatusMsg}</TextStatus>}
           </TextWrapper>
           <ActionWrapper>
             {isNewFriend && (
