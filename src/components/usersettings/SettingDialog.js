@@ -137,7 +137,11 @@ function SettingDialog(props) {
       userStore.myProfile.id,
       'medium',
     );
+    obj.profileFile = null;
+    obj.profileName = null;
     obj.backPhoto = userStore.getBackgroundPhotoURL(userStore.myProfile.id);
+    obj.backFile = null;
+    obj.backName = null;
     obj.name = name ?? userStore.myProfile.name;
     // 별명 빈칸 변경 시도시 이름으로 변경하는 기획
     if (nick === undefined) {

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { Menu, Dropdown } from 'antd';
@@ -13,11 +14,12 @@ import {
   StyledUpload,
 } from '../../styles/SettingDialogStyle';
 
-const SettingDialogPhoto = () => {
+const SettingDialogPhoto = observer(() => {
   const { t } = useTranslation();
   const { userStore } = useCoreStores();
   const userId = userStore.myProfile.id;
   const profile = userStore.userProfiles[userId];
+  const [isDisabled, setIsDisabled] = useState(!profile.thumbPhoto);
 
   useEffect(() => {
     (async () => {
@@ -28,62 +30,42 @@ const SettingDialogPhoto = () => {
     })();
   }, [userId, userStore]);
 
-  const [profilePhoto, setProfilePhoto] = useState(undefined);
-
-  const toBase64 = async blobImage =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(blobImage);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = err => reject(err);
-    });
-
-  const toBlob = async file => {
-    const result = await fetch(file).then(r => r.blob());
-    return result;
-  };
-
-  const getDtoObject = photo => {
+  const getDtoObject = () => {
     const obj = {};
-    obj.profilePhoto = photo;
+    obj.profilePhoto = null;
     obj.backPhoto = userStore.getBackgroundPhotoURL(userStore.myProfile.id);
+    obj.backFile = null;
+    obj.backName = null;
     obj.name = userStore.myProfile.name;
     obj.nick = userStore.myProfile.nick;
     obj.nationalCode = userStore.myProfile.nationalCode;
     obj.companyNum = userStore.myProfile.companyNum;
     obj.phone = userStore.myProfile.phone;
     obj.birthDate = userStore.myProfile.birthDate;
+
     return obj;
   };
 
   const handleChangePhoto = async file => {
-    const fileURL = URL.createObjectURL(file);
-    if (fileURL?.includes('blob:')) {
-      const blobImage = await toBlob(fileURL);
-      const base64Image = await toBase64(blobImage);
-      const obj = getDtoObject(base64Image);
-      await userStore.updateMyProfile(obj);
-      URL.revokeObjectURL(fileURL);
-    }
-    // initialize
-    setProfilePhoto(undefined);
+    const updatedInfo = getDtoObject();
+    updatedInfo.profileFile = file;
+    updatedInfo.profileName = file?.name;
+    await userStore.updateMyProfile({ updatedInfo });
+    setIsDisabled(false);
   };
 
   const getProfilePhoto = () => {
     return userStore.getProfilePhotoURL(userId, 'medium');
   };
-
-  const renderProfilePhoto =
-    profilePhoto === null
-      ? profile.defaultPhotoUrl
-      : profilePhoto || getProfilePhoto();
+  const renderProfilePhoto = getProfilePhoto();
 
   const handleChangeToDefaultPhoto = async () => {
-    const obj = getDtoObject(null);
-    await userStore.updateMyProfile(obj);
+    const updatedInfo = getDtoObject();
+    updatedInfo.profileFile = null;
+    updatedInfo.profileName = null;
+    await userStore.updateMyProfile({ updatedInfo });
+    setIsDisabled(true);
   };
-
-  const isDefaultPhoto = profilePhoto === undefined && !profile?.thumbPhoto;
 
   const profileMenu = (
     <Menu>
@@ -97,7 +79,7 @@ const SettingDialogPhoto = () => {
           {t('CM_B2C_SETTING_CHANGE_INFO_22')}
         </StyledUpload>
       </Menu.Item>
-      <Menu.Item onClick={handleChangeToDefaultPhoto} disabled={isDefaultPhoto}>
+      <Menu.Item onClick={handleChangeToDefaultPhoto} disabled={isDisabled}>
         {t('CM_EDIT_PROFILE_05')}
       </Menu.Item>
     </Menu>
@@ -123,6 +105,6 @@ const SettingDialogPhoto = () => {
       </Data>
     </InnerItem>
   );
-};
+});
 
 export default SettingDialogPhoto;
