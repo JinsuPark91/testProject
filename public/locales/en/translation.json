@@ -472,5 +472,7 @@
   "CM_OPEN_ROOM_HOME_05": "No search results found.",
   "CM_OPEN_ROOM_HOME_06": "Do you want to join the open room?",
   "CM_OPEN_ROOM_HOME_03": "My Open Rooms",
-  "CM_OPEN_ROOM_HOME_04": "Recommended Open Rooms"
+  "CM_OPEN_ROOM_HOME_04": "Recommended Open Rooms",
+
+  "TEMP_DELETE_FRIEND": "Delete friend"
 }

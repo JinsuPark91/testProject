@@ -475,5 +475,6 @@
   "CM_OPEN_ROOM_HOME_04": "추천 오픈 룸",
 
   "TEST_REQUEST": "입장 요청 하시겠습니까?",
-  "TEST_REQUEST_OK": "요청"
+  "TEST_REQUEST_OK": "요청",
+  "TEMP_DELETE_FRIEND": "프렌즈 삭제"
 }
