@@ -257,6 +257,7 @@ const FriendItem = observer(
       id: userId = '',
       orgName,
       position,
+      profileStatusMsg,
     } = friendInfo;
     const fullCompanyJob = friendInfo.getFullCompanyJob({ format: 'friend' });
     const history = useHistory();
