@@ -89,14 +89,15 @@ function OpenRoomHome({ visible, onCancel }) {
         return res;
       };
 
-      const fetchRecommandOpenRoomList = async () => {
-        const res = await roomStore.fetchRecommandRoomList(
-          userStore.myProfile.id,
-        );
-        return res;
-      };
+      // const fetchRecommandOpenRoomList = async () => {
+      //   const res = await roomStore.fetchRecommandRoomList(
+      //     userStore.myProfile.id,
+      //   );
+      //   return res;
+      // };
 
-      Promise.all([fetchOpenRoomList(), fetchRecommandOpenRoomList()]);
+      fetchOpenRoomList();
+      // Promise.all([fetchOpenRoomList(), fetchRecommandOpenRoomList()]);
     }
   }, [visible]);
 
@@ -476,7 +477,7 @@ function OpenRoomHome({ visible, onCancel }) {
                 <Observer>
                   {() => (
                     <RoomList>
-                      {roomStore.getRecommandRoomArray().map(roomInfo => (
+                      {roomStore.getOpenRoomArray().map(roomInfo => (
                         <RoomListItem key={roomInfo.id}>
                           <OpenRoomPhotos
                             srcList={getUserPhotos(roomInfo.memberIdListString)}
