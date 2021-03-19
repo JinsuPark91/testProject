@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useCoreStores, Toast, Chip, Message, logEvent } from 'teespace-core';
 import styled from 'styled-components';
 import { Button, Input, Modal } from 'antd';
+import { useTranslation } from 'react-i18next';
 import sendMailIcon from '../../assets/invite_send.svg';
 import { checkEmailValid } from '../../libs/Regex';
 
@@ -61,6 +62,7 @@ const StyledInfoText = styled.p`
   line-height: 0.91rem;
   color: #777;
   letter-spacing: 0;
+  white-space: pre-line;
 `;
 
 const StyledInput = styled(Input)`
@@ -104,6 +106,7 @@ function AddFriendsByInvitationDialog({
   onSendInviteMail = () => {},
   onCancel,
 }) {
+  const { t } = useTranslation();
   const { friendStore, userStore, spaceStore } = useCoreStores();
   const [mailAddress, setMailAddress] = useState('');
   const [chipList, setChipList] = useState([]);
@@ -145,7 +148,7 @@ function AddFriendsByInvitationDialog({
       el.select();
       document.execCommand('copy');
       document.body.removeChild(el);
-      setToastText('복사한 초대 링크는 24시간 이후 만료됩니다.');
+      setToastText(t('CM_INVITE_PEOPLE_POPUP_05'));
       handleToggleToast();
       logEvent('member', 'clickCopyInvitationLinkBtn');
     } catch (e) {
@@ -189,7 +192,7 @@ function AddFriendsByInvitationDialog({
 
   const handleSendInviteMail = async () => {
     if (!chipList.length && !mailAddress.length) {
-      setToastText('초대할 이메일 주소를 1개 이상 입력해 주세요.');
+      setToastText(t('CM_INVITE_PEOPLE_POPUP_06'));
       handleToggleToast();
       return;
     }
@@ -221,7 +224,7 @@ function AddFriendsByInvitationDialog({
 
       setMailAddress('');
       setChipList([]);
-      setToastText('발송한 초대장은 24시간 이후 만료됩니다.');
+      setToastText(t('CM_INVITE_PEOPLE_POPUP_07'));
       handleToggleToast();
       logEvent('member', 'clickSendInvitationBtn');
       // onSendInviteMail();
@@ -240,22 +243,20 @@ function AddFriendsByInvitationDialog({
         maskClosable={false}
         footer={null}
         width="24.38rem"
-        title="초대 메일 보내기"
+        title={t('CM_CMD_RESPONSE_RESULT_04')}
         onCancel={handleCancel}
       >
         <StyledContent>
           <StyledInfoTitle>
-            {spaceStore.currentSpace?.name}(으)로 구성원 초대
+            {t('CM_INVITE_PEOPLE_POPUP_02', {
+              name: spaceStore.currentSpace?.name,
+            })}
           </StyledInfoTitle>
-          <StyledInfoText>
-            입력한 이메일 주소로 초대장이 발송됩니다.
-            <br />
-            초대받은 구성원의 참여 완료 시, 나의 프렌즈 목록에 추가됩니다.
-          </StyledInfoText>
+          <StyledInfoText>{t('CM_INVITE_PEOPLE_POPUP_03')}</StyledInfoText>
           <StyledInputBox onInput={e => handleInput(e.target.value)}>
             <StyledInput
               onPressEnter={handlePressEnter}
-              placeholder="이메일 주소 추가"
+              placeholder={t('CM_EMAIL_ADD')}
               maxLength="200"
               value={mailAddress}
               autoFocus
@@ -278,19 +279,19 @@ function AddFriendsByInvitationDialog({
             </StyledChipBox>
           ) : null}
           <StyledLinkButton type="link" onClick={handleCopyInviteLink}>
-            초대 링크 복사
+            {t('CM_INVITE_PEOPLE_POPUP_04')}
           </StyledLinkButton>
         </StyledContent>
         <Message
           visible={isMessageVisible}
-          title="올바르지 않은 이메일 주소가 포함되어 있습니다."
-          subtitle={`오류 표시된 주소를 수정하거나 삭제 후 \n 초대 메일을 보내주세요.`}
+          title={t('CM_INVITE_PEOPLE_POPUP_08')}
+          subtitle={t('CM_INVITE_PEOPLE_POPUP_09')}
           type="error"
           btns={[
             {
               type: 'solid',
               shape: 'round',
-              text: '확인',
+              text: t('CM_LOGIN_POLICY_03'),
               onClick: handleToggleMessage,
             },
           ]}

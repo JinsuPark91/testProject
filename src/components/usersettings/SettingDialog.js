@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useObserver } from 'mobx-react';
 import { Modal, Menu } from 'antd';
 import { useCoreStores, Form } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import ContentAlarm from './ContentAlarm';
 import ContentTitle from './ContentTitle';
@@ -96,6 +97,7 @@ const InnerList = styled.ul`
 `;
 
 function SettingDialog(props) {
+  const { t } = useTranslation();
   const { userStore, authStore } = useCoreStores();
   const { selectedKeyA, visible, onCancel } = props;
   const [selectedKey, setSelectedKey] = useState(selectedKeyA);
@@ -297,17 +299,13 @@ function SettingDialog(props) {
       visible={visible}
       centered
       width="59.38rem"
-      title="설정"
+      title={t('CM_SETTING')}
       style={{ top: 20, minWidth: '50rem' }}
       footer={
         buttonFooter ? (
           <Settingsave
             form={form}
             selectedKey={selectedKey}
-            saveaccountOut={() => setSelectedKey('4')}
-            savepasswordOut={() => setSelectedKey('5')}
-            saveaccountChange={() => setSelectedKey('4')}
-            savepasswordChange={() => setSelectedKey('5')}
             isContinue={isSecessionContinue}
             toggleContinue={handleToggleContinue}
             toggleFooter={handleSecessionButton}
@@ -328,15 +326,14 @@ function SettingDialog(props) {
               handleTabClick(key);
             }}
           >
-            <Menu.ItemGroup key="0" title="환경설정">
+            <Menu.ItemGroup key="0" title={t('CM_SETTING_02')}>
               {/* <Menu.Item key="1">일반</Menu.Item> */}
-              <Menu.Item key="2">알림</Menu.Item>
+              <Menu.Item key="2">{t('CM_NOTI')}</Menu.Item>
             </Menu.ItemGroup>
-            <Menu.ItemGroup key="3" title="개인 설정">
-              <Menu.Item key="4">내 정보</Menu.Item>
-              {/* <Menu.Item key="5">비밀번호변경</Menu.Item> */}
+            <Menu.ItemGroup key="3" title={t('CM_SETTING_05')}>
+              <Menu.Item key="4">{t('CM_MY_INFO_06')}</Menu.Item>
               {!isAdmin && !isB2B && (
-                <Menu.Item key="7">스페이스 탈퇴</Menu.Item>
+                <Menu.Item key="7">{t('CM_SETTING_DELETE_SPACE_01')}</Menu.Item>
               )}
             </Menu.ItemGroup>
           </StyledMenu>
@@ -355,8 +352,8 @@ function SettingDialog(props) {
           {selectedKey === '4' && (
             <>
               <ContentTitle
-                title="내 정보"
-                subTitle="내 스페이스 프로필을 편집할 수 있습니다."
+                title={t('CM_MY_INFO_06')}
+                subTitle={t('CM_SPACE_EDIT_PROFILE_02')}
               />
               <InnerList>
                 <SettingDialogPhoto />
