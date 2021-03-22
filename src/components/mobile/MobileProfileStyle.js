@@ -27,6 +27,7 @@ export const Container = styled.div`
   align-items: center;
   flex-direction: column;
   width: 100%;
+  height: calc(100% - 6.88rem);
   background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
     url('${props => props.imageSrc}');
   background-repeat: no-repeat;
@@ -35,10 +36,10 @@ export const Container = styled.div`
   ${props =>
     props.isEditMode
       ? css`
-          cursor: pointer;
+          height: 100%;
         `
       : css`
-          cursor: auto;
+          height: calc(100% - 6.88rem);
         `}
 `;
 
@@ -82,9 +83,10 @@ export const Sidebar = styled.div`
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
   width: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  height: 6.88rem;
+  background-color: #fff;
 `;
 
 export const StyledUpload = styled(Upload)`
@@ -98,9 +100,9 @@ export const Text = styled.span`
   display: block;
   max-width: 14.69rem;
   width: 100%;
-  color: #fff;
-  line-height: 1.19rem;
-  font-size: 0.81rem;
+  color: #333;
+  line-height: 1.06rem;
+  font-size: 0.69rem;
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: center;
@@ -117,11 +119,8 @@ export const ImageChangeButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
   border: none;
-  background-color: #000;
-  border-radius: 50%;
+  background-color: transparent;
   z-index: 5;
 
   &:hover {
@@ -157,17 +156,17 @@ export const Content = styled.div`
   display: flex;
   position: relative;
   width: 100%;
-  height: 90%;
+  height: 100%;
   flex-direction: column;
   align-items: center;
 `;
 
 export const ContentTop = styled.div`
   display: flex;
-  align-items: left;
-  width: 100%;
-  height: 1rem;
-  padding: 0.94rem 0.94rem 0;
+  align-items: center;
+  position: absolute;
+  top: 1.63rem;
+  left: 1.63rem;
 `;
 
 export const ContentBody = styled.div`
@@ -178,6 +177,9 @@ export const ContentBody = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  @media screen and (max-width: 320px) {
+    padding-top: 2.75rem;
+  }
 `;
 
 export const UserImageWrapper = styled.div`
@@ -210,6 +212,9 @@ export const UserInfoList = styled.div`
   padding: 4.38rem 5rem 3rem 5rem;
   display: flex;
   flex-direction: column;
+  @media screen and (max-width: 320px) {
+    padding: 2.38rem 4rem 3rem;
+  }
 `;
 
 export const UserInfoItem = styled.div`
@@ -254,6 +259,7 @@ export const UserInfoItem = styled.div`
 export const BigText = styled(Text)`
   margin-top: 1rem;
   line-height: 1.5rem;
+  color: #fff;
   font-size: 1rem;
 `;
 
@@ -457,7 +463,6 @@ export const Blind = styled.span`
 `;
 
 export const LockIconBox = styled.div`
-  height: 1;
   align-self: flex-start;
   margin: 0.25rem 0 0 0.3125rem;
   color: #75757f;
