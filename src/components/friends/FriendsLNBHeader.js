@@ -59,7 +59,10 @@ const FriendsLNBHeader = ({ handleInputChange, handleInputClear }) => {
         placement="bottomLeft"
         color="#232D3B"
       >
-        <FriendAddButton onClick={handleOpenAddFriendsDialog}>
+        <FriendAddButton
+          className="friends__add-button"
+          onClick={handleOpenAddFriendsDialog}
+        >
           <img alt="friend" src={FriendAddIcon} />
         </FriendAddButton>
       </Tooltip>

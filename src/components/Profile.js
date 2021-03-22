@@ -311,17 +311,26 @@ const Profile = observer(
         <Wrapper imageSrc={renderBackgroundPhoto}>
           {showSider && (
             <Sidebar>
-              <StyledButton onClick={handleTalkClick}>
+              <StyledButton
+                className="profile__talk-button"
+                onClick={handleTalkClick}
+              >
                 <FriendsIcon />
                 <Text>{isMyId() ? t('CM_MY_TALK_13') : `1:1 Talk`}</Text>
               </StyledButton>
               {isMyId() ? (
-                <StyledButton onClick={handleChangetoEditMode}>
+                <StyledButton
+                  className="profile__edit-button"
+                  onClick={handleChangetoEditMode}
+                >
                   <StyleIcon iconimg="profile" />
                   <Text>{t('CM_EDIT_PROFILE')}</Text>
                 </StyledButton>
               ) : (
-                <StyledButton onClick={handleMeetingClick}>
+                <StyledButton
+                  className="profile__meeting-button"
+                  onClick={handleMeetingClick}
+                >
                   <StyleIcon iconimg="meeting" />
                   <Text>1:1 Meeting</Text>
                 </StyledButton>
@@ -363,6 +372,7 @@ const Profile = observer(
               )}
               {!editEnabled && !(userId === userStore.myProfile.id) && (
                 <BookMarkButton
+                  className="profile__bookmark-button"
                   isFav={friendStore.isFavoriteFriend(userId)}
                   onClick={handleToggleFavoriteFriend}
                 >

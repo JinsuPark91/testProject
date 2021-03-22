@@ -62,7 +62,11 @@ const DropdownMenu = React.memo(
 const Profile = React.memo(
   ({ mode, profilePhoto, itemId, handleClickPhoto }) => {
     return (
-      <StyledAvatar mode={mode} onClick={e => handleClickPhoto(e, itemId)}>
+      <StyledAvatar
+        className="friends__item__photo"
+        mode={mode}
+        onClick={e => handleClickPhoto(e, itemId)}
+      >
         <img src={profilePhoto} alt="" />
       </StyledAvatar>
     );
@@ -80,7 +84,7 @@ const FriendAction = React.memo(
               trigger={['click']}
               onClick={e => e.stopPropagation()}
             >
-              <MoreIconWrapper className="friend-more-icon">
+              <MoreIconWrapper className="friend-more-icon friends__item__config-button">
                 <ViewMoreIcon />
               </MoreIconWrapper>
             </Dropdown>
@@ -119,7 +123,10 @@ const MeAction = React.memo(({ mode, itemId }) => {
 
   return (
     <Tooltip placement="top" title={t('CM_TEMP_MINI_CHAT')} color="#4C535D">
-      <MoreIconWrapper className="friend-export-icon" onClick={handleExport}>
+      <MoreIconWrapper
+        className="friend-export-icon friends__item__export-button"
+        onClick={handleExport}
+      >
         <ExportIcon />
       </MoreIconWrapper>
     </Tooltip>
@@ -531,7 +538,7 @@ const FriendItem = observer(
           isActive={isActive}
           isDndHover={isDndHover}
           mode={mode}
-          className=""
+          className="friends__item"
         >
           <Profile
             mode={mode}
