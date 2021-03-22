@@ -569,8 +569,8 @@ const StyledItem = styled.div`
   }
 
   .ant-list-item-meta-avatar {
-    margin-right: 0.4375rem;
     position: relative;
+    margin: 0.0652rem 0.4375rem 0.0652rem 0;
     .photos > div {
       border: 1px solid #fff;
       &::after {
