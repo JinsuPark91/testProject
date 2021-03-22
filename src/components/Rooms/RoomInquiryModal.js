@@ -410,7 +410,7 @@ function RoomInquiryModal({
               <ButtonIcon>
                 <ChattingIcon width="1.5" height="1.5" />
               </ButtonIcon>
-              {t('CM_TEMP_TALK')}
+              Talk
             </SettingButton>
             <SettingButton onClick={handleMeeting}>
               <ButtonIcon>
