@@ -25,9 +25,17 @@ const RoomSettingStore = observable({
 
   async fetchBlockedMembers({ roomId }) {
     try {
-      const members = await RoomStore.getBanList({
+      const banInfos = await RoomStore.getBanList({
         roomId,
       });
+
+      const userIdList = banInfos.map(({ userId }) => userId);
+
+      let members = [];
+      if (userIdList.length) {
+        members = await UserStore.fetchProfileList(userIdList);
+      }
+
       this.members = members;
     } catch (err) {
       console.log('블록 멤버 조회 에러 : ', err);
@@ -97,6 +105,23 @@ const RoomSettingStore = observable({
     }
   },
 
+  async disableBan({ roomId, userIdList }) {
+    try {
+      const result = await RoomStore.deleteBanMembers({
+        roomId,
+        userIdList,
+      });
+
+      if (result) {
+        await this.fetchRequestMembers({ roomId });
+        return Promise.resolve(true);
+      }
+      return Promise.resolve(false);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+
   async transferAdmin({ roomId, userId }) {
     try {
       await RoomStore.updateRoomLeader({
@@ -114,8 +139,6 @@ const RoomSettingStore = observable({
   async kickoutMembers({ roomId, userIdList }) {
     try {
       const result = await RoomStore.createBanMembers({ roomId, userIdList });
-      console.log('result : ', result);
-
       if (result) return Promise.resolve(true);
       return Promise.resolve(false);
     } catch (err) {
@@ -127,8 +150,9 @@ const RoomSettingStore = observable({
   // 검색 관련
   keyword: '',
   get filteredMembers() {
-    return this.members.filter(
-      member => !!member?.name?.includes(this.keyword),
+    return (
+      this.members?.filter(member => !!member?.name?.includes(this.keyword)) ||
+      []
     );
   },
 

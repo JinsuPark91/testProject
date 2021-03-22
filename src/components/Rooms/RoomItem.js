@@ -265,7 +265,7 @@ const RoomItemContent = ({
                   defaultDiameter="2.13"
                   srcList={userPhotos}
                   onClick={handleClickRootPhoto}
-                  className="photos"
+                  className="photos rooms__item__photo"
                 />
               );
             }}
@@ -335,7 +335,7 @@ const RoomItemContent = ({
       <Observer>
         {() => {
           return roomInfo.metadata?.count ? (
-            <UnreadCount className="room-item__unread">
+            <UnreadCount className="rooms__item__unread">
               {roomInfo.metadata?.count > 99 ? '99+' : roomInfo.metadata?.count}
             </UnreadCount>
           ) : null;
@@ -347,13 +347,16 @@ const RoomItemContent = ({
           onMenuClick={handleMenuClick}
           onClickMenuItem={onClickMenuItem}
         >
-          <IconWrapper className="room-item__icon">
+          <IconWrapper className="rooms__item__config-button">
             <ViewMoreIcon />
           </IconWrapper>
         </RoomDropdown>
       )}
       <Tooltip placement="top" title={t('CM_TEMP_MINI_CHAT')} color="#4C535D">
-        <IconWrapper className="room-item__icon" onClick={handleExport}>
+        <IconWrapper
+          className="rooms__item__export-button"
+          onClick={handleExport}
+        >
           <ExportIcon width={1} height={1} color="#49423A" />
         </IconWrapper>
       </Tooltip>
@@ -446,7 +449,7 @@ const RoomItem = ({
   }, []);
 
   return (
-    <StyledItem ref={drop} onClick={handleRoomClick}>
+    <StyledItem ref={drop} className="rooms__item" onClick={handleRoomClick}>
       <ItemWrapper selected={selected} isActiveDropEffect={isActive}>
         <RoomItemContent
           roomInfo={roomInfo}
@@ -501,11 +504,12 @@ const ItemWrapper = styled.div`
   &:hover {
     background: #faf8f7;
 
-    .room-item__unread {
+    .rooms__item__unread {
       display: none;
     }
 
-    .room-item__icon {
+    .rooms__item__config-button,
+    .rooms__item__export-button {
       display: flex;
     }
   }
