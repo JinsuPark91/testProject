@@ -217,6 +217,10 @@ const ProfileMyModal = ({
 
   const isTmaxDomain = !!/^(tmax)\./gi.exec(window.location.hostname);
 
+  const getBackPhoto = () => {
+    return userStore.getBackgroundPhotoURL(userId);
+  };
+
   // 이후 '현재 스페이스의 어드민'인지를 체크하도록 수정
   const moreMenu = (
     <Menu style={{ minWidth: '6.25rem' }}>
@@ -244,6 +248,10 @@ const ProfileMyModal = ({
       </UserImage>
       <UserName>{userStore.myProfile?.displayName}</UserName>
       <UserMail>{`(${userStore.myProfile?.loginId})`}</UserMail>
+      {userStore.myProfile?.profileStatusMsg && (
+        <UserStatus>{userStore.myProfile?.profileStatusMsg}</UserStatus>
+      )}
+
       <UserButtonBox>
         <Button type="link" onClick={toggleEditMode}>
           {t('CM_EDIT_PROFILE')}
@@ -478,6 +486,7 @@ const ProfileMyModal = ({
       onCancel={handleCancel}
       closable={false}
       outLine
+      backgroundPhotoURL={getBackPhoto()}
       width="17rem"
       type="user"
       userContent={userContent}
@@ -544,6 +553,17 @@ const UserMail = styled.span`
   opacity: 0.8;
   white-space: nowrap;
   text-overflow: ellipsis;
+`;
+const UserStatus = styled.span`
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  font-size: 0.63rem;
+  color: white;
+  margin-top: 0.3rem;
 `;
 const UserButtonBox = styled.div`
   display: flex;

@@ -41,6 +41,7 @@ const DropdownMenu = React.memo(
     handleRemoveFriendMessageOpen,
   }) => {
     const { t } = useTranslation();
+    // 추후 프렌즈 삭제 i18n 교체 필요
     return (
       <Menu>
         {friendFavorite && (
@@ -52,7 +53,7 @@ const DropdownMenu = React.memo(
           <Menu.Item onClick={handleAddBookmark}>{t('CM_BOOKMARK')}</Menu.Item>
         )}
         <Menu.Item onClick={handleRemoveFriendMessageOpen}>
-          프렌즈 삭제
+          {t('TEMP_DELETE_FRIEND')}
         </Menu.Item>
       </Menu>
     );
@@ -555,7 +556,7 @@ const FriendItem = observer(
               orgName={orgName}
               position={position}
             />
-            {/* <TextStatus>상태메세지영역입니다</TextStatus> */}
+            {profileStatusMsg && <TextStatus>{profileStatusMsg}</TextStatus>}
           </TextWrapper>
           <ActionWrapper>
             {isNewFriend && (

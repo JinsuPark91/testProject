@@ -30,6 +30,7 @@ import {
   UserInfoList,
   UserInfoItem,
   BigText,
+  StatusText,
   ButtonContainer,
   FriendsIcon,
   StyleIcon,
@@ -73,6 +74,14 @@ const Profile = observer(
     // NOTE. Setting null to photo means default image is used
     const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(undefined);
     const [localProfilePhoto, setLocalProfilePhoto] = useState(undefined);
+    // 프로필 이미지 변경시 파일 객체
+    const [changedProfilePhotoFile, setChangedProfilePhotoFile] = useState(
+      undefined,
+    );
+    const [
+      changedBackgroundPhotoFile,
+      setChangedBackgroundPhotoFile,
+    ] = useState(undefined);
 
     const isMyId = () => userId === userStore.myProfile.id;
     const profile = isMyId()
@@ -110,6 +119,8 @@ const Profile = observer(
       setMobile(profile?.phone);
       setLocalProfilePhoto(undefined);
       setLocalBackgroundPhoto(undefined);
+      setChangedProfilePhotoFile(undefined);
+      setChangedBackgroundPhotoFile(undefined);
     };
 
     const resetLocalInputData = () => {
@@ -119,6 +130,8 @@ const Profile = observer(
       setMobile(undefined);
       setLocalProfilePhoto(undefined);
       setLocalBackgroundPhoto(undefined);
+      setChangedProfilePhotoFile(undefined);
+      setChangedBackgroundPhotoFile(undefined);
     };
 
     const isValidInputData = () => !!name;
@@ -127,6 +140,8 @@ const Profile = observer(
       if (isEditMode) {
         setLocalProfilePhoto(undefined);
         setLocalBackgroundPhoto(undefined);
+        setChangedProfilePhotoFile(undefined);
+        setChangedBackgroundPhotoFile(undefined);
       }
       setEditMode(editOnlyMode);
       (async () => {
@@ -204,20 +219,24 @@ const Profile = observer(
 
     const handleChangeBackground = file => {
       setIsChange(true);
+      setChangedBackgroundPhotoFile(file);
       setLocalBackgroundPhoto(URL.createObjectURL(file));
     };
     const handleChangeDefaultBackground = () => {
       setIsChange(true);
       setLocalBackgroundPhoto(null);
+      setChangedBackgroundPhotoFile(undefined);
     };
 
     const handleChangePhoto = file => {
       setIsChange(true);
+      setChangedProfilePhotoFile(file);
       setLocalProfilePhoto(URL.createObjectURL(file));
     };
     const handleChangeDefaultPhoto = () => {
       setIsChange(true);
       setLocalProfilePhoto(null);
+      setChangedProfilePhotoFile(undefined);
     };
 
     const handleConfirm = async () => {
@@ -229,27 +248,39 @@ const Profile = observer(
       if (statusMsg || statusMsg === '')
         updatedInfo.profileStatusMsg = statusMsg;
 
+      // default photo가 아닌 프로필 사진으로 변경을 시도한 경우
       if (localProfilePhoto?.includes('blob:')) {
-        const blobImage = await toBlob(localProfilePhoto);
-        const base64Image = await toBase64(blobImage);
-        updatedInfo.profilePhoto = base64Image;
+        // const blobImage = await toBlob(localProfilePhoto);
+        // const base64Image = await toBase64(blobImage);
+        updatedInfo.profilePhoto = null; // base64Image
+        updatedInfo.profileFile = changedProfilePhotoFile;
+        updatedInfo.profileName = changedProfilePhotoFile?.name;
         URL.revokeObjectURL(localProfilePhoto);
       } else {
+        // default photo로 변경 시도 혹은 변경 없는 경우
         // The null value means default photo
         updatedInfo.profilePhoto =
           localProfilePhoto === null ? localProfilePhoto : getProfilePhoto();
+        updatedInfo.profileFile = null;
+        updatedInfo.profileName = null;
       }
 
+      // 프로필 사진 변경과 동일한 로직 flow
       if (localBackgroundPhoto?.includes('blob:')) {
-        const blobImage = await toBlob(localBackgroundPhoto);
-        const base64Image = await toBase64(blobImage);
-        updatedInfo.backPhoto = base64Image;
+        // const blobImage = await toBlob(localBackgroundPhoto);
+        // const base64Image = await toBase64(blobImage);
+        updatedInfo.backPhoto = null; // base64Image;
+        updatedInfo.backFile = changedBackgroundPhotoFile;
+        updatedInfo.backName = changedBackgroundPhotoFile?.name;
         URL.revokeObjectURL(localBackgroundPhoto);
       } else {
         // The null value means default photo
         updatedInfo.backPhoto =
           localBackgroundPhoto === null ? localBackgroundPhoto : getBackPhoto();
+        updatedInfo.backFile = null;
+        updatedInfo.backName = null;
       }
+
       await userStore.updateMyProfile({ updatedInfo });
 
       resetLocalInputData();
@@ -435,26 +466,26 @@ const Profile = observer(
               {!editEnabled && (
                 <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
               )}
-              {/* NOTE 프로파일 상태 메시지는 추후에 지원함.
-              <UserStatusMsg>
+              <StatusText editEnabled={editEnabled}>
                 {editEnabled ? (
-                  <StyleInput
-                    className="type2"
+                  <EditNameInput
+                    maxLength={50}
+                    placeholder={t('CM_B2C_CONTENTS_AREA_EMPTY_PAGE_36')}
                     onChange={e => {
                       setIsChange(true);
-                      setStatusMsg(e.target.value);
+                      setStatusMsg(e);
                     }}
                     value={
                       statusMsg !== undefined
                         ? statusMsg
                         : profile?.profileStatusMsg
                     }
+                    isStatusMsg
                   />
                 ) : (
                   profile?.profileStatusMsg
                 )}
-              </UserStatusMsg>
-              */}
+              </StatusText>
               {/* <Tooltip placement="bottom" title={t('CM_EDIT_ONLY_ADMIN')} color="#4C535D"></Tooltip> */}
               <UserInfoList>
                 {userType === 'USR0001' && (
@@ -488,12 +519,10 @@ const Profile = observer(
                         }
                         placeholder={t('CM_B3C_CONTENTS_AREA_EMPTY_PAGE_30')}
                       />
-                    ) : profile?.companyNum ? (
+                    ) : (
                       <UserInfoText>
                         <span>{getCompanyNumber(profile)}</span>
                       </UserInfoText>
-                    ) : (
-                      <UserInfoText>-</UserInfoText>
                     )}
                   </UserInfoItem>
                 )}

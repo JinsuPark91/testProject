@@ -41,7 +41,11 @@ const SettingDialogCountryCode = props => {
       userStore.myProfile.id,
       'medium',
     );
+    obj.profileFile = null;
+    obj.profileName = null;
     obj.backPhoto = userStore.getBackgroundPhotoURL(userStore.myProfile.id);
+    obj.backFile = null;
+    obj.backName = null;
     obj.name = userStore.myProfile.name;
     obj.nick = userStore.myProfile.nick;
     obj.nationalCode = selectedCountryCode;
@@ -51,7 +55,7 @@ const SettingDialogCountryCode = props => {
     try {
       await userStore.updateMyProfile(obj);
     } catch (e) {
-      console.log(`changeNationalCode Error is ${e}`);
+      console.log(`change National Code Error is ${e}`);
     }
     onSuccess();
   };
