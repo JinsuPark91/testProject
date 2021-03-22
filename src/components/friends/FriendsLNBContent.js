@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useObserver } from 'mobx-react';
 import { ProfileInfoModal, useCoreStores, Toast } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
@@ -33,6 +33,13 @@ const FriendsLNBContent = React.forwardRef(
     const [toastText, setToastText] = useState('');
     const [infoModalVisible, setInfoModalVisible] = useState(false);
     const [yPosition, setyPosition] = useState(0);
+
+    const friendContainer = useRef(null);
+    useEffect(() => {
+      if (friendContainer.current) {
+        friendContainer.current.scrollTo(0, 0);
+      }
+    }, []);
 
     useEffect(() => {
       setFriendActiveId(activeUserId);
@@ -132,25 +139,27 @@ const FriendsLNBContent = React.forwardRef(
       );
 
       return (
-        <ContentWrapper id="lnb__friend-container">
-          <div ref={ref} />
-          <FriendListBox noFriend={!friendStore.friendInfoList.length}>
-            <FriendItem
-              mode="me"
-              tooltipPopupContainer={meTooltipPopupContainer}
-              friendInfo={userStore.myProfile}
-              onClick={handleFriendActive}
-              isActive={
-                PlatformUIStore.resourceType === 'f' &&
-                friendActiveId === userStore.myProfile.id
-              }
-              setSelectedId={targetId => setSelectedId(targetId)}
-              toggleInfoModal={() => setInfoModalVisible(!infoModalVisible)}
-              setyPosition={yCoord => setyPosition(yCoord)}
-            />
-          </FriendListBox>
-          {!friendStore.friendInfoList.length && renderEmptyContent}
-          {!!friendStore.friendInfoList.length && renderContent}
+        <>
+          <ContentWrapper id="lnb__friend-container" ref={friendContainer}>
+            <div ref={ref} />
+            <FriendListBox noFriend={!friendStore.friendInfoList.length}>
+              <FriendItem
+                mode="me"
+                tooltipPopupContainer={meTooltipPopupContainer}
+                friendInfo={userStore.myProfile}
+                onClick={handleFriendActive}
+                isActive={
+                  PlatformUIStore.resourceType === 'f' &&
+                  friendActiveId === userStore.myProfile.id
+                }
+                setSelectedId={targetId => setSelectedId(targetId)}
+                toggleInfoModal={() => setInfoModalVisible(!infoModalVisible)}
+                setyPosition={yCoord => setyPosition(yCoord)}
+              />
+            </FriendListBox>
+            {!friendStore.friendInfoList.length && renderEmptyContent}
+            {!!friendStore.friendInfoList.length && renderContent}
+          </ContentWrapper>
           {infoModalVisible && (
             <ProfileInfoModal
               userId={selectedId}
@@ -168,7 +177,7 @@ const FriendsLNBContent = React.forwardRef(
               position={{ left: '16.81rem' }}
             />
           )}
-        </ContentWrapper>
+        </>
       );
     });
   },

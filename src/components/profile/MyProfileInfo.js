@@ -1,16 +1,19 @@
 import React, { useState, useCallback } from 'react';
+import { useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import { observer } from 'mobx-react';
-import { useCoreStores } from 'teespace-core';
 import settingIcon from '../../assets/setting.svg';
 import ProfileMyModal from './ProfileMyModal';
 
 const MyProfileInfo = observer(() => {
-  const { userStore, authStore } = useCoreStores();
+  const { userStore, authStore, spaceStore } = useCoreStores();
   const userId = authStore.user.id;
   const { isFirstLogin } = authStore.sessionInfo;
   const [myModalVisible, setMyModalVisible] = useState(isFirstLogin);
   const [tutorialVisible, setTutorialVisible] = useState(isFirstLogin);
+
+  const newMessageExist =
+    spaceStore.spaceList.find(elem => elem.unreadSpaceCount > 0) !== undefined;
 
   const toggleMyModal = useCallback(() => {
     setMyModalVisible(v => !v);
@@ -23,7 +26,6 @@ const MyProfileInfo = observer(() => {
     userStore.myProfile.id,
     'small',
   );
-
   const thumbPhotoMedium = userStore.getProfilePhotoURL(
     userStore.myProfile.id,
     'medium',
@@ -32,6 +34,7 @@ const MyProfileInfo = observer(() => {
   return (
     <>
       <ProfileIcon className="header__profile-button" onClick={toggleMyModal}>
+        {newMessageExist && <NewBadge />}
         <ThumbImage src={thumbPhoto} />
         <SettingImage>
           <img alt="settingIcon" src={settingIcon} />
@@ -51,6 +54,16 @@ const MyProfileInfo = observer(() => {
 const ProfileIcon = styled.div`
   position: relative;
   cursor: pointer;
+`;
+
+const NewBadge = styled.div`
+  position: absolute;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: #dc4547;
+  top: 0.1rem;
+  right: 0.1rem;
 `;
 
 const ThumbImage = styled.img`

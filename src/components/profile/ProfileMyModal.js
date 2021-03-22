@@ -10,10 +10,9 @@ import {
   logEvent,
 } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
-import { useObserver } from 'mobx-react';
-// import { useTranslation } from 'react-i18next';
-import { useKeycloak } from '@react-keycloak/web';
-import { useTranslation } from 'react-i18next';
+import { useObserver, Observer } from 'mobx-react';
+import { I18nContext, useTranslation } from 'react-i18next';
+import i18next from '../../i18n';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SettingDialog from '../usersettings/SettingDialog';
 import ProfileSpaceModal from './ProfileSpaceModal';
@@ -21,6 +20,8 @@ import convertSpaceIcon from '../../assets/convert_space.svg';
 import moreSpaceIcon from '../../assets/view_more.svg';
 import checkekIcon from '../../assets/ts_check.svg';
 import { ReactComponent as SquareSpaceIcon } from '../../assets/card_view.svg';
+import LanguageIcon from '../../assets/language.svg';
+import RightArrowIcon from '../../assets/arrow_right_line.svg';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
 import AddFriendsBySearch from '../friends/AddFriendsBySearch';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
@@ -69,10 +70,7 @@ const ProfileMyModal = ({
   ] = useState(false);
 
   const isAdmin = userStore.myProfile.grade === 'admin';
-
-  // 1월 업데이트
-  // const [lngListVisible, setLngListVisible] = useState(false);
-  //
+  const [lngListVisible, setLngListVisible] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
   const handleSettingDialogOpen = useCallback(e => {
@@ -109,19 +107,6 @@ const ProfileMyModal = ({
   const revokeURL = useCallback(() => {
     URL.revokeObjectURL(thumbPhoto);
   }, [thumbPhoto]);
-
-  // 1월 업데이트
-  // const handleToggleLngList = useCallback(() => {
-  //   setLngListVisible(l => !l);
-  //   useProfile.setState({ ...useProfile.state, created: false });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [useProfile]);
-
-  // const handleLanguage = useCallback(lng => {
-  //   setLngListVisible(l => false);
-  //   i18n.changeLanguage(lng);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
 
   const handleCancel = useCallback(() => {
     setSpaceListVisible(false);
@@ -241,6 +226,26 @@ const ProfileMyModal = ({
     </Menu>
   );
 
+  const handleChangeLanguage = key => {
+    if (i18next.language === key) return;
+    i18next.changeLanguage(key).then((t, err) => {
+      if (err) return console.log(`error is..${err}`);
+      sessionStorage.setItem('language', key);
+      userStore.myProfile.setLanguage(key);
+    });
+  };
+
+  const LanguageMenu = (
+    <Menu style={{ minWidth: '6.25rem' }}>
+      <Menu.Item onClick={() => handleChangeLanguage('ko')}>
+        {t('CM_KOREAN')}
+      </Menu.Item>
+      <Menu.Item onClick={() => handleChangeLanguage('en')}>
+        {t('CM_ENGLISH')}
+      </Menu.Item>
+    </Menu>
+  );
+
   const userContent = !isEditMode ? (
     <>
       <UserImage>
@@ -282,6 +287,11 @@ const ProfileMyModal = ({
     />
   );
 
+  const getLanguage = () => {
+    if (userStore.myProfile.language) return userStore.myProfile.language;
+    return sessionStorage.getItem('language');
+  };
+
   const subContent = (
     <>
       <UserSpaceArea isEdit={isEditMode}>
@@ -318,37 +328,29 @@ const ProfileMyModal = ({
           </Dropdown>
         </DataBox>
       </UserSpaceArea>
-      {/* 1월 업데이트 */}
-      {/* <UserSubArea>
-        <SubInfo tabIndex="-1" onClick={handleToggleLngList}>
-          <LangSpaceIcon />
-          Language : {i18n.language === 'ko' ? t('CM_KOREAN') : t('CM_ENGLISH')}
-          <LangIcon>
-            <ArrowRightIcon />
-          </LangIcon>
-        </SubInfo>
-        {lngListVisible && (
-          <LngList>
-            <LangItem
-              checked={i18n.language === 'ko'}
-              onClick={handleLanguage.bind(this, 'ko')}
+      <Observer>
+        {() => (
+          <UserSubArea>
+            <img alt="lang" src={LanguageIcon} />
+            Language :{' '}
+            {getLanguage() === 'ko' ? t('CM_KOREAN') : t('CM_ENGLISH')}
+            <Dropdown
+              trigger={['click']}
+              overlay={LanguageMenu}
+              placement="bottomRight"
             >
-              {t('CM_KOREAN')}
-            </LangItem>
-            <LangItem
-              checked={i18n.language === 'en'}
-              onClick={handleLanguage.bind(this, 'en')}
-            >
-              {t('CM_ENGLISH')}
-            </LangItem>
-          </LngList>
+              <LanguageButton>
+                <img alt="arrow" src={RightArrowIcon} />
+              </LanguageButton>
+            </Dropdown>
+          </UserSubArea>
         )}
-      </UserSubArea> */}
+      </Observer>
       {spaceListVisible && (
         <ConvertDropdown>
           <ConvertNow>
             <LogoSmall checked>
-              {spaceStore.currentSpace?.unreadSpaceCount && (
+              {spaceStore.currentSpace?.unreadSpaceCount > 0 && (
                 <LogoNumber>
                   {spaceStore.currentSpace?.unreadSpaceCount > 99
                     ? '99+'
@@ -376,7 +378,7 @@ const ProfileMyModal = ({
                       key={elem}
                     >
                       <LogoSmall>
-                        {elem?.unreadSpaceCount && (
+                        {elem?.unreadSpaceCount > 0 && (
                           <LogoNumber>
                             {elem.unreadSpaceCount > 99
                               ? '99+'
@@ -704,8 +706,36 @@ const Blind = styled.span`
   overflow: hidden;
 `;
 const UserSubArea = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 1rem 0.56rem 1rem 1.69rem;
+  color: #000;
+  font-size: 0.81rem;
+  font-weight: 500;
+  & > img {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.63rem;
+  }
   & + & {
     border-top: 1px solid #e3e7eb;
+  }
+`;
+const LanguageButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.25rem;
+  margin-left: auto;
+  cursor: pointer;
+  &:hover {
+    background-color: #f2efec;
+  }
+  & > img {
+    height: 1rem;
+    width: 1rem;
   }
 `;
 const SubInfo = styled.p`
