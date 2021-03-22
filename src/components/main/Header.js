@@ -141,6 +141,7 @@ const AppIcon = React.memo(
     return (
       <Tooltip placement="bottom" title={t(i18n)} color="#4C535D">
         <AppIconInner
+          className={`header__${appName}-button`}
           key={appName}
           onClick={handleAppClick}
           disabled={disabled}
@@ -411,6 +412,7 @@ const Header = observer(() => {
           <>
             <Title>
               <StyledPhotos
+                className="header__photo"
                 srcList={getUserPhotos()}
                 onClick={handleClickRoomPhoto}
               />
@@ -439,7 +441,10 @@ const Header = observer(() => {
                       title={t('CM_TEMP_MINI_CHAT')}
                       color="#4C535D"
                     >
-                      <IconWrapper onClick={handleExport}>
+                      <IconWrapper
+                        className="header__export-button"
+                        onClick={handleExport}
+                      >
                         <ExportIcon
                           width={1.25}
                           height={1.25}
@@ -452,7 +457,10 @@ const Header = observer(() => {
                       title={t('CM_ROOMTITLE_TOOLTIP_02')}
                       color="#4C535D"
                     >
-                      <IconWrapper onClick={handleSearch}>
+                      <IconWrapper
+                        className="header__search-button"
+                        onClick={handleSearch}
+                      >
                         <SearchIcon
                           width={1.25}
                           height={1.25}
@@ -469,7 +477,10 @@ const Header = observer(() => {
                       title={t('CM_ROOM_INVITE_USER')}
                       color="#4C535D"
                     >
-                      <IconWrapper onClick={handleAddMember}>
+                      <IconWrapper
+                        className="header__invite-button"
+                        onClick={handleAddMember}
+                      >
                         <AddAcountIcon
                           width={1.25}
                           height={1.25}

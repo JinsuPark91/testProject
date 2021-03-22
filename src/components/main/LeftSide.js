@@ -64,7 +64,7 @@ const LeftSide = observer(() => {
               placement="bottom"
               color="#4C535D"
             >
-              <IconWrapper className="lnb__icon-wrapper">
+              <IconWrapper className="lnb__icon-wrapper lnb__friends">
                 <UnreadCount isVisible={newFriendNum > 0}>
                   {newFriendNum}
                 </UnreadCount>
@@ -88,7 +88,7 @@ const LeftSide = observer(() => {
               placement="bottom"
               color="#4C535D"
             >
-              <IconWrapper className="lnb__icon-wrapper">
+              <IconWrapper className="lnb__icon-wrapper lnb__rooms">
                 <Observer>
                   {() => {
                     PlatformUIStore.totalUnreadCount = roomStore
@@ -131,7 +131,7 @@ const LeftSide = observer(() => {
               placement="bottom"
               color="#4C535D"
             >
-              <IconWrapper className="lnb__icon-wrapper">
+              <IconWrapper className="lnb__icon-wrapper lnb__mail">
                 <UnreadCount isVisible={false}>N</UnreadCount>
                 {PlatformUIStore.tabType === 'm' ? (
                   <MailActiveIcon width={1.5} height={1.5} />

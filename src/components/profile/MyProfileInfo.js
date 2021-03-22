@@ -31,7 +31,7 @@ const MyProfileInfo = observer(() => {
 
   return (
     <>
-      <ProfileIcon onClick={toggleMyModal}>
+      <ProfileIcon className="header__profile-button" onClick={toggleMyModal}>
         <ThumbImage src={thumbPhoto} />
         <SettingImage>
           <img alt="settingIcon" src={settingIcon} />

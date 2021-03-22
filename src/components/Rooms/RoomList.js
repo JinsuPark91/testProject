@@ -320,7 +320,10 @@ function RoomList() {
           placement="bottomLeft"
           color="#4C535D"
         >
-          <AddRoomIconWrapper onClick={handleCreateRoom}>
+          <AddRoomIconWrapper
+            className="rooms__create-button"
+            onClick={handleCreateRoom}
+          >
             <AddRoomIcon width={1.38} height={1.38} color="#232D3B" />
           </AddRoomIconWrapper>
         </Tooltip>
