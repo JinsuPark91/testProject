@@ -77,13 +77,13 @@ const TableRow = ({ style, member }) => {
         )}
       </Cell>
       <Observer>
-        {() => <Cell style={{ width: WIDTH.NICK }}>{member.name}</Cell>}
+        {() => <Cell style={{ width: WIDTH.NICK }}>{member.nick}</Cell>}
       </Observer>
       <Observer>
         {() => <Cell style={{ width: WIDTH.LOGIN_ID }}>{member.loginId}</Cell>}
       </Observer>
       <Observer>
-        {() => <Cell style={{ width: WIDTH.TEAM }}>{member.userJob}</Cell>}
+        {() => <Cell style={{ width: WIDTH.TEAM }}>{member.orgName}</Cell>}
       </Observer>
       <Observer>
         {() => <Cell style={{ width: WIDTH.JOB }}>{member.position}</Cell>}
@@ -188,23 +188,23 @@ const MemberPage = ({ roomId }) => {
   const { t } = useTranslation();
   const history = useHistory();
 
-  const handleSystemMessage = message => {
-    if (message.SPACE_ID !== roomId) return;
+  // const handleSystemMessage = message => {
+  //   console.log('**** noti type : ', message.NOTI_TYPE);
+  //   if (message.SPACE_ID !== roomId) return;
+  //   switch (message.NOTI_TYPE) {
+  //     case 'addMember':
+  //     case 'removeMember':
+  //       store.fetchMembers({ roomId });
 
-    switch (message.NOTI_TYPE) {
-      case 'addMember':
-      case 'removeMember':
-        store.fetchMembers({ roomId });
-
-        break;
-      default:
-        break;
-    }
-  };
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
 
   useEffect(() => {
     store.fetchMembers({ roomId });
-    WWMS.addHandler('SYSTEM', 'room_setting', handleSystemMessage);
+    // WWMS.addHandler('SYSTEM', 'room_setting', handleSystemMessage);
 
     return () => {
       store.members = [];
@@ -212,7 +212,7 @@ const MemberPage = ({ roomId }) => {
       store.toastMessage = '';
       store.toastVisible = '';
       store.selectedMembers.clear();
-      WWMS.removeHandler('SYSTEM', 'room_setting');
+      // WWMS.removeHandler('SYSTEM', 'room_setting');
     };
   }, []);
 
@@ -234,7 +234,11 @@ const MemberPage = ({ roomId }) => {
   const handleKickoutOK = async () => {
     try {
       const userIdList = Array.from(store.selectedMembers.keys());
-      await store.kickoutMembers({ roomId, userIdList });
+      const result = await store.kickoutMembers({ roomId, userIdList });
+      if (result) {
+        await store.fetchMembers({ roomId });
+      }
+
       store.selectedMembers.clear();
     } catch (err) {
       console.log('강퇴 / 밴 실패 : ', err);

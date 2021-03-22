@@ -126,23 +126,23 @@ const Table = () => {
 const SubWaitingMemberPage = ({ roomId }) => {
   const { t } = useTranslation();
 
-  const handleSystemMessage = message => {
-    console.log('setting page store : ', message);
-    if (message.SPACE_ID !== roomId) return;
+  // const handleSystemMessage = message => {
+  //   console.log('setting page store : ', message);
+  //   if (message.SPACE_ID !== roomId) return;
 
-    switch (message.NOTI_TYPE) {
-      case 'memberRequest':
-        store.fetchRequestMembers({ roomId });
+  //   switch (message.NOTI_TYPE) {
+  //     case 'memberRequest':
+  //       store.fetchRequestMembers({ roomId });
 
-        break;
-      default:
-        break;
-    }
-  };
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
 
   useEffect(() => {
     store.fetchRequestMembers({ roomId });
-    WWMS.addHandler('SYSTEM', 'room_setting', handleSystemMessage);
+    // WWMS.addHandler('SYSTEM', 'room_setting', handleSystemMessage);
 
     return () => {
       store.members = [];
@@ -150,7 +150,7 @@ const SubWaitingMemberPage = ({ roomId }) => {
       store.toastMessage = '';
       store.toastVisible = false;
       store.selectedMembers.clear();
-      WWMS.removeHandler('SYSTEM', 'room_setting');
+      // WWMS.removeHandler('SYSTEM', 'room_setting');
     };
   }, []);
 
@@ -160,6 +160,7 @@ const SubWaitingMemberPage = ({ roomId }) => {
     try {
       const result = await store.acceptUsers({ roomId, userIdList });
       if (result) {
+        await store.fetchRequestMembers({ roomId });
         store.open(
           'toast',
           t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_07', {
@@ -180,6 +181,7 @@ const SubWaitingMemberPage = ({ roomId }) => {
     try {
       const result = await store.rejectUsers({ roomId, userIdList });
       if (result) {
+        await store.fetchRequestMembers({ roomId });
         store.open(
           'toast',
           t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_08', {

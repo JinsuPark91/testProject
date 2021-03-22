@@ -47,19 +47,19 @@ const TableRow = ({ style, member }) => {
         </Observer>
       </Cell>
       <Observer>
-        {() => <Cell style={{ width: WIDTH.NICK }}>{member.name}</Cell>}
+        {() => <Cell style={{ width: WIDTH.NICK }}>{member.nick}</Cell>}
       </Observer>
       <Observer>
         {() => <Cell style={{ width: WIDTH.LOGIN_ID }}>{member.loginId}</Cell>}
       </Observer>
       <Observer>
-        {() => <Cell style={{ width: WIDTH.TEAM }}>{member.userJob}</Cell>}
+        {() => <Cell style={{ width: WIDTH.TEAM }}>{member.orgName}</Cell>}
       </Observer>
       <Observer>
         {() => <Cell style={{ width: WIDTH.JOB }}>{member.position}</Cell>}
       </Observer>
       <Observer>
-        {() => <Cell style={{ width: WIDTH.PHONE }}>{member.userPhone}</Cell>}
+        {() => <Cell style={{ width: WIDTH.PHONE }}>{member.phone}</Cell>}
       </Observer>
     </RowWrapper>
   );
@@ -137,7 +137,6 @@ const SubWaitingMemberPage = ({ roomId }) => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    // TODO : fetchRequests()
     store.fetchBlockedMembers({ roomId });
 
     return () => {
@@ -149,14 +148,19 @@ const SubWaitingMemberPage = ({ roomId }) => {
     };
   }, []);
 
-  const handleUnblock = () => {
-    store.open(
-      'toast',
-      t('CM_ROOM_SETTING_MANAGE_PEOPLE_04', {
-        num: store.selectedMembers.size,
-      }),
-    );
-    store.selectedMembers.clear();
+  const handleUnblock = async () => {
+    const userIdList = Array.from(store.selectedMembers.keys());
+    const result = await store.disableBan({ roomId, userIdList });
+    if (result) {
+      await store.fetchBlockedMembers({ roomId });
+      store.open(
+        'toast',
+        t('CM_ROOM_SETTING_MANAGE_PEOPLE_04', {
+          num: store.selectedMembers.size,
+        }),
+      );
+      store.selectedMembers.clear();
+    }
   };
 
   const handleSearchClear = () => {
