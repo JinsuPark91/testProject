@@ -10,7 +10,12 @@ import {
 } from 'react-router-dom';
 import './App.less';
 import { create } from 'mobx-persist';
-import { logPageView, PortalProvider, useCoreStores } from 'teespace-core';
+import {
+  logPageView,
+  PortalProvider,
+  useCoreStores,
+  CoreInitializeTranslation,
+} from 'teespace-core';
 import { initApp as initTalkApp } from 'teespace-talk-app';
 import { initApp as initDriveApp } from 'teespace-drive-app';
 import { initApp as initNoteApp } from 'teespace-note-app';
@@ -94,6 +99,7 @@ function App() {
     Promise.all([hydrate('user', userStore)])
       .then(() => {
         userStore.initHydratedMyProfile({});
+        userStore.myProfile.setLanguage(sessionStorage.getItem('language'));
         setIsHydrating(true);
       })
       .catch(e => console.error(e));
@@ -114,6 +120,7 @@ function App() {
   if (!isHydrating) return <></>;
   return (
     <DndProvider backend={HTML5Backend}>
+      <CoreInitializeTranslation />
       <Switch>
         <Route exact path="/">
           <Redirect to="/login" />

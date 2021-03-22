@@ -8,22 +8,29 @@ i18n
   .use(LanguageDetector)
   .use(Backend)
   .use(initReactI18next)
-  .init({
-    debug: true,
-    ns: ['translation'],
-    defaultNS: 'translation',
-    keySeparator: false,
-    interpolation: { escapeValue: false },
-    backend: {
-      loadPath: `/locales/{{lng}}/{{ns}}.json`,
+  .init(
+    {
+      debug: true,
+      fallbackLng: ['ko', 'en'],
+      ns: ['translation'],
+      defaultNS: 'translation',
+      keySeparator: false,
+      interpolation: { escapeValue: false },
+      backend: {
+        loadPath: `/locales/{{lng}}/{{ns}}.json`,
+      },
+      detection: {
+        order: ['sessionStorage', 'navigator'],
+        lookupSessionStorage: 'language',
+      },
+      react: {
+        useSuspense: false,
+      },
     },
-    detection: {
-      order: ['sessionStorage', 'navigator'],
-      lookupSessionStorage: 'language',
+    (err, t) => {
+      if (err) console.log('i18next init error : ', err);
+      sessionStorage.setItem('language', i18n.language);
     },
-    react: {
-      useSuspense: false,
-    },
-  });
+  );
 
 export default i18n;
