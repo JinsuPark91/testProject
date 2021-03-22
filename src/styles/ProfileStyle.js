@@ -206,6 +206,22 @@ export const BigText = styled(Text)`
   font-size: 1.5rem;
 `;
 
+export const StatusText = styled.span`
+  margin-top: 1.25rem;
+  line-height: 1.15rem;
+  font-size: 0.75rem;
+  color: ${props => (props.editEnabled ? '#fff' : '#8b8f95')};
+  width: 15rem;
+  max-width: 17.94rem;
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+`;
+
 export const ButtonContainer = styled.div`
   height: 50px;
   margin-top: 1.25rem;
@@ -317,9 +333,9 @@ export const EditNameInput = styled(InputCounter)`
   input {
     height: 2.25rem;
     margin: 0;
-    padding-bottom: 0.56rem;
+    padding-bottom: ${props => (props.isStatusMsg ? '0rem' : '0.56rem')};
     border-bottom: 1px solid #fff;
-    font-size: 1.5rem;
+    font-size: ${props => (props.isStatusMsg ? '0.75rem' : '1.5rem')};
     text-align: center;
   }
   .input-counter {

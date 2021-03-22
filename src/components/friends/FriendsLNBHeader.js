@@ -47,7 +47,7 @@ const FriendsLNBHeader = ({ handleInputChange, handleInputClear }) => {
       <FriendSearch
         className="friendSearch"
         type="underline"
-        searchIconColor={{ active: '#17202B', default: '#C6CED6' }}
+        searchIconColor={{ active: '#000', default: '#000' }}
         clearIconColor={{ active: '#17202B', default: '#C6CED6' }}
         onChange={handleInputChange}
         onClear={handleInputClear}

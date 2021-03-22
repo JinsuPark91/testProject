@@ -128,8 +128,8 @@ const Wrapper = styled.div`
         return css`
           padding-left: 0.25rem;
           border-bottom: 0.09rem solid #17202b;
-          input::placeholder {
-            color: #bcbcbc;
+          .search-icon path {
+            fill: #000;
           }
         `;
       default:
@@ -138,18 +138,15 @@ const Wrapper = styled.div`
           padding: 0 0.63rem;
           border: 1px solid #7b7671;
           border-radius: 0.375rem;
-          input::placeholder {
-            color: #c9c4be;
+
+          &:hover {
+            .search-icon path {
+              fill: #17202b;
+            }
           }
         `;
     }
   }}
-
-  &:hover {
-    .search-icon path {
-      fill: #17202b;
-    }
-  }
 
   input {
     width: 100%;
@@ -160,6 +157,9 @@ const Wrapper = styled.div`
     border: 0;
     &:focus {
       outline: 0;
+    }
+    &::placeholder {
+      color: #c9c4be;
     }
   }
 `;

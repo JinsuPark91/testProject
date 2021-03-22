@@ -4,7 +4,7 @@ import { Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import PlatformUIStore from '../../stores/PlatformUIStore';
-import { LockLineIcon, CameraIcon } from '../Icons';
+import { LockLineIcon, CameraIcon, ImageIcon } from '../Icons';
 import { CloseIcon, SettingIcon } from './Icon';
 import {
   handleProfileMenuClick,
@@ -305,7 +305,7 @@ const MobileProfile = observer(
                   }
                 >
                   <ImageChangeButton>
-                    <CameraIcon width="1.25" height="1.25" />
+                    <ImageIcon width="1.25" height="1.25" />
                   </ImageChangeButton>
                 </Dropdown>
               </ContentTop>
@@ -370,9 +370,7 @@ const MobileProfile = observer(
                   <UserInfoItem style={{ alignItems: 'flex-start' }}>
                     <StyleOfficeIcon iconimg="address" />
                     <UserInfoText>
-                      <span style={{ whiteSpace: 'break-spaces' }}>
-                        {profile?.getFullCompanyJob()}
-                      </span>
+                      <span>{profile?.getFullCompanyJob()}</span>
                       {editEnabled && (
                         <LockIconBox>
                           <LockLineIcon width="0.88" height="0.88" />

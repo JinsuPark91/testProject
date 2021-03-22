@@ -476,5 +476,6 @@
   "CM_TEMP_USER_MANAGEMENT": "User Management",
   "TEST_REQUEST": "Send request?",
   "TEST_REQUEST_OK": "Send",
-  "CM_TEMP_MINI_CHAT": "Mini Chat"
+  "CM_TEMP_MINI_CHAT": "Mini Chat",
+  "TEMP_DELETE_FRIEND": "Delete friend"
 }

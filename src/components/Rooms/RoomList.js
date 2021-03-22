@@ -8,6 +8,7 @@ import {
   ProfileInfoModal,
   Message,
   logEvent,
+  WaplSearch,
 } from 'teespace-core';
 import { Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +17,6 @@ import RoomItem from './RoomItem';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
-import Search from '../common/Search';
 import i18n from '../../i18n';
 
 function RoomList() {
@@ -305,16 +305,16 @@ function RoomList() {
       />
 
       <TopWrapper>
-        <InputWrapper>
-          <Search
-            placeholder={t('CM_SEARCH_NAME')}
-            onChange={handleChange}
-            onClear={handleClear}
-            searchIconColor={{ active: '#17202B', default: '#C6CED6' }}
-            clearIconColor={{ active: '#17202B', default: '#C6CED6' }}
-            type="underline"
-          />
-        </InputWrapper>
+        <FriendSearch
+          className="friendSearch"
+          type="underline"
+          searchIconColor={{ active: '#000', default: '#000' }}
+          clearIconColor={{ active: '#17202B', default: '#C6CED6' }}
+          onChange={handleChange}
+          onClear={handleClear}
+          placeholder={t('CM_SEARCH_NAME')}
+          isCountExist={false}
+        />
         <Tooltip
           title={t('CM_CREATE_ROOM')}
           placement="bottomLeft"
@@ -392,13 +392,6 @@ const RoomContainer = styled.div`
   flex: 1;
 `;
 
-const InputWrapper = styled.div`
-  display: flex;
-  flex: 1;
-  align-items: center;
-  margin-right: 0.63rem;
-`;
-
 const AddRoomIconWrapper = styled.div`
   display: flex;
   cursor: pointer;
@@ -425,4 +418,14 @@ const ButtomWrapper = styled.div`
   z-index: 5;
 `;
 
+export const FriendSearch = styled(WaplSearch)`
+  &.friendSearch {
+    display: flex;
+    flex: 1 1 0%;
+    margin-right: 0.63rem;
+    height: 1.75rem;
+    padding: 0;
+    border-width: 0 0 0.06rem 0;
+  }
+`;
 export default RoomList;
