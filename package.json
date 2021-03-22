@@ -30,6 +30,7 @@
     "emoji-mart": "^3.0.0",
     "http-proxy-middleware": "^1.0.6",
     "i18next": "^19.8.4",
+    "i18next-browser-languagedetector": "^6.0.1",
     "i18next-http-backend": "^1.0.21",
     "jodit-react": "^1.0.65",
     "js-cookie": "^2.2.1",
