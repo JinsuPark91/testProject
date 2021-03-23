@@ -152,7 +152,7 @@ const SubWaitingMemberPage = ({ roomId }) => {
       store.selectedMembers.clear();
       // WWMS.removeHandler('SYSTEM', 'room_setting');
     };
-  }, []);
+  }, [roomId]);
 
   const handleAccept = async () => {
     const userIdList = Array.from(store.selectedMembers.keys());

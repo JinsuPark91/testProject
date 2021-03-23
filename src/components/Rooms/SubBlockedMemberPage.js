@@ -146,7 +146,7 @@ const SubWaitingMemberPage = ({ roomId }) => {
       store.toastVisible = '';
       store.selectedMembers.clear();
     };
-  }, []);
+  }, [roomId]);
 
   const handleUnblock = async () => {
     const userIdList = Array.from(store.selectedMembers.keys());

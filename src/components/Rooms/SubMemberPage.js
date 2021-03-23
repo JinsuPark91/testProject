@@ -214,7 +214,7 @@ const MemberPage = ({ roomId }) => {
       store.selectedMembers.clear();
       // WWMS.removeHandler('SYSTEM', 'room_setting');
     };
-  }, []);
+  }, [roomId]);
 
   const handleTransferOk = async () => {
     const userId = store.member.id;
