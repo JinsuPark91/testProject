@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import { ProfileInfoModal, useCoreStores, Toast } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
@@ -33,13 +33,6 @@ const FriendsLNBContent = React.forwardRef(
     const [toastText, setToastText] = useState('');
     const [infoModalVisible, setInfoModalVisible] = useState(false);
     const [yPosition, setyPosition] = useState(0);
-
-    const friendContainer = useRef(null);
-    useEffect(() => {
-      if (friendContainer.current) {
-        friendContainer.current.scrollTo(0, 0);
-      }
-    }, []);
 
     useEffect(() => {
       setFriendActiveId(activeUserId);
@@ -140,7 +133,7 @@ const FriendsLNBContent = React.forwardRef(
 
       return (
         <>
-          <ContentWrapper id="lnb__friend-container" ref={friendContainer}>
+          <ContentWrapper id="lnb__friend-container">
             <div ref={ref} />
             <FriendListBox noFriend={!friendStore.friendInfoList.length}>
               <FriendItem
