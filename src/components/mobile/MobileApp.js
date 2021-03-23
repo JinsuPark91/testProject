@@ -12,18 +12,19 @@ import {
   initializeApp as initializeCalendarApp,
 } from 'teespace-calendar-app';
 import { initApp as initNoteApp } from 'teespace-note-app';
-import { ReactKeycloakProvider } from '@react-keycloak/web';
-import Cookies from 'js-cookie';
 import SignUpPage from '../../page/SignUpPage';
 import SignUpFormPage from '../../page/SignUpFormPage';
 import SignUpCompletePage from '../../page/SignUpCompletePage';
 import MobileCreateRoomPage from './MobileCreateRoomPage';
-import LogoutPage from '../../page/LogoutPage';
 import MobileMainPage from './MobileMainPage';
 import RedirectablePublicRoute from '../../libs/RedirectablePublicRoute';
-import PrivateRoute from '../../libs/PrivateRoute';
-import KeycloakRedirectRoute from '../../libs/KeycloakRedirectRoute';
-import keycloak from '../../libs/keycloak';
+import {
+  AuthProvider,
+  AuthRoute,
+  PrivateAuthRoute,
+  LogoutComponent,
+} from '../../libs/auth';
+import PrivateLoginPage from '../../page/PrivateLoginPage';
 
 const hydrate = create();
 
@@ -31,32 +32,6 @@ const MobileApp = () => {
   const [isHydrating, setIsHydrating] = useState(false);
   const { userStore } = useCoreStores();
   const isLocal = process.env.REACT_APP_ENV === 'local';
-
-  const eventLogger = (event, error) => {
-    switch (event) {
-      case 'onAuthSuccess':
-      case 'onAuthRefreshSuccess': {
-        Cookies.set(
-          'ACCESS_TOKEN',
-          keycloak.token,
-          isLocal
-            ? {}
-            : {
-                domain: `.${window.location.host.slice(
-                  window.location.host.indexOf('.') + 1,
-                  window.location.host.length,
-                )}`,
-              },
-        );
-        break;
-      }
-      case 'onAuthLogout':
-        window.location.href = '/';
-        break;
-      default:
-        break;
-    }
-  };
 
   // initialize apps
   useEffect(() => {
@@ -87,24 +62,13 @@ const MobileApp = () => {
             <Redirect to="/login" />
           </Route>
           <Route>
-            <ReactKeycloakProvider
-              authClient={keycloak}
-              onEvent={eventLogger}
-              LoadingComponent={<></>}
-              initOptions={{
-                onLoad: 'login-required',
-                redirectUri: '',
-              }}
-            >
+            <AuthProvider>
               <PortalProvider>
                 <BrowserRouter basename="/mobile">
                   <Switch>
-                    <Route exact path="/logout" component={LogoutPage} />
-                    <KeycloakRedirectRoute
-                      exact
-                      path="/login"
-                      component={MobileMainPage}
-                    />
+                    <Route exact path="/logout" component={LogoutComponent} />
+                    <AuthRoute exact path="/login" component={MobileMainPage} />
+                    <Route path="/privateLogin" component={PrivateLoginPage} />
                     <RedirectablePublicRoute
                       exact
                       path="/register"
@@ -120,12 +84,12 @@ const MobileApp = () => {
                       path="/registerComplete"
                       component={<SignUpCompletePage />}
                     />
-                    <PrivateRoute
+                    <PrivateAuthRoute
                       exact
                       path="/room/:loginUserId/create"
                       component={MobileCreateRoomPage}
                     />
-                    <PrivateRoute
+                    <PrivateAuthRoute
                       path="/:resourceType/:resourceId?"
                       component={MobileMainPage}
                     />
@@ -133,7 +97,7 @@ const MobileApp = () => {
                   </Switch>
                 </BrowserRouter>
               </PortalProvider>
-            </ReactKeycloakProvider>
+            </AuthProvider>
           </Route>
         </Switch>
       </BrowserRouter>

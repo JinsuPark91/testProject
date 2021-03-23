@@ -2,7 +2,10 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
 
-export default function RedirectablePublicRoute({ component, ...rest }) {
+export default function RedirectablePublicRoute({
+  component: Component,
+  ...rest
+}) {
   const { userStore, authStore } = useCoreStores();
 
   return (
@@ -10,7 +13,7 @@ export default function RedirectablePublicRoute({ component, ...rest }) {
       {...rest}
       render={({ location }) =>
         !authStore.isAuthenticated ? (
-          component
+          <Component />
         ) : (
           <Redirect
             to={{

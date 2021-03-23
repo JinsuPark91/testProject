@@ -25,8 +25,6 @@ import {
   initApp as initCalendarApp,
   initializeApp as initializeCalendarApp,
 } from 'teespace-calendar-app';
-import { ReactKeycloakProvider } from '@react-keycloak/web';
-import Cookies from 'js-cookie';
 import AdminPage from './page/AdminPage';
 import NotFoundPage from './page/NotFoundPage';
 import SignUpPage from './page/SignUpPage';
@@ -35,14 +33,17 @@ import SignUpCompletePage from './page/SignUpCompletePage';
 import DriveSharedFilePage from './page/DriveSharedFilePage';
 import OfficeFilePage from './page/OffiveFilePage';
 import NewWindowPage from './page/NewWindowPage';
-import LogoutPage from './page/LogoutPage';
 import MainPage from './page/MainPage';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
-import PrivateRoute from './libs/PrivateRoute';
-import KeycloakRedirectRoute from './libs/KeycloakRedirectRoute';
-import keycloak from './libs/keycloak';
 import { getQueryParams } from './utils/UrlUtil';
 import initMonitoringLog from './libs/monitoringLog';
+import {
+  AuthProvider,
+  AuthRoute,
+  PrivateAuthRoute,
+  LogoutComponent,
+} from './libs/auth';
+import PrivateLoginPage from './page/PrivateLoginPage';
 
 const hydrate = create();
 
@@ -52,32 +53,6 @@ function App() {
   const history = useHistory();
   const url = window.location.origin; //  http://xxx.dev.teespace.net
   const isLocal = process.env.REACT_APP_ENV === 'local';
-
-  const eventLogger = event => {
-    switch (event) {
-      case 'onAuthSuccess':
-      case 'onAuthRefreshSuccess': {
-        Cookies.set(
-          'ACCESS_TOKEN',
-          keycloak.token,
-          isLocal
-            ? {}
-            : {
-                domain: `.${window.location.host.slice(
-                  window.location.host.indexOf('.') + 1,
-                  window.location.host.length,
-                )}`,
-              },
-        );
-        break;
-      }
-      case 'onAuthLogout':
-        window.location.href = '/';
-        break;
-      default:
-        break;
-    }
-  };
 
   // MiniTalk 임시.
   const { mini: isMini } = getQueryParams(window.location.search);
@@ -129,25 +104,14 @@ function App() {
           <DriveSharedFilePage />
         </Route>
         <Route>
-          <ReactKeycloakProvider
-            authClient={keycloak}
-            onEvent={eventLogger}
-            LoadingComponent={<></>}
-            initOptions={{
-              onLoad: 'login-required',
-              redirectUri: '',
-            }}
-          >
+          <AuthProvider>
             <PortalProvider>
               <BrowserRouter>
                 <Switch>
-                  <Route exact path="/logout" component={LogoutPage} />
-                  <KeycloakRedirectRoute
-                    exact
-                    path="/login"
-                    component={MainPage}
-                  />
-                  <PrivateRoute
+                  <Route exact path="/logout" component={LogoutComponent} />
+                  <AuthRoute exact path="/login" component={MainPage} />
+                  <Route path="/privateLogin" component={PrivateLoginPage} />
+                  <PrivateAuthRoute
                     path="/office/:fileId"
                     component={OfficeFilePage}
                   />
@@ -166,16 +130,16 @@ function App() {
                     path="/registerComplete"
                     component={<SignUpCompletePage />}
                   />
-                  <PrivateRoute
+                  <PrivateAuthRoute
                     path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
                     component={isMini ? NewWindowPage : MainPage}
                   />
-                  <PrivateRoute path="/admin" component={AdminPage} />
+                  <PrivateAuthRoute path="/admin" component={AdminPage} />
                   <Route component={NotFoundPage} />
                 </Switch>
               </BrowserRouter>
             </PortalProvider>
-          </ReactKeycloakProvider>
+          </AuthProvider>
         </Route>
       </Switch>
     </DndProvider>
