@@ -602,13 +602,15 @@ const FriendItem = observer(
             },
           ]}
         />
-        <FileDndDialog
-          visible={isDndDialogVisible}
-          target="Platform:Friend"
-          fileList={dndTargetFiles}
-          findRoom={findRoomInfo}
-          onClose={handleCloseDndDialog}
-        />
+        {isDndDialogVisible && (
+          <FileDndDialog
+            visible={isDndDialogVisible}
+            target="Platform:Friend"
+            fileList={dndTargetFiles}
+            findRoom={findRoomInfo}
+            onClose={handleCloseDndDialog}
+          />
+        )}
       </Wrapper>
     );
   },
