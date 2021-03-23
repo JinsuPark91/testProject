@@ -89,7 +89,11 @@ const ProfileMyModal = ({
     setIsEditMode(i => !i);
   }, []);
 
-  const handleSpaceList = useCallback(() => {
+  const handleSpaceList = useCallback(async () => {
+    await spaceStore.fetchSpaces({
+      userId: userStore.myProfile.id,
+      isLocal: process.env.REACT_APP_ENV === 'local',
+    });
     setSpaceListVisible(prevVisible => !prevVisible);
     setIsCreated(false);
   }, []);
