@@ -155,7 +155,7 @@ const AppIcon = React.memo(
 
 const Header = observer(() => {
   const history = useHistory();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { roomStore, userStore } = useCoreStores();
   const [isRoomProfileVisible, setRoomProfileVisible] = useState(false);
   const [isAddMemberVisible, setAddMemberVisible] = useState(false);
@@ -283,6 +283,7 @@ const Header = observer(() => {
       } else {
         const meetingAppConfirm = (
           <MeetingApp.ConfirmLaunchApp
+            language={i18n.language}
             onConfirm={() => {
               setAppConfirm(null);
               openMeeting();
