@@ -31,15 +31,28 @@ const AddFriendSearchForm = styled.div`
 
 const SearchBox = styled.div`
   padding: 0.63rem 0.94rem 0.56rem;
-  .anticon {
-    color: #bdc6d3;
-  }
-  &:hover,
-  &:focus {
-    .anticon {
-      color: #000;
+  &:hover {
+    .ant-input-prefix {
+      .anticon {
+        color: #49423a;
+      }
     }
   }
+
+  &.ant-input-affix-wrapper {
+    .ant-input-prefix {
+      .anticon {
+        color: #7c7670;
+      }
+    }
+  }
+
+  .ant-input-prefix {
+    .anticon {
+      color: #cac4bd;
+    }
+  }
+
   .ant-input {
     padding: 0.38rem 1.88rem;
     &::placeholder {
@@ -50,7 +63,6 @@ const SearchBox = styled.div`
 
 const StyledSearch = styled(Search)`
   &.openhomeinput {
-    height: 1.81rem;
     &:hover:not(:disabled),
     &:focus:not(:disabled) {
       background-color: #fff;
