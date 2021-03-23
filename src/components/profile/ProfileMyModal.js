@@ -333,7 +333,9 @@ const ProfileMyModal = ({
           <UserSubArea>
             <img alt="lang" src={LanguageIcon} />
             Language :{' '}
-            {getLanguage() === 'ko' ? t('CM_KOREAN') : t('CM_ENGLISH')}
+            {getLanguage() === 'ko' || getLanguage() === 'ko-KR'
+              ? t('CM_KOREAN')
+              : t('CM_ENGLISH')}
             <Dropdown
               trigger={['click']}
               overlay={LanguageMenu}
