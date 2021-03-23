@@ -42,7 +42,7 @@ const LeftSide = observer(() => {
 
   const handleSelectTab = key => {
     if (key !== 'f')
-      document.getElementById('lnb__friend-container').scrollTo(0, 0); // 임시: 좋은 방법이 맞을까
+      document.getElementById('lnb__friend-container').scrollTo(0, 0);
     PlatformUIStore.tabType = key;
     if (key === 'm') logEvent('gnb', 'clickTeeMailBtn');
     scrollTop(key);
