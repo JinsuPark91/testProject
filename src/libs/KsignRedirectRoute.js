@@ -52,9 +52,12 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
                     `${stateFrom.pathname}${props.location.state?.from.search}`,
                   );
                 } else {
-                  history.push(`/f/${authStore.user.id}/profile`);
+                  if (window.location.pathname.includes('/mobile')) {
+                    history.push(`/friend`);
+                  } else {
+                    history.push(`/f/${authStore.user.id}/profile`);
+                  }
                 }
-                history.push(`/friend`);
               }
               return null;
             })
