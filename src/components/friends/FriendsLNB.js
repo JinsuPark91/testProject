@@ -1,15 +1,10 @@
 import React, { useCallback, useState, useRef } from 'react';
-import { observer } from 'mobx-react';
 import FriendsLNBHeader from './FriendsLNBHeader';
 import FriendsLNBContent from './FriendsLNBContent';
 import FriendsLNBFooter from './FriendsLNBFooter';
-import { FriendsLnbWrapper } from '../../styles/friend/FriendsLnbStyle';
+import { FriendsLnbWrapper } from '../../styles/friends/FriendsLNBStyle';
 
-/**
- * 프렌즈 LNB
- * @param {Object} props
- */
-const FriendsLNB = observer(({ userId }) => {
+const FriendsLNB = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const lnbRef = useRef(null);
 
@@ -32,11 +27,10 @@ const FriendsLNB = observer(({ userId }) => {
         ref={lnbRef}
         searchKeyword={searchKeyword}
         meTooltipPopupContainer={getPopupContainer}
-        activeUserId={userId}
       />
       <FriendsLNBFooter />
     </FriendsLnbWrapper>
   );
-});
+};
 
 export default FriendsLNB;

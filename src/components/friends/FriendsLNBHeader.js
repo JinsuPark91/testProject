@@ -10,7 +10,7 @@ import {
   SearchBox,
   FriendSearch,
   FriendAddButton,
-} from '../../styles/friend/FriendsLnbHeaderStyle';
+} from '../../styles/friends/FriendsLNBHeaderStyle';
 
 /**
  * Friends LNB Header

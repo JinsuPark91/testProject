@@ -345,14 +345,6 @@ function SettingDialog(props) {
         <ContentArea>
           {selectedKey === '1' && <Contentcommon />}
           {selectedKey === '2' && <ContentAlarm form={form} />}
-          {/* {selectedKey === '3' && (
-            <SettingContentaccountedit
-              onChange={() => setbuttonFooter(true)}
-              form={form}
-              footonChange={() => setbuttonFooter(false)}
-              onClick={() => setSelectedKey('2')}
-            />
-          )} */}
           {selectedKey === '4' && (
             <>
               <ContentTitle

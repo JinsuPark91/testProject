@@ -5,8 +5,6 @@ class UIStore {
 
   @observable addFriendsDialogTabKey: string = 'organization';
 
-  @observable visibleRemoveFriendDialog: Boolean = false;
-
   @observable addFriendByPhoneNumberButtonDisabled: Boolean = true;
 
   @observable addFriendsDialogInfo: Object = {

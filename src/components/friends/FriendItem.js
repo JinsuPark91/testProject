@@ -25,7 +25,7 @@ import {
   StyledAvatar,
   MeWrapper,
   MoreIconWrapper,
-} from '../../styles/friend/FriendItemStyle';
+} from '../../styles/friends/FriendItemStyle';
 import { ACCEPT_ITEMS, TALK_ACCEPT_ITEMS } from '../../utils/DndConstant';
 import { handleCheckNewFriend } from '../../utils/FriendsUtil';
 import { handleProfileMenuClick } from '../../utils/ProfileUtil';
