@@ -9,7 +9,7 @@ import LogoutPage from '../page/LogoutPage';
 import KsignLogoutPage from '../page/KsignLogoutPage';
 
 const isHyperauth =
-  window.env.REACT_APP_IS_HYPERAUTH === '%HYPERAUTH_URL%'
+  window.env.REACT_APP_IS_HYPERAUTH === '%IS_HYPERAUTH%'
     ? process.env.REACT_APP_IS_HYPERAUTH === 'Y'
     : window.env.REACT_APP_IS_HYPERAUTH === 'Y';
 const authType = isHyperauth ? 'HyperAuth' : 'Ksign';
