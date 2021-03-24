@@ -11,7 +11,7 @@ import {
   FriendListBox,
   StyleTitle,
   StyleText,
-} from '../../styles/friend/FriendsLNBContentStyle';
+} from '../../styles/friends/FriendsLNBContentStyle';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
 /**

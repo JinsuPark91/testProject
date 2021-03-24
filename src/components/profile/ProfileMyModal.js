@@ -381,7 +381,7 @@ const ProfileMyModal = ({
                       onClick={() => {
                         window.location.href = `${window.location.protocol}//${elem.domain}`;
                       }}
-                      key={elem}
+                      key={elem?.id}
                     >
                       <LogoSmall>
                         {elem?.unreadSpaceCount > 0 && (

@@ -179,7 +179,7 @@ function AddFriendsBySearch({
         centered
         footer={null}
         width="24.38rem"
-        height="25.38rem"
+        height="30.18rem"
         title={
           <>
             {isViewMode && (
