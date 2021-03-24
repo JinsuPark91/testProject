@@ -11,8 +11,7 @@ import KsignLogoutPage from '../page/KsignLogoutPage';
 const isHyperauth =
   window.env.REACT_APP_IS_HYPERAUTH === '%HYPERAUTH_URL%'
     ? process.env.REACT_APP_IS_HYPERAUTH === 'Y'
-    : window.env.REACT_APP_IS_HYPERAUTH === 'Y' ||
-      process.env.REACT_APP_IS_HYPERAUTH === 'Y';
+    : window.env.REACT_APP_IS_HYPERAUTH === 'Y';
 const authType = isHyperauth ? 'HyperAuth' : 'Ksign';
 //   const authType = (isHyperauth) =>{
 //       switch(isHyperauth){
