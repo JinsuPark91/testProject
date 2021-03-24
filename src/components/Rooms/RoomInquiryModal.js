@@ -191,6 +191,7 @@ function RoomInquiryModal({
     if (_roomInfo && _roomInfo?.memberIdListString) {
       return _roomInfo.memberIdListString
         .split(',')
+        .filter(userId => userId !== userStore.myProfile.id)
         .splice(0, 4)
         .map(userId => userStore.getProfilePhotoURL(userId, 'small'));
     }

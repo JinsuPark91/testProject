@@ -203,7 +203,10 @@ const Header = observer(() => {
   const getUserPhotos = () => {
     const found = findRoom();
     if (found && found?.memberIdListString) {
-      let userIds = found.memberIdListString.split(',').splice(0, 4);
+      let userIds = found.memberIdListString
+        .split(',')
+        .filter(userId => userId !== userStore.myProfile.id)
+        .splice(0, 4);
 
       if (found.isDirectMsg) {
         userIds = userIds.filter(userId => userId !== userStore.myProfile.id);

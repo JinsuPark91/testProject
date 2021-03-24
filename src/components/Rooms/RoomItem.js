@@ -248,6 +248,7 @@ const RoomItemContent = ({
               } else {
                 let userIds = roomInfo.memberIdListString
                   .split(',')
+                  .filter(userId => userId !== userStore.myProfile.id)
                   .splice(0, 4);
 
                 if (isDMRoom) {
