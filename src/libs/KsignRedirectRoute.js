@@ -62,12 +62,12 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
               return null;
             })
             .catch(e => {
-              history.push('/privateLogin');
+              history.push('/privatelogin');
               console.log(e);
               throw e;
             });
         } else {
-          history.push('/privateLogin');
+          history.push('/privatelogin');
         }
       }}
     />

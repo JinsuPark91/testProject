@@ -68,7 +68,7 @@ const MobileApp = () => {
                   <Switch>
                     <Route exact path="/logout" component={LogoutComponent} />
                     <AuthRoute exact path="/login" component={MobileMainPage} />
-                    <Route path="/privateLogin" component={PrivateLoginPage} />
+                    <Route path="/privatelogin" component={PrivateLoginPage} />
                     <RedirectablePublicRoute
                       exact
                       path="/register"

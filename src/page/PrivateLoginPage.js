@@ -19,12 +19,16 @@ function PrivateLoginPage() {
     try {
       const res = await authStore.login({
         id: values.username, // localhost용 id= "seonhyeok_kim2@tmax.co.kr"
-        domainUrl: values.domain, //  localhost용 domain= "test-8sh1"
-        isLocal: process.env.REACT_APP_ENV,
         deviceType: 'PC',
+        domainUrl: '',
+        authorizeType: 'Ksign',
       });
       if (res.id) {
-        history.push(`/f/${authStore.user.id}`);
+        if (window.location.pathname.includes('/mobile')) {
+          history.push(`/friend`);
+        } else {
+          history.push(`/f/${authStore.user.id}/profile`);
+        }
       } else {
         setIsLoading(false);
       }
@@ -58,7 +62,7 @@ function PrivateLoginPage() {
       onFinishFailed={onFinishFailed}
     >
       <LoginIdInput />
-      <LoginPasswordInput />
+      {/* <LoginPasswordInput /> */}
       {isLoading === true && <span>로그인 중</span>}
       {isLoading === false && errorResult && (
         <span>로그인 실패! 사유: {errorResult}</span>

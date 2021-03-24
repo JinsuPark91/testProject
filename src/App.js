@@ -110,7 +110,7 @@ function App() {
                 <Switch>
                   <Route exact path="/logout" component={LogoutComponent} />
                   <AuthRoute exact path="/login" component={MainPage} />
-                  <Route path="/privateLogin" component={PrivateLoginPage} />
+                  <RedirectablePublicRoute exact path="/privatelogin" component={PrivateLoginPage} />
                   <PrivateAuthRoute
                     path="/office/:fileId"
                     component={OfficeFilePage}
