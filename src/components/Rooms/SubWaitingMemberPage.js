@@ -46,7 +46,7 @@ const TableRow = ({ style, member }) => {
         </Observer>
       </Cell>
       <Observer>
-        {() => <Cell style={{ width: WIDTH.NICK }}>{member.name}</Cell>}
+        {() => <Cell style={{ width: WIDTH.NICK }}>{member.nick}</Cell>}
       </Observer>
       <Observer>
         {() => <Cell style={{ width: WIDTH.LOGIN_ID }}>{member.loginId}</Cell>}
