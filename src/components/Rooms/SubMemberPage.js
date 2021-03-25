@@ -255,6 +255,7 @@ const MemberPage = ({ roomId }) => {
   };
 
   const handleKickoutCancel = () => {
+    store.selectedMembers.clear();
     store.close('kickout');
   };
 
