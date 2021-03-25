@@ -480,7 +480,7 @@ const Header = observer(() => {
                     </Tooltip>
                   </>
                 )}
-                {!isMyRoom() && (
+                {!isMyRoom() && userStore.myProfile?.isGuest === false && (
                   <>
                     <Tooltip
                       placement="bottom"
