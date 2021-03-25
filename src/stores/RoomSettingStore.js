@@ -151,8 +151,12 @@ const RoomSettingStore = observable({
   keyword: '',
   get filteredMembers() {
     return (
-      this.members?.filter(member => !!member?.name?.includes(this.keyword)) ||
-      []
+      this.members?.filter(
+        member =>
+          !!member?.nick?.includes(this.keyword) ||
+          !!member?.orgName?.includes(this.keyword) ||
+          !!member?.position?.includes(this.keyword),
+      ) || []
     );
   },
 
