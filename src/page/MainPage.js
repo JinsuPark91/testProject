@@ -8,7 +8,7 @@ import {
   AppState,
   WWMS,
   AlarmSetting,
-  Message,
+  Toast,
 } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
@@ -28,7 +28,8 @@ import { runWatcher, stopWatcher } from '../utils/Watcher';
 const MainPage = () => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
-  const [isAccessDeniedVisible, setIsAccessDeniedVisible] = useState(false);
+  const [isToastVisible, setIsToastVisible] = useState(false);
+  const [toastText, setToastText] = useState('');
 
   const history = useHistory();
   const { resourceType, resourceId, mainApp } = useParams();
@@ -219,7 +220,8 @@ const MainPage = () => {
         const { status } = response;
         switch (status) {
           case 403:
-            setIsAccessDeniedVisible(true);
+            setToastText(t('TEMP_GUEST_ACCESS_DENIED'));
+            setIsToastVisible(true);
             break;
           default:
             break;
@@ -239,10 +241,6 @@ const MainPage = () => {
       WWMS.removeHandler('SYSTEM', 'platform_wwms');
     };
   }, []);
-
-  const handleAccessDeniedOK = () => {
-    setIsAccessDeniedVisible(false);
-  };
 
   const leftSide = useMemo(() => <LeftSide />, []);
   const mainSide = useMemo(() => <MainSide />, []);
@@ -332,19 +330,15 @@ const MainPage = () => {
 
   return (
     <Wrapper>
-      <Message
-        visible={isAccessDeniedVisible}
-        title={t('TEMP_GUEST_ACCESS_DENIED')}
-        type="error"
-        btns={[
-          {
-            type: 'solid',
-            shape: 'round',
-            text: t('CM_LOGIN_POLICY_03'),
-            onClick: handleAccessDeniedOK,
-          },
-        ]}
-      />
+      <Toast
+        visible={isToastVisible}
+        timeoutMs={1000}
+        onClose={() => {
+          setIsToastVisible(false);
+        }}
+      >
+        {toastText}
+      </Toast>
       <FaviconChanger />
       <Prompt
         message={(location, action) => {
