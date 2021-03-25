@@ -246,16 +246,13 @@ const RoomItemContent = ({
                   userStore.getProfilePhotoURL(userStore.myProfile.id, 'small'),
                 ];
               } else {
-                let userIds = roomInfo.memberIdListString
-                  .split(',')
-                  .filter(userId => userId !== userStore.myProfile.id)
-                  .splice(0, 4);
-
-                if (isDMRoom) {
-                  userIds = userIds.filter(
-                    userId => userId !== userStore.myProfile.id,
-                  );
-                }
+                const userIdArr = roomInfo.memberIdListString.split(',');
+                const userIds =
+                  userIdArr.length === 1
+                    ? userIdArr
+                    : userIdArr
+                        .filter(userId => userId !== userStore.myProfile.id)
+                        .splice(0, 4);
 
                 userPhotos = userIds.map(userId =>
                   userStore.getProfilePhotoURL(userId, 'small'),
