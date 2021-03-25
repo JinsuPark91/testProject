@@ -12,6 +12,12 @@ import { getQueryString, getQueryParams } from '../../utils/UrlUtil';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import { AddAcountIcon, ChattingIcon, EditIcon, MeetingIcon } from '../Icons';
 
+const InquiryContentwrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 13.75rem;
+`;
+
 const AddButton = styled.button`
   display: flex;
   align-items: center;
@@ -94,10 +100,13 @@ const SettingBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 4.13rem;
+  margin-top: auto;
   padding: 1.13rem 0 0.94rem;
-  .ant-btn + .ant-btn {
-    margin-left: 0.44rem;
+  .ant-btn {
+    margin-bottom: 0.75rem;
+    & + .ant-btn {
+      margin-left: 0.44rem;
+    }
   }
 `;
 const SettingButton = styled.button`
@@ -127,6 +136,7 @@ const ButtonIcon = styled.span`
 `;
 const StyledInput = styled(Input)`
   height: auto;
+  margin-bottom: 0.1875rem;
   padding: 0;
   background-color: transparent;
   border-width: 0 0 1px !important;
@@ -352,9 +362,8 @@ function RoomInquiryModal({
   );
 
   const userContent = (
-    <>
+    <InquiryContentwrap>
       <StyledPhotos srcList={memberPhotos} defaultDiameter="3.75" />
-
       <Observer>
         {() => (
           <GroupTitle>
@@ -376,7 +385,6 @@ function RoomInquiryModal({
           </GroupTitle>
         )}
       </Observer>
-
       <GroupNumber>
         {t('CM_PPL_NUMBER', { num: roomInfo?.userCount })}
       </GroupNumber>
@@ -385,17 +393,12 @@ function RoomInquiryModal({
           <>
             <Button
               type="solid"
-              shape="round"
               onClick={handleChangeNameOK}
               disabled={!isChanged}
             >
               {t('CM_SAVE')}
             </Button>
-            <Button
-              type="outlined"
-              shape="round"
-              onClick={handleChangeNameCancel}
-            >
+            <Button type="outlined" onClick={handleChangeNameCancel}>
               {t('CM_CANCEL')}
             </Button>
           </>
@@ -422,7 +425,7 @@ function RoomInquiryModal({
           </>
         )}
       </SettingBox>
-    </>
+    </InquiryContentwrap>
   );
   const subContent = (
     <>

@@ -23,7 +23,7 @@ const RoomButton = ({ roomInfo, onClick, disabled }) => {
 
   return (
     <RoomJoinBtn onClick={handleClick} disabled={disabled}>
-      <OpenChatIcon width={1} height={1} color="#75757f" />
+      <OpenChatIcon width={1} height={1} color="#7B7671" />
     </RoomJoinBtn>
   );
 };
