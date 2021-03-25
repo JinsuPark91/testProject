@@ -15,7 +15,6 @@ const NewWindowPage = () => {
 
   const [channelId, setChannelId] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isSearch, setIsSearch] = useState(false);
 
   const init = async () => {
     try {
@@ -57,8 +56,7 @@ const NewWindowPage = () => {
     );
   }
 
-  const openSearch = () => setIsSearch(true);
-  const closeSearch = () => setIsSearch(false);
+  const openSearch = () => EventBus.dispatch('Talk:OpenSearch');
 
   switch (mainApp) {
     case 'talk':
@@ -70,8 +68,6 @@ const NewWindowPage = () => {
               roomId={roomId}
               channelId={channelId}
               layoutState="expand"
-              isSearchInputVisible={isSearch}
-              onSearchClose={closeSearch}
               isMini
             />
           </Content>

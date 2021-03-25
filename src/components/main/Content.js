@@ -53,10 +53,6 @@ const Content = () => {
     return null;
   };
 
-  const handleSearchClose = () => {
-    PlatformUIStore.isSearchVisible = false;
-  };
-
   const handleSplitDragStart = ratio => {
     const splitter = splitRef?.current?.parent;
     const gutter = splitter.childNodes[1];
@@ -83,8 +79,6 @@ const Content = () => {
             roomId={getRoomId()}
             channelId={getChannelId('CHN0001')}
             layoutState={PlatformUIStore.layout}
-            isSearchInputVisible={PlatformUIStore.isSearchVisible}
-            onSearchClose={handleSearchClose}
             language={i18n.language}
             isMini={false}
           />

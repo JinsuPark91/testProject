@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import { useObserver } from 'mobx-react';
 import { useCoreStores, logEvent } from 'teespace-core';
 import { Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -13,14 +12,13 @@ import {
 } from '../../styles/friends/FriendsLNBHeaderStyle';
 
 /**
- * Friends LNB Header
- * @param {Object} props
- * @param {function} props.handleInputChange
+ * @param {function} props.handleInputChange - 검색 값 change
+ * @param {function} props.handleInputClear - 검색 값 clear
  */
 
 const FriendsLNBHeader = ({ handleInputChange, handleInputClear }) => {
-  const { spaceStore } = useCoreStores();
   const { t } = useTranslation();
+  const { spaceStore } = useCoreStores();
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isOrgExist, setIsOrgExist] = useState(false);
   const [spaceMemberList, setSpaceMemberList] = useState([]);
@@ -31,18 +29,18 @@ const FriendsLNBHeader = ({ handleInputChange, handleInputClear }) => {
         () => setIsOrgExist(true),
         res => setSpaceMemberList(res),
       );
-      setIsDialogVisible(!isDialogVisible);
+      setIsDialogVisible(true);
       logEvent('main', 'clickAddFriendsBtn');
     } catch (e) {
       console.log('Org/Member Get Service Error');
     }
-  }, [isDialogVisible]);
+  }, []);
 
-  const handleCloseAddFriendsDialog = () => {
-    setIsDialogVisible(!isDialogVisible);
-  };
+  const handleCloseAddFriendsDialog = useCallback(() => {
+    setIsDialogVisible(false);
+  }, []);
 
-  return useObserver(() => (
+  return (
     <SearchBox>
       <FriendSearch
         className="friendSearch"
@@ -76,7 +74,7 @@ const FriendsLNBHeader = ({ handleInputChange, handleInputClear }) => {
         spaceMemberList={spaceMemberList}
       />
     </SearchBox>
-  ));
+  );
 };
 
 export default FriendsLNBHeader;

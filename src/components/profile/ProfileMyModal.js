@@ -21,7 +21,6 @@ import moreSpaceIcon from '../../assets/view_more.svg';
 import checkekIcon from '../../assets/ts_check.svg';
 import { ReactComponent as SquareSpaceIcon } from '../../assets/card_view.svg';
 import LanguageIcon from '../../assets/language.svg';
-import RightArrowIcon from '../../assets/arrow_right_line.svg';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
 import AddFriendsBySearch from '../friends/AddFriendsBySearch';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
@@ -30,6 +29,7 @@ import MovePage from '../../utils/MovePage';
 import { SELECTED_TAB } from '../usersettings/SettingConstants';
 import { getMainWaplURL } from '../../utils/UrlUtil';
 import { handleFriendsDialogType } from '../../utils/FriendsUtil';
+import { ArrowRightIcon } from '../Icons';
 
 const ProfileMyModal = ({
   userId,
@@ -346,7 +346,7 @@ const ProfileMyModal = ({
               placement="bottomRight"
             >
               <LanguageButton>
-                <img alt="arrow" src={RightArrowIcon} />
+                <ArrowRightIcon color="#7B7671" />
               </LanguageButton>
             </Dropdown>
           </UserSubArea>
@@ -738,10 +738,6 @@ const LanguageButton = styled.div`
   cursor: pointer;
   &:hover {
     background-color: #f2efec;
-  }
-  & > img {
-    height: 1rem;
-    width: 1rem;
   }
 `;
 const SubInfo = styled.p`
