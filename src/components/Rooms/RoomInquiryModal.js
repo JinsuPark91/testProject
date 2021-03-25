@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled from 'styled-components';
-import { Button } from 'antd';
+import { Button, Tooltip } from 'antd';
 import { useCoreStores, ProfileInfoModal, ProfileModal } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import Photos from '../Photos';
@@ -10,7 +10,13 @@ import Input from '../Input';
 import RoomAddMemberModal from './RoomAddMemberModal';
 import { getQueryString, getQueryParams } from '../../utils/UrlUtil';
 import PlatformUIStore from '../../stores/PlatformUIStore';
-import { AddAcountIcon, ChattingIcon, EditIcon, MeetingIcon } from '../Icons';
+import {
+  AddAcountIcon,
+  ChattingIcon,
+  EditIcon,
+  MeetingIcon,
+  LeaderIcon,
+} from '../Icons';
 
 const InquiryContentwrap = styled.div`
   display: flex;
@@ -158,6 +164,11 @@ const StyledInput = styled(Input)`
 const StyledPhotos = styled(Photos)`
   margin: 0 auto;
   cursor: default;
+`;
+
+const IconWrapper = styled.div`
+  width: fit-content;
+  margin-left: 0.38rem;
 `;
 
 function RoomInquiryModal({
@@ -442,6 +453,17 @@ function RoomInquiryModal({
               />
             </UserImag>
             <UserName>{memberInfo.nick || memberInfo.name}</UserName>
+            {memberInfo.role === 'WKS0004' ? (
+              <Tooltip
+                placement="bottom"
+                title={t('CM_ROOM_ADMIN')}
+                color="#4C535D"
+              >
+                <IconWrapper>
+                  <LeaderIcon width={1.13} height={1.13} color="#205855" />
+                </IconWrapper>
+              </Tooltip>
+            ) : null}
           </UserItem>
         ))}
       </UserList>
