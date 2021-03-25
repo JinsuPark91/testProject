@@ -33,12 +33,21 @@ const Title = styled.strong`
   line-height: 1.81rem;
   color: #000;
 `;
+
 const Description = styled.p`
   margin-bottom: 1.25rem;
   font-size: 0.75rem;
   line-height: 1.13rem;
   color: #868686;
 `;
+
+const SubDescription = styled.p`
+  margin-bottom: 1.25rem;
+  font-size: 0.69rem;
+  line-height: 1.13rem;
+  color: gray;
+`;
+
 const ButtonContainer = styled.div`
   margin-bottom: 0.375rem;
   .ant-btn {
@@ -78,6 +87,7 @@ function ProfileSpaceModal({
   const { t } = useTranslation();
   const { userStore, spaceStore } = useCoreStores();
   const isAdmin = userStore.myProfile.grade === 'admin';
+  const { isGuest } = userStore.myProfile;
   const title = isAdmin
     ? t('CM_SPACE_CREATE_COMPLETE_01')
     : t('CM_INVITE_PEOPLE_MAIL_LINK_09');
@@ -101,48 +111,79 @@ function ProfileSpaceModal({
     onAddFriend();
   }, [onClose, onAddFriend]);
 
-  return (
-    <SpaceInformation>
-      <Title>{title}</Title>
-      {isAdmin ? (
+  const getButtons = () => {
+    if (isAdmin) {
+      return (
+        <>
+          <Button type="solid" onClick={handleAddMember}>
+            {t('CM_USER_INVITE')}
+          </Button>
+          <Button type="solid" onClick={handleAdminPage}>
+            {t('CM_ADMIN_PAGE')}
+          </Button>
+          <LinkButton type="link" onClick={onClose}>
+            {t('CM_SKIP')}
+          </LinkButton>
+        </>
+      );
+    }
+    if (isGuest) {
+      return null;
+    }
+    return (
+      <>
+        <Button type="solid" onClick={handleAddFriend}>
+          {t('CM_ADD_PHOTO_FRIENDS')}
+        </Button>
+        <Button type="solid" onClick={handleCreateRoom}>
+          {t('CM_CREATE_ROOM')}
+        </Button>
+        <LinkButton type="link" onClick={onClose}>
+          {t('CM_SKIP')}
+        </LinkButton>
+      </>
+    );
+  };
+
+  const getDescription = () => {
+    if (isAdmin) {
+      return (
         <Description>
           {t('CM_SPACE_CREATE_COMPLETE_02', {
             name1: userName,
             name2: spaceStore.currentSpace?.name,
           })}
         </Description>
-      ) : (
-        <Description>
-          {t('CM_INVITE_PEOPLE_MAIL_LINK_10', {
-            name1: userName,
-            name2: spaceStore.currentSpace?.name,
-          })}
-        </Description>
-      )}
-      <ButtonContainer>
-        {isAdmin ? (
-          <>
-            <Button type="solid" onClick={handleAddMember}>
-              {t('CM_USER_INVITE')}
-            </Button>
-            <Button type="solid" onClick={handleAdminPage}>
-              {t('CM_ADMIN_PAGE')}
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button type="solid" onClick={handleAddFriend}>
-              {t('CM_ADD_PHOTO_FRIENDS')}
-            </Button>
-            <Button type="solid" onClick={handleCreateRoom}>
-              {t('CM_CREATE_ROOM')}
-            </Button>
-          </>
-        )}
-      </ButtonContainer>
-      <LinkButton type="link" onClick={onClose}>
-        {t('CM_SKIP')}
-      </LinkButton>
+      );
+    }
+    if (isGuest) {
+      return (
+        <>
+          <Description>
+            {t('CM_GUEST_LAYOUT_01', {
+              name1: userName,
+              name2: spaceStore.currentSpace?.name,
+            })}
+          </Description>
+          <SubDescription>{t('CM_GUEST_LAYOUT_02')}</SubDescription>
+        </>
+      );
+    }
+    return (
+      <Description>
+        {t('CM_INVITE_PEOPLE_MAIL_LINK_10', {
+          name1: userName,
+          name2: spaceStore.currentSpace?.name,
+        })}
+      </Description>
+    );
+  };
+
+  return (
+    <SpaceInformation>
+      <Title>{title}</Title>
+      {getDescription()}
+      <ButtonContainer>{getButtons()}</ButtonContainer>
     </SpaceInformation>
   );
 }
