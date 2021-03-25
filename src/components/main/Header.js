@@ -209,11 +209,12 @@ const Header = observer(() => {
     const found = findRoom();
     if (found && found?.memberIdListString) {
       const userIdArr = found?.memberIdListString.split(',');
-      const userIds = isMyRoom()
-        ? userIdArr
-        : userIdArr
-            .filter(userId => userId !== userStore.myProfile.id)
-            .splice(0, 4);
+      const userIds =
+        userIdArr.length === 1
+          ? userIdArr
+          : userIdArr
+              .filter(userId => userId !== userStore.myProfile.id)
+              .splice(0, 4);
 
       return userIds.map(
         userId => `${userStore.getProfilePhotoURL(userId, 'small')}`,
