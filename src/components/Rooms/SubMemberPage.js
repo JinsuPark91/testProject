@@ -289,7 +289,7 @@ const MemberPage = ({ roomId }) => {
           <Message
             visible={store.transferVisible}
             title={t('CM_ROOM_SETTING_MANAGE_PEOPLE_05', {
-              name: store.member?.name ? store.member.name : '',
+              name: store.member?.nick || store.member?.name || '',
             })}
             subtitle={t('CM_ROOM_SETTING_MANAGE_PEOPLE_06')}
             type="error"
