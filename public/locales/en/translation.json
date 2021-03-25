@@ -477,5 +477,6 @@
   "TEST_REQUEST": "Send request?",
   "TEST_REQUEST_OK": "Send",
   "CM_TEMP_MINI_CHAT": "Mini Chat",
-  "TEMP_DELETE_FRIEND": "Delete friend"
+  "TEMP_DELETE_FRIEND": "Delete friend",
+  "TEMP_GUEST_ACCESS_DENIED" : "Access denied"
 }

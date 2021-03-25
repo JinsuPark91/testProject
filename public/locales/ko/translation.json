@@ -477,5 +477,6 @@
   "TEST_REQUEST": "입장 요청 하시겠습니까?",
   "TEST_REQUEST_OK": "요청",
   "CM_TEMP_MINI_CHAT": "미니 채팅",
-  "TEMP_DELETE_FRIEND": "프렌즈 삭제"
+  "TEMP_DELETE_FRIEND": "프렌즈 삭제",
+  "TEMP_GUEST_ACCESS_DENIED": "게스트는 사용할 수 없는 기능입니다."
 }
