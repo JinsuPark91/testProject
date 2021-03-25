@@ -9,6 +9,7 @@ import {
   Message,
   logEvent,
   WaplSearch,
+  EventBus,
 } from 'teespace-core';
 import { Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -17,10 +18,9 @@ import RoomItem from './RoomItem';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
-import i18n from '../../i18n';
 
 function RoomList() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const history = useHistory();
   const [keyword, setKeyword] = useState('');
   const [targetRoom, setTargetRoom] = useState(null);
@@ -51,6 +51,11 @@ function RoomList() {
       containerRef.current.scrollTo(0, 0);
     }
   });
+
+  // LNB lastMessage i18n 임시
+  useEffect(() => {
+    EventBus.dispatch('Platform:initLNB');
+  }, [i18n.language]);
 
   const handleCreateRoom = () => {
     setVisible({ ...visible, selectRoomType: true });
@@ -349,14 +354,7 @@ function RoomList() {
         </Observer>
       </RoomContainer>
       <ButtomWrapper>
-        <div
-          onClick={() => {
-            if (i18n.language === 'en') i18n.changeLanguage('ko');
-            else i18n.changeLanguage('en');
-          }}
-        >
-          <WaplLogo />
-        </div>
+        <WaplLogo />
         <Toast
           visible={isToastVisible}
           timeoutMs={1000}
