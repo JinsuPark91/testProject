@@ -36,7 +36,7 @@ const SubTab = ({ isOpenRoom = false }) => {
           margin: '0 0.63rem',
         }}
       />
-      {isOpenRoom ? (
+      {/* {isOpenRoom ? (
         <>
           <Observer>
             {() => (
@@ -59,7 +59,7 @@ const SubTab = ({ isOpenRoom = false }) => {
             }}
           />
         </>
-      ) : null}
+      ) : null} */}
       <Observer>
         {() => (
           <SubTabItem
