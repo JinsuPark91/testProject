@@ -208,14 +208,12 @@ const Header = observer(() => {
   const getUserPhotos = () => {
     const found = findRoom();
     if (found && found?.memberIdListString) {
-      let userIds = found.memberIdListString
-        .split(',')
-        .filter(userId => userId !== userStore.myProfile.id)
-        .splice(0, 4);
-
-      if (found.isDirectMsg) {
-        userIds = userIds.filter(userId => userId !== userStore.myProfile.id);
-      }
+      const userIdArr = found?.memberIdListString.split(',');
+      const userIds = isMyRoom()
+        ? userIdArr
+        : userIdArr
+            .filter(userId => userId !== userStore.myProfile.id)
+            .splice(0, 4);
 
       return userIds.map(
         userId => `${userStore.getProfilePhotoURL(userId, 'small')}`,
