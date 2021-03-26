@@ -242,8 +242,12 @@ const ProfileMyModal = ({
   // NOTE: 메뉴는 언어 설정과 관계없음
   const LanguageMenu = (
     <Menu style={{ minWidth: '6.25rem' }}>
-      <Menu.Item onClick={() => handleChangeLanguage('ko')}>한국어</Menu.Item>
-      <Menu.Item onClick={() => handleChangeLanguage('en')}>English</Menu.Item>
+      <Menu.Item onClick={() => handleChangeLanguage('ko')}>
+        {t('CM_KOREAN')}
+      </Menu.Item>
+      <Menu.Item onClick={() => handleChangeLanguage('en')}>
+        {t('CM_ENGLISH')}
+      </Menu.Item>
     </Menu>
   );
 
