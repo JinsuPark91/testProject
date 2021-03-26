@@ -37,15 +37,14 @@ const Title = styled.strong`
 const Description = styled.p`
   margin-bottom: 1.25rem;
   font-size: 0.75rem;
+  white-space: pre-line;
   line-height: 1.13rem;
   color: #868686;
 `;
 
-const SubDescription = styled.p`
-  margin-bottom: 1.25rem;
+const SubDescription = styled(Description)`
   font-size: 0.69rem;
-  line-height: 1.13rem;
-  color: gray;
+  opacity: 0.7;
 `;
 
 const ButtonContainer = styled.div`
@@ -112,6 +111,9 @@ function ProfileSpaceModal({
   }, [onClose, onAddFriend]);
 
   const getButtons = () => {
+    if (isGuest) {
+      return null;
+    }
     if (isAdmin) {
       return (
         <>
@@ -126,9 +128,6 @@ function ProfileSpaceModal({
           </LinkButton>
         </>
       );
-    }
-    if (isGuest) {
-      return null;
     }
     return (
       <>
