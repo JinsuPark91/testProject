@@ -96,7 +96,7 @@ const InnerList = styled.ul`
   }
 `;
 
-function SettingDialog(props) {
+const SettingDialog = props => {
   const { t } = useTranslation();
   const { userStore, authStore } = useCoreStores();
   const { selectedKeyA, visible, onCancel } = props;
@@ -412,6 +412,6 @@ function SettingDialog(props) {
       </LayoutWrap>
     </DialogWrap>
   ));
-}
+};
 
 export default SettingDialog;

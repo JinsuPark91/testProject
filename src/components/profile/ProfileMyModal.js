@@ -11,7 +11,7 @@ import {
 } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import { useObserver, Observer } from 'mobx-react';
-import { I18nContext, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import i18next from '../../i18n';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SettingDialog from '../usersettings/SettingDialog';
@@ -68,9 +68,7 @@ const ProfileMyModal = ({
     isNewSpaceErrorMessagVisible,
     setIsNewSpaceErrorMessageVisible,
   ] = useState(false);
-
   const isAdmin = userStore.myProfile.grade === 'admin';
-  const [lngListVisible, setLngListVisible] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
   const handleSettingDialogOpen = useCallback(e => {
@@ -80,7 +78,7 @@ const ProfileMyModal = ({
     setSpaceListVisible(false);
   }, []);
 
-  const handleSettingDialogClose = useCallback(() => {
+  const handleCloseSettingDialog = useCallback(() => {
     setItemKey(SELECTED_TAB.ALARM);
     setSettingDialogVisible(false);
   }, []);
@@ -422,7 +420,7 @@ const ProfileMyModal = ({
       <SettingDialog
         selectedKeyA={itemKey}
         visible={settingDialogVisible}
-        onCancel={handleSettingDialogClose}
+        onCancel={handleCloseSettingDialog}
       />
       <AddFriendsByInvitationDialog
         visible={isInviteDialogOpen}
@@ -766,59 +764,6 @@ const SubInfo = styled.p`
     svg {
       color: #43434a;
     }
-  }
-`;
-// eslint-disable-next-line no-unused-vars
-const LangIcon = styled.span`
-  margin-left: auto;
-  line-height: 0;
-  svg {
-    width: 1rem;
-    height: 1rem;
-  }
-`;
-// eslint-disable-next-line no-unused-vars
-const LngList = styled.ul`
-  position: absolute;
-  left: -5.27rem;
-  width: 5.19rem;
-  margin-top: -3.25rem;
-  padding: 0.25rem 0;
-  background-color: #fff;
-  border: 1px solid #c6ced6;
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 0.25rem;
-`;
-// eslint-disable-next-line no-unused-vars
-const LangItem = styled.li`
-  position: relative;
-  padding-left: 1.63rem;
-  font-size: 0.75rem;
-  color: #000;
-  line-height: 2.125rem;
-  border-radius: 1.25rem;
-  cursor: pointer;
-  ${props =>
-    props.checked &&
-    css`
-      &:before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 0.56rem;
-        width: 0.75rem;
-        height: 0.75rem;
-        transform: translateY(-50%);
-        background-image: url('${checkekIcon}');
-        background-size: contain;
-      }
-    `};
-  &:hover {
-    background: #dcddff;
-  }
-  &:active,
-  &:focus {
-    background-color: #bcbeff;
   }
 `;
 const ConvertDropdown = styled.div`
