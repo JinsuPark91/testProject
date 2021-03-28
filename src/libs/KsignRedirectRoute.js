@@ -9,7 +9,7 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
   const { authStore } = useCoreStores();
   const history = useHistory();
   const searchParams = new URLSearchParams(window.location.search);
-  const getToken = searchParams.get('token');
+  // const getToken = searchParams.get('token');
   const getDeviceKey = searchParams.get('devicekey');
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
           return <Component />;
         }
         //로그인 안됐는데 토큰 있을경우
-        else if (getToken && getDeviceKey) {
+        else if (getDeviceKey) {
           console.log(loginInfo);
           Promise.all([authStore.login(loginInfo)])
             .then(async res => {
