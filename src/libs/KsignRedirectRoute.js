@@ -9,8 +9,8 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
   const { authStore } = useCoreStores();
   const history = useHistory();
   const searchParams = new URLSearchParams(window.location.search);
-  // const getToken = searchParams.get('token');
-  const getDeviceKey = searchParams.get('devicekey');
+  const getLoginId = searchParams.get('loginId');
+  const getDeviceId = searchParams.get('deviceId');
 
   useEffect(() => {
     // NOTE. 사용자 인증이 된 상태에서 웹소켓 연결을 시도
@@ -20,15 +20,23 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
   }, [authStore.user.id, authStore.isAuthenticated]);
 
   let loginInfo;
-  loginInfo = {
-    //ksign 용 로그인 input
-    // accessToken: getToken,
-    // deviceKey: getDeviceKey,
-    deviceType: 'PC',
-    domainUrl: '',
-    id: 'bin_lim@tmax.co.kr',
-    authorizeType: 'Ksign',
-  };
+  if (window.location.pathname.includes('/mobile')) {
+    loginInfo = {
+      //ksign 용 로그인 input
+      deviceType: 'Mobile',
+      // domainUrl: '',
+      deviceId: getDeviceId,
+      id: getLoginId,
+      authorizeType: 'Ksign',
+    };
+  } else {
+    loginInfo = {
+      // domainUrl: '',
+      deviceType: 'PC',
+      id: getLoginId,
+      authorizeType: 'Ksign',
+    };
+  }
 
   return (
     <Route
@@ -39,7 +47,7 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
           return <Component />;
         }
         //로그인 안됐는데 토큰 있을경우
-        else if (getDeviceKey) {
+        else if (getLoginId ) {
           console.log(loginInfo);
           Promise.all([authStore.login(loginInfo)])
             .then(async res => {
