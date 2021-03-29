@@ -18,7 +18,6 @@ import SettingDialog from '../usersettings/SettingDialog';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import convertSpaceIcon from '../../assets/convert_space.svg';
 import moreSpaceIcon from '../../assets/view_more.svg';
-import checkekIcon from '../../assets/ts_check.svg';
 import { ReactComponent as SquareSpaceIcon } from '../../assets/card_view.svg';
 import LanguageIcon from '../../assets/language.svg';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
@@ -318,6 +317,18 @@ const ProfileMyModal = ({
             title={t('CM_PROFILE_PROFILE_MENU_01')}
           >
             <Button className="btn-convert" onClick={handleSpaceList}>
+              <Observer>
+                {() => {
+                  const newMessage =
+                    spaceStore.spaceList
+                      .filter(elem => elem?.id !== spaceStore.currentSpace?.id)
+                      .find(elem => elem.unreadSpaceCount > 0) !== undefined ||
+                    PlatformUIStore.totalUnreadCount > 0;
+
+                  if (newMessage) return <NewBadge />;
+                  return null;
+                }}
+              </Observer>
               <Blind>{t('CM_PROFILE_PROFILE_MENU_01')}</Blind>
             </Button>
           </Tooltip>
@@ -673,12 +684,22 @@ const DataBox = styled.div`
     }
   }
   .btn-convert {
+    position: relative;
     background-image: url('${convertSpaceIcon}');
   }
   .btn-more {
     margin-left: 0.125rem;
     background-image: url('${moreSpaceIcon}');
   }
+`;
+const NewBadge = styled.div`
+  position: absolute;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background-color: #dc4547;
+  top: -0.1rem;
+  right: -0.1rem;
 `;
 const Logo = styled(Avatar)`
   flex-shrink: 0;
