@@ -14,7 +14,8 @@ import {
 const SettingDialogName = props => {
   const { t } = useTranslation();
   const { name, isNameEdit, onInputChange, onCancel, onSuccess } = props;
-  const { authStore } = useCoreStores();
+  const { userStore } = useCoreStores();
+  const { myProfile } = userStore;
 
   return (
     <InnerItem>
@@ -24,14 +25,14 @@ const SettingDialogName = props => {
           {isNameEdit ? (
             <EditNameInput
               maxLength={20}
-              placeholder={authStore.user.name}
+              placeholder={myProfile.name}
               value={name}
               onChange={input => {
                 onInputChange(input);
               }}
             />
           ) : (
-            <p>{authStore.user.name || '-'}</p>
+            <p>{myProfile.name || '-'}</p>
           )}
         </TextArea>
         <ButtonArea>
@@ -41,7 +42,7 @@ const SettingDialogName = props => {
                 size="small"
                 type="solid"
                 className="color-Beige"
-                disabled={authStore.user.name === name}
+                disabled={myProfile.name === name}
                 onClick={onSuccess}
               >
                 {t('CM_SAVE')}
