@@ -4,6 +4,7 @@ import { Talk } from 'teespace-talk-app';
 import { App as MeetingApp } from 'teespace-meeting-app';
 import { EventBus, useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 import LoadingImg from '../assets/WAPL_Loading.gif';
 import Photos from '../components/Photos';
 import { SearchIcon } from '../components/Icons';
@@ -11,6 +12,7 @@ import { SearchIcon } from '../components/Icons';
 const NewWindowPage = () => {
   const { resourceId: roomId, mainApp } = useParams();
   const { roomStore, userStore, spaceStore } = useCoreStores();
+  const { i18n } = useTranslation();
   const myUserId = userStore.myProfile.id;
 
   const [channelId, setChannelId] = useState('');
@@ -65,6 +67,7 @@ const NewWindowPage = () => {
           <Header roomId={roomId} onSearch={openSearch} />
           <Content>
             <Talk
+              language={i18n.language}
               roomId={roomId}
               channelId={channelId}
               layoutState="expand"
@@ -76,6 +79,7 @@ const NewWindowPage = () => {
     case 'meeting':
       return (
         <MeetingApp
+          language={i18n.language}
           roomId={roomId}
           channelId={channelId}
           layoutState="expand"
