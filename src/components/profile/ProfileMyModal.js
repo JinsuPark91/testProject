@@ -310,7 +310,6 @@ const ProfileMyModal = ({
             <Title>{spaceStore.currentSpace?.name}</Title>
             {spaceStore.currentSpace?.domain}
           </Info>
-          {newMessageExist && <NewBadge />}
           <Tooltip
             placement="topLeft"
             color="#4C535D"
@@ -940,17 +939,6 @@ const SettingBar = styled.span`
   margin: 0 0.375rem;
   background-color: #7b7671;
   border-radius: 50%;
-`;
-
-const NewBadge = styled.div`
-  position: absolute;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background-color: #dc4547;
-  right: 2rem;
-  top: 2.5rem;
-  z-index: 1;
 `;
 
 export default ProfileMyModal;
