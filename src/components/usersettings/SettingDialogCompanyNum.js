@@ -20,7 +20,8 @@ const SettingDialogCompanyNum = props => {
     onSuccess,
   } = props;
   const { t } = useTranslation();
-  const { authStore } = useCoreStores();
+  const { userStore } = useCoreStores();
+  const { myProfile } = userStore;
 
   return (
     <InnerItem>
@@ -34,7 +35,7 @@ const SettingDialogCompanyNum = props => {
               onChange={e => onInputChange(e.target.value)}
             />
           ) : (
-            <p>{getCompanyNumber(authStore.user)}</p>
+            <p>{getCompanyNumber(myProfile)}</p>
           )}
         </TextArea>
         <ButtonArea>
@@ -44,7 +45,7 @@ const SettingDialogCompanyNum = props => {
                 size="small"
                 type="solid"
                 className="color-Beige"
-                disabled={authStore.user.companyNum === companyNum}
+                disabled={myProfile.companyNum === companyNum}
                 onClick={onSuccess}
               >
                 {t('CM_SAVE')}

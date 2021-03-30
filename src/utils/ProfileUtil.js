@@ -1,4 +1,3 @@
-// 프로필에서 1:1 Talk, 1:1 Meeting, Mini Talk Open 할 때
 import { RoomStore, UserStore } from 'teespace-core';
 
 export const handleProfileMenuClick = async (
