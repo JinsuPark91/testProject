@@ -30,7 +30,7 @@ function RoomAddMemberModal({
         const userIdList = banInfos.map(({ userId }) => userId);
         userStore.fetchProfileList(userIdList).then(blockMembers => {
           setMembers(roomMembers);
-          setBlockedMembers(blockMembers);
+          setBlockedMembers(blockMembers || []);
           setisLoaded(true);
         });
       });
@@ -44,12 +44,18 @@ function RoomAddMemberModal({
       const originRoomMemberIds = members.map(
         member => member.friendId || member.id,
       );
+
+      const blockedMemberIds = blockedMembers.map(member => member.id);
+      const mergedMemberIds = [
+        ...new Set(originRoomMemberIds.concat(blockedMemberIds)),
+      ];
+
       const filteredUsers = userArray.filter(
-        user => !originRoomMemberIds.includes(user.friendId || user.id),
+        user => !mergedMemberIds.includes(user.friendId || user.id),
       );
       setSelectedUsers(filteredUsers);
     },
-    [members],
+    [members, blockedMembers],
   );
 
   const handleInviteUsers = async () => {
