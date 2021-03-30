@@ -38,7 +38,8 @@ const ProfileMyModal = ({
   created = false,
 }) => {
   const { t } = useTranslation();
-  const { userStore, spaceStore, roomStore } = useCoreStores();
+  const { userStore, spaceStore } = useCoreStores();
+  const { isGuest } = userStore.myProfile;
   const history = useHistory();
   const [isCreated, setIsCreated] = useState(created);
   const [profile, setProfile] = useState(null);
@@ -210,7 +211,7 @@ const ProfileMyModal = ({
   // 이후 '현재 스페이스의 어드민'인지를 체크하도록 수정
   const moreMenu = (
     <Menu style={{ minWidth: '6.25rem' }}>
-      {!isTmaxDomain ? (
+      {!isTmaxDomain && !isGuest ? (
         <Menu.Item onClick={handleInviteDialog}>
           {t('CM_USER_INVITE')}
         </Menu.Item>
