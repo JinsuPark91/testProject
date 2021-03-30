@@ -7,7 +7,7 @@ import { Observer } from 'mobx-react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import Photos from '../Photos';
 import NextArrowIcon from '../../assets/arrow_right_line.svg';
 import PrevArrowIcon from '../../assets/arrow_left_line.svg';
@@ -328,8 +328,15 @@ function OpenRoomHome({ visible, onCancel }) {
 
     return (
       <RoomSearchForm>
-        <SearchTitle>{keyword}</SearchTitle>
-        <SearchSubText>{t('CM_OPEN_ROOM_HOME_05')}</SearchSubText>
+        <SearchSubText>
+          <Trans
+            i18nKey="CM_OPEN_ROOM_HOME_05"
+            components={{
+              style: <SearchTitle />,
+            }}
+            values={{ result: keyword }}
+          />
+        </SearchSubText>
       </RoomSearchForm>
     );
   };
@@ -459,8 +466,13 @@ function OpenRoomHome({ visible, onCancel }) {
                     return (
                       <>
                         <RoomTitle>
-                          {t('CM_OPEN_ROOM_HOME_03')}
-                          <RoomCount>{openRooms.length}</RoomCount>
+                          <Trans
+                            i18nKey="CM_OPEN_ROOM_HOME_03"
+                            components={{
+                              style: <RoomCount />,
+                            }}
+                            values={{ num: openRooms.length }}
+                          />
                         </RoomTitle>
                         <StyledSlider
                           arrows
