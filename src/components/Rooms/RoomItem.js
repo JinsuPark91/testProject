@@ -322,13 +322,16 @@ const RoomItemContent = ({
         }
         description={
           <Observer>
-            {() =>
-              roomInfo.metadata?.lastMessage && (
-                <StyleRoomMessage>
-                  {roomInfo.metadata?.lastMessage}
-                </StyleRoomMessage>
-              )
-            }
+            {() => {
+              if (roomInfo.metadata?.lastMessage) {
+                return (
+                  <StyleRoomMessage>
+                    {roomInfo.metadata?.lastMessage}
+                  </StyleRoomMessage>
+                );
+              }
+              return null;
+            }}
           </Observer>
         }
       />

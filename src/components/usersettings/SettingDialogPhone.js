@@ -14,7 +14,8 @@ import {
 const SettingDialogPhone = props => {
   const { t } = useTranslation();
   const { phone, isPhoneEdit, onInputChange, onCancel, onSuccess } = props;
-  const { authStore } = useCoreStores();
+  const { userStore } = useCoreStores();
+  const { myProfile } = userStore;
 
   return (
     <InnerItem>
@@ -28,7 +29,7 @@ const SettingDialogPhone = props => {
               onChange={e => onInputChange(e.target.value)}
             />
           ) : (
-            <p>{getMobileNumber(authStore.user)}</p>
+            <p>{getMobileNumber(myProfile)}</p>
           )}
         </TextArea>
         <ButtonArea>
@@ -38,7 +39,7 @@ const SettingDialogPhone = props => {
                 size="small"
                 type="solid"
                 className="color-Beige"
-                disabled={authStore.user.phone === phone}
+                disabled={myProfile.phone === phone}
                 onClick={onSuccess}
               >
                 {t('CM_SAVE')}

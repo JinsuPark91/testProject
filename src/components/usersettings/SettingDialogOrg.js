@@ -14,8 +14,9 @@ import { LockLineIcon } from '../Icons';
 
 const SettingDialogOrg = () => {
   const { t } = useTranslation();
-  const { authStore, userStore } = useCoreStores();
-  // const isAdmin = userStore.myProfile.grade === 'admin';
+  const { userStore } = useCoreStores();
+  const { myProfile } = userStore;
+  // const isAdmin = myProfile.grade === 'admin';
   // const tooltipText = '어드민만 변경 가능';
 
   return (
@@ -24,8 +25,8 @@ const SettingDialogOrg = () => {
       <Data>
         <TextArea>
           <p>
-            {authStore.user.orgName || '-'}/ {authStore.user.position || '-'}/{' '}
-            {authStore.user.job || '-'}
+            {myProfile.orgName || '-'}/ {myProfile.position || '-'}/{' '}
+            {myProfile.job || '-'}
           </p>
         </TextArea>
         <ButtonArea>

@@ -1,5 +1,4 @@
-// 프로필에서 1:1 Talk, 1:1 Meeting, Mini Talk Open 할 때
-import { RoomStore } from 'teespace-core';
+import { RoomStore, UserStore } from 'teespace-core';
 
 export const handleProfileMenuClick = async (
   myUserId,
@@ -113,4 +112,57 @@ export const getCompanyNumber = profile => {
 
   // 지역번호가 02가 아니면 모바일 번호 양식이랑 기획이 같음
   return getMobileNumber(profile, false);
+};
+
+export const getProfileEditDto = params => {
+  const { myProfile } = UserStore;
+  const {
+    thumbFile,
+    backGroundFile,
+    name,
+    nick,
+    nationalCode,
+    companyNum,
+    phone,
+    birthDate,
+  } = params;
+  const obj = {};
+
+  // 기본 이미지로 변경 profilePhoto, profileFile, profileName = null
+  // 이미지 변경 없을 시 profileFile, profileName = null, profilePhoto = 경로
+  // 이미지 변경시 profilePhoto = null, ProfileFile = fileChooser file, ProfileName = 파일 이름
+
+  if (thumbFile) {
+    obj.profilePhoto = null;
+    obj.profileFile = thumbFile;
+    obj.profileName = thumbFile.name;
+  } else {
+    obj.profilePhoto = UserStore.getProfilePhotoURL(myProfile.id, 'medium');
+    obj.profileFile = null;
+    obj.profileName = null;
+  }
+
+  if (backGroundFile) {
+    obj.backPhoto = null;
+    obj.backFile = backGroundFile;
+    obj.backName = backGroundFile.name;
+  } else {
+    obj.backPhoto = UserStore.getBackgroundPhotoURL(myProfile.id);
+    obj.backFile = null;
+    obj.backName = null;
+  }
+
+  obj.name = name ?? myProfile.name;
+
+  // 기획상 별명 빈칸으로 변경 시도하면 이름으로 변경되어야 함
+  if (nick === undefined) obj.nick = myProfile.displayName;
+  else if (nick === '') obj.nick = myProfile.name;
+  else obj.nick = nick;
+
+  obj.nationalCode = nationalCode ?? myProfile.nationalCode;
+  obj.companyNum = companyNum ?? myProfile.companyNum;
+  obj.phone = phone ?? myProfile.phone;
+  obj.birthDate = birthDate ?? myProfile.birthDate;
+
+  return obj;
 };
