@@ -13,15 +13,26 @@ function RoomAddMemberModal({
   const { t } = useTranslation();
   const [isLoaded, setisLoaded] = useState(false);
   const [members, setMembers] = useState([]);
+  const [blockedMembers, setBlockedMembers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const { roomStore, userStore } = useCoreStores();
 
   useEffect(() => {
     if (roomId && visible) {
       const myUserId = userStore.myProfile.id;
-      roomStore.fetchRoomMemberList({ myUserId, roomId }).then(roomMembers => {
-        setMembers(roomMembers);
-        setisLoaded(true);
+
+      Promise.all([
+        roomStore.fetchRoomMemberList({ myUserId, roomId }),
+        roomStore.getBanList({
+          roomId,
+        }),
+      ]).then(([roomMembers, banInfos]) => {
+        const userIdList = banInfos.map(({ userId }) => userId);
+        userStore.fetchProfileList(userIdList).then(blockMembers => {
+          setMembers(roomMembers);
+          setBlockedMembers(blockMembers);
+          setisLoaded(true);
+        });
       });
     } else {
       setisLoaded(false);
@@ -69,6 +80,16 @@ function RoomAddMemberModal({
     onCancel();
   };
 
+  const getDisabledIds = () => {
+    const originMemberIds = members.map(member => member.friendId || member.id);
+    const blockedMemberIds = blockedMembers.map(member => member.id);
+    return [...new Set(originMemberIds.concat(blockedMemberIds))];
+  };
+
+  const getDefaultSelectedUsers = () => {
+    return members.concat(blockedMembers);
+  };
+
   return (
     isLoaded && (
       <FlexModal
@@ -86,8 +107,8 @@ function RoomAddMemberModal({
         <ItemSelector
           isVisibleRoom={false}
           onSelectChange={handleSelectedUserChange}
-          disabledIds={members.map(member => member.friendId || member.id)}
-          defaultSelectedUsers={members}
+          disabledIds={getDisabledIds()}
+          defaultSelectedUsers={getDefaultSelectedUsers()}
           showMeOnFriendTab={false}
           height={25} // rem
         />

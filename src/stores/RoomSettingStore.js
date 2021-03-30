@@ -7,10 +7,6 @@ const RoomSettingStore = observable({
   members: [],
   selectedMembers: new Map(),
 
-  //
-  blockedMemebers: [],
-  //
-
   async fetchMembers({ roomId }) {
     try {
       const members = await RoomStore.fetchRoomMemberList({
@@ -38,7 +34,7 @@ const RoomSettingStore = observable({
 
       this.members = members;
     } catch (err) {
-      console.log('블록 멤버 조회 에러 : ', err);
+      console.log('blocked member list get error : ', err);
     }
   },
 
