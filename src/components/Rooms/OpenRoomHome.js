@@ -60,6 +60,7 @@ function OpenRoomHome({ visible, onCancel }) {
   const initialStates = {
     createModalVisible: false,
     enterModalVisible: false,
+    enterFailModalVisible: false,
     requestModalVisible: false,
     keyword: '',
     currentOpenRoom: null,
@@ -77,6 +78,9 @@ function OpenRoomHome({ visible, onCancel }) {
   const [keyword, setKeyword] = useState(initialStates.keyword);
   const [currentOpenRoom, setCurrentOpenRoom] = useState(
     initialStates.currentOpenRoom,
+  );
+  const [enterFailModalVisible, setEnterFailModalVisible] = useState(
+    initialStates.enterFailModalVisible,
   );
 
   const { roomStore, userStore } = useCoreStores();
@@ -225,22 +229,28 @@ function OpenRoomHome({ visible, onCancel }) {
   const handleConfirmEnter = async () => {
     const myUserId = userStore.myProfile.id;
 
+    const failRoomEnter = () => {
+      setEnterFailModalVisible(true);
+    };
+
     try {
       const res = await roomStore.enterRoom({
         myUserId,
         roomId: currentOpenRoom.id,
       });
 
-      if (res?.roomId) {
+      if (!res.result) {
+        failRoomEnter();
+      } else if (res?.roomId) {
         history.push(`/s/${currentOpenRoom.id}/talk`);
+        closeEnterModal();
+        closeHomeModal();
       }
       logEvent('room', 'clickEnterOpenRoomBtn');
     } catch (err) {
       console.error('ROOM ENTER ERROR : ', err);
+      failRoomEnter();
     }
-
-    closeEnterModal();
-    closeHomeModal();
   };
 
   const handleCancelEnter = () => {
@@ -381,6 +391,21 @@ function OpenRoomHome({ visible, onCancel }) {
                 shape: 'round',
                 text: t('CM_CANCEL'),
                 onClick: handleCancelEnter,
+              },
+            ]}
+          />
+          <Message
+            visible={enterFailModalVisible}
+            title="참여가 불가능한 오픈 룸입니다."
+            subtitle="룸 관리자의 참여 제한 해제가 필요합니다."
+            btns={[
+              {
+                type: 'solid',
+                shape: 'round',
+                text: '확인',
+                onClick: () => {
+                  setEnterFailModalVisible(false);
+                },
               },
             ]}
           />

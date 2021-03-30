@@ -39,7 +39,7 @@ const ProfileMyModal = ({
   created = false,
 }) => {
   const { t } = useTranslation();
-  const { userStore, spaceStore } = useCoreStores();
+  const { userStore, spaceStore, roomStore } = useCoreStores();
   const history = useHistory();
   const [isCreated, setIsCreated] = useState(created);
   const [profile, setProfile] = useState(null);
@@ -293,6 +293,12 @@ const ProfileMyModal = ({
     return sessionStorage.getItem('language');
   };
 
+  const newMessageExist =
+    spaceStore.spaceList
+      .filter(elem => elem?.id !== spaceStore.currentSpace?.id)
+      .find(elem => elem.unreadSpaceCount > 0) !== undefined ||
+    PlatformUIStore.totalUnreadCount > 0;
+
   const subContent = (
     <>
       <UserSpaceArea isEdit={isEditMode}>
@@ -303,6 +309,7 @@ const ProfileMyModal = ({
             <Title>{spaceStore.currentSpace?.name}</Title>
             {spaceStore.currentSpace?.domain}
           </Info>
+          {newMessageExist && <NewBadge />}
           <Tooltip
             placement="topLeft"
             color="#4C535D"
@@ -963,6 +970,17 @@ const SettingBar = styled.span`
   margin: 0 0.375rem;
   background-color: #7b7671;
   border-radius: 50%;
+`;
+
+const NewBadge = styled.div`
+  position: absolute;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: #dc4547;
+  right: 2rem;
+  top: 2.5rem;
+  z-index: 1;
 `;
 
 export default ProfileMyModal;
