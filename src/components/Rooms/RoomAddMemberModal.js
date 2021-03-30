@@ -23,6 +23,8 @@ function RoomAddMemberModal({
         setMembers(roomMembers);
         setisLoaded(true);
       });
+    } else {
+      setisLoaded(false);
     }
   }, [roomId, visible]);
 
