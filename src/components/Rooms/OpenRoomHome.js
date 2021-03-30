@@ -85,6 +85,7 @@ function OpenRoomHome({ visible, onCancel }) {
 
   const { roomStore, userStore } = useCoreStores();
   const history = useHistory();
+  const { isGuest } = userStore.myProfile;
 
   useEffect(() => {
     if (visible) {
@@ -447,69 +448,71 @@ function OpenRoomHome({ visible, onCancel }) {
           />
           {!keyword ? (
             <>
-              <RoomListBox>
-                <Observer>
-                  {() => {
-                    const openRooms = roomStore
-                      .getOpenRoomArray()
-                      .filter(
-                        roomInfo =>
-                          roomInfo.adminId === userStore.myProfile.id &&
-                          roomInfo.isJoined,
+              {isGuest ? null : (
+                <RoomListBox>
+                  <Observer>
+                    {() => {
+                      const openRooms = roomStore
+                        .getOpenRoomArray()
+                        .filter(
+                          roomInfo =>
+                            roomInfo.adminId === userStore.myProfile.id &&
+                            roomInfo.isJoined,
+                        );
+
+                      const remain = (openRooms.length + 1) % 4;
+                      const dummyArray = Array.from(
+                        Array(remain ? 4 - remain : 0).keys(),
                       );
 
-                    const remain = (openRooms.length + 1) % 4;
-                    const dummyArray = Array.from(
-                      Array(remain ? 4 - remain : 0).keys(),
-                    );
-
-                    return (
-                      <>
-                        <RoomTitle>
-                          <Trans
-                            i18nKey="CM_OPEN_ROOM_HOME_03"
-                            components={{
-                              style: <RoomCount />,
-                            }}
-                            values={{ num: openRooms.length }}
-                          />
-                        </RoomTitle>
-                        <StyledSlider
-                          arrows
-                          initialSlide={0}
-                          slidesToShow={4}
-                          slidesToScroll={4}
-                        >
-                          <ItemAddBtn onClick={handleCreateRoom}>
-                            <span>{t('CM_CREATE_OPEN_ROOM')}</span>
-                            <AddIcon
-                              width="1.25"
-                              height="1.25"
-                              color="#7B7671"
+                      return (
+                        <>
+                          <RoomTitle>
+                            <Trans
+                              i18nKey="CM_OPEN_ROOM_HOME_03"
+                              components={{
+                                style: <RoomCount />,
+                              }}
+                              values={{ num: openRooms.length }}
                             />
-                          </ItemAddBtn>
-                          {openRooms.map(openRoom => {
-                            return (
-                              <OpenRoomItem
-                                key={openRoom.id}
-                                roomInfo={openRoom}
-                                photo={getUserPhotos(
-                                  openRoom.memberIdListString,
-                                )}
-                                onClick={handleRoomClick}
-                                onSettingClick={handleSettingClick}
+                          </RoomTitle>
+                          <StyledSlider
+                            arrows
+                            initialSlide={0}
+                            slidesToShow={4}
+                            slidesToScroll={4}
+                          >
+                            <ItemAddBtn onClick={handleCreateRoom}>
+                              <span>{t('CM_CREATE_OPEN_ROOM')}</span>
+                              <AddIcon
+                                width="1.25"
+                                height="1.25"
+                                color="#7B7671"
                               />
-                            );
-                          })}
-                          {dummyArray.map(key => {
-                            return <div key={key} />;
-                          })}
-                        </StyledSlider>
-                      </>
-                    );
-                  }}
-                </Observer>
-              </RoomListBox>
+                            </ItemAddBtn>
+                            {openRooms.map(openRoom => {
+                              return (
+                                <OpenRoomItem
+                                  key={openRoom.id}
+                                  roomInfo={openRoom}
+                                  photo={getUserPhotos(
+                                    openRoom.memberIdListString,
+                                  )}
+                                  onClick={handleRoomClick}
+                                  onSettingClick={handleSettingClick}
+                                />
+                              );
+                            })}
+                            {dummyArray.map(key => {
+                              return <div key={key} />;
+                            })}
+                          </StyledSlider>
+                        </>
+                      );
+                    }}
+                  </Observer>
+                </RoomListBox>
+              )}
               <RecommendRoomListBox>
                 <RoomOpenTitle>{t('CM_OPEN_ROOM_HOME_04')}</RoomOpenTitle>
                 <Observer>

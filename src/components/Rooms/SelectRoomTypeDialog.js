@@ -26,34 +26,40 @@ const SelectRoomType = styled.div`
   align-items: center;
 `;
 
-const RoomInformation = styled.div`
+const RoomInformation = styled.button`
   width: 12.81rem;
   padding: 2rem 1rem;
   display: flex;
   flex-flow: column wrap;
   align-items: center;
-  cursor: pointer;
   border-radius: 0.875rem;
+  background: #fff;
+  border: 0;
 
   &:hover {
+    cursor: pointer;
     background: #faf8f7;
   }
 
   &:active {
     background: #f2efec;
   }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 `;
 
 const StyledInfoTitle = styled(Title)`
   font-size: 0.94rem;
   line-height: 1.38rem;
-  color: #000000;
+  color: ${({ disabled }) => (disabled ? '#ccc' : '#000')};
   letter-spacing: 0;
   margin-bottom: 0.63rem;
 `;
 const StyledInfoText = styled.p`
   font-size: 0.75rem;
-  color: #696969;
+  color: ${({ disabled }) => (disabled ? '#ccc' : '#696969')};
   white-space: pre-line;
   letter-spacing: 0;
   text-align: center;
@@ -159,6 +165,10 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
     setIsVisible({ ...isVisible, createPrivateRoom: false });
   };
 
+  const isDisabled = () => {
+    return userStore.myProfile.isGuest;
+  };
+
   return (
     <>
       <OpenRoomHome
@@ -179,14 +189,23 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
         centered
       >
         <SelectRoomType>
-          <RoomInformation onClick={handlePrivateRoomCreate}>
+          <RoomInformation
+            disabled={isDisabled()}
+            onClick={handlePrivateRoomCreate}
+          >
             <div style={{ marginBottom: '1.19rem' }}>
-              <PrivateRoomIcon width={1.88} height={1.88} color="#232D3B" />
+              <PrivateRoomIcon
+                width={1.88}
+                height={1.88}
+                color={isDisabled() ? '#cccccc' : '#232D3B'}
+              />
             </div>
-            <StyledInfoTitle level={4}>
+            <StyledInfoTitle disabled={isDisabled()} level={4}>
               {t('CM_CREATE_ROOM_OPTION_01')}
             </StyledInfoTitle>
-            <StyledInfoText>{t('CM_CREATE_ROOM_OPTION_02')}</StyledInfoText>
+            <StyledInfoText disabled={isDisabled()}>
+              {t('CM_CREATE_ROOM_OPTION_02')}
+            </StyledInfoText>
           </RoomInformation>
           <VerticalBar />
           <RoomInformation onClick={handleOpenRoomCreate}>
