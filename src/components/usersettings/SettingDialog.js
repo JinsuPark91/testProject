@@ -19,6 +19,7 @@ import Contentcommon from './Contentcommon';
 import Settingsave from './Settingsave';
 import TermsFooter from '../login/TermsFooter';
 import { SELECTED_TAB } from './SettingConstants';
+import { getProfileEditDto } from '../../utils/ProfileUtil';
 
 const DialogWrap = styled(Modal)`
   .ant-modal-body {
@@ -96,9 +97,9 @@ const InnerList = styled.ul`
   }
 `;
 
-function SettingDialog(props) {
+const SettingDialog = props => {
   const { t } = useTranslation();
-  const { userStore, authStore } = useCoreStores();
+  const { userStore } = useCoreStores();
   const { selectedKeyA, visible, onCancel } = props;
   const [selectedKey, setSelectedKey] = useState(selectedKeyA);
   const [settingform] = Form.useForm();
@@ -106,6 +107,7 @@ function SettingDialog(props) {
   const [buttonFooter, setbuttonFooter] = useState(
     selectedKey === '6' || selectedKey === true,
   );
+  const { myProfile } = userStore;
 
   // 내 정보 변경 관련
   const [isNameEdit, setIsNameEdit] = useState(false);
@@ -131,115 +133,75 @@ function SettingDialog(props) {
 
   // FIXME: 급하게 추가했지만 추후에 settingprofilephoto,
   // settingprofilecountrycode 에 있는 함수와 합치는 작업 필요
-  const getDtoObject = useCallback(() => {
-    const obj = {};
-    obj.profilePhoto = userStore.getProfilePhotoURL(
-      userStore.myProfile.id,
-      'medium',
-    );
-    obj.profileFile = null;
-    obj.profileName = null;
-    obj.backPhoto = userStore.getBackgroundPhotoURL(userStore.myProfile.id);
-    obj.backFile = null;
-    obj.backName = null;
-    obj.name = name ?? userStore.myProfile.name;
-    // 별명 빈칸 변경 시도시 이름으로 변경하는 기획
-    if (nick === undefined) {
-      obj.nick = userStore.myProfile.nick || userStore.myProfile.name;
-    } else if (nick === '') {
-      obj.nick = userStore.myProfile.name;
-    } else {
-      obj.nick = nick;
-    }
-    obj.nationalCode = userStore.myProfile.nationalCode;
-    obj.companyNum = companyNum ?? userStore.myProfile.companyNum;
-    obj.phone = phone ?? userStore.myProfile.phone;
-    obj.birthDate = birthDate ?? userStore.myProfile.birthDate;
-    return obj;
-  }, [name, nick, companyNum, phone, birthDate, userStore]);
-
-  const handleToggleNameInput = useCallback(() => {
+  const handleToggleNameInput = () => {
+    setName(myProfile.name);
     setIsNameEdit(!isNameEdit);
-    setName(authStore.user.name);
-  }, [isNameEdit, authStore]);
-
-  const handleToggleNickInput = useCallback(() => {
+  };
+  const handleToggleNickInput = () => {
+    setNick(myProfile.nick);
     setIsNickEdit(!isNickEdit);
-    setNick(authStore.user.nick);
-  }, [isNickEdit, authStore]);
-
-  const handleToggleCountryCode = useCallback(() => {
+  };
+  const handleToggleCountryCode = () => {
     setIsCountryCodeEdit(!isCountryCodeEdit);
-  }, [isCountryCodeEdit]);
-
-  const handleToggleCompanyNumInput = useCallback(() => {
+  };
+  const handleToggleCompanyNumInput = () => {
+    setCompanyNum(myProfile.companyNum);
     setIsCompanyNumEdit(!isCompanyNumEdit);
-    setCompanyNum(authStore.user.companyNum);
-  }, [isCompanyNumEdit, authStore]);
-
-  const handleTogglePhoneInput = useCallback(() => {
+  };
+  const handleTogglePhoneInput = () => {
+    setPhone(myProfile.phone);
     setIsPhoneEdit(!isPhoneEdit);
-    setPhone(authStore.user.phone);
-  }, [isPhoneEdit, authStore]);
-
-  const handleToggleBirthDateInput = useCallback(() => {
+  };
+  const handleToggleBirthDateInput = () => {
+    setBirthDate(myProfile.birthDate);
     setIsBirthDateEdit(!isBirthDateEdit);
-    setBirthDate(authStore.user.birthDate);
-  }, [isBirthDateEdit, authStore]);
+  };
 
-  const handleChangeName = useCallback(async () => {
-    const updateInfo = getDtoObject();
+  const handleChangeName = async () => {
+    const updateInfo = getProfileEditDto({ name });
     try {
       await userStore.updateMyProfile(updateInfo);
       setIsNameEdit(false);
     } catch (e) {
       console.log(`changeName Error is ${e}`);
     }
-  }, [getDtoObject, userStore]);
-
-  const handleChangeNick = useCallback(async () => {
-    const updateInfo = getDtoObject();
+  };
+  const handleChangeNick = async () => {
+    const updateInfo = getProfileEditDto({ nick });
     try {
       await userStore.updateMyProfile(updateInfo);
       setIsNickEdit(false);
     } catch (e) {
       console.log(`changeNick Error is ${e}`);
     }
-  }, [getDtoObject, userStore]);
-
-  const handleChangeCountryCode = useCallback(async () => {
-    handleToggleCountryCode();
-  }, [handleToggleCountryCode]);
-
-  const handleChangeCompanyNum = useCallback(async () => {
-    const updateInfo = getDtoObject();
+  };
+  const handleChangeCompanyNum = async () => {
+    const updateInfo = getProfileEditDto({ companyNum });
     try {
       await userStore.updateMyProfile(updateInfo);
       setIsCompanyNumEdit(false);
     } catch (e) {
       console.log(`changeCompanyPhone Error is ${e}`);
     }
-  }, [getDtoObject, userStore]);
-
-  const handleChangePhone = useCallback(async () => {
-    const updateInfo = getDtoObject();
+  };
+  const handleChangePhone = async () => {
+    const updateInfo = getProfileEditDto({ phone });
     try {
       await userStore.updateMyProfile(updateInfo);
       setIsPhoneEdit(false);
     } catch (e) {
       console.log(`changeCellPhone Error is ${e}`);
     }
-  }, [getDtoObject, userStore]);
-
-  const handleChangeBirthDate = useCallback(async () => {
-    const updateInfo = getDtoObject();
+  };
+  const handleChangeBirthDate = async () => {
+    const updateInfo = getProfileEditDto({ birthDate });
     try {
       await userStore.updateMyProfile(updateInfo);
       setIsBirthDateEdit(false);
     } catch (e) {
       console.log(`changeBirthDay Error is ${e}`);
     }
-  }, [getDtoObject, userStore]);
+  };
 
   const handleToggleContinue = () => {
     setIsSecessionContinue(!isSecessionContinue);
@@ -371,7 +333,6 @@ function SettingDialog(props) {
                 <SettingDialogCountryCode
                   isCountryCodeEdit={isCountryCodeEdit}
                   onCancel={handleToggleCountryCode}
-                  onSuccess={handleChangeCountryCode}
                 />
                 {isB2B && (
                   <SettingDialogCompanyNum
@@ -412,6 +373,6 @@ function SettingDialog(props) {
       </LayoutWrap>
     </DialogWrap>
   ));
-}
+};
 
 export default SettingDialog;

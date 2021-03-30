@@ -11,14 +11,13 @@ import {
 } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import { useObserver, Observer } from 'mobx-react';
-import { I18nContext, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import i18next from '../../i18n';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SettingDialog from '../usersettings/SettingDialog';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import convertSpaceIcon from '../../assets/convert_space.svg';
 import moreSpaceIcon from '../../assets/view_more.svg';
-import checkekIcon from '../../assets/ts_check.svg';
 import { ReactComponent as SquareSpaceIcon } from '../../assets/card_view.svg';
 import LanguageIcon from '../../assets/language.svg';
 import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
@@ -39,7 +38,7 @@ const ProfileMyModal = ({
   created = false,
 }) => {
   const { t } = useTranslation();
-  const { userStore, spaceStore } = useCoreStores();
+  const { userStore, spaceStore, roomStore } = useCoreStores();
   const history = useHistory();
   const [isCreated, setIsCreated] = useState(created);
   const [profile, setProfile] = useState(null);
@@ -68,9 +67,7 @@ const ProfileMyModal = ({
     isNewSpaceErrorMessagVisible,
     setIsNewSpaceErrorMessageVisible,
   ] = useState(false);
-
   const isAdmin = userStore.myProfile.grade === 'admin';
-  const [lngListVisible, setLngListVisible] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
   const handleSettingDialogOpen = useCallback(e => {
@@ -80,7 +77,7 @@ const ProfileMyModal = ({
     setSpaceListVisible(false);
   }, []);
 
-  const handleSettingDialogClose = useCallback(() => {
+  const handleCloseSettingDialog = useCallback(() => {
     setItemKey(SELECTED_TAB.ALARM);
     setSettingDialogVisible(false);
   }, []);
@@ -242,8 +239,12 @@ const ProfileMyModal = ({
   // NOTE: 메뉴는 언어 설정과 관계없음
   const LanguageMenu = (
     <Menu style={{ minWidth: '6.25rem' }}>
-      <Menu.Item onClick={() => handleChangeLanguage('ko')}>한국어</Menu.Item>
-      <Menu.Item onClick={() => handleChangeLanguage('en')}>English</Menu.Item>
+      <Menu.Item onClick={() => handleChangeLanguage('ko')}>
+        {t('CM_KOREAN')}
+      </Menu.Item>
+      <Menu.Item onClick={() => handleChangeLanguage('en')}>
+        {t('CM_ENGLISH')}
+      </Menu.Item>
     </Menu>
   );
 
@@ -293,6 +294,12 @@ const ProfileMyModal = ({
     return sessionStorage.getItem('language');
   };
 
+  const newMessageExist =
+    spaceStore.spaceList
+      .filter(elem => elem?.id !== spaceStore.currentSpace?.id)
+      .find(elem => elem.unreadSpaceCount > 0) !== undefined ||
+    PlatformUIStore.totalUnreadCount > 0;
+
   const subContent = (
     <>
       <UserSpaceArea isEdit={isEditMode}>
@@ -309,6 +316,18 @@ const ProfileMyModal = ({
             title={t('CM_PROFILE_PROFILE_MENU_01')}
           >
             <Button className="btn-convert" onClick={handleSpaceList}>
+              <Observer>
+                {() => {
+                  const newMessage =
+                    spaceStore.spaceList
+                      .filter(elem => elem?.id !== spaceStore.currentSpace?.id)
+                      .find(elem => elem.unreadSpaceCount > 0) !== undefined ||
+                    PlatformUIStore.totalUnreadCount > 0;
+
+                  if (newMessage) return <NewBadge />;
+                  return null;
+                }}
+              </Observer>
               <Blind>{t('CM_PROFILE_PROFILE_MENU_01')}</Blind>
             </Button>
           </Tooltip>
@@ -418,7 +437,7 @@ const ProfileMyModal = ({
       <SettingDialog
         selectedKeyA={itemKey}
         visible={settingDialogVisible}
-        onCancel={handleSettingDialogClose}
+        onCancel={handleCloseSettingDialog}
       />
       <AddFriendsByInvitationDialog
         visible={isInviteDialogOpen}
@@ -664,12 +683,22 @@ const DataBox = styled.div`
     }
   }
   .btn-convert {
+    position: relative;
     background-image: url('${convertSpaceIcon}');
   }
   .btn-more {
     margin-left: 0.125rem;
     background-image: url('${moreSpaceIcon}');
   }
+`;
+const NewBadge = styled.div`
+  position: absolute;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background-color: #dc4547;
+  top: -0.1rem;
+  right: -0.1rem;
 `;
 const Logo = styled(Avatar)`
   flex-shrink: 0;
@@ -762,59 +791,6 @@ const SubInfo = styled.p`
     svg {
       color: #43434a;
     }
-  }
-`;
-// eslint-disable-next-line no-unused-vars
-const LangIcon = styled.span`
-  margin-left: auto;
-  line-height: 0;
-  svg {
-    width: 1rem;
-    height: 1rem;
-  }
-`;
-// eslint-disable-next-line no-unused-vars
-const LngList = styled.ul`
-  position: absolute;
-  left: -5.27rem;
-  width: 5.19rem;
-  margin-top: -3.25rem;
-  padding: 0.25rem 0;
-  background-color: #fff;
-  border: 1px solid #c6ced6;
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 0.25rem;
-`;
-// eslint-disable-next-line no-unused-vars
-const LangItem = styled.li`
-  position: relative;
-  padding-left: 1.63rem;
-  font-size: 0.75rem;
-  color: #000;
-  line-height: 2.125rem;
-  border-radius: 1.25rem;
-  cursor: pointer;
-  ${props =>
-    props.checked &&
-    css`
-      &:before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 0.56rem;
-        width: 0.75rem;
-        height: 0.75rem;
-        transform: translateY(-50%);
-        background-image: url('${checkekIcon}');
-        background-size: contain;
-      }
-    `};
-  &:hover {
-    background: #dcddff;
-  }
-  &:active,
-  &:focus {
-    background-color: #bcbeff;
   }
 `;
 const ConvertDropdown = styled.div`

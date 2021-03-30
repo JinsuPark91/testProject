@@ -15,7 +15,8 @@ import {
 const SettingDialogNick = props => {
   const { t } = useTranslation();
   const { nick, isNickEdit, onInputChange, onCancel, onSuccess } = props;
-  const { authStore } = useCoreStores();
+  const { userStore } = useCoreStores();
+  const { myProfile } = userStore;
 
   return (
     <InnerItem>
@@ -25,14 +26,14 @@ const SettingDialogNick = props => {
           {isNickEdit ? (
             <EditNameInput
               maxLength={20}
-              placeholder={authStore.user.name}
+              placeholder={myProfile.displayName}
               value={nick}
               onChange={input => {
                 onInputChange(input);
               }}
             />
           ) : (
-            <p>{authStore.user.nick || '-'}</p>
+            <p>{myProfile.displayName || '-'}</p>
           )}
           <Info>{t('CM_SETTING_NICKNAME_EXPLAIN')}</Info>
         </TextArea>
@@ -43,7 +44,7 @@ const SettingDialogNick = props => {
                 size="small"
                 type="solid"
                 className="color-Beige"
-                disabled={authStore.user.nick === nick}
+                disabled={myProfile.displayName === nick}
                 onClick={onSuccess}
               >
                 {t('CM_SAVE')}
