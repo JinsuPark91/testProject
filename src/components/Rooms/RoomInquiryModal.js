@@ -134,6 +134,13 @@ const SettingButton = styled.button`
   & + & {
     margin-left: 0.5625rem;
   }
+
+  &:disabled {
+    color: #646464;
+    &:hover {
+      cursor: not-allowed;
+    }
+  }
 `;
 const ButtonIcon = styled.span`
   display: block;
@@ -372,6 +379,13 @@ function RoomInquiryModal({
     [onCancel],
   );
 
+  const isDisabled = () => {
+    // 룸이 있는상태에서만 이 다이얼로그를 열수 있음.
+    if (!roomInfo) return true;
+
+    return false;
+  };
+
   const userContent = (
     <InquiryContentwrap>
       <StyledPhotos srcList={memberPhotos} defaultDiameter="3.75" />
@@ -421,15 +435,23 @@ function RoomInquiryModal({
               </ButtonIcon>
               {t('CM_CHANGE_NAME_02')}
             </SettingButton>
-            <SettingButton onClick={handleTalk}>
+            <SettingButton disabled={isDisabled()} onClick={handleTalk}>
               <ButtonIcon>
-                <ChattingIcon width="1.5" height="1.5" />
+                <ChattingIcon
+                  color={isDisabled() ? '#646464' : '#fff'}
+                  width="1.5"
+                  height="1.5"
+                />
               </ButtonIcon>
-              Talk
+              {t('CM_TALK')}
             </SettingButton>
-            <SettingButton onClick={handleMeeting}>
+            <SettingButton disabled={isDisabled()} onClick={handleMeeting}>
               <ButtonIcon>
-                <MeetingIcon width="1.5" height="1.5" color="#fff" />
+                <MeetingIcon
+                  color={isDisabled() ? '#646464' : '#fff'}
+                  width="1.5"
+                  height="1.5"
+                />
               </ButtonIcon>
               {t('CM_B2C_CONTENTS_AREA_EMPTY_PAGE_20')}
             </SettingButton>
@@ -481,6 +503,16 @@ function RoomInquiryModal({
     </>
   );
 
+  const getFooter = () => {
+    const { isGuest } = userStore.myProfile;
+    return isGuest ? null : (
+      <AddButton onClick={handleInvite}>
+        <AddAcountIcon width="1.25" height="1.25" color="#232D3B" />
+        {t('CM_ROOM_INVITE_USER')}
+      </AddButton>
+    );
+  };
+
   return (
     <>
       <ProfileModal
@@ -493,12 +525,7 @@ function RoomInquiryModal({
         type="room"
         userContent={userContent}
         subContent={subContent}
-        footer={
-          <AddButton onClick={handleInvite}>
-            <AddAcountIcon width="1.25" height="1.25" color="#232D3B" />
-            {t('CM_ROOM_INVITE_USER')}
-          </AddButton>
-        }
+        footer={getFooter()}
       />
 
       <RoomAddMemberModal
