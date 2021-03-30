@@ -47,7 +47,7 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
           return <Component />;
         }
         //로그인 안됐는데 토큰 있을경우
-        else if (getLoginId ) {
+        else if (getLoginId) {
           console.log(loginInfo);
           Promise.all([authStore.login(loginInfo)])
             .then(async res => {

@@ -5,6 +5,7 @@ import LoginPasswordInput from '../components/login/LoginPasswordInput';
 import LoginIdInput from '../components/login/LoginIdInput';
 import { Loader } from './MainPageStyle';
 import LoadingImg from '../assets/WAPL_Loading.gif';
+import Cookies from 'js-cookie';
 import styled from 'styled-components';
 
 function PrivateLoginPage() {
@@ -13,6 +14,11 @@ function PrivateLoginPage() {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [errorResult, setErrorResult] = useState(null);
+
+  useEffect(()=>{
+      Cookies.remove('ACCESS_TOKEN');
+      Cookies.remove('DEVICE_TYPE'); 
+   },[])
 
   const onFinish = async values => {
     setIsLoading(true);
@@ -37,6 +43,7 @@ function PrivateLoginPage() {
       setIsLoading(false);
     }
   };
+
 
   const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
