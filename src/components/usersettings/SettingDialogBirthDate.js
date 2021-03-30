@@ -19,7 +19,8 @@ const SettingDialogBirthDate = props => {
     onSuccess,
   } = props;
   const { t } = useTranslation();
-  const { authStore } = useCoreStores();
+  const { userStore } = useCoreStores();
+  const { myProfile } = userStore;
 
   return (
     <InnerItem>
@@ -35,7 +36,7 @@ const SettingDialogBirthDate = props => {
               onChange={e => onInputChange(e.target.value)}
             />
           ) : (
-            <p>{authStore.user.birthDate || '-'}</p>
+            <p>{myProfile.birthDate || '-'}</p>
           )}
         </TextArea>
         <ButtonArea>
@@ -45,7 +46,7 @@ const SettingDialogBirthDate = props => {
                 size="small"
                 type="solid"
                 className="color-Beige"
-                disabled={authStore.user.birthDate === birthDate}
+                disabled={myProfile.birthDate === birthDate}
                 onClick={onSuccess}
               >
                 {t('CM_SAVE')}
