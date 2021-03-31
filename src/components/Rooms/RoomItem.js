@@ -79,15 +79,30 @@ const RoomDropdown = React.memo(
 
     const handleViewMember = e => {
       e.domEvent.stopPropagation();
+
+      //  1:1 방의 경우 상대 유저의 프로파일 정보를 보여줌.
+      const isDMRoom = roomInfo.isDirectMsg;
+
       setVisible(false);
 
-      onClickMenuItem({
-        key: 'member',
-        item: roomInfo,
-        value: {
-          isEdit: false,
-        },
-      });
+      if (isDMRoom) {
+        const targetUserId = roomInfo.memberIdListString
+          .split(',')
+          .find(userId => userId !== userStore.myProfile.id);
+
+        onClickMenuItem({
+          key: 'profile',
+          item: targetUserId,
+        });
+      } else {
+        onClickMenuItem({
+          key: 'member',
+          item: roomInfo,
+          value: {
+            isEdit: false,
+          },
+        });
+      }
     };
 
     const handleNameChange = e => {

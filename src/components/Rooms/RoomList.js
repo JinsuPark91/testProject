@@ -111,6 +111,10 @@ function RoomList() {
 
   const handleClickMenuItem = useCallback(({ key, item, value }) => {
     switch (key) {
+      case 'profile':
+        setTargetUserId(item);
+        setIsProfileInfoModalVisible(true);
+        break;
       case 'member':
       case 'changeName':
         setRoomMemberAttr(value);
