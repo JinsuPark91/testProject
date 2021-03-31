@@ -27,6 +27,7 @@ if (process.env.NODE_ENV !== 'development') {
   console.error = () => {};
   console.info = () => {};
   console.warn = () => {};
+  console.debug = () => {};
 }
 
 const legacyDomainURL = `${window.location.protocol}//${
