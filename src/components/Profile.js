@@ -4,7 +4,12 @@ import { Button, Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
 import { useCoreStores, Message, Toast } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
-import { LockLineIcon, ChattingWithMeIcon, MeetingIcon } from './Icons';
+import {
+  LockLineIcon,
+  ChattingWithMeIcon,
+  MeetingIcon,
+  CameraIcon,
+} from './Icons';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 import PlatformUIStore from '../stores/PlatformUIStore';
 import {
@@ -428,7 +433,7 @@ const Profile = observer(
                   }
                 >
                   <ImageChangeButton>
-                    <MeetingIcon width="1.25" height="1.25" color="#fff" />
+                    <CameraIcon width="1.25" height="1.25" color="#fff" />
                   </ImageChangeButton>
                 </Dropdown>
               )}
@@ -473,7 +478,7 @@ const Profile = observer(
                       }
                     >
                       <CameraBox>
-                        <MeetingIcon width="1.88" height="1.88" color="#fff" />
+                        <CameraIcon width="1.88" height="1.88" color="#fff" />
                       </CameraBox>
                     </Dropdown>
                   </ImageChange>
