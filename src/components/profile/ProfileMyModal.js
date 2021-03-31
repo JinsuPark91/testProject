@@ -929,8 +929,7 @@ const UserSettingArea = styled.div`
   border-top: 1px solid #eeedeb;
 `;
 const SettingButton = styled(Button)`
-  width: 4.375rem;
-  padding: 0 !important;
+  min-width: 4.375rem;
 `;
 // eslint-disable-next-line no-unused-vars
 const SettingBar = styled.span`

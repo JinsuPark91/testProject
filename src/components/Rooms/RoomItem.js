@@ -558,6 +558,11 @@ const Title = styled.div`
 `;
 
 const StyleRoomMessage = styled.span`
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 0.125rem;
   color: #666;
 `;
 
@@ -574,7 +579,7 @@ const UserCountText = styled.span`
   margin-left: 0.25rem;
   font-size: 0.81rem;
   line-height: 1.19rem;
-  color: #7f7f7f;
+  color: #aeaeae;
 `;
 
 const StyledItem = styled.div`
@@ -610,8 +615,8 @@ const StyledItem = styled.div`
     line-height: 1.188rem;
   }
   .ant-list-item-meta-description {
-    margin-top: 0.125rem;
     font-size: 0.69rem;
+    font-weight: 300;
     line-height: 1rem;
     overflow: hidden;
     text-overflow: ellipsis;

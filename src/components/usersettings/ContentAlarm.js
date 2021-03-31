@@ -39,10 +39,6 @@ const ItemMain = styled.label`
   }
 `;
 
-const ItemInfo = styled.div`
-  flex: 1;
-`;
-
 const ItemTitle = styled.label`
   display: block;
   font-size: 0.75rem;
@@ -50,14 +46,21 @@ const ItemTitle = styled.label`
   color: #777;
 `;
 
+const ItemInfo = styled.div`
+  flex: 1;
+  ${ItemTitle}:only-child {
+    margin-bottom: 0;
+  }
+`;
+
 const ItemTitleBlack = styled(ItemTitle)`
   color: #000;
 `;
 
 const ItemSub = styled.div`
-  margin: 0.63rem 0 0.4375rem;
-  color: ${props => (props.isEmail ? '#818181' : '#000000')};
-  font-size: ${props => (props.isSmall ? '0.75rem' : '0.81rem')};
+  margin: ${props => (props.isMail ? '0 0 0.4375rem' : '0.63rem 0 0.4375rem')};
+  color: ${props => (props.isMail ? '#818181' : '#000000')};
+  font-size: ${props => (props.isMail ? '0.81rem' : '0.75rem')};
   .ant-checkbox-wrapper {
     font-size: 0.81rem;
     & + .ant-checkbox-wrapper {

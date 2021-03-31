@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import Upload from 'rc-upload';
-import { Input } from 'antd';
+import { Input, Button } from 'antd';
 import InputCounter from '../components/Input';
 import friendsIcon from '../assets/profile_talk.svg';
 import profileEditIcon from '../assets/profile_edit.svg';
@@ -76,7 +76,8 @@ export const ImageChangeButton = styled.button`
     background-color: rgba(255, 255, 255, 0.2);
   }
 
-  &:active {
+  &:active,
+  &.ant-dropdown-open {
     background-color: #205855;
   }
 `;
@@ -447,4 +448,10 @@ export const CameraBox = styled.span`
   line-height: 0;
   z-index: 5;
   cursor: pointer;
+`;
+
+export const ButtonCancel = styled(Button)`
+  background-color: #f7f4ef !important;
+  border-color: #f7f4ef !important;
+  color: #3b3b3b !important;
 `;
