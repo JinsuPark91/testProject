@@ -40,6 +40,7 @@ import {
   LockIconBox,
   ImageChange,
   CameraBox,
+  ButtonCancel,
 } from '../styles/ProfileStyle';
 
 const Profile = observer(
@@ -581,23 +582,18 @@ const Profile = observer(
                   <>
                     <Button
                       style={{
-                        color: '#ffffff',
                         marginRight: '1.25rem',
-                        border: 'none',
                       }}
                       type="solid"
+                      className="color-green"
                       disabled={!isChange || !isValidInputData()}
                       onClick={handleConfirm}
                     >
                       {t('CM_SAVE')}
                     </Button>
-                    <Button
-                      type="outlined"
-                      onClick={handleCancel}
-                      style={{ backgroundColor: '#fff', color: '#3b3b3b' }}
-                    >
+                    <ButtonCancel type="outlined" onClick={handleCancel}>
                       {t('CM_CANCEL')}
-                    </Button>
+                    </ButtonCancel>
                   </>
                 )}
               </ButtonContainer>
