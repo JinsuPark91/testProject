@@ -518,31 +518,38 @@ function OpenRoomHome({ visible, onCancel }) {
                 <Observer>
                   {() => (
                     <RoomList>
-                      {roomStore.getOpenRoomArray().map(roomInfo => (
-                        <RoomListItem key={roomInfo.id}>
-                          <OpenRoomPhotos
-                            srcList={getUserPhotos(roomInfo.memberIdListString)}
-                            defaultDiameter="2.26"
-                          />
-                          <RecomRoomTitle
-                            style={{
-                              flex: 1,
-                              marginLeft: '0.38rem',
-                              whiteSpace: 'nowrap',
-                            }}
-                          >
-                            {roomInfo.customName || roomInfo.name}
-                          </RecomRoomTitle>
-                          <JoinedText>
-                            {roomInfo.isJoined ? t('CM_OPEN_ROOM_HOME_10') : ''}
-                          </JoinedText>
-                          <RoomButton
-                            roomInfo={roomInfo}
-                            onClick={handleJoin}
-                            disabled={roomInfo.isJoined}
-                          />
-                        </RoomListItem>
-                      ))}
+                      {roomStore
+                        .getOpenRoomArray()
+                        .filter(roomInfo => !roomInfo.isJoined)
+                        .map(roomInfo => (
+                          <RoomListItem key={roomInfo.id}>
+                            <OpenRoomPhotos
+                              srcList={getUserPhotos(
+                                roomInfo.memberIdListString,
+                              )}
+                              defaultDiameter="2.26"
+                            />
+                            <RecomRoomTitle
+                              style={{
+                                flex: 1,
+                                marginLeft: '0.38rem',
+                                whiteSpace: 'nowrap',
+                              }}
+                            >
+                              {roomInfo.customName || roomInfo.name}
+                            </RecomRoomTitle>
+                            <JoinedText>
+                              {roomInfo.isJoined
+                                ? t('CM_OPEN_ROOM_HOME_10')
+                                : ''}
+                            </JoinedText>
+                            <RoomButton
+                              roomInfo={roomInfo}
+                              onClick={handleJoin}
+                              disabled={roomInfo.isJoined}
+                            />
+                          </RoomListItem>
+                        ))}
                     </RoomList>
                   )}
                 </Observer>
