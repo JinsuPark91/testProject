@@ -3,7 +3,7 @@ import { useCoreStores, Message, Button } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import MovePage from '../../utils/MovePage';
 
-const Settingsave = props => {
+const SettingSave = ({ onCancel, inputPassword }) => {
   const { t } = useTranslation();
   const [isMessageOpen, setIsMessageOpen] = useState(false);
   const { userStore, authStore, spaceStore } = useCoreStores();
@@ -11,13 +11,12 @@ const Settingsave = props => {
   const handleToggleMessage = () => {
     setIsMessageOpen(!isMessageOpen);
   };
-
   const handleMoveSpacePage = useCallback(() => {
     MovePage('spaces');
   }, []);
 
   const handleInputPassword = async () => {
-    const passwordInput = props.inputPassword;
+    const passwordInput = inputPassword;
     const res = await authStore.validatePassword({
       pw: passwordInput,
     });
@@ -36,18 +35,11 @@ const Settingsave = props => {
 
   return (
     <>
-      <Button
-        type="solid"
-        onClick={() => {
-          props.toggleContinue();
-          props.toggleFooter();
-          props.toggleCheck();
-        }}
-      >
+      <Button type="solid" onClick={() => onCancel()}>
         {t('CM_BACK')}
       </Button>
       <Button onClick={handleInputPassword} type="outlined">
-        확인
+        {t('CM_LOGIN_POLICY_03')}
       </Button>
       <Message
         visible={isMessageOpen}
@@ -67,4 +59,4 @@ const Settingsave = props => {
   );
 };
 
-export default Settingsave;
+export default SettingSave;

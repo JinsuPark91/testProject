@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
+import { getProfileEditDto } from '../../../utils/ProfileUtil';
 import {
   InnerItem,
   Name,
@@ -9,13 +10,28 @@ import {
   TextArea,
   EditNameInput,
   ButtonArea,
-} from '../../styles/SettingDialogStyle';
+} from '../../../styles/usersettings/SettingDialogStyle';
 
-const SettingDialogName = props => {
+const SettingDialogName = () => {
   const { t } = useTranslation();
-  const { name, isNameEdit, onInputChange, onCancel, onSuccess } = props;
   const { userStore } = useCoreStores();
   const { myProfile } = userStore;
+  const [name, setName] = useState(myProfile.name);
+  const [isNameEdit, setIsNameEdit] = useState(false);
+
+  const handleChangeName = async () => {
+    const updateInfo = getProfileEditDto({ name });
+    try {
+      await userStore.updateMyProfile(updateInfo);
+      setIsNameEdit(false);
+    } catch (e) {
+      console.log(`changeName Error is ${e}`);
+    }
+  };
+  const handleCancelChange = () => {
+    setIsNameEdit(false);
+    setName(myProfile.name);
+  };
 
   return (
     <InnerItem>
@@ -28,7 +44,7 @@ const SettingDialogName = props => {
               placeholder={myProfile.name}
               value={name}
               onChange={input => {
-                onInputChange(input);
+                setName(input);
               }}
             />
           ) : (
@@ -43,16 +59,20 @@ const SettingDialogName = props => {
                 type="solid"
                 className="color-Beige"
                 disabled={myProfile.name === name}
-                onClick={onSuccess}
+                onClick={handleChangeName}
               >
                 {t('CM_SAVE')}
               </Button>
-              <Button size="small" type="outlined" onClick={onCancel}>
+              <Button size="small" type="outlined" onClick={handleCancelChange}>
                 {t('CM_CANCEL')}
               </Button>
             </>
           ) : (
-            <Button size="small" type="outlined" onClick={onCancel}>
+            <Button
+              size="small"
+              type="outlined"
+              onClick={() => setIsNameEdit(true)}
+            >
               {t('CM_CHANGE')}
             </Button>
           )}

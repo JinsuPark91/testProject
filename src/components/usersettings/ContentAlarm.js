@@ -1,120 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useCoreStores, Switch, Checkbox, AlarmSetting } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
-import { Button } from 'antd';
-import styled, { css } from 'styled-components';
 import ContentTitle from './ContentTitle';
 import { ReactComponent as SoundIcon } from '../../assets/sound_on.svg';
 import AlarmSound from '../../assets/alarm_sound.wav';
-import { ALARM_TYPE, ALARM_TYPE_SEND, EDIT_TYPE } from './SettingConstants';
-
-const FormItemMain = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 1.25rem 0 2rem 0;
-`;
-
-const AlarmList = styled.div`
-  width: 26rem;
-`;
-
-const FormItem = styled(FormItemMain)`
-  min-height: 3.313rem;
-  margin-top: 0;
-  padding: 0.5625rem 0;
-  border-top: 1px solid #d8d8d8;
-  &:first-of-type {
-    border-top: 0;
-  }
-  .ant-switch {
-    margin: 0.4375rem 0 auto;
-  }
-`;
-
-const ItemMain = styled.label`
-  span {
-    padding-left: 0.56rem;
-    font-size: 0.75rem;
-    vertical-align: middle;
-  }
-`;
-
-const ItemTitle = styled.label`
-  display: block;
-  font-size: 0.75rem;
-  line-height: 1.13rem;
-  color: #777;
-`;
-
-const ItemInfo = styled.div`
-  flex: 1;
-  ${ItemTitle}:only-child {
-    margin-bottom: 0;
-  }
-`;
-
-const ItemTitleBlack = styled(ItemTitle)`
-  color: #000;
-`;
-
-const ItemSub = styled.div`
-  margin: ${props => (props.isMail ? '0 0 0.4375rem' : '0.63rem 0 0.4375rem')};
-  color: ${props => (props.isMail ? '#818181' : '#000000')};
-  font-size: ${props => (props.isMail ? '0.81rem' : '0.75rem')};
-  .ant-checkbox-wrapper {
-    font-size: 0.81rem;
-    & + .ant-checkbox-wrapper {
-      margin-left: 1.25rem;
-    }
-  }
-  .ant-checkbox + span {
-    padding: 0 0 0 0.38rem;
-  }
-`;
-
-const SoundText = styled.span`
-  vertical-align: middle;
-`;
-
-const SoundButton = styled(Button)`
-  width: 1.5rem;
-  min-width: auto;
-  height: 1.5rem;
-  margin-left: 0.19rem;
-  line-height: 0;
-  background-color: transparent;
-  border: 1px solid;
-  border-color: transparent;
-  svg {
-    width: 1rem;
-    height: 1rem;
-    color: #75757f;
-    vertical-align: middle;
-    transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-  }
-  &:hover {
-    background-color: #f7f4ef;
-    border-color: #f7f4ef;
-    svg {
-      color: #7b7671;
-    }
-  }
-  &:active,
-  &:focus {
-    background-color: #ddd7cd;
-    border-color: #ddd7cd;
-    svg {
-      color: #48423b;
-    }
-  }
-  ${props =>
-    props.checked &&
-    css`
-      svg {
-        color: #48423b;
-      }
-    `}
-`;
+import { ALARM_TYPE, ALARM_TYPE_SEND } from './SettingConstants';
+import {
+  FormItemMain,
+  AlarmList,
+  FormItem,
+  ItemMain,
+  ItemInfo,
+  ItemTitle,
+  ItemTitleBlack,
+  ItemSub,
+  SoundText,
+  SoundButton,
+} from '../../styles/usersettings/ContentAlarmStyle';
 
 const ContentAlarm = () => {
   const { t } = useTranslation();
@@ -184,7 +86,9 @@ const ContentAlarm = () => {
   useEffect(() => {
     const { alarmSet } = AlarmSetting;
     const alarmArray = [...alarmSet.keys()];
-    alarmArray.forEach(elem => handleInitState(elem));
+    alarmArray.forEach(elem => {
+      if (alarmSet.get(elem)) handleInitState(elem);
+    });
     setIsLoading(false);
   }, []);
 
@@ -202,8 +106,8 @@ const ContentAlarm = () => {
     }
   };
   const handleAlarmSound = async value => {
-    setIsSoundChecked(value);
     AlarmSetting.save(ALARM_TYPE_SEND.SOUND, getOnOffText(value));
+    setIsSoundChecked(value);
   };
   const handleTalkMessage = value => {
     try {
@@ -273,8 +177,8 @@ const ContentAlarm = () => {
     }
   };
 
-  const alarmSound = new Audio();
-  alarmSound.src = AlarmSound;
+  // const alarmSound = new Audio();
+  // alarmSound.src = AlarmSound;
   const isBasicPlan = spaceStore.currentSpace?.plan === 'BASIC';
 
   if (isLoading) return null;

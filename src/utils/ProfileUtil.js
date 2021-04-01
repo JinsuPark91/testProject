@@ -131,13 +131,16 @@ export const getProfileEditDto = params => {
   // 기본 이미지로 변경 profilePhoto, profileFile, profileName = null
   // 이미지 변경 없을 시 profileFile, profileName = null, profilePhoto = 경로
   // 이미지 변경시 profilePhoto = null, ProfileFile = fileChooser file, ProfileName = 파일 이름
-
   if (thumbFile) {
     obj.profilePhoto = null;
     obj.profileFile = thumbFile;
     obj.profileName = thumbFile.name;
-  } else {
+  } else if (thumbFile === undefined) {
     obj.profilePhoto = UserStore.getProfilePhotoURL(myProfile.id, 'medium');
+    obj.profileFile = null;
+    obj.profileName = null;
+  } else {
+    obj.profilePhoto = null;
     obj.profileFile = null;
     obj.profileName = null;
   }
@@ -146,8 +149,12 @@ export const getProfileEditDto = params => {
     obj.backPhoto = null;
     obj.backFile = backGroundFile;
     obj.backName = backGroundFile.name;
-  } else {
+  } else if (backGroundFile === undefined) {
     obj.backPhoto = UserStore.getBackgroundPhotoURL(myProfile.id);
+    obj.backFile = null;
+    obj.backName = null;
+  } else {
+    obj.backPhoto = null;
     obj.backFile = null;
     obj.backName = null;
   }

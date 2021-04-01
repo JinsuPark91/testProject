@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
+import React, { useState } from 'react';
 import { useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { Menu, Dropdown } from 'antd';
+import { getProfileEditDto } from '../../../utils/ProfileUtil';
 import {
   InnerItem,
   Name,
@@ -12,57 +13,30 @@ import {
   ImageIcon,
   Info,
   StyledUpload,
-} from '../../styles/SettingDialogStyle';
+} from '../../../styles/usersettings/SettingDialogStyle';
 
 const SettingDialogPhoto = observer(() => {
   const { t } = useTranslation();
   const { userStore } = useCoreStores();
-  const userId = userStore.myProfile.id;
-  const profile = userStore.userProfiles[userId];
+  const myUserId = userStore.myProfile.id;
+  const profile = userStore.userProfiles[myUserId];
   const [isDisabled, setIsDisabled] = useState(!profile.thumbPhoto);
 
-  useEffect(() => {
-    (async () => {
-      let userProfile = userStore.userProfiles[userId];
-      if (!userProfile) {
-        userProfile = await userStore.getProfile({ userId });
-      }
-    })();
-  }, [userId, userStore]);
-
-  const getDtoObject = () => {
-    const obj = {};
-    obj.profilePhoto = null;
-    obj.backPhoto = userStore.getBackgroundPhotoURL(userStore.myProfile.id);
-    obj.backFile = null;
-    obj.backName = null;
-    obj.name = userStore.myProfile.name;
-    obj.nick = userStore.myProfile.nick;
-    obj.nationalCode = userStore.myProfile.nationalCode;
-    obj.companyNum = userStore.myProfile.companyNum;
-    obj.phone = userStore.myProfile.phone;
-    obj.birthDate = userStore.myProfile.birthDate;
-
-    return obj;
+  const getProfilePhoto = () => {
+    return userStore.getProfilePhotoURL(myUserId, 'medium');
   };
 
   const handleChangePhoto = async file => {
-    const updatedInfo = getDtoObject();
-    updatedInfo.profileFile = file;
-    updatedInfo.profileName = file?.name;
+    const updatedInfo = getProfileEditDto({
+      thumbFile: file,
+    });
     await userStore.updateMyProfile({ updatedInfo });
     setIsDisabled(false);
   };
-
-  const getProfilePhoto = () => {
-    return userStore.getProfilePhotoURL(userId, 'medium');
-  };
-  const renderProfilePhoto = getProfilePhoto();
-
   const handleChangeToDefaultPhoto = async () => {
-    const updatedInfo = getDtoObject();
-    updatedInfo.profileFile = null;
-    updatedInfo.profileName = null;
+    const updatedInfo = getProfileEditDto({
+      thumbFile: null,
+    });
     await userStore.updateMyProfile({ updatedInfo });
     setIsDisabled(true);
   };
@@ -91,7 +65,7 @@ const SettingDialogPhoto = observer(() => {
       <Data>
         <TextArea>
           <ImageBox>
-            <img alt="profile" src={renderProfilePhoto} />
+            <img alt="profile" src={getProfilePhoto()} />
             <Dropdown
               trigger={['click']}
               placement="bottomLeft"

@@ -28,6 +28,7 @@ import MovePage from '../../utils/MovePage';
 import { SELECTED_TAB } from '../usersettings/SettingConstants';
 import { getMainWaplURL } from '../../utils/UrlUtil';
 import { handleFriendsDialogType } from '../../utils/FriendsUtil';
+import { isSpaceAdmin } from '../../utils/GeneralUtil';
 import { ArrowRightIcon } from '../Icons';
 
 const ProfileMyModal = ({
@@ -68,7 +69,6 @@ const ProfileMyModal = ({
     isNewSpaceErrorMessagVisible,
     setIsNewSpaceErrorMessageVisible,
   ] = useState(false);
-  const isAdmin = userStore.myProfile.grade === 'admin';
 
   // eslint-disable-next-line no-unused-vars
   const handleSettingDialogOpen = useCallback(e => {
@@ -217,12 +217,12 @@ const ProfileMyModal = ({
         </Menu.Item>
       ) : null}
       <Menu.Item onClick={handleMemberList}>{t('CM_USER_LIST')}</Menu.Item>
-      {isAdmin && (
+      {isSpaceAdmin() && (
         <Menu.Item onClick={handleSpaceEditDialog}>
           {t('CM_SPACE_EDIT')}
         </Menu.Item>
       )}
-      {isAdmin && (
+      {isSpaceAdmin() && (
         <Menu.Item onClick={handleAdminPage}>{t('CM_ADMIN_PAGE')}</Menu.Item>
       )}
     </Menu>
