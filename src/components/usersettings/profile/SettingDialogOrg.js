@@ -9,14 +9,13 @@ import {
   TextArea,
   ButtonArea,
   LockIconBox,
-} from '../../styles/SettingDialogStyle';
-import { LockLineIcon } from '../Icons';
+} from '../../../styles/usersettings/SettingDialogStyle';
+import { LockLineIcon } from '../../Icons';
 
 const SettingDialogOrg = () => {
   const { t } = useTranslation();
   const { userStore } = useCoreStores();
   const { myProfile } = userStore;
-  // const isAdmin = myProfile.grade === 'admin';
   // const tooltipText = '어드민만 변경 가능';
 
   return (

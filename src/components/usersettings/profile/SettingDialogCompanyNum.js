@@ -1,27 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from 'antd';
 import { Input, useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
-import { getCompanyNumber } from '../../utils/ProfileUtil';
+import {
+  getCompanyNumber,
+  getProfileEditDto,
+} from '../../../utils/ProfileUtil';
 import {
   InnerItem,
   Name,
   Data,
   TextArea,
   ButtonArea,
-} from '../../styles/SettingDialogStyle';
+} from '../../../styles/usersettings/SettingDialogStyle';
 
-const SettingDialogCompanyNum = props => {
-  const {
-    companyNum,
-    isCompanyNumEdit,
-    onInputChange,
-    onCancel,
-    onSuccess,
-  } = props;
+const SettingDialogCompanyNum = () => {
   const { t } = useTranslation();
   const { userStore } = useCoreStores();
   const { myProfile } = userStore;
+  const [companyNum, setCompanyNum] = useState(myProfile.companyNum);
+  const [isCompanyNumEdit, setIsCompanyNumEdit] = useState(false);
+
+  const handleChangeCompanyNum = async () => {
+    const updateInfo = getProfileEditDto({ companyNum });
+    try {
+      await userStore.updateMyProfile(updateInfo);
+      setIsCompanyNumEdit(false);
+    } catch (e) {
+      console.log(`changeCompanyPhone Error is ${e}`);
+    }
+  };
+  const handleCancelChange = () => {
+    setIsCompanyNumEdit(false);
+    setCompanyNum(myProfile.companyNum);
+  };
 
   return (
     <InnerItem>
@@ -32,7 +44,7 @@ const SettingDialogCompanyNum = props => {
             <Input
               type="number"
               value={companyNum}
-              onChange={e => onInputChange(e.target.value)}
+              onChange={e => setCompanyNum(e.target.value)}
             />
           ) : (
             <p>{getCompanyNumber(myProfile)}</p>
@@ -46,16 +58,20 @@ const SettingDialogCompanyNum = props => {
                 type="solid"
                 className="color-Beige"
                 disabled={myProfile.companyNum === companyNum}
-                onClick={onSuccess}
+                onClick={handleChangeCompanyNum}
               >
                 {t('CM_SAVE')}
               </Button>
-              <Button size="small" type="outlined" onClick={onCancel}>
+              <Button size="small" type="outlined" onClick={handleCancelChange}>
                 {t('CM_CANCEL')}
               </Button>
             </>
           ) : (
-            <Button size="small" type="outlined" onClick={onCancel}>
+            <Button
+              size="small"
+              type="outlined"
+              onClick={() => setIsCompanyNumEdit(true)}
+            >
               {t('CM_CHANGE')}
             </Button>
           )}

@@ -3,23 +3,23 @@ import { Button, Select } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import countryData from 'country-data';
-import { getProfileEditDto } from '../../utils/ProfileUtil';
+import { getProfileEditDto } from '../../../utils/ProfileUtil';
 import {
   InnerItem,
   Name,
   Data,
   TextArea,
   ButtonArea,
-} from '../../styles/SettingDialogStyle';
+} from '../../../styles/usersettings/SettingDialogStyle';
 
-const SettingDialogCountryCode = props => {
+const SettingDialogCountryCode = () => {
   const { t } = useTranslation();
-  const { isCountryCodeEdit, onCancel } = props;
   const { userStore } = useCoreStores();
   const { myProfile } = userStore;
   const [selectedCountryCode, setSelectedCountryCode] = useState(
     myProfile.nationalCode,
   );
+  const [isCountryCodeEdit, setIsCountryCodeEdit] = useState(false);
   const { Option } = Select;
 
   // 국가 번호가 있는 국가를 알파벳 순으로 정렬하자
@@ -40,7 +40,6 @@ const SettingDialogCountryCode = props => {
   const getTextFormat = item => {
     return item ? `${item.countryCallingCodes[0] || ''} ${item.name}` : '-';
   };
-
   const handleChange = value => {
     setSelectedCountryCode(value.split(' ')[0]);
   };
@@ -51,10 +50,14 @@ const SettingDialogCountryCode = props => {
     });
     try {
       await userStore.updateMyProfile(updateInfo);
-      onCancel();
+      setIsCountryCodeEdit(false);
     } catch (e) {
       console.log(`change National Code Error is ${e}`);
     }
+  };
+  const handleCancelChange = () => {
+    setIsCountryCodeEdit(false);
+    setSelectedCountryCode(myProfile.nationalCode);
   };
 
   return (
@@ -90,12 +93,16 @@ const SettingDialogCountryCode = props => {
               >
                 {t('CM_SAVE')}
               </Button>
-              <Button size="small" type="outlined" onClick={onCancel}>
+              <Button size="small" type="outlined" onClick={handleCancelChange}>
                 {t('CM_CANCEL')}
               </Button>
             </>
           ) : (
-            <Button size="small" type="outlined" onClick={onCancel}>
+            <Button
+              size="small"
+              type="outlined"
+              onClick={() => setIsCountryCodeEdit(true)}
+            >
               {t('CM_CHANGE')}
             </Button>
           )}

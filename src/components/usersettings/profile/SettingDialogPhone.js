@@ -1,21 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from 'antd';
 import { Input, useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
-import { getMobileNumber } from '../../utils/ProfileUtil';
+import { getMobileNumber, getProfileEditDto } from '../../../utils/ProfileUtil';
 import {
   InnerItem,
   Name,
   Data,
   TextArea,
   ButtonArea,
-} from '../../styles/SettingDialogStyle';
+} from '../../../styles/usersettings/SettingDialogStyle';
 
-const SettingDialogPhone = props => {
+const SettingDialogPhone = () => {
   const { t } = useTranslation();
-  const { phone, isPhoneEdit, onInputChange, onCancel, onSuccess } = props;
   const { userStore } = useCoreStores();
   const { myProfile } = userStore;
+  const [phone, setPhone] = useState(myProfile.phone);
+  const [isPhoneEdit, setIsPhoneEdit] = useState(false);
+
+  const handleChangePhone = async () => {
+    const updateInfo = getProfileEditDto({ phone });
+    try {
+      await userStore.updateMyProfile(updateInfo);
+      setIsPhoneEdit(false);
+    } catch (e) {
+      console.log(`changeCellPhone Error is ${e}`);
+    }
+  };
+  const handleCancelChange = () => {
+    setIsPhoneEdit(false);
+    setPhone(myProfile.phone);
+  };
 
   return (
     <InnerItem>
@@ -26,7 +41,7 @@ const SettingDialogPhone = props => {
             <Input
               type="number"
               value={phone}
-              onChange={e => onInputChange(e.target.value)}
+              onChange={e => setPhone(e.target.value)}
             />
           ) : (
             <p>{getMobileNumber(myProfile)}</p>
@@ -40,16 +55,20 @@ const SettingDialogPhone = props => {
                 type="solid"
                 className="color-Beige"
                 disabled={myProfile.phone === phone}
-                onClick={onSuccess}
+                onClick={handleChangePhone}
               >
                 {t('CM_SAVE')}
               </Button>
-              <Button size="small" type="outlined" onClick={onCancel}>
+              <Button size="small" type="outlined" onClick={handleCancelChange}>
                 {t('CM_CANCEL')}
               </Button>
             </>
           ) : (
-            <Button size="small" type="outlined" onClick={onCancel}>
+            <Button
+              size="small"
+              type="outlined"
+              onClick={() => setIsPhoneEdit(true)}
+            >
               {t('CM_CHANGE')}
             </Button>
           )}

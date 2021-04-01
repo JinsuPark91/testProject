@@ -3,6 +3,7 @@ import { useCoreStores } from 'teespace-core';
 import { Button } from 'antd';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import { isSpaceAdmin } from '../../utils/GeneralUtil';
 
 const SpaceInformation = styled.div`
   position: absolute;
@@ -85,9 +86,8 @@ function ProfileSpaceModal({
 }) {
   const { t } = useTranslation();
   const { userStore, spaceStore } = useCoreStores();
-  const isAdmin = userStore.myProfile.grade === 'admin';
   const { isGuest } = userStore.myProfile;
-  const title = isAdmin
+  const title = isSpaceAdmin()
     ? t('CM_SPACE_CREATE_COMPLETE_01')
     : t('CM_INVITE_PEOPLE_MAIL_LINK_09');
 
@@ -114,7 +114,7 @@ function ProfileSpaceModal({
     if (isGuest) {
       return null;
     }
-    if (isAdmin) {
+    if (isSpaceAdmin()) {
       return (
         <>
           <Button type="solid" onClick={handleAddMember}>
@@ -145,7 +145,7 @@ function ProfileSpaceModal({
   };
 
   const getDescription = () => {
-    if (isAdmin) {
+    if (isSpaceAdmin()) {
       return (
         <Description>
           {t('CM_SPACE_CREATE_COMPLETE_02', {
