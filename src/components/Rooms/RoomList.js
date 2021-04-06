@@ -9,6 +9,7 @@ import {
   Message,
   logEvent,
   WaplSearch,
+  EventBus,
 } from 'teespace-core';
 import { Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -17,10 +18,9 @@ import RoomItem from './RoomItem';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
-import i18n from '../../i18n';
 
 function RoomList() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const history = useHistory();
   const [keyword, setKeyword] = useState('');
   const [targetRoom, setTargetRoom] = useState(null);
@@ -51,6 +51,11 @@ function RoomList() {
       containerRef.current.scrollTo(0, 0);
     }
   });
+
+  // LNB lastMessage i18n 임시
+  useEffect(() => {
+    EventBus.dispatch('Platform:initLNB');
+  }, [i18n.language]);
 
   const handleCreateRoom = () => {
     setVisible({ ...visible, selectRoomType: true });
@@ -106,6 +111,10 @@ function RoomList() {
 
   const handleClickMenuItem = useCallback(({ key, item, value }) => {
     switch (key) {
+      case 'profile':
+        setTargetUserId(item);
+        setIsProfileInfoModalVisible(true);
+        break;
       case 'member':
       case 'changeName':
         setRoomMemberAttr(value);
@@ -349,14 +358,7 @@ function RoomList() {
         </Observer>
       </RoomContainer>
       <ButtomWrapper>
-        <div
-          onClick={() => {
-            if (i18n.language === 'en') i18n.changeLanguage('ko');
-            else i18n.changeLanguage('en');
-          }}
-        >
-          <WaplLogo />
-        </div>
+        <WaplLogo />
         <Toast
           visible={isToastVisible}
           timeoutMs={1000}
@@ -394,17 +396,22 @@ const RoomContainer = styled.div`
 
 const AddRoomIconWrapper = styled.div`
   display: flex;
-  cursor: pointer;
   width: 2rem;
   height: 2rem;
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  background: white;
+  background-color: #fff;
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  cursor: pointer;
 
   &:hover {
-    background: #ebe6df;
+    background-color: #ebe6df;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    background-color: #ddd7cd;
     box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
   }
 `;
@@ -425,7 +432,6 @@ export const FriendSearch = styled(WaplSearch)`
     margin-right: 0.63rem;
     height: 1.75rem;
     padding: 0;
-    border-width: 0 0 0.06rem 0;
   }
 `;
 export default RoomList;

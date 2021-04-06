@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Observer } from 'mobx-react';
 import { Button, Checkbox } from 'antd';
 import { FixedSizeList as List } from 'react-window';
+import Moment from 'react-moment';
 import { RoomSettingStore as store } from '../../stores/RoomSettingStore';
 
 const remToPixel = rem => {
@@ -45,14 +46,16 @@ const TableRow = ({ style, member }) => {
         </Observer>
       </Cell>
       <Observer>
-        {() => <Cell style={{ width: WIDTH.NICK }}>{member.name}</Cell>}
+        {() => <Cell style={{ width: WIDTH.NICK }}>{member.nick}</Cell>}
       </Observer>
       <Observer>
         {() => <Cell style={{ width: WIDTH.LOGIN_ID }}>{member.loginId}</Cell>}
       </Observer>
       <Observer>
         {() => (
-          <Cell style={{ width: WIDTH.REQUEST_AT }}>{member.reqRegDate}</Cell>
+          <Cell style={{ width: WIDTH.REQUEST_AT }}>
+            <Moment format="YYYY.MM.DD">{member.reqRegDate}</Moment>
+          </Cell>
         )}
       </Observer>
     </RowWrapper>

@@ -1,7 +1,12 @@
 import React, { useState, useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-import { useCoreStores, ProfileInfoModal, logEvent } from 'teespace-core';
+import {
+  useCoreStores,
+  ProfileInfoModal,
+  logEvent,
+  EventBus,
+} from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -203,11 +208,13 @@ const Header = observer(() => {
   const getUserPhotos = () => {
     const found = findRoom();
     if (found && found?.memberIdListString) {
-      let userIds = found.memberIdListString.split(',').splice(0, 4);
-
-      if (found.isDirectMsg) {
-        userIds = userIds.filter(userId => userId !== userStore.myProfile.id);
-      }
+      const userIdArr = found?.memberIdListString.split(',');
+      const userIds =
+        userIdArr.length === 1
+          ? userIdArr
+          : userIdArr
+              .filter(userId => userId !== userStore.myProfile.id)
+              .splice(0, 4);
 
       return userIds.map(
         userId => `${userStore.getProfilePhotoURL(userId, 'small')}`,
@@ -230,6 +237,8 @@ const Header = observer(() => {
 
   const handleSearch = () => {
     PlatformUIStore.isSearchVisible = true;
+    // Refactoring: Talk Web isSearchVisible 의존성 제거
+    EventBus.dispatch('Talk:OpenSearch');
   };
 
   const openSubApp = async appName => {
@@ -471,7 +480,7 @@ const Header = observer(() => {
                     </Tooltip>
                   </>
                 )}
-                {!isMyRoom() && (
+                {!isMyRoom() && userStore.myProfile?.isGuest === false && (
                   <>
                     <Tooltip
                       placement="bottom"

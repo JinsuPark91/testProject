@@ -7,7 +7,7 @@ import { Observer } from 'mobx-react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import Photos from '../Photos';
 import NextArrowIcon from '../../assets/arrow_right_line.svg';
 import PrevArrowIcon from '../../assets/arrow_left_line.svg';
@@ -23,7 +23,7 @@ const RoomButton = ({ roomInfo, onClick, disabled }) => {
 
   return (
     <RoomJoinBtn onClick={handleClick} disabled={disabled}>
-      <OpenChatIcon width={1} height={1} color="#75757f" />
+      <OpenChatIcon width={1} height={1} color="#7B7671" />
     </RoomJoinBtn>
   );
 };
@@ -60,6 +60,7 @@ function OpenRoomHome({ visible, onCancel }) {
   const initialStates = {
     createModalVisible: false,
     enterModalVisible: false,
+    enterFailModalVisible: false,
     requestModalVisible: false,
     keyword: '',
     currentOpenRoom: null,
@@ -78,9 +79,13 @@ function OpenRoomHome({ visible, onCancel }) {
   const [currentOpenRoom, setCurrentOpenRoom] = useState(
     initialStates.currentOpenRoom,
   );
+  const [enterFailModalVisible, setEnterFailModalVisible] = useState(
+    initialStates.enterFailModalVisible,
+  );
 
   const { roomStore, userStore } = useCoreStores();
   const history = useHistory();
+  const { isGuest } = userStore.myProfile;
 
   useEffect(() => {
     if (visible) {
@@ -177,6 +182,7 @@ function OpenRoomHome({ visible, onCancel }) {
   const getUserPhotos = memberString => {
     return memberString
       .split(',')
+      .filter(userId => userId !== userStore.myProfile.id)
       .splice(0, 4)
       .map(userId => `${userStore.getProfilePhotoURL(userId, 'small')}`);
   };
@@ -224,22 +230,28 @@ function OpenRoomHome({ visible, onCancel }) {
   const handleConfirmEnter = async () => {
     const myUserId = userStore.myProfile.id;
 
+    const failRoomEnter = () => {
+      setEnterFailModalVisible(true);
+    };
+
     try {
       const res = await roomStore.enterRoom({
         myUserId,
         roomId: currentOpenRoom.id,
       });
 
-      if (res?.roomId) {
+      if (!res.result) {
+        failRoomEnter();
+      } else if (res?.roomId) {
         history.push(`/s/${currentOpenRoom.id}/talk`);
+        closeEnterModal();
+        closeHomeModal();
       }
       logEvent('room', 'clickEnterOpenRoomBtn');
     } catch (err) {
       console.error('ROOM ENTER ERROR : ', err);
+      failRoomEnter();
     }
-
-    closeEnterModal();
-    closeHomeModal();
   };
 
   const handleCancelEnter = () => {
@@ -317,8 +329,15 @@ function OpenRoomHome({ visible, onCancel }) {
 
     return (
       <RoomSearchForm>
-        <SearchTitle>{keyword}</SearchTitle>
-        <SearchSubText>{t('CM_OPEN_ROOM_HOME_05')}</SearchSubText>
+        <SearchSubText>
+          <Trans
+            i18nKey="CM_OPEN_ROOM_HOME_05"
+            components={{
+              style: <SearchTitle />,
+            }}
+            values={{ result: keyword }}
+          />
+        </SearchSubText>
       </RoomSearchForm>
     );
   };
@@ -383,6 +402,21 @@ function OpenRoomHome({ visible, onCancel }) {
               },
             ]}
           />
+          <Message
+            visible={enterFailModalVisible}
+            title="참여가 불가능한 오픈 룸입니다."
+            subtitle="룸 관리자의 참여 제한 해제가 필요합니다."
+            btns={[
+              {
+                type: 'solid',
+                shape: 'round',
+                text: '확인',
+                onClick: () => {
+                  setEnterFailModalVisible(false);
+                },
+              },
+            ]}
+          />
         </>
       )}
       <CreatePublicRoomDialog
@@ -414,94 +448,108 @@ function OpenRoomHome({ visible, onCancel }) {
           />
           {!keyword ? (
             <>
-              <RoomListBox>
-                <Observer>
-                  {() => {
-                    const openRooms = roomStore
-                      .getOpenRoomArray()
-                      .filter(
-                        roomInfo =>
-                          roomInfo.adminId === userStore.myProfile.id &&
-                          roomInfo.isJoined,
+              {isGuest ? null : (
+                <RoomListBox>
+                  <Observer>
+                    {() => {
+                      const openRooms = roomStore
+                        .getOpenRoomArray()
+                        .filter(
+                          roomInfo =>
+                            roomInfo.adminId === userStore.myProfile.id &&
+                            roomInfo.isJoined,
+                        );
+
+                      const remain = (openRooms.length + 1) % 4;
+                      const dummyArray = Array.from(
+                        Array(remain ? 4 - remain : 0).keys(),
                       );
 
-                    const remain = (openRooms.length + 1) % 4;
-                    const dummyArray = Array.from(
-                      Array(remain ? 4 - remain : 0).keys(),
-                    );
-
-                    return (
-                      <>
-                        <RoomTitle>
-                          {t('CM_OPEN_ROOM_HOME_03')}
-                          <RoomCount>{openRooms.length}</RoomCount>
-                        </RoomTitle>
-                        <StyledSlider
-                          arrows
-                          initialSlide={0}
-                          slidesToShow={4}
-                          slidesToScroll={4}
-                        >
-                          <ItemAddBtn onClick={handleCreateRoom}>
-                            <span>{t('CM_CREATE_OPEN_ROOM')}</span>
-                            <AddIcon
-                              width="1.25"
-                              height="1.25"
-                              color="#7B7671"
+                      return (
+                        <>
+                          <RoomTitle>
+                            <Trans
+                              i18nKey="CM_OPEN_ROOM_HOME_03"
+                              components={{
+                                style: <RoomCount />,
+                              }}
+                              values={{ num: openRooms.length }}
                             />
-                          </ItemAddBtn>
-                          {openRooms.map(openRoom => {
-                            return (
-                              <OpenRoomItem
-                                key={openRoom.id}
-                                roomInfo={openRoom}
-                                photo={getUserPhotos(
-                                  openRoom.memberIdListString,
-                                )}
-                                onClick={handleRoomClick}
-                                onSettingClick={handleSettingClick}
+                          </RoomTitle>
+                          <StyledSlider
+                            arrows
+                            initialSlide={0}
+                            slidesToShow={4}
+                            slidesToScroll={4}
+                          >
+                            <ItemAddBtn onClick={handleCreateRoom}>
+                              <span>{t('CM_CREATE_OPEN_ROOM')}</span>
+                              <AddIcon
+                                width="1.25"
+                                height="1.25"
+                                color="#7B7671"
                               />
-                            );
-                          })}
-                          {dummyArray.map(key => {
-                            return <div key={key} />;
-                          })}
-                        </StyledSlider>
-                      </>
-                    );
-                  }}
-                </Observer>
-              </RoomListBox>
+                            </ItemAddBtn>
+                            {openRooms.map(openRoom => {
+                              return (
+                                <OpenRoomItem
+                                  key={openRoom.id}
+                                  roomInfo={openRoom}
+                                  photo={getUserPhotos(
+                                    openRoom.memberIdListString,
+                                  )}
+                                  onClick={handleRoomClick}
+                                  onSettingClick={handleSettingClick}
+                                />
+                              );
+                            })}
+                            {dummyArray.map(key => {
+                              return <div key={key} />;
+                            })}
+                          </StyledSlider>
+                        </>
+                      );
+                    }}
+                  </Observer>
+                </RoomListBox>
+              )}
               <RecommendRoomListBox>
                 <RoomOpenTitle>{t('CM_OPEN_ROOM_HOME_04')}</RoomOpenTitle>
                 <Observer>
                   {() => (
                     <RoomList>
-                      {roomStore.getOpenRoomArray().map(roomInfo => (
-                        <RoomListItem key={roomInfo.id}>
-                          <OpenRoomPhotos
-                            srcList={getUserPhotos(roomInfo.memberIdListString)}
-                            defaultDiameter="2.26"
-                          />
-                          <RecomRoomTitle
-                            style={{
-                              flex: 1,
-                              marginLeft: '0.38rem',
-                              whiteSpace: 'nowrap',
-                            }}
-                          >
-                            {roomInfo.customName || roomInfo.name}
-                          </RecomRoomTitle>
-                          <JoinedText>
-                            {roomInfo.isJoined ? t('CM_OPEN_ROOM_HOME_10') : ''}
-                          </JoinedText>
-                          <RoomButton
-                            roomInfo={roomInfo}
-                            onClick={handleJoin}
-                            disabled={roomInfo.isJoined}
-                          />
-                        </RoomListItem>
-                      ))}
+                      {roomStore
+                        .getOpenRoomArray()
+                        .filter(roomInfo => !roomInfo.isJoined)
+                        .map(roomInfo => (
+                          <RoomListItem key={roomInfo.id}>
+                            <OpenRoomPhotos
+                              srcList={getUserPhotos(
+                                roomInfo.memberIdListString,
+                              )}
+                              defaultDiameter="2.26"
+                            />
+                            <RecomRoomTitle
+                              style={{
+                                flex: 1,
+                                marginLeft: '0.38rem',
+                                whiteSpace: 'nowrap',
+                              }}
+                            >
+                              {roomInfo.customName || roomInfo.name}
+                            </RecomRoomTitle>
+                            <JoinedText>
+                              {roomInfo.isJoined
+                                ? t('CM_OPEN_ROOM_HOME_10')
+                                : ''}
+                            </JoinedText>
+                            <RoomButton
+                              roomInfo={roomInfo}
+                              onClick={handleJoin}
+                              disabled={roomInfo.isJoined}
+                            />
+                          </RoomListItem>
+                        ))}
                     </RoomList>
                   )}
                 </Observer>

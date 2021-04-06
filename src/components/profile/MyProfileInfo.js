@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { observer } from 'mobx-react';
 import settingIcon from '../../assets/setting.svg';
 import ProfileMyModal from './ProfileMyModal';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const MyProfileInfo = observer(() => {
   const { userStore, authStore, spaceStore } = useCoreStores();
@@ -13,7 +14,10 @@ const MyProfileInfo = observer(() => {
   const [tutorialVisible, setTutorialVisible] = useState(isFirstLogin);
 
   const newMessageExist =
-    spaceStore.spaceList.find(elem => elem.unreadSpaceCount > 0) !== undefined;
+    spaceStore.spaceList
+      .filter(elem => elem?.id !== spaceStore.currentSpace?.id)
+      .find(elem => elem.unreadSpaceCount > 0) !== undefined ||
+    PlatformUIStore.totalUnreadCount > 0;
 
   const toggleMyModal = useCallback(() => {
     setMyModalVisible(v => !v);

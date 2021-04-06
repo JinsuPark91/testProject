@@ -1,7 +1,88 @@
 import styled from 'styled-components';
+import { Modal, Menu } from 'antd';
 import Upload from 'rc-upload';
-import CameraIcon from '../assets/camera.svg';
-import InputCounter from '../components/Input';
+import CameraIcon from '../../assets/camera.svg';
+import InputCounter from '../../components/Input';
+
+export const DialogWrap = styled(Modal)`
+  .ant-modal-body {
+    padding: 0;
+  }
+  .ant-modal-footer {
+    height: 3.8rem;
+    padding: 0.64rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+export const LayoutWrap = styled.div`
+  display: flex;
+`;
+
+export const SiderArea = styled.div`
+  width: 10.94rem;
+  background-color: #f7f4ef;
+  border-right: 1px solid #e3e7eb;
+`;
+
+export const ContentArea = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  height: 73vh;
+  padding: 1.25rem 1.25rem 3.125rem;
+`;
+
+export const StyledMenu = styled(Menu)`
+  padding-top: 0.75rem;
+  background-color: #f7f4ef;
+  border: 0;
+  .ant-menu-item-group {
+    & + .ant-menu-item-group:before {
+      content: '';
+      display: block;
+      height: 1px;
+      margin: 0.63rem 0.63rem 0;
+      background-color: #e3e7eb;
+    }
+  }
+  .ant-menu-item-group-title {
+    padding: 0.44rem 1.5rem 0.81rem;
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+    color: #717171;
+  }
+  .ant-menu-item {
+    margin: 0 !important;
+    height: 2.38rem;
+    margin: 0 0.25rem !important;
+    padding: 0 2.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.81rem;
+    line-height: 2.38rem;
+    background-color: #f7f4ef;
+    color: #000;
+    &.ant-menu-item-selected {
+      background-color: #ddd7cd;
+    }
+  }
+`;
+// &:hover {
+//   background-color: #f2efec;
+// }
+
+export const InnerList = styled.ul`
+  margin-top: 1.56rem;
+  font-size: 0.81rem;
+  color: #000;
+  .ant-btn {
+    color: #000;
+  }
+  .antd-btn-outlined:focus {
+    color: #000;
+  }
+`;
 
 export const InnerItem = styled.li`
   overflow: hidden;

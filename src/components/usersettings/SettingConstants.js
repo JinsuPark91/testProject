@@ -30,8 +30,3 @@ export const ALARM_TYPE_SEND = {
   MAIL: 'mail_all',
   CALENDAR: 'schedule_all',
 };
-
-export const EDIT_TYPE = {
-  INSERT: 'insert',
-  DELETE: 'delete',
-};

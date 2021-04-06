@@ -45,6 +45,7 @@ const LeftSide = observer(() => {
       const friendContainer = document.getElementById('lnb__friend-container');
       if (friendContainer) friendContainer.scrollTo(0, 0);
     }
+
     PlatformUIStore.tabType = key;
     if (key === 'm') logEvent('gnb', 'clickTeeMailBtn');
     scrollTop(key);

@@ -79,15 +79,30 @@ const RoomDropdown = React.memo(
 
     const handleViewMember = e => {
       e.domEvent.stopPropagation();
+
+      //  1:1 방의 경우 상대 유저의 프로파일 정보를 보여줌.
+      const isDMRoom = roomInfo.isDirectMsg;
+
       setVisible(false);
 
-      onClickMenuItem({
-        key: 'member',
-        item: roomInfo,
-        value: {
-          isEdit: false,
-        },
-      });
+      if (isDMRoom) {
+        const targetUserId = roomInfo.memberIdListString
+          .split(',')
+          .find(userId => userId !== userStore.myProfile.id);
+
+        onClickMenuItem({
+          key: 'profile',
+          item: targetUserId,
+        });
+      } else {
+        onClickMenuItem({
+          key: 'member',
+          item: roomInfo,
+          value: {
+            isEdit: false,
+          },
+        });
+      }
     };
 
     const handleNameChange = e => {
@@ -246,15 +261,13 @@ const RoomItemContent = ({
                   userStore.getProfilePhotoURL(userStore.myProfile.id, 'small'),
                 ];
               } else {
-                let userIds = roomInfo.memberIdListString
-                  .split(',')
-                  .splice(0, 4);
-
-                if (isDMRoom) {
-                  userIds = userIds.filter(
-                    userId => userId !== userStore.myProfile.id,
-                  );
-                }
+                const userIdArr = roomInfo.memberIdListString.split(',');
+                const userIds =
+                  userIdArr.length === 1
+                    ? userIdArr
+                    : userIdArr
+                        .filter(userId => userId !== userStore.myProfile.id)
+                        .splice(0, 4);
 
                 userPhotos = userIds.map(userId =>
                   userStore.getProfilePhotoURL(userId, 'small'),
@@ -324,13 +337,16 @@ const RoomItemContent = ({
         }
         description={
           <Observer>
-            {() =>
-              roomInfo.metadata?.lastMessage && (
-                <StyleRoomMessage>
-                  {roomInfo.metadata?.lastMessage}
-                </StyleRoomMessage>
-              )
-            }
+            {() => {
+              if (roomInfo.metadata?.lastMessage) {
+                return (
+                  <StyleRoomMessage>
+                    {roomInfo.metadata?.lastMessage}
+                  </StyleRoomMessage>
+                );
+              }
+              return null;
+            }}
           </Observer>
         }
       />
@@ -542,6 +558,11 @@ const Title = styled.div`
 `;
 
 const StyleRoomMessage = styled.span`
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 0.125rem;
   color: #666;
 `;
 
@@ -558,7 +579,7 @@ const UserCountText = styled.span`
   margin-left: 0.25rem;
   font-size: 0.81rem;
   line-height: 1.19rem;
-  color: #7f7f7f;
+  color: #aeaeae;
 `;
 
 const StyledItem = styled.div`
@@ -594,8 +615,8 @@ const StyledItem = styled.div`
     line-height: 1.188rem;
   }
   .ant-list-item-meta-description {
-    margin-top: 0.125rem;
     font-size: 0.69rem;
+    font-weight: 300;
     line-height: 1rem;
     overflow: hidden;
     text-overflow: ellipsis;

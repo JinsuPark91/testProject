@@ -25,7 +25,7 @@ import {
   StyledAvatar,
   MeWrapper,
   MoreIconWrapper,
-} from '../../styles/friend/FriendItemStyle';
+} from '../../styles/friends/FriendItemStyle';
 import { ACCEPT_ITEMS, TALK_ACCEPT_ITEMS } from '../../utils/DndConstant';
 import { handleCheckNewFriend } from '../../utils/FriendsUtil';
 import { handleProfileMenuClick } from '../../utils/ProfileUtil';
@@ -85,7 +85,7 @@ const FriendAction = React.memo(
               trigger={['click']}
               onClick={e => e.stopPropagation()}
             >
-              <MoreIconWrapper className="friend-more-icon friends__item__config-button">
+              <MoreIconWrapper className="lnb-friend__more-icon friends__item__config-button">
                 <ViewMoreIcon />
               </MoreIconWrapper>
             </Dropdown>
@@ -125,7 +125,7 @@ const MeAction = React.memo(({ mode, itemId }) => {
   return (
     <Tooltip placement="top" title={t('CM_TEMP_MINI_CHAT')} color="#4C535D">
       <MoreIconWrapper
-        className="friend-export-icon friends__item__export-button"
+        className="lnb-friend__export-icon friends__item__export-button"
         onClick={handleExport}
       >
         <ExportIcon />
@@ -267,7 +267,7 @@ const FriendItem = observer(
       position,
       profileStatusMsg,
     } = friendInfo;
-    const fullCompanyJob = friendInfo.getFullCompanyJob({ format: 'friend' });
+    const fullCompanyJob = friendInfo.getFullCompanyJob();
     const history = useHistory();
     const {
       friendStore,
@@ -560,7 +560,10 @@ const FriendItem = observer(
           </TextWrapper>
           <ActionWrapper>
             {isNewFriend && (
-              <NewFriendBadge className="friend-new-icon"> N </NewFriendBadge>
+              <NewFriendBadge className="lnb-friend__new-icon">
+                {' '}
+                N{' '}
+              </NewFriendBadge>
             )}
             <Action
               mode={mode}

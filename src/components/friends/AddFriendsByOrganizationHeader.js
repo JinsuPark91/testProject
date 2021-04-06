@@ -37,30 +37,19 @@ function AddFriendsByOrganizationHeader({
     }
   }, [timestamp]);
   return (
-    <>
-      {/* <Wrapper>
-        <Input
-          ref={inputRef}
-          placeholder="팀 이름, 조직원 이름 검색"
-          style={{ width: '100%' }}
-          onPressEnter={onInputChange}
-        />
-      </Wrapper>
-      <StyledDivider /> */}
-      <Wrapper>
-        <OrganizationDropdown
-          orgList={orgList}
-          onChange={onDropdownChange}
-          overwrittenValue={overwrittenValue}
-          defaultValue={defaultValue}
-        />
-        <UserCounter>
-          {t('CM_PPL_NUMBER', {
-            num: orgUserSize,
-          })}
-        </UserCounter>
-      </Wrapper>
-    </>
+    <Wrapper>
+      <OrganizationDropdown
+        orgList={orgList}
+        onChange={onDropdownChange}
+        overwrittenValue={overwrittenValue}
+        defaultValue={defaultValue}
+      />
+      <UserCounter>
+        {t('CM_PPL_NUMBER', {
+          num: orgUserSize,
+        })}
+      </UserCounter>
+    </Wrapper>
   );
 }
 

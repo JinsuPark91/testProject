@@ -177,7 +177,7 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
 
   const FriendAddItem = React.memo(({ friendInfo, style }) => {
     const userName = friendInfo?.displayName;
-    const fullCompanyJob = friendInfo.getFullCompanyJob({ format: 'friend' });
+    const fullCompanyJob = friendInfo.getFullCompanyJob();
     const fullCompanyJobText = fullCompanyJob ? `(${fullCompanyJob})` : '';
     const isMe =
       friendInfo?.friendId || friendInfo.id === userStore.myProfile.id;
