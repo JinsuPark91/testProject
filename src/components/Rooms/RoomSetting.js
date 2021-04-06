@@ -61,7 +61,7 @@ const RoomSetting = ({ roomId }) => {
                 <CommonSettingPage roomId={roomId} />
               </TabPane>
 
-              <TabPane key="member" tab={t('CM_TEMP_USER_MANAGEMENT')}>
+              <TabPane key="member" tab={t('CM_MEMBER_MANAGEMENT')}>
                 <MemberSettingPage roomId={roomId} />
               </TabPane>
             </StyledTabs>

@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import Upload from 'rc-upload';
-import { Input } from 'antd';
+import { Input, Button } from 'antd';
 import InputCounter from '../components/Input';
 import friendsIcon from '../assets/profile_talk.svg';
 import profileEditIcon from '../assets/profile_edit.svg';
@@ -48,7 +48,6 @@ export const Text = styled.span`
   display: block;
   max-width: 14.69rem;
   width: 100%;
-  color: #fff;
   line-height: 1.19rem;
   font-size: 0.81rem;
   text-overflow: ellipsis;
@@ -77,28 +76,40 @@ export const ImageChangeButton = styled.button`
     background-color: rgba(255, 255, 255, 0.2);
   }
 
-  &:active {
+  &:active,
+  &.ant-dropdown-open {
     background-color: #205855;
   }
 `;
 
-export const StyledButton = styled(Text)`
+export const StyledButton = styled.button`
   display: flex;
+  background: rgba(0, 0, 0, 0);
+  border: 0;
   justify-content: center;
   flex-direction: column;
   align-items: center;
   width: 5.38rem;
   height: 5.38rem;
   margin-top: 3rem;
+  color: #fff;
+
   &:first-of-type {
     margin-top: 0;
   }
+
   &:hover {
     background: rgba(255, 255, 255, 0.2);
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
     border-radius: 4px;
     border-radius: 4px;
-    cursor: pointer;
+  }
+
+  &:disabled {
+    color: #646464;
+    &:hover {
+      cursor: not-allowed;
+    }
   }
 `;
 
@@ -201,6 +212,7 @@ export const UserInfoItem = styled.div`
 `;
 
 export const BigText = styled(Text)`
+  color: #fff;
   margin-top: 1.56rem;
   line-height: 2.25rem;
   font-size: 1.5rem;
@@ -226,16 +238,6 @@ export const ButtonContainer = styled.div`
   height: 50px;
   margin-top: 1.25rem;
   display: flex;
-`;
-
-export const FriendsIcon = styled.span`
-  display: inline-block;
-  width: 1.88rem;
-  height: 1.88rem;
-  margin-bottom: 0.5rem;
-  background-image: url(${friendsIcon});
-  background-repeat: no-repeat;
-  background-size: 1.88rem 1.88rem;
 `;
 
 export const StyleIcon = styled.span`
@@ -446,4 +448,10 @@ export const CameraBox = styled.span`
   line-height: 0;
   z-index: 5;
   cursor: pointer;
+`;
+
+export const ButtonCancel = styled(Button)`
+  background-color: #f7f4ef !important;
+  border-color: #f7f4ef !important;
+  color: #3b3b3b !important;
 `;

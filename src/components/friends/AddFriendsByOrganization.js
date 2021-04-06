@@ -35,12 +35,20 @@ function AddFriendsByOrganization({ timestamp, searchText, isViewMode }) {
       keyword: searchText,
     });
     setSearchedUserList(userList);
+    let companyCode = '';
+    let departmentCode = '';
+    // 기획 변경: 검색시 결과 있으면 최상단, 아니면 미분류 조직
+    // const { companyCode, departmentCode } = userList[0];
     if (userList.length) {
-      const { companyCode, departmentCode } = userList[0];
-      setDropdownDisplayValue(
-        OrganizationDropdown.valueCreator({ companyCode, departmentCode }),
-      );
+      companyCode = 'All';
+      departmentCode = 'All';
+    } else {
+      companyCode = 'NULL';
+      departmentCode = 'NULL';
     }
+    setDropdownDisplayValue(
+      OrganizationDropdown.valueCreator({ companyCode, departmentCode }),
+    );
   }, [searchText, userStore]);
 
   useEffect(() => {

@@ -3,61 +3,61 @@ import { Button, Select } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import countryData from 'country-data';
+import { getProfileEditDto } from '../../../utils/ProfileUtil';
 import {
   InnerItem,
   Name,
   Data,
   TextArea,
   ButtonArea,
-} from '../../styles/SettingDialogStyle';
+} from '../../../styles/usersettings/SettingDialogStyle';
 
-const SettingDialogCountryCode = props => {
+const SettingDialogCountryCode = () => {
   const { t } = useTranslation();
-  const { isCountryCodeEdit, onCancel, onSuccess } = props;
-  const { userStore, authStore } = useCoreStores();
+  const { userStore } = useCoreStores();
+  const { myProfile } = userStore;
   const [selectedCountryCode, setSelectedCountryCode] = useState(
-    authStore.user.nationalCode,
+    myProfile.nationalCode,
   );
+  const [isCountryCodeEdit, setIsCountryCodeEdit] = useState(false);
   const { Option } = Select;
 
-  const countryDataArray = countryData.countries?.all;
-  const defaultCountry = authStore.user.nationalCode
+  // 국가 번호가 있는 국가를 알파벳 순으로 정렬하자
+  const countryDataArray = countryData.countries?.all
+    .filter(elem => elem.countryCallingCodes?.length > 0)
+    .sort((a, b) => {
+      if (a.name > b.name) return 1;
+      if (a.name < b.name) return -1;
+      return 0;
+    });
+
+  const defaultCountry = myProfile.nationalCode
     ? countryDataArray.find(
-        elem => elem.countryCallingCodes[0] === authStore.user.nationalCode,
+        elem => elem.countryCallingCodes[0] === myProfile.nationalCode,
       )
     : null;
 
   const getTextFormat = item => {
     return item ? `${item.countryCallingCodes[0] || ''} ${item.name}` : '-';
   };
-
   const handleChange = value => {
     setSelectedCountryCode(value.split(' ')[0]);
   };
 
   const handleSuccess = async () => {
-    const obj = {};
-    obj.profilePhoto = userStore.getProfilePhotoURL(
-      userStore.myProfile.id,
-      'medium',
-    );
-    obj.profileFile = null;
-    obj.profileName = null;
-    obj.backPhoto = userStore.getBackgroundPhotoURL(userStore.myProfile.id);
-    obj.backFile = null;
-    obj.backName = null;
-    obj.name = userStore.myProfile.name;
-    obj.nick = userStore.myProfile.nick;
-    obj.nationalCode = selectedCountryCode;
-    obj.companyNum = userStore.myProfile.companyNum;
-    obj.phone = userStore.myProfile.phone;
-    obj.birthDate = userStore.myProfile.birthDate;
+    const updateInfo = getProfileEditDto({
+      nationalCode: selectedCountryCode,
+    });
     try {
-      await userStore.updateMyProfile(obj);
+      await userStore.updateMyProfile(updateInfo);
+      setIsCountryCodeEdit(false);
     } catch (e) {
       console.log(`change National Code Error is ${e}`);
     }
-    onSuccess();
+  };
+  const handleCancelChange = () => {
+    setIsCountryCodeEdit(false);
+    setSelectedCountryCode(myProfile.nationalCode);
   };
 
   return (
@@ -71,8 +71,8 @@ const SettingDialogCountryCode = props => {
               style={{ width: '15rem' }}
               onChange={handleChange}
             >
-              {countryDataArray?.map(elem => (
-                <Option key={elem.name} value={getTextFormat(elem)}>
+              {countryDataArray?.map((elem, index) => (
+                <Option key={index} value={getTextFormat(elem)}>
                   {getTextFormat(elem)}
                 </Option>
               ))}
@@ -88,17 +88,21 @@ const SettingDialogCountryCode = props => {
                 size="small"
                 type="solid"
                 className="color-Beige"
-                disabled={selectedCountryCode === authStore.user.nationalCode}
+                disabled={selectedCountryCode === myProfile.nationalCode}
                 onClick={handleSuccess}
               >
                 {t('CM_SAVE')}
               </Button>
-              <Button size="small" type="outlined" onClick={onCancel}>
+              <Button size="small" type="outlined" onClick={handleCancelChange}>
                 {t('CM_CANCEL')}
               </Button>
             </>
           ) : (
-            <Button size="small" type="outlined" onClick={onCancel}>
+            <Button
+              size="small"
+              type="outlined"
+              onClick={() => setIsCountryCodeEdit(true)}
+            >
               {t('CM_CHANGE')}
             </Button>
           )}

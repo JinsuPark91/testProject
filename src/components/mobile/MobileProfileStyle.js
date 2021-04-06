@@ -4,7 +4,7 @@ import { Input, Button } from 'antd';
 import InputCounter from '../Input';
 import friendsIcon from '../../assets/mobile/profile_talk.svg';
 import profileEditIcon from '../../assets/mobile/profile_edit.svg';
-import meetingIcon from '../../assets/meeting.svg';
+import meetingIcon from '../../assets/mobile/meeting.svg';
 import OfficeIcon from '../../assets/office.svg';
 import CallIcon from '../../assets/call.svg';
 import PhoneIcon from '../../assets/phone.svg';

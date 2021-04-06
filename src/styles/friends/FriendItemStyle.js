@@ -1,17 +1,17 @@
 import styled, { css } from 'styled-components';
 
 export const Wrapper = styled.div`
-  .friend-more-icon,
-  .friend-export-icon {
+  .lnb-friend__more-icon,
+  .lnb-friend__export-icon {
     display: none;
   }
 
   &:hover {
-    .friend-more-icon,
-    .friend-export-icon {
+    .lnb-friend__more-icon,
+    .lnb-friend__export-icon {
       display: flex;
     }
-    .friend-new-icon {
+    .lnb-friend__new-icon {
       display: none;
     }
   }
@@ -194,6 +194,7 @@ export const StyledAvatar = styled.div`
           width: 2.13rem;
           height: 2.13rem;
           margin: 0.0652rem 0;
+          border: 1px solid #fff;
         `;
     }
   }}

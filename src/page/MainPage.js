@@ -8,11 +8,13 @@ import {
   AppState,
   WWMS,
   AlarmSetting,
+  Toast,
 } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
-import { initApp as initMailApp, WindowMail } from 'teespace-mail-app';
+import { WindowMail } from 'teespace-mail-app';
 import { Prompt } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
 import { Loader, Wrapper } from './MainPageStyle';
@@ -24,7 +26,10 @@ import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 import { runWatcher, stopWatcher } from '../utils/Watcher';
 
 const MainPage = () => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
+  const [isToastVisible, setIsToastVisible] = useState(false);
+  const [toastText, setToastText] = useState('');
 
   const history = useHistory();
   const { resourceType, resourceId, mainApp } = useParams();
@@ -209,6 +214,20 @@ const MainPage = () => {
         handler: null,
       });
     });
+    const errorHandler = EventBus.on(
+      'CoreRequest:forbidden',
+      ({ response }) => {
+        const { status } = response;
+        switch (status) {
+          case 403:
+            setToastText(t('TEMP_GUEST_ACCESS_DENIED'));
+            setIsToastVisible(true);
+            break;
+          default:
+            break;
+        }
+      },
+    );
 
     WWMS.addHandler('SYSTEM', 'platform_wwms', handleSystemMessage);
 
@@ -217,7 +236,8 @@ const MainPage = () => {
       EventBus.off('onLayoutExpand', expandHandler);
       EventBus.off('onLayoutCollapse', collapseHandler);
       EventBus.off('onLayoutClose', closeHandler);
-      EventBus.off('onLayoutClose', openMeetingHandler);
+      EventBus.off('onMeetingOpen', openMeetingHandler);
+      EventBus.off('CoreRequest:forbidden', errorHandler);
       WWMS.removeHandler('SYSTEM', 'platform_wwms');
     };
   }, []);
@@ -310,6 +330,15 @@ const MainPage = () => {
 
   return (
     <Wrapper>
+      <Toast
+        visible={isToastVisible}
+        timeoutMs={1000}
+        onClose={() => {
+          setIsToastVisible(false);
+        }}
+      >
+        {toastText}
+      </Toast>
       <FaviconChanger />
       <Prompt
         message={(location, action) => {

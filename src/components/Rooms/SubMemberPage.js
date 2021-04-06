@@ -4,7 +4,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import { Message, WaplSearch, WWMS } from 'teespace-core';
 import styled from 'styled-components';
 import { Observer } from 'mobx-react';
-import { Button, Checkbox } from 'antd';
+import { Button, Checkbox, Tooltip } from 'antd';
 import { FixedSizeList as List } from 'react-window';
 import { LeaderIcon } from '../Icons';
 import RoomAddMemberModal from './RoomAddMemberModal';
@@ -63,7 +63,15 @@ const TableRow = ({ style, member }) => {
     <RowWrapper style={style}>
       <Cell style={{ width: WIDTH.CHECKBOX }}>
         {isAdmin() ? (
-          <LeaderIcon width={1.13} height={1.13} color="#205855" />
+          <Tooltip
+            placement="bottom"
+            title={t('CM_ROOM_ADMIN')}
+            color="#4C535D"
+          >
+            <IconWrapper>
+              <LeaderIcon width={1.13} height={1.13} color="#205855" />
+            </IconWrapper>
+          </Tooltip>
         ) : (
           <Observer>
             {() => (
@@ -247,6 +255,7 @@ const MemberPage = ({ roomId }) => {
   };
 
   const handleKickoutCancel = () => {
+    store.selectedMembers.clear();
     store.close('kickout');
   };
 
@@ -289,7 +298,7 @@ const MemberPage = ({ roomId }) => {
           <Message
             visible={store.transferVisible}
             title={t('CM_ROOM_SETTING_MANAGE_PEOPLE_05', {
-              name: store.member?.name ? store.member.name : '',
+              name: store.member?.nick || '',
             })}
             subtitle={t('CM_ROOM_SETTING_MANAGE_PEOPLE_06')}
             type="error"
@@ -357,7 +366,7 @@ const MemberPage = ({ roomId }) => {
                 <Trans
                   i18nKey="CM_ROOM_SETTING_MANAGE_PEOPLE_02"
                   components={{
-                    styled: <span style={{ color: 'rgb(87, 66, 200)' }} />,
+                    style: <span style={{ color: 'rgb(87, 66, 200)' }} />,
                   }}
                   values={{ num: store.filteredMembers.length }}
                 />
@@ -403,6 +412,10 @@ const MemberPage = ({ roomId }) => {
 };
 
 export default MemberPage;
+
+const IconWrapper = styled.div`
+  width: fit-content;
+`;
 
 const RowWrapper = styled.div`
   display: flex;

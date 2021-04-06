@@ -76,5 +76,5 @@ export const IconWrapper = styled.div`
   justify-content: center;
   width: 5.13rem;
   height: 2.75rem;
-  border-radius: 10px;
+  border-radius: 0.625rem;
 `;

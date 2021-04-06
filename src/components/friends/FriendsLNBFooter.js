@@ -1,6 +1,6 @@
 import React from 'react';
 import { WaplLogo } from '../Icons';
-import { FooterWrapper } from '../../styles/friend/FriendsLnbStyle';
+import { FooterWrapper } from '../../styles/friends/FriendsLNBStyle';
 
 const FriendsLNBFooter = () => {
   return (
@@ -10,4 +10,4 @@ const FriendsLNBFooter = () => {
   );
 };
 
-export default FriendsLNBFooter;
+export default React.memo(FriendsLNBFooter);

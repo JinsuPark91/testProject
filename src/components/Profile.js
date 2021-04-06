@@ -4,13 +4,16 @@ import { Button, Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
 import { useCoreStores, Message, Toast } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
-import { LockLineIcon, CameraIcon } from './Icons';
+import {
+  LockLineIcon,
+  ChattingWithMeIcon,
+  MeetingIcon,
+  CameraIcon,
+} from './Icons';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 import PlatformUIStore from '../stores/PlatformUIStore';
 import {
   handleProfileMenuClick,
-  toBase64,
-  toBlob,
   getCompanyNumber,
   getMobileNumber,
 } from '../utils/ProfileUtil';
@@ -32,7 +35,6 @@ import {
   BigText,
   StatusText,
   ButtonContainer,
-  FriendsIcon,
   StyleIcon,
   UserInfoText,
   StyleOfficeIcon,
@@ -43,6 +45,7 @@ import {
   LockIconBox,
   ImageChange,
   CameraBox,
+  ButtonCancel,
 } from '../styles/ProfileStyle';
 
 const Profile = observer(
@@ -57,7 +60,7 @@ const Profile = observer(
     const history = useHistory();
     const { t } = useTranslation();
 
-    const { userStore, friendStore, authStore } = useCoreStores();
+    const { userStore, friendStore, authStore, roomStore } = useCoreStores();
     const [isEditMode, setEditMode] = useState(editOnlyMode);
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [toastText, setToastText] = useState('');
@@ -337,6 +340,27 @@ const Profile = observer(
     // check edit mode
     const editEnabled = editOnlyMode || isEditMode;
 
+    const isDisabled = () => {
+      const { id: myId, isGuest } = userStore.myProfile;
+      const { result: isExistRoom, roomInfo } = roomStore.getDMRoom(
+        myId,
+        userId,
+      );
+
+      // 게스트가 아님
+      if (!isGuest) {
+        return false;
+      }
+
+      // 게스트, 방이 있음
+      if (isExistRoom) {
+        return !roomInfo.isVisible;
+      }
+
+      // 게스트, 방이 없음
+      return true;
+    };
+
     return (
       <>
         <Wrapper imageSrc={renderBackgroundPhoto}>
@@ -345,9 +369,16 @@ const Profile = observer(
               <StyledButton
                 className="profile__talk-button"
                 onClick={handleTalkClick}
+                disabled={isDisabled()}
               >
-                <FriendsIcon />
-                <Text>{isMyId() ? t('CM_MY_TALK_13') : `1:1 Talk`}</Text>
+                <ChattingWithMeIcon
+                  width={1.88}
+                  height={1.88}
+                  color={isDisabled() ? '#646464' : '#fff'}
+                />
+                <Text style={{ marginTop: '0.5rem' }}>
+                  {isMyId() ? t('CM_MY_TALK_13') : `1:1 ${t('CM_TALK')}`}
+                </Text>
               </StyledButton>
               {isMyId() ? (
                 <StyledButton
@@ -361,9 +392,14 @@ const Profile = observer(
                 <StyledButton
                   className="profile__meeting-button"
                   onClick={handleMeetingClick}
+                  disabled={isDisabled()}
                 >
-                  <StyleIcon iconimg="meeting" />
-                  <Text>1:1 Meeting</Text>
+                  <MeetingIcon
+                    width={1.88}
+                    height={1.88}
+                    color={isDisabled() ? '#646464' : '#fff'}
+                  />
+                  <Text style={{ marginTop: '0.5rem' }}>1:1 Meeting</Text>
                 </StyledButton>
               )}
             </Sidebar>
@@ -397,7 +433,7 @@ const Profile = observer(
                   }
                 >
                   <ImageChangeButton>
-                    <CameraIcon width="1.25" height="1.25" />
+                    <CameraIcon width="1.25" height="1.25" color="#fff" />
                   </ImageChangeButton>
                 </Dropdown>
               )}
@@ -442,7 +478,7 @@ const Profile = observer(
                       }
                     >
                       <CameraBox>
-                        <CameraIcon width="1.88" height="1.88" />
+                        <CameraIcon width="1.88" height="1.88" color="#fff" />
                       </CameraBox>
                     </Dropdown>
                   </ImageChange>
@@ -551,23 +587,18 @@ const Profile = observer(
                   <>
                     <Button
                       style={{
-                        color: '#ffffff',
                         marginRight: '1.25rem',
-                        border: 'none',
                       }}
                       type="solid"
+                      className="color-green"
                       disabled={!isChange || !isValidInputData()}
                       onClick={handleConfirm}
                     >
                       {t('CM_SAVE')}
                     </Button>
-                    <Button
-                      type="outlined"
-                      onClick={handleCancel}
-                      style={{ backgroundColor: '#fff', color: '#3b3b3b' }}
-                    >
+                    <ButtonCancel type="outlined" onClick={handleCancel}>
                       {t('CM_CANCEL')}
-                    </Button>
+                    </ButtonCancel>
                   </>
                 )}
               </ButtonContainer>
