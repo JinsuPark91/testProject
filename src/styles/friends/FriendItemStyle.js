@@ -194,6 +194,7 @@ export const StyledAvatar = styled.div`
           width: 2.13rem;
           height: 2.13rem;
           margin: 0.0652rem 0;
+          border: 1px solid #fff;
         `;
     }
   }}

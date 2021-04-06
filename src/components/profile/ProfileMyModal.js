@@ -679,7 +679,7 @@ const DataBox = styled.div`
       background-color: #f2efec;
     }
     &:active,
-    &:focus {
+    &:hover:active:focus {
       background-color: #f2efec;
     }
   }
