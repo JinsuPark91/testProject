@@ -10,7 +10,7 @@ export default function PrivateKsignRoute({ component: Component, ...rest }) {
     if (!wwms.isConnected && authStore.isAuthenticated) {
       wwms.connect(authStore.user.id, authStore.user.loginId);
     }
-  }, [authStore.user.id, authStore.isAuthenticated]);
+  }, [authStore.user.id, authStore.user.loginId, authStore.isAuthenticated]);
   return (
     <Route
       {...rest}

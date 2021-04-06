@@ -21,6 +21,8 @@ const KsignLogoutPage = () => {
       wwms.disconnect();
       Cookies.remove('ACCESS_TOKEN');
       Cookies.remove('DEVICE_TYPE');
+
+      window.location.href = `/cnu/sso/logout.jsp`;
     };
 
     logoutLogic();
