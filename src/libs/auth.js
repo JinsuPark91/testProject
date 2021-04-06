@@ -8,20 +8,21 @@ import PrivateKsignRoute from './PrivateKsignRoute';
 import LogoutPage from '../page/LogoutPage';
 import KsignLogoutPage from '../page/KsignLogoutPage';
 
-const isHyperauth =
-  window.env.REACT_APP_IS_HYPERAUTH === '%IS_HYPERAUTH%'
-    ? process.env.REACT_APP_IS_HYPERAUTH === 'Y'
-    : window.env.REACT_APP_IS_HYPERAUTH === 'Y';
-const authType = isHyperauth ? 'HyperAuth' : 'Ksign';
-//   const authType = (isHyperauth) =>{
-//       switch(isHyperauth){
-//           case true:
-//               return "KSign";
-//         case false:
-//         return "HyperAuth";
-//         default:
-//             break;
-//   }
+const ssoType =
+  window.env.REACT_APP_SSO_TYPE === '%SSO_TYPE%'
+    ? process.env.REACT_APP_SSO_TYPE
+    : window.env.REACT_APP_SSO_TYPE || process.env.REACT_APP_SSO_TYPE;
+let authType;
+switch (ssoType) {
+  case 'ksign':
+    authType = 'Ksign';
+    break;
+  case 'hyperauth':
+    authType = 'HyperAuth';
+    break;
+  default:
+    break;
+}
 
 export const AuthProvider = ({ children }) => {
   const RootProvider = (authType => {
