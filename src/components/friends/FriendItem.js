@@ -585,7 +585,6 @@ const FriendItem = observer(
               isMe={isMe}
               itemId={itemId}
             />
-            {mode === 'addFriend' && isMe && <span>{t('CM_MY_ACCOUNT')}</span>}
           </ActionWrapper>
         </FriendItemWrapper>
         <Message

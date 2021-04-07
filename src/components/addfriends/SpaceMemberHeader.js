@@ -1,19 +1,21 @@
 import React from 'react';
+import { useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-function SpaceMemberHeader({ spaceName, userCount }) {
+const SpaceMemberHeader = ({ userCount }) => {
   const { t } = useTranslation();
+  const { spaceStore } = useCoreStores();
 
   return (
     <StyledWrapper>
-      <StyledSpaceName>{spaceName}</StyledSpaceName>
+      <StyledSpaceName>{spaceStore.currentSpace?.name}</StyledSpaceName>
       <StyledUserCounter>
         {t('CM_PPL_NUMBER', { num: userCount })}
       </StyledUserCounter>
     </StyledWrapper>
   );
-}
+};
 
 const StyledWrapper = styled.div`
   display: flex;

@@ -16,9 +16,10 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 
 /**
  * @param {string} searchKeyword - 프렌즈 검색 키워드
+ * @param {function} handleShadow - scroll 최하단일때 호출
  */
 
-const FriendsLNBContent = ({ searchKeyword }) => {
+const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
   const { t } = useTranslation();
   const { userStore, friendStore } = useCoreStores();
   const [favFriendActiveId, setFavFriendActiveId] = useState('');
@@ -30,11 +31,17 @@ const FriendsLNBContent = ({ searchKeyword }) => {
   const [infoModalVisible, setInfoModalVisible] = useState(false);
   const [yPosition, setyPosition] = useState(0);
 
-  const handleOpenToast = () => {
-    setIsToastVisible(true);
-  };
-  const handleSetText = text => {
-    setToastText(text);
+  const handleScroll = () => {
+    const friendContainer = document.getElementById('lnb__friend-container');
+    if (
+      Math.abs(
+        friendContainer.scrollTop +
+          friendContainer.clientHeight -
+          friendContainer.scrollHeight,
+      ) <= 2
+    )
+      handleShadow(false);
+    else handleShadow(true);
   };
 
   const handleFavFriendActive = friendId => {
@@ -63,8 +70,8 @@ const FriendsLNBContent = ({ searchKeyword }) => {
               PlatformUIStore.resourceType === 'f' &&
               activeFriendId === friendInfo.friendId
             }
-            openToast={handleOpenToast}
-            setToastText={handleSetText}
+            openToast={() => setIsToastVisible(true)}
+            setToastText={input => setToastText(input)}
             setSelectedId={targetId => setSelectedId(targetId)}
             toggleInfoModal={() => setInfoModalVisible(!infoModalVisible)}
             setyPosition={yCoord => setyPosition(yCoord)}
@@ -121,7 +128,7 @@ const FriendsLNBContent = ({ searchKeyword }) => {
 
     return (
       <>
-        <ContentWrapper id="lnb__friend-container">
+        <ContentWrapper id="lnb__friend-container" onScroll={handleScroll}>
           <FriendListBox noFriend={!friendStore.friendInfoList.length}>
             <FriendItem
               mode="me"
@@ -161,4 +168,4 @@ const FriendsLNBContent = ({ searchKeyword }) => {
   });
 };
 
-export default FriendsLNBContent;
+export default React.memo(FriendsLNBContent);

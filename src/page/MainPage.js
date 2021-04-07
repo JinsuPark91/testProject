@@ -9,6 +9,7 @@ import {
   WWMS,
   AlarmSetting,
   Toast,
+  Message,
 } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
@@ -30,6 +31,7 @@ const MainPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [toastText, setToastText] = useState('');
+  const [isRefreshModalVisible, setIsRefreshModalVisible] = useState(false);
 
   const history = useHistory();
   const { resourceType, resourceId, mainApp } = useParams();
@@ -85,6 +87,14 @@ const MainPage = () => {
       .then(async res => {
         // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
         EventBus.dispatch('Platform:initLNB');
+
+        // 프렌즈 프로필은 모두 가져오자
+        if (friendStore.friendInfoList.length) {
+          const friendIdList = friendStore.friendInfoList.map(
+            elem => elem.friendId,
+          );
+          await userStore.fetchProfileList(friendIdList);
+        }
 
         const [, , , , histories, alarmList] = res;
         AlarmSetting.initAlarmSet(alarmList);
@@ -350,6 +360,24 @@ const MainPage = () => {
       <WindowManager />
       {/* <PortalWindowManager /> */}
       <WindowMail />
+      {isRefreshModalVisible && (
+        <Message
+          visible={isRefreshModalVisible}
+          title={t('CM_LOGIN_POLICY_10')}
+          subtitle={t('CM_LOGIN_POLICY_11')}
+          btns={[
+            {
+              type: 'solid',
+              shape: 'round',
+              text: t('CM_LOGIN_POLICY_03'),
+              onClick: () => {
+                setIsRefreshModalVisible(false);
+                window.location.reload();
+              },
+            },
+          ]}
+        />
+      )}
     </Wrapper>
   );
 };

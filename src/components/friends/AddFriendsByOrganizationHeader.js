@@ -1,7 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { Divider } from 'antd';
+import React from 'react';
 import styled from 'styled-components';
-import { Input } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import OrganizationDropdown from './OrganizationDropdown';
 
@@ -26,16 +24,9 @@ function AddFriendsByOrganizationHeader({
   onDropdownChange,
   overwrittenValue,
   defaultValue,
-  timestamp,
 }) {
   const { t } = useTranslation();
-  const inputRef = useRef(null);
 
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.state.value = '';
-    }
-  }, [timestamp]);
   return (
     <Wrapper>
       <OrganizationDropdown

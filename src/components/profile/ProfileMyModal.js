@@ -20,15 +20,15 @@ import convertSpaceIcon from '../../assets/convert_space.svg';
 import moreSpaceIcon from '../../assets/view_more.svg';
 import { ReactComponent as SquareSpaceIcon } from '../../assets/card_view.svg';
 import LanguageIcon from '../../assets/language.svg';
-import AddFriendsByInvitationDialog from '../friends/AddFriendsByInvitationDialog';
-import AddFriendsBySearch from '../friends/AddFriendsBySearch';
+import AddFriendsByInvitationDialog from '../addfriends/AddFriendsByInvitationDialog';
+import AddFriendsBySearch from '../addfriends/AddFriendsBySearch';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
 import SpaceEditModal from './SpaceEditModal';
 import MovePage from '../../utils/MovePage';
 import { SELECTED_TAB } from '../usersettings/SettingConstants';
 import { getMainWaplURL } from '../../utils/UrlUtil';
 import { handleFriendsDialogType } from '../../utils/FriendsUtil';
-import { isSpaceAdmin } from '../../utils/GeneralUtil';
+import { isSpaceAdmin, isNewSpaceMessageExist } from '../../utils/GeneralUtil';
 import { ArrowRightIcon } from '../Icons';
 
 const ProfileMyModal = ({
@@ -295,12 +295,6 @@ const ProfileMyModal = ({
     return sessionStorage.getItem('language');
   };
 
-  const newMessageExist =
-    spaceStore.spaceList
-      .filter(elem => elem?.id !== spaceStore.currentSpace?.id)
-      .find(elem => elem.unreadSpaceCount > 0) !== undefined ||
-    PlatformUIStore.totalUnreadCount > 0;
-
   const subContent = (
     <>
       <UserSpaceArea isEdit={isEditMode}>
@@ -318,16 +312,7 @@ const ProfileMyModal = ({
           >
             <Button className="btn-convert" onClick={handleSpaceList}>
               <Observer>
-                {() => {
-                  const newMessage =
-                    spaceStore.spaceList
-                      .filter(elem => elem?.id !== spaceStore.currentSpace?.id)
-                      .find(elem => elem.unreadSpaceCount > 0) !== undefined ||
-                    PlatformUIStore.totalUnreadCount > 0;
-
-                  if (newMessage) return <NewBadge />;
-                  return null;
-                }}
+                {() => (isNewSpaceMessageExist() ? <NewBadge /> : null)}
               </Observer>
               <Blind>{t('CM_PROFILE_PROFILE_MENU_01')}</Blind>
             </Button>
@@ -440,23 +425,21 @@ const ProfileMyModal = ({
         visible={settingDialogVisible}
         onCancel={handleCloseSettingDialog}
       />
-      <AddFriendsByInvitationDialog
-        visible={isInviteDialogOpen}
-        onSendInviteMail={() => {
-          setToastText(t('CM_INVITE_PEOPLE_POPUP_07'));
-          setIsToastOpen(true);
-        }}
-        onCancel={handleCancelInviteMail}
-      />
-      <AddFriendsBySearch
-        visible={isFriendMemViewOpen}
-        onCancelAddFriends={() => setIsFriendMemViewOpen(false)}
-        isOrgExist={isOrgExist}
-        title={modalTitle}
-        isViewMode={isViewMode}
-        spaceInfo={spaceStore.currentSpace}
-        spaceMemberList={spaceMemberList}
-      />
+      {isInviteDialogOpen && (
+        <AddFriendsByInvitationDialog
+          visible
+          onCancel={handleCancelInviteMail}
+        />
+      )}
+      {isFriendMemViewOpen && (
+        <AddFriendsBySearch
+          title={modalTitle}
+          isOrgExist={isOrgExist}
+          spaceMemberList={spaceMemberList}
+          isViewMode={isViewMode}
+          onCancelAddFriends={() => setIsFriendMemViewOpen(false)}
+        />
+      )}
       <SelectRoomTypeDialog
         visible={isRoomDialogVisible}
         onCancel={() => setIsRoomDialogVisible(false)}
