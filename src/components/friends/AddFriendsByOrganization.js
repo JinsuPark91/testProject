@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   padding: 0 0.94rem;
 `;
 
-function AddFriendsByOrganization({ timestamp, searchText, isViewMode }) {
+const AddFriendsByOrganization = ({ searchText, isViewMode }) => {
   const { orgStore, userStore } = useCoreStores();
   const [isOpen, setIsOpen] = useState(false);
   const [searchedUserList, setSearchedUserList] = useState([]);
@@ -78,7 +78,6 @@ function AddFriendsByOrganization({ timestamp, searchText, isViewMode }) {
     handleDropdownChange,
     orgStore,
     userStore.myProfile.id,
-    timestamp,
     isOpen,
     searchText,
     handleSearch,
@@ -92,7 +91,6 @@ function AddFriendsByOrganization({ timestamp, searchText, isViewMode }) {
         onDropdownChange={handleDropdownChange}
         overwrittenValue={dropdownDisplayValue}
         defaultValue={dropdownDefaultValue}
-        timestamp={timestamp}
       />
       <AddFriendsItem
         friendAddList={searchedUserList}
@@ -100,6 +98,6 @@ function AddFriendsByOrganization({ timestamp, searchText, isViewMode }) {
       />
     </Wrapper>
   ));
-}
+};
 
 export default AddFriendsByOrganization;

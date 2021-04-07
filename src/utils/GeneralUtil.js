@@ -1,4 +1,4 @@
-import { UserStore } from 'teespace-core';
+import { UserStore, SpaceStore } from 'teespace-core';
 
 export const isB2B = () => {
   return UserStore.myProfile.type === 'USR0001';
@@ -6,4 +6,10 @@ export const isB2B = () => {
 
 export const isSpaceAdmin = () => {
   return UserStore.myProfile.grade === 'admin';
+};
+
+export const isNewSpaceMessageExist = () => {
+  return (
+    SpaceStore.totalUnreadSpaceCount > SpaceStore.currentSpace?.unreadSpaceCount
+  );
 };

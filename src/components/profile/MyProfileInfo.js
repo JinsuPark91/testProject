@@ -4,20 +4,14 @@ import styled from 'styled-components';
 import { observer } from 'mobx-react';
 import settingIcon from '../../assets/setting.svg';
 import ProfileMyModal from './ProfileMyModal';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { isNewSpaceMessageExist } from '../../utils/GeneralUtil';
 
 const MyProfileInfo = observer(() => {
-  const { userStore, authStore, spaceStore } = useCoreStores();
+  const { userStore, authStore } = useCoreStores();
   const userId = authStore.user.id;
   const { isFirstLogin } = authStore.sessionInfo;
   const [myModalVisible, setMyModalVisible] = useState(isFirstLogin);
   const [tutorialVisible, setTutorialVisible] = useState(isFirstLogin);
-
-  const newMessageExist =
-    spaceStore.spaceList
-      .filter(elem => elem?.id !== spaceStore.currentSpace?.id)
-      .find(elem => elem.unreadSpaceCount > 0) !== undefined ||
-    PlatformUIStore.totalUnreadCount > 0;
 
   const toggleMyModal = useCallback(() => {
     setMyModalVisible(v => !v);
@@ -38,7 +32,7 @@ const MyProfileInfo = observer(() => {
   return (
     <>
       <ProfileIcon className="header__profile-button" onClick={toggleMyModal}>
-        {newMessageExist && <NewBadge />}
+        {isNewSpaceMessageExist() && <NewBadge />}
         <ThumbImage src={thumbPhoto} />
         <SettingImage>
           <img alt="settingIcon" src={settingIcon} />
