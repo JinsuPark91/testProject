@@ -247,10 +247,6 @@ const MobileProfile = observer(
     // check edit mode
     const editEnabled = editOnlyMode || isEditMode;
 
-    const onHandleLogout = async() => {
-      history.push('/logout')
-    }
-
     return (
       <Wrapper>
         <Container imageSrc={renderBackgroundPhoto} isEditMode={isEditMode}>
@@ -436,16 +432,10 @@ const MobileProfile = observer(
               <Text>{isMyId() ? '나와의 Talk' : '1:1 Talk'}</Text>
             </StyledButton>
             {isMyId() && (
-              <>
-               <StyledButton onClick={onHandleLogout}>
-               <StyleIcon iconimg="profile" />
-               <Text>로그아웃</Text>
-             </StyledButton>
               <StyledButton onClick={handleChangetoEditMode}>
                 <StyleIcon iconimg="profile" />
                 <Text>프로필 편집</Text>
               </StyledButton>
-              </>
             )}
           </Sidebar>
         )}
