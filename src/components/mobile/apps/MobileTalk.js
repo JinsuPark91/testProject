@@ -25,6 +25,7 @@ const MobileTalkStyle = createGlobalStyle`
     .talk-root-wrapper {
       height: calc(100% - 6.01rem);
       top: 2.88rem;
+      position: fixed;
     }
 
     .talk-drag-zone-wrapper {
