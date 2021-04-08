@@ -50,7 +50,7 @@ function RoomList() {
     if (containerRef.current) {
       containerRef.current.scrollTo(0, 0);
     }
-  });
+  }, [PlatformUIStore.tabType]);
 
   // LNB lastMessage i18n 임시
   useEffect(() => {
