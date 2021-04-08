@@ -677,8 +677,8 @@ const DataBox = styled.div`
 `;
 const NewBadge = styled.div`
   position: absolute;
-  width: 0.4rem;
-  height: 0.4rem;
+  width: 0.5rem;
+  height: 0.5rem;
   border-radius: 50%;
   background-color: #dc4547;
   top: -0.1rem;

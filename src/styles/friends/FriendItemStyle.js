@@ -23,33 +23,6 @@ export const FriendItemWrapper = styled.div`
   white-space: nowrap;
   text-overflow: ellipsis;
   cursor: pointer;
-  ${props =>
-    (props.mode === 'addFriend' || props.mode === 'recommended') &&
-    css`
-      width: calc(100% - 1.5rem + 8px);
-      height: 3rem;
-      background-color: transparent;
-      border-bottom: 1px solid #e3e7eb;
-      padding: 0 0.63rem;
-      margin-left: 0.75rem;
-      margin-right: calc(0.75rem - 8px);
-
-      &:hover {
-        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
-      }
-
-      /* icon */
-      .ant-btn-circle {
-        background: transparent;
-        box-shadow: 0;
-        border: 0;
-        color: #75757f;
-        &:hover {
-          color: #75757f;
-          background-color: #dcddff;
-        }
-      }
-    `}
 
   ${props =>
     props.mode === 'me' &&
@@ -57,7 +30,7 @@ export const FriendItemWrapper = styled.div`
       padding: 0.69rem 0.38rem 0.69rem 0.5rem;
     `}
 
-    ${props =>
+  ${props =>
     props.mode === 'friend' &&
     css`
       padding: 0.56rem 0.38rem 0.56rem 0.5rem;
@@ -164,40 +137,10 @@ export const NewFriendBadge = styled.div`
 export const StyledAvatar = styled.div`
   position: relative;
   flex-shrink: 0;
-  ${props => {
-    switch (props.mode) {
-      case 'me':
-        return css`
-          width: 2.13rem;
-          height: 2.13rem;
-          margin: 0.0652rem 0;
-          border: 1px solid #fff;
-        `;
-      case 'addFriend':
-        return css`
-          width: 2rem;
-          height: 2rem;
-          &:after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            border-radius: 50%;
-          }
-        `;
-      case 'friend':
-      default:
-        return css`
-          width: 2.13rem;
-          height: 2.13rem;
-          margin: 0.0652rem 0;
-          border: 1px solid #fff;
-        `;
-    }
-  }}
+  width: 2.13rem;
+  height: 2.13rem;
+  margin: 0.0652rem 0;
+  border: 1px solid #fff;
   border-radius: 50%;
   background-color: #fff;
   img {
