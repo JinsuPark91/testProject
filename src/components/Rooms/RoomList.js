@@ -33,7 +33,7 @@ function RoomList() {
     false,
   );
   const [roomMemberAttr, setRoomMemberAttr] = useState({});
-  const { roomStore, userStore } = useCoreStores();
+  const { roomStore, userStore, configStore } = useCoreStores();
   const [isProfileInfoModalVisible, setIsProfileInfoModalVisible] = useState(
     false,
   );
@@ -357,16 +357,18 @@ function RoomList() {
           }}
         </Observer>
       </RoomContainer>
-      <ButtomWrapper>
-        <WaplLogo />
-        <Toast
-          visible={isToastVisible}
-          timeoutMs={1000}
-          onClose={handleToastClose}
-        >
-          {toastText}
-        </Toast>
-      </ButtomWrapper>
+      {configStore.isActivateComponent('Platform', 'LNB:Logo') ? (
+        <ButtomWrapper>
+          <WaplLogo />
+        </ButtomWrapper>
+      ) : null}
+      <Toast
+        visible={isToastVisible}
+        timeoutMs={1000}
+        onClose={handleToastClose}
+      >
+        {toastText}
+      </Toast>
     </Wrapper>
   );
 }

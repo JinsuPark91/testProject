@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -46,6 +46,7 @@ import {
   OpenChatIcon,
 } from '../Icons';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
+import useLocalObservable from '../../libs/useLocalObservable';
 
 const getIconStyle = (isDisabled = false) => {
   return {
@@ -54,70 +55,6 @@ const getIconStyle = (isDisabled = false) => {
     color: isDisabled ? 'rgba(68, 77, 89, 0.3)' : '#232D3B',
   };
 };
-
-const apps = [
-  {
-    name: 'drive',
-    i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_18',
-    icons: {
-      active: <DriveActiveIcon {...getIconStyle()} />,
-      disabled: <DriveIcon {...getIconStyle(true)} />,
-      default: <DriveIcon {...getIconStyle()} />,
-    },
-    isUsedInMyRoom: true,
-    isSeperated: false,
-    isUsedInProfile: true,
-  },
-  {
-    name: 'calendar',
-    i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_17',
-    icons: {
-      active: <CalendarActiveIcon {...getIconStyle()} />,
-      disabled: <CalendarIcon {...getIconStyle(true)} />,
-      default: <CalendarIcon {...getIconStyle()} />,
-    },
-    isUsedInMyRoom: true,
-    isSeperated: false,
-    isUsedInProfile: true,
-  },
-  {
-    name: 'note',
-    i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_19',
-    icons: {
-      active: <NoteActiveIcon {...getIconStyle()} />,
-      disabled: <NoteIcon {...getIconStyle(true)} />,
-      default: <NoteIcon {...getIconStyle()} />,
-    },
-    isUsedInMyRoom: true,
-    isSeperated: false,
-    isUsedInProfile: true,
-  },
-
-  {
-    name: 'meeting',
-    i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_20',
-    icons: {
-      active: <MeetingActiveIcon {...getIconStyle()} />,
-      disabled: <MeetingIcon {...getIconStyle(true)} />,
-      default: <MeetingIcon {...getIconStyle()} />,
-    },
-    isUsedInMyRoom: false,
-    isSeperated: false,
-    isUsedInProfile: false,
-  },
-  {
-    name: 'files',
-    i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_16',
-    icons: {
-      active: <ViewFileActiveIcon {...getIconStyle()} />,
-      disabled: <ViewFileIcon {...getIconStyle(true)} />,
-      default: <ViewFileIcon {...getIconStyle()} />,
-    },
-    isUsedInMyRoom: true,
-    isSeperated: true,
-    isUsedInProfile: true,
-  },
-];
 
 const AppIcon = React.memo(
   ({
@@ -158,6 +95,110 @@ const AppIcon = React.memo(
   },
 );
 
+const useActiveApp = () => {
+  const { configStore } = useCoreStores();
+
+  const driveApp = useMemo(
+    () => ({
+      name: 'drive',
+      i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_18',
+      icons: {
+        active: <DriveActiveIcon {...getIconStyle()} />,
+        disabled: <DriveIcon {...getIconStyle(true)} />,
+        default: <DriveIcon {...getIconStyle()} />,
+      },
+      isUsedInMyRoom: true,
+      isSeperated: false,
+      isUsedInProfile: true,
+    }),
+    [],
+  );
+  const calendarApp = useMemo(
+    () => ({
+      name: 'calendar',
+      i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_17',
+      icons: {
+        active: <CalendarActiveIcon {...getIconStyle()} />,
+        disabled: <CalendarIcon {...getIconStyle(true)} />,
+        default: <CalendarIcon {...getIconStyle()} />,
+      },
+      isUsedInMyRoom: true,
+      isSeperated: false,
+      isUsedInProfile: true,
+    }),
+    [],
+  );
+  const noteApp = useMemo(
+    () => ({
+      name: 'note',
+      i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_19',
+      icons: {
+        active: <NoteActiveIcon {...getIconStyle()} />,
+        disabled: <NoteIcon {...getIconStyle(true)} />,
+        default: <NoteIcon {...getIconStyle()} />,
+      },
+      isUsedInMyRoom: true,
+      isSeperated: false,
+      isUsedInProfile: true,
+    }),
+    [],
+  );
+  const meetingApp = useMemo(
+    () => ({
+      name: 'meeting',
+      i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_20',
+      icons: {
+        active: <MeetingActiveIcon {...getIconStyle()} />,
+        disabled: <MeetingIcon {...getIconStyle(true)} />,
+        default: <MeetingIcon {...getIconStyle()} />,
+      },
+      isUsedInMyRoom: false,
+      isSeperated: false,
+      isUsedInProfile: false,
+    }),
+    [],
+  );
+  const files = useMemo(
+    () => ({
+      name: 'files',
+      i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_16',
+      icons: {
+        active: <ViewFileActiveIcon {...getIconStyle()} />,
+        disabled: <ViewFileIcon {...getIconStyle(true)} />,
+        default: <ViewFileIcon {...getIconStyle()} />,
+      },
+      isUsedInMyRoom: true,
+      isSeperated: true,
+      isUsedInProfile: true,
+    }),
+    [],
+  );
+
+  const state = useLocalObservable(() => ({
+    activeApps: [],
+    updateActiveApps() {
+      this.activeApps = [];
+      if (configStore.isActivateForCNU('Drive')) {
+        this.activeApps.push(driveApp);
+      }
+      this.activeApps.push(calendarApp);
+      this.activeApps.push(noteApp);
+      if (configStore.isActivateForCNU('Meeting')) {
+        this.activeApps.push(meetingApp);
+      }
+      if (configStore.isActivateForCNU('Files')) {
+        this.activeApps.push(files);
+      }
+    },
+  }));
+
+  useEffect(() => {
+    state.updateActiveApps();
+  }, []);
+
+  return state.activeApps;
+};
+
 const Header = observer(() => {
   const history = useHistory();
   const { t, i18n } = useTranslation();
@@ -165,6 +206,8 @@ const Header = observer(() => {
   const [isRoomProfileVisible, setRoomProfileVisible] = useState(false);
   const [isAddMemberVisible, setAddMemberVisible] = useState(false);
   const [appConfirm, setAppConfirm] = useState();
+
+  const apps = useActiveApp();
 
   const findRoom = () => {
     if (PlatformUIStore.resourceType !== 'f') {
