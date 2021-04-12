@@ -1,3 +1,4 @@
+import { Children } from 'react';
 import styled from 'styled-components';
 import { Tabs } from 'antd';
 
@@ -35,7 +36,8 @@ export const CustomTabs = styled(Tabs)`
     display: none !important;
   }
   .ant-tabs-tab {
-    width: calc(100% / 3);
+    width: ${({ children }) =>
+      `calc(100% / ${Children.toArray(children).length})`};
     justify-content: center;
     margin: 0;
     padding: 0;

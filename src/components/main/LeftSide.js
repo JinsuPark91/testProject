@@ -22,7 +22,7 @@ const { TabPane } = CustomTabs;
 
 const LeftSide = observer(() => {
   const { t, i18n } = useTranslation();
-  const { roomStore, friendStore } = useCoreStores();
+  const { roomStore, friendStore, configStore } = useCoreStores();
   const newFriendNum = friendStore.friendInfoList?.filter(elem =>
     handleCheckNewFriend(elem),
   ).length;
@@ -124,28 +124,29 @@ const LeftSide = observer(() => {
         >
           <RoomList />
         </TabPane>
-
-        <TabPane
-          key="m"
-          tab={
-            <Tooltip
-              title={t('CM_COMMUNICATION_BAR_03')}
-              placement="bottom"
-              color="#4C535D"
-            >
-              <IconWrapper className="lnb__icon-wrapper lnb__mail">
-                <UnreadCount isVisible={false}>N</UnreadCount>
-                {PlatformUIStore.tabType === 'm' ? (
-                  <MailActiveIcon width={1.5} height={1.5} />
-                ) : (
-                  <MailIcon width={1.5} height={1.5} />
-                )}
-              </IconWrapper>
-            </Tooltip>
-          }
-        >
-          <MailSideView language={i18n.language} />
-        </TabPane>
+        {configStore.isActivateForCNU('Mail') ? (
+          <TabPane
+            key="m"
+            tab={
+              <Tooltip
+                title={t('CM_COMMUNICATION_BAR_03')}
+                placement="bottom"
+                color="#4C535D"
+              >
+                <IconWrapper className="lnb__icon-wrapper lnb__mail">
+                  <UnreadCount isVisible={false}>N</UnreadCount>
+                  {PlatformUIStore.tabType === 'm' ? (
+                    <MailActiveIcon width={1.5} height={1.5} />
+                  ) : (
+                    <MailIcon width={1.5} height={1.5} />
+                  )}
+                </IconWrapper>
+              </Tooltip>
+            }
+          >
+            <MailSideView language={i18n.language} />
+          </TabPane>
+        ) : null}
       </CustomTabs>
     </Wrapper>
   );
