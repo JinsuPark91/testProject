@@ -39,7 +39,7 @@ const ProfileMyModal = ({
   created = false,
 }) => {
   const { t } = useTranslation();
-  const { userStore, spaceStore } = useCoreStores();
+  const { userStore, spaceStore, configStore } = useCoreStores();
   const { isGuest } = userStore.myProfile;
   const history = useHistory();
   const [isCreated, setIsCreated] = useState(created);
@@ -211,17 +211,17 @@ const ProfileMyModal = ({
   // 이후 '현재 스페이스의 어드민'인지를 체크하도록 수정
   const moreMenu = (
     <Menu style={{ minWidth: '6.25rem' }}>
-      {!isTmaxDomain && !isGuest ? (
+      {!isTmaxDomain && !isGuest && !configStore.isFromCNU ? (
         <Menu.Item onClick={handleInviteDialog}>
           {t('CM_USER_INVITE')}
         </Menu.Item>
       ) : null}
       <Menu.Item onClick={handleMemberList}>{t('CM_USER_LIST')}</Menu.Item>
-      {isSpaceAdmin() && (
+      {isSpaceAdmin() && !configStore.isFromCNU ? (
         <Menu.Item onClick={handleSpaceEditDialog}>
           {t('CM_SPACE_EDIT')}
         </Menu.Item>
-      )}
+      ) : null}
       {isSpaceAdmin() && (
         <Menu.Item onClick={handleAdminPage}>{t('CM_ADMIN_PAGE')}</Menu.Item>
       )}
@@ -305,18 +305,20 @@ const ProfileMyModal = ({
             <Title>{spaceStore.currentSpace?.name}</Title>
             {spaceStore.currentSpace?.domain}
           </Info>
-          <Tooltip
-            placement="topLeft"
-            color="#4C535D"
-            title={t('CM_PROFILE_PROFILE_MENU_01')}
-          >
-            <Button className="btn-convert" onClick={handleSpaceList}>
-              <Observer>
-                {() => (isNewSpaceMessageExist() ? <NewBadge /> : null)}
-              </Observer>
-              <Blind>{t('CM_PROFILE_PROFILE_MENU_01')}</Blind>
-            </Button>
-          </Tooltip>
+          {configStore.isFromCNU ? null : (
+            <Tooltip
+              placement="topLeft"
+              color="#4C535D"
+              title={t('CM_PROFILE_PROFILE_MENU_01')}
+            >
+              <Button className="btn-convert" onClick={handleSpaceList}>
+                <Observer>
+                  {() => (isNewSpaceMessageExist() ? <NewBadge /> : null)}
+                </Observer>
+                <Blind>{t('CM_PROFILE_PROFILE_MENU_01')}</Blind>
+              </Button>
+            </Tooltip>
+          )}
           <Dropdown
             trigger={['click']}
             overlay={moreMenu}
@@ -507,10 +509,14 @@ const ProfileMyModal = ({
           >
             {t('CM_SETTING')}
           </SettingButton>
-          <SettingBar />
-          <SettingButton type="text" onClick={handleOpenSupport}>
-            {t('CM_PROFILE_MENU_04')}
-          </SettingButton>
+          {!configStore.isFromCNU ? (
+            <>
+              <SettingBar />
+              <SettingButton type="text" onClick={handleOpenSupport}>
+                {t('CM_PROFILE_MENU_04')}
+              </SettingButton>
+            </>
+          ) : null}
         </UserSettingArea>
       }
       transitionName=""

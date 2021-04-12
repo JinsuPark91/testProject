@@ -178,6 +178,7 @@ const useActiveApp = () => {
     activeApps: [],
     updateActiveApps() {
       this.activeApps = [];
+
       if (configStore.isActivateForCNU('Drive')) {
         this.activeApps.push(driveApp);
       }

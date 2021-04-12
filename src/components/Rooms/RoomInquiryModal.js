@@ -212,7 +212,7 @@ function RoomInquiryModal({
   const [memberPhotos, setMemberPhotos] = useState(initialStates.memberPhotos);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [profileUserId, setProfileUserId] = useState();
-  const { roomStore, userStore } = useCoreStores();
+  const { roomStore, userStore, configStore } = useCoreStores();
   const nameInputRef = useRef();
 
   const getUserPhotos = _roomInfo => {
@@ -445,7 +445,7 @@ function RoomInquiryModal({
               </ButtonIcon>
               {t('CM_TALK')}
             </SettingButton>
-            <SettingButton disabled={isDisabled()} onClick={handleMeeting}>
+            {configStore.isFromCNU ? null :  <SettingButton disabled={isDisabled()} onClick={handleMeeting}>
               <ButtonIcon>
                 <MeetingIcon
                   color={isDisabled() ? '#646464' : '#fff'}
@@ -454,7 +454,7 @@ function RoomInquiryModal({
                 />
               </ButtonIcon>
               {t('CM_B2C_CONTENTS_AREA_EMPTY_PAGE_20')}
-            </SettingButton>
+            </SettingButton>}
           </>
         )}
       </SettingBox>
