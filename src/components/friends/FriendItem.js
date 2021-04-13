@@ -32,16 +32,20 @@ import {
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 import mySign from '../../assets/wapl_me.svg';
 
-const Profile = React.memo(({ profilePhoto, itemId, handleClickPhoto }) => {
-  return (
-    <StyledAvatar
-      className="friends__item__photo"
-      onClick={e => handleClickPhoto(e, itemId)}
-    >
-      <img src={profilePhoto} alt="" />
-    </StyledAvatar>
-  );
-});
+const disableScroll = event => event.preventDefault();
+
+const ProfilePhoto = React.memo(
+  ({ profilePhoto, itemId, handleClickPhoto }) => {
+    return (
+      <StyledAvatar
+        className="friends__item__photo"
+        onClick={e => handleClickPhoto(e, itemId)}
+      >
+        <img src={profilePhoto} alt="" />
+      </StyledAvatar>
+    );
+  },
+);
 
 const TextComponent = React.memo(({ displayName, fullCompanyJob, mode }) => {
   const fullDisplayName = (() => {
@@ -76,9 +80,15 @@ const DropdownMenu = React.memo(
     handleRemoveFriendMessageOpen,
   }) => {
     const { t } = useTranslation();
+    const handleClickContextMenu = () => {
+      document
+        .getElementById('lnb__friend-container')
+        .removeEventListener('wheel', disableScroll);
+    };
+
     // 추후 프렌즈 삭제 i18n 교체 필요
     return (
-      <Menu>
+      <Menu onClick={handleClickContextMenu}>
         {friendFavorite && (
           <Menu.Item onClick={handleCancelBookmark}>
             {t('CM_BOOKMARK_REMOVE')}
@@ -114,7 +124,12 @@ const FriendAction = React.memo(
             <Dropdown
               overlay={menu}
               trigger={['click']}
-              onClick={e => e.stopPropagation()}
+              onClick={e => {
+                e.stopPropagation();
+                document
+                  .getElementById('lnb__friend-container')
+                  .addEventListener('wheel', disableScroll);
+              }}
               visible={dropdownVisible}
               onVisibleChange={handleDropdownVisible}
             >
@@ -183,11 +198,10 @@ const FriendItem = observer(
     isActive = false,
     onClick,
     friendInfo,
-    openToast,
-    setToastText,
-    setSelectedId,
-    toggleInfoModal,
-    setyPosition,
+    handleOpenToast,
+    handleToastText,
+    handleSelectedId,
+    handleInfoModalVisible,
   }) => {
     const { t } = useTranslation();
     const {
@@ -284,13 +298,10 @@ const FriendItem = observer(
     const isDndHover = canDrop && isOver;
 
     const handleSelectPhoto = (e, id = '') => {
-      setyPosition(e.clientY);
       if (e) e.stopPropagation();
       if (id) {
-        setSelectedId(id);
-        toggleInfoModal(true);
-      } else {
-        toggleInfoModal(false);
+        handleSelectedId(id);
+        handleInfoModalVisible(true);
       }
     };
 
@@ -358,6 +369,10 @@ const FriendItem = observer(
 
     const handleDropdownVisible = useCallback(visible => {
       setDropdownVisible(visible);
+      if (!visible)
+        document
+          .getElementById('lnb__friend-container')
+          .removeEventListener('wheel', disableScroll);
     }, []);
 
     const handleAddBookmark = async ({ domEvent: e }) => {
@@ -371,9 +386,8 @@ const FriendItem = observer(
       } catch (error) {
         console.log(error);
       }
-      setDropdownVisible(false);
-      setToastText(t('CM_BOOKMARK_03'));
-      openToast();
+      handleToastText(t('CM_BOOKMARK_03'));
+      handleOpenToast();
     };
 
     const handleCancelBookmark = async ({ domEvent: e }) => {
@@ -383,9 +397,8 @@ const FriendItem = observer(
         friendId: itemId,
         isFav: false,
       });
-      setToastText(t('CM_BOOKMARK_02'));
-      setDropdownVisible(false);
-      openToast();
+      handleToastText(t('CM_BOOKMARK_02'));
+      handleOpenToast();
     };
 
     const handleMoveItem = targetId => {
@@ -440,7 +453,7 @@ const FriendItem = observer(
           mode={mode}
           className="friends__item"
         >
-          <Profile
+          <ProfilePhoto
             profilePhoto={userStore.getProfilePhotoURL(itemId, 'small')}
             itemId={itemId}
             handleClickPhoto={handleSelectPhoto}

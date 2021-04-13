@@ -9,7 +9,6 @@ import {
   ContentSpaceSecession,
   SettingSave,
 } from './index';
-import TermsFooter from '../login/TermsFooter';
 import { isB2B, isSpaceAdmin } from '../../utils/GeneralUtil';
 import {
   DialogWrap,
@@ -82,7 +81,7 @@ const SettingDialog = props => {
             inputPassword={inputPassword}
           />
         ) : (
-          <TermsFooter />
+          <></>
         )
       }
     >

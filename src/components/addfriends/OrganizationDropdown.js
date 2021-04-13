@@ -17,13 +17,12 @@ const valueCreator = org => {
  * @param {Array<OrgModel>} props.orgList
  * @param {string} overWrittenValue - valueCreator를 이용해서 만든 값, 기존의 value를 내부적으로 유지한 채로 보여주는 값만 바꿀 때 사용
  */
-function OrganizationDropdown({
-  orgList,
+const OrganizationDropdown = ({
   onChange,
   overwrittenValue,
   defaultValue: dropdownDefaultValue,
-}) {
-  const { orgStore, userStore } = useCoreStores();
+}) => {
+  const { orgStore } = useCoreStores();
   const [dropdownValue, setDropdownValue] = useState('');
 
   // org 데이터는 실시간으로 바뀌지 않으므로 index를 id로 써도 무방
@@ -52,20 +51,15 @@ function OrganizationDropdown({
         handleDropdownChange(valueCreator({ companyCode, departmentCode }));
       }
     })();
-  }, [
-    dropdownDefaultValue,
-    handleDropdownChange,
-    onChange,
-    orgStore,
-    userStore.myProfile.id,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return useObserver(() => (
     <StyledTreeSelect
       dropdownClassName="teespace-common"
       treeDefaultExpandedKeys={[dropdownValue || dropdownDefaultValue]}
       value={overwrittenValue || dropdownValue || dropdownDefaultValue}
-      treeData={orgList.map(orgConverter)}
+      treeData={orgStore.orgList?.map(orgConverter)}
       treeNodeLabelProp="title"
       onChange={handleDropdownChange}
       placeholder="please select"
@@ -73,7 +67,7 @@ function OrganizationDropdown({
       dropdownStyle={{ minWidth: '21.5rem' }}
     />
   ));
-}
+};
 
 const StyledTreeSelect = styled(TreeSelect)`
   &.ant-select:not(.ant-select-customize-input) .ant-select-selector {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
-import AddFriendsByOrganization from '../friends/AddFriendsByOrganization';
+import AddFriendsByOrganization from './AddFriendsByOrganization';
 import AddFriendsFromSpace from './AddFriendsFromSpace';
 import AddFriendsByInvitationDialog from './AddFriendsByInvitationDialog';
 import {
@@ -55,6 +55,7 @@ const AddFriendsBySearch = ({
           mask
           maskTransitionName=""
           centered
+          className="friend-modal__user-list"
           footer={null}
           width="24.38rem"
           height="30.18rem"

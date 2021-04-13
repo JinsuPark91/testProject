@@ -3,7 +3,7 @@ import { useObserver } from 'mobx-react';
 import styled from 'styled-components';
 import { Divider } from 'antd';
 import SpaceMemberHeader from './SpaceMemberHeader';
-import AddFriendsItem from '../friends/AddFriendsItem';
+import AddFriendsItem from './AddFriendsItem';
 
 const Wrapper = styled.div`
   width: 100%;
