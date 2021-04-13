@@ -518,7 +518,7 @@ const Header = observer(() => {
                         <SearchIcon
                           width={1.25}
                           height={1.25}
-                          color="#4C535D"
+                          color="#232D3B"
                         />
                       </IconWrapper>
                     </Tooltip>

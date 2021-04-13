@@ -68,7 +68,7 @@ const SettingDialogCountryCode = () => {
           {isCountryCodeEdit ? (
             <Select
               defaultValue={getTextFormat(defaultCountry)}
-              style={{ width: '15rem' }}
+              style={{ width: '13.75rem' }}
               onChange={handleChange}
             >
               {countryDataArray?.map((elem, index) => (
@@ -87,7 +87,6 @@ const SettingDialogCountryCode = () => {
               <Button
                 size="small"
                 type="solid"
-                className="color-Beige"
                 disabled={selectedCountryCode === myProfile.nationalCode}
                 onClick={handleSuccess}
               >

@@ -57,7 +57,6 @@ const SettingDialogName = () => {
               <Button
                 size="small"
                 type="solid"
-                className="color-Beige"
                 disabled={myProfile.name === name}
                 onClick={handleChangeName}
               >

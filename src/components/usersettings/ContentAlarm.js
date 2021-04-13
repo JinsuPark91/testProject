@@ -6,6 +6,7 @@ import { ReactComponent as SoundIcon } from '../../assets/sound_on.svg';
 import AlarmSound from '../../assets/alarm_sound.wav';
 import { ALARM_TYPE, ALARM_TYPE_SEND } from './SettingConstants';
 import {
+  ContentDataWrap,
   FormItemMain,
   AlarmList,
   FormItem,
@@ -186,19 +187,20 @@ const ContentAlarm = () => {
   return (
     <>
       <ContentTitle title={t('CM_NOTI')} subTitle={t('CM_SETTING_NOTI_03')} />
-      <form>
-        <FormItemMain valuePropName="alarmchecked">
-          <ItemMain>
-            <Switch
-              defaultChecked={isAlarmChecked}
-              onChange={handleDeskTopNotification}
-            />
-            <span>{t('CM_SETTING_NOTI_02')}</span>
-          </ItemMain>
-        </FormItemMain>
-        {isAlarmChecked && (
-          <AlarmList>
-            {/* <FormItem valuePropName="alarmchecked">
+      <ContentDataWrap>
+        <form>
+          <FormItemMain valuePropName="alarmchecked">
+            <ItemMain>
+              <Switch
+                defaultChecked={isAlarmChecked}
+                onChange={handleDeskTopNotification}
+              />
+              <span>{t('CM_SETTING_NOTI_02')}</span>
+            </ItemMain>
+          </FormItemMain>
+          {isAlarmChecked && (
+            <AlarmList>
+              {/* <FormItem valuePropName="alarmchecked">
               <ItemInfo>
                 <ItemTitle htmlFor="alarmsound">소리 알림</ItemTitle>
                 <ItemSub>
@@ -222,103 +224,104 @@ const ContentAlarm = () => {
                 onChange={handleAlarmSound}
               />
             </FormItem> */}
-            <FormItem>
-              <ItemInfo>
-                <ItemTitle htmlFor="newmessagetoggle">
-                  {t('CM_SETTING_NOTI_05')}
-                </ItemTitle>
-                {isMessageNoticeChecked && (
-                  <ItemSub>
-                    <Checkbox
-                      checked={isMessagePreviewChecked}
-                      onChange={handleMessagePreview}
-                      shape="round"
-                    >
-                      {t('CM_SETTING_NOTI_06')}
-                    </Checkbox>
-                  </ItemSub>
-                )}
-              </ItemInfo>
-              <Switch
-                id="newmessagetoggle"
-                defaultChecked={isMessageNoticeChecked}
-                onChange={handleTalkMessage}
-              />
-            </FormItem>
-            <FormItem>
-              <ItemInfo>
-                <ItemTitle htmlFor="mentiontoggle">
-                  {t('CM_SETTING_NOTI_14')}
-                </ItemTitle>
-                <ItemSub isSmall>{t('CM_SETTING_NOTI_15')}</ItemSub>
-              </ItemInfo>
-              <Switch
-                id="mentiontoggle"
-                defaultChecked={isMentionNoticeChecked}
-                onChange={handleMention}
-              />
-            </FormItem>
-            <FormItem>
-              <ItemInfo>
-                <ItemTitle htmlFor="Meetingtoggle">
-                  {t('CM_SETTING_NOTI_08')}
-                </ItemTitle>
-                {isMeetingNoticeChecked && (
-                  <ItemSub>
-                    <Checkbox
-                      checked={isMeetingStartChecked}
-                      onChange={handleMeetingStart}
-                      shape="round"
-                    >
-                      {t('CM_SETTING_NOTI_09')}
-                    </Checkbox>
-                    <Checkbox
-                      checked={isMeetingEndChecked}
-                      onChange={handleMeetingEnd}
-                      shape="round"
-                    >
-                      {t('CM_SETTING_NOTI_10')}
-                    </Checkbox>
-                  </ItemSub>
-                )}
-              </ItemInfo>
-              <Switch
-                id="Meetingtoggle"
-                defaultChecked={isMeetingNoticeChecked}
-                onChange={handleMeetingNotice}
-              />
-            </FormItem>
-            <FormItem>
-              <ItemInfo>
-                <ItemTitle htmlFor="Newlettertoggle">
-                  {t('CM_SETTING_NOTI_07')}
-                </ItemTitle>
-                {isBasicPlan && (
-                  <ItemSub isMail>{t('CM_SETTING_NOTI')}</ItemSub>
-                )}
-              </ItemInfo>
-              <Switch
-                id="Newlettertoggle"
-                defaultChecked={isMailNoticeChecked}
-                onChange={handleMailNotice}
-                disabled={isBasicPlan}
-              />
-            </FormItem>
-            <FormItem>
-              <ItemInfo>
-                <ItemTitleBlack htmlFor="scheduletoggle">
-                  {t('CM_SETTING_NOTI_11')}
-                </ItemTitleBlack>
-              </ItemInfo>
-              <Switch
-                id="scheduletoggle"
-                defaultChecked={isCalendarNoticeChecked}
-                onChange={handleCalendarNotice}
-              />
-            </FormItem>
-          </AlarmList>
-        )}
-      </form>
+              <FormItem>
+                <ItemInfo>
+                  <ItemTitle htmlFor="newmessagetoggle">
+                    {t('CM_SETTING_NOTI_05')}
+                  </ItemTitle>
+                  {isMessageNoticeChecked && (
+                    <ItemSub>
+                      <Checkbox
+                        checked={isMessagePreviewChecked}
+                        onChange={handleMessagePreview}
+                        shape="round"
+                      >
+                        {t('CM_SETTING_NOTI_06')}
+                      </Checkbox>
+                    </ItemSub>
+                  )}
+                </ItemInfo>
+                <Switch
+                  id="newmessagetoggle"
+                  defaultChecked={isMessageNoticeChecked}
+                  onChange={handleTalkMessage}
+                />
+              </FormItem>
+              <FormItem>
+                <ItemInfo>
+                  <ItemTitle htmlFor="mentiontoggle">
+                    {t('CM_SETTING_NOTI_14')}
+                  </ItemTitle>
+                  <ItemSub isSmall>{t('CM_SETTING_NOTI_15')}</ItemSub>
+                </ItemInfo>
+                <Switch
+                  id="mentiontoggle"
+                  defaultChecked={isMentionNoticeChecked}
+                  onChange={handleMention}
+                />
+              </FormItem>
+              <FormItem>
+                <ItemInfo>
+                  <ItemTitle htmlFor="Meetingtoggle">
+                    {t('CM_SETTING_NOTI_08')}
+                  </ItemTitle>
+                  {isMeetingNoticeChecked && (
+                    <ItemSub>
+                      <Checkbox
+                        checked={isMeetingStartChecked}
+                        onChange={handleMeetingStart}
+                        shape="round"
+                      >
+                        {t('CM_SETTING_NOTI_09')}
+                      </Checkbox>
+                      <Checkbox
+                        checked={isMeetingEndChecked}
+                        onChange={handleMeetingEnd}
+                        shape="round"
+                      >
+                        {t('CM_SETTING_NOTI_10')}
+                      </Checkbox>
+                    </ItemSub>
+                  )}
+                </ItemInfo>
+                <Switch
+                  id="Meetingtoggle"
+                  defaultChecked={isMeetingNoticeChecked}
+                  onChange={handleMeetingNotice}
+                />
+              </FormItem>
+              <FormItem>
+                <ItemInfo>
+                  <ItemTitle htmlFor="Newlettertoggle">
+                    {t('CM_SETTING_NOTI_07')}
+                  </ItemTitle>
+                  {isBasicPlan && (
+                    <ItemSub isMail>{t('CM_SETTING_NOTI')}</ItemSub>
+                  )}
+                </ItemInfo>
+                <Switch
+                  id="Newlettertoggle"
+                  defaultChecked={isMailNoticeChecked}
+                  onChange={handleMailNotice}
+                  disabled={isBasicPlan}
+                />
+              </FormItem>
+              <FormItem>
+                <ItemInfo>
+                  <ItemTitleBlack htmlFor="scheduletoggle">
+                    {t('CM_SETTING_NOTI_11')}
+                  </ItemTitleBlack>
+                </ItemInfo>
+                <Switch
+                  id="scheduletoggle"
+                  defaultChecked={isCalendarNoticeChecked}
+                  onChange={handleCalendarNotice}
+                />
+              </FormItem>
+            </AlarmList>
+          )}
+        </form>
+      </ContentDataWrap>
     </>
   );
 };

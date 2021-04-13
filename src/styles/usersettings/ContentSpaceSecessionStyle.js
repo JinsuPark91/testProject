@@ -1,11 +1,16 @@
 import { Button, Avatar } from 'antd';
 import styled from 'styled-components';
 
+export const ContentDataWrap = styled.div`
+  overflow-y: auto;
+  height: 100%;
+  padding: 0 1.25rem;
+`;
+
 export const ContentGroup = styled.div`
-  padding: 0.25rem 0 1.25rem;
-  border-top: 1px solid #d8d8d8;
-  &:first-of-type {
-    margin-top: 1.25rem;
+  padding: 0.63rem 0 1.25rem;
+  & + & {
+    border-top: 1px solid #d8d8d8;
   }
 `;
 
