@@ -1,6 +1,12 @@
 import { Button } from 'antd';
 import styled, { css } from 'styled-components';
 
+export const ContentDataWrap = styled.div`
+  overflow-y: auto;
+  height: 100%;
+  padding: 0 1.25rem 1.25rem;
+`;
+
 export const FormItemMain = styled.div`
   display: flex;
   align-items: center;

@@ -1,5 +1,11 @@
 import styled from 'styled-components';
 
+export const ContentTitleWrap = styled.div`
+  margin: 0 1.25rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid #ddd9d4;
+`;
+
 export const Title = styled.p`
   strong {
     font-size: 1.25rem;
@@ -14,9 +20,4 @@ export const SubTitle = styled.span`
   font-size: 0.75rem;
   color: #8d8d8d;
   line-height: 1.13rem;
-`;
-
-export const Blank = styled.div`
-  height: 1.25rem;
-  border-bottom: 0.06rem solid #ddd9d4;
 `;

@@ -42,7 +42,7 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   padding: 0 0.75rem;
-  height: 1.8rem;
+  height: 1.75rem;
   background: ${({ disabled }) => (disabled ? '#cccccc' : '#fff')};
   ${({ disabled }) =>
     disabled &&
