@@ -1,18 +1,17 @@
 import styled, { css } from 'styled-components';
 import Upload from 'rc-upload';
 import { Input, Button } from 'antd';
-import InputCounter from '../components/Input';
-import friendsIcon from '../assets/profile_talk.svg';
-import profileEditIcon from '../assets/profile_edit.svg';
-import meetingIcon from '../assets/meeting.svg';
-import OfficeIcon from '../assets/office.svg';
-import CallIcon from '../assets/call.svg';
-import PhoneIcon from '../assets/phone.svg';
-import MailIcon from '../assets/mail.svg';
-import EmailHoverIcon from '../assets/ts_export.svg';
-import tsBgImgIcon from '../assets/ts_photo.svg';
-import starLineIcon from '../assets/favorites_line.svg';
-import starIcon from '../assets/favorites.svg';
+import InputCounter from '../../components/Input';
+import profileEditIcon from '../../assets/profile_edit.svg';
+import meetingIcon from '../../assets/meeting.svg';
+import OfficeIcon from '../../assets/office.svg';
+import CallIcon from '../../assets/call.svg';
+import PhoneIcon from '../../assets/phone.svg';
+import MailIcon from '../../assets/mail.svg';
+import EmailHoverIcon from '../../assets/ts_export.svg';
+import tsBgImgIcon from '../../assets/ts_photo.svg';
+import starLineIcon from '../../assets/favorites_line.svg';
+import starIcon from '../../assets/favorites.svg';
 
 export const Wrapper = styled.div`
   display: flex;

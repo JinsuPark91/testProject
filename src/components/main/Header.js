@@ -26,7 +26,7 @@ import {
   VerticalBar,
 } from './HeaderStyle';
 import PlatformUIStore from '../../stores/PlatformUIStore';
-import MyProfileInfo from '../profile/MyProfileInfo';
+import HeaderProfile from '../profile/HeaderProfile';
 import RoomInquiryModal from '../Rooms/RoomInquiryModal';
 import RoomAddMemberModal from '../Rooms/RoomAddMemberModal';
 import {
@@ -595,7 +595,7 @@ const Header = observer(() => {
       </AppIconContainer>
 
       <UserMenu>
-        <MyProfileInfo />
+        <HeaderProfile />
       </UserMenu>
     </Wrapper>
   );

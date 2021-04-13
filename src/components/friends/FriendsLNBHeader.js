@@ -31,4 +31,4 @@ const FriendsLNBHeader = ({ handleInputChange, handleInputClear }) => {
   );
 };
 
-export default FriendsLNBHeader;
+export default React.memo(FriendsLNBHeader);

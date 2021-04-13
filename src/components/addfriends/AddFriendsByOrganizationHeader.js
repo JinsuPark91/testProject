@@ -18,19 +18,17 @@ const UserCounter = styled.div`
   font-size: 0.75rem;
 `;
 
-function AddFriendsByOrganizationHeader({
-  orgList,
+const AddFriendsByOrganizationHeader = ({
   orgUserSize,
   onDropdownChange,
   overwrittenValue,
   defaultValue,
-}) {
+}) => {
   const { t } = useTranslation();
 
   return (
     <Wrapper>
       <OrganizationDropdown
-        orgList={orgList}
         onChange={onDropdownChange}
         overwrittenValue={overwrittenValue}
         defaultValue={defaultValue}
@@ -42,6 +40,6 @@ function AddFriendsByOrganizationHeader({
       </UserCounter>
     </Wrapper>
   );
-}
+};
 
 export default AddFriendsByOrganizationHeader;
