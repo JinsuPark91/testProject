@@ -304,14 +304,13 @@ const MainProfile = observer(({ userId = null }) => {
   };
 
   const isDisabled = () => {
-    const { id: myId, isGuest } = userStore.myProfile;
-    const { result: isExistRoom, roomInfo } = roomStore.getDMRoom(myId, userId);
-    // 게스트가 아님
-    if (!isGuest) return false;
-    // 게스트, 방이 있음
-    if (isExistRoom) return !roomInfo.isVisible;
-    // 게스트, 방이 없음
-    return true;
+    const { id: myId } = userStore.myProfile;
+    const hasPermission = authStore.hasPermission('rooms', 'C');
+    const { result: isExistRoom } = roomStore.getDMRoom(myId, userId);
+
+    // NOTE : 방이 있으면 R, 없으면 C
+    if (isExistRoom) return false;
+    return !hasPermission;
   };
 
   return (
