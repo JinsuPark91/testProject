@@ -153,28 +153,28 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
             } else {
               const res = await authStore.login(loginInfo);
               const getRoutingPath = Cookies.get('routingPath');
-              console.log('#############', getRoutingPath);
+              const getNibId = Cookies.get('NIBID');
               if (res) {
-              
-
-                if (window.location.pathname.includes('/mobile')) {
-                  const exceptMobilePath = getRoutingPath?.replace(
-                    '/mobile',
-                    '',
-                  );
-                  if (exceptMobilePath.includes('login')) {
-                    history.push(`/friend`);
-                  } else {
-                    history.push(exceptMobilePath);
+                if (getNibId) {
+                  if (stateFrom) {
+                    history.push(
+                      `${stateFrom.pathname}${props.location.state?.from.search}`,
+                    );
                   }
                 } else {
-                  history.push(`/f/${authStore.user.id}/profile`);
-                }
-
-                if (stateFrom) {
-                  history.push(
-                    `${stateFrom.pathname}${props.location.state?.from.search}`,
-                  );
+                  if (window.location.pathname.includes('/mobile')) {
+                    const exceptMobilePath = getRoutingPath?.replace(
+                      '/mobile',
+                      '',
+                    );
+                    if (exceptMobilePath.includes('login')) {
+                      history.push(`/friend`);
+                    } else {
+                      history.push(exceptMobilePath);
+                    }
+                  } else {
+                    history.push(`/f/${authStore.user.id}/profile`);
+                  }
                 }
               }
             }
