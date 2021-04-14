@@ -33,7 +33,7 @@ function RoomList() {
     false,
   );
   const [roomMemberAttr, setRoomMemberAttr] = useState({});
-  const { roomStore, userStore, configStore } = useCoreStores();
+  const { roomStore, userStore, configStore, authStore } = useCoreStores();
   const [isProfileInfoModalVisible, setIsProfileInfoModalVisible] = useState(
     false,
   );
@@ -221,6 +221,9 @@ function RoomList() {
   const handleToastClose = () => {
     setIsToastVisible(false);
   };
+
+  const hasMemberCreatePermission = authStore.hasPermission('members', 'C');
+
   return (
     <Wrapper>
       <Observer>
@@ -332,8 +335,13 @@ function RoomList() {
           <AddRoomIconWrapper
             className="rooms__create-button"
             onClick={handleCreateRoom}
+            $isDisable={!hasMemberCreatePermission}
           >
-            <AddRoomIcon width={1.38} height={1.38} color="#232D3B" />
+            <AddRoomIcon
+              width={1.38}
+              height={1.38}
+              color={hasMemberCreatePermission ? '#232D3B' : '#999'}
+            />
           </AddRoomIconWrapper>
         </Tooltip>
       </TopWrapper>
@@ -405,7 +413,7 @@ const AddRoomIconWrapper = styled.div`
   border-radius: 50%;
   background-color: #fff;
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
-  cursor: pointer;
+  pointer-events: ${({ $isDisable }) => ($isDisable ? 'none' : '')};
 
   &:hover {
     background-color: #ebe6df;
