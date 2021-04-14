@@ -245,7 +245,7 @@ const SubWaitingMemberPage = ({ roomId }) => {
                 <Trans
                   i18nKey="CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_02"
                   components={{
-                    styled: <span style={{ color: 'rgb(87, 66, 200)' }} />,
+                    styled: <span style={{ color: '#205855' }} />,
                   }}
                   values={{ num: store.filteredMembers.length }}
                 />

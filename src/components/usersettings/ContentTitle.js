@@ -1,19 +1,18 @@
 import React from 'react';
 import {
+  ContentTitleWrap,
   Title,
   SubTitle,
-  Blank,
 } from '../../styles/usersettings/ContentTitleStyle';
 
 function ContentTitle({ title, subTitle }) {
   return (
-    <>
+    <ContentTitleWrap>
       <Title>
         <strong>{title}</strong>
       </Title>
       <SubTitle>{subTitle}</SubTitle>
-      <Blank />
-    </>
+    </ContentTitleWrap>
   );
 }
 

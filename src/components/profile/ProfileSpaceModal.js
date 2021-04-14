@@ -85,7 +85,7 @@ function ProfileSpaceModal({
   onClose,
 }) {
   const { t } = useTranslation();
-  const { userStore, spaceStore } = useCoreStores();
+  const { userStore, spaceStore, configStore } = useCoreStores();
   const { isGuest } = userStore.myProfile;
   const title = isSpaceAdmin()
     ? t('CM_SPACE_CREATE_COMPLETE_01')

@@ -2,16 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Talk } from 'teespace-talk-app';
 import { App as MeetingApp } from 'teespace-meeting-app';
-import { EventBus, useCoreStores } from 'teespace-core';
+import { EventBus, useCoreStores, ProfileInfoModal } from 'teespace-core';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import LoadingImg from '../assets/WAPL_Loading.gif';
+import RoomInquiryModal from '../components/Rooms/RoomInquiryModal';
 import Photos from '../components/Photos';
 import { SearchIcon } from '../components/Icons';
+import WindowManager from '../components/common/WindowManager';
+import PlatformUIStore from '../stores/PlatformUIStore';
 
 const NewWindowPage = () => {
   const { resourceId: roomId, mainApp } = useParams();
-  const { roomStore, userStore, spaceStore } = useCoreStores();
+  const { roomStore, userStore, spaceStore, friendStore } = useCoreStores();
   const { i18n } = useTranslation();
   const myUserId = userStore.myProfile.id;
 
@@ -34,6 +37,10 @@ const NewWindowPage = () => {
         channel =>
           channel.type === (mainApp === 'talk' ? 'CHN0001' : 'CHN0005'),
       );
+
+            // 프렌드 리스트를 불러오자
+      await friendStore.fetchFriends({ myUserId }),
+        
       setChannelId(channelInfo.id);
     } catch (err) {
       console.error('Mini Talk Error : ', err);
@@ -64,6 +71,7 @@ const NewWindowPage = () => {
     case 'talk':
       return (
         <Wrapper>
+          <WindowManager />
           <Header roomId={roomId} onSearch={openSearch} />
           <Content>
             <Talk
@@ -78,12 +86,15 @@ const NewWindowPage = () => {
       );
     case 'meeting':
       return (
-        <MeetingApp
-          language={i18n.language}
-          roomId={roomId}
-          channelId={channelId}
-          layoutState="expand"
-        />
+        <>
+          <WindowManager />
+          <MeetingApp
+            language={i18n.language}
+            roomId={roomId}
+            channelId={channelId}
+            layoutState="expand"
+          />
+        </>
       );
     default:
       return null;
@@ -98,9 +109,11 @@ const Header = ({ roomId, onSearch }) => {
     name: '',
     srcs: [],
     userCount: 0,
+    memberIdListString: '',
     isDMRoom: false,
     isMyRoom: false,
   });
+  const [modalVisible, setModalVisible] = useState(false);
 
   const getRoomName = roomInfo => {
     const { type, customName, name } = roomInfo;
@@ -124,22 +137,74 @@ const Header = ({ roomId, onSearch }) => {
   useEffect(() => {
     if (roomId) {
       const targetRoomInfo = roomStore.getRoom(roomId);
-      const { isDirectMsg: isDMRoom, type, userCount } = targetRoomInfo;
+      const {
+        isDirectMsg: isDMRoom,
+        type,
+        userCount,
+        memberIdListString,
+      } = targetRoomInfo;
       const name = getRoomName(targetRoomInfo);
       const srcs = getSrcs(targetRoomInfo);
       setInfo({
         name,
         srcs,
         userCount,
+        memberIdListString,
         isDMRoom,
         isMyRoom: type === 'WKS0001',
       });
     }
   }, [roomId]);
 
+  const handlePhotoClick = () => {
+    setModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setModalVisible(false);
+  };
+
+  const getModal = () => {
+    if (info.isMyRoom || info.userCount === 2) {
+      const userIds = info.isMyRoom
+        ? userStore.myProfile.id
+        : info.memberIdListString
+            .split(',')
+            .find(userId => userId !== userStore.myProfile.id);
+      return (
+        <ProfileInfoModal
+          userId={userIds}
+          visible={modalVisible}
+          onClickMeeting={_roomId => {
+            PlatformUIStore.openWindow({
+              id: _roomId,
+              type: 'meeting',
+              name: null,
+              userCount: null,
+              handler: null,
+            });
+          }}
+          onClose={handleModalClose}
+          position={{ top: '3.5rem', left: '0' }}
+        />
+      );
+    }
+    return (
+      <RoomInquiryModal
+        roomId={roomId}
+        visible={modalVisible}
+        onCancel={handleModalClose}
+        width="17.5rem"
+        top="3.5rem"
+        left="0"
+      />
+    );
+  };
+
   return (
     <HeaderWrapper>
-      <Photos srcList={info.srcs} />
+      {getModal()}
+      <Photos srcList={info.srcs} onClick={handlePhotoClick} />
       <span className="header__room-name">{info.name}</span>
 
       {info.isDMRoom || info.isMyRoom ? null : (

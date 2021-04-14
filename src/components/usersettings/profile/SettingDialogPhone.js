@@ -53,7 +53,6 @@ const SettingDialogPhone = () => {
               <Button
                 size="small"
                 type="solid"
-                className="color-Beige"
                 disabled={myProfile.phone === phone}
                 onClick={handleChangePhone}
               >

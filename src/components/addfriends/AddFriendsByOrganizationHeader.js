@@ -1,7 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { Divider } from 'antd';
+import React from 'react';
 import styled from 'styled-components';
-import { Input } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import OrganizationDropdown from './OrganizationDropdown';
 
@@ -20,26 +18,17 @@ const UserCounter = styled.div`
   font-size: 0.75rem;
 `;
 
-function AddFriendsByOrganizationHeader({
-  orgList,
+const AddFriendsByOrganizationHeader = ({
   orgUserSize,
   onDropdownChange,
   overwrittenValue,
   defaultValue,
-  timestamp,
-}) {
+}) => {
   const { t } = useTranslation();
-  const inputRef = useRef(null);
 
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.state.value = '';
-    }
-  }, [timestamp]);
   return (
     <Wrapper>
       <OrganizationDropdown
-        orgList={orgList}
         onChange={onDropdownChange}
         overwrittenValue={overwrittenValue}
         defaultValue={defaultValue}
@@ -51,6 +40,6 @@ function AddFriendsByOrganizationHeader({
       </UserCounter>
     </Wrapper>
   );
-}
+};
 
 export default AddFriendsByOrganizationHeader;

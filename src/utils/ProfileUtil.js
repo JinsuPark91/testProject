@@ -118,13 +118,14 @@ export const getProfileEditDto = params => {
   const { myProfile } = UserStore;
   const {
     thumbFile,
-    backGroundFile,
+    backgroundFile,
     name,
     nick,
     nationalCode,
     companyNum,
     phone,
     birthDate,
+    profileStatusMsg,
   } = params;
   const obj = {};
 
@@ -145,11 +146,11 @@ export const getProfileEditDto = params => {
     obj.profileName = null;
   }
 
-  if (backGroundFile) {
+  if (backgroundFile) {
     obj.backPhoto = null;
-    obj.backFile = backGroundFile;
-    obj.backName = backGroundFile.name;
-  } else if (backGroundFile === undefined) {
+    obj.backFile = backgroundFile;
+    obj.backName = backgroundFile.name;
+  } else if (backgroundFile === undefined) {
     obj.backPhoto = UserStore.getBackgroundPhotoURL(myProfile.id);
     obj.backFile = null;
     obj.backName = null;
@@ -170,6 +171,7 @@ export const getProfileEditDto = params => {
   obj.companyNum = companyNum ?? myProfile.companyNum;
   obj.phone = phone ?? myProfile.phone;
   obj.birthDate = birthDate ?? myProfile.birthDate;
+  obj.profileStatusMsg = profileStatusMsg ?? myProfile.profileStatusMsg;
 
   return obj;
 };

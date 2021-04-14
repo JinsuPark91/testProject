@@ -13,7 +13,7 @@ import RoomSetting from '../Rooms/RoomSetting';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import { Wrapper, Splitter } from './ContentStyle';
 import { MainAppContainer, SubAppContainer } from './AppContainer';
-import Profile from '../Profile';
+import MainProfile from '../profile/MainProfile';
 
 const remToPixel = rem => {
   return (
@@ -142,7 +142,7 @@ const Content = () => {
       case 'mailsub':
         return <MailSubView roomId={getRoomId()} language={i18n.language} />;
       case 'profile':
-        return <Profile userId={PlatformUIStore.resourceId} />;
+        return <MainProfile userId={PlatformUIStore.resourceId} />;
       case 'setting':
         return <RoomSetting roomId={getRoomId()} />;
       default:

@@ -1,14 +1,9 @@
-import React, { useState, useCallback } from 'react';
-import { useCoreStores, logEvent } from 'teespace-core';
-import { Tooltip } from 'antd';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import AddFriendsBySearch from './AddFriendsBySearch';
-import { handleFriendsDialogType } from '../../utils/FriendsUtil';
-import FriendAddIcon from '../../assets/add_friends.svg';
+import AddFriendsButton from '../addfriends/AddFriendsButton';
 import {
   SearchBox,
   FriendSearch,
-  FriendAddButton,
 } from '../../styles/friends/FriendsLNBHeaderStyle';
 
 /**
@@ -18,27 +13,6 @@ import {
 
 const FriendsLNBHeader = ({ handleInputChange, handleInputClear }) => {
   const { t } = useTranslation();
-  const { spaceStore } = useCoreStores();
-  const [isDialogVisible, setIsDialogVisible] = useState(false);
-  const [isOrgExist, setIsOrgExist] = useState(false);
-  const [spaceMemberList, setSpaceMemberList] = useState([]);
-
-  const handleOpenAddFriendsDialog = useCallback(async () => {
-    try {
-      await handleFriendsDialogType(
-        () => setIsOrgExist(true),
-        res => setSpaceMemberList(res),
-      );
-      setIsDialogVisible(true);
-      logEvent('main', 'clickAddFriendsBtn');
-    } catch (e) {
-      console.log('Org/Member Get Service Error');
-    }
-  }, []);
-
-  const handleCloseAddFriendsDialog = useCallback(() => {
-    setIsDialogVisible(false);
-  }, []);
 
   return (
     <SearchBox>
@@ -52,29 +26,9 @@ const FriendsLNBHeader = ({ handleInputChange, handleInputClear }) => {
         placeholder={t('CM_B2C_LNB_EMPTY_PAGE_06')}
         isCountExist={false}
       />
-      <Tooltip
-        title={t('CM_ADD_PHOTO_FRIENDS')}
-        placement="bottomLeft"
-        color="#232D3B"
-      >
-        <FriendAddButton
-          className="friends__add-button"
-          onClick={handleOpenAddFriendsDialog}
-        >
-          <img alt="friend" src={FriendAddIcon} />
-        </FriendAddButton>
-      </Tooltip>
-      <AddFriendsBySearch
-        visible={isDialogVisible}
-        onCancelAddFriends={handleCloseAddFriendsDialog}
-        isOrgExist={isOrgExist}
-        title={t('CM_ADD_PHOTO_FRIENDS')}
-        isViewMode={false}
-        spaceInfo={spaceStore.currentSpace}
-        spaceMemberList={spaceMemberList}
-      />
+      <AddFriendsButton />
     </SearchBox>
   );
 };
 
-export default FriendsLNBHeader;
+export default React.memo(FriendsLNBHeader);

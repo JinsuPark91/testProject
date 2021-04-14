@@ -28,60 +28,42 @@ export const SiderArea = styled.div`
 `;
 
 export const ContentArea = styled.div`
+  display: flex;
+  flex-direction: column;
   flex: 1;
-  overflow-y: auto;
   height: 73vh;
-  padding: 1.25rem 1.25rem 3.125rem;
 `;
 
 export const StyledMenu = styled(Menu)`
-  padding-top: 0.75rem;
   background-color: #f7f4ef;
   border: 0;
-  .ant-menu-item-group {
-    & + .ant-menu-item-group:before {
-      content: '';
-      display: block;
-      height: 1px;
-      margin: 0.63rem 0.63rem 0;
-      background-color: #e3e7eb;
-    }
-  }
   .ant-menu-item-group-title {
-    padding: 0.44rem 1.5rem 0.81rem;
+    padding: 1.25rem 1.25rem 0.625rem;
     font-size: 0.75rem;
     line-height: 1.125rem;
     color: #717171;
   }
   .ant-menu-item {
-    margin: 0 !important;
     height: 2.38rem;
     margin: 0 0.25rem !important;
-    padding: 0 2.25rem;
+    padding: 0 2.5rem;
     border-radius: 0.25rem;
+    background-color: #f7f4ef;
     font-size: 0.81rem;
     line-height: 2.38rem;
-    background-color: #f7f4ef;
     color: #000;
     &.ant-menu-item-selected {
       background-color: #ddd7cd;
     }
   }
 `;
-// &:hover {
-//   background-color: #f2efec;
-// }
 
 export const InnerList = styled.ul`
-  margin-top: 1.56rem;
+  overflow-y: auto;
+  height: 100%;
+  padding: 1.56rem 1.25rem 1.25rem;
   font-size: 0.81rem;
   color: #000;
-  .ant-btn {
-    color: #000;
-  }
-  .antd-btn-outlined:focus {
-    color: #000;
-  }
 `;
 
 export const InnerItem = styled.li`
@@ -98,14 +80,13 @@ export const Name = styled.p`
   float: left;
   min-width: 13.13rem;
   padding-right: 1.25rem;
-  line-height: 1.69rem;
+  line-height: 1.875rem;
 `;
 
 export const Data = styled.div`
   overflow: hidden;
   display: flex;
-  min-height: 1.69rem;
-  align-items: center;
+  padding-right: 3rem;
   font-weight: 500;
   .ant-btn {
     padding: 0 0.81rem;
@@ -120,7 +101,7 @@ export const ImageBox = styled.div`
   position: relative;
   width: 3.38rem;
   height: 3.38rem;
-  margin-right: 0.63rem;
+  margin-bottom: 0.625rem;
   flex-shrink: 0;
   border-radius: 50%;
   cursor: pointer;
@@ -155,9 +136,8 @@ export const ImageIcon = styled.span`
 
 export const Info = styled.span`
   display: block;
-  margin-top: 0.63rem;
   font-size: 0.75rem;
-  line-height: 0.94rem;
+  line-height: 1.125rem;
   font-weight: 400;
   color: #8d8d8d;
   span {
@@ -169,11 +149,12 @@ export const Info = styled.span`
 export const TextArea = styled.div`
   margin-right: 1.25rem;
   p {
+    line-height: 1.875rem;
     word-break: break-word;
     word-wrap: break-word;
   }
   .ant-input {
-    width: 11.88rem;
+    width: 13.75rem;
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
       -webkit-appearance: none;
@@ -183,13 +164,13 @@ export const TextArea = styled.div`
 `;
 
 export const ButtonArea = styled.div`
-  margin-left: auto;
-  margin-right: 3rem;
+  margin: 0.125rem 0 0 auto;
   flex-shrink: 0;
 `;
 
 export const EditNameInput = styled(InputCounter)`
-  width: 11.88rem;
+  width: 13.75rem;
+  height: 1.875rem;
   .input-counter {
     font-size: 0.69rem;
     color: #bdc6d3;

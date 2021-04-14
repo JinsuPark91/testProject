@@ -366,7 +366,7 @@ const MemberPage = ({ roomId }) => {
                 <Trans
                   i18nKey="CM_ROOM_SETTING_MANAGE_PEOPLE_02"
                   components={{
-                    style: <span style={{ color: 'rgb(87, 66, 200)' }} />,
+                    style: <span style={{ color: '#205855' }} />,
                   }}
                   values={{ num: store.filteredMembers.length }}
                 />

@@ -56,7 +56,6 @@ const SettingDialogCompanyNum = () => {
               <Button
                 size="small"
                 type="solid"
-                className="color-Beige"
                 disabled={myProfile.companyNum === companyNum}
                 onClick={handleChangeCompanyNum}
               >

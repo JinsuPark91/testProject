@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Form, useCoreStores } from 'teespace-core';
+import Cookies from 'js-cookie';
 import LoginPasswordInput from '../components/login/LoginPasswordInput';
 import LoginIdInput from '../components/login/LoginIdInput';
 import { Loader } from './MainPageStyle';
 import LoadingImg from '../assets/WAPL_Loading.gif';
-import Cookies from 'js-cookie';
-import styled from 'styled-components';
 
 function PrivateLoginPage() {
   const [form] = Form.useForm();
@@ -15,10 +14,10 @@ function PrivateLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorResult, setErrorResult] = useState(null);
 
-  useEffect(()=>{
-      Cookies.remove('ACCESS_TOKEN');
-      Cookies.remove('DEVICE_TYPE'); 
-   },[])
+  useEffect(() => {
+    Cookies.remove('ACCESS_TOKEN');
+    Cookies.remove('DEVICE_TYPE');
+  }, []);
 
   const onFinish = async values => {
     setIsLoading(true);
@@ -28,6 +27,8 @@ function PrivateLoginPage() {
         deviceType: 'PC',
         domainUrl: '',
         authorizeType: 'Ksign',
+        ssoType:
+          process.env.REACT_APP_SSO_TYPE || window?.env?.REACT_APP_SSO_TYPE,
       });
       if (res.id) {
         if (window.location.pathname.includes('/mobile')) {
@@ -43,7 +44,6 @@ function PrivateLoginPage() {
       setIsLoading(false);
     }
   };
-
 
   const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);

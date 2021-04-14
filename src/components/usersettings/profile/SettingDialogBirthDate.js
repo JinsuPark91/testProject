@@ -55,7 +55,6 @@ const SettingDialogBirthDate = () => {
               <Button
                 size="small"
                 type="solid"
-                className="color-Beige"
                 disabled={myProfile.birthDate === birthDate}
                 onClick={handleChangeBirthDate}
               >

@@ -131,17 +131,22 @@ const AddFriendsItem = ({ friendAddList, isViewMode }) => {
     ];
   }
 
-  const handleAddFriend = useCallback(
-    async friendInfo => {
+  const handleAddFriend = async friendInfo => {
+    try {
       await friendStore.addFriend({
         myUserId: userStore.myProfile.id,
         friendInfo,
       });
+      // 일단 친구 추가 후에 프로필 사진 얻어오기 위해 fetch하자
+      await userStore.fetchProfile({
+        userId: friendInfo.friendId || friendInfo.id,
+      });
       setFriendUserName(friendInfo?.displayName);
       setIsToastVisible(true);
-    },
-    [friendStore, userStore.myProfile.id],
-  );
+    } catch (e) {
+      console.log('Friend Add Error...');
+    }
+  };
 
   const renderMenu = friendInfo => {
     const userId = friendInfo?.friendId || friendInfo?.id;

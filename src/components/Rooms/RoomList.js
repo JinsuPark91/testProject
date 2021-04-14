@@ -33,7 +33,7 @@ function RoomList() {
     false,
   );
   const [roomMemberAttr, setRoomMemberAttr] = useState({});
-  const { roomStore, userStore } = useCoreStores();
+  const { roomStore, userStore, configStore } = useCoreStores();
   const [isProfileInfoModalVisible, setIsProfileInfoModalVisible] = useState(
     false,
   );
@@ -50,7 +50,7 @@ function RoomList() {
     if (containerRef.current) {
       containerRef.current.scrollTo(0, 0);
     }
-  });
+  }, [PlatformUIStore.tabType]);
 
   // LNB lastMessage i18n 임시
   useEffect(() => {
@@ -357,16 +357,18 @@ function RoomList() {
           }}
         </Observer>
       </RoomContainer>
-      <ButtomWrapper>
-        <WaplLogo />
-        <Toast
-          visible={isToastVisible}
-          timeoutMs={1000}
-          onClose={handleToastClose}
-        >
-          {toastText}
-        </Toast>
-      </ButtomWrapper>
+      {configStore.isActivateComponent('Platform', 'LNB:Logo') ? (
+        <ButtomWrapper>
+          <WaplLogo />
+        </ButtomWrapper>
+      ) : null}
+      <Toast
+        visible={isToastVisible}
+        timeoutMs={1000}
+        onClose={handleToastClose}
+      >
+        {toastText}
+      </Toast>
     </Wrapper>
   );
 }
@@ -421,7 +423,6 @@ const ButtomWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0.69rem 0.94rem;
-  box-shadow: 0 -0.8125rem 0.75rem -0.1875rem #fff;
   z-index: 5;
 `;
 

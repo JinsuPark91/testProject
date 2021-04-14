@@ -17,6 +17,7 @@ export const FooterWrapper = styled(Footer)`
   margin-top: auto;
   padding: 0.69rem 0.94rem;
   background-color: #fff;
-  box-shadow: 0 -0.8125rem 0.75rem -0.1875rem #fff;
+  box-shadow: ${props =>
+    props.shadow ? '0 -0.8125rem 0.75rem -0.1875rem #fff' : ''};
   z-index: 5;
 `;

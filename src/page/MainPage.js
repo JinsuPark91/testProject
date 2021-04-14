@@ -9,8 +9,8 @@ import {
   WWMS,
   AlarmSetting,
   Toast,
+  Message,
 } from 'teespace-core';
-import { Observer } from 'mobx-react';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
 import { WindowMail } from 'teespace-mail-app';
 import { Prompt } from 'react-router';
@@ -21,15 +21,15 @@ import { Loader, Wrapper } from './MainPageStyle';
 import PlatformUIStore from '../stores/PlatformUIStore';
 import LoadingImg from '../assets/WAPL_Loading.gif';
 import FaviconChanger from '../components/common/FaviconChanger';
-import FloatingButton from '../components/common/FloatingButton';
+import WindowManager from '../components/common/WindowManager';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
-import { runWatcher, stopWatcher } from '../utils/Watcher';
 
 const MainPage = () => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [toastText, setToastText] = useState('');
+  const [isRefreshModalVisible, setIsRefreshModalVisible] = useState(false);
 
   const history = useHistory();
   const { resourceType, resourceId, mainApp } = useParams();
@@ -85,6 +85,14 @@ const MainPage = () => {
       .then(async res => {
         // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
         EventBus.dispatch('Platform:initLNB');
+
+        // 프렌즈 프로필은 모두 가져오자
+        if (friendStore.friendInfoList.length) {
+          const friendIdList = friendStore.friendInfoList.map(
+            elem => elem.friendId,
+          );
+          await userStore.fetchProfileList(friendIdList);
+        }
 
         const [, , , , histories, alarmList] = res;
         AlarmSetting.initAlarmSet(alarmList);
@@ -350,83 +358,26 @@ const MainPage = () => {
       <WindowManager />
       {/* <PortalWindowManager /> */}
       <WindowMail />
+      {isRefreshModalVisible && (
+        <Message
+          visible={isRefreshModalVisible}
+          title={t('CM_LOGIN_POLICY_10')}
+          subtitle={t('CM_LOGIN_POLICY_11')}
+          btns={[
+            {
+              type: 'solid',
+              shape: 'round',
+              text: t('CM_LOGIN_POLICY_03'),
+              onClick: () => {
+                setIsRefreshModalVisible(false);
+                window.location.reload();
+              },
+            },
+          ]}
+        />
+      )}
     </Wrapper>
   );
 };
 
 export default MainPage;
-
-// [TODO] : 나중에 다른데로 옮기자.
-const Window = ({ windowInfo }) => {
-  const { id: windowId, type: app } = windowInfo;
-  const url = `/s/${windowId}/${app}?mini=true`;
-
-  const getSpecs = appName => {
-    if (appName === 'meeting') return '';
-
-    const width = 600;
-    const height = 800;
-    const options = {
-      width,
-      height,
-      top: (window.innerHeight - height) / 2 + window.screenY,
-      left: (window.innerWidth - width) / 2 + window.screenX,
-    };
-    return Object.entries(options)
-      .map(entry => entry.join('='))
-      .join(',');
-  };
-
-  useEffect(() => {
-    const handler = window.open(url, '_blank', getSpecs(app));
-    const info = PlatformUIStore.getWindow(app, windowId);
-    if (info) {
-      info.handler = handler;
-      handler.focus();
-    }
-  }, []);
-
-  return null;
-};
-
-const WindowManager = () => {
-  useEffect(() => {
-    runWatcher();
-
-    return () => stopWatcher();
-  }, []);
-
-  return (
-    <Observer>
-      {() => {
-        const talkWindows = PlatformUIStore.getWindows('talk');
-        return (
-          <>
-            {PlatformUIStore.getWindows('talk').map(window => (
-              <Window key={window.id} windowInfo={window} />
-            ))}
-            {PlatformUIStore.getWindows('meeting').map(window => (
-              <Window key={window.id} windowInfo={window} />
-            ))}
-            <FloatingButton
-              // visible={talkWindows.length}
-              visible={false}
-              rooms={talkWindows}
-              count={5}
-              onItemClick={roomInfo => {
-                PlatformUIStore.focusWindow('talk', roomInfo.id);
-              }}
-              onItemClose={roomInfo => {
-                console.log('ROOM INFO : ', roomInfo);
-                PlatformUIStore.closeWindow('talk', roomInfo.id);
-              }}
-              onCloseAll={() => {
-                PlatformUIStore.closeAllWindow('talk');
-              }}
-            />
-          </>
-        );
-      }}
-    </Observer>
-  );
-};

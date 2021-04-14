@@ -6,6 +6,7 @@ import { FriendsLnbWrapper } from '../../styles/friends/FriendsLNBStyle';
 
 const FriendsLNB = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [shadowVisible, setShadowVisible] = useState(true);
 
   const handleSearchKeyword = useCallback(value => {
     setSearchKeyword(value);
@@ -14,14 +15,21 @@ const FriendsLNB = () => {
     setSearchKeyword('');
   }, []);
 
+  const handleShadow = useCallback(value => {
+    setShadowVisible(value);
+  }, []);
+
   return (
     <FriendsLnbWrapper>
       <FriendsLNBHeader
         handleInputChange={handleSearchKeyword}
         handleInputClear={handleClearKeyword}
       />
-      <FriendsLNBContent searchKeyword={searchKeyword} />
-      <FriendsLNBFooter />
+      <FriendsLNBContent
+        searchKeyword={searchKeyword}
+        handleShadow={handleShadow}
+      />
+      <FriendsLNBFooter shadow={shadowVisible} />
     </FriendsLnbWrapper>
   );
 };

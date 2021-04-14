@@ -1,111 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useCoreStores, Toast, Chip, Message, logEvent } from 'teespace-core';
-import styled from 'styled-components';
-import { Button, Input, Modal } from 'antd';
 import { useTranslation } from 'react-i18next';
-import sendMailIcon from '../../assets/invite_send.svg';
 import { checkEmailValid } from '../../libs/Regex';
+import {
+  StyledModal,
+  StyledContent,
+  StyledInputBox,
+  StyledChipBox,
+  StyledInfoTitle,
+  StyledInfoText,
+  StyledInput,
+  StyledLinkButton,
+  SendButton,
+} from '../../styles/addfriends/AddFriendsByInvitationDialogStyle';
+import sendMailIcon from '../../assets/invite_send.svg';
 
-const StyledModal = styled(Modal)`
-  .ant-modal-body {
-    padding: 0;
-  }
-  .ant-modal-header {
-    padding: 0.69rem 0 0.75rem;
-  }
-  .ant-modal-title {
-    font-size: 0.88rem;
-    line-height: 1.25rem;
-    color: #000000;
-    letter-spacing: 0;
-  }
-`;
-
-const StyledContent = styled.div`
-  padding: 1.13rem 1rem 1.44rem;
-`;
-
-const StyledInputBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 0.88rem;
-`;
-
-const StyledChipBox = styled.div`
-  overflow-y: auto;
-  height: 5.2rem;
-  margin-top: 0.56rem;
-  padding: 0 0 0.38rem 0.38rem;
-  background-color: white;
-  border: 0.06rem solid #d0ccc7;
-  border-radius: 0.25rem;
-  & > div {
-    margin: 0.25rem 0.38rem 0 0;
-    vertical-align: top;
-  }
-`;
-
-const StyledInfoTitle = styled.h3`
-  font-size: 0.81rem;
-  line-height: 1.19rem;
-  color: #000000;
-  letter-spacing: 0;
-  margin-bottom: 0.38rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-const StyledInfoText = styled.p`
-  font-size: 0.75rem;
-  line-height: 0.91rem;
-  color: #777;
-  letter-spacing: 0;
-  white-space: pre-line;
-`;
-
-const StyledInput = styled(Input)`
-  margin-right: 0.5rem;
-`;
-
-const StyledLinkButton = styled(Button)`
-  &.ant-btn {
-    height: auto;
-    margin-top: 1rem;
-    padding: 0;
-    font-size: 0.81rem;
-    line-height: 1.19rem;
-    color: #00493d;
-    &:hover span {
-      text-decoration: underline;
-    }
-  }
-`;
-
-const SendButton = styled.button`
-  height: 1.88rem;
-  width: 1.88rem;
-  line-height: 0;
-  background-color: #f7f4ef;
-  border-radius: 0.38rem;
-  border: none;
-  &:hover {
-    background-color: #ebe6df;
-  }
-  &:active {
-    background-color: #ddd7cd;
-  }
-  img {
-    width: 1.08rem;
-  }
-`;
-
-function AddFriendsByInvitationDialog({
-  visible,
-  onSendInviteMail = () => {},
-  onCancel,
-}) {
+const AddFriendsByInvitationDialog = ({ onCancel }) => {
   const { t } = useTranslation();
   const { friendStore, userStore, spaceStore } = useCoreStores();
   const [mailAddress, setMailAddress] = useState('');
@@ -114,11 +24,6 @@ function AddFriendsByInvitationDialog({
   const [toastText, setToastText] = useState('');
   const [isMessageVisible, setIsMessageVisible] = useState(false);
   const myUserId = userStore.myProfile.id;
-
-  useEffect(() => {
-    setMailAddress('');
-    setChipList([]);
-  }, [visible]);
 
   const handleCancel = () => {
     if (isMessageVisible) {
@@ -131,7 +36,6 @@ function AddFriendsByInvitationDialog({
   const handleToggleToast = () => {
     setIsToastVisible(!isToastVisible);
   };
-
   const handleToggleMessage = () => {
     setIsMessageVisible(!isMessageVisible);
   };
@@ -183,7 +87,6 @@ function AddFriendsByInvitationDialog({
       setMailAddress('');
     }
   };
-
   const handleCloseChip = elem => {
     const chipsSet = new Set(chipList);
     chipsSet.delete(elem);
@@ -197,16 +100,15 @@ function AddFriendsByInvitationDialog({
       return;
     }
 
-    if (mailAddress.length > 0 && !checkEmailValid(mailAddress)) {
+    const isChipInvalid = chipList.find(
+      elem => checkEmailValid(elem) === false,
+    );
+    const isInputInvalid =
+      mailAddress.length > 0 && !checkEmailValid(mailAddress);
+
+    if (isChipInvalid || isInputInvalid) {
       handleToggleMessage();
       return;
-    }
-
-    for (let i = 0; i < chipList.length; i += 1) {
-      if (!checkEmailValid(chipList[i])) {
-        handleToggleMessage();
-        return;
-      }
     }
 
     try {
@@ -214,7 +116,6 @@ function AddFriendsByInvitationDialog({
       if (mailAddress.length) {
         sendChipSet.add(mailAddress);
       }
-
       friendStore.sendSpaceInvitationMail({
         myUserId,
         userEmailList: Array.from(sendChipSet),
@@ -227,16 +128,15 @@ function AddFriendsByInvitationDialog({
       setToastText(t('CM_INVITE_PEOPLE_POPUP_07'));
       handleToggleToast();
       logEvent('member', 'clickSendInvitationBtn');
-      // onSendInviteMail();
     } catch (e) {
-      console.log(`Just Error is ${e}`);
+      console.log(`Invitation Error... ${e}`);
     }
   };
 
   return (
     <>
       <StyledModal
-        visible={visible}
+        visible
         mask
         maskTransitionName=""
         centered
@@ -265,7 +165,7 @@ function AddFriendsByInvitationDialog({
               <img alt="send" src={sendMailIcon} />
             </SendButton>
           </StyledInputBox>
-          {chipList.length ? (
+          {chipList.length > 0 && (
             <StyledChipBox>
               {chipList.map(elem => (
                 <Chip
@@ -277,26 +177,26 @@ function AddFriendsByInvitationDialog({
                 />
               ))}
             </StyledChipBox>
-          ) : null}
+          )}
           <StyledLinkButton type="link" onClick={handleCopyInviteLink}>
             {t('CM_INVITE_PEOPLE_POPUP_04')}
           </StyledLinkButton>
         </StyledContent>
-        <Message
-          visible={isMessageVisible}
-          title={t('CM_INVITE_PEOPLE_POPUP_08')}
-          subtitle={t('CM_INVITE_PEOPLE_POPUP_09')}
-          type="error"
-          btns={[
-            {
-              type: 'solid',
-              shape: 'round',
-              text: t('CM_LOGIN_POLICY_03'),
-              onClick: handleToggleMessage,
-            },
-          ]}
-        />
       </StyledModal>
+      <Message
+        visible={isMessageVisible}
+        title={t('CM_INVITE_PEOPLE_POPUP_08')}
+        subtitle={t('CM_INVITE_PEOPLE_POPUP_09')}
+        type="error"
+        btns={[
+          {
+            type: 'solid',
+            shape: 'round',
+            text: t('CM_LOGIN_POLICY_03'),
+            onClick: handleToggleMessage,
+          },
+        ]}
+      />
       <Toast
         visible={isToastVisible}
         timeoutMs={1000}
@@ -308,6 +208,6 @@ function AddFriendsByInvitationDialog({
       </Toast>
     </>
   );
-}
+};
 
 export default AddFriendsByInvitationDialog;

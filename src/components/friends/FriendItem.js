@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { talkOnDrop, Talk } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
 import { observer } from 'mobx-react';
-import { Button, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
 import {
   useCoreStores,
   Dropdown,
@@ -12,7 +12,10 @@ import {
   Message,
   usePortalWindow,
 } from 'teespace-core';
-import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
+import PlatformUIStore from '../../stores/PlatformUIStore';
+import { ACCEPT_ITEMS, TALK_ACCEPT_ITEMS } from '../../utils/DndConstant';
+import { handleCheckNewFriend } from '../../utils/FriendsUtil';
+import { handleProfileMenuClick } from '../../utils/ProfileUtil';
 import {
   Wrapper,
   FriendItemWrapper,
@@ -26,12 +29,48 @@ import {
   MeWrapper,
   MoreIconWrapper,
 } from '../../styles/friends/FriendItemStyle';
-import { ACCEPT_ITEMS, TALK_ACCEPT_ITEMS } from '../../utils/DndConstant';
-import { handleCheckNewFriend } from '../../utils/FriendsUtil';
-import { handleProfileMenuClick } from '../../utils/ProfileUtil';
-import PlatformUIStore from '../../stores/PlatformUIStore';
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 import mySign from '../../assets/wapl_me.svg';
+
+const disableScroll = event => event.preventDefault();
+
+const ProfilePhoto = React.memo(
+  ({ profilePhoto, itemId, handleClickPhoto }) => {
+    return (
+      <StyledAvatar
+        className="friends__item__photo"
+        onClick={e => handleClickPhoto(e, itemId)}
+      >
+        <img src={profilePhoto} alt="" />
+      </StyledAvatar>
+    );
+  },
+);
+
+const TextComponent = React.memo(({ displayName, fullCompanyJob, mode }) => {
+  const fullDisplayName = (() => {
+    switch (mode) {
+      case 'me':
+      case 'friend': {
+        const fullCompanyJobTxt = fullCompanyJob ? `(${fullCompanyJob})` : '';
+        return `${displayName} ${fullCompanyJobTxt}`;
+      }
+      default:
+        return displayName;
+    }
+  })();
+
+  return (
+    <TextComponentBox>
+      {mode === 'me' && (
+        <MeWrapper>
+          <img src={mySign} alt="me" />
+        </MeWrapper>
+      )}
+      <TitleForName>{fullDisplayName}</TitleForName>
+    </TextComponentBox>
+  );
+});
 
 const DropdownMenu = React.memo(
   ({
@@ -41,9 +80,15 @@ const DropdownMenu = React.memo(
     handleRemoveFriendMessageOpen,
   }) => {
     const { t } = useTranslation();
+    const handleClickContextMenu = () => {
+      document
+        .getElementById('lnb__friend-container')
+        .removeEventListener('wheel', disableScroll);
+    };
+
     // 추후 프렌즈 삭제 i18n 교체 필요
     return (
-      <Menu>
+      <Menu onClick={handleClickContextMenu}>
         {friendFavorite && (
           <Menu.Item onClick={handleCancelBookmark}>
             {t('CM_BOOKMARK_REMOVE')}
@@ -60,19 +105,15 @@ const DropdownMenu = React.memo(
   },
 );
 
-const Profile = React.memo(
-  ({ mode, profilePhoto, itemId, handleClickPhoto }) => {
-    return (
-      <StyledAvatar
-        className="friends__item__photo"
-        mode={mode}
-        onClick={e => handleClickPhoto(e, itemId)}
-      >
-        <img src={profilePhoto} alt="" />
-      </StyledAvatar>
-    );
-  },
-);
+const OpenMiniTalk = roomInfo => {
+  PlatformUIStore.openWindow({
+    id: roomInfo.id,
+    type: 'talk',
+    name: roomInfo.name,
+    userCount: roomInfo.userCount,
+    handler: null,
+  });
+};
 
 const FriendAction = React.memo(
   ({ mode, menu, dropdownVisible, handleDropdownVisible }) => {
@@ -83,7 +124,14 @@ const FriendAction = React.memo(
             <Dropdown
               overlay={menu}
               trigger={['click']}
-              onClick={e => e.stopPropagation()}
+              onClick={e => {
+                e.stopPropagation();
+                document
+                  .getElementById('lnb__friend-container')
+                  .addEventListener('wheel', disableScroll);
+              }}
+              visible={dropdownVisible}
+              onVisibleChange={handleDropdownVisible}
             >
               <MoreIconWrapper className="lnb-friend__more-icon friends__item__config-button">
                 <ViewMoreIcon />
@@ -96,18 +144,7 @@ const FriendAction = React.memo(
   },
 );
 
-const OpenMiniTalk = roomInfo => {
-  //  FIXME: 안정화 후 함수로 묶기
-  PlatformUIStore.openWindow({
-    id: roomInfo.id,
-    type: 'talk',
-    name: roomInfo.name,
-    userCount: roomInfo.userCount,
-    handler: null,
-  });
-};
-
-const MeAction = React.memo(({ mode, itemId }) => {
+const AllAction = React.memo(({ itemId }) => {
   const { t } = useTranslation();
   const { userStore } = useCoreStores();
   const handleExport = async e => {
@@ -134,128 +171,37 @@ const MeAction = React.memo(({ mode, itemId }) => {
   );
 });
 
-const AddFriendAction = React.memo(
-  ({ mode, friendRelation, handleAddFriend, isMe }) => (
-    <>
-      {mode === 'addFriend' && !friendRelation && !isMe && (
-        <Button
-          shape="circle"
-          icon={<PlusOutlined onClick={handleAddFriend} />}
-        />
-      )}
-    </>
-  ),
-);
-
-const RecommendedAction = React.memo(
-  ({ mode, friendRelation, handleAddFriend }) => (
-    <>
-      {mode === 'recommended' && !friendRelation && (
-        <>
-          <Button
-            shape="circle"
-            icon={<PlusOutlined onClick={handleAddFriend} />}
-          />
-          <Button shape="circle" icon={<CloseOutlined />} />
-        </>
-      )}
-    </>
-  ),
-);
-
 const Action = React.memo(
-  ({
-    mode,
-    menu,
-    dropdownVisible,
-    handleDropdownVisible,
-    handleTalkWindowOpen,
-    friendRelation,
-    handleAddFriend,
-    isMe,
-    itemId,
-  }) => (
+  ({ mode, menu, dropdownVisible, handleDropdownVisible, itemId }) => (
     <>
-      {mode !== 'readOnly' && (
-        <>
-          <FriendAction
-            mode={mode}
-            menu={menu}
-            dropdownVisible={dropdownVisible}
-            handleDropdownVisible={handleDropdownVisible}
-            handleTalkWindowOpen={handleTalkWindowOpen}
-          />
-          <MeAction mode={mode} itemId={itemId} />
-          <AddFriendAction
-            mode={mode}
-            friendRelation={friendRelation}
-            handleAddFriend={handleAddFriend}
-            isMe={isMe}
-          />
-          <RecommendedAction
-            mode={mode}
-            friendRelation={friendRelation}
-            handleAddFriend={handleAddFriend}
-          />
-        </>
-      )}
+      <FriendAction
+        mode={mode}
+        menu={menu}
+        dropdownVisible={dropdownVisible}
+        handleDropdownVisible={handleDropdownVisible}
+      />
+      <AllAction itemId={itemId} />
     </>
   ),
-);
-
-const TextComponent = React.memo(
-  ({ displayName, fullCompanyJob, mode, orgName, position }) => {
-    const fullDisplayName = (() => {
-      switch (mode) {
-        // friends LNB
-        case 'me':
-        case 'friend': {
-          const fullCompanyJobTxt = fullCompanyJob ? `(${fullCompanyJob})` : '';
-          return `${displayName} ${fullCompanyJobTxt}`;
-        }
-        case 'addFriend': // organization
-          if (orgName && position) {
-            return `${displayName} (${orgName}·${position})`;
-          }
-          return displayName;
-        default:
-          return displayName;
-      }
-    })();
-
-    return (
-      <TextComponentBox>
-        {mode === 'me' && (
-          <MeWrapper>
-            <img src={mySign} alt="me" />
-          </MeWrapper>
-        )}
-        <TitleForName>{fullDisplayName}</TitleForName>
-      </TextComponentBox>
-    );
-  },
 );
 
 /**
  * A friend item component to use in the list view.
  * @param {Object} props
- * @param {('me'|'friend'|'readOnly'|'addFriend'|'recommended')} props.mode
+ * @param {('me'|'friend')} props.mode
  * @param {function} props.tooltipPopupContainer
  * @param {UserModel} props.friendInfo
  */
 const FriendItem = observer(
   ({
-    mode = 'friend', // 'me', 'friend' // 추후: 'readOnly', 'addFriend', 'recommended'
+    mode = 'friend', // 'me', 'friend'
     isActive = false,
     onClick,
-    tooltipPopupContainer = () => document.body,
     friendInfo,
-    style,
-    openToast,
-    setToastText,
-    setSelectedId,
-    toggleInfoModal,
-    setyPosition,
+    handleOpenToast,
+    handleToastText,
+    handleSelectedId,
+    handleInfoModalVisible,
   }) => {
     const { t } = useTranslation();
     const {
@@ -263,8 +209,6 @@ const FriendItem = observer(
       friendFavorite = false,
       friendId = '',
       id: userId = '',
-      orgName,
-      position,
       profileStatusMsg,
     } = friendInfo;
     const fullCompanyJob = friendInfo.getFullCompanyJob();
@@ -287,7 +231,6 @@ const FriendItem = observer(
 
     const myUserId = userStore.myProfile.id;
     const itemId = friendId || userId;
-    const isMe = itemId === myUserId;
     const isNewFriend = handleCheckNewFriend(friendInfo);
 
     const findRoomInfo = async () => {
@@ -354,166 +297,136 @@ const FriendItem = observer(
     });
     const isDndHover = canDrop && isOver;
 
-    const handleCloseDndDialog = () => {
-      setDndDialogVisible(false);
-    };
-
     const handleSelectPhoto = (e, id = '') => {
-      setyPosition(e.clientY);
       if (e) e.stopPropagation();
       if (id) {
-        setSelectedId(id);
-        toggleInfoModal(true);
-      } else {
-        toggleInfoModal(false);
+        handleSelectedId(id);
+        handleInfoModalVisible(true);
       }
     };
 
-    const talkWindowOpen = usePortalWindow();
+    // const talkWindowOpen = usePortalWindow();
 
-    const handleTalkWindowOpen = async e => {
-      if (e) e.stopPropagation();
-      try {
-        const targetId = friendInfo.friendId || myUserId;
-        const { roomInfo } = await roomStore.getDMRoom(myUserId, targetId);
+    // const handleTalkWindowOpen = async e => {
+    //   if (e) e.stopPropagation();
+    //   try {
+    //     const targetId = friendInfo.friendId || myUserId;
+    //     const { roomInfo } = await roomStore.getDMRoom(myUserId, targetId);
 
-        if (roomInfo) {
-          if (!roomInfo.isVisible) {
-            await roomStore.updateRoomMemberSetting({
-              roomId: roomInfo.id,
-              myUserId,
-              newIsVisible: true,
-            });
-          }
-          talkWindowOpen({
-            element: (
-              <Talk
-                roomId={roomInfo.id}
-                channelId={
-                  roomStore
-                    .getRoomMap()
-                    .get(roomInfo.id)
-                    ?.channelList?.find(channel => channel.type === 'CHN0001')
-                    ?.id
-                }
-              />
-            ),
-            opts: 'width=600, height=900',
-            title: 'mini-talk',
-          });
-        } else {
-          const { dmRoomId } = await roomStore.createRoom({
-            creatorId: myUserId,
-            userList:
-              myUserId === targetId
-                ? [{ userId: myUserId }]
-                : [{ userId: myUserId }, { userId: targetId }],
-          });
-          talkWindowOpen({
-            element: (
-              <Talk
-                roomId={dmRoomId}
-                channelId={
-                  roomStore
-                    .getRoomMap()
-                    .get(dmRoomId)
-                    ?.channelList?.find(channel => channel.type === 'CHN0001')
-                    ?.id
-                }
-              />
-            ),
-            opts: 'width=600, height=900',
-            title: 'mini-talk',
-          });
-        }
-      } catch (e) {
-        console.error(`Error is${e}`);
-      }
-    };
+    //     if (roomInfo) {
+    //       if (!roomInfo.isVisible) {
+    //         await roomStore.updateRoomMemberSetting({
+    //           roomId: roomInfo.id,
+    //           myUserId,
+    //           newIsVisible: true,
+    //         });
+    //       }
+    //       talkWindowOpen({
+    //         element: (
+    //           <Talk
+    //             roomId={roomInfo.id}
+    //             channelId={
+    //               roomStore
+    //                 .getRoomMap()
+    //                 .get(roomInfo.id)
+    //                 ?.channelList?.find(channel => channel.type === 'CHN0001')
+    //                 ?.id
+    //             }
+    //           />
+    //         ),
+    //         opts: 'width=600, height=900',
+    //         title: 'mini-talk',
+    //       });
+    //     } else {
+    //       const { dmRoomId } = await roomStore.createRoom({
+    //         creatorId: myUserId,
+    //         userList:
+    //           myUserId === targetId
+    //             ? [{ userId: myUserId }]
+    //             : [{ userId: myUserId }, { userId: targetId }],
+    //       });
+    //       talkWindowOpen({
+    //         element: (
+    //           <Talk
+    //             roomId={dmRoomId}
+    //             channelId={
+    //               roomStore
+    //                 .getRoomMap()
+    //                 .get(dmRoomId)
+    //                 ?.channelList?.find(channel => channel.type === 'CHN0001')
+    //                 ?.id
+    //             }
+    //           />
+    //         ),
+    //         opts: 'width=600, height=900',
+    //         title: 'mini-talk',
+    //       });
+    //     }
+    //   } catch (e) {
+    //     console.error(`Error is${e}`);
+    //   }
+    // };
 
     const handleDropdownVisible = useCallback(visible => {
       setDropdownVisible(visible);
+      if (!visible)
+        document
+          .getElementById('lnb__friend-container')
+          .removeEventListener('wheel', disableScroll);
     }, []);
 
-    const handleAddBookmark = useCallback(
-      async ({ domEvent: e }) => {
-        e.stopPropagation();
-        try {
-          await friendStore.setFriendFavorite({
-            myUserId,
-            friendId: itemId,
-            isFav: true,
-          });
-        } catch (error) {
-          console.log(error);
-        }
-        setDropdownVisible(false);
-        setToastText(t('CM_BOOKMARK_03'));
-        openToast();
-      },
-      [friendStore, itemId, setToastText, openToast, myUserId],
-    );
-
-    const handleCancelBookmark = useCallback(
-      async ({ domEvent: e }) => {
-        e.stopPropagation();
+    const handleAddBookmark = async ({ domEvent: e }) => {
+      e.stopPropagation();
+      try {
         await friendStore.setFriendFavorite({
           myUserId,
           friendId: itemId,
-          isFav: false,
+          isFav: true,
         });
-        setToastText(t('CM_BOOKMARK_02'));
-        setDropdownVisible(false);
-        openToast();
-      },
-      [friendStore, myUserId, itemId, setToastText, openToast],
-    );
+      } catch (error) {
+        console.log(error);
+      }
+      handleToastText(t('CM_BOOKMARK_03'));
+      handleOpenToast();
+    };
 
-    const handleMoveItem = useCallback(
-      targetId => {
-        if (onClick) onClick(targetId);
-        if (mode === 'me' || mode === 'friend') {
-          history.push({
-            pathname: `/f/${targetId}/profile`,
-            search: null,
-          });
-        }
-      },
-      [onClick, mode, history],
-    );
-
-    const handleItemClick = useCallback(
-      e => {
-        if (e) e.stopPropagation();
-        handleMoveItem(itemId);
-      },
-      [itemId, handleMoveItem],
-    );
-
-    const handleRemoveFriend = useCallback(
-      async e => {
-        e.stopPropagation();
-        setVisibleRemoveFriendMessage(false);
-        await friendStore.deleteFriend({
-          myUserId,
-          friendId: itemId,
-        });
-        if (isActive) handleMoveItem(myUserId);
-      },
-      [friendStore, myUserId, itemId, isActive, handleMoveItem],
-    );
-
-    const handleAddFriend = () => {
-      friendStore.addFriend({
+    const handleCancelBookmark = async ({ domEvent: e }) => {
+      e.stopPropagation();
+      await friendStore.setFriendFavorite({
         myUserId,
-        friendInfo,
+        friendId: itemId,
+        isFav: false,
+      });
+      handleToastText(t('CM_BOOKMARK_02'));
+      handleOpenToast();
+    };
+
+    const handleMoveItem = targetId => {
+      if (onClick) onClick(targetId);
+      history.push({
+        pathname: `/f/${targetId}/profile`,
+        search: null,
       });
     };
 
+    const handleItemClick = e => {
+      if (e) e.stopPropagation();
+      handleMoveItem(itemId);
+    };
+
+    const handleRemoveFriend = async e => {
+      e.stopPropagation();
+      setVisibleRemoveFriendMessage(false);
+      await friendStore.deleteFriend({
+        myUserId,
+        friendId: itemId,
+      });
+      if (isActive) handleMoveItem(myUserId);
+    };
+
     const getRemoveFriendMessageTitle = () => {
-      const fullName = fullCompanyJob
-        ? `${displayName}(${fullCompanyJob})`
-        : displayName;
+      const fullCompanyJobTxt = fullCompanyJob ? `(${fullCompanyJob})` : '';
+      const fullName = `${displayName} ${fullCompanyJobTxt}`;
 
       return t('CM_DEL_FRIENDS_01', {
         name: fullName,
@@ -534,16 +447,13 @@ const FriendItem = observer(
     return (
       <Wrapper ref={drop}>
         <FriendItemWrapper
-          style={style}
           onClick={handleItemClick}
           isActive={isActive}
           isDndHover={isDndHover}
           mode={mode}
           className="friends__item"
         >
-          <Profile
-            mode={mode}
-            tooltipPopupContainer={tooltipPopupContainer}
+          <ProfilePhoto
             profilePhoto={userStore.getProfilePhotoURL(itemId, 'small')}
             itemId={itemId}
             handleClickPhoto={handleSelectPhoto}
@@ -553,8 +463,6 @@ const FriendItem = observer(
               displayName={displayName}
               fullCompanyJob={fullCompanyJob}
               mode={mode}
-              orgName={orgName}
-              position={position}
             />
             {profileStatusMsg && <TextStatus>{profileStatusMsg}</TextStatus>}
           </TextWrapper>
@@ -577,41 +485,36 @@ const FriendItem = observer(
               }
               dropdownVisible={dropdownVisible}
               handleDropdownVisible={handleDropdownVisible}
-              handleTalkWindowOpen={handleTalkWindowOpen}
-              friendRelation={friendStore.checkAlreadyFriend({
-                userId: itemId,
-              })}
-              handleAddFriend={handleAddFriend}
-              isMe={isMe}
               itemId={itemId}
             />
-            {mode === 'addFriend' && isMe && <span>{t('CM_MY_ACCOUNT')}</span>}
           </ActionWrapper>
         </FriendItemWrapper>
-        <Message
-          visible={visibleRemoveFriendMessage}
-          title={getRemoveFriendMessageTitle()}
-          type="error"
-          btns={[
-            {
-              text: t('CM_DEL'),
-              type: 'solid',
-              onClick: handleRemoveFriend,
-            },
-            {
-              text: t('CM_CANCEL'),
-              type: 'outlined',
-              onClick: handleRemoveFriendMessageClose,
-            },
-          ]}
-        />
+        {visibleRemoveFriendMessage && (
+          <Message
+            visible={visibleRemoveFriendMessage}
+            title={getRemoveFriendMessageTitle()}
+            type="error"
+            btns={[
+              {
+                text: t('CM_DEL'),
+                type: 'solid',
+                onClick: handleRemoveFriend,
+              },
+              {
+                text: t('CM_CANCEL'),
+                type: 'outlined',
+                onClick: handleRemoveFriendMessageClose,
+              },
+            ]}
+          />
+        )}
         {isDndDialogVisible && (
           <FileDndDialog
             visible={isDndDialogVisible}
             target="Platform:Friend"
             fileList={dndTargetFiles}
             findRoom={findRoomInfo}
-            onClose={handleCloseDndDialog}
+            onClose={() => setDndDialogVisible(false)}
           />
         )}
       </Wrapper>
