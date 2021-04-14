@@ -53,7 +53,13 @@ const MainProfile = observer(({ userId = null }) => {
   const history = useHistory();
   const { t } = useTranslation();
 
-  const { userStore, friendStore, authStore, roomStore } = useCoreStores();
+  const {
+    userStore,
+    friendStore,
+    authStore,
+    roomStore,
+    configStore,
+  } = useCoreStores();
   const [isEditMode, setEditMode] = useState(false);
   const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
   const [toastText, setToastText] = useState('');
@@ -331,28 +337,32 @@ const MainProfile = observer(({ userId = null }) => {
               {isMyId() ? t('CM_MY_TALK_13') : `1:1 ${t('CM_TALK')}`}
             </Text>
           </StyledButton>
-          {isMyId() ? (
-            <StyledButton
-              className="profile__edit-button"
-              onClick={handleChangetoEditMode}
-            >
-              <StyleIcon iconimg="profile" />
-              <Text>{t('CM_EDIT_PROFILE')}</Text>
-            </StyledButton>
-          ) : (
-            <StyledButton
-              className="profile__meeting-button"
-              onClick={handleMeetingClick}
-              disabled={isDisabled()}
-            >
-              <MeetingIcon
-                width={1.88}
-                height={1.88}
-                color={isDisabled() ? '#646464' : '#fff'}
-              />
-              <Text style={{ marginTop: '0.5rem' }}>1:1 Meeting</Text>
-            </StyledButton>
-          )}
+
+          {
+            // eslint-disable-next-line no-nested-ternary
+            isMyId() ? (
+              <StyledButton
+                className="profile__edit-button"
+                onClick={handleChangetoEditMode}
+              >
+                <StyleIcon iconimg="profile" />
+                <Text>{t('CM_EDIT_PROFILE')}</Text>
+              </StyledButton>
+            ) : configStore.isActivateForCNU('Meeting') ? (
+              <StyledButton
+                className="profile__meeting-button"
+                onClick={handleMeetingClick}
+                disabled={isDisabled()}
+              >
+                <MeetingIcon
+                  width={1.88}
+                  height={1.88}
+                  color={isDisabled() ? '#646464' : '#fff'}
+                />
+                <Text style={{ marginTop: '0.5rem' }}>1:1 Meeting</Text>
+              </StyledButton>
+            ) : null
+          }
         </Sidebar>
 
         <Content>

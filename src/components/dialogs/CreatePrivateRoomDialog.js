@@ -13,7 +13,7 @@ import {
 import Input from '../Input';
 
 const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
-  const { userStore } = useCoreStores();
+  const { userStore, configStore } = useCoreStores();
   const { t } = useTranslation();
 
   const initialOptions = {
@@ -106,15 +106,18 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
             placeholder={t('CM_B2B_CREATE_ROOM_POPUP_FRIENDS_08')}
             disabled={selectedUsers.length < 2 || !options.isChangeName}
           />
-
-          <ConfigTitle>
-            <Checkbox
-              className="check-round"
-              checked={options.isStartMeeting}
-              onChange={handleStartMeetingChange}
-            />
-            <ConfigTitleText>{t('CM_CREATE_PRIVATE_ROOM_04')}</ConfigTitleText>
-          </ConfigTitle>
+          {configStore.isActivateForCNU('Meeting') ? (
+            <ConfigTitle>
+              <Checkbox
+                className="check-round"
+                checked={options.isStartMeeting}
+                onChange={handleStartMeetingChange}
+              />
+              <ConfigTitleText>
+                {t('CM_CREATE_PRIVATE_ROOM_04')}
+              </ConfigTitleText>
+            </ConfigTitle>
+          ) : null}
         </ConfigWrapper>
 
         <ButtonContainer>
