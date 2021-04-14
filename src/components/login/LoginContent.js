@@ -96,6 +96,8 @@ const LoginContent = () => {
         domainUrl: values.domain, //  localhost용 domain= "test-8sh1"
         isLocal: process.env.REACT_APP_ENV,
         deviceType: 'PC',
+        ssoType:
+          window?.env?.REACT_APP_SSO_TYPE || process.env.REACT_APP_SSO_TYPE,
       });
       if (res.id) {
         history.push(`/f/${authStore.user.id}`);
