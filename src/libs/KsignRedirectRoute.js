@@ -155,14 +155,10 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
               const getRoutingPath = Cookies.get('routingPath');
               console.log('#############', getRoutingPath);
               if (res) {
-                if (stateFrom) {
-                  history.push(
-                    `${stateFrom.pathname}${props.location.state?.from.search}`,
-                  );
-                }
+              
 
                 if (window.location.pathname.includes('/mobile')) {
-                  const exceptMobilePath = getRoutingPath.replace(
+                  const exceptMobilePath = getRoutingPath?.replace(
                     '/mobile',
                     '',
                   );
@@ -173,6 +169,12 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
                   }
                 } else {
                   history.push(`/f/${authStore.user.id}/profile`);
+                }
+
+                if (stateFrom) {
+                  history.push(
+                    `${stateFrom.pathname}${props.location.state?.from.search}`,
+                  );
                 }
               }
             }
