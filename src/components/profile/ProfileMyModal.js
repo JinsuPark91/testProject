@@ -264,10 +264,15 @@ const ProfileMyModal = ({
         <Button type="link" onClick={toggleEditMode}>
           {t('CM_EDIT_PROFILE')}
         </Button>
-        <UserBar />
-        <Button type="link" onClick={handleMoveAccountPage}>
-          {t('CM_PROFILE_MENU_08')}
-        </Button>
+
+        {configStore.isActivateComponent('Platform', 'ChangePassword') ? (
+          <>
+            <UserBar />
+            <Button type="link" onClick={handleMoveAccountPage}>
+              {t('CM_PROFILE_MENU_08')}
+            </Button>
+          </>
+        ) : null}
       </UserButtonBox>
       <LogoutButton onClick={handleLogout}>{t('CM_LOGOUT_01')}</LogoutButton>
     </>
