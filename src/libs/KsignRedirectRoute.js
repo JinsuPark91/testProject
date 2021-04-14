@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Route, useHistory } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
-import wwms from './wwms';
 import Cookies from 'js-cookie';
-import { Loader } from '../page/MainPageStyle';
-import LoadingImg from '../assets/WAPL_Loading.gif';
+import wwms from './wwms';
 
 export default function KsignRedirectRoute({ component: Component, ...rest }) {
   const { authStore } = useCoreStores();
@@ -34,12 +32,14 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
   let loginInfo;
   if (window.location.pathname.includes('/mobile')) {
     loginInfo = {
-      //ksign 용 로그인 input
+      // ksign 용 로그인 input
       deviceType: 'Mobile',
       // domainUrl: '',
       // deviceId: getDeviceId,
       // id: getLoginId,
       authorizeType: 'Ksign',
+      ssoType:
+        process.env.REACT_APP_SSO_TYPE || window?.env?.REACT_APP_SSO_TYPE,
     };
   } else {
     loginInfo = {
@@ -47,6 +47,8 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
       deviceType: 'PC',
       // id: getLoginId,
       authorizeType: 'Ksign',
+      ssoType:
+        process.env.REACT_APP_SSO_TYPE || window?.env?.REACT_APP_SSO_TYPE,
     };
   }
 
