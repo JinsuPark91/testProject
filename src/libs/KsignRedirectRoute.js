@@ -39,7 +39,7 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
       // id: getLoginId,
       authorizeType: 'Ksign',
       ssoType:
-        process.env.REACT_APP_SSO_TYPE || window?.env?.REACT_APP_SSO_TYPE,
+        window?.env?.REACT_APP_SSO_TYPE || process?.env?.REACT_APP_SSO_TYPE,
     };
   } else {
     loginInfo = {
@@ -48,7 +48,7 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
       // id: getLoginId,
       authorizeType: 'Ksign',
       ssoType:
-        process.env.REACT_APP_SSO_TYPE || window?.env?.REACT_APP_SSO_TYPE,
+        window?.env?.REACT_APP_SSO_TYPE || process?.env?.REACT_APP_SSO_TYPE,
     };
   }
 
@@ -161,20 +161,18 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
                       `${stateFrom.pathname}${props.location.state?.from.search}`,
                     );
                   }
-                } else {
-                  if (window.location.pathname.includes('/mobile')) {
-                    const exceptMobilePath = getRoutingPath?.replace(
-                      '/mobile',
-                      '',
-                    );
-                    if (exceptMobilePath.includes('login')) {
-                      history.push(`/friend`);
-                    } else {
-                      history.push(exceptMobilePath);
-                    }
+                } else if (window.location.pathname.includes('/mobile')) {
+                  const exceptMobilePath = getRoutingPath?.replace(
+                    '/mobile',
+                    '',
+                  );
+                  if (exceptMobilePath.includes('login')) {
+                    history.push(`/friend`);
                   } else {
-                    history.push(`/f/${authStore.user.id}/profile`);
+                    history.push(exceptMobilePath);
                   }
+                } else {
+                  history.push(`/f/${authStore.user.id}/profile`);
                 }
               }
             }
