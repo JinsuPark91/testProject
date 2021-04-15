@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { Menu, Dropdown } from 'antd';
-import { getProfileEditDto } from '../../../utils/ProfileUtil';
+import { updateMyProfile } from '../../../utils/ProfileUtil';
 import {
   InnerItem,
   Name,
@@ -27,17 +27,15 @@ const SettingDialogPhoto = observer(() => {
   };
 
   const handleChangePhoto = async file => {
-    const updatedInfo = getProfileEditDto({
+    await updateMyProfile({
       thumbFile: file,
     });
-    await userStore.updateMyProfile({ updatedInfo });
     setIsDisabled(false);
   };
   const handleChangeToDefaultPhoto = async () => {
-    const updatedInfo = getProfileEditDto({
+    await updateMyProfile({
       thumbFile: null,
     });
-    await userStore.updateMyProfile({ updatedInfo });
     setIsDisabled(true);
   };
 

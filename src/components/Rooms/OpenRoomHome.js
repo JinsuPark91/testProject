@@ -283,8 +283,10 @@ function OpenRoomHome({ visible, onCancel }) {
       .getOpenRoomArray()
       .filter(
         roomInfo =>
-          roomInfo.name.includes(searchKeyword) ||
-          roomInfo.adminName.includes(searchKeyword),
+          roomInfo.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+          roomInfo.adminName
+            .toLowerCase()
+            .includes(searchKeyword.toLowerCase()),
       );
 
     if (rooms.length) {

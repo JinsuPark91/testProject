@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from 'antd';
 import { Input, useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
-import { getProfileEditDto } from '../../../utils/ProfileUtil';
+import { updateMyProfile } from '../../../utils/ProfileUtil';
 import {
   InnerItem,
   Name,
@@ -19,9 +19,8 @@ const SettingDialogBirthDate = () => {
   const [isBirthDateEdit, setIsBirthDateEdit] = useState(false);
 
   const handleChangeBirthDate = async () => {
-    const updateInfo = getProfileEditDto({ birthDate });
     try {
-      await userStore.updateMyProfile(updateInfo);
+      await updateMyProfile({ birthDate });
       setIsBirthDateEdit(false);
     } catch (e) {
       console.log(`changeBirthDay Error is ${e}`);

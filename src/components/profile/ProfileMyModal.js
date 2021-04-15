@@ -8,28 +8,28 @@ import {
   ProfileInfoModal,
   ProfileModal,
   logEvent,
+  AddFriendsByInvitationDialog,
+  AddFriendsBySearch,
 } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import { useObserver, Observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
 import i18next from '../../i18n';
 import PlatformUIStore from '../../stores/PlatformUIStore';
-import SettingDialog from '../usersettings/SettingDialog';
 import ProfileSpaceModal from './ProfileSpaceModal';
-import convertSpaceIcon from '../../assets/convert_space.svg';
-import moreSpaceIcon from '../../assets/view_more.svg';
-import { ReactComponent as SquareSpaceIcon } from '../../assets/card_view.svg';
-import LanguageIcon from '../../assets/language.svg';
-import AddFriendsByInvitationDialog from '../addfriends/AddFriendsByInvitationDialog';
-import AddFriendsBySearch from '../addfriends/AddFriendsBySearch';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
 import SpaceEditModal from './SpaceEditModal';
+import SettingDialog from '../usersettings/SettingDialog';
 import MovePage from '../../utils/MovePage';
 import { SELECTED_TAB } from '../usersettings/SettingConstants';
 import { getMainWaplURL } from '../../utils/UrlUtil';
 import { handleFriendsDialogType } from '../../utils/FriendsUtil';
 import { isSpaceAdmin, isNewSpaceMessageExist } from '../../utils/GeneralUtil';
 import { ArrowRightIcon } from '../Icons';
+import convertSpaceIcon from '../../assets/convert_space.svg';
+import moreSpaceIcon from '../../assets/view_more.svg';
+import { ReactComponent as SquareSpaceIcon } from '../../assets/card_view.svg';
+import LanguageIcon from '../../assets/language.svg';
 
 const ProfileMyModal = ({
   userId,
@@ -44,7 +44,6 @@ const ProfileMyModal = ({
   const history = useHistory();
   const [isCreated, setIsCreated] = useState(created);
   const [profile, setProfile] = useState(null);
-  const [itemKey, setItemKey] = useState(SELECTED_TAB.GENERAL);
   const [settingDialogVisible, setSettingDialogVisible] = useState(false);
   const [spaceListVisible, setSpaceListVisible] = useState(false);
   const [moreMenuDropDownVisible, setMoreMenuDropDownVisible] = useState(false);
@@ -72,14 +71,12 @@ const ProfileMyModal = ({
 
   // eslint-disable-next-line no-unused-vars
   const handleSettingDialogOpen = useCallback(e => {
-    setItemKey(e);
     setIsCreated(false);
     setSettingDialogVisible(true);
     setSpaceListVisible(false);
   }, []);
 
   const handleCloseSettingDialog = useCallback(() => {
-    setItemKey(SELECTED_TAB.ALARM);
     setSettingDialogVisible(false);
   }, []);
 
@@ -427,22 +424,20 @@ const ProfileMyModal = ({
           onClose={() => setIsCreated(false)}
         />
       )}
-      <SettingDialog
-        selectedKeyA={itemKey}
-        visible={settingDialogVisible}
-        onCancel={handleCloseSettingDialog}
-      />
+      {settingDialogVisible && (
+        <SettingDialog
+          visible={settingDialogVisible}
+          onCancel={handleCloseSettingDialog}
+        />
+      )}
       {isInviteDialogOpen && (
         <AddFriendsByInvitationDialog
-          visible
+          visible={isInviteDialogOpen}
           onCancel={handleCancelInviteMail}
         />
       )}
       {isFriendMemViewOpen && (
         <AddFriendsBySearch
-          title={modalTitle}
-          isOrgExist={isOrgExist}
-          spaceMemberList={spaceMemberList}
           isViewMode={isViewMode}
           onCancelAddFriends={() => setIsFriendMemViewOpen(false)}
         />
@@ -603,7 +598,6 @@ const UserButtonBox = styled.div`
     }
   }
 `;
-// eslint-disable-next-line no-unused-vars
 const UserBar = styled.span`
   display: inline-block;
   width: 1px;
@@ -925,7 +919,6 @@ const UserSettingArea = styled.div`
 const SettingButton = styled(Button)`
   min-width: 4.375rem;
 `;
-// eslint-disable-next-line no-unused-vars
 const SettingBar = styled.span`
   display: inline-block;
   width: 0.1875rem;

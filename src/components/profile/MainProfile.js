@@ -10,7 +10,7 @@ import {
   handleProfileMenuClick,
   getCompanyNumber,
   getMobileNumber,
-  getProfileEditDto,
+  updateMyProfile,
 } from '../../utils/ProfileUtil';
 import {
   Wrapper,
@@ -247,7 +247,7 @@ const MainProfile = observer(({ userId = null }) => {
       URL.revokeObjectURL(localBackgroundPhoto);
     } else if (localBackgroundPhoto === null) backgroundFile = null;
 
-    const updatedInfo = getProfileEditDto({
+    await updateMyProfile({
       nick,
       companyNum,
       phone,
@@ -255,24 +255,6 @@ const MainProfile = observer(({ userId = null }) => {
       thumbFile,
       backgroundFile,
     });
-
-    // // default photo가 아닌 프로필 사진으로 변경을 시도한 경우
-    // if (localProfilePhoto?.includes('blob:')) {
-    //   // const blobImage = await toBlob(localProfilePhoto);
-    //   // const base64Image = await toBase64(blobImage);
-    //   updatedInfo.profilePhoto = null; // base64Image
-    //   updatedInfo.profileFile = changedProfilePhotoFile;
-    //   updatedInfo.profileName = changedProfilePhotoFile?.name;
-    //   URL.revokeObjectURL(localProfilePhoto);
-    // } else {
-    //   // default photo로 변경 시도 혹은 변경 없는 경우
-    //   // The null value means default photo
-    //   updatedInfo.profilePhoto =
-    //     localProfilePhoto === null ? localProfilePhoto : getProfilePhoto();
-    //   updatedInfo.profileFile = null;
-    //   updatedInfo.profileName = null;
-    // }
-    await userStore.updateMyProfile({ updatedInfo });
 
     resetLocalInputData();
     setIsChange(false);
