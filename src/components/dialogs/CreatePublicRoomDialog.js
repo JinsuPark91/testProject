@@ -13,7 +13,7 @@ import {
 import Input from '../Input';
 
 const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
-  const { userStore } = useCoreStores();
+  const { userStore, configStore } = useCoreStores();
   const initialStates = {
     step: 0,
     roomName: '',
@@ -147,16 +147,18 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
             defaultSelectedUsers={[userStore.myProfile]}
             height={25} // rem
           />
-          <ConfigWrapper>
-            <Checkbox
-              className="check-round"
-              checked={isStartMeeting}
-              onChange={handleStartMeetingChange}
-            />
-            <Title onClick={handleToggle} style={{ marginLeft: '0.38rem' }}>
-              {t('CM_CREATE_PRIVATE_ROOM_04')}
-            </Title>
-          </ConfigWrapper>
+          {configStore.isActivateForCNU('Meeting') ? (
+            <ConfigWrapper>
+              <Checkbox
+                className="check-round"
+                checked={isStartMeeting}
+                onChange={handleStartMeetingChange}
+              />
+              <Title onClick={handleToggle} style={{ marginLeft: '0.38rem' }}>
+                {t('CM_CREATE_PRIVATE_ROOM_04')}
+              </Title>
+            </ConfigWrapper>
+          ) : null}
           <ButtonContainer>
             {selectedUsers.length ? (
               <>

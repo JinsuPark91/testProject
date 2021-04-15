@@ -21,7 +21,7 @@ import {
 
 const ContentAlarm = () => {
   const { t } = useTranslation();
-  const { spaceStore } = useCoreStores();
+  const { spaceStore, configStore } = useCoreStores();
   const [isLoading, setIsLoading] = useState(true);
   const [isAlarmChecked, setIsAlarmChecked] = useState(true);
   const [isSoundChecked, setIsSoundChecked] = useState(true);
@@ -260,52 +260,56 @@ const ContentAlarm = () => {
                   onChange={handleMention}
                 />
               </FormItem>
-              <FormItem>
-                <ItemInfo>
-                  <ItemTitle htmlFor="Meetingtoggle">
-                    {t('CM_SETTING_NOTI_08')}
-                  </ItemTitle>
-                  {isMeetingNoticeChecked && (
-                    <ItemSub>
-                      <Checkbox
-                        checked={isMeetingStartChecked}
-                        onChange={handleMeetingStart}
-                        shape="round"
-                      >
-                        {t('CM_SETTING_NOTI_09')}
-                      </Checkbox>
-                      <Checkbox
-                        checked={isMeetingEndChecked}
-                        onChange={handleMeetingEnd}
-                        shape="round"
-                      >
-                        {t('CM_SETTING_NOTI_10')}
-                      </Checkbox>
-                    </ItemSub>
-                  )}
-                </ItemInfo>
-                <Switch
-                  id="Meetingtoggle"
-                  defaultChecked={isMeetingNoticeChecked}
-                  onChange={handleMeetingNotice}
-                />
-              </FormItem>
-              <FormItem>
-                <ItemInfo>
-                  <ItemTitle htmlFor="Newlettertoggle">
-                    {t('CM_SETTING_NOTI_07')}
-                  </ItemTitle>
-                  {isBasicPlan && (
-                    <ItemSub isMail>{t('CM_SETTING_NOTI')}</ItemSub>
-                  )}
-                </ItemInfo>
-                <Switch
-                  id="Newlettertoggle"
-                  defaultChecked={isMailNoticeChecked}
-                  onChange={handleMailNotice}
-                  disabled={isBasicPlan}
-                />
-              </FormItem>
+              {configStore.isActivateForCNU('Meeting') ? (
+                <FormItem>
+                  <ItemInfo>
+                    <ItemTitle htmlFor="Meetingtoggle">
+                      {t('CM_SETTING_NOTI_08')}
+                    </ItemTitle>
+                    {isMeetingNoticeChecked && (
+                      <ItemSub>
+                        <Checkbox
+                          checked={isMeetingStartChecked}
+                          onChange={handleMeetingStart}
+                          shape="round"
+                        >
+                          {t('CM_SETTING_NOTI_09')}
+                        </Checkbox>
+                        <Checkbox
+                          checked={isMeetingEndChecked}
+                          onChange={handleMeetingEnd}
+                          shape="round"
+                        >
+                          {t('CM_SETTING_NOTI_10')}
+                        </Checkbox>
+                      </ItemSub>
+                    )}
+                  </ItemInfo>
+                  <Switch
+                    id="Meetingtoggle"
+                    defaultChecked={isMeetingNoticeChecked}
+                    onChange={handleMeetingNotice}
+                  />
+                </FormItem>
+              ) : null}
+              {configStore.isActivateForCNU('Mail') ? (
+                <FormItem>
+                  <ItemInfo>
+                    <ItemTitle htmlFor="Newlettertoggle">
+                      {t('CM_SETTING_NOTI_07')}
+                    </ItemTitle>
+                    {isBasicPlan && (
+                      <ItemSub isMail>{t('CM_SETTING_NOTI')}</ItemSub>
+                    )}
+                  </ItemInfo>
+                  <Switch
+                    id="Newlettertoggle"
+                    defaultChecked={isMailNoticeChecked}
+                    onChange={handleMailNotice}
+                    disabled={isBasicPlan}
+                  />
+                </FormItem>
+              ) : null}
               <FormItem>
                 <ItemInfo>
                   <ItemTitleBlack htmlFor="scheduletoggle">

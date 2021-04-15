@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer, Observer } from 'mobx-react';
 import { useCoreStores, logEvent } from 'teespace-core';
-import { MailSideView } from 'teespace-mail-app';
+import { MailSideView, MailStore } from 'teespace-mail-app';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'antd';
 import {
@@ -134,7 +134,11 @@ const LeftSide = observer(() => {
                 color="#4C535D"
               >
                 <IconWrapper className="lnb__icon-wrapper lnb__mail">
-                  <UnreadCount isVisible={false}>N</UnreadCount>
+                  <UnreadCount isVisible={MailStore.unreadTotalCount > 0}>
+                    {MailStore.unreadTotalCount > 99
+                      ? '99+'
+                      : MailStore.unreadTotalCount}
+                  </UnreadCount>
                   {PlatformUIStore.tabType === 'm' ? (
                     <MailActiveIcon width={1.5} height={1.5} />
                   ) : (

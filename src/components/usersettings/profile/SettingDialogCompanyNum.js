@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import { Button } from 'antd';
 import { Input, useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
-import {
-  getCompanyNumber,
-  getProfileEditDto,
-} from '../../../utils/ProfileUtil';
+import { getCompanyNumber, updateMyProfile } from '../../../utils/ProfileUtil';
 import {
   InnerItem,
   Name,
@@ -22,9 +19,8 @@ const SettingDialogCompanyNum = () => {
   const [isCompanyNumEdit, setIsCompanyNumEdit] = useState(false);
 
   const handleChangeCompanyNum = async () => {
-    const updateInfo = getProfileEditDto({ companyNum });
     try {
-      await userStore.updateMyProfile(updateInfo);
+      await updateMyProfile({ companyNum });
       setIsCompanyNumEdit(false);
     } catch (e) {
       console.log(`changeCompanyPhone Error is ${e}`);

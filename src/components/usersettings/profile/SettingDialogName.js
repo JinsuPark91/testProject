@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
-import { getProfileEditDto } from '../../../utils/ProfileUtil';
+import { updateMyProfile } from '../../../utils/ProfileUtil';
 import {
   InnerItem,
   Name,
@@ -20,9 +20,8 @@ const SettingDialogName = () => {
   const [isNameEdit, setIsNameEdit] = useState(false);
 
   const handleChangeName = async () => {
-    const updateInfo = getProfileEditDto({ name });
     try {
-      await userStore.updateMyProfile(updateInfo);
+      await updateMyProfile({ name });
       setIsNameEdit(false);
     } catch (e) {
       console.log(`changeName Error is ${e}`);

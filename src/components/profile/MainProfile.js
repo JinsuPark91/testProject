@@ -10,7 +10,7 @@ import {
   handleProfileMenuClick,
   getCompanyNumber,
   getMobileNumber,
-  getProfileEditDto,
+  updateMyProfile,
 } from '../../utils/ProfileUtil';
 import {
   Wrapper,
@@ -53,7 +53,13 @@ const MainProfile = observer(({ userId = null }) => {
   const history = useHistory();
   const { t } = useTranslation();
 
-  const { userStore, friendStore, authStore, roomStore } = useCoreStores();
+  const {
+    userStore,
+    friendStore,
+    authStore,
+    roomStore,
+    configStore,
+  } = useCoreStores();
   const [isEditMode, setEditMode] = useState(false);
   const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
   const [toastText, setToastText] = useState('');
@@ -241,7 +247,7 @@ const MainProfile = observer(({ userId = null }) => {
       URL.revokeObjectURL(localBackgroundPhoto);
     } else if (localBackgroundPhoto === null) backgroundFile = null;
 
-    const updatedInfo = getProfileEditDto({
+    await updateMyProfile({
       nick,
       companyNum,
       phone,
@@ -249,24 +255,6 @@ const MainProfile = observer(({ userId = null }) => {
       thumbFile,
       backgroundFile,
     });
-
-    // // default photo가 아닌 프로필 사진으로 변경을 시도한 경우
-    // if (localProfilePhoto?.includes('blob:')) {
-    //   // const blobImage = await toBlob(localProfilePhoto);
-    //   // const base64Image = await toBase64(blobImage);
-    //   updatedInfo.profilePhoto = null; // base64Image
-    //   updatedInfo.profileFile = changedProfilePhotoFile;
-    //   updatedInfo.profileName = changedProfilePhotoFile?.name;
-    //   URL.revokeObjectURL(localProfilePhoto);
-    // } else {
-    //   // default photo로 변경 시도 혹은 변경 없는 경우
-    //   // The null value means default photo
-    //   updatedInfo.profilePhoto =
-    //     localProfilePhoto === null ? localProfilePhoto : getProfilePhoto();
-    //   updatedInfo.profileFile = null;
-    //   updatedInfo.profileName = null;
-    // }
-    await userStore.updateMyProfile({ updatedInfo });
 
     resetLocalInputData();
     setIsChange(false);
@@ -331,28 +319,32 @@ const MainProfile = observer(({ userId = null }) => {
               {isMyId() ? t('CM_MY_TALK_13') : `1:1 ${t('CM_TALK')}`}
             </Text>
           </StyledButton>
-          {isMyId() ? (
-            <StyledButton
-              className="profile__edit-button"
-              onClick={handleChangetoEditMode}
-            >
-              <StyleIcon iconimg="profile" />
-              <Text>{t('CM_EDIT_PROFILE')}</Text>
-            </StyledButton>
-          ) : (
-            <StyledButton
-              className="profile__meeting-button"
-              onClick={handleMeetingClick}
-              disabled={isDisabled()}
-            >
-              <MeetingIcon
-                width={1.88}
-                height={1.88}
-                color={isDisabled() ? '#646464' : '#fff'}
-              />
-              <Text style={{ marginTop: '0.5rem' }}>1:1 Meeting</Text>
-            </StyledButton>
-          )}
+
+          {
+            // eslint-disable-next-line no-nested-ternary
+            isMyId() ? (
+              <StyledButton
+                className="profile__edit-button"
+                onClick={handleChangetoEditMode}
+              >
+                <StyleIcon iconimg="profile" />
+                <Text>{t('CM_EDIT_PROFILE')}</Text>
+              </StyledButton>
+            ) : configStore.isActivateForCNU('Meeting') ? (
+              <StyledButton
+                className="profile__meeting-button"
+                onClick={handleMeetingClick}
+                disabled={isDisabled()}
+              >
+                <MeetingIcon
+                  width={1.88}
+                  height={1.88}
+                  color={isDisabled() ? '#646464' : '#fff'}
+                />
+                <Text style={{ marginTop: '0.5rem' }}>1:1 Meeting</Text>
+              </StyledButton>
+            ) : null
+          }
         </Sidebar>
 
         <Content>

@@ -134,12 +134,13 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
 
     const existRoom = roomStore.getRoomMap().get(roomId);
     if (existRoom) {
-      const myUserId = userStore.myProfile.id;
-      await roomStore.updateRoomMemberSetting({
-        roomId,
-        myUserId,
-        newIsVisible: true,
-      });
+      // const myUserId = userStore.myProfile.id;
+      // await roomStore.updateRoomMemberSetting({
+      //   roomId,
+      //   myUserId,
+      //   newIsVisible: true,
+      // });
+      await roomStore.activateRoom({ roomId });
     }
 
     // NOTE. 룸 목록 컴포넌트에서 토스트를 띄우기 위해 전달

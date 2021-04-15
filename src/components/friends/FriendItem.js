@@ -238,11 +238,12 @@ const FriendItem = observer(
       try {
         if (roomInfo && roomInfo.isVisible) return roomInfo;
         if (roomInfo && !roomInfo.isVisible) {
-          await roomStore.updateRoomMemberSetting({
-            roomId: roomInfo.id,
-            myUserId,
-            newIsVisible: true,
-          });
+          await roomStore.activateRoom({ roomId: roomInfo.id });
+          // await roomStore.updateRoomMemberSetting({
+          //   roomId: roomInfo.id,
+          //   myUserId,
+          //   newIsVisible: true,
+          // });
           return roomInfo;
         }
 

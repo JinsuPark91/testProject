@@ -16,11 +16,12 @@ export const handleProfileMenuClick = async (
     }
     // 방은 있지만 룸리스트에 없는 경우 (나간경우)
     if (roomInfo && !roomInfo.isVisible) {
-      await RoomStore.updateRoomMemberSetting({
-        roomId: roomInfo.id,
-        myUserId,
-        newIsVisible: true,
-      });
+      await RoomStore.activateRoom({ roomId: roomInfo.id });
+      // await RoomStore.updateRoomMemberSetting({
+      //   roomId: roomInfo.id,
+      //   myUserId,
+      //   newIsVisible: true,
+      // });
       hiddenRoomFunction(roomInfo);
       return;
     }
@@ -114,7 +115,7 @@ export const getCompanyNumber = profile => {
   return getMobileNumber(profile, false);
 };
 
-export const getProfileEditDto = params => {
+export const updateMyProfile = async info => {
   const { myProfile } = UserStore;
   const {
     thumbFile,
@@ -126,52 +127,64 @@ export const getProfileEditDto = params => {
     phone,
     birthDate,
     profileStatusMsg,
-  } = params;
-  const obj = {};
-
+  } = info;
+  // legacy
   // 기본 이미지로 변경 profilePhoto, profileFile, profileName = null
   // 이미지 변경 없을 시 profileFile, profileName = null, profilePhoto = 경로
   // 이미지 변경시 profilePhoto = null, ProfileFile = fileChooser file, ProfileName = 파일 이름
-  if (thumbFile) {
-    obj.profilePhoto = null;
-    obj.profileFile = thumbFile;
-    obj.profileName = thumbFile.name;
-  } else if (thumbFile === undefined) {
-    obj.profilePhoto = UserStore.getProfilePhotoURL(myProfile.id, 'medium');
-    obj.profileFile = null;
-    obj.profileName = null;
-  } else {
-    obj.profilePhoto = null;
-    obj.profileFile = null;
-    obj.profileName = null;
+  //
+  let params;
+  let file;
+  let extension;
+  if (thumbFile !== undefined) {
+    if (thumbFile) {
+      const thumbFileName = thumbFile.name;
+      const thumbFileNameLength = thumbFileName.length;
+      const thumbFileLastDot = thumbFileName.lastIndexOf('.') + 1;
+      const thumbFileExtension = thumbFileName
+        .substring(thumbFileLastDot, thumbFileNameLength)
+        .toLowerCase();
+      file = thumbFile;
+      extension = thumbFileExtension;
+    } else if (thumbFile === null) {
+      file = null;
+      extension = 'default';
+    }
+    params = { type: 'profile', extension, file };
+    await UserStore.updateMyPhoto(params);
   }
 
-  if (backgroundFile) {
-    obj.backPhoto = null;
-    obj.backFile = backgroundFile;
-    obj.backName = backgroundFile.name;
-  } else if (backgroundFile === undefined) {
-    obj.backPhoto = UserStore.getBackgroundPhotoURL(myProfile.id);
-    obj.backFile = null;
-    obj.backName = null;
-  } else {
-    obj.backPhoto = null;
-    obj.backFile = null;
-    obj.backName = null;
+  if (backgroundFile !== undefined) {
+    if (backgroundFile) {
+      const backgroundFileName = backgroundFile.name;
+      const backgroundFileNameLength = backgroundFileName.length;
+      const backgroundFileLastDot = backgroundFileName.lastIndexOf('.') + 1;
+      const backgroundFileExtension = backgroundFileName
+        .substring(backgroundFileLastDot, backgroundFileNameLength)
+        .toLowerCase();
+      file = backgroundFile;
+      extension = backgroundFileExtension;
+    } else if (backgroundFile === null) {
+      file = null;
+      extension = 'default';
+    }
+    params = { type: 'background', extension, file };
+    await UserStore.updateMyPhoto(params);
   }
 
-  obj.name = name ?? myProfile.name;
+  const updatedInfo = {};
 
+  updatedInfo.name = name ?? myProfile.name;
   // 기획상 별명 빈칸으로 변경 시도하면 이름으로 변경되어야 함
-  if (nick === undefined) obj.nick = myProfile.displayName;
-  else if (nick === '') obj.nick = myProfile.name;
-  else obj.nick = nick;
+  if (nick === undefined) updatedInfo.nick = myProfile.displayName;
+  else if (nick === '') updatedInfo.nick = myProfile.name;
+  else updatedInfo.nick = nick;
 
-  obj.nationalCode = nationalCode ?? myProfile.nationalCode;
-  obj.companyNum = companyNum ?? myProfile.companyNum;
-  obj.phone = phone ?? myProfile.phone;
-  obj.birthDate = birthDate ?? myProfile.birthDate;
-  obj.profileStatusMsg = profileStatusMsg ?? myProfile.profileStatusMsg;
+  updatedInfo.nationalCode = nationalCode ?? myProfile.nationalCode;
+  updatedInfo.companyNum = companyNum ?? myProfile.companyNum;
+  updatedInfo.phone = phone ?? myProfile.phone;
+  updatedInfo.birthDate = birthDate ?? myProfile.birthDate;
+  updatedInfo.profileStatusMsg = profileStatusMsg ?? myProfile.profileStatusMsg;
 
-  return obj;
+  await UserStore.updateMyProfile(updatedInfo);
 };
