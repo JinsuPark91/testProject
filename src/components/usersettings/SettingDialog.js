@@ -103,10 +103,10 @@ const SettingDialog = ({ visible, onCancel }) => {
                 configStore.isActivateComponent(
                   'Platform',
                   'SpaceSecession',
-                )(
+                ) && (
                   <Menu.Item key="7">
                     {t('CM_SETTING_DELETE_SPACE_01')}
-                  </Menu.Item>,
+                  </Menu.Item>
                 )}
             </Menu.ItemGroup>
           </StyledMenu>
