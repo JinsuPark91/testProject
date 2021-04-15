@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Menu } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { useCoreStores } from 'teespace-core';
 import { SELECTED_TAB } from './SettingConstants';
 import {
   ContentCommon,
@@ -25,6 +26,8 @@ const SettingDialog = ({ visible, onCancel }) => {
   // 스페이스 탈퇴 관련
   const [isSecession, setIsSecession] = useState(false);
   const [inputPassword, setInputPassword] = useState('');
+
+  const { configStore } = useCoreStores();
 
   const handleCancel = () => {
     setSelectedKey(SELECTED_TAB.ALARM);
@@ -95,9 +98,16 @@ const SettingDialog = ({ visible, onCancel }) => {
             </Menu.ItemGroup>
             <Menu.ItemGroup key="3" title={t('CM_SETTING_05')}>
               <Menu.Item key="4">{t('CM_MY_INFO_06')}</Menu.Item>
-              {!isSpaceAdmin() && !isB2B() && (
-                <Menu.Item key="7">{t('CM_SETTING_DELETE_SPACE_01')}</Menu.Item>
-              )}
+              {!isSpaceAdmin() &&
+                !isB2B() &&
+                configStore.isActivateComponent(
+                  'Platform',
+                  'SpaceSecession',
+                )(
+                  <Menu.Item key="7">
+                    {t('CM_SETTING_DELETE_SPACE_01')}
+                  </Menu.Item>,
+                )}
             </Menu.ItemGroup>
           </StyledMenu>
         </SiderArea>
