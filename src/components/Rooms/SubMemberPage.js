@@ -107,7 +107,7 @@ const TableRow = ({ style, member }) => {
           type="solid"
           size="small"
           onClick={handleTransfer}
-          disabled={isAdmin()}
+          disabled={isAdmin() || member.grade === 'guest'}
         >
           {t('CM_CHANGE')}
         </Button>
