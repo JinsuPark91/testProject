@@ -18,6 +18,14 @@ import {
   LeaderIcon,
 } from '../Icons';
 
+const GuestText = styled.div`
+  margin-left: 0.38rem;
+  padding: 0 0.31rem;
+  background: #f7f4ef;
+  color: #afa397;
+  font-size: 0.63rem;
+`;
+
 const InquiryContentwrap = styled.div`
   display: flex;
   flex-direction: column;
@@ -445,16 +453,18 @@ function RoomInquiryModal({
               </ButtonIcon>
               {t('CM_TALK')}
             </SettingButton>
-            {configStore.isFromCNU ? null :  <SettingButton disabled={isDisabled()} onClick={handleMeeting}>
-              <ButtonIcon>
-                <MeetingIcon
-                  color={isDisabled() ? '#646464' : '#fff'}
-                  width="1.5"
-                  height="1.5"
-                />
-              </ButtonIcon>
-              {t('CM_B2C_CONTENTS_AREA_EMPTY_PAGE_20')}
-            </SettingButton>}
+            {configStore.isFromCNU ? null : (
+              <SettingButton disabled={isDisabled()} onClick={handleMeeting}>
+                <ButtonIcon>
+                  <MeetingIcon
+                    color={isDisabled() ? '#646464' : '#fff'}
+                    width="1.5"
+                    height="1.5"
+                  />
+                </ButtonIcon>
+                {t('CM_B2C_CONTENTS_AREA_EMPTY_PAGE_20')}
+              </SettingButton>
+            )}
           </>
         )}
       </SettingBox>
@@ -485,6 +495,9 @@ function RoomInquiryModal({
                   <LeaderIcon width={1.13} height={1.13} color="#205855" />
                 </IconWrapper>
               </Tooltip>
+            ) : null}
+            {memberInfo.grade === 'guest' ? (
+              <GuestText>{t('CM_GUEST')}</GuestText>
             ) : null}
           </UserItem>
         ))}
