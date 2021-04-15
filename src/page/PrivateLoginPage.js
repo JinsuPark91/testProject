@@ -22,6 +22,15 @@ function PrivateLoginPage() {
   const onFinish = async values => {
     setIsLoading(true);
     try {
+      Cookies.set(
+        'NIBID',
+        values.username,
+        process.env.REACT_APP_ENV === 'local'
+          ? {}
+          : {
+              domain: `.${window.location.host}`,
+            },
+      );
       const res = await authStore.login({
         id: values.username, // localhost용 id= "seonhyeok_kim2@tmax.co.kr"
         deviceType: 'PC',
@@ -31,15 +40,7 @@ function PrivateLoginPage() {
           process.env.REACT_APP_SSO_TYPE || window?.env?.REACT_APP_SSO_TYPE,
       });
       if (res.id) {
-        Cookies.set(
-          'NIBID',
-          authStore.user.loginId,
-          process.env.REACT_APP_ENV === 'local'
-            ? {}
-            : {
-                domain: `.${window.location.host}`,
-              },
-        );
+       
         if (window.location.pathname.includes('/mobile')) {
           history.push(`/friend`);
         } else {
