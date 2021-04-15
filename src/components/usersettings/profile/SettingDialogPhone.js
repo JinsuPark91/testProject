@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from 'antd';
 import { Input, useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
-import { getMobileNumber, getProfileEditDto } from '../../../utils/ProfileUtil';
+import { getMobileNumber, updateMyProfile } from '../../../utils/ProfileUtil';
 import {
   InnerItem,
   Name,
@@ -19,9 +19,8 @@ const SettingDialogPhone = () => {
   const [isPhoneEdit, setIsPhoneEdit] = useState(false);
 
   const handleChangePhone = async () => {
-    const updateInfo = getProfileEditDto({ phone });
     try {
-      await userStore.updateMyProfile(updateInfo);
+      await updateMyProfile({ phone });
       setIsPhoneEdit(false);
     } catch (e) {
       console.log(`changeCellPhone Error is ${e}`);

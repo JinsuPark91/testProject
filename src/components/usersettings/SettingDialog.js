@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Menu } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { SELECTED_TAB } from './SettingConstants';
@@ -18,18 +18,13 @@ import {
   StyledMenu,
 } from '../../styles/usersettings/SettingDialogStyle';
 
-const SettingDialog = props => {
+const SettingDialog = ({ visible, onCancel }) => {
   const { t } = useTranslation();
-  const { selectedKeyA, visible, onCancel } = props;
-  const [selectedKey, setSelectedKey] = useState(selectedKeyA);
+  const [selectedKey, setSelectedKey] = useState(SELECTED_TAB.ALARM);
 
   // 스페이스 탈퇴 관련
   const [isSecession, setIsSecession] = useState(false);
   const [inputPassword, setInputPassword] = useState('');
-
-  useEffect(() => {
-    setSelectedKey(selectedKeyA);
-  }, [selectedKeyA]);
 
   const handleCancel = () => {
     setSelectedKey(SELECTED_TAB.ALARM);

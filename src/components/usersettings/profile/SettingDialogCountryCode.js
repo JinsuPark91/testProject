@@ -3,7 +3,7 @@ import { Button, Select } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import countryData from 'country-data';
-import { getProfileEditDto } from '../../../utils/ProfileUtil';
+import { updateMyProfile } from '../../../utils/ProfileUtil';
 import {
   InnerItem,
   Name,
@@ -45,11 +45,10 @@ const SettingDialogCountryCode = () => {
   };
 
   const handleSuccess = async () => {
-    const updateInfo = getProfileEditDto({
-      nationalCode: selectedCountryCode,
-    });
     try {
-      await userStore.updateMyProfile(updateInfo);
+      await updateMyProfile({
+        nationalCode: selectedCountryCode,
+      });
       setIsCountryCodeEdit(false);
     } catch (e) {
       console.log(`change National Code Error is ${e}`);
