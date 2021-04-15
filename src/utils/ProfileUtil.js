@@ -16,11 +16,12 @@ export const handleProfileMenuClick = async (
     }
     // 방은 있지만 룸리스트에 없는 경우 (나간경우)
     if (roomInfo && !roomInfo.isVisible) {
-      await RoomStore.updateRoomMemberSetting({
-        roomId: roomInfo.id,
-        myUserId,
-        newIsVisible: true,
-      });
+      await RoomStore.activateRoom({ roomId: roomInfo.id });
+      // await RoomStore.updateRoomMemberSetting({
+      //   roomId: roomInfo.id,
+      //   myUserId,
+      //   newIsVisible: true,
+      // });
       hiddenRoomFunction(roomInfo);
       return;
     }
