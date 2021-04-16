@@ -14,7 +14,6 @@ import {
 import { useHistory } from 'react-router-dom';
 import { useObserver, Observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
-import i18next from '../../i18n';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
@@ -38,7 +37,7 @@ const ProfileMyModal = ({
   visible = false,
   created = false,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { userStore, spaceStore, configStore } = useCoreStores();
   const { isGuest } = userStore.myProfile;
   const history = useHistory();
@@ -228,7 +227,7 @@ const ProfileMyModal = ({
   const handleChangeLanguage = async language => {
     const result = await userStore.updateMyLanguage({ language });
     if (result) {
-      i18next.changeLanguage(language).then((t, err) => {
+      i18n.changeLanguage(language).then((t, err) => {
         if (err) return console.log(`error is..${err}`);
       });
     }
