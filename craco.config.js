@@ -1,5 +1,9 @@
 const path = require('path');
 const CracoLessPlugin = require('craco-less');
+const TalkLinkPlugin = require('teespace-talk-app/link');
+
+// TalkLinkPlugin(externalPublicPath = 'public')
+TalkLinkPlugin();
 
 module.exports = {
   babel: {
@@ -14,7 +18,7 @@ module.exports = {
       'react-dnd': require.resolve('react-dnd'),
       'react-router-dom': require.resolve('react-router-dom'),
       'teespace-core': path.resolve(__dirname, 'node_modules/teespace-core'),
-      'antd': path.resolve(__dirname, 'node_modules/antd'),
+      antd: path.resolve(__dirname, 'node_modules/antd'),
     },
   },
   plugins: [
