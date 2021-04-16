@@ -225,13 +225,13 @@ const ProfileMyModal = ({
     </Menu>
   );
 
-  const handleChangeLanguage = key => {
-    if (i18next.language === key) return;
-    i18next.changeLanguage(key).then((t, err) => {
-      if (err) return console.log(`error is..${err}`);
-      sessionStorage.setItem('language', key);
-      userStore.myProfile.setLanguage(key);
-    });
+  const handleChangeLanguage = async language => {
+    const result = await userStore.updateMyLanguage({ language });
+    if (result) {
+      i18next.changeLanguage(language).then((t, err) => {
+        if (err) return console.log(`error is..${err}`);
+      });
+    }
   };
 
   // NOTE: 메뉴는 언어 설정과 관계없음
@@ -292,11 +292,6 @@ const ProfileMyModal = ({
     />
   );
 
-  const getLanguage = () => {
-    if (userStore.myProfile.language) return userStore.myProfile.language;
-    return sessionStorage.getItem('language');
-  };
-
   const subContent = (
     <>
       <UserSpaceArea isEdit={isEditMode}>
@@ -342,10 +337,11 @@ const ProfileMyModal = ({
         {() => (
           <UserSubArea>
             <img alt="lang" src={LanguageIcon} />
-            Language :{' '}
-            {getLanguage() === 'ko' || getLanguage() === 'ko-KR'
-              ? t('CM_KOREAN')
-              : t('CM_ENGLISH')}
+            {t('CM_PROFILE_MENU_02', {
+              language: userStore.myProfile.language?.includes('ko')
+                ? t('CM_KOREAN')
+                : t('CM_ENGLISH'),
+            })}
             <Dropdown
               trigger={['click']}
               overlay={LanguageMenu}

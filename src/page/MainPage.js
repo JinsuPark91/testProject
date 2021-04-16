@@ -25,7 +25,7 @@ import WindowManager from '../components/common/WindowManager';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 
 const MainPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [toastText, setToastText] = useState('');
@@ -100,7 +100,17 @@ const MainPage = () => {
         const lastUrl = histories?.[0]?.lastUrl;
         return Promise.resolve(lastUrl);
       })
-      .then(lastUrl => {
+      .then(async lastUrl => {
+        // 계정 langauge 적용. 없으면 브라우저 기본 langauge로 업데이트 한다.
+        await userStore.getMyLanguage();
+        if (!userStore.myProfile.language) {
+          await userStore.updateMyLanguage({
+            language: i18n.language,
+          });
+        } else {
+          i18n.changeLanguage(userStore.myProfile.language);
+        }
+
         // NOTE : 마지막 접속 URL 로 Redirect 시킨다.
         if (lastUrl) {
           history.push(lastUrl);

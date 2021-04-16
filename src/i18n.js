@@ -12,6 +12,7 @@ i18n
     {
       debug: false,
       fallbackLng: ['ko', 'en'],
+      load: 'languageOnly',
       ns: ['translation'],
       defaultNS: 'translation',
       keySeparator: false,
@@ -20,8 +21,7 @@ i18n
         loadPath: `/locales/{{lng}}/{{ns}}.json`,
       },
       detection: {
-        order: ['sessionStorage', 'navigator'],
-        lookupSessionStorage: 'language',
+        order: ['navigator'],
       },
       react: {
         useSuspense: false,
@@ -29,7 +29,6 @@ i18n
     },
     (err, t) => {
       if (err) console.log('i18next init error : ', err);
-      sessionStorage.setItem('language', i18n.language);
     },
   );
 
