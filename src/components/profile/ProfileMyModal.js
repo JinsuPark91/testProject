@@ -14,6 +14,7 @@ import {
 import { useHistory } from 'react-router-dom';
 import { useObserver, Observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
+import { fallbackLanguage } from '../../i18n';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
@@ -233,6 +234,17 @@ const ProfileMyModal = ({
     }
   };
 
+  const getLanguage = () => {
+    const { language } = userStore.myProfile;
+    if (!language) return fallbackLanguage;
+
+    const match = language.match(/en|ko/g);
+    const isValidLanguage = !!match;
+    if (isValidLanguage) return match?.[0];
+
+    return fallbackLanguage;
+  };
+
   // NOTE: 메뉴는 언어 설정과 관계없음
   const LanguageMenu = (
     <Menu style={{ minWidth: '6.25rem' }}>
@@ -337,7 +349,7 @@ const ProfileMyModal = ({
           <UserSubArea>
             <img alt="lang" src={LanguageIcon} />
             {t('CM_PROFILE_MENU_02', {
-              language: userStore.myProfile.language?.includes('ko')
+              language: getLanguage()?.includes('ko')
                 ? t('CM_KOREAN')
                 : t('CM_ENGLISH'),
             })}
