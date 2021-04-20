@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import {
   useCoreStores,
   Toast,
@@ -13,6 +13,7 @@ import {
 } from 'teespace-core';
 import { Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { throttle } from 'lodash';
 import { WaplLogo, AddRoomIcon } from '../Icons';
 import RoomItem from './RoomItem';
 import PlatformUIStore from '../../stores/PlatformUIStore';
@@ -44,6 +45,7 @@ function RoomList() {
   });
   const [toastText, setToastText] = useState('');
   const [isToastVisible, setIsToastVisible] = useState(false);
+  const [isScrollEnd, setIsScrollEnd] = useState(false);
 
   const containerRef = useRef(null);
   useEffect(() => {
@@ -56,6 +58,17 @@ function RoomList() {
   useEffect(() => {
     EventBus.dispatch('Platform:initLNB');
   }, [i18n.language]);
+
+  const handleScroll = throttle(() => {
+    const container = containerRef.current;
+    const { scrollTop, clientHeight, scrollHeight } = container;
+
+    if (scrollTop + clientHeight === scrollHeight) {
+      setIsScrollEnd(true);
+    } else {
+      setIsScrollEnd(false);
+    }
+  }, 200);
 
   const handleCreateRoom = () => {
     setVisible({ ...visible, selectRoomType: true });
@@ -345,7 +358,11 @@ function RoomList() {
           </AddRoomIconWrapper>
         </Tooltip>
       </TopWrapper>
-      <RoomContainer id="lnb__room-container" ref={containerRef}>
+      <RoomContainer
+        id="lnb__room-container"
+        ref={containerRef}
+        onScroll={handleScroll}
+      >
         <Observer>
           {() => {
             return roomStore
@@ -366,7 +383,7 @@ function RoomList() {
         </Observer>
       </RoomContainer>
       {configStore.isActivateComponent('Platform', 'LNB:Logo') ? (
-        <ButtomWrapper>
+        <ButtomWrapper isScrollEnd={isScrollEnd}>
           <WaplLogo />
         </ButtomWrapper>
       ) : null}
@@ -431,6 +448,14 @@ const ButtomWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0.69rem 0.94rem;
+  ${({ isScrollEnd }) => {
+    return (
+      !isScrollEnd &&
+      css`
+        box-shadow: 0 -0.8125rem 0.75rem -0.1875rem #fff;
+      `
+    );
+  }}
   z-index: 5;
 `;
 
