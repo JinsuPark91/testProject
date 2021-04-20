@@ -483,6 +483,7 @@ function OpenRoomHome({ visible, onCancel }) {
                             initialSlide={0}
                             slidesToShow={4}
                             slidesToScroll={4}
+                            infinite={false}
                           >
                             <ItemAddBtn onClick={handleCreateRoom}>
                               <span>{t('CM_CREATE_OPEN_ROOM')}</span>
