@@ -341,7 +341,7 @@ const MobileProfile = observer(
                       }
                     >
                       <CameraBox>
-                        <CameraIcon width="1.88" height="1.88" />
+                        <CameraIcon width="1.88" height="1.88" color="#fff" />
                       </CameraBox>
                     </Dropdown>
                   </ImageChange>

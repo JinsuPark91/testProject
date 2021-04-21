@@ -3,7 +3,7 @@ import { Modal } from 'antd';
 
 export const Wrapper = styled(Modal)`
   .ant-modal-body {
-    padding: 0 1.25rem 2rem;
+    padding: 2.25rem 1.25rem 2rem;
   }
 `;
 
@@ -100,4 +100,66 @@ export const ErrorIcon = styled.div`
 
 export const UrlText = styled.span`
   font-size: 0.88rem;
+`;
+
+export const SpaceImage = styled.div`
+  position: relative;
+  margin: 0 auto 1.875rem;
+  width: 4.88rem;
+  height: 4.88rem;
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.88rem;
+    cursor: pointer;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.88rem;
+    object-fit: cover;
+  }
+`;
+
+export const ImageChangeBox = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 0.88rem;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+`;
+
+export const ImageChangButton = styled.div`
+  position: absolute;
+  top: calc(50% - 0.94rem);
+  left: calc(50% - 0.94rem);
+  width: 1.88rem;
+  height: 1.88rem;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  z-index: 1;
+  &:hover {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  &.ant-dropdown-open {
+    color: #ed7e49;
+  }
+`;
+
+export const Blind = styled.span`
+  position: absolute;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
 `;

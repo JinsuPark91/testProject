@@ -364,13 +364,11 @@ function OpenRoomHome({ visible, onCancel }) {
             btns={[
               {
                 type: 'solid',
-                shape: 'round',
                 text: t('TEST_REQUEST_OK'),
                 onClick: handleRequestOK,
               },
               {
                 type: 'outlined',
-                shape: 'round',
                 text: t('CM_CANCEL'),
                 onClick: handleRequestCancel,
               },
@@ -392,13 +390,11 @@ function OpenRoomHome({ visible, onCancel }) {
             btns={[
               {
                 type: 'solid',
-                shape: 'round',
                 text: t('CM_OPEN_ROOM_HOME_07'),
                 onClick: handleConfirmEnter,
               },
               {
                 type: 'outlined',
-                shape: 'round',
                 text: t('CM_CANCEL'),
                 onClick: handleCancelEnter,
               },
@@ -411,7 +407,6 @@ function OpenRoomHome({ visible, onCancel }) {
             btns={[
               {
                 type: 'solid',
-                shape: 'round',
                 text: '확인',
                 onClick: () => {
                   setEnterFailModalVisible(false);
@@ -586,7 +581,7 @@ const OpenHomeForm = styled.div`
 `;
 
 const JoinedText = styled.div`
-  padding: 0 0.5rem;
+  padding: 0 0.25rem 0 0.5rem;
   font-size: 0.69rem;
   color: #696969;
   white-space: nowrap;
