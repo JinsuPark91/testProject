@@ -19,8 +19,7 @@ const HeaderProfile = observer(() => {
 
   const spaceUnreadCount =
     spaceStore.totalUnreadSpaceCount -
-    spaceStore.currentSpace?.unreadSpaceCount;
-  const [count, setCount] = useState(spaceUnreadCount);
+    spaceStore.currentSpace?.totalUnreadRoomCount;
 
   const toggleMyModal = useCallback(() => {
     setMyModalVisible(v => !v);
@@ -41,7 +40,7 @@ const HeaderProfile = observer(() => {
   return (
     <>
       <ProfileIcon className="header__profile-button" onClick={toggleMyModal}>
-        {count > 0 && <NewBadge count={count} />}
+        {spaceUnreadCount > 0 && <NewBadge />}
         <ThumbImage src={thumbPhoto} />
         <SettingImage>
           <img alt="settingIcon" src={settingIcon} />

@@ -1,17 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { talkOnDrop, Talk } from 'teespace-talk-app';
+import { talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
 import { observer } from 'mobx-react';
 import { Tooltip } from 'antd';
-import {
-  useCoreStores,
-  Dropdown,
-  Menu,
-  Message,
-  usePortalWindow,
-} from 'teespace-core';
+import { useCoreStores, Dropdown, Menu, Message } from 'teespace-core';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import { ACCEPT_ITEMS, TALK_ACCEPT_ITEMS } from '../../utils/DndConstant';
 import { handleCheckNewFriend } from '../../utils/FriendsUtil';

@@ -14,6 +14,8 @@ const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [toastText, setToastText] = useState('');
 
+  const [isMemberModalVisible, setIsMemberModalVisible] = useState(false);
+
   const handleInfoModalVisible = useCallback(value => {
     setIsInfoModalVisible(value);
   }, []);
@@ -28,6 +30,10 @@ const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
     setToastText(value);
   }, []);
 
+  const handleMemberModalVisible = useCallback(value => {
+    setIsMemberModalVisible(value);
+  }, []);
+
   return (
     <>
       <FriendsLNBList
@@ -37,6 +43,7 @@ const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
         handleSelectedId={handleSelectedId}
         handleToastVisible={handleToastVisible}
         handleToastText={handleToastText}
+        handleMemberModalVisible={handleMemberModalVisible}
       />
       <FriendsLNBModal
         infoModalVisible={isInfoModalVisible}
@@ -45,6 +52,8 @@ const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
         toastVisible={isToastVisible}
         handleCloseToast={() => handleToastVisible(false)}
         toastText={toastText}
+        memberModalVisible={isMemberModalVisible}
+        handleCloseMemberModal={() => setIsMemberModalVisible(false)}
       />
     </>
   );

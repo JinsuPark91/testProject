@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProfileInfoModal, Toast } from 'teespace-core';
+import { ProfileInfoModal, Toast, AddFriendsBySearch } from 'teespace-core';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const FriendsLNBModal = ({
@@ -9,6 +9,8 @@ const FriendsLNBModal = ({
   toastVisible,
   handleCloseToast,
   toastText,
+  memberModalVisible,
+  handleCloseMemberModal,
 }) => {
   return (
     <>
@@ -25,13 +27,19 @@ const FriendsLNBModal = ({
               handler: null,
             });
           }}
-          onClose={() => handleCloseInfoModal(false)}
+          onClose={handleCloseInfoModal}
           position={{ left: '16.81rem' }}
         />
       )}
       <Toast visible={toastVisible} timeoutMs={1000} onClose={handleCloseToast}>
         {toastText}
       </Toast>
+      {memberModalVisible && (
+        <AddFriendsBySearch
+          isViewMode
+          onCancelAddFriends={handleCloseMemberModal}
+        />
+      )}
     </>
   );
 };

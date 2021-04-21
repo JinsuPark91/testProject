@@ -351,9 +351,7 @@ const MainPage = () => {
       <Toast
         visible={isToastVisible}
         timeoutMs={1000}
-        onClose={() => {
-          setIsToastVisible(false);
-        }}
+        onClose={() => setIsToastVisible(false)}
       >
         {toastText}
       </Toast>

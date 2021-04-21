@@ -484,7 +484,7 @@ function RoomInquiryModal({
                 src={userStore.getProfilePhotoURL(memberInfo.id, 'small')}
               />
             </UserImag>
-            <UserName>{memberInfo.nick || memberInfo.name}</UserName>
+            <UserName>{memberInfo.displayName}</UserName>
             {memberInfo.role === 'WKS0004' ? (
               <Tooltip
                 placement="bottom"

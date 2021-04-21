@@ -24,7 +24,7 @@ import MovePage from '../../utils/MovePage';
 import { SELECTED_TAB } from '../usersettings/SettingConstants';
 import { getMainWaplURL } from '../../utils/UrlUtil';
 import { handleFriendsDialogType } from '../../utils/FriendsUtil';
-import { isSpaceAdmin, isNewSpaceMessageExist } from '../../utils/GeneralUtil';
+import { isSpaceAdmin } from '../../utils/GeneralUtil';
 import { ArrowRightIcon } from '../Icons';
 import convertSpaceIcon from '../../assets/convert_space.svg';
 import moreSpaceIcon from '../../assets/view_more.svg';
@@ -321,7 +321,13 @@ const ProfileMyModal = ({
             >
               <Button className="btn-convert" onClick={handleSpaceList}>
                 <Observer>
-                  {() => (isNewSpaceMessageExist() ? <NewBadge /> : null)}
+                  {() => {
+                    const spaceUnreadCount =
+                      spaceStore.totalUnreadSpaceCount -
+                      spaceStore.currentSpace?.totalUnreadRoomCount;
+                    if (spaceUnreadCount > 0) return <NewBadge />;
+                    return null;
+                  }}
                 </Observer>
                 <Blind>{t('CM_PROFILE_PROFILE_MENU_01')}</Blind>
               </Button>
@@ -369,11 +375,11 @@ const ProfileMyModal = ({
         <ConvertDropdown>
           <ConvertNow>
             <LogoSmall checked>
-              {spaceStore.currentSpace?.unreadSpaceCount > 0 && (
+              {spaceStore.currentSpace?.totalUnreadRoomCount > 0 && (
                 <LogoNumber>
-                  {spaceStore.currentSpace?.unreadSpaceCount > 99
+                  {spaceStore.currentSpace?.totalUnreadRoomCount > 99
                     ? '99+'
-                    : spaceStore.currentSpace?.unreadSpaceCount}
+                    : spaceStore.currentSpace?.totalUnreadRoomCount}
                 </LogoNumber>
               )}
               {spaceStore.currentSpace?.name[0]}
@@ -397,11 +403,11 @@ const ProfileMyModal = ({
                       key={elem?.id}
                     >
                       <LogoSmall>
-                        {elem?.unreadSpaceCount > 0 && (
+                        {elem?.totalUnreadRoomCount > 0 && (
                           <LogoNumber>
-                            {elem.unreadSpaceCount > 99
+                            {elem.totalUnreadRoomCount > 99
                               ? '99+'
-                              : elem.unreadSpaceCount}
+                              : elem.totalUnreadRoomCount}
                           </LogoNumber>
                         )}
                         {elem?.name[0]}
