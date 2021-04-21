@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Message, useCoreStores } from 'teespace-core';
+import { Message, useCoreStores, Menu, Dropdown } from 'teespace-core';
 import { Button, Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { handleCheckValidUrl, handleCheckValidEngUrl } from '../../libs/Regex';
@@ -12,7 +12,12 @@ import {
   UrlInputBox,
   ErrorIcon,
   UrlText,
+  SpaceImage,
+  ImageChangeBox,
+  ImageChangButton,
+  Blind,
 } from '../../styles/SpaceEditModalStyle';
+import { CameraIcon } from '../Icons';
 
 const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
   const { t } = useTranslation();
@@ -155,6 +160,13 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
     }
   };
 
+  const imageChangeMenu = (
+    <Menu>
+      <Menu.Item>스페이스 이미지 변경</Menu.Item>
+      <Menu.Item>기본 이미지로 변경</Menu.Item>
+    </Menu>
+  );
+
   return (
     <>
       <Wrapper
@@ -181,6 +193,22 @@ const SpaceEditModal = ({ visible, onClose, onSuccess }) => {
           </>
         }
       >
+        {/* 스페이스 이미지 
+        <SpaceImage>
+          <img alt="" src="" />
+          <ImageChangeBox>
+            <Dropdown
+              trigger={['click']}
+              overlay={imageChangeMenu}
+              placement="bottomLeft"
+            >
+              <ImageChangButton>
+                <Blind>Change Profile Image</Blind>
+                <CameraIcon width={1.88} height={1.88} />
+              </ImageChangButton>
+            </Dropdown>
+          </ImageChangeBox>
+        </SpaceImage> */}
         <SubTitle>{t('CM_SPACE_NAME')}</SubTitle>
         <NameInputBox>
           <input

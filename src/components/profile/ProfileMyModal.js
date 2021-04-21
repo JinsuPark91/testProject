@@ -576,6 +576,7 @@ const UserMail = styled.span`
   text-overflow: ellipsis;
 `;
 const UserStatus = styled.span`
+  margin-top: 0.3rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -583,8 +584,8 @@ const UserStatus = styled.span`
   text-overflow: ellipsis;
   word-wrap: break-word;
   font-size: 0.63rem;
-  color: white;
-  margin-top: 0.3rem;
+  color: #fff;
+  opacity: 0.5;
 `;
 const UserButtonBox = styled.div`
   display: flex;
@@ -599,7 +600,7 @@ const UserButtonBox = styled.div`
     padding: 0 0.375rem;
     font-size: 0.75rem;
     line-height: 1.13rem;
-    color: #f7f4ef;
+    color: #f7f4ef !important;
     &:hover span {
       text-decoration: underline;
     }
@@ -698,10 +699,10 @@ const NewBadge = styled.div`
 `;
 const Logo = styled(Avatar)`
   flex-shrink: 0;
-  width: 2.64rem;
-  height: 2.64rem;
+  width: 2.625rem;
+  height: 2.625rem;
   font-size: 1.125rem;
-  line-height: 2.375rem;
+  line-height: 2.5rem;
   font-weight: 500;
   color: #49423a;
   border-radius: 0.25rem;
