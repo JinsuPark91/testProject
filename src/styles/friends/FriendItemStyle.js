@@ -50,13 +50,13 @@ export const FriendItemWrapper = styled.div`
   ${props =>
     (props.mode === 'me' || props.mode === 'member') &&
     css`
-      padding: 0.69rem 0.38rem 0.69rem 0.5rem;
+      padding: 0.69rem 0.375rem 0.69rem 0.5rem;
     `}
 
   ${props =>
     props.mode === 'friend' &&
     css`
-      padding: 0.56rem 0.38rem 0.56rem 0.5rem;
+      padding: 0.56rem 0.375rem 0.56rem 0.5rem;
     `}
 
   ${props =>
@@ -118,10 +118,10 @@ export const ActionWrapper = styled.div`
 `;
 
 export const NewFriendBadge = styled.div`
-  height: 1rem;
-  width: 1rem;
-  margin: 0 0.125rem 0 0.25rem;
-  line-height: 0.94rem;
+  height: 0.875rem;
+  width: 0.875rem;
+  margin: 0 0.25rem;
+  line-height: 0.8125rem;
   font-size: 0.63rem;
   color: #fff;
   font-weight: 400;
