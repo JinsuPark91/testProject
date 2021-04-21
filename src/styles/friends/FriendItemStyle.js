@@ -24,8 +24,31 @@ export const FriendItemWrapper = styled.div`
   text-overflow: ellipsis;
   cursor: pointer;
 
+  margin: 0 0.25rem;
+  align-items: center;
+
+  /* icon */
+  .ant-btn-circle {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    box-shadow: none;
+    border: 0;
+    color: #75757f;
+    &:hover {
+      background-color: #dcddff;
+    }
+    &:active,
+    &:focus {
+      background-color: transparent;
+    }
+  }
+
   ${props =>
-    props.mode === 'me' &&
+    (props.mode === 'me' || props.mode === 'member') &&
     css`
       padding: 0.69rem 0.38rem 0.69rem 0.5rem;
     `}
@@ -36,45 +59,18 @@ export const FriendItemWrapper = styled.div`
       padding: 0.56rem 0.38rem 0.56rem 0.5rem;
     `}
 
-  /* 내 프로필 아이템과 친구 아이템의 스타일 */
   ${props =>
-    (props.mode === 'me' || props.mode === 'friend') &&
-    css`
-      margin: 0 0.25rem;
-      align-items: center;
-
-      ${props.isActive
-        ? css`
-            background-color: #f2efec;
+    props.isActive
+      ? css`
+          background-color: #f2efec;
+          border-radius: 0.81rem;
+        `
+      : css`
+          &:hover {
+            background-color: #faf8f7;
             border-radius: 0.81rem;
-          `
-        : css`
-            &:hover {
-              background-color: #faf8f7;
-              border-radius: 0.81rem;
-            }
-          `}
-
-      /* icon */
-      .ant-btn-circle {
-        width: 1.5rem;
-        height: 1.5rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: transparent;
-        box-shadow: none;
-        border: 0;
-        color: #75757f;
-        &:hover {
-          background-color: #dcddff;
-        }
-        &:active,
-        &:focus {
-          background-color: transparent;
-        }
-      }
-    `}
+          }
+        `}
 
     ${({ isDndHover }) =>
     isDndHover &&

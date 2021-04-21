@@ -55,14 +55,14 @@ export const toBlob = async file => {
 export const getMobileNumber = (profile, isMobile = true) => {
   const nCode = profile?.nationalCode || '';
   let number = isMobile ? profile?.phone : profile?.companyNum;
-  if (!number) return '-';
+  if (!number || number === 'undefined') return '-';
 
   // 010 - 1234 - 5678
   let firstNum = ''; // 010
   let secondNum = ''; // 1234
   let thirdNum = ''; // 5678
 
-  if (number.length <= 10) {
+  if (number.length >= 6 && number.length <= 10) {
     firstNum =
       nCode && number.substring(0, 1) === '0'
         ? number.substring(1, 3)
@@ -76,7 +76,7 @@ export const getMobileNumber = (profile, isMobile = true) => {
         : number.substring(0, 3);
     secondNum = `-${number.substring(3, 7)}`;
     thirdNum = `-${number.substring(7)}`;
-  } else if (number.length >= 12 && nCode) {
+  } else if (nCode) {
     number = number.substring(0, 1) === '0' ? number.substring(1) : number;
   }
 
@@ -88,14 +88,14 @@ export const getMobileNumber = (profile, isMobile = true) => {
 export const getCompanyNumber = profile => {
   const nCode = profile?.nationalCode || '';
   let number = profile?.companyNum;
-  if (!number) return '-';
+  if (!number || number === 'undefined') return '-';
 
   let firstNum = '';
   let secondNum = '';
   let thirdNum = '';
 
   if (number.substring(0, 2) === '02') {
-    if (number.length <= 9) {
+    if (number.length >= 6 && number.length <= 9) {
       firstNum = nCode ? '2' : '02';
       secondNum = number.substring(2, 5) ? `-${number.substring(2, 5)}` : '';
       thirdNum = number.substring(5) ? `-${number.substring(5)}` : '';
@@ -103,7 +103,7 @@ export const getCompanyNumber = profile => {
       firstNum = nCode ? '2' : '02';
       secondNum = `-${number.substring(2, 6)}`;
       thirdNum = `-${number.substring(6)}`;
-    } else if (number.length >= 11 && nCode) {
+    } else if (nCode) {
       number = number.substring(1);
     }
 

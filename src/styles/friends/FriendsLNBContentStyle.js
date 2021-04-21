@@ -27,7 +27,7 @@ export const FriendListBox = styled.div`
 
   &:last-of-type {
     &:after {
-      display: ${props => (props.noFriend ? '' : 'none')};
+      display: none;
     }
   }
 `;
@@ -57,4 +57,24 @@ export const StyledSubInfo = styled.p`
   font-size: 0.75rem;
   line-height: 1.06rem;
   white-space: pre-line;
+`;
+
+export const MemberItemWrapper = styled.div`
+  &:after {
+    display: ${props => (props.noFriend ? 'none' : 'block')};
+    content: '';
+    height: 1px;
+    margin: 0.25rem 0.75rem;
+    background-color: #e3e7eb;
+  }
+`;
+
+export const GroupAvatar = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: #205855;
 `;
