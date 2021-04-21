@@ -194,7 +194,11 @@ const RoomDropdown = React.memo(
               </Menu.Item>
             )
           }
-          <Menu.Item key="exit" onClick={handleExit}>
+          <Menu.Item
+            key="exit"
+            onClick={handleExit}
+            style={{ borderTop: '1px solid #D0CCC7' }}
+          >
             {t('CM_LEAVE')}
           </Menu.Item>
         </StyledMenu>
@@ -285,7 +289,7 @@ const RoomItemContent = ({
           </Observer>
         }
         title={
-          <Title>
+          <>
             <Observer>
               {() => (
                 <>
@@ -333,32 +337,42 @@ const RoomItemContent = ({
                 ) : null
               }
             </Observer>
-          </Title>
+            {/* <UserTimeText className="rooms__item__unread">
+              오전 11:01
+            </UserTimeText> */}
+          </>
         }
         description={
-          <Observer>
-            {() => {
-              if (roomInfo.metadata?.lastMessage) {
-                return (
-                  <StyleRoomMessage>
-                    {roomInfo.metadata?.lastMessage}
-                  </StyleRoomMessage>
-                );
-              }
-              return null;
-            }}
-          </Observer>
+          <>
+            <Observer>
+              {() => {
+                if (roomInfo.metadata?.lastMessage) {
+                  return (
+                    <RoomMessage>{roomInfo.metadata?.lastMessage}</RoomMessage>
+                  );
+                }
+                return null;
+              }}
+            </Observer>
+            <Observer>
+              {() => {
+                return roomInfo.metadata?.count ? (
+                  <UnreadCount
+                    className="rooms__item__unread"
+                    style={{
+                      width: roomInfo.metadata?.count < 10 && '0.875rem',
+                    }}
+                  >
+                    {roomInfo.metadata?.count > 99
+                      ? '99+'
+                      : roomInfo.metadata?.count}
+                  </UnreadCount>
+                ) : null;
+              }}
+            </Observer>
+          </>
         }
       />
-      <Observer>
-        {() => {
-          return roomInfo.metadata?.count ? (
-            <UnreadCount className="rooms__item__unread">
-              {roomInfo.metadata?.count > 99 ? '99+' : roomInfo.metadata?.count}
-            </UnreadCount>
-          ) : null;
-        }}
-      </Observer>
       {!isMyRoom && (
         <RoomDropdown
           roomInfo={roomInfo}
@@ -552,17 +566,10 @@ const StyledMenu = styled(Menu)`
   }
 `;
 
-const Title = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const StyleRoomMessage = styled.span`
-  display: block;
+const RoomMessage = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-top: 0.125rem;
   color: #666;
 `;
 
@@ -580,6 +587,14 @@ const UserCountText = styled.span`
   font-size: 0.81rem;
   line-height: 1.19rem;
   color: #aeaeae;
+`;
+
+const UserTimeText = styled.span`
+  margin-left: auto;
+  padding-left: 0.25rem;
+  font-size: 0.56rem;
+  color: #666;
+  white-space: nowrap;
 `;
 
 const StyledItem = styled.div`
@@ -603,7 +618,7 @@ const StyledItem = styled.div`
   }
 
   .ant-list-item-meta-content {
-    margin-right: 0.3rem;
+    margin-right: 0.25rem;
   }
 
   button {
@@ -611,27 +626,33 @@ const StyledItem = styled.div`
   }
 
   .ant-list-item-meta-title {
+    display: flex;
+    align-items: center;
     margin: 0;
-    line-height: 1.188rem;
   }
   .ant-list-item-meta-description {
+    display: flex;
+    margin-top: 0.125rem;
+    align-items: center;
+    justify-content: space-between;
     font-size: 0.69rem;
     font-weight: 300;
     line-height: 1rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 `;
 
 const UnreadCount = styled.div`
-  align-self: flex-start;
-  padding: 0 0.25rem;
-  font-size: 0.69rem;
+  width: 1.63rem;
+  height: 0.875rem;
+  margin-left: 0.25rem;
+  font-size: 0.63rem;
   color: #fff;
+  line-height: 0.8125rem;
   font-weight: 400;
   border-radius: 0.56rem;
   background-color: #dc4547;
+  text-align: center;
+  flex-shrink: 0;
 `;
 
 const TitleIconWrapper = styled.div`

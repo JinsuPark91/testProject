@@ -43,7 +43,7 @@ import {
   ViewFileActiveIcon,
   MeetingIcon,
   MeetingActiveIcon,
-  OpenChatIcon,
+  OpenChatBgIcon,
 } from '../Icons';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 import useLocalObservable from '../../libs/useLocalObservable';
@@ -472,9 +472,9 @@ const Header = observer(() => {
               />
               {findRoom()?.type === 'WKS0003' && (
                 <div style={{ display: 'flex', marginRight: '0.25rem' }}>
-                  <OpenChatIcon
-                    width={0.9}
-                    height={0.9}
+                  <OpenChatBgIcon
+                    width={1.125}
+                    height={1.125}
                     color="rgb(0, 73, 61)"
                   />
                 </div>
