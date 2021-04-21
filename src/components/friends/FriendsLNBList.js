@@ -103,7 +103,7 @@ const FriendsLNBList = ({
           </GroupAvatar>
           <TextWrapper>
             <TextComponentBox>
-              <TitleForName>전체 구성원 보기</TitleForName>
+              <TitleForName>{t('CM_VIEW_ALL_USER')}</TitleForName>
             </TextComponentBox>
           </TextWrapper>
         </FriendItemWrapper>
