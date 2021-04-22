@@ -6,10 +6,10 @@ import {
   ProfileInfoModal,
   logEvent,
   EventBus,
+  Tooltip,
 } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { useTranslation } from 'react-i18next';
-import Tooltip from '../common/Tooltip';
 import {
   Wrapper,
   TitleWrapper,
