@@ -8,8 +8,8 @@ import {
   EventBus,
 } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
-import { Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
+import Tooltip from '../common/Tooltip';
 import {
   Wrapper,
   TitleWrapper,
