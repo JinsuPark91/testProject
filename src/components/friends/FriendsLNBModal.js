@@ -38,6 +38,7 @@ const FriendsLNBModal = ({
         <AddFriendsBySearch
           isViewMode
           onCancelAddFriends={handleCloseMemberModal}
+          isTopOrg
         />
       )}
     </>
