@@ -23,18 +23,13 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
     loginInfo = {
       // ksign 용 로그인 input
       deviceType: 'Mobile',
-      // domainUrl: '',
-      // deviceId: getDeviceId,
-      // id: getLoginId,
       authorizeType: 'Ksign',
       ssoType:
         window?.env?.REACT_APP_SSO_TYPE || process?.env?.REACT_APP_SSO_TYPE,
     };
   } else {
     loginInfo = {
-      // domainUrl: '',
       deviceType: 'PC',
-      // id: getLoginId,
       authorizeType: 'Ksign',
       ssoType:
         window?.env?.REACT_APP_SSO_TYPE || process?.env?.REACT_APP_SSO_TYPE,
@@ -52,10 +47,8 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
             const getNibId = Cookies.get('NIBID');
 
             const res = await authStore.login(loginInfo);
-
+            console.log(getRoutingPath)
             if (res) {
-              // if (getNibId) {
-                  // NOTE. 이전 경로가 존재하면 해당 경로로 이동
                 if (stateFrom) {
                   history.push(
                     `${stateFrom.pathname}${props.location.state?.from.search}`,
@@ -75,16 +68,6 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
                     history.push(`/f/${authStore.user.id}/profile`);
                   }
                 }
-              // } else if (getRoutingPath.includes('/mobile')) {
-              //   const exceptMobilePath = getRoutingPath.replace('/mobile', '');
-              //   if (exceptMobilePath.includes('login')) {
-              //     history.push(`/friend`);
-              //   } else {
-              //     history.push(exceptMobilePath);
-              //   }
-              // } else {
-              //   history.push(`/f/${authStore.user.id}/profile`);
-              // }
             }
           } catch (e) {
             history.push('/privatelogin');

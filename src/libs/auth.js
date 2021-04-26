@@ -3,12 +3,15 @@ import ReactKsignProvider from './Providers/ReactKsignProvider';
 import ReactKeycloakProvider from './Providers/ReactKeycloakProvider';
 import KeycloakRedirectRoute from './KeycloakRedirectRoute';
 import KsignRedirectRoute from './KsignRedirectRoute';
+import LocalRedirectRoute from './LocalRedirectRoute';
 import PrivateRoute from './PrivateRoute';
 import PrivateKsignRoute from './PrivateKsignRoute';
+import PrivateLocalRoute from './PrivateLocalRoute';
 import LogoutPage from '../page/LogoutPage';
 import KsignLogoutPage from '../page/KsignLogoutPage';
+import LocalLogoutPage from '../page/LocalLogoutPage';
 
-const ssoType =
+export const ssoType =
   window.env.REACT_APP_SSO_TYPE === '%SSO_TYPE%'
     ? process.env.REACT_APP_SSO_TYPE
     : window.env.REACT_APP_SSO_TYPE || process.env.REACT_APP_SSO_TYPE;
@@ -19,6 +22,9 @@ switch (ssoType) {
     break;
   case 'hyperauth':
     authType = 'HyperAuth';
+    break;
+  case 'local':
+    authType = 'Local';
     break;
   default:
     break;
@@ -31,6 +37,8 @@ export const AuthProvider = ({ children }) => {
         return ReactKeycloakProvider;
       case 'Ksign':
         return ReactKsignProvider;
+      case 'Local':
+        return ReactKsignProvider; //local과 ksign은 단순 wrapper 이므로
       default:
         break;
     }
@@ -45,6 +53,8 @@ export const AuthRoute = ({ children, ...rest }) => {
         return KeycloakRedirectRoute;
       case 'Ksign':
         return KsignRedirectRoute;
+      case 'Local':
+        return LocalRedirectRoute;
       default:
         break;
     }
@@ -59,6 +69,8 @@ export const PrivateAuthRoute = ({ children, ...rest }) => {
         return PrivateRoute;
       case 'Ksign':
         return PrivateKsignRoute;
+      case 'Local':
+        return PrivateLocalRoute;
       default:
         break;
     }
@@ -73,6 +85,8 @@ export const LogoutComponent = () => {
         return LogoutPage;
       case 'Ksign':
         return KsignLogoutPage;
+      case 'Local':
+        return LocalLogoutPage;
       default:
         break;
     }

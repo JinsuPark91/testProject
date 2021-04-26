@@ -40,7 +40,6 @@ function PrivateLoginPage() {
           process.env.REACT_APP_SSO_TYPE || window?.env?.REACT_APP_SSO_TYPE,
       });
       if (res.id) {
-       
         if (window.location.pathname.includes('/mobile')) {
           history.push(`/friend`);
         } else {
@@ -67,17 +66,7 @@ function PrivateLoginPage() {
     );
   }
   return (
-    <Form
-      // {...layout}
-      name="basic"
-      initialValues={{
-        saveId: false,
-        autoLogin: false,
-      }}
-      form={form}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-    >
+    <Form form={form} onFinish={onFinish} onFinishFailed={onFinishFailed}>
       <LoginIdInput />
       {/* <LoginPasswordInput /> */}
       {isLoading === true && <span>로그인 중</span>}
