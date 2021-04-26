@@ -3,6 +3,7 @@ import { useObserver } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import FriendItem from './FriendItem';
+import PlatformUIStore from '../../stores/PlatformUIStore';
 import {
   WelcomeWrapper,
   ContentWrapper,
@@ -11,8 +12,16 @@ import {
   FriendListBox,
   StyleTitle,
   StyleText,
+  MemberItemWrapper,
+  GroupAvatar,
 } from '../../styles/friends/FriendsLNBContentStyle';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import {
+  FriendItemWrapper,
+  TextComponentBox,
+  TextWrapper,
+  TitleForName,
+} from '../../styles/friends/FriendItemStyle';
+import { GroupIcon } from '../Icons';
 
 /**
  * @param {string} searchKeyword - 프렌즈 검색 키워드
@@ -26,6 +35,7 @@ const FriendsLNBList = ({
   handleSelectedId,
   handleToastVisible,
   handleToastText,
+  handleMemberModalVisible,
 }) => {
   const { t } = useTranslation();
   const { userStore, friendStore } = useCoreStores();
@@ -81,6 +91,26 @@ const FriendsLNBList = ({
     );
   };
 
+  const MemberViewItem = () => {
+    return (
+      <MemberItemWrapper noFriend={!friendStore.friendInfoList.length}>
+        <FriendItemWrapper
+          mode="member"
+          onClick={() => handleMemberModalVisible(true)}
+        >
+          <GroupAvatar>
+            <GroupIcon width={1.25} height={1.25} color="#fff" />
+          </GroupAvatar>
+          <TextWrapper>
+            <TextComponentBox>
+              <TitleForName>전체 구성원 보기</TitleForName>
+            </TextComponentBox>
+          </TextWrapper>
+        </FriendItemWrapper>
+      </MemberItemWrapper>
+    );
+  };
+
   return useObserver(() => {
     const renderEmptyContent = (
       <WelcomeWrapper>
@@ -122,7 +152,7 @@ const FriendsLNBList = ({
     return (
       <>
         <ContentWrapper id="lnb__friend-container" onScroll={handleScroll}>
-          <FriendListBox noFriend={!friendStore.friendInfoList.length}>
+          <FriendListBox>
             <FriendItem
               mode="me"
               friendInfo={userStore.myProfile}
@@ -135,6 +165,7 @@ const FriendsLNBList = ({
               handleInfoModalVisible={() => handleInfoModalVisible(true)}
             />
           </FriendListBox>
+          <MemberViewItem />
           {!friendStore.friendInfoList.length && renderEmptyContent}
           {!!friendStore.friendInfoList.length && renderContent}
         </ContentWrapper>

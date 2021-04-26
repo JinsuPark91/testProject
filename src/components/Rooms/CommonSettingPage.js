@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from 'antd';
-import { useCoreStores, Toast, Message } from 'teespace-core';
+import { useCoreStores, Toast, Message, Switch } from 'teespace-core';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
 import Input from '../Input';
@@ -150,9 +150,7 @@ const CommonSettingPage = ({ roomId }) => {
         {toastMessage}
       </Toast>
       <SettingWrapper>
-        <SettingTitleText style={{ marginBottom: '0.31rem' }}>
-          {t('CM_ROOM_SETTING_BAISC_02')}
-        </SettingTitleText>
+        <SettingTitleText>{t('CM_ROOM_SETTING_BAISC_02')}</SettingTitleText>
         <SettingDescriptionText style={{ marginBottom: '0.81rem' }}>
           {t('CM_ROOM_SETTING_BAISC_03')}
         </SettingDescriptionText>
@@ -172,6 +170,16 @@ const CommonSettingPage = ({ roomId }) => {
           {t('CM_SAVE')}
         </Button>
       </SettingWrapper>
+      {/* //참여 승인 추가 영역
+      <SettingWrapper>
+        <SettingTitleWrap>
+          <SettingTitleText>참여 승인 필요</SettingTitleText>
+          <Switch />
+        </SettingTitleWrap>
+        <SettingDescriptionText>
+          On 시, 룸 관리자의 승인이 잇어야 룸에 참여 가능합니다.
+        </SettingDescriptionText>
+      </SettingWrapper> */}
       {(isPrivateRoom && roomInfo?.typeModifiedDate) || !isPrivateRoom ? (
         <SettingWrapper>
           {isPrivateRoom && roomInfo?.typeModifiedDate ? (
@@ -263,6 +271,15 @@ const SettingTitleText = styled.span`
   color: #000;
   font-weight: bold;
   margin-bottom: 0.31rem;
+`;
+
+const SettingTitleWrap = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  ${SettingTitleText} {
+    margin-bottom: 0;
+  }
 `;
 
 const SettingDescriptionText = styled.span`

@@ -3,6 +3,8 @@ import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
+const FALLBACK_LANGUAGE = 'en';
+
 const i18n = i18next.createInstance();
 i18n
   .use(LanguageDetector)
@@ -11,7 +13,8 @@ i18n
   .init(
     {
       debug: false,
-      fallbackLng: ['ko', 'en'],
+      fallbackLng: FALLBACK_LANGUAGE,
+      load: 'languageOnly',
       ns: ['translation'],
       defaultNS: 'translation',
       keySeparator: false,
@@ -20,8 +23,7 @@ i18n
         loadPath: `/locales/{{lng}}/{{ns}}.json`,
       },
       detection: {
-        order: ['sessionStorage', 'navigator'],
-        lookupSessionStorage: 'language',
+        order: ['navigator'],
       },
       react: {
         useSuspense: false,
@@ -29,8 +31,7 @@ i18n
     },
     (err, t) => {
       if (err) console.log('i18next init error : ', err);
-      sessionStorage.setItem('language', i18n.language);
     },
   );
 
-export default i18n;
+export { i18n, FALLBACK_LANGUAGE as fallbackLanguage };

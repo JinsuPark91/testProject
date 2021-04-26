@@ -127,7 +127,7 @@
   "CM_DEL_ROOM_EMPTY_02": "If you leave a room with no remaining members, all transmitted data is deleted immediately. Please back up important data in advance.",
   "CM_PROFILE_POPUP_OTHERS_02": "{{name}} has been added as a friend.",
   "CM_LOGOUT_01": "Logout",
-  "CM_PROFILE_MENU_02": "Language: {{language}}",
+  "CM_PROFILE_MENU_02": "Language : {{language}}",
   "CM_SETTING": "Settings",
   "CM_PROFILE_MENU_04": "Support",
   "CM_PROFILE_MENU_08": "Change Password",

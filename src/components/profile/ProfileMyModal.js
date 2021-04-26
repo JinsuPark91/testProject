@@ -14,7 +14,7 @@ import {
 import { useHistory } from 'react-router-dom';
 import { useObserver, Observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
-import i18next from '../../i18n';
+import { fallbackLanguage } from '../../i18n';
 import PlatformUIStore from '../../stores/PlatformUIStore';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
@@ -24,7 +24,7 @@ import MovePage from '../../utils/MovePage';
 import { SELECTED_TAB } from '../usersettings/SettingConstants';
 import { getMainWaplURL } from '../../utils/UrlUtil';
 import { handleFriendsDialogType } from '../../utils/FriendsUtil';
-import { isSpaceAdmin, isNewSpaceMessageExist } from '../../utils/GeneralUtil';
+import { isSpaceAdmin } from '../../utils/GeneralUtil';
 import { ArrowRightIcon } from '../Icons';
 import convertSpaceIcon from '../../assets/convert_space.svg';
 import moreSpaceIcon from '../../assets/view_more.svg';
@@ -38,7 +38,7 @@ const ProfileMyModal = ({
   visible = false,
   created = false,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { userStore, spaceStore, configStore } = useCoreStores();
   const { isGuest } = userStore.myProfile;
   const history = useHistory();
@@ -225,13 +225,24 @@ const ProfileMyModal = ({
     </Menu>
   );
 
-  const handleChangeLanguage = key => {
-    if (i18next.language === key) return;
-    i18next.changeLanguage(key).then((t, err) => {
-      if (err) return console.log(`error is..${err}`);
-      sessionStorage.setItem('language', key);
-      userStore.myProfile.setLanguage(key);
-    });
+  const handleChangeLanguage = async language => {
+    const result = await userStore.updateMyLanguage({ language });
+    if (result) {
+      i18n.changeLanguage(language).then((t, err) => {
+        if (err) return console.log(`error is..${err}`);
+      });
+    }
+  };
+
+  const getLanguage = () => {
+    const { language } = userStore.myProfile;
+    if (!language) return fallbackLanguage;
+
+    const match = language.match(/en|ko/g);
+    const isValidLanguage = !!match;
+    if (isValidLanguage) return match?.[0];
+
+    return fallbackLanguage;
   };
 
   // NOTE: 메뉴는 언어 설정과 관계없음
@@ -292,11 +303,6 @@ const ProfileMyModal = ({
     />
   );
 
-  const getLanguage = () => {
-    if (userStore.myProfile.language) return userStore.myProfile.language;
-    return sessionStorage.getItem('language');
-  };
-
   const subContent = (
     <>
       <UserSpaceArea isEdit={isEditMode}>
@@ -315,7 +321,13 @@ const ProfileMyModal = ({
             >
               <Button className="btn-convert" onClick={handleSpaceList}>
                 <Observer>
-                  {() => (isNewSpaceMessageExist() ? <NewBadge /> : null)}
+                  {() => {
+                    const spaceUnreadCount =
+                      spaceStore.totalUnreadSpaceCount -
+                      spaceStore.currentSpace?.totalUnreadRoomCount;
+                    if (spaceUnreadCount > 0) return <NewBadge />;
+                    return null;
+                  }}
                 </Observer>
                 <Blind>{t('CM_PROFILE_PROFILE_MENU_01')}</Blind>
               </Button>
@@ -342,10 +354,11 @@ const ProfileMyModal = ({
         {() => (
           <UserSubArea>
             <img alt="lang" src={LanguageIcon} />
-            Language :{' '}
-            {getLanguage() === 'ko' || getLanguage() === 'ko-KR'
-              ? t('CM_KOREAN')
-              : t('CM_ENGLISH')}
+            {t('CM_PROFILE_MENU_02', {
+              language: getLanguage()?.includes('ko')
+                ? t('CM_KOREAN')
+                : t('CM_ENGLISH'),
+            })}
             <Dropdown
               trigger={['click']}
               overlay={LanguageMenu}
@@ -362,11 +375,11 @@ const ProfileMyModal = ({
         <ConvertDropdown>
           <ConvertNow>
             <LogoSmall checked>
-              {spaceStore.currentSpace?.unreadSpaceCount > 0 && (
+              {spaceStore.currentSpace?.totalUnreadRoomCount > 0 && (
                 <LogoNumber>
-                  {spaceStore.currentSpace?.unreadSpaceCount > 99
+                  {spaceStore.currentSpace?.totalUnreadRoomCount > 99
                     ? '99+'
-                    : spaceStore.currentSpace?.unreadSpaceCount}
+                    : spaceStore.currentSpace?.totalUnreadRoomCount}
                 </LogoNumber>
               )}
               {spaceStore.currentSpace?.name[0]}
@@ -390,11 +403,11 @@ const ProfileMyModal = ({
                       key={elem?.id}
                     >
                       <LogoSmall>
-                        {elem?.unreadSpaceCount > 0 && (
+                        {elem?.totalUnreadRoomCount > 0 && (
                           <LogoNumber>
-                            {elem.unreadSpaceCount > 99
+                            {elem.totalUnreadRoomCount > 99
                               ? '99+'
-                              : elem.unreadSpaceCount}
+                              : elem.totalUnreadRoomCount}
                           </LogoNumber>
                         )}
                         {elem?.name[0]}
@@ -569,6 +582,7 @@ const UserMail = styled.span`
   text-overflow: ellipsis;
 `;
 const UserStatus = styled.span`
+  margin-top: 0.3rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -576,8 +590,8 @@ const UserStatus = styled.span`
   text-overflow: ellipsis;
   word-wrap: break-word;
   font-size: 0.63rem;
-  color: white;
-  margin-top: 0.3rem;
+  color: #fff;
+  opacity: 0.5;
 `;
 const UserButtonBox = styled.div`
   display: flex;
@@ -592,7 +606,7 @@ const UserButtonBox = styled.div`
     padding: 0 0.375rem;
     font-size: 0.75rem;
     line-height: 1.13rem;
-    color: #f7f4ef;
+    color: #f7f4ef !important;
     &:hover span {
       text-decoration: underline;
     }
@@ -691,10 +705,10 @@ const NewBadge = styled.div`
 `;
 const Logo = styled(Avatar)`
   flex-shrink: 0;
-  width: 2.64rem;
-  height: 2.64rem;
+  width: 2.625rem;
+  height: 2.625rem;
   font-size: 1.125rem;
-  line-height: 2.375rem;
+  line-height: 2.5rem;
   font-weight: 500;
   color: #49423a;
   border-radius: 0.25rem;

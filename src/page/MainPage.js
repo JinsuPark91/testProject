@@ -15,6 +15,8 @@ import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
 import { WindowMail } from 'teespace-mail-app';
 import { Prompt } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { ThemeProvider } from 'styled-components';
+import { useObserver } from 'mobx-react';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
 import { Loader, Wrapper } from './MainPageStyle';
@@ -25,7 +27,7 @@ import WindowManager from '../components/common/WindowManager';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 
 const MainPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [toastText, setToastText] = useState('');
@@ -100,7 +102,17 @@ const MainPage = () => {
         const lastUrl = histories?.[0]?.lastUrl;
         return Promise.resolve(lastUrl);
       })
-      .then(lastUrl => {
+      .then(async lastUrl => {
+        // 계정 langauge 적용. 없으면 브라우저 기본 langauge로 업데이트 한다.
+        await userStore.getMyLanguage();
+        if (!userStore.myProfile.language) {
+          await userStore.updateMyLanguage({
+            language: i18n.language,
+          });
+        } else {
+          i18n.changeLanguage(userStore.myProfile.language);
+        }
+
         // NOTE : 마지막 접속 URL 로 Redirect 시킨다.
         if (lastUrl) {
           history.push(lastUrl);
@@ -328,55 +340,53 @@ const MainPage = () => {
     return isRoutable;
   };
 
-  if (isLoading) {
-    return (
+  return useObserver(() =>
+    isLoading ? (
       <Loader>
         <img src={LoadingImg} alt="loader" />
       </Loader>
-    );
-  }
-
-  return (
-    <Wrapper>
-      <Toast
-        visible={isToastVisible}
-        timeoutMs={1000}
-        onClose={() => {
-          setIsToastVisible(false);
-        }}
-      >
-        {toastText}
-      </Toast>
-      <FaviconChanger />
-      <Prompt
-        message={(location, action) => {
-          return beforeRoute(location, action);
-        }}
-      />
-      {leftSide}
-      {mainSide}
-      <WindowManager />
-      {/* <PortalWindowManager /> */}
-      <WindowMail />
-      {isRefreshModalVisible && (
-        <Message
-          visible={isRefreshModalVisible}
-          title={t('CM_LOGIN_POLICY_10')}
-          subtitle={t('CM_LOGIN_POLICY_11')}
-          btns={[
-            {
-              type: 'solid',
-              shape: 'round',
-              text: t('CM_LOGIN_POLICY_03'),
-              onClick: () => {
-                setIsRefreshModalVisible(false);
-                window.location.reload();
-              },
-            },
-          ]}
-        />
-      )}
-    </Wrapper>
+    ) : (
+      <ThemeProvider theme={PlatformUIStore.theme}>
+        <Wrapper>
+          <Toast
+            visible={isToastVisible}
+            timeoutMs={1000}
+            onClose={() => setIsToastVisible(false)}
+          >
+            {toastText}
+          </Toast>
+          <FaviconChanger />
+          <Prompt
+            message={(location, action) => {
+              return beforeRoute(location, action);
+            }}
+          />
+          {leftSide}
+          {mainSide}
+          <WindowManager />
+          {/* <PortalWindowManager /> */}
+          <WindowMail />
+          {isRefreshModalVisible && (
+            <Message
+              visible={isRefreshModalVisible}
+              title={t('CM_LOGIN_POLICY_10')}
+              subtitle={t('CM_LOGIN_POLICY_11')}
+              btns={[
+                {
+                  type: 'solid',
+                  shape: 'round',
+                  text: t('CM_LOGIN_POLICY_03'),
+                  onClick: () => {
+                    setIsRefreshModalVisible(false);
+                    window.location.reload();
+                  },
+                },
+              ]}
+            />
+          )}
+        </Wrapper>
+      </ThemeProvider>
+    ),
   );
 };
 

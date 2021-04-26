@@ -37,7 +37,7 @@ function PrivateLoginPage() {
         domainUrl: '',
         authorizeType: 'Ksign',
         ssoType:
-          process.env.REACT_APP_SSO_TYPE || window?.env?.REACT_APP_SSO_TYPE,
+          window?.env?.REACT_APP_SSO_TYPE || process.env.REACT_APP_SSO_TYPE,
       });
       if (res.id) {
         if (window.location.pathname.includes('/mobile')) {
