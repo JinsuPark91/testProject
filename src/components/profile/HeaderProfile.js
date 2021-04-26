@@ -21,25 +21,17 @@ const HeaderProfile = observer(() => {
     spaceStore.totalUnreadSpaceCount -
     spaceStore.currentSpace?.totalUnreadRoomCount;
 
+  const thumbPhoto = userStore.getProfilePhotoURL(myUserId, 'small');
+  const thumbPhotoMedium = userStore.getProfilePhotoURL(myUserId, 'medium');
+
   const toggleMyModal = useCallback(() => {
     setMyModalVisible(v => !v);
-    if (tutorialVisible) {
-      setTutorialVisible(false);
-    }
+    if (tutorialVisible) setTutorialVisible(false);
   }, [tutorialVisible]);
-
-  const thumbPhoto = userStore.getProfilePhotoURL(
-    userStore.myProfile.id,
-    'small',
-  );
-  const thumbPhotoMedium = userStore.getProfilePhotoURL(
-    userStore.myProfile.id,
-    'medium',
-  );
 
   return (
     <>
-      <ProfileIcon className="header__profile-button" onClick={toggleMyModal}>
+      <ProfileIcon onClick={toggleMyModal}>
         {spaceUnreadCount > 0 && <NewBadge />}
         <ThumbImage src={thumbPhoto} />
         <SettingImage>
