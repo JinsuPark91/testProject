@@ -10,6 +10,7 @@ import {
   logEvent,
   AddFriendsByInvitationDialog,
   AddFriendsBySearch,
+  SettingDialog,
 } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import { useObserver, Observer } from 'mobx-react';
@@ -19,7 +20,6 @@ import PlatformUIStore from '../../stores/PlatformUIStore';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
 import SpaceEditModal from './SpaceEditModal';
-import SettingDialog from '../usersettings/SettingDialog';
 import MovePage from '../../utils/MovePage';
 import { SELECTED_TAB } from '../usersettings/SettingConstants';
 import { getMainWaplURL } from '../../utils/UrlUtil';
