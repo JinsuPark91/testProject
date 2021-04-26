@@ -15,6 +15,8 @@ import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
 import { WindowMail } from 'teespace-mail-app';
 import { Prompt } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { ThemeProvider } from 'styled-components';
+import { useObserver } from 'mobx-react';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
 import { Loader, Wrapper } from './MainPageStyle';
@@ -338,53 +340,61 @@ const MainPage = () => {
     return isRoutable;
   };
 
-  if (isLoading) {
-    return (
+  // if (isLoading) {
+  //   return (
+  //     <Loader>
+  //       <img src={LoadingImg} alt="loader" />
+  //     </Loader>
+  //   );
+  // }
+
+  return useObserver(() =>
+    isLoading ? (
       <Loader>
         <img src={LoadingImg} alt="loader" />
       </Loader>
-    );
-  }
-
-  return (
-    <Wrapper>
-      <Toast
-        visible={isToastVisible}
-        timeoutMs={1000}
-        onClose={() => setIsToastVisible(false)}
-      >
-        {toastText}
-      </Toast>
-      <FaviconChanger />
-      <Prompt
-        message={(location, action) => {
-          return beforeRoute(location, action);
-        }}
-      />
-      {leftSide}
-      {mainSide}
-      <WindowManager />
-      {/* <PortalWindowManager /> */}
-      <WindowMail />
-      {isRefreshModalVisible && (
-        <Message
-          visible={isRefreshModalVisible}
-          title={t('CM_LOGIN_POLICY_10')}
-          subtitle={t('CM_LOGIN_POLICY_11')}
-          btns={[
-            {
-              type: 'solid',
-              shape: 'round',
-              text: t('CM_LOGIN_POLICY_03'),
-              onClick: () => {
-                setIsRefreshModalVisible(false);
-                window.location.reload();
-              },
-            },
-          ]}
-        />
-      )}
-    </Wrapper>
+    ) : (
+      <ThemeProvider theme={PlatformUIStore.theme}>
+        <Wrapper>
+          <Toast
+            visible={isToastVisible}
+            timeoutMs={1000}
+            onClose={() => setIsToastVisible(false)}
+          >
+            {toastText}
+          </Toast>
+          <FaviconChanger />
+          <Prompt
+            message={(location, action) => {
+              return beforeRoute(location, action);
+            }}
+          />
+          {leftSide}
+          {mainSide}
+          <WindowManager />
+          {/* <PortalWindowManager /> */}
+          <WindowMail />
+          {isRefreshModalVisible && (
+            <Message
+              visible={isRefreshModalVisible}
+              title={t('CM_LOGIN_POLICY_10')}
+              subtitle={t('CM_LOGIN_POLICY_11')}
+              btns={[
+                {
+                  type: 'solid',
+                  shape: 'round',
+                  text: t('CM_LOGIN_POLICY_03'),
+                  onClick: () => {
+                    setIsRefreshModalVisible(false);
+                    window.location.reload();
+                  },
+                },
+              ]}
+            />
+          )}
+        </Wrapper>
+      </ThemeProvider>
+    ),
   );
 };
 
