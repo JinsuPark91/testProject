@@ -66,17 +66,7 @@ function PrivateLoginPage() {
     );
   }
   return (
-    <Form
-      // {...layout}
-      name="basic"
-      initialValues={{
-        saveId: false,
-        autoLogin: false,
-      }}
-      form={form}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-    >
+    <Form form={form} onFinish={onFinish} onFinishFailed={onFinishFailed}>
       <LoginIdInput />
       {/* <LoginPasswordInput /> */}
       {isLoading === true && <span>로그인 중</span>}
