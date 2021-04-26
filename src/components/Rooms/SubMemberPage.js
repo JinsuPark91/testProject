@@ -94,7 +94,11 @@ const TableRow = ({ style, member }) => {
         {() => <Cell style={{ width: WIDTH.TEAM }}>{member.orgName}</Cell>}
       </Observer>
       <Observer>
-        {() => <Cell style={{ width: WIDTH.JOB }}>{member.position}</Cell>}
+        {() => (
+          <Cell style={{ width: WIDTH.JOB }}>
+            {`${member.userJob}/${member.position}`}
+          </Cell>
+        )}
       </Observer>
       <Observer>
         {() => <Cell style={{ width: WIDTH.PHONE }}>{member.userPhone}</Cell>}
