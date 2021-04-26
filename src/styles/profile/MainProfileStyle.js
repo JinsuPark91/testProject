@@ -233,6 +233,13 @@ export const StatusText = styled.span`
   word-wrap: break-word;
 `;
 
+// GUI 없어서 임시
+export const GuestText = styled.span`
+  color: #8b8f95;
+  font-size: 0.75rem;
+  margin-top: 1.25rem;
+`;
+
 export const ButtonContainer = styled.div`
   height: 50px;
   margin-top: 1.25rem;
