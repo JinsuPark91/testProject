@@ -43,31 +43,29 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
         (async () => {
           try {
             const stateFrom = props.location.state?.from;
-            const getRoutingPath = Cookies.get('routingPath') ? Cookies.get('routingPath')  : "/mobile/login"
-            const getNibId = Cookies.get('NIBID');
+            const getRoutingPath = Cookies.get('routingPath');
 
             const res = await authStore.login(loginInfo);
-            console.log(getRoutingPath)
             if (res) {
-                if (stateFrom) {
-                  history.push(
-                    `${stateFrom.pathname}${props.location.state?.from.search}`,
+              if (stateFrom) {
+                history.push(
+                  `${stateFrom.pathname}${props.location.state?.from.search}`,
+                );
+              } else {
+                if (getRoutingPath?.includes('/mobile')) {
+                  const exceptMobilePath = getRoutingPath.replace(
+                    '/mobile',
+                    '',
                   );
-                } else {
-                  if (getRoutingPath.includes('/mobile')) {
-                    const exceptMobilePath = getRoutingPath.replace(
-                      '/mobile',
-                      '',
-                    );
-                    if (exceptMobilePath.includes('/login')) {
-                      history.push(`/friend`);
-                    } else {
-                      history.push(exceptMobilePath);
-                    }
+                  if (exceptMobilePath.includes('/login')) {
+                    history.push(`/friend`);
                   } else {
-                    history.push(`/f/${authStore.user.id}/profile`);
+                    history.push(exceptMobilePath);
                   }
+                } else {
+                  history.push(`/f/${authStore.user.id}/profile`);
                 }
+              }
             }
           } catch (e) {
             history.push('/privatelogin');
