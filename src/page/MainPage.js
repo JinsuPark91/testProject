@@ -340,14 +340,6 @@ const MainPage = () => {
     return isRoutable;
   };
 
-  // if (isLoading) {
-  //   return (
-  //     <Loader>
-  //       <img src={LoadingImg} alt="loader" />
-  //     </Loader>
-  //   );
-  // }
-
   return useObserver(() =>
     isLoading ? (
       <Loader>
