@@ -23,18 +23,13 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
     loginInfo = {
       // ksign 용 로그인 input
       deviceType: 'Mobile',
-      // domainUrl: '',
-      // deviceId: getDeviceId,
-      // id: getLoginId,
       authorizeType: 'Ksign',
       ssoType:
         window?.env?.REACT_APP_SSO_TYPE || process?.env?.REACT_APP_SSO_TYPE,
     };
   } else {
     loginInfo = {
-      // domainUrl: '',
       deviceType: 'PC',
-      // id: getLoginId,
       authorizeType: 'Ksign',
       ssoType:
         window?.env?.REACT_APP_SSO_TYPE || process?.env?.REACT_APP_SSO_TYPE,
@@ -48,43 +43,29 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
         (async () => {
           try {
             const stateFrom = props.location.state?.from;
-            const getRoutingPath = Cookies.get('routingPath') ? Cookies.get('routingPath')  : "/mobile/login"
-            const getNibId = Cookies.get('NIBID');
+            const getRoutingPath = Cookies.get('routingPath');
 
             const res = await authStore.login(loginInfo);
-
             if (res) {
-              // if (getNibId) {
-                  // NOTE. 이전 경로가 존재하면 해당 경로로 이동
-                if (stateFrom) {
-                  history.push(
-                    `${stateFrom.pathname}${props.location.state?.from.search}`,
+              if (stateFrom) {
+                history.push(
+                  `${stateFrom.pathname}${props.location.state?.from.search}`,
+                );
+              } else {
+                if (getRoutingPath?.includes('/mobile')) {
+                  const exceptMobilePath = getRoutingPath.replace(
+                    '/mobile',
+                    '',
                   );
-                } else {
-                  if (getRoutingPath.includes('/mobile')) {
-                    const exceptMobilePath = getRoutingPath.replace(
-                      '/mobile',
-                      '',
-                    );
-                    if (exceptMobilePath.includes('/login')) {
-                      history.push(`/friend`);
-                    } else {
-                      history.push(exceptMobilePath);
-                    }
+                  if (exceptMobilePath.includes('/login')) {
+                    history.push(`/friend`);
                   } else {
-                    history.push(`/f/${authStore.user.id}/profile`);
+                    history.push(exceptMobilePath);
                   }
+                } else {
+                  history.push(`/f/${authStore.user.id}/profile`);
                 }
-              // } else if (getRoutingPath.includes('/mobile')) {
-              //   const exceptMobilePath = getRoutingPath.replace('/mobile', '');
-              //   if (exceptMobilePath.includes('login')) {
-              //     history.push(`/friend`);
-              //   } else {
-              //     history.push(exceptMobilePath);
-              //   }
-              // } else {
-              //   history.push(`/f/${authStore.user.id}/profile`);
-              // }
+              }
             }
           } catch (e) {
             history.push('/privatelogin');
