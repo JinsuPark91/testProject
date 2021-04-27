@@ -20,12 +20,11 @@ export const Wrapper = styled.div`
 export const FriendItemWrapper = styled.div`
   /* 조직도 조회, 추천친구 스타일 */
   display: flex;
+  margin: 0 0.25rem;
   white-space: nowrap;
   text-overflow: ellipsis;
-  cursor: pointer;
-
-  margin: 0 0.25rem;
   align-items: center;
+  cursor: pointer;
 
   /* icon */
   .ant-btn-circle {
