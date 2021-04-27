@@ -61,7 +61,16 @@ const RoomSetting = ({ roomId }) => {
                 <CommonSettingPage roomId={roomId} />
               </TabPane>
 
-              <TabPane key="member" tab={t('CM_MEMBER_MANAGEMENT')}>
+              {/* AlarmBadge 추가 시 알림 뱃지 노출 */}
+              <TabPane
+                key="member"
+                tab={
+                  <>
+                    {t('CM_MEMBER_MANAGEMENT')}
+                    {/* <AlarmBadge /> */}
+                  </>
+                }
+              >
                 <MemberSettingPage roomId={roomId} />
               </TabPane>
             </StyledTabs>
@@ -120,27 +129,41 @@ const Content = styled.div`
 const StyledTabs = styled(Tabs)`
   width: 100%;
 
-  & .ant-tabs-content-holder {
+  .ant-tabs-content-holder {
     height: 100%;
   }
 
-  & .ant-tabs.default {
+  .ant-tabs.default {
     .ant-tabs-nav {
       height: 2.88rem;
       margin-bottom: 0;
     }
   }
 
-  & .ant-tabs-tab {
+  .ant-tabs-tab {
     flex: none !important;
     width: 7rem;
   }
 
-  & .ant-tabs-nav {
-    margin: 0 0 0.25rem 0;
+  .ant-tabs-tab-btn {
+    position: relative;
   }
 
-  & .ant-tabs-content {
+  .ant-tabs-nav {
+    margin: 0;
+  }
+
+  .ant-tabs-content {
     overflow-y: auto;
   }
+`;
+
+const AlarmBadge = styled.span`
+  position: absolute;
+  top: -1px;
+  right: -0.5rem;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background-color: #dc4547;
 `;
