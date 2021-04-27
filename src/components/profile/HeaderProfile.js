@@ -22,7 +22,6 @@ const HeaderProfile = observer(() => {
     spaceStore.currentSpace?.totalUnreadRoomCount;
 
   const thumbPhoto = userStore.getProfilePhotoURL(myUserId, 'small');
-  const thumbPhotoMedium = userStore.getProfilePhotoURL(myUserId, 'medium');
 
   const toggleMyModal = useCallback(() => {
     setMyModalVisible(v => !v);
@@ -31,7 +30,7 @@ const HeaderProfile = observer(() => {
 
   return (
     <>
-      <ProfileIcon onClick={toggleMyModal}>
+      <ProfileIcon className="header__profile-button" onClick={toggleMyModal}>
         {spaceUnreadCount > 0 && <NewBadge />}
         <ThumbImage src={thumbPhoto} />
         <SettingImage>
@@ -40,10 +39,8 @@ const HeaderProfile = observer(() => {
       </ProfileIcon>
       {myModalVisible && (
         <ProfileMyModal
-          userId={myUserId}
           onCancel={toggleMyModal}
           visible={myModalVisible}
-          thumbPhoto={thumbPhotoMedium}
           created={tutorialVisible}
         />
       )}

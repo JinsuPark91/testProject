@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Button, Dropdown, Menu, Checkbox, Tooltip } from 'antd';
+import { Button, Dropdown, Menu, Checkbox } from 'antd';
 import {
   useCoreStores,
+  Tooltip,
   Toast,
   Message,
   ProfileInfoModal,
@@ -61,18 +62,10 @@ import {
 import { ReactComponent as SquareSpaceIcon } from '../../assets/card_view.svg';
 import LanguageIcon from '../../assets/language.svg';
 
-const ProfileMyModal = ({
-  userId,
-  onCancel,
-  thumbPhoto,
-  visible = false,
-  created = false,
-}) => {
+const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   const { t, i18n } = useTranslation();
   const { userStore, spaceStore, configStore } = useCoreStores();
   const history = useHistory();
-  const profile = userStore.myProfile;
-  const { isGuest } = userStore.myProfile;
 
   const [isCreated, setIsCreated] = useState(created);
   const [settingDialogVisible, setSettingDialogVisible] = useState(false);
@@ -95,12 +88,16 @@ const ProfileMyModal = ({
     setIsNewSpaceErrorMessageVisible,
   ] = useState(false);
 
+  const { myProfile } = userStore;
+  const { isGuest } = myProfile;
+  const myUserId = myProfile.id;
+  const thumbPhoto = userStore.getProfilePhotoURL(myUserId, 'medium');
+
   const handleSettingDialogOpen = useCallback(() => {
     setIsCreated(false);
     setSettingDialogVisible(true);
     setSpaceListVisible(false);
   }, []);
-
   const handleCloseSettingDialog = useCallback(() => {
     setSettingDialogVisible(false);
   }, []);
@@ -111,7 +108,7 @@ const ProfileMyModal = ({
 
   const handleSpaceList = useCallback(async () => {
     await spaceStore.fetchSpaces({
-      userId: userStore.myProfile.id,
+      userId: myUserId,
       isLocal: process.env.REACT_APP_ENV === 'local',
     });
     setSpaceListVisible(prevVisible => !prevVisible);
@@ -134,19 +131,22 @@ const ProfileMyModal = ({
     setTimeout(() => onCancel(), 1);
   }, [onCancel]);
 
-  const handleCancelInviteMail = useCallback(() => {
-    setIsInviteDialogOpen(false);
-  }, []);
-
-  const handleInviteDialog = useCallback(() => {
+  const handleOpenInviteModal = useCallback(() => {
     setIsInviteDialogOpen(true);
     logEvent('threedot', 'clickInviteMemberBtn');
   }, []);
+  const handleCancelInviteModal = useCallback(() => {
+    setIsInviteDialogOpen(false);
+  }, []);
 
-  const handleMemberList = useCallback(async () => {
+  const handleOpenMemberModal = useCallback(async () => {
     setIsViewMode(true);
     setIsFriendMemViewOpen(true);
     logEvent('threedot', 'clickShowMemberList');
+  }, []);
+
+  const handleOpenSpaceEditModal = useCallback(() => {
+    setIsSpaceEditDialogVisible(true);
   }, []);
 
   const handleAddFriend = useCallback(async () => {
@@ -154,17 +154,13 @@ const ProfileMyModal = ({
     setIsFriendMemViewOpen(true);
   }, []);
 
-  const handleSpaceEditDialog = useCallback(() => {
-    setIsSpaceEditDialogVisible(true);
-  }, []);
-
-  const handleAdminPage = useCallback(() => {
+  const handleMoveAdminPage = useCallback(() => {
     window.open(`${window.location.origin}/admin`);
   }, []);
   const handleMoveSpacePage = useCallback(() => {
     MovePage('spaces');
   }, []);
-  const handleMoveAccountPage = useCallback(() => {
+  const handleMovePasswordPage = useCallback(() => {
     MovePage('account?open=password');
   }, []);
   const handleOpenSupport = useCallback(() => {
@@ -172,18 +168,15 @@ const ProfileMyModal = ({
   }, []);
 
   const handleClickNewSpace = () => {
-    try {
-      const adminSpace = spaceStore.getAdminSpaces({
-        loginId: userStore.myProfile?.loginId,
-      });
-      if (adminSpace.length >= 3) {
-        setIsNewSpaceErrorMessageVisible(true);
-      } else {
-        window.location.href = getMainWaplURL('/select-space-type');
-      }
-    } catch (e) {
-      console.log('SpaceStore Adminspace Get Error...');
-    }
+    const adminSpace = spaceStore.getAdminSpaces({
+      loginId: myProfile.loginId,
+    });
+    if (adminSpace.length >= 3) setIsNewSpaceErrorMessageVisible(true);
+    else window.location.href = getMainWaplURL('/select-space-type');
+  };
+
+  const getBackPhoto = () => {
+    return userStore.getBackgroundPhotoURL(myUserId);
   };
 
   useEffect(() => {
@@ -192,26 +185,23 @@ const ProfileMyModal = ({
 
   const isTmaxDomain = !!/^(tmax)\./gi.exec(window.location.hostname);
 
-  const getBackPhoto = () => {
-    return userStore.getBackgroundPhotoURL(userId);
-  };
-
-  // 이후 '현재 스페이스의 어드민'인지를 체크하도록 수정
   const moreMenu = (
     <Menu style={{ minWidth: '6.25rem' }}>
       {!isTmaxDomain && !isGuest && !configStore.isFromCNU ? (
-        <Menu.Item onClick={handleInviteDialog}>
+        <Menu.Item onClick={handleOpenInviteModal}>
           {t('CM_USER_INVITE')}
         </Menu.Item>
       ) : null}
-      <Menu.Item onClick={handleMemberList}>{t('CM_USER_LIST')}</Menu.Item>
+      <Menu.Item onClick={handleOpenMemberModal}>{t('CM_USER_LIST')}</Menu.Item>
       {isSpaceAdmin() && !configStore.isFromCNU ? (
-        <Menu.Item onClick={handleSpaceEditDialog}>
+        <Menu.Item onClick={handleOpenSpaceEditModal}>
           {t('CM_SPACE_EDIT')}
         </Menu.Item>
       ) : null}
       {isSpaceAdmin() && (
-        <Menu.Item onClick={handleAdminPage}>{t('CM_ADMIN_PAGE')}</Menu.Item>
+        <Menu.Item onClick={handleMoveAdminPage}>
+          {t('CM_ADMIN_PAGE')}
+        </Menu.Item>
       )}
     </Menu>
   );
@@ -226,7 +216,7 @@ const ProfileMyModal = ({
   };
 
   const getLanguage = () => {
-    const { language } = userStore.myProfile;
+    const { language } = myProfile;
     if (!language) return fallbackLanguage;
 
     const match = language.match(/en|ko/g);
@@ -252,31 +242,44 @@ const ProfileMyModal = ({
       <UserImage>
         <img src={thumbPhoto} onLoad={revokeURL} alt="" />
       </UserImage>
-      <UserName>{userStore.myProfile?.displayName}</UserName>
-      <UserMail>{`(${userStore.myProfile?.loginId})`}</UserMail>
-      {userStore.myProfile?.profileStatusMsg && (
-        <UserStatus>{userStore.myProfile?.profileStatusMsg}</UserStatus>
+      <UserName>{myProfile.displayName}</UserName>
+      <UserMail>{`(${myProfile.loginId})`}</UserMail>
+      {myProfile.profileStatusMsg && (
+        <UserStatus>{myProfile.profileStatusMsg}</UserStatus>
       )}
 
       <UserButtonBox>
-        <Button type="link" onClick={toggleEditMode}>
+        <Button
+          className="header-profile__edit-button"
+          type="link"
+          onClick={toggleEditMode}
+        >
           {t('CM_EDIT_PROFILE')}
         </Button>
 
         {configStore.isActivateComponent('Platform', 'ChangePassword') ? (
           <>
             <UserBar />
-            <Button type="link" onClick={handleMoveAccountPage}>
+            <Button
+              className="header-profile__password-button"
+              type="link"
+              onClick={handleMovePasswordPage}
+            >
               {t('CM_PROFILE_MENU_08')}
             </Button>
           </>
         ) : null}
       </UserButtonBox>
-      <LogoutButton onClick={handleLogout}>{t('CM_LOGOUT_01')}</LogoutButton>
+      <LogoutButton
+        className="header-profile__logout-button"
+        onClick={handleLogout}
+      >
+        {t('CM_LOGOUT_01')}
+      </LogoutButton>
     </>
   ) : (
     <ProfileInfoModal
-      userId={userId}
+      userId={myUserId}
       visible={isEditMode}
       onClose={toggleEditMode}
       profilePhoto={thumbPhoto}
@@ -411,7 +414,7 @@ const ProfileMyModal = ({
       )}
       {isCreated && (
         <ProfileSpaceModal
-          userName={profile?.displayName}
+          userName={myProfile.displayName}
           onInvite={() => setIsInviteDialogOpen(true)}
           onRoomCreate={() => setIsRoomDialogVisible(true)}
           onAddFriend={handleAddFriend}
@@ -427,7 +430,7 @@ const ProfileMyModal = ({
       {isInviteDialogOpen && (
         <AddFriendsByInvitationDialog
           visible={isInviteDialogOpen}
-          onCancel={handleCancelInviteMail}
+          onCancel={handleCancelInviteModal}
         />
       )}
       {isFriendMemViewOpen && (
