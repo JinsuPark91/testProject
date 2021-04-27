@@ -220,16 +220,21 @@ export const UserSubArea = styled.div`
     border-top: 1px solid #e3e7eb;
   }
 `;
-export const LanguageButton = styled.div`
+export const LanguageButton = styled.button`
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   width: 1.5rem;
   height: 1.5rem;
+  border: none;
   border-radius: 0.25rem;
+  background-color: transparent;
   margin-left: auto;
-  cursor: pointer;
   &:hover {
+    background-color: #f2efec;
+  }
+  &:active,
+  &:hover:active:focus {
     background-color: #f2efec;
   }
 `;

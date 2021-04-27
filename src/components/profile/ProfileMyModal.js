@@ -348,7 +348,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
               overlay={LanguageMenu}
               placement="bottomRight"
             >
-              <LanguageButton>
+              <LanguageButton className="header-profile__language-button">
                 <ArrowRightIcon color="#7B7671" />
               </LanguageButton>
             </Dropdown>
