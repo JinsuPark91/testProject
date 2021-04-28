@@ -28,7 +28,7 @@ function PrivateLoginPage() {
         process.env.REACT_APP_ENV === 'local'
           ? {}
           : {
-              domain: `.${window.location.host}`,
+              domain: `${window.location.host}`,
             },
       );
       const res = await authStore.login({

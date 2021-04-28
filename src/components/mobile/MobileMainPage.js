@@ -11,7 +11,18 @@ import LoadingImg from '../../assets/WAPL_Loading.gif';
 const Wrapper = styled.div`
   height: 100%;
 `;
-const Loader = styled.div``;
+const Loader = styled.div`
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+
+  & img {
+    width: 5rem;
+    height: auto;
+  }
+`;
 
 const MobileMainPage = () => {
   const { resourceType, resourceId } = useParams();

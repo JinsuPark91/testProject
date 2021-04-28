@@ -222,7 +222,7 @@ const Header = observer(() => {
     const found = findRoom();
     if (found) {
       if (found?.type === 'WKS0001') {
-        return userStore.myProfile.nick || userStore.myProfile.name;
+        return userStore.myProfile.displayName;
       }
       if (found?.customName || found?.name) {
         return found?.customName || found?.name;
@@ -280,11 +280,7 @@ const Header = observer(() => {
     });
   };
 
-  const handleSearch = () => {
-    uiStore.isSearchVisible = true;
-    // Refactoring: Talk Web isSearchVisible 의존성 제거
-    EventBus.dispatch('Talk:OpenSearch');
-  };
+  const handleSearch = () => EventBus.dispatch('Talk:OpenSearch');
 
   const openSubApp = async appName => {
     const queryParams = { ...getQueryParams(), sub: appName };
@@ -357,7 +353,6 @@ const Header = observer(() => {
       closeSubApp();
     }
 
-    // 최대한 기존 코드 안 건드리려고 했는데, 수정해도 무방함
     switch (appName) {
       case 'drive':
         logEvent('gnb', 'clickTeeDriveBtn');

@@ -29,6 +29,7 @@ import {
   UserInfoItem,
   BigText,
   StatusText,
+  GuestText,
   ButtonContainer,
   StyleIcon,
   UserInfoText,
@@ -89,6 +90,7 @@ const MainProfile = observer(({ userId = null }) => {
   const profile = isMyId()
     ? userStore.myProfile
     : userStore.userProfiles[userId];
+  const { isGuest } = profile;
   const getBackPhoto = () => {
     return userStore.getBackgroundPhotoURL(userId);
   };
@@ -467,8 +469,9 @@ const MainProfile = observer(({ userId = null }) => {
               )}
             </StatusText>
             {/* <Tooltip placement="bottom" title={t('CM_EDIT_ONLY_ADMIN')} color="#4C535D"></Tooltip> */}
+            {isGuest && <GuestText>{t('CM_GUEST')}</GuestText>}
             <UserInfoList>
-              {userType === 'USR0001' && (
+              {userType === 'USR0001' && !isGuest && (
                 <UserInfoItem style={{ alignItems: 'flex-start' }}>
                   <StyleOfficeIcon iconimg="address" />
                   <UserInfoText>
@@ -483,7 +486,7 @@ const MainProfile = observer(({ userId = null }) => {
                   </UserInfoText>
                 </UserInfoItem>
               )}
-              {userType === 'USR0001' && (
+              {userType === 'USR0001' && !isGuest && (
                 <UserInfoItem>
                   <StyleOfficeIcon iconimg="company" />
                   {isEditMode ? (
