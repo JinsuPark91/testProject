@@ -10,7 +10,6 @@ import {
   logEvent,
   AddFriendsByInvitationDialog,
   AddFriendsBySearch,
-  SettingDialog,
 } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import { useObserver, Observer } from 'mobx-react';
@@ -19,6 +18,7 @@ import { fallbackLanguage } from '../../i18n';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
 import SpaceEditModal from './SpaceEditModal';
+import SettingDialog from '../usersettings/SettingDialog';
 import MovePage from '../../utils/MovePage';
 import { getMainWaplURL } from '../../utils/UrlUtil';
 import { isSpaceAdmin } from '../../utils/GeneralUtil';
@@ -513,7 +513,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
       }
       transitionName=""
       maskTransitionName=""
-      style={{ top: '2.875rem', margin: '0 20px 0 auto' }}
+      style={{ top: '2.875rem', margin: '0 1.25rem 0 auto' }}
     />
   ));
 };
