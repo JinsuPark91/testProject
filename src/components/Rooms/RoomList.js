@@ -76,40 +76,39 @@ function RoomList() {
     logEvent('main', 'clickRoomCreateBtn');
   };
 
-  // const handleSelectRoom = useCallback(
-  //   roomInfo => {
-  //     (async () => {
-  //       // NOTE : 같은 방을 누르면 history 부르지 않는다.
-  //       const isSameRoom =
-  //         uiStore.resourceType === 's' &&
-  //         uiStore.resourceId === roomInfo.id;
-  //       if (isSameRoom) return Promise.resolve();
+  const handleSelectRoom = useCallback(
+    roomInfo => {
+      (async () => {
+        // NOTE : 같은 방을 누르면 history 부르지 않는다.
+        const isSameRoom =
+          uiStore.resourceType === 's' && uiStore.resourceId === roomInfo.id;
+        if (isSameRoom) return Promise.resolve();
 
-  //       try {
-  //         const routingHistory = (
-  //           await userStore.getRoutingHistory({
-  //             userId: userStore.myProfile.id,
-  //             roomId: roomInfo.id,
-  //           })
-  //         )?.[0];
+        try {
+          const routingHistory = (
+            await userStore.getRoutingHistory({
+              userId: userStore.myProfile.id,
+              roomId: roomInfo.id,
+            })
+          )?.[0];
 
-  //         history.push(routingHistory?.lastUrl || `/s/${roomInfo.id}/talk`);
-  //       } catch (err) {
-  //         console.log('[Platform] Get routing history 에러 : ', err);
-  //         history.push(`/s/${roomInfo.id}/talk`);
-  //       }
-  //     })();
-  //   },
-  //   [history, userStore],
-  // );
+          history.push(routingHistory?.lastUrl || `/s/${roomInfo.id}/talk`);
+        } catch (err) {
+          console.log('[Platform] Get routing history 에러 : ', err);
+          history.push(`/s/${roomInfo.id}/talk`);
+        }
+      })();
+    },
+    [history, userStore],
+  );
 
-  const handleSelectRoom = roomInfo => {
-    const isSameRoom =
-      uiStore.resourceType === 's' && uiStore.resourceId === roomInfo.id;
-    if (isSameRoom) return Promise.resolve();
+  // const handleSelectRoom = roomInfo => {
+  //   const isSameRoom =
+  //     uiStore.resourceType === 's' && uiStore.resourceId === roomInfo.id;
+  //   if (isSameRoom) return Promise.resolve();
 
-    history.push(`/s/${roomInfo.id}/talk`);
-  };
+  //   history.push(`/s/${roomInfo.id}/talk`);
+  // };
 
   const handleChange = value => {
     setKeyword(value);
