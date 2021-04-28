@@ -4,7 +4,7 @@ import { Button, Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
 import { useCoreStores, Message, Toast } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 import {
   handleProfileMenuClick,
@@ -60,6 +60,7 @@ const MainProfile = observer(({ userId = null }) => {
     roomStore,
     configStore,
   } = useCoreStores();
+  const { uiStore } = useStores();
   const [isEditMode, setEditMode] = useState(false);
   const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
   const [toastText, setToastText] = useState('');
@@ -181,7 +182,7 @@ const MainProfile = observer(({ userId = null }) => {
     // const queryParams = { ...getQueryParams(), sub: 'meeting' };
     const queryString = getQueryString(getQueryParams());
     const openMeeting = roomInfo => {
-      PlatformUIStore.openWindow({
+      uiStore.openWindow({
         id: roomInfo.id,
         type: 'meeting',
         name: null,

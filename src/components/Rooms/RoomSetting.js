@@ -5,13 +5,14 @@ import { Observer } from 'mobx-react';
 import { Tabs } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeftIcon, CancelIcon } from '../Icons';
-import { RoomSettingStore as store } from '../../stores/RoomSettingStore';
+import { useStores } from '../../stores';
 import MemberSettingPage from './MemberSettingPage';
 import CommonSettingPage from './CommonSettingPage';
 
 const { TabPane } = Tabs;
 
 const RoomSetting = ({ roomId }) => {
+  const { roomSettingStore: store } = useStores();
   const { t } = useTranslation();
   const history = useHistory();
 

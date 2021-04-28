@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { Tabs } from 'antd';
 import { ChattingIcon } from '../Icons';
 import { FriendsIcon } from './Icon';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 import { handleCheckNewFriend } from '../../utils/FriendsUtil';
 
 const Wrapper = styled.div`
@@ -89,6 +89,7 @@ const FooterTab = styled(Tabs)`
 const { TabPane } = FooterTab;
 
 const MobileFooter = () => {
+  const { uiStore } = useStores();
   const history = useHistory();
   const { userStore, friendStore, roomStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
@@ -106,7 +107,7 @@ const MobileFooter = () => {
   return (
     <Wrapper>
       <FooterTab
-        activeKey={PlatformUIStore.resourceType}
+        activeKey={uiStore.resourceType}
         onTabClick={handleSelectTab}
         animated={false}
       >
@@ -132,7 +133,7 @@ const MobileFooter = () => {
             <IconWrapper className="icon-wrapper">
               <Observer>
                 {() => {
-                  PlatformUIStore.totalUnreadCount = roomStore
+                  uiStore.totalUnreadCount = roomStore
                     .getRoomArray()
                     .filter(roomInfo => roomInfo.isVisible)
                     .reduce(
@@ -141,7 +142,7 @@ const MobileFooter = () => {
                         parseInt(roomInfo.metadata.count ?? '0', 10),
                       0,
                     );
-                  return newBadgeView(PlatformUIStore.totalUnreadCount);
+                  return newBadgeView(uiStore.totalUnreadCount);
                 }}
               </Observer>
               <ChattingIcon width={1.5} height={1.5} color="#7B7671" />

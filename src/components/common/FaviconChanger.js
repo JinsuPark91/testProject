@@ -1,8 +1,9 @@
 import React from 'react';
 import { Observer } from 'mobx-react';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 
 const FaviconChanger = () => {
+  const { uiStore } = useStores();
   const changeFavicon = isAlarm => {
     const favicon = document.getElementById('favicon');
     favicon.href = `/favicon${isAlarm ? '_alarm' : ''}.ico`;
@@ -12,8 +13,8 @@ const FaviconChanger = () => {
     <Observer>
       {() => {
         let isAlarm = false;
-        if (PlatformUIStore.totalUnreadCount > 0) {
-          // if (PlatformUIStore.layout === 'collapse') {
+        if (uiStore.totalUnreadCount > 0) {
+          // if (uiStore.layout === 'collapse') {
           isAlarm = true;
         }
         changeFavicon(isAlarm);

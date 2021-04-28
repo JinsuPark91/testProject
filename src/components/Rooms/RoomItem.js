@@ -17,7 +17,7 @@ import {
   OpenChatBgIcon,
   ExportIcon,
 } from '../Icons';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores, rootStore } from '../../stores';
 import mySign from '../../assets/wapl_me.svg';
 
 const RoomDropdown = React.memo(
@@ -228,12 +228,12 @@ const RoomItemContent = ({
 }) => {
   const { t } = useTranslation();
   const { userStore } = useCoreStores();
-  const isDMRoom = roomInfo.isDirectMsg;
+  const { uiStore } = useStores();
 
   const handleExport = e => {
     e.stopPropagation();
 
-    PlatformUIStore.openWindow({
+    uiStore.openWindow({
       id: roomInfo.id,
       type: 'talk',
       name: roomInfo.name,
@@ -398,8 +398,9 @@ const RoomItemContent = ({
 
 // TODO: Content.js 와 동일한 함수로 리팩토링 필요
 const getRoomId = () => {
-  if (PlatformUIStore.resourceType !== 'f') {
-    return PlatformUIStore.resourceId;
+  const { uiStore } = rootStore;
+  if (uiStore.resourceType !== 'f') {
+    return uiStore.resourceId;
   }
   return null;
 };
@@ -587,14 +588,6 @@ const UserCountText = styled.span`
   font-size: 0.81rem;
   line-height: 1.19rem;
   color: #aeaeae;
-`;
-
-const UserTimeText = styled.span`
-  margin-left: auto;
-  padding-left: 0.25rem;
-  font-size: 0.56rem;
-  color: #666;
-  white-space: nowrap;
 `;
 
 const StyledItem = styled.div`

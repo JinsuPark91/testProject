@@ -1,6 +1,6 @@
 import React from 'react';
 import { ProfileInfoModal, Toast, AddFriendsBySearch } from 'teespace-core';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 
 const FriendsLNBModal = ({
   infoModalVisible,
@@ -12,6 +12,7 @@ const FriendsLNBModal = ({
   memberModalVisible,
   handleCloseMemberModal,
 }) => {
+  const { uiStore } = useStores();
   return (
     <>
       {infoModalVisible && (
@@ -19,7 +20,7 @@ const FriendsLNBModal = ({
           userId={selectedId}
           visible={infoModalVisible}
           onClickMeeting={_roomId => {
-            PlatformUIStore.openWindow({
+            uiStore.openWindow({
               id: _roomId,
               type: 'meeting',
               name: null,

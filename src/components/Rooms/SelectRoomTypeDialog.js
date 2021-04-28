@@ -6,7 +6,7 @@ import { useCoreStores, logEvent } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { PrivateRoomIcon, OpenChatIcon } from '../Icons';
 import CreatePrivateRoomDialog from '../dialogs/CreatePrivateRoomDialog';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 import OpenRoomHome from './OpenRoomHome';
 
 const { Title } = Typography;
@@ -80,6 +80,7 @@ const StyledModal = styled(Modal)`
 function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
   const { t } = useTranslation();
   const { userStore, roomStore } = useCoreStores();
+  const { uiStore } = useStores();
 
   const history = useHistory();
   // Private Room
@@ -150,7 +151,7 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
     });
 
     if (isStartMeeting) {
-      PlatformUIStore.openWindow({
+      uiStore.openWindow({
         id: roomId,
         type: 'meeting',
         name: null,

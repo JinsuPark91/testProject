@@ -6,7 +6,7 @@ import { useDrop } from 'react-dnd';
 import { observer } from 'mobx-react';
 import { Tooltip } from 'antd';
 import { useCoreStores, Dropdown, Menu, Message } from 'teespace-core';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { rootStore } from '../../stores';
 import { ACCEPT_ITEMS, TALK_ACCEPT_ITEMS } from '../../utils/DndConstant';
 import { handleCheckNewFriend } from '../../utils/FriendsUtil';
 import { handleProfileMenuClick } from '../../utils/ProfileUtil';
@@ -25,6 +25,8 @@ import {
 } from '../../styles/friends/FriendItemStyle';
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 import mySign from '../../assets/wapl_me.svg';
+
+const { uiStore } = rootStore;
 
 const disableScroll = event => event.preventDefault();
 
@@ -100,7 +102,7 @@ const DropdownMenu = React.memo(
 );
 
 const OpenMiniTalk = roomInfo => {
-  PlatformUIStore.openWindow({
+  uiStore.openWindow({
     id: roomInfo.id,
     type: 'talk',
     name: roomInfo.name,

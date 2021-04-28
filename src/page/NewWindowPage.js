@@ -10,7 +10,7 @@ import RoomInquiryModal from '../components/Rooms/RoomInquiryModal';
 import Photos from '../components/Photos';
 import { SearchIcon } from '../components/Icons';
 import WindowManager from '../components/common/WindowManager';
-import PlatformUIStore from '../stores/PlatformUIStore';
+import { useStores } from '../stores';
 
 const NewWindowPage = () => {
   const { resourceId: roomId, mainApp } = useParams();
@@ -38,10 +38,9 @@ const NewWindowPage = () => {
           channel.type === (mainApp === 'talk' ? 'CHN0001' : 'CHN0005'),
       );
 
-            // 프렌드 리스트를 불러오자
+      // 프렌드 리스트를 불러오자
       await friendStore.fetchFriends({ myUserId }),
-        
-      setChannelId(channelInfo.id);
+        setChannelId(channelInfo.id);
     } catch (err) {
       console.error('Mini Talk Error : ', err);
     }
@@ -104,6 +103,7 @@ const NewWindowPage = () => {
 export default NewWindowPage;
 
 const Header = ({ roomId, onSearch }) => {
+  const { uiStore } = useStores();
   const { roomStore, userStore } = useCoreStores();
   const [info, setInfo] = useState({
     name: '',
@@ -176,7 +176,7 @@ const Header = ({ roomId, onSearch }) => {
           userId={userIds}
           visible={modalVisible}
           onClickMeeting={_roomId => {
-            PlatformUIStore.openWindow({
+            uiStore.openWindow({
               id: _roomId,
               type: 'meeting',
               name: null,

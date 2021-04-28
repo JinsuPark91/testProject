@@ -25,7 +25,7 @@ import {
   StyledPhotos,
   VerticalBar,
 } from './HeaderStyle';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 import HeaderProfile from '../profile/HeaderProfile';
 import RoomInquiryModal from '../Rooms/RoomInquiryModal';
 import RoomAddMemberModal from '../Rooms/RoomAddMemberModal';
@@ -203,6 +203,7 @@ const useActiveApp = () => {
 const Header = observer(() => {
   const history = useHistory();
   const { t, i18n } = useTranslation();
+  const { uiStore } = useStores();
   const { roomStore, userStore } = useCoreStores();
   const [isRoomProfileVisible, setRoomProfileVisible] = useState(false);
   const [isAddMemberVisible, setAddMemberVisible] = useState(false);
@@ -211,8 +212,8 @@ const Header = observer(() => {
   const apps = useActiveApp();
 
   const findRoom = () => {
-    if (PlatformUIStore.resourceType !== 'f') {
-      return roomStore.getRoomMap().get(PlatformUIStore.resourceId);
+    if (uiStore.resourceType !== 'f') {
+      return roomStore.getRoomMap().get(uiStore.resourceId);
     }
     return null;
   };
@@ -270,7 +271,7 @@ const Header = observer(() => {
   const handleExport = () => {
     const roomInfo = findRoom();
 
-    PlatformUIStore.openWindow({
+    uiStore.openWindow({
       id: roomInfo.id,
       type: 'talk',
       name: roomInfo.name,
@@ -280,7 +281,7 @@ const Header = observer(() => {
   };
 
   const handleSearch = () => {
-    PlatformUIStore.isSearchVisible = true;
+    uiStore.isSearchVisible = true;
     // Refactoring: Talk Web isSearchVisible 의존성 제거
     EventBus.dispatch('Talk:OpenSearch');
   };
@@ -289,7 +290,7 @@ const Header = observer(() => {
     const queryParams = { ...getQueryParams(), sub: appName };
     const queryString = getQueryString(queryParams);
 
-    if (PlatformUIStore.resourceType === 'f') {
+    if (uiStore.resourceType === 'f') {
       try {
         const response = await roomStore.getDMRoom(
           userStore.myProfile.id,
@@ -318,7 +319,7 @@ const Header = observer(() => {
   const openMeeting = () => {
     const roomInfo = findRoom();
 
-    PlatformUIStore.openWindow({
+    uiStore.openWindow({
       id: roomInfo.id,
       type: 'meeting',
       name: null,
@@ -330,9 +331,9 @@ const Header = observer(() => {
   const handleAppClick = async appName => {
     if (appName === 'meeting') {
       const { id } = findRoom();
-      const meetingWindow = PlatformUIStore.getWindow('meeting', id);
+      const meetingWindow = uiStore.getWindow('meeting', id);
       if (meetingWindow) {
-        PlatformUIStore.focusWindow('meeting', id);
+        uiStore.focusWindow('meeting', id);
       } else {
         const meetingAppConfirm = (
           <MeetingApp.ConfirmLaunchApp
@@ -350,7 +351,7 @@ const Header = observer(() => {
         );
         setAppConfirm(meetingAppConfirm);
       }
-    } else if (PlatformUIStore.subApp !== appName) {
+    } else if (uiStore.subApp !== appName) {
       openSubApp(appName);
     } else {
       closeSubApp();
@@ -412,7 +413,7 @@ const Header = observer(() => {
         userId={userStore.myProfile.id}
         visible={isRoomProfileVisible}
         onClickMeeting={_roomId => {
-          PlatformUIStore.openWindow({
+          uiStore.openWindow({
             id: _roomId,
             type: 'meeting',
             name: null,
@@ -435,7 +436,7 @@ const Header = observer(() => {
         visible={isRoomProfileVisible}
         onClose={handleCancelRoomMemeberModal}
         onClickMeeting={_roomId => {
-          PlatformUIStore.openWindow({
+          uiStore.openWindow({
             id: _roomId,
             type: 'meeting',
             name: null,
@@ -462,7 +463,7 @@ const Header = observer(() => {
   return (
     <Wrapper>
       <TitleWrapper>
-        {PlatformUIStore.resourceType !== 'f' && (
+        {uiStore.resourceType !== 'f' && (
           <>
             <Title>
               <StyledPhotos
@@ -486,9 +487,9 @@ const Header = observer(() => {
               {profileModal}
             </Title>
 
-            {PlatformUIStore.resourceType !== 'm' && (
+            {uiStore.resourceType !== 'm' && (
               <SystemIconContainer>
-                {PlatformUIStore.layout !== 'expand' && (
+                {uiStore.layout !== 'expand' && (
                   <>
                     <Tooltip
                       placement="bottom"
@@ -572,11 +573,11 @@ const Header = observer(() => {
               {isSeperated ? <VerticalBar /> : null}
               <AppIcon
                 key={name}
-                // isActive={PlatformUIStore.subApp === name}
+                // isActive={uiStore.subApp === name}
                 isActive={
                   name !== 'meeting'
-                    ? PlatformUIStore.subApp === name
-                    : !!PlatformUIStore.getWindow('meeting', findRoom()?.id)
+                    ? uiStore.subApp === name
+                    : !!uiStore.getWindow('meeting', findRoom()?.id)
                 }
                 appName={name}
                 i18n={i18n}
@@ -586,7 +587,7 @@ const Header = observer(() => {
                 disabledIcon={icons.disabled}
                 disabled={
                   (isMyRoom() && !isUsedInMyRoom) ||
-                  (PlatformUIStore.resourceType === 'f' && !isUsedInProfile)
+                  (uiStore.resourceType === 'f' && !isUsedInProfile)
                 }
               />
             </AppIconbutton>

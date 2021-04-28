@@ -8,7 +8,7 @@ import { Button, Checkbox, Tooltip } from 'antd';
 import { FixedSizeList as List } from 'react-window';
 import { LeaderIcon } from '../Icons';
 import RoomAddMemberModal from './RoomAddMemberModal';
-import { RoomSettingStore as store } from '../../stores/RoomSettingStore';
+import { useStores } from '../../stores';
 
 const remToPixel = rem => {
   return (
@@ -28,6 +28,7 @@ const WIDTH = {
 };
 
 const TableRow = ({ style, member }) => {
+  const { roomSettingStore: store } = useStores();
   const { t } = useTranslation();
   const isAdmin = () => member.role === 'WKS0004';
 
@@ -122,6 +123,7 @@ const TableRow = ({ style, member }) => {
 
 const Table = () => {
   const { t } = useTranslation();
+  const { roomSettingStore: store } = useStores();
   const tableBodyRef = useRef(null);
   const [listHeight, setListHeight] = useState(0);
 
@@ -198,6 +200,7 @@ const Table = () => {
 
 const MemberPage = ({ roomId }) => {
   const { t } = useTranslation();
+  const { roomSettingStore: store } = useStores();
   const history = useHistory();
 
   // const handleSystemMessage = message => {

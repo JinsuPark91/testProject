@@ -4,13 +4,14 @@ import styled from 'styled-components';
 import { Observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
 import { useCoreStores } from 'teespace-core';
-import { RoomSettingStore as store } from '../../stores/RoomSettingStore';
+import { useStores } from '../../stores';
 import SubMemberPage from './SubMemberPage';
 import SubWaitingMemberPage from './SubWaitingMemberPage';
 import SubBlockedMemberPage from './SubBlockedMemberPage';
 
 const SubTab = ({ isOpenRoom = false }) => {
   const { t } = useTranslation();
+  const { roomSettingStore: store } = useStores();
 
   const handleTabChange = e => {
     store.changeSubTab(e.target.dataset.tabKey);
@@ -70,6 +71,7 @@ const SubTab = ({ isOpenRoom = false }) => {
 
 const MemberSettingPage = ({ roomId }) => {
   const { roomStore } = useCoreStores();
+  const { roomSettingStore: store } = useStores();
   const roomInfo = roomStore.getRoom(roomId);
 
   const subPage = () => {

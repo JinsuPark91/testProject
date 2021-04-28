@@ -16,13 +16,14 @@ import { useTranslation } from 'react-i18next';
 import { throttle } from 'lodash';
 import { WaplLogo, AddRoomIcon } from '../Icons';
 import RoomItem from './RoomItem';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
 
 function RoomList() {
   const { t, i18n } = useTranslation();
   const history = useHistory();
+  const { uiStore } = useStores();
   const [keyword, setKeyword] = useState('');
   const [targetRoom, setTargetRoom] = useState(null);
   const [exitTargetRoom, setExitTargetRoom] = useState(null);
@@ -52,7 +53,7 @@ function RoomList() {
     if (containerRef.current) {
       containerRef.current.scrollTo(0, 0);
     }
-  }, [PlatformUIStore.tabType]);
+  }, [uiStore.tabType]);
 
   // LNB lastMessage i18n 임시
   useEffect(() => {
@@ -75,32 +76,40 @@ function RoomList() {
     logEvent('main', 'clickRoomCreateBtn');
   };
 
-  const handleSelectRoom = useCallback(
-    roomInfo => {
-      (async () => {
-        // NOTE : 같은 방을 누르면 history 부르지 않는다.
-        const isSameRoom =
-          PlatformUIStore.resourceType === 's' &&
-          PlatformUIStore.resourceId === roomInfo.id;
-        if (isSameRoom) return Promise.resolve();
+  // const handleSelectRoom = useCallback(
+  //   roomInfo => {
+  //     (async () => {
+  //       // NOTE : 같은 방을 누르면 history 부르지 않는다.
+  //       const isSameRoom =
+  //         uiStore.resourceType === 's' &&
+  //         uiStore.resourceId === roomInfo.id;
+  //       if (isSameRoom) return Promise.resolve();
 
-        try {
-          const routingHistory = (
-            await userStore.getRoutingHistory({
-              userId: userStore.myProfile.id,
-              roomId: roomInfo.id,
-            })
-          )?.[0];
+  //       try {
+  //         const routingHistory = (
+  //           await userStore.getRoutingHistory({
+  //             userId: userStore.myProfile.id,
+  //             roomId: roomInfo.id,
+  //           })
+  //         )?.[0];
 
-          history.push(routingHistory?.lastUrl || `/s/${roomInfo.id}/talk`);
-        } catch (err) {
-          console.log('[Platform] Get routing history 에러 : ', err);
-          history.push(`/s/${roomInfo.id}/talk`);
-        }
-      })();
-    },
-    [history, userStore],
-  );
+  //         history.push(routingHistory?.lastUrl || `/s/${roomInfo.id}/talk`);
+  //       } catch (err) {
+  //         console.log('[Platform] Get routing history 에러 : ', err);
+  //         history.push(`/s/${roomInfo.id}/talk`);
+  //       }
+  //     })();
+  //   },
+  //   [history, userStore],
+  // );
+
+  const handleSelectRoom = roomInfo => {
+    const isSameRoom =
+      uiStore.resourceType === 's' && uiStore.resourceId === roomInfo.id;
+    if (isSameRoom) return Promise.resolve();
+
+    history.push(`/s/${roomInfo.id}/talk`);
+  };
 
   const handleChange = value => {
     setKeyword(value);
@@ -202,8 +211,8 @@ function RoomList() {
 
       if (result) {
         if (
-          PlatformUIStore.resourceType === 's' &&
-          PlatformUIStore.resourceId === exitTargetRoom.id
+          uiStore.resourceType === 's' &&
+          uiStore.resourceId === exitTargetRoom.id
         ) {
           const firstRoomId = roomStore.getRoomArray()?.[0].id;
           if (firstRoomId) history.push(`/s/${firstRoomId}/talk`);
@@ -261,7 +270,7 @@ function RoomList() {
               userId={targetUserId}
               visible={isProfileInfoModalVisible}
               onClickMeeting={_roomId => {
-                PlatformUIStore.openWindow({
+                uiStore.openWindow({
                   id: _roomId,
                   type: 'meeting',
                   name: null,
@@ -372,7 +381,7 @@ function RoomList() {
                 <RoomItem
                   key={roomInfo.id}
                   roomInfo={roomInfo}
-                  selected={PlatformUIStore.resourceId === roomInfo.id}
+                  selected={uiStore.resourceId === roomInfo.id}
                   onClick={handleSelectRoom}
                   onMenuClick={handleMenuClick}
                   onClickMenuItem={handleClickMenuItem}
@@ -383,7 +392,16 @@ function RoomList() {
         </Observer>
       </RoomContainer>
       {configStore.isActivateComponent('Platform', 'LNB:Logo') ? (
-        <ButtomWrapper isScrollEnd={isScrollEnd}>
+        <ButtomWrapper
+          isScrollEnd={isScrollEnd}
+          // onClick={() => {
+          //   const store = uiStore;
+          //   const currentTheme = store.getTheme();
+          //   if (currentTheme === 'white') store.setTheme('dark');
+          //   else if (currentTheme === 'dark') store.setTheme('green');
+          //   else store.setTheme('white');
+          // }}
+        >
           <WaplLogo />
         </ButtomWrapper>
       ) : null}
@@ -402,6 +420,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  // background: ${props => props.theme.bg_color};
   background: #ffffff;
   overflow-y: auto;
   height: 100%;

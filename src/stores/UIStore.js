@@ -1,66 +1,138 @@
-import { observable, action } from 'mobx';
+/* eslint-disable no-underscore-dangle */
+import { observable, values } from 'mobx';
+import theme from '../theme';
 
-class UIStore {
-  @observable visibleAddFriendsDialog: Boolean = false;
+const uiStore = observable({
+  theme: theme.white,
 
-  @observable addFriendsDialogTabKey: string = 'organization';
+  setTheme(name) {
+    if (theme[name]) this.theme = theme[name];
+  },
 
-  @observable addFriendByPhoneNumberButtonDisabled: Boolean = true;
+  getTheme() {
+    return this.theme.name;
+  },
 
-  @observable addFriendsDialogInfo: Object = {
-    width: 800,
-    height: 600,
-  };
+  /*
+    Resource Type : URL 상의 s / f / m
+    충남대의 경우 friend / room /....
+  */
+  resourceType: null,
 
-  @observable visibleSettingDialog: Boolean = false;
+  /*
+    FIXME: 추후 좋은 방법 고민, 프로필 수정 모드도 history로 관리?
+    모바일 웹뷰용 프로필 수정 모드 판단
+  */
+  isProfileEditMode: false,
 
-  @action.bound
-  changeAddFriendsDialogTabKey(tabKey) {
-    console.log(this);
-    switch (tabKey) {
-      case 'phone':
-      case 'id':
-      case 'organization':
-      case 'recommended':
-      case 'invitation':
-        this.addFriendsDialogTabKey = tabKey;
-        break;
+  /*
+    Tab Type : 선택된 탭 s / f / m
+    (탭 이동시에는 url 변경 없어야 하기 때문)
+  */
+  tabType: null,
+  resourceId: null,
+  mainApp: 'talk',
+  subApp: null,
+  subAppState: undefined,
+  layout: 'collapse',
+
+  /*
+    Talk Search Input visibility
+  */
+  isSearchVisible: false,
+
+  // modal
+  roomMemberModal: {
+    isEdit: false,
+    visible: false,
+    rect: null,
+
+    open({ top, left, isEdit = false }) {
+      this.isEdit = isEdit;
+      this.visible = true;
+      if (top) {
+        this.top = top;
+      }
+      if (left) {
+        this.left = left;
+      }
+    },
+
+    close() {
+      this.visible = false;
+    },
+  },
+
+  // [TODO] : Talk 안정화 될때까지 임시
+  totalUnreadCount: 0,
+
+  // ref
+  content: {
+    rect: null,
+  },
+
+  // windows 관련
+  talkWindowMap: new Map(),
+  meetingWindowMap: new Map(),
+
+  _getMap(type) {
+    switch (type) {
+      case 'talk':
+        return this.talkWindowMap;
+      case 'meeting':
+        return this.meetingWindowMap;
       default:
-        break;
+        return null;
     }
-  }
+  },
 
-  /**
-   *
-   * @param {('organization'|'phone'|'id'|'recommended'|'invitation')} tab - (옵션) 해당 탭 화면으로 Dialog를 띄운다. 없으면 이전 탭을 유지
-   */
-  @action
-  showAddFriendsDialog(tab) {
-    this.visibleAddFriendsDialog = true;
-    this.changeAddFriendsDialogTabKey(tab);
-  }
+  getWindows(type) {
+    const targetMap = this._getMap(type);
+    if (targetMap) return values(targetMap);
+    return null;
+  },
 
-  @action
-  showSettingDialog() {
-    console.log('tesdtt');
-    this.visibleSettingDialog = true;
-  }
+  getWindow(type, windowId) {
+    const targetMap = this._getMap(type);
+    if (targetMap) return targetMap.get(windowId);
+    return null;
+  },
 
-  @action
-  hideSettingDialog() {
-    console.log('tesdtt');
-    this.visibleSettingDialog = false;
-  }
+  openWindow(windowInfo, enableFocus = true) {
+    const { id: windowId, type } = windowInfo;
+    const targetMap = this._getMap(type);
+    const targetWindow = targetMap.get(windowId);
 
-  @action
-  hideAddFriendsDialog() {
-    this.visibleAddFriendsDialog = false;
-  }
+    if (enableFocus && targetWindow) {
+      this.focusWindow(type, windowId);
+    } else {
+      targetMap.set(windowId, windowInfo);
+    }
+  },
 
-  @action
-  setAddFriendByPhoneNumberButtonDisabled(data: Boolean) {
-    this.addFriendByPhoneNumberButtonDisabled = data;
-  }
-}
+  focusWindow(type, windowId) {
+    const handler = this.getWindow(type, windowId)?.handler;
 
-export default UIStore;
+    if (handler && !handler.closed) {
+      handler.focus();
+    }
+  },
+
+  closeWindow(type, windowId) {
+    const targetMap = this._getMap(type);
+    if (targetMap) {
+      const targetWindow = targetMap.get(windowId);
+      targetWindow.handler?.close();
+      targetMap.delete(windowId);
+    }
+  },
+
+  closeAllWindow(type) {
+    this.getWindows(type).forEach(window => {
+      const { id: windowId } = window;
+      this.closeWindow(type, windowId);
+    });
+  },
+});
+
+export default uiStore;

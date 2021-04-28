@@ -20,7 +20,7 @@ import { useObserver } from 'mobx-react';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
 import { Loader, Wrapper } from './MainPageStyle';
-import PlatformUIStore from '../stores/PlatformUIStore';
+import { useStores } from '../stores';
 import LoadingImg from '../assets/WAPL_Loading.gif';
 import FaviconChanger from '../components/common/FaviconChanger';
 import WindowManager from '../components/common/WindowManager';
@@ -28,6 +28,7 @@ import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 
 const MainPage = () => {
   const { t, i18n } = useTranslation();
+  const { uiStore } = useStores();
   const [isLoading, setIsLoading] = useState(true);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [toastText, setToastText] = useState('');
@@ -157,37 +158,34 @@ const MainPage = () => {
 
   // 묶어 놓으면, 하나 바뀔때도 다 바뀜
   useEffect(() => {
-    PlatformUIStore.resourceType = resourceType;
-    PlatformUIStore.tabType = resourceType;
+    uiStore.resourceType = resourceType;
+    uiStore.tabType = resourceType;
   }, [resourceType]);
 
   useEffect(() => {
     if (resourceType === 'm' && !isLoading) {
-      PlatformUIStore.resourceId = roomStore.getDMRoom(
-        myUserId,
-        myUserId,
-      ).roomInfo.id;
+      uiStore.resourceId = roomStore.getDMRoom(myUserId, myUserId).roomInfo.id;
     } else {
-      PlatformUIStore.resourceId = resourceId;
+      uiStore.resourceId = resourceId;
     }
   }, [isLoading, resourceId, resourceType, myUserId, roomStore]);
 
   useEffect(() => {
-    PlatformUIStore.mainApp = mainApp;
+    uiStore.mainApp = mainApp;
   }, [mainApp]);
 
   useEffect(() => {
-    PlatformUIStore.subApp = subApp;
+    uiStore.subApp = subApp;
     if (!subApp) {
-      PlatformUIStore.layout = 'close';
+      uiStore.layout = 'close';
     } else {
-      PlatformUIStore.layout = 'collapse';
+      uiStore.layout = 'collapse';
     }
   }, [subApp, resourceId]);
 
   const handleSystemMessage = message => {
-    const resType = PlatformUIStore.resourceType;
-    const resId = PlatformUIStore.resourceId;
+    const resType = uiStore.resourceType;
+    const resId = uiStore.resourceId;
 
     switch (message.NOTI_TYPE) {
       // 강퇴 또는 나가기
@@ -210,13 +208,13 @@ const MainPage = () => {
   */
   useEffect(() => {
     const fullHandler = EventBus.on('onLayoutFull', () => {
-      PlatformUIStore.layout = 'full';
+      uiStore.layout = 'full';
     });
     const expandHandler = EventBus.on('onLayoutExpand', () => {
-      PlatformUIStore.layout = 'expand';
+      uiStore.layout = 'expand';
     });
     const collapseHandler = EventBus.on('onLayoutCollapse', () => {
-      PlatformUIStore.layout = 'collapse';
+      uiStore.layout = 'collapse';
     });
     const closeHandler = EventBus.on('onLayoutClose', () => {
       const queryParams = getQueryParams();
@@ -226,7 +224,7 @@ const MainPage = () => {
       history.push(`${history.location.pathname}?${queryString}`);
     });
     const openMeetingHandler = EventBus.on('onMeetingOpen', ({ roomId }) => {
-      PlatformUIStore.openWindow({
+      uiStore.openWindow({
         id: roomId,
         type: 'meeting',
         name: null,
@@ -265,7 +263,7 @@ const MainPage = () => {
   const leftSide = useMemo(() => <LeftSide />, []);
   const mainSide = useMemo(() => <MainSide />, []);
 
-  const saveHistory = async (location, action) => {
+  const saveHistory = async location => {
     // NOTE : 이 시점에서, resourceId, resouceType, mainApp, subApp 값은 아직 변경되지 않은 상태.
     const { pathname, search } = location;
     const pathArr = pathname.split('/');
@@ -315,12 +313,12 @@ const MainPage = () => {
       isRoutable = isRoutable && noteBeforeRoute(location, action);
 
     if (isRunning('meeting')) {
-      if (PlatformUIStore.subAppState === AppState.RUNNING) {
+      if (uiStore.subAppState === AppState.RUNNING) {
         // NOTE. 미팅앱에서 빠져 나갈 것인지 묻는 상태로 진입
-        PlatformUIStore.subAppState = AppState.BEFORE_STOP;
-        PlatformUIStore.nextLocation = location;
+        uiStore.subAppState = AppState.BEFORE_STOP;
+        uiStore.nextLocation = location;
         isRoutable = false;
-      } else if (PlatformUIStore.subAppState === AppState.STOPPED) {
+      } else if (uiStore.subAppState === AppState.STOPPED) {
         // NOTE. 미팅의 경우 라우팅이 변경될 때 토크 상태의 히스토리가 저장되어야 함.
         //  그렇지 않으면 이 방에 들어올 때마다 미팅이 실행됨.
         saveHistory({ ...history.location, search: '' }, action);
@@ -334,7 +332,7 @@ const MainPage = () => {
 
       // NOTE. 서브앱으로 라우팅되는 경우 초기화 진행중 상태로 진입됨.
       if (!subApp) {
-        PlatformUIStore.subAppState = AppState.INITIALIZING;
+        uiStore.subAppState = AppState.INITIALIZING;
       }
     }
     return isRoutable;
@@ -346,7 +344,7 @@ const MainPage = () => {
         <img src={LoadingImg} alt="loader" />
       </Loader>
     ) : (
-      <ThemeProvider theme={PlatformUIStore.theme}>
+      <ThemeProvider theme={uiStore.theme}>
         <Wrapper>
           <Toast
             visible={isToastVisible}

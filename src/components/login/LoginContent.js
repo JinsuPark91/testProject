@@ -5,7 +5,6 @@ import { useObserver } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import LoginPasswordInput from './LoginPasswordInput';
 import LoginIdInput from './LoginIdInput';
-import PlatformUIStore from '../../stores/PlatformUIStore';
 
 const layout = {
   labelCol: {

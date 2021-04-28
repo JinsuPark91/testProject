@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useCoreStores } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import styled from 'styled-components';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 import MobileFriend from './friend/MobileFriend';
 import MobileAddFriend from './friend/MobileAddFriend';
 import MobileProfile from './MobileProfile';
@@ -46,6 +46,7 @@ const Container = styled.div`
 // }}
 
 const MobileContent = () => {
+  const { uiStore } = useStores();
   const { roomStore } = useCoreStores();
   const [isMemberSelected, setIsMemberSelected] = useState(false);
 
@@ -54,7 +55,7 @@ const MobileContent = () => {
   };
 
   const handleSearchClose = () => {
-    PlatformUIStore.isSearchVisible = false;
+    uiStore.isSearchVisible = false;
   };
 
   const getChannelId = type => {
@@ -72,7 +73,7 @@ const MobileContent = () => {
       case 'addfriend':
         return <MobileAddFriend />;
       case 'profile':
-        return <MobileProfile userId={PlatformUIStore.resourceId} />;
+        return <MobileProfile userId={uiStore.resourceId} />;
       case 'room':
         return <MobileRoom />;
       case 'addroom':
@@ -82,7 +83,7 @@ const MobileContent = () => {
           <MobileTalk
             roomId={getRoomId()}
             channelId={getChannelId('CHN0001')}
-            isSearchInputVisible={PlatformUIStore.isSearchVisible}
+            isSearchInputVisible={uiStore.isSearchVisible}
             onSearchClose={handleSearchClose}
             isMini={false}
           />
@@ -116,10 +117,10 @@ const MobileContent = () => {
     <Observer>
       {() => (
         <Container
-          appType={PlatformUIStore.resourceType}
+          appType={uiStore.resourceType}
           isMemberSelected={isMemberSelected}
         >
-          {getApplication(PlatformUIStore.resourceType)}
+          {getApplication(uiStore.resourceType)}
         </Container>
       )}
     </Observer>

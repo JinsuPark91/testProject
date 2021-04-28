@@ -3,7 +3,7 @@ import { useObserver } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import FriendItem from './FriendItem';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 import {
   WelcomeWrapper,
   ContentWrapper,
@@ -38,6 +38,7 @@ const FriendsLNBList = ({
   handleMemberModalVisible,
 }) => {
   const { t } = useTranslation();
+  const { uiStore } = useStores();
   const { userStore, friendStore } = useCoreStores();
   const [favFriendActiveId, setFavFriendActiveId] = useState('');
   const [friendActiveId, setFriendActiveId] = useState('');
@@ -78,7 +79,7 @@ const FriendsLNBList = ({
             mode="friend"
             onClick={onClick}
             isActive={
-              PlatformUIStore.resourceType === 'f' &&
+              uiStore.resourceType === 'f' &&
               activeFriendId === friendInfo.friendId
             }
             handleOpenToast={() => handleToastVisible(true)}
@@ -158,7 +159,7 @@ const FriendsLNBList = ({
               friendInfo={userStore.myProfile}
               onClick={handleFriendActive}
               isActive={
-                PlatformUIStore.resourceType === 'f' &&
+                uiStore.resourceType === 'f' &&
                 friendActiveId === userStore.myProfile.id
               }
               handleSelectedId={targetId => handleSelectedId(targetId)}

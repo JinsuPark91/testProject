@@ -16,12 +16,13 @@ import FriendLnb from '../friends/FriendsLNB';
 import RoomList from '../Rooms/RoomList';
 import { handleCheckNewFriend } from '../../utils/FriendsUtil';
 import { Wrapper, CustomTabs, UnreadCount, IconWrapper } from './LeftSideStyle';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 
 const { TabPane } = CustomTabs;
 
 const LeftSide = observer(() => {
   const { t, i18n } = useTranslation();
+  const { uiStore } = useStores();
   const { roomStore, friendStore, configStore } = useCoreStores();
   const newFriendNum = friendStore.friendInfoList?.filter(elem =>
     handleCheckNewFriend(elem),
@@ -46,7 +47,7 @@ const LeftSide = observer(() => {
       if (friendContainer) friendContainer.scrollTo(0, 0);
     }
 
-    PlatformUIStore.tabType = key;
+    uiStore.tabType = key;
     if (key === 'm') logEvent('gnb', 'clickTeeMailBtn');
     scrollTop(key);
   };
@@ -54,7 +55,7 @@ const LeftSide = observer(() => {
   return (
     <Wrapper>
       <CustomTabs
-        activeKey={PlatformUIStore.tabType}
+        activeKey={uiStore.tabType}
         onTabClick={handleSelectTab}
         animated={false}
       >
@@ -70,7 +71,7 @@ const LeftSide = observer(() => {
                 <UnreadCount isVisible={newFriendNum > 0}>
                   {newFriendNum}
                 </UnreadCount>
-                {PlatformUIStore.tabType === 'f' ? (
+                {uiStore.tabType === 'f' ? (
                   <PeopleActiveIcon width={1.5} height={1.5} />
                 ) : (
                   <PeopleIcon width={1.5} height={1.5} />
@@ -93,7 +94,7 @@ const LeftSide = observer(() => {
               <IconWrapper className="lnb__icon-wrapper lnb__rooms">
                 <Observer>
                   {() => {
-                    PlatformUIStore.totalUnreadCount = roomStore
+                    uiStore.totalUnreadCount = roomStore
                       .getRoomArray()
                       .filter(roomInfo => roomInfo.isVisible)
                       .reduce(
@@ -103,17 +104,15 @@ const LeftSide = observer(() => {
                         0,
                       );
                     return (
-                      <UnreadCount
-                        isVisible={PlatformUIStore.totalUnreadCount > 0}
-                      >
-                        {PlatformUIStore.totalUnreadCount > 99
+                      <UnreadCount isVisible={uiStore.totalUnreadCount > 0}>
+                        {uiStore.totalUnreadCount > 99
                           ? '99+'
-                          : PlatformUIStore.totalUnreadCount}
+                          : uiStore.totalUnreadCount}
                       </UnreadCount>
                     );
                   }}
                 </Observer>
-                {PlatformUIStore.tabType === 's' ? (
+                {uiStore.tabType === 's' ? (
                   <ChattingActiveIcon width={1.5} height={1.5} />
                 ) : (
                   <ChattingIcon width={1.5} height={1.5} />
@@ -139,7 +138,7 @@ const LeftSide = observer(() => {
                       ? '99+'
                       : MailStore.unreadTotalCount}
                   </UnreadCount>
-                  {PlatformUIStore.tabType === 'm' ? (
+                  {uiStore.tabType === 'm' ? (
                     <MailActiveIcon width={1.5} height={1.5} />
                   ) : (
                     <MailIcon width={1.5} height={1.5} />

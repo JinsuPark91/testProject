@@ -3,7 +3,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import { EventBus, useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 import MobileContent from './MobileContent';
 import MobileFooter from './MobileFooter';
 import LoadingImg from '../../assets/WAPL_Loading.gif';
@@ -15,6 +15,7 @@ const Loader = styled.div``;
 
 const MobileMainPage = () => {
   const { resourceType, resourceId } = useParams();
+  const { uiStore } = useStores();
   const { userStore, friendStore, roomStore } = useCoreStores();
   const [isLoading, setIsLoading] = useState(true);
   const history = useHistory();
@@ -33,8 +34,8 @@ const MobileMainPage = () => {
   }, []);
 
   useEffect(() => {
-    PlatformUIStore.resourceType = resourceType;
-    PlatformUIStore.resourceId = resourceId;
+    uiStore.resourceType = resourceType;
+    uiStore.resourceId = resourceId;
   }, [resourceType, resourceId]);
 
   if (isLoading) {
@@ -49,7 +50,7 @@ const MobileMainPage = () => {
     <Wrapper>
       <MobileContent />
       <Observer>
-        {() => !PlatformUIStore.isProfileEditMode && <MobileFooter />}
+        {() => !uiStore.isProfileEditMode && <MobileFooter />}
       </Observer>
     </Wrapper>
   );

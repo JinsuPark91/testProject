@@ -15,7 +15,7 @@ import { useHistory } from 'react-router-dom';
 import { useObserver, Observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
 import { fallbackLanguage } from '../../i18n';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
 import SpaceEditModal from './SpaceEditModal';
@@ -39,6 +39,7 @@ const ProfileMyModal = ({
   created = false,
 }) => {
   const { t, i18n } = useTranslation();
+  const { uiStore } = useStores();
   const { userStore, spaceStore, configStore } = useCoreStores();
   const { isGuest } = userStore.myProfile;
   const history = useHistory();
@@ -291,7 +292,7 @@ const ProfileMyModal = ({
       onClose={toggleEditMode}
       profilePhoto={thumbPhoto}
       onClickMeeting={roomId => {
-        PlatformUIStore.openWindow({
+        uiStore.openWindow({
           id: roomId,
           type: 'meeting',
           name: null,

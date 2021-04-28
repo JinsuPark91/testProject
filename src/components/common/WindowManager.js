@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import { Observer } from 'mobx-react';
 import FloatingButton from './FloatingButton';
 import { runWatcher, stopWatcher } from '../../utils/Watcher';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 
 const Window = ({ windowInfo }) => {
+  const { uiStore } = useStores();
   const { id: windowId, type: app } = windowInfo;
   const url = `/s/${windowId}/${app}?mini=true`;
 
@@ -26,7 +27,7 @@ const Window = ({ windowInfo }) => {
 
   useEffect(() => {
     const handler = window.open(url, '_blank', getSpecs(app));
-    const info = PlatformUIStore.getWindow(app, windowId);
+    const info = uiStore.getWindow(app, windowId);
     if (info) {
       info.handler = handler;
       handler.focus();
@@ -37,6 +38,8 @@ const Window = ({ windowInfo }) => {
 };
 
 const WindowManager = () => {
+  const { uiStore } = useStores();
+
   useEffect(() => {
     runWatcher();
 
@@ -46,13 +49,13 @@ const WindowManager = () => {
   return (
     <Observer>
       {() => {
-        const talkWindows = PlatformUIStore.getWindows('talk');
+        const talkWindows = uiStore.getWindows('talk');
         return (
           <>
-            {PlatformUIStore.getWindows('talk').map(window => (
+            {uiStore.getWindows('talk').map(window => (
               <Window key={window.id} windowInfo={window} />
             ))}
-            {PlatformUIStore.getWindows('meeting').map(window => (
+            {uiStore.getWindows('meeting').map(window => (
               <Window key={window.id} windowInfo={window} />
             ))}
             <FloatingButton
@@ -61,14 +64,14 @@ const WindowManager = () => {
               rooms={talkWindows}
               count={5}
               onItemClick={roomInfo => {
-                PlatformUIStore.focusWindow('talk', roomInfo.id);
+                uiStore.focusWindow('talk', roomInfo.id);
               }}
               onItemClose={roomInfo => {
                 console.log('ROOM INFO : ', roomInfo);
-                PlatformUIStore.closeWindow('talk', roomInfo.id);
+                uiStore.closeWindow('talk', roomInfo.id);
               }}
               onCloseAll={() => {
-                PlatformUIStore.closeAllWindow('talk');
+                uiStore.closeAllWindow('talk');
               }}
             />
           </>
