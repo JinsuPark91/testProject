@@ -28,7 +28,7 @@ import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 
 const MainPage = () => {
   const { t, i18n } = useTranslation();
-  const { uiStore } = useStores();
+  const { uiStore, historyStore } = useStores();
   const [isLoading, setIsLoading] = useState(true);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [toastText, setToastText] = useState('');
@@ -81,7 +81,7 @@ const MainPage = () => {
       // 프렌드 리스트를 불러오자
       friendStore.fetchFriends({ myUserId }),
       // 접속 정보를 불러오자.
-      userStore.getRoutingHistory({ userId: myUserId }),
+      historyStore.fetchHistories(),
       // 알림 세팅을 불러오자
       userStore.getAlarmList(myUserId),
     ])
@@ -97,13 +97,10 @@ const MainPage = () => {
           await userStore.fetchProfileList(friendIdList);
         }
 
-        const [, , , , histories, alarmList] = res;
+        // 알람 리스트 적용
+        const [, , , , , alarmList] = res;
         AlarmSetting.initAlarmSet(alarmList);
 
-        const lastUrl = histories?.[0]?.lastUrl;
-        return Promise.resolve(lastUrl);
-      })
-      .then(async lastUrl => {
         // 계정 langauge 적용. 없으면 브라우저 기본 langauge로 업데이트 한다.
         await userStore.getMyLanguage();
         if (!userStore.myProfile.language) {
@@ -115,10 +112,11 @@ const MainPage = () => {
         }
 
         // NOTE : 마지막 접속 URL 로 Redirect 시킨다.
-        if (lastUrl) {
-          history.push(lastUrl);
+        if (historyStore.lastHistory) {
+          history.push(historyStore.lastHistory);
         }
-
+      })
+      .then(() => {
         setIsLoading(false);
       })
       .catch(err => {
@@ -263,7 +261,7 @@ const MainPage = () => {
   const leftSide = useMemo(() => <LeftSide />, []);
   const mainSide = useMemo(() => <MainSide />, []);
 
-  const saveHistory = async location => {
+  const saveHistory = location => {
     // NOTE : 이 시점에서, resourceId, resouceType, mainApp, subApp 값은 아직 변경되지 않은 상태.
     const { pathname, search } = location;
     const pathArr = pathname.split('/');
@@ -289,16 +287,15 @@ const MainPage = () => {
       return;
     }
 
-    try {
-      await userStore.updateRoutingHistory({
-        userId: myUserId,
-        roomId: currentResourceId,
-        lastUrl: `${pathname}${search}`,
-        appInfo: `${currentMainApp || ''}/${currentSubApp || ''}`,
-      });
-    } catch (err) {
-      console.error('[Platform] History update 에러 : ', err);
-    }
+    const historyInfo = {
+      userId: myUserId,
+      roomId: currentResourceId,
+      lastUrl: `${pathname}${search}`,
+      appInfo: `${currentMainApp || ''}/${currentSubApp || ''}`,
+    };
+
+    userStore.updateRoutingHistory(historyInfo);
+    historyStore.updateHistory({ history: historyInfo });
   };
 
   const isRunning = appName => {

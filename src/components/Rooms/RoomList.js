@@ -23,7 +23,7 @@ import RoomInquiryModal from './RoomInquiryModal';
 function RoomList() {
   const { t, i18n } = useTranslation();
   const history = useHistory();
-  const { uiStore } = useStores();
+  const { uiStore, historyStore } = useStores();
   const [keyword, setKeyword] = useState('');
   const [targetRoom, setTargetRoom] = useState(null);
   const [exitTargetRoom, setExitTargetRoom] = useState(null);
@@ -76,39 +76,18 @@ function RoomList() {
     logEvent('main', 'clickRoomCreateBtn');
   };
 
-  const handleSelectRoom = useCallback(
-    roomInfo => {
-      (async () => {
-        // NOTE : 같은 방을 누르면 history 부르지 않는다.
-        const isSameRoom =
-          uiStore.resourceType === 's' && uiStore.resourceId === roomInfo.id;
-        if (isSameRoom) return Promise.resolve();
+  const handleSelectRoom = async roomInfo => {
+    const isSameRoom =
+      uiStore.resourceType === 's' && uiStore.resourceId === roomInfo.id;
+    if (isSameRoom) return;
 
-        try {
-          const routingHistory = (
-            await userStore.getRoutingHistory({
-              userId: userStore.myProfile.id,
-              roomId: roomInfo.id,
-            })
-          )?.[0];
-
-          history.push(routingHistory?.lastUrl || `/s/${roomInfo.id}/talk`);
-        } catch (err) {
-          console.log('[Platform] Get routing history 에러 : ', err);
-          history.push(`/s/${roomInfo.id}/talk`);
-        }
-      })();
-    },
-    [history, userStore],
-  );
-
-  // const handleSelectRoom = roomInfo => {
-  //   const isSameRoom =
-  //     uiStore.resourceType === 's' && uiStore.resourceId === roomInfo.id;
-  //   if (isSameRoom) return Promise.resolve();
-
-  //   history.push(`/s/${roomInfo.id}/talk`);
-  // };
+    const { lastUrl } = await historyStore.getHistory({ roomId: roomInfo.id });
+    if (lastUrl) {
+      history.push(lastUrl);
+    } else {
+      history.push(`/s/${roomInfo.id}/talk`);
+    }
+  };
 
   const handleChange = value => {
     setKeyword(value);
