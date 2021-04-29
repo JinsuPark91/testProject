@@ -16,7 +16,6 @@ import { InnerList } from '../../styles/usersettings/SettingDialogStyle';
 
 const ContentProfile = () => {
   const { t } = useTranslation();
-
   return (
     <>
       <ContentTitle

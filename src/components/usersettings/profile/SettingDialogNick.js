@@ -43,9 +43,7 @@ const SettingDialogNick = () => {
               maxLength={20}
               placeholder={myProfile.displayName}
               value={nick}
-              onChange={input => {
-                setNick(input);
-              }}
+              onChange={input => setNick(input)}
             />
           ) : (
             <p>{myProfile.displayName || '-'}</p>
@@ -82,4 +80,4 @@ const SettingDialogNick = () => {
   );
 };
 
-export default SettingDialogNick;
+export default React.memo(SettingDialogNick);

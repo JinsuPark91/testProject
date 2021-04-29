@@ -110,4 +110,4 @@ const SettingDialogCountryCode = () => {
   );
 };
 
-export default SettingDialogCountryCode;
+export default React.memo(SettingDialogCountryCode);
