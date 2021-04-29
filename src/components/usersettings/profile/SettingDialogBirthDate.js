@@ -28,7 +28,7 @@ const SettingDialogBirthDate = () => {
   };
   const handleCancelChange = () => {
     setIsBirthDateEdit(false);
-    setBirthDate(myProfile.phone);
+    setBirthDate(myProfile.birthDate);
   };
 
   return (
@@ -78,4 +78,4 @@ const SettingDialogBirthDate = () => {
   );
 };
 
-export default SettingDialogBirthDate;
+export default React.memo(SettingDialogBirthDate);

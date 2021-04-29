@@ -18,9 +18,9 @@ import {
 const SettingDialogPhoto = observer(() => {
   const { t } = useTranslation();
   const { userStore } = useCoreStores();
-  const myUserId = userStore.myProfile.id;
-  const profile = userStore.userProfiles[myUserId];
-  const [isDisabled, setIsDisabled] = useState(!profile.thumbPhoto);
+  const { myProfile } = userStore;
+  const myUserId = myProfile.id;
+  const [isDisabled, setIsDisabled] = useState(!myProfile.thumbPhoto);
 
   const getProfilePhoto = () => {
     return userStore.getProfilePhotoURL(myUserId, 'medium');
@@ -79,4 +79,4 @@ const SettingDialogPhoto = observer(() => {
   );
 });
 
-export default SettingDialogPhoto;
+export default React.memo(SettingDialogPhoto);

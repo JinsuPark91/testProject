@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useCoreStores, Switch, Checkbox, AlarmSetting } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import ContentTitle from './ContentTitle';
 import { ReactComponent as SoundIcon } from '../../assets/sound_on.svg';
 import AlarmSound from '../../assets/alarm_sound.wav';
 import { ALARM_TYPE, ALARM_TYPE_SEND } from './SettingConstants';
+import { isBasicPlan } from '../../utils/GeneralUtil';
 import {
   ContentDataWrap,
   FormItemMain,
@@ -19,23 +20,201 @@ import {
   SoundButton,
 } from '../../styles/usersettings/ContentAlarmStyle';
 
+const DesktopAlarm = React.memo(
+  ({ isAlarmChecked, handleDeskTopNotification }) => {
+    const { t } = useTranslation();
+    return (
+      <FormItemMain valuePropName="alarmchecked">
+        <ItemMain>
+          <Switch
+            defaultChecked={isAlarmChecked}
+            onChange={handleDeskTopNotification}
+          />
+          <span>{t('CM_SETTING_NOTI_02')}</span>
+        </ItemMain>
+      </FormItemMain>
+    );
+  },
+);
+
+const TalkAlarm = React.memo(
+  ({
+    isMessageChecked,
+    handleMessage,
+    isMessagePreviewChecked,
+    handleMessagePreview,
+  }) => {
+    const { t } = useTranslation();
+    return (
+      <FormItem>
+        <ItemInfo>
+          <ItemTitle htmlFor="newmessagetoggle">
+            {t('CM_SETTING_NOTI_05')}
+          </ItemTitle>
+          {isMessageChecked && (
+            <ItemSub>
+              <Checkbox
+                checked={isMessagePreviewChecked}
+                onChange={handleMessagePreview}
+                shape="round"
+              >
+                {t('CM_SETTING_NOTI_06')}
+              </Checkbox>
+            </ItemSub>
+          )}
+        </ItemInfo>
+        <Switch
+          id="newmessagetoggle"
+          defaultChecked={isMessageChecked}
+          onChange={handleMessage}
+        />
+      </FormItem>
+    );
+  },
+);
+
+const MentionAlarm = React.memo(({ isMentionChecked, handleMention }) => {
+  const { t } = useTranslation();
+  return (
+    <FormItem>
+      <ItemInfo>
+        <ItemTitle htmlFor="mentiontoggle">{t('CM_SETTING_NOTI_14')}</ItemTitle>
+        <ItemSub isSmall>{t('CM_SETTING_NOTI_15')}</ItemSub>
+      </ItemInfo>
+      <Switch
+        id="mentiontoggle"
+        defaultChecked={isMentionChecked}
+        onChange={handleMention}
+      />
+    </FormItem>
+  );
+});
+
+const MeetingStartCheckBox = React.memo(
+  ({ isMeetingStartChecked, handleMeetingStart }) => {
+    const { t } = useTranslation();
+    return (
+      <Checkbox
+        checked={isMeetingStartChecked}
+        onChange={handleMeetingStart}
+        shape="round"
+      >
+        {t('CM_SETTING_NOTI_09')}
+      </Checkbox>
+    );
+  },
+);
+
+const MeetingEndCheckBox = React.memo(
+  ({ isMeetingEndChecked, handleMeetingEnd }) => {
+    const { t } = useTranslation();
+    return (
+      <Checkbox
+        checked={isMeetingEndChecked}
+        onChange={handleMeetingEnd}
+        shape="round"
+      >
+        {t('CM_SETTING_NOTI_10')}
+      </Checkbox>
+    );
+  },
+);
+
+const MeetingAlarm = React.memo(
+  ({
+    isMeetingChecked,
+    handleMeeting,
+    isMeetingStartChecked,
+    handleMeetingStart,
+    isMeetingEndChecked,
+    handleMeetingEnd,
+  }) => {
+    const { t } = useTranslation();
+    return (
+      <FormItem>
+        <ItemInfo>
+          <ItemTitle htmlFor="Meetingtoggle">
+            {t('CM_SETTING_NOTI_08')}
+          </ItemTitle>
+          {isMeetingChecked && (
+            <ItemSub>
+              <MeetingStartCheckBox
+                isMeetingStartChecked={isMeetingStartChecked}
+                handleMeetingStart={handleMeetingStart}
+              />
+              <MeetingEndCheckBox
+                isMeetingEndChecked={isMeetingEndChecked}
+                handleMeetingEnd={handleMeetingEnd}
+              />
+            </ItemSub>
+          )}
+        </ItemInfo>
+        <Switch
+          id="Meetingtoggle"
+          defaultChecked={isMeetingChecked}
+          onChange={handleMeeting}
+        />
+      </FormItem>
+    );
+  },
+);
+
+const MailAlarm = React.memo(({ isMailChecked, handleMail }) => {
+  const { t } = useTranslation();
+  return (
+    <FormItem>
+      <ItemInfo>
+        <ItemTitle htmlFor="Newlettertoggle">
+          {t('CM_SETTING_NOTI_07')}
+        </ItemTitle>
+        {isBasicPlan() && <ItemSub isMail>{t('CM_SETTING_NOTI')}</ItemSub>}
+      </ItemInfo>
+      <Switch
+        id="Newlettertoggle"
+        defaultChecked={isMailChecked}
+        onChange={handleMail}
+        disabled={isBasicPlan()}
+      />
+    </FormItem>
+  );
+});
+
+const CalendarAlarm = React.memo(({ isCalendarChecked, handleCalendar }) => {
+  const { t } = useTranslation();
+  return (
+    <FormItem>
+      <ItemInfo>
+        <ItemTitleBlack htmlFor="scheduletoggle">
+          {t('CM_SETTING_NOTI_11')}
+        </ItemTitleBlack>
+      </ItemInfo>
+      <Switch
+        id="scheduletoggle"
+        defaultChecked={isCalendarChecked}
+        onChange={handleCalendar}
+      />
+    </FormItem>
+  );
+});
+
 const ContentAlarm = () => {
   const { t } = useTranslation();
-  const { spaceStore, configStore } = useCoreStores();
+  const { configStore } = useCoreStores();
   const [isLoading, setIsLoading] = useState(true);
+
   const [isAlarmChecked, setIsAlarmChecked] = useState(true);
   const [isSoundChecked, setIsSoundChecked] = useState(true);
 
-  const [isMessageNoticeChecked, setIsMessageNoticeChecked] = useState(true);
+  const [isMessageChecked, setIsMessageChecked] = useState(true);
   const [isMessagePreviewChecked, setIsMessagePreviewChecked] = useState(true);
-  const [isMentionNoticeChecked, setIsMentionNoticeChecked] = useState(true);
+  const [isMentionChecked, setIsMentionChecked] = useState(true);
 
-  const [isMeetingNoticeChecked, setIsMeetingNoticeChecked] = useState(true);
+  const [isMeetingChecked, setIsMeetingChecked] = useState(true);
   const [isMeetingStartChecked, setIsMeetingStartChecked] = useState(true);
   const [isMeetingEndChecked, setIsMeetingEndChecked] = useState(true);
 
-  const [isMailNoticeChecked, setIsMailNoticeChecked] = useState(true);
-  const [isCalendarNoticeChecked, setIsCalendarNoticeChecked] = useState(true);
+  const [isMailChecked, setIsMailChecked] = useState(true);
+  const [isCalendarChecked, setIsCalendarChecked] = useState(true);
 
   const handleInitState = value => {
     switch (value) {
@@ -48,7 +227,7 @@ const ContentAlarm = () => {
         break;
       }
       case ALARM_TYPE.TALK: {
-        setIsMessageNoticeChecked(false);
+        setIsMessageChecked(false);
         break;
       }
       case ALARM_TYPE.TALK_CONTENTS: {
@@ -56,11 +235,11 @@ const ContentAlarm = () => {
         break;
       }
       case ALARM_TYPE.TALK_MENTION: {
-        setIsMentionNoticeChecked(false);
+        setIsMentionChecked(false);
         break;
       }
       case ALARM_TYPE.MEETING: {
-        setIsMeetingNoticeChecked(false);
+        setIsMeetingChecked(false);
         break;
       }
       case ALARM_TYPE.MEETING_START: {
@@ -72,11 +251,11 @@ const ContentAlarm = () => {
         break;
       }
       case ALARM_TYPE.MAIL: {
-        setIsMailNoticeChecked(false);
+        setIsMailChecked(false);
         break;
       }
       case ALARM_TYPE.CALENDAR: {
-        setIsCalendarNoticeChecked(false);
+        setIsCalendarChecked(false);
         break;
       }
       default:
@@ -85,10 +264,9 @@ const ContentAlarm = () => {
   };
 
   useEffect(() => {
-    const { alarmSet } = AlarmSetting;
-    const alarmArray = [...alarmSet.keys()];
-    alarmArray.forEach(elem => {
-      if (alarmSet.get(elem)) handleInitState(elem);
+    const { alarmSet } = AlarmSetting; // Map
+    alarmSet.forEach((value, key) => {
+      if (value) handleInitState(key);
     });
     setIsLoading(false);
   }, []);
@@ -98,90 +276,98 @@ const ContentAlarm = () => {
   };
 
   // value - On: True, Off: False
-  const handleDeskTopNotification = value => {
+  // 알람 설정 변경은 async이긴 하지만, 굳이 await 후 toggle할 필요는 없어 보임
+  const handleDeskTopNotification = useCallback(value => {
     try {
       AlarmSetting.save(ALARM_TYPE_SEND.DESKTOP, getOnOffText(value));
       setIsAlarmChecked(value);
     } catch (e) {
-      console.log(`Alarm Change All Failed${e}`);
+      console.log(`Desktop Alarm Change Failed${e}`);
     }
-  };
-  const handleAlarmSound = async value => {
+  }, []);
+
+  const handleAlarmSound = useCallback(value => {
     AlarmSetting.save(ALARM_TYPE_SEND.SOUND, getOnOffText(value));
     setIsSoundChecked(value);
-  };
-  const handleTalkMessage = value => {
+  }, []);
+
+  const handleMessage = useCallback(value => {
     try {
       AlarmSetting.save(ALARM_TYPE_SEND.TALK, getOnOffText(value));
-      setIsMessageNoticeChecked(value);
+      setIsMessageChecked(value);
     } catch (e) {
-      console.log(`Alarm Change Talk Failed${e}`);
+      console.log(`Message Alarm Change Failed${e}`);
     }
-  };
-  const handleMessagePreview = () => {
+  }, []);
+
+  const handleMessagePreview = useCallback(() => {
     try {
       const value = !isMessagePreviewChecked;
       AlarmSetting.save(ALARM_TYPE_SEND.TALK_CONTENTS, getOnOffText(value));
       setIsMessagePreviewChecked(value);
     } catch (e) {
-      console.log(`Alarm Change Talk_Preview Failed${e}`);
+      console.log(`Message Preview Alarm Change Failed${e}`);
     }
-  };
-  const handleMention = value => {
+  }, [isMessagePreviewChecked]);
+
+  const handleMention = useCallback(value => {
     try {
       AlarmSetting.save(ALARM_TYPE_SEND.TALK_MENTION, getOnOffText(value));
-      setIsMentionNoticeChecked(value);
+      setIsMentionChecked(value);
     } catch (e) {
-      console.log(`Alarm Change Mention Failed${e}`);
+      console.log(`Mention Alarm Change Failed${e}`);
     }
-  };
-  const handleMeetingNotice = value => {
+  }, []);
+
+  const handleMeeting = useCallback(value => {
     try {
       AlarmSetting.save(ALARM_TYPE_SEND.MEETING, getOnOffText(value));
-      setIsMeetingNoticeChecked(value);
+      setIsMeetingChecked(value);
     } catch (e) {
-      console.log(`Alarm Change Meeting Failed${e}`);
+      console.log(`Meeting Alarm Change Failed${e}`);
     }
-  };
-  const handleMeetingStart = () => {
+  }, []);
+
+  const handleMeetingStart = useCallback(() => {
     try {
       const value = !isMeetingStartChecked;
       AlarmSetting.save(ALARM_TYPE_SEND.MEETING_START, getOnOffText(value));
       setIsMeetingStartChecked(value);
     } catch (e) {
-      console.log(`Alarm Change Meeting_Start Failed${e}`);
+      console.log(`Meeting Start Alarm Change Failed${e}`);
     }
-  };
-  const handleMeetingEnd = () => {
+  }, [isMeetingStartChecked]);
+
+  const handleMeetingEnd = useCallback(() => {
     try {
       const value = !isMeetingEndChecked;
       AlarmSetting.save(ALARM_TYPE_SEND.MEETING_END, getOnOffText(value));
       setIsMeetingEndChecked(value);
     } catch (e) {
-      console.log(`Alarm Change Meeting_End Failed${e}`);
+      console.log(`Meeting End Alarm Change Failed${e}`);
     }
-  };
-  const handleMailNotice = value => {
+  }, [isMeetingEndChecked]);
+
+  const handleMail = useCallback(value => {
     try {
       AlarmSetting.save(ALARM_TYPE_SEND.MAIL, getOnOffText(value));
-      setIsMailNoticeChecked(value);
+      setIsMailChecked(value);
     } catch (e) {
-      console.log(`Alarm Change Mail Failed${e}`);
+      console.log(`Mail Alarm Change Failed${e}`);
     }
-  };
-  const handleCalendarNotice = value => {
+  }, []);
+
+  const handleCalendar = useCallback(value => {
     try {
       AlarmSetting.save(ALARM_TYPE_SEND.CALENDAR, getOnOffText(value));
-      setIsCalendarNoticeChecked(value);
+      setIsCalendarChecked(value);
     } catch (e) {
-      console.log(`Alarm Change Calendar Failed${e}`);
+      console.log(`Calendar Alarm Change Failed${e}`);
     }
-  };
+  }, []);
 
   // const alarmSound = new Audio();
   // alarmSound.src = AlarmSound;
-  const isBasicPlan = spaceStore.currentSpace?.plan === 'BASIC';
-
   if (isLoading) return null;
 
   return (
@@ -189,15 +375,10 @@ const ContentAlarm = () => {
       <ContentTitle title={t('CM_NOTI')} subTitle={t('CM_SETTING_NOTI_03')} />
       <ContentDataWrap>
         <form>
-          <FormItemMain valuePropName="alarmchecked">
-            <ItemMain>
-              <Switch
-                defaultChecked={isAlarmChecked}
-                onChange={handleDeskTopNotification}
-              />
-              <span>{t('CM_SETTING_NOTI_02')}</span>
-            </ItemMain>
-          </FormItemMain>
+          <DesktopAlarm
+            isAlarmChecked={isAlarmChecked}
+            handleDeskTopNotification={handleDeskTopNotification}
+          />
           {isAlarmChecked && (
             <AlarmList>
               {/* <FormItem valuePropName="alarmchecked">
@@ -224,104 +405,36 @@ const ContentAlarm = () => {
                 onChange={handleAlarmSound}
               />
             </FormItem> */}
-              <FormItem>
-                <ItemInfo>
-                  <ItemTitle htmlFor="newmessagetoggle">
-                    {t('CM_SETTING_NOTI_05')}
-                  </ItemTitle>
-                  {isMessageNoticeChecked && (
-                    <ItemSub>
-                      <Checkbox
-                        checked={isMessagePreviewChecked}
-                        onChange={handleMessagePreview}
-                        shape="round"
-                      >
-                        {t('CM_SETTING_NOTI_06')}
-                      </Checkbox>
-                    </ItemSub>
-                  )}
-                </ItemInfo>
-                <Switch
-                  id="newmessagetoggle"
-                  defaultChecked={isMessageNoticeChecked}
-                  onChange={handleTalkMessage}
-                />
-              </FormItem>
-              <FormItem>
-                <ItemInfo>
-                  <ItemTitle htmlFor="mentiontoggle">
-                    {t('CM_SETTING_NOTI_14')}
-                  </ItemTitle>
-                  <ItemSub isSmall>{t('CM_SETTING_NOTI_15')}</ItemSub>
-                </ItemInfo>
-                <Switch
-                  id="mentiontoggle"
-                  defaultChecked={isMentionNoticeChecked}
-                  onChange={handleMention}
-                />
-              </FormItem>
+              <TalkAlarm
+                isMessageChecked={isMessageChecked}
+                handleMessage={handleMessage}
+                isMessagePreviewChecked={isMessagePreviewChecked}
+                handleMessagePreview={handleMessagePreview}
+              />
+              <MentionAlarm
+                isMentionChecked={isMentionChecked}
+                handleMention={handleMention}
+              />
               {configStore.isActivateForCNU('Meeting') ? (
-                <FormItem>
-                  <ItemInfo>
-                    <ItemTitle htmlFor="Meetingtoggle">
-                      {t('CM_SETTING_NOTI_08')}
-                    </ItemTitle>
-                    {isMeetingNoticeChecked && (
-                      <ItemSub>
-                        <Checkbox
-                          checked={isMeetingStartChecked}
-                          onChange={handleMeetingStart}
-                          shape="round"
-                        >
-                          {t('CM_SETTING_NOTI_09')}
-                        </Checkbox>
-                        <Checkbox
-                          checked={isMeetingEndChecked}
-                          onChange={handleMeetingEnd}
-                          shape="round"
-                        >
-                          {t('CM_SETTING_NOTI_10')}
-                        </Checkbox>
-                      </ItemSub>
-                    )}
-                  </ItemInfo>
-                  <Switch
-                    id="Meetingtoggle"
-                    defaultChecked={isMeetingNoticeChecked}
-                    onChange={handleMeetingNotice}
-                  />
-                </FormItem>
+                <MeetingAlarm
+                  isMeetingChecked={isMeetingChecked}
+                  handleMeeting={handleMeeting}
+                  isMeetingStartChecked={isMeetingStartChecked}
+                  handleMeetingStart={handleMeetingStart}
+                  isMeetingEndChecked={isMeetingEndChecked}
+                  handleMeetingEnd={handleMeetingEnd}
+                />
               ) : null}
               {configStore.isActivateForCNU('Mail') ? (
-                <FormItem>
-                  <ItemInfo>
-                    <ItemTitle htmlFor="Newlettertoggle">
-                      {t('CM_SETTING_NOTI_07')}
-                    </ItemTitle>
-                    {isBasicPlan && (
-                      <ItemSub isMail>{t('CM_SETTING_NOTI')}</ItemSub>
-                    )}
-                  </ItemInfo>
-                  <Switch
-                    id="Newlettertoggle"
-                    defaultChecked={isMailNoticeChecked}
-                    onChange={handleMailNotice}
-                    disabled={isBasicPlan}
-                  />
-                </FormItem>
-              ) : null}
-              <FormItem>
-                <ItemInfo>
-                  <ItemTitleBlack htmlFor="scheduletoggle">
-                    {t('CM_SETTING_NOTI_11')}
-                  </ItemTitleBlack>
-                </ItemInfo>
-                <Switch
-                  id="scheduletoggle"
-                  defaultChecked={isCalendarNoticeChecked}
-                  onChange={handleCalendarNotice}
+                <MailAlarm
+                  isMailChecked={isMailChecked}
+                  handleMail={handleMail}
                 />
-              </FormItem>
+              ) : null}
+              <CalendarAlarm
+                isCalendarChecked={isCalendarChecked}
+                handleCalendar={handleCalendar}
+              />
             </AlarmList>
           )}
         </form>
@@ -330,4 +443,4 @@ const ContentAlarm = () => {
   );
 };
 
-export default React.memo(ContentAlarm);
+export default ContentAlarm;
