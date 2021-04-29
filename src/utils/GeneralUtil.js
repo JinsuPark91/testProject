@@ -8,8 +8,6 @@ export const isSpaceAdmin = () => {
   return UserStore.myProfile.grade === 'admin';
 };
 
-export const isNewSpaceMessageExist = () => {
-  return (
-    SpaceStore.totalUnreadSpaceCount > SpaceStore.currentSpace?.unreadSpaceCount
-  );
+export const isBasicPlan = () => {
+  return SpaceStore.currentSpace?.plan === 'BASIC';
 };

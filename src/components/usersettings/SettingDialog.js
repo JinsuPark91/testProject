@@ -21,13 +21,11 @@ import {
 
 const SettingDialog = ({ visible, onCancel }) => {
   const { t } = useTranslation();
-  const [selectedKey, setSelectedKey] = useState(SELECTED_TAB.ALARM);
+  const { configStore } = useCoreStores();
 
-  // 스페이스 탈퇴 관련
+  const [selectedKey, setSelectedKey] = useState(SELECTED_TAB.ALARM);
   const [isSecession, setIsSecession] = useState(false);
   const [inputPassword, setInputPassword] = useState('');
-
-  const { configStore } = useCoreStores();
 
   const handleCancel = () => {
     setSelectedKey(SELECTED_TAB.ALARM);
@@ -39,7 +37,6 @@ const SettingDialog = ({ visible, onCancel }) => {
       setIsSecession(false);
       setInputPassword('');
     }
-
     setSelectedKey(key);
   };
 
@@ -71,7 +68,7 @@ const SettingDialog = ({ visible, onCancel }) => {
       centered
       width="59.38rem"
       title={t('CM_SETTING')}
-      style={{ top: 15, minWidth: '50rem' }}
+      style={{ minWidth: '50rem' }}
       footer={
         isSecession ? (
           <SettingSave
@@ -88,9 +85,7 @@ const SettingDialog = ({ visible, onCancel }) => {
           <StyledMenu
             defaultSelectedKeys={['2']}
             selectedKeys={selectedKey}
-            onClick={({ item, key }) => {
-              handleTabClick(key);
-            }}
+            onClick={({ item, key }) => handleTabClick(key)}
           >
             <Menu.ItemGroup key="0" title={t('CM_SETTING_02')}>
               {/* <Menu.Item key="1">일반</Menu.Item> */}

@@ -272,12 +272,14 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
           </>
         ) : null}
       </UserButtonBox>
-      <LogoutButton
-        className="header-profile__logout-button"
-        onClick={handleLogout}
-      >
-        {t('CM_LOGOUT_01')}
-      </LogoutButton>
+      {!configStore.isFromCNU ? (
+        <LogoutButton
+          className="header-profile__logout-button"
+          onClick={handleLogout}
+        >
+          {t('CM_LOGOUT_01')}
+        </LogoutButton>
+      ) : null}
     </>
   ) : (
     <ProfileInfoModal
