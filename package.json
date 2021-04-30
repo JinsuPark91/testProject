@@ -82,7 +82,7 @@
     "styled-tools": "^1.7.2",
     "suneditor-react": "^2.13.4",
     "teespace-admin": "git+http://192.168.158.12:9000/teespace/teespace-admin#develop",
-    "teespace-calendar-app": "git+http://192.168.158.12:9000/root/teespace-calendar-app#develop",
+    "teespace-calendar-app": "git+http://192.168.158.12:9000/teespace/teespace-calendar-app#develop",
     "teespace-core": "git+http://192.168.158.12:9000/teespace/teespace-core#develop",
     "teespace-drive-app": "git+http://192.168.158.12:9000/teespace/teespace-drive-app#develop",
     "teespace-mail-app": "git+http://192.168.158.12:9000/teespace/teespace-mail-app#develop",
