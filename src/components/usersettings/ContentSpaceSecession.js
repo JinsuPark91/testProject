@@ -20,6 +20,40 @@ import {
   InputName,
 } from '../../styles/usersettings/ContentSpaceSecessionStyle';
 
+const SpaceSecessionUpper = React.memo(({ spaceName, spaceDomain }) => {
+  const { t } = useTranslation();
+  return (
+    <ContentGroup>
+      <GroupTitle>{t('CM_SETTING_DELETE_SPACE_03')}</GroupTitle>
+      <SpaceBox>
+        <SpaceLogo
+          shape="square"
+          style={{ color: '#fff', backgroundColor: '#75757F' }}
+        >
+          {spaceName[0]}
+        </SpaceLogo>
+        <SpaceInfo>
+          <SpaceTitle>{spaceName}</SpaceTitle>
+          {spaceDomain}
+        </SpaceInfo>
+      </SpaceBox>
+    </ContentGroup>
+  );
+});
+
+const SpaceSecessionText = React.memo(() => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <GroupTitle>{t('CM_SETTING_DELETE_SPACE_04')}</GroupTitle>
+      <NoticeList>
+        <NoticeItem>{t('CM_SETTING_DELETE_SPACE_05')}</NoticeItem>
+        <NoticeItem>{t('CM_SETTING_DELETE_SPACE_06')}</NoticeItem>
+      </NoticeList>
+    </>
+  );
+});
+
 const ContentSpaceSecession = ({
   isSecession,
   toggleSecession,
@@ -45,21 +79,10 @@ const ContentSpaceSecession = ({
         subTitle={t('CM_SETTING_DELETE_SPACE_02')}
       />
       <ContentDataWrap>
-        <ContentGroup>
-          <GroupTitle>{t('CM_SETTING_DELETE_SPACE_03')}</GroupTitle>
-          <SpaceBox>
-            <SpaceLogo
-              shape="square"
-              style={{ color: '#fff', backgroundColor: '#75757F' }}
-            >
-              {spaceStore.currentSpace?.name[0]}
-            </SpaceLogo>
-            <SpaceInfo>
-              <SpaceTitle>{spaceStore.currentSpace?.name}</SpaceTitle>
-              {spaceStore.currentSpace?.domain}
-            </SpaceInfo>
-          </SpaceBox>
-        </ContentGroup>
+        <SpaceSecessionUpper
+          spaceName={spaceStore.currentSpace?.name}
+          spaceDomain={spaceStore.currentSpace?.domain}
+        />
         <ContentGroup>
           {isSecession ? (
             <>
@@ -78,11 +101,7 @@ const ContentSpaceSecession = ({
             </>
           ) : (
             <>
-              <GroupTitle>{t('CM_SETTING_DELETE_SPACE_04')}</GroupTitle>
-              <NoticeList>
-                <NoticeItem>{t('CM_SETTING_DELETE_SPACE_05')}</NoticeItem>
-                <NoticeItem>{t('CM_SETTING_DELETE_SPACE_06')}</NoticeItem>
-              </NoticeList>
+              <SpaceSecessionText />
               <CheckboxWrap>
                 <Checkbox
                   className="check-round"

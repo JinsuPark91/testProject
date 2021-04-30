@@ -21,9 +21,8 @@ const SettingSave = ({ onCancel, inputPassword }) => {
       pw: passwordInput,
     });
 
-    if (!res) {
-      handleToggleMessage();
-    } else {
+    if (!res) handleToggleMessage();
+    else {
       await spaceStore.leaveCurrentSpace({
         userId: userStore.myProfile.id,
       });
@@ -35,26 +34,28 @@ const SettingSave = ({ onCancel, inputPassword }) => {
 
   return (
     <>
-      <Button type="solid" onClick={() => onCancel()}>
+      <Button type="solid" onClick={onCancel}>
         {t('CM_BACK')}
       </Button>
       <Button onClick={handleInputPassword} type="outlined">
         {t('CM_LOGIN_POLICY_03')}
       </Button>
-      <Message
-        visible={isMessageOpen}
-        title={title[0]}
-        subtitle={title[1]}
-        type="error"
-        btns={[
-          {
-            type: 'solid',
-            shape: 'round',
-            text: t('CM_LOGIN_POLICY_03'),
-            onClick: handleToggleMessage,
-          },
-        ]}
-      />
+      {isMessageOpen && (
+        <Message
+          visible={isMessageOpen}
+          title={title[0]}
+          subtitle={title[1]}
+          type="error"
+          btns={[
+            {
+              type: 'solid',
+              shape: 'round',
+              text: t('CM_LOGIN_POLICY_03'),
+              onClick: handleToggleMessage,
+            },
+          ]}
+        />
+      )}
     </>
   );
 };
