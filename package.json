@@ -94,7 +94,9 @@
   },
   "scripts": {
     "start": "craco --max_old_space_size=8096 start",
-    "build": "craco --max_old_space_size=8096 build",
+    "build": "yarn build:web && yarn build:mobile",
+    "build:web": "HOST_TYPE=web craco --max_old_space_size=8096 build",
+    "build:mobile": "HOST_TYPE=mobile PUBLIC_URL=/mobile craco --max_old_space_size=8096 build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
