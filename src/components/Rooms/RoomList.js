@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer, useLocalStore } from 'mobx-react';
 import styled, { css } from 'styled-components';
@@ -21,54 +21,51 @@ import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
 
 function RoomList() {
+  const containerRef = useRef(null);
   const { t, i18n } = useTranslation();
+  const history = useHistory();
+  const { roomStore, userStore, configStore, authStore } = useCoreStores();
+  const { uiStore, historyStore } = useStores();
   const store = useLocalStore(() => ({
     keyword: '',
     targetRoom: null,
     exitTargetRoom: null,
+    targetUserId: null,
+    roomMemberAttr: {},
+    isScrollEnd: false,
+    toast: {
+      visible: false,
+      text: '',
+    },
     visible: {
+      profileModal: false,
       roomMemberModal: false,
       exitAdminModal: false,
       exitNormalModal: false,
       selectRoomTypeModal: false,
     },
   }));
-  const history = useHistory();
-  const { roomStore, userStore, configStore, authStore } = useCoreStores();
-  const { uiStore, historyStore } = useStores();
 
-  const [roomMemberAttr, setRoomMemberAttr] = useState({});
-  const [isProfileInfoModalVisible, setIsProfileInfoModalVisible] = useState(
-    false,
-  );
-  const [targetUserId, setTargetUserId] = useState(null);
-
-  const [toastText, setToastText] = useState('');
-  const [isToastVisible, setIsToastVisible] = useState(false);
-  const [isScrollEnd, setIsScrollEnd] = useState(false);
-
-  const containerRef = useRef(null);
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTo(0, 0);
     }
   }, [uiStore.tabType]);
 
-  // LNB lastMessage i18n 임시
-  useEffect(() => {
-    EventBus.dispatch('Platform:initLNB');
-  }, [i18n.language]);
-
   const handleScroll = throttle(() => {
     const container = containerRef.current;
     const { scrollTop, clientHeight, scrollHeight } = container;
 
     if (scrollTop + clientHeight === scrollHeight) {
-      setIsScrollEnd(true);
+      store.isScrollEnd = true;
     } else {
-      setIsScrollEnd(false);
+      store.isScrollEnd = false;
     }
   }, 200);
+
+  useEffect(() => {
+    EventBus.dispatch('Platform:initLNB');
+  }, [i18n.language]);
 
   const handleCreateRoom = () => {
     store.visible.selectRoomTypeModal = true;
@@ -108,15 +105,15 @@ function RoomList() {
     store.targetRoom = roomInfo;
   };
 
-  const handleClickMenuItem = useCallback(({ key, item, value }) => {
+  const handleClickMenuItem = ({ key, item, value }) => {
     switch (key) {
       case 'profile':
-        setTargetUserId(item);
-        setIsProfileInfoModalVisible(true);
+        store.targetUserId = item;
+        store.visible.profileModal = true;
         break;
       case 'member':
       case 'changeName':
-        setRoomMemberAttr(value);
+        store.roomMemberAttr = value;
         store.targetRoom = item;
         store.visible.roomMemberModal = true;
         break;
@@ -130,7 +127,7 @@ function RoomList() {
         break;
       default:
     }
-  }, []);
+  };
 
   const handleClickRoomPhoto = roomInfo => {
     // NOTE. 마이룸인 경우 나의 프로파일 정보를,
@@ -139,24 +136,24 @@ function RoomList() {
     const isMyRoom = roomInfo.type === 'WKS0001';
 
     if (isMyRoom) {
-      setTargetUserId(userStore.myProfile.id);
-      setIsProfileInfoModalVisible(true);
+      store.targetUserId = userStore.myProfile.id;
+      store.visible.profileModal = true;
     } else if (isDMRoom) {
       const found = roomInfo.memberIdListString
         .split(',')
         .find(userId => userId !== userStore.myProfile.id);
 
-      setTargetUserId(found);
-      setIsProfileInfoModalVisible(true);
+      store.targetUserId = found;
+      store.visible.profileModal = true;
     } else {
       store.targetRoom = roomInfo;
-      setRoomMemberAttr({ isEdit: false });
+      store.roomMemberAttr = { isEdit: false };
       store.visible.roomMemberModal = true;
     }
   };
 
   const handleCloseProfileInfoModal = () => {
-    setIsProfileInfoModalVisible(false);
+    store.visible.profileModal = false;
   };
 
   const handleCloseExitAdminModal = () => {
@@ -217,7 +214,7 @@ function RoomList() {
         ?.includes(store.keyword.toLowerCase()));
 
   const handleToastClose = () => {
-    setIsToastVisible(false);
+    store.toast.visible = false;
   };
 
   const hasMemberCreatePermission = authStore.hasPermission('members', 'C');
@@ -234,7 +231,7 @@ function RoomList() {
               width="17.5rem"
               top="calc(50% - 15rem)"
               left="16.81rem"
-              isEdit={roomMemberAttr.isEdit}
+              isEdit={store.roomMemberAttr.isEdit}
             />
           );
         }}
@@ -242,10 +239,10 @@ function RoomList() {
 
       <Observer>
         {() => {
-          return targetUserId ? (
+          return store.targetUserId ? (
             <ProfileInfoModal
-              userId={targetUserId}
-              visible={isProfileInfoModalVisible}
+              userId={store.targetUserId}
+              visible={store.visible.profileModal}
               onClickMeeting={_roomId => {
                 uiStore.openWindow({
                   id: _roomId,
@@ -315,12 +312,12 @@ function RoomList() {
             onCancel={handleSelectRoomTypeCancel}
             onCreateRoom={({ selectedUsers, isNewRoom }) => {
               if (isNewRoom) {
-                setIsToastVisible(true);
-                setToastText(
-                  t('CM_INVITE_MEMBER', {
+                store.toast = {
+                  visible: true,
+                  text: t('CM_INVITE_MEMBER', {
                     num: selectedUsers.length,
                   }),
-                );
+                };
               }
             }}
           />
@@ -380,27 +377,28 @@ function RoomList() {
           }}
         </Observer>
       </RoomContainer>
-      {configStore.isActivateComponent('Platform', 'LNB:Logo') ? (
-        <ButtomWrapper
-          isScrollEnd={isScrollEnd}
-          // onClick={() => {
-          //   const store = uiStore;
-          //   const currentTheme = store.getTheme();
-          //   if (currentTheme === 'white') store.setTheme('dark');
-          //   else if (currentTheme === 'dark') store.setTheme('green');
-          //   else store.setTheme('white');
-          // }}
-        >
-          <WaplLogo />
-        </ButtomWrapper>
-      ) : null}
-      <Toast
-        visible={isToastVisible}
-        timeoutMs={1000}
-        onClose={handleToastClose}
-      >
-        {toastText}
-      </Toast>
+
+      <Observer>
+        {() => {
+          return configStore.isActivateComponent('Platform', 'LNB:Logo') ? (
+            <ButtomWrapper isScrollEnd={store.isScrollEnd}>
+              <WaplLogo />
+            </ButtomWrapper>
+          ) : null;
+        }}
+      </Observer>
+
+      <Observer>
+        {() => (
+          <Toast
+            visible={store.toast.visible}
+            timeoutMs={1000}
+            onClose={handleToastClose}
+          >
+            {store.toast.text}
+          </Toast>
+        )}
+      </Observer>
     </Wrapper>
   );
 }
