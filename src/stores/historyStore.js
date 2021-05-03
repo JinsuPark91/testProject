@@ -19,6 +19,20 @@ const HistoryStore = observable({
     }
   },
 
+  async fetchHistory({ roomId }) {
+    try {
+      const userId = UserStore.myProfile.id;
+      const history = await UserStore.getRoutingHistory({
+        userId,
+        roomId,
+      });
+
+      return Promise.resolve(history);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+
   updateHistory({ history }) {
     const { roomId } = history;
 
