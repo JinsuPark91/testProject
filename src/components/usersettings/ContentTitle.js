@@ -16,4 +16,4 @@ function ContentTitle({ title, subTitle }) {
   );
 }
 
-export default ContentTitle;
+export default React.memo(ContentTitle);

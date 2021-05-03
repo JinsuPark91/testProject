@@ -5,6 +5,26 @@ const TalkLinkPlugin = require('teespace-talk-app/link');
 // TalkLinkPlugin(externalPublicPath = 'public')
 TalkLinkPlugin();
 
+const cracoWebpackConfig = {
+  alias: {
+    react: require.resolve('react'),
+    'react-dnd': require.resolve('react-dnd'),
+    'react-router-dom': require.resolve('react-router-dom'),
+    'teespace-core': path.resolve(__dirname, 'node_modules/teespace-core'),
+    antd: path.resolve(__dirname, 'node_modules/antd'),
+  },
+};
+
+if (process.env.HOST_TYPE === 'mobile') {
+  cracoWebpackConfig.configure = (webpackConfig, { paths }) => {
+    // eslint-disable-next-line no-param-reassign
+    webpackConfig.entry = './src/index.mobile.js';
+    // eslint-disable-next-line no-param-reassign, no-multi-assign
+    paths.appBuild = webpackConfig.output.path = path.resolve('build/mobile');
+    return webpackConfig;
+  };
+}
+
 module.exports = {
   babel: {
     plugins: [
@@ -12,15 +32,7 @@ module.exports = {
       '@babel/plugin-proposal-class-properties',
     ],
   },
-  webpack: {
-    alias: {
-      react: require.resolve('react'),
-      'react-dnd': require.resolve('react-dnd'),
-      'react-router-dom': require.resolve('react-router-dom'),
-      'teespace-core': path.resolve(__dirname, 'node_modules/teespace-core'),
-      antd: path.resolve(__dirname, 'node_modules/antd'),
-    },
-  },
+  webpack: cracoWebpackConfig,
   plugins: [
     {
       plugin: CracoLessPlugin,
