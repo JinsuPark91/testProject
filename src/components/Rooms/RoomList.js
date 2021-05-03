@@ -20,7 +20,7 @@ import { useStores } from '../../stores';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
 
-function RoomList() {
+const RoomList = () => {
   const containerRef = useRef(null);
   const { t, i18n } = useTranslation();
   const history = useHistory();
@@ -367,7 +367,6 @@ function RoomList() {
                 <RoomItem
                   key={roomInfo.id}
                   roomInfo={roomInfo}
-                  selected={uiStore.resourceId === roomInfo.id}
                   onClick={handleSelectRoom}
                   onMenuClick={handleMenuClick}
                   onClickMenuItem={handleClickMenuItem}
@@ -401,7 +400,7 @@ function RoomList() {
       </Observer>
     </Wrapper>
   );
-}
+};
 
 const Wrapper = styled.div`
   display: flex;
