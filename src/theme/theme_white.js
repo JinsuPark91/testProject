@@ -31,4 +31,5 @@ const colors = {
   OreangeVividColor: '#FF8459',
 };
 
+colors.name = 'white';
 export { colors };

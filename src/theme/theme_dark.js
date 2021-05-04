@@ -17,4 +17,5 @@ const colors = {
   WapleNavyDarkColor: '#313438',
 };
 
+colors.name = 'dark';
 export { colors };
