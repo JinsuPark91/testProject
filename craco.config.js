@@ -12,6 +12,7 @@ const cracoWebpackConfig = {
     'react-router-dom': require.resolve('react-router-dom'),
     'teespace-core': path.resolve(__dirname, 'node_modules/teespace-core'),
     antd: path.resolve(__dirname, 'node_modules/antd'),
+    'styled-components': require.resolve('styled-components'),
   },
 };
 
