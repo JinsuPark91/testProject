@@ -355,7 +355,7 @@ const RoomItemContent = React.memo(
               </Observer>
               <Observer>
                 {() => {
-                  return roomInfo.metadata?.count ? (
+                  return roomInfo.metadata?.count > 0 ? (
                     <UnreadCount
                       className="rooms__item__unread"
                       style={{
