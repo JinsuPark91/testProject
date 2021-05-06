@@ -9,10 +9,6 @@ const uiStore = observable({
     if (theme[name]) this.theme = theme[name];
   },
 
-  getTheme() {
-    return this.theme.name;
-  },
-
   /*
     Resource Type : URL 상의 s / f / m
     충남대의 경우 friend / room /....
