@@ -15,6 +15,27 @@ const colors = {
   WapleNavyBrightColor: '#191A1B',
   WapleNavyLightColor: '#3B3C3F',
   WapleNavyDarkColor: '#313438',
+
+  GreenColor: '#205855',
+  GreenBrightColor: '#698c87',
+  GreenLightColor: '#4a7672',
+  GreenDarkColor: '#133d3b',
+  GreenVividColor: '#00493d',
+
+  OreangeColor: '#ec6222',
+  OreangeBrightColor: '#ee9266',
+  OreangeLightColor: '#ed7e49',
+  OreangeDarkColor: '#d05319',
+  OreangeVividColor: '#FF8459',
+
+  BasicDarkColor: '#fff',
+  BasicLightColor: '#171819',
+  DisabledColor: '#454545',
+  HeaderIconColor: '#fff',
+
+  LineColor: '#666',
+  LineMainColor: '#333',
+  LineSubColor: '#252525',
 };
 
 colors.name = 'dark';
