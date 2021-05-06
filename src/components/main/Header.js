@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useLocalStore, Observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -10,6 +10,7 @@ import {
 } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import {
   Wrapper,
   TitleWrapper,
@@ -25,7 +26,7 @@ import {
   StyledPhotos,
   VerticalBar,
 } from './HeaderStyle';
-import { useStores } from '../../stores';
+import { useStores, rootStore } from '../../stores';
 import HeaderProfile from '../profile/HeaderProfile';
 import RoomInquiryModal from '../Rooms/RoomInquiryModal';
 import RoomAddMemberModal from '../Rooms/RoomAddMemberModal';
@@ -48,6 +49,9 @@ import {
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 
 const getIconStyle = (isDisabled = false) => {
+  const { uiStore } = rootStore;
+
+  // uiStore.theme.xxx
   return {
     width: 1.38,
     height: 1.38,
@@ -128,6 +132,7 @@ const AppIcon = React.memo(
     activeIcon,
     disabledIcon,
     disabled,
+    color,
   }) => {
     const { t } = useTranslation();
 
@@ -150,7 +155,7 @@ const AppIcon = React.memo(
           onClick={handleAppClick}
           disabled={disabled}
         >
-          {icon}
+          {React.cloneElement(icon, { color })}
         </AppIconInner>
       </Tooltip>
     );
@@ -158,6 +163,7 @@ const AppIcon = React.memo(
 );
 
 const Header = () => {
+  const themeContext = useContext(ThemeContext);
   const history = useHistory();
   const { t, i18n } = useTranslation();
   const { uiStore } = useStores();
@@ -581,6 +587,7 @@ const Header = () => {
                           ? uiStore.subApp === name
                           : !!uiStore.getWindow('meeting', findRoom()?.id)
                       }
+                      color={themeContext.testColor}
                       appName={name}
                       i18n={tooltip}
                       onClick={handleAppClick}
