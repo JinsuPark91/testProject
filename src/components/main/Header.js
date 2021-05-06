@@ -55,7 +55,7 @@ const getIconStyle = (isDisabled = false) => {
   return {
     width: 1.38,
     height: 1.38,
-    color: isDisabled ? 'rgba(68, 77, 89, 0.3)' : '#232D3B',
+    color: isDisabled ? 'rgba(68, 77, 89, 0.3)' : uiStore.theme.HeaderIconColor,
   };
 };
 
@@ -587,7 +587,7 @@ const Header = () => {
                           ? uiStore.subApp === name
                           : !!uiStore.getWindow('meeting', findRoom()?.id)
                       }
-                      color={themeContext.testColor}
+                      color={themeContext.HeaderIconColor}
                       appName={name}
                       i18n={tooltip}
                       onClick={handleAppClick}

@@ -9,7 +9,7 @@ export const Wrapper = styled.div`
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   border-bottom: 1px solid #ddd9d4;
-  background-color: #fff;
+  background-color: ${props => props.theme.StateBeigeColor};
 `;
 
 export const TitleWrapper = styled.div`

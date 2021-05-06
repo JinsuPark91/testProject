@@ -29,6 +29,15 @@ const colors = {
   OreangeLightColor: '#ed7e49',
   OreangeDarkColor: '#d05319',
   OreangeVividColor: '#FF8459',
+
+  BasicDarkColor: '#000',
+  BasicLightColor: '#fff',
+  DisabledColor: '#ccc',
+  HeaderIconColor: '#232D3B',
+
+  LineColor: '#d0ccc7',
+  LineMainColor: '#ddd9d4',
+  LineSubColor: '#eeedeb',
 };
 
 colors.name = 'white';
