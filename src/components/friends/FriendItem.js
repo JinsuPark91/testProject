@@ -194,10 +194,10 @@ const FriendItem = observer(
     isActive = false,
     onClick,
     friendInfo,
+    handleOpenInfoModal,
+    handleSelectedId,
     handleOpenToast,
     handleToastText,
-    handleSelectedId,
-    handleInfoModalVisible,
   }) => {
     const { t } = useTranslation();
     const {
@@ -235,11 +235,6 @@ const FriendItem = observer(
         if (roomInfo && roomInfo.isVisible) return roomInfo;
         if (roomInfo && !roomInfo.isVisible) {
           await roomStore.activateRoom({ roomId: roomInfo.id });
-          // await roomStore.updateRoomMemberSetting({
-          //   roomId: roomInfo.id,
-          //   myUserId,
-          //   newIsVisible: true,
-          // });
           return roomInfo;
         }
 
@@ -298,7 +293,7 @@ const FriendItem = observer(
       if (e) e.stopPropagation();
       if (id) {
         handleSelectedId(id);
-        handleInfoModalVisible(true);
+        handleOpenInfoModal();
       }
     };
 

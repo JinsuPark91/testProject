@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const ContentTitleWrap = styled.div`
   margin: 0 1.25rem;
   padding: 1.25rem 0;
-  border-bottom: 1px solid #ddd9d4;
+  border-bottom: ${props => (props.divider ? '1px solid #ddd9d4' : '')};
 `;
 
 export const Title = styled.p`

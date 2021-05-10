@@ -14,7 +14,6 @@ import {
 import { useHistory } from 'react-router-dom';
 import { useObserver, Observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
-import { fallbackLanguage } from '../../i18n';
 import { useStores } from '../../stores';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
@@ -22,7 +21,7 @@ import SpaceEditModal from './SpaceEditModal';
 import SettingDialog from '../usersettings/SettingDialog';
 import MovePage from '../../utils/MovePage';
 import { getMainWaplURL } from '../../utils/UrlUtil';
-import { isSpaceAdmin } from '../../utils/GeneralUtil';
+import { isSpaceAdmin, getLanguage } from '../../utils/GeneralUtil';
 import { ArrowRightIcon } from '../Icons';
 import {
   UserImage,
@@ -215,17 +214,6 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
         if (err) return console.log(`error is..${err}`);
       });
     }
-  };
-
-  const getLanguage = () => {
-    const { language } = myProfile;
-    if (!language) return fallbackLanguage;
-
-    const match = language.match(/en|ko/g);
-    const isValidLanguage = !!match;
-    if (isValidLanguage) return match?.[0];
-
-    return fallbackLanguage;
   };
 
   const LanguageMenu = (
