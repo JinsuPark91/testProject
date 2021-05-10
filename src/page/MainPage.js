@@ -25,6 +25,7 @@ import LoadingImg from '../assets/WAPL_Loading.gif';
 import FaviconChanger from '../components/common/FaviconChanger';
 import WindowManager from '../components/common/WindowManager';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
+import { handleProfileMenuClick } from '../utils/ProfileUtil';
 
 const MainPage = () => {
   const { t, i18n } = useTranslation();
@@ -44,6 +45,15 @@ const MainPage = () => {
   const url = window.location.origin; //  http://xxx.dev.teespace.net
   const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
   const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
+
+  /**
+   * /f/:userId?action=talk
+   * /f/:userId?action=meeting
+   * 위 주소로 각각 1:1 talk, 1:1 meeting 을 호출할 수 있음.
+   */
+  const query = new URLSearchParams(window.location.search);
+  const profileAction = query.get('action'); // profile 용 action
+
   let domainName;
   [domainName] = url.split(`//`)[1].split(`.`);
   /**
@@ -63,6 +73,52 @@ const MainPage = () => {
       };
     }
   }, []);
+
+  const handleMoveTalkHistory = async roomInfo => {
+    const { lastUrl } = await historyStore.getHistory({
+      roomId: roomInfo.id,
+    });
+    if (lastUrl) history.push(lastUrl);
+    else history.push(`/s/${roomInfo.id}/talk`);
+  };
+  const handleMoveTalk = roomInfo => history.push(`/s/${roomInfo.id}/talk`);
+
+  const handleOpenMeeting = roomInfo => {
+    uiStore.openWindow({
+      id: roomInfo.id,
+      type: 'meeting',
+      name: null,
+      userCount: null,
+      handler: null,
+    });
+  };
+  const handleMoveMeetingHistory = async roomInfo => {
+    handleOpenMeeting(roomInfo);
+    await handleMoveTalkHistory(roomInfo);
+  };
+  const handleMoveMeeting = roomInfo => {
+    handleOpenMeeting(roomInfo);
+    handleMoveTalk(roomInfo);
+  };
+
+  const handleTalkClick = async () => {
+    handleProfileMenuClick(
+      myUserId,
+      resourceId,
+      handleMoveTalkHistory,
+      handleMoveTalk,
+      handleMoveTalk,
+    );
+  };
+  const handleMeetingClick = async () => {
+    handleProfileMenuClick(
+      myUserId,
+      resourceId,
+      handleMoveMeetingHistory,
+      handleMoveMeeting,
+      handleMoveMeeting,
+    );
+  };
 
   /*
     Loading 체크
@@ -111,10 +167,22 @@ const MainPage = () => {
           i18n.changeLanguage(userStore.myProfile.language);
         }
 
-        // NOTE : 마지막 접속 URL 로 Redirect 시킨다.
-        if (historyStore.lastHistory) {
-          history.push(historyStore.lastHistory);
+        // 스페이스 화면에서 1:1 Talk나 1:1 Meeting을 선택한 경우
+        if (resourceType === 'f' && profileAction) {
+          switch (profileAction) {
+            case 'talk':
+              handleTalkClick();
+              break;
+            case 'meeting':
+              handleMeetingClick();
+              break;
+            default:
+              break;
+          }
         }
+        // NOTE : 마지막 접속 URL 로 Redirect 시킨다.
+        else if (historyStore.lastHistory)
+          history.push(historyStore.lastHistory);
       })
       .then(() => {
         setIsLoading(false);
