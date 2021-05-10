@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
+import { ProfileInfoModal, Toast } from 'teespace-core';
 import FriendsLNBList from './FriendsLNBList';
-import FriendsLNBModal from './FriendsLNBModal';
+import { useStores } from '../../stores';
 
 /**
  * @param {string} searchKeyword - 프렌즈 검색 키워드
@@ -8,30 +9,26 @@ import FriendsLNBModal from './FriendsLNBModal';
  */
 
 const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
+  const { uiStore } = useStores();
+
   const [isInfoModalVisible, setIsInfoModalVisible] = useState(false);
   const [selectedId, setSelectedId] = useState('');
 
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [toastText, setToastText] = useState('');
 
-  const [isMemberModalVisible, setIsMemberModalVisible] = useState(false);
-
-  const handleInfoModalVisible = useCallback(value => {
-    setIsInfoModalVisible(value);
+  const handleOpenInfoModal = useCallback(() => {
+    setIsInfoModalVisible(true);
   }, []);
   const handleSelectedId = useCallback(value => {
     setSelectedId(value);
   }, []);
 
-  const handleToastVisible = useCallback(value => {
-    setIsToastVisible(value);
+  const handleOpenToast = useCallback(() => {
+    setIsToastVisible(true);
   }, []);
   const handleToastText = useCallback(value => {
     setToastText(value);
-  }, []);
-
-  const handleMemberModalVisible = useCallback(value => {
-    setIsMemberModalVisible(value);
   }, []);
 
   return (
@@ -39,22 +36,37 @@ const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
       <FriendsLNBList
         searchKeyword={searchKeyword}
         handleShadow={handleShadow}
-        handleInfoModalVisible={handleInfoModalVisible}
+        handleOpenInfoModal={handleOpenInfoModal}
         handleSelectedId={handleSelectedId}
-        handleToastVisible={handleToastVisible}
+        handleOpenToast={handleOpenToast}
         handleToastText={handleToastText}
-        handleMemberModalVisible={handleMemberModalVisible}
       />
-      <FriendsLNBModal
-        infoModalVisible={isInfoModalVisible}
-        handleCloseInfoModal={() => handleInfoModalVisible(false)}
-        selectedId={selectedId}
-        toastVisible={isToastVisible}
-        handleCloseToast={() => handleToastVisible(false)}
-        toastText={toastText}
-        memberModalVisible={isMemberModalVisible}
-        handleCloseMemberModal={() => setIsMemberModalVisible(false)}
-      />
+      {isInfoModalVisible && (
+        <ProfileInfoModal
+          userId={selectedId}
+          visible={isInfoModalVisible}
+          onClickMeeting={_roomId => {
+            uiStore.openWindow({
+              id: _roomId,
+              type: 'meeting',
+              name: null,
+              userCount: null,
+              handler: null,
+            });
+          }}
+          onClose={() => setIsInfoModalVisible(false)}
+          position={{ left: '16.81rem' }}
+        />
+      )}
+      {isToastVisible && (
+        <Toast
+          visible={isToastVisible}
+          timeoutMs={1000}
+          onClose={() => setIsToastVisible(false)}
+        >
+          {toastText}
+        </Toast>
+      )}
     </>
   );
 };

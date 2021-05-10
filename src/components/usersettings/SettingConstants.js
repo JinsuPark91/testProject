@@ -1,8 +1,9 @@
 export const SELECTED_TAB = {
-  GENERAL: '1',
-  ALARM: '2',
-  MY_INFO: '4',
-  SECESSION: '7',
+  LANGUAGE: '1',
+  THEME: '2',
+  PROFILE: '4',
+  ALARM: '5',
+  SECESSION: '6',
 };
 
 export const ALARM_TYPE = {

@@ -61,7 +61,7 @@ const MainProfile = observer(({ userId = null }) => {
     roomStore,
     configStore,
   } = useCoreStores();
-  const { uiStore } = useStores();
+  const { uiStore, historyStore } = useStores();
   const [isEditMode, setEditMode] = useState(false);
   const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
   const [toastText, setToastText] = useState('');
@@ -160,53 +160,54 @@ const MainProfile = observer(({ userId = null }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
+  const handleMoveTalkHistory = async roomInfo => {
+    const { lastUrl } = await historyStore.getHistory({
+      roomId: roomInfo.id,
+    });
+    if (lastUrl) history.push(lastUrl);
+    else history.push(`/s/${roomInfo.id}/talk`);
+  };
+  const handleMoveTalk = roomInfo => history.push(`/s/${roomInfo.id}/talk`);
+
+  const handleOpenMeeting = roomInfo => {
+    uiStore.openWindow({
+      id: roomInfo.id,
+      type: 'meeting',
+      name: null,
+      userCount: null,
+      handler: null,
+    });
+  };
+  const handleMoveMeetingHistory = async roomInfo => {
+    handleOpenMeeting(roomInfo);
+    await handleMoveTalkHistory(roomInfo);
+  };
+  const handleMoveMeeting = roomInfo => {
+    handleOpenMeeting(roomInfo);
+    handleMoveTalk(roomInfo);
+  };
+
   const handleTalkClick = async () => {
     const myUserId = userStore.myProfile.id;
     handleProfileMenuClick(
       myUserId,
       userId,
-      async roomInfo => {
-        const routingHistory = (
-          await userStore.getRoutingHistory({
-            userId: userStore.myProfile.id,
-            roomId: roomInfo.id,
-          })
-        )?.[0];
-        history.push(routingHistory?.lastUrl || `/s/${roomInfo.id}/talk`);
-      },
-      roomInfo => history.push(`/s/${roomInfo.id}/talk`),
-      newRoomInfo => history.push(`/s/${newRoomInfo?.id}/talk`),
+      handleMoveTalkHistory,
+      handleMoveTalk, // 나간 1:1 방에도 히스토리 따라가야 하는지 기획 확인 필요
+      handleMoveTalk,
     );
   };
 
   const handleMeetingClick = async () => {
     const myUserId = userStore.myProfile.id;
     // const queryParams = { ...getQueryParams(), sub: 'meeting' };
-    const queryString = getQueryString(getQueryParams());
-    const openMeeting = roomInfo => {
-      uiStore.openWindow({
-        id: roomInfo.id,
-        type: 'meeting',
-        name: null,
-        userCount: null,
-        handler: null,
-      });
-    };
+    // const queryString = getQueryString(getQueryParams());
     handleProfileMenuClick(
       myUserId,
       userId,
-      roomInfo => {
-        openMeeting(roomInfo);
-        history.push(`/s/${roomInfo.id}/talk?${queryString}`);
-      },
-      roomInfo => {
-        openMeeting(roomInfo);
-        history.push(`/s/${roomInfo.id}/talk?${queryString}`);
-      },
-      newRoomInfo => {
-        openMeeting(newRoomInfo);
-        history.push(`/s/${newRoomInfo?.id}/talk?${queryString}`);
-      },
+      handleMoveMeetingHistory,
+      handleMoveMeeting,
+      handleMoveMeeting,
     );
   };
 

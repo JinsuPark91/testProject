@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { useCoreStores } from 'teespace-core';
 import { SELECTED_TAB } from './SettingConstants';
 import {
-  ContentCommon,
-  ContentAlarm,
+  ContentLanguage,
+  ContentTheme,
   ContentProfile,
+  ContentAlarm,
   ContentSpaceSecession,
   SettingSave,
 } from './index';
@@ -23,7 +24,7 @@ const SettingDialog = ({ visible, onCancel }) => {
   const { t } = useTranslation();
   const { configStore } = useCoreStores();
 
-  const [selectedKey, setSelectedKey] = useState(SELECTED_TAB.ALARM);
+  const [selectedKey, setSelectedKey] = useState(SELECTED_TAB.PROFILE);
   const [isSecession, setIsSecession] = useState(false);
   const [inputPassword, setInputPassword] = useState('');
 
@@ -42,12 +43,14 @@ const SettingDialog = ({ visible, onCancel }) => {
 
   const getSettingContent = targetKey => {
     switch (targetKey) {
-      case SELECTED_TAB.GENERAL:
-        return <ContentCommon />;
+      case SELECTED_TAB.LANGUAGE:
+        return <ContentLanguage />;
+      case SELECTED_TAB.THEME:
+        return <ContentTheme />;
+      case SELECTED_TAB.PROFILE:
+        return <ContentProfile />;
       case SELECTED_TAB.ALARM:
         return <ContentAlarm />;
-      case SELECTED_TAB.MY_INFO:
-        return <ContentProfile />;
       case SELECTED_TAB.SECESSION:
         return (
           <ContentSpaceSecession
@@ -83,23 +86,24 @@ const SettingDialog = ({ visible, onCancel }) => {
       <LayoutWrap>
         <SiderArea>
           <StyledMenu
-            defaultSelectedKeys={['2']}
             selectedKeys={selectedKey}
             onClick={({ item, key }) => handleTabClick(key)}
           >
-            <Menu.ItemGroup key="0" title={t('CM_SETTING_02')}>
-              {/* <Menu.Item key="1">일반</Menu.Item> */}
-              <Menu.Item key="2">{t('CM_NOTI')}</Menu.Item>
+            <Menu.ItemGroup key="0" title={t('CM_SETTING_06')}>
+              <Menu.Item key="1">{t('CM_SETTING_GENERAL_04')}</Menu.Item>
+              {/* 테마 관련 기능 완성 후 open */}
+              {/* <Menu.Item key="2">{t('CM_SETTING_GENERAL_01')}</Menu.Item> */}
             </Menu.ItemGroup>
-            <Menu.ItemGroup key="3" title={t('CM_SETTING_05')}>
-              <Menu.Item key="4">{t('CM_MY_INFO_06')}</Menu.Item>
+            <Menu.ItemGroup key="3" title={t('CM_SETTING_08')}>
+              <Menu.Item key="4">{t('CM_ROOMTITLE_TOOLTIP_04')}</Menu.Item>
+              <Menu.Item key="5">{t('CM_NOTI')}</Menu.Item>
               {!isSpaceAdmin() &&
                 !isB2B() &&
                 configStore.isActivateComponent(
                   'Platform',
                   'SpaceSecession',
                 ) && (
-                  <Menu.Item key="7">
+                  <Menu.Item key="6">
                     {t('CM_SETTING_DELETE_SPACE_01')}
                   </Menu.Item>
                 )}
