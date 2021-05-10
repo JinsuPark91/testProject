@@ -2,17 +2,14 @@ import React, { useEffect } from 'react';
 import { useCoreStores } from 'teespace-core';
 import Cookies from 'js-cookie';
 import wwms from '../libs/wwms';
+import { useKeycloak } from '@react-keycloak/web';
 
 const KsignLogoutPage = () => {
   const { authStore } = useCoreStores();
-
-  //   const url = window.location.origin; //  http://xxx.dev.teespace.net
-  //   const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
-  //   const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
-  //   const redirectURL =
-  //     process.env.REACT_APP_ENV === `local`
-  //       ? `${url}/login`
-  //       : `${window.location.protocol}//${mainURL}/spaces`;
+  const { keycloak } = useKeycloak();
+  const url = window.location.origin; //  http://xxx.dev.teespace.net
+  const redirectURL = `${url}/login`;
+  const getNibId = Cookies.get('NIBID');
 
   useEffect(() => {
     const logoutLogic = async () => {
@@ -21,8 +18,13 @@ const KsignLogoutPage = () => {
       wwms.disconnect();
       Cookies.remove('ACCESS_TOKEN');
       Cookies.remove('DEVICE_TYPE');
-
-      window.location.href = `/cnu/sso/logout.jsp`;
+      if (getNibId) {
+        window.location.href = `/cnu/sso/logout.jsp`;
+      } else {
+        await keycloak.logout({
+          redirectUri: redirectURL,
+        });
+      }
     };
 
     logoutLogic();
