@@ -578,6 +578,7 @@ const StyledMenu = styled(Menu)`
 
 const RoomMessage = styled.span`
   overflow: hidden;
+  margin-top: 0.125rem;
   text-overflow: ellipsis;
   white-space: nowrap;
   color: #666;
@@ -634,7 +635,6 @@ const StyledItem = styled.div`
   }
   .ant-list-item-meta-description {
     display: flex;
-    margin-top: 0.125rem;
     align-items: center;
     justify-content: space-between;
     font-size: 0.69rem;
@@ -646,7 +646,7 @@ const StyledItem = styled.div`
 const UnreadCount = styled.div`
   width: 1.63rem;
   height: 0.875rem;
-  margin-left: 0.25rem;
+  margin: 0.125rem 0 0 0.25rem;
   font-size: 0.63rem;
   color: #fff;
   line-height: 0.8125rem;

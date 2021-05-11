@@ -10,6 +10,7 @@ export const ThemeList = styled.ul`
 
 export const ThemeItem = styled.li`
   display: flex;
+  width: 9.375rem;
   flex-direction: column-reverse;
   margin-right: 3.31rem;
   &:last-child {
@@ -19,43 +20,13 @@ export const ThemeItem = styled.li`
     font-size: 0.75rem;
     line-height: 0.94rem;
     color: #000;
-    .ant-radio {
-      input {
-        width: 100%;
-        height: 100%;
-      }
-      &-checked {
-        .ant-radio-inner {
-          border: none;
-        }
-      }
-    }
     &-checked {
-      + div {
-        background-color: red;
-        &:after {
-          border: 2px solid #6c56e5;
-        }
+      + div::after {
+        border: 2px solid #ec6222;
       }
     }
-    .ant-radio-inner {
-      position: relative;
-      width: 0.94rem;
-      height: 0.94rem;
-      -webkit-transition: none;
-      transition: none;
-      &:after {
-        content: '';
-        display: inline-block;
-        position: absolute;
-        top: 0.25rem;
-        left: 0.25rem;
-        width: 0.44rem;
-        height: 0.44rem;
-        border-radius: 50%;
-        -webkit-transition: none;
-        transition: none;
-      }
+    span.ant-radio + * {
+      padding: 0 0.25rem;
     }
   }
 `;
@@ -65,7 +36,7 @@ export const ThemeImage = styled.div`
   position: relative;
   margin-bottom: 0.63rem;
   border-radius: 0.63rem;
-  :after {
+  &::after {
     content: '';
     position: absolute;
     left: 0;
@@ -74,8 +45,6 @@ export const ThemeImage = styled.div`
     bottom: 0;
     border-radius: 0.63rem;
     border: 1px solid #e3e7eb;
-  }
-  &.checked:after {
   }
 `;
 
