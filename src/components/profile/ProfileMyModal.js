@@ -438,6 +438,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
         <AddFriendsBySearch
           isViewMode={isViewMode}
           onCancelAddFriends={() => setIsFriendMemViewOpen(false)}
+          isTopOrg={false}
         />
       )}
       <SelectRoomTypeDialog
