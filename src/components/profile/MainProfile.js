@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
@@ -305,6 +305,11 @@ const MainProfile = observer(({ userId = null }) => {
     return !hasPermission;
   };
 
+  const handleNumber = useCallback(number => {
+    if (number.length > 30) return number.substring(0, 30);
+    return number;
+  }, []);
+
   return (
     <>
       <Wrapper imageSrc={renderBackgroundPhoto}>
@@ -493,8 +498,9 @@ const MainProfile = observer(({ userId = null }) => {
                   {isEditMode ? (
                     <StyleInput
                       onChange={e => {
+                        const companyText = handleNumber(e.target.value);
+                        setCompanyNum(companyText);
                         setIsChange(true);
-                        setCompanyNum(e.target.value);
                       }}
                       value={
                         companyNum !== undefined
@@ -515,8 +521,9 @@ const MainProfile = observer(({ userId = null }) => {
                 {isEditMode ? (
                   <StyleInput
                     onChange={e => {
+                      const phoneText = handleNumber(e.target.value);
+                      setPhone(phoneText);
                       setIsChange(true);
-                      setPhone(e.target.value);
                     }}
                     value={phone !== undefined ? phone : profile?.phone || ``}
                     placeholder={t('CM_B2C_CONTENTS_AREA_EMPTY_PAGE_35')}

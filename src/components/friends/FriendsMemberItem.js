@@ -47,9 +47,10 @@ const FriendsMemberItem = () => {
       />
       {isMemberModalVisible && (
         <AddFriendsBySearch
-          isViewMode
+          isViewMode={false}
           onCancelAddFriends={() => setIsMemberModalVisible(false)}
           isTopOrg
+          isMeOnlyVisible
         />
       )}
     </>
