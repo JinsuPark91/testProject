@@ -51,11 +51,10 @@ import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 const getIconStyle = (isDisabled = false) => {
   const { uiStore } = rootStore;
 
-  // uiStore.theme.xxx
   return {
     width: 1.38,
     height: 1.38,
-    color: isDisabled ? 'rgba(68, 77, 89, 0.3)' : uiStore.theme.HeaderIconColor,
+    color: isDisabled ? 'rgba(68, 77, 89, 0.3)' : uiStore.theme.NavyWhiteColor,
   };
 };
 
@@ -491,7 +490,7 @@ const Header = () => {
                                 <ExportIcon
                                   width={1.25}
                                   height={1.25}
-                                  color="#232D3B"
+                                  color={uiStore.theme.NavyWhiteColor}
                                 />
                               </IconWrapper>
                             </Tooltip>
@@ -507,7 +506,7 @@ const Header = () => {
                                 <SearchIcon
                                   width={1.25}
                                   height={1.25}
-                                  color="#232D3B"
+                                  color={uiStore.theme.NavyWhiteColor}
                                 />
                               </IconWrapper>
                             </Tooltip>
@@ -530,7 +529,7 @@ const Header = () => {
                                     <AddAcountIcon
                                       width={1.25}
                                       height={1.25}
-                                      color="#232D3B"
+                                      color={uiStore.theme.NavyWhiteColor}
                                     />
                                   </IconWrapper>
                                 </Tooltip>
@@ -587,7 +586,7 @@ const Header = () => {
                           ? uiStore.subApp === name
                           : !!uiStore.getWindow('meeting', findRoom()?.id)
                       }
-                      color={themeContext.HeaderIconColor}
+                      color={themeContext.NavyWhiteColor}
                       appName={name}
                       i18n={tooltip}
                       onClick={handleAppClick}

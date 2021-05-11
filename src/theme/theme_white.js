@@ -32,12 +32,18 @@ const colors = {
 
   BasicDarkColor: '#000',
   BasicLightColor: '#fff',
+  NavyWhiteColor: '#232D3B',
+
   DisabledColor: '#ccc',
-  HeaderIconColor: '#232D3B',
+
+  HeaderLineColor: '#232D3B',
+  LeftSideTabActiveColor: '#fff',
 
   LineColor: '#d0ccc7',
   LineMainColor: '#ddd9d4',
   LineSubColor: '#eeedeb',
+
+  IconActiveColor: '#E4E4E4',
 };
 
 colors.name = 'white';
