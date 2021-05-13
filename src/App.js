@@ -16,7 +16,7 @@ import {
   useCoreStores,
   CoreInitializeTranslation,
 } from 'teespace-core';
-import { initApp as initTalkApp } from 'teespace-talk-app';
+import { useTalkApp } from 'teespace-talk-app';
 import { initApp as initDriveApp } from 'teespace-drive-app';
 import { initApp as initNoteApp } from 'teespace-note-app';
 import { initApp as initMeetingApp } from 'teespace-meeting-app';
@@ -59,8 +59,9 @@ function App() {
   // MiniTalk 임시.
 
   // initialize apps
+  useTalkApp();
   useEffect(() => {
-    initTalkApp(isMini);
+    // initTalkApp(isMini);
     initDriveApp();
     initCalendarApp();
     initializeCalendarApp();
@@ -110,7 +111,11 @@ function App() {
                 <Switch>
                   <Route exact path="/logout" component={LogoutComponent} />
                   <AuthRoute exact path="/login" component={MainPage} />
-                  <RedirectablePublicRoute exact path="/privatelogin" component={PrivateLoginPage} />
+                  <RedirectablePublicRoute
+                    exact
+                    path="/privatelogin"
+                    component={PrivateLoginPage}
+                  />
                   <PrivateAuthRoute
                     path="/office/:fileId"
                     component={OfficeFilePage}
