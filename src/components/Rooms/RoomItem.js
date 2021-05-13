@@ -105,7 +105,8 @@ const RoomDropdown = React.memo(
       }
     };
 
-    const handleForceRead = () => {
+    const handleForceRead = e => {
+      e.domEvent.stopPropagation();
       setVisible(false);
       EventBus.dispatch('Platform:forceReadMessages', { roomId: roomInfo.id });
     };
