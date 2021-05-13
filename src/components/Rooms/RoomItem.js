@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { List, Menu, Dropdown, Tooltip } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, EventBus } from 'teespace-core';
 import { talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
 import { useTranslation } from 'react-i18next';
@@ -105,6 +105,11 @@ const RoomDropdown = React.memo(
       }
     };
 
+    const handleForceRead = () => {
+      setVisible(false);
+      EventBus.dispatch('Platform:forceReadMessages', { roomId: roomInfo.id });
+    };
+
     const handleNameChange = e => {
       e.domEvent.stopPropagation();
       setVisible(false);
@@ -184,6 +189,9 @@ const RoomDropdown = React.memo(
           )}
           <Menu.Item key="member" onClick={handleViewMember}>
             {t('CM_ROOM_CONTEXT_MENU_01')}
+          </Menu.Item>
+          <Menu.Item key="read" onClick={handleForceRead}>
+            {t('CM_READ_ALL')}
           </Menu.Item>
           {
             // NOTE. 마이룸과 1:1 룸은 룸설정 할 수 없음
