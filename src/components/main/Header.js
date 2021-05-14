@@ -51,6 +51,7 @@ import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 const getIconStyle = (isDisabled = false) => {
   const { uiStore } = rootStore;
 
+  console.log('여기');
   return {
     width: 1.38,
     height: 1.38,
@@ -199,6 +200,11 @@ const Header = () => {
   const isMyRoom = () => {
     const found = findRoom();
     return found?.type === 'WKS0001';
+  };
+
+  const isBotRoom = () => {
+    const found = findRoom();
+    return found?.isBotRoom;
   };
 
   const isDMRoom = () => {
@@ -362,6 +368,12 @@ const Header = () => {
   };
 
   const currRoomInfo = findRoom();
+
+  const isActive = name => {
+    if (name === 'meeting')
+      return !!uiStore.getWindow('meeting', findRoom()?.id);
+    return uiStore.subApp === name;
+  };
 
   const getProfileModal = () => {
     if (isMyRoom()) {
@@ -581,11 +593,7 @@ const Header = () => {
                     {isSeperated ? <VerticalBar /> : null}
                     <AppIcon
                       key={name}
-                      isActive={
-                        name !== 'meeting'
-                          ? uiStore.subApp === name
-                          : !!uiStore.getWindow('meeting', findRoom()?.id)
-                      }
+                      isActive={isActive(name)}
                       color={themeContext.NavyWhiteColor}
                       appName={name}
                       i18n={tooltip}
@@ -594,6 +602,7 @@ const Header = () => {
                       activeIcon={icons.active}
                       disabledIcon={icons.disabled}
                       disabled={
+                        isBotRoom() ||
                         (isMyRoom() && !isUsedInMyRoom) ||
                         (uiStore.resourceType === 'f' && !isUsedInProfile)
                       }

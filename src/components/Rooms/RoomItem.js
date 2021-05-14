@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { List, Menu, Dropdown, Tooltip } from 'antd';
@@ -158,19 +159,20 @@ const RoomDropdown = React.memo(
     const roomMenu = () => {
       const isDMRoom = roomInfo.isDirectMsg;
       const isAdmin = roomInfo.adminId === myUserId;
+      const { isBotRoom } = roomInfo;
 
       return (
         <StyledMenu>
           {
             // NOTE. 마이룸과 1:1 룸은 이름 변경할 수 있음
             // NOTE. 마이름은 메뉴 자체가 없다. (체크할 필요 없음)
-            !isDMRoom && (
+            !isBotRoom && !isDMRoom && (
               <Menu.Item key="changeName" onClick={handleNameChange}>
                 {t('CM_CHANGE_NAME_02')}
               </Menu.Item>
             )
           }
-          {roomInfo.isRoomBookmarked ? (
+          {isBotRoom ? null : roomInfo.isRoomBookmarked ? (
             <Menu.Item key="disableBookmark" onClick={handleBookmarkDisable}>
               {t('CM_FIX_TOP_ROOM_03')}
             </Menu.Item>
@@ -188,28 +190,32 @@ const RoomDropdown = React.memo(
               {t('CM_NOTI_SETTING_01')}
             </Menu.Item>
           )}
-          <Menu.Item key="member" onClick={handleViewMember}>
-            {t('CM_ROOM_CONTEXT_MENU_01')}
-          </Menu.Item>
+          {!isBotRoom && (
+            <Menu.Item key="member" onClick={handleViewMember}>
+              {t('CM_ROOM_CONTEXT_MENU_01')}
+            </Menu.Item>
+          )}
           <Menu.Item key="read" onClick={handleForceRead}>
             {t('CM_READ_ALL')}
           </Menu.Item>
           {
             // NOTE. 마이룸과 1:1 룸은 룸설정 할 수 없음
             // NOTE. 1:1 방이 아니고, 내가 관리자면 세팅페이지를 볼수 있다.
-            !isDMRoom && isAdmin && (
+            !isBotRoom && !isDMRoom && isAdmin && (
               <Menu.Item key="setting" onClick={handleSetting}>
                 {t('CM_ROOM_SETTING')}
               </Menu.Item>
             )
           }
-          <Menu.Item
-            key="exit"
-            onClick={handleExit}
-            style={{ borderTop: '1px solid #D0CCC7' }}
-          >
-            {t('CM_LEAVE')}
-          </Menu.Item>
+          {!isBotRoom && (
+            <Menu.Item
+              key="exit"
+              onClick={handleExit}
+              style={{ borderTop: '1px solid #D0CCC7' }}
+            >
+              {t('CM_LEAVE')}
+            </Menu.Item>
+          )}
         </StyledMenu>
       );
     };
@@ -256,6 +262,21 @@ const RoomItemContent = React.memo(
       onClickRoomPhoto(roomInfo);
     };
 
+    const getIcon = () => {
+      if (roomInfo.type === 'WKS0003')
+        return (
+          <OpenChatIconBox>
+            <OpenChatBgIcon width={0.88} height={0.88} />
+          </OpenChatIconBox>
+        );
+
+      if (isMyRoom) return <RoomTypeIcon>나</RoomTypeIcon>;
+      if (roomInfo.isBotRoom)
+        return <RoomTypeIcon>{t('CM_NOTI')}</RoomTypeIcon>;
+
+      return null;
+    };
+
     return (
       <>
         <List.Item.Meta
@@ -287,6 +308,7 @@ const RoomItemContent = React.memo(
                   <Photos
                     defaultDiameter="2.13"
                     srcList={userPhotos}
+                    isClickable={!roomInfo.isBotRoom}
                     onClick={handleClickRootPhoto}
                     className="photos rooms__item__photo"
                   />
@@ -299,23 +321,12 @@ const RoomItemContent = React.memo(
               <Observer>
                 {() => (
                   <>
-                    {roomInfo.type === 'WKS0003' && (
-                      <OpenChatIconBox>
-                        <OpenChatBgIcon width={0.88} height={0.88} />
-                      </OpenChatIconBox>
-                    )}
-                    <>
-                      {isMyRoom ? (
-                        <MyIcon>
-                          <img src={mySign} alt="me" />
-                        </MyIcon>
-                      ) : null}
-                      <RoomNameText>
-                        {isMyRoom
-                          ? userStore.myProfile.nick || userStore.myProfile.name
-                          : roomInfo.customName || roomInfo.name}
-                      </RoomNameText>
-                    </>
+                    {getIcon()}
+                    <RoomNameText>
+                      {isMyRoom
+                        ? userStore.myProfile.nick || userStore.myProfile.name
+                        : roomInfo.customName || roomInfo.name}
+                    </RoomNameText>
                   </>
                 )}
               </Observer>
@@ -521,17 +532,29 @@ const RoomItem = React.memo(
   },
 );
 
-const MyIcon = styled.div`
-  width: 0.88rem;
+const RoomTypeIcon = styled.div`
+  display: flex;
+  align-items: center;
   height: 0.88rem;
-  flex-shrink: 0;
+  background: #232d3b;
+  padding: 0 0.19rem;
+  border-radius: 0.25rem;
+  font-size: 0.5rem;
+  color: #fff;
   margin-right: 0.25rem;
-  line-height: 0;
-  img {
-    width: 100%;
-    height: 100%;
-  }
 `;
+
+// const MyIcon = styled.div`
+//   width: 0.88rem;
+//   height: 0.88rem;
+//   flex-shrink: 0;
+//   margin-right: 0.25rem;
+//   line-height: 0;
+//   img {
+//     width: 100%;
+//     height: 100%;
+//   }
+// `;
 
 const ItemWrapper = styled.div`
   display: flex;
