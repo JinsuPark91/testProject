@@ -32,12 +32,13 @@ const SubTab = ({ isOpenRoom = false }) => {
           </SubTabItem>
         )}
       </Observer>
-      {/* {isOpenRoom ? (
+      {isOpenRoom ? (
         <>
           <Observer>
             {() => (
               // "alarm-badge" className 추가 시 알림 뱃지 노출
-              <SubTabItem className="alarm-badge">
+              // <SubTabItem className="alarm-badge">
+              <SubTabItem>
                 <ItemText
                   data-tab-key="waiting"
                   className={
@@ -51,7 +52,7 @@ const SubTab = ({ isOpenRoom = false }) => {
             )}
           </Observer>
         </>
-      ) : null} */}
+      ) : null}
       <Observer>
         {() => (
           <SubTabItem>

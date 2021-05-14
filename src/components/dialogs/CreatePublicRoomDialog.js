@@ -112,7 +112,7 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
 
             <Description>{t('CM_CREATE_OPEN_ROOM_04')}</Description>
 
-            {/* <Title
+            <Title
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -122,7 +122,7 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
               <span>{t('CM_CREATE_OPEN_ROOM_POPUP_01')}</span>
               <Switch checked={isJoinable} onChange={handleJoinableChange} />
             </Title>
-            <Description>{t('CM_CREATE_OPEN_ROOM_POPUP_02')}</Description> */}
+            <Description>{t('CM_CREATE_OPEN_ROOM_POPUP_02')}</Description>
           </InfoContainer>
           <ButtonContainer>
             <Button
