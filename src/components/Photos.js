@@ -35,13 +35,17 @@ const getStyle = (index, count, defaultDiameter) => {
 
 function Photos({
   srcList,
+  isClickable = true,
   onClick = () => {},
   defaultDiameter = 2.125,
   className,
 }) {
   return (
     <Wrapper
-      onClick={e => onClick(e)}
+      isClickable={isClickable}
+      onClick={e => {
+        if (isClickable) onClick(e);
+      }}
       defaultDiameter={defaultDiameter}
       className={className}
     >
@@ -70,7 +74,7 @@ const Wrapper = styled.div`
   position: relative;
   width: ${({ defaultDiameter }) => defaultDiameter}rem;
   height: ${({ defaultDiameter }) => defaultDiameter}rem;
-  cursor: pointer;
+  cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'default')};
 `;
 
 const UserPhoto = styled.div`
