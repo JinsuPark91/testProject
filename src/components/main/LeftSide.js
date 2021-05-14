@@ -1,6 +1,6 @@
 import React from 'react';
-import { observer, Observer } from 'mobx-react';
-import { useCoreStores, logEvent } from 'teespace-core';
+import { Observer } from 'mobx-react';
+import { useCoreStores, logEvent, EventBus } from 'teespace-core';
 import { MailSideView, MailStore } from 'teespace-mail-app';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'antd';
@@ -44,7 +44,10 @@ const LeftSide = () => {
     }
 
     uiStore.tabType = key;
-    if (key === 'm') logEvent('gnb', 'clickTeeMailBtn');
+    if (key === 'm') {
+      EventBus.dispatch('Note:onEditClose');
+      logEvent('gnb', 'clickTeeMailBtn');
+    }
     scrollTop(key);
   };
 

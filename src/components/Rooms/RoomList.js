@@ -69,6 +69,7 @@ const RoomList = () => {
 
   const handleCreateRoom = () => {
     store.visible.selectRoomTypeModal = true;
+    EventBus.dispatch('Note:onEditClose');
     logEvent('main', 'clickRoomCreateBtn');
   };
 
