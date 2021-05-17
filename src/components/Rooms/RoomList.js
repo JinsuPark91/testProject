@@ -381,7 +381,13 @@ const RoomList = () => {
       <Observer>
         {() => {
           return configStore.isActivateComponent('Platform', 'LNB:Logo') ? (
-            <ButtomWrapper isScrollEnd={store.isScrollEnd}>
+            <ButtomWrapper
+              isScrollEnd={store.isScrollEnd}
+              onClick={() => {
+                console.log("여기")
+                EventBus.dispatch('Platform:inviteUser');
+              }}
+            >
               <WaplLogo />
             </ButtomWrapper>
           ) : null;
