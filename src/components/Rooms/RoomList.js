@@ -383,10 +383,13 @@ const RoomList = () => {
           return configStore.isActivateComponent('Platform', 'LNB:Logo') ? (
             <ButtomWrapper
               isScrollEnd={store.isScrollEnd}
-              onClick={() => {
-                console.log("여기")
-                EventBus.dispatch('Platform:inviteUser');
-              }}
+              // onClick={() => {
+              //   // EventBus.dispatch('Platform:inviteUser');
+              //   EventBus.dispatch('Platform:roomSetting', {
+              //     mainTab: 'member',
+              //     subTab: 'blocked',
+              //   });
+              // }}
             >
               <WaplLogo />
             </ButtomWrapper>

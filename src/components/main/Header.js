@@ -180,7 +180,7 @@ const Header = () => {
       store.visible.addMemberModal = true;
     });
 
-    return EventBus.off('Platform:inviteUser', inviteUserHandler);
+    return () => EventBus.off('Platform:inviteUser', inviteUserHandler);
   }, []);
 
   const findRoom = () => {
