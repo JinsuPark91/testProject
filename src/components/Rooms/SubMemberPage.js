@@ -97,7 +97,7 @@ const TableRow = ({ style, member }) => {
       <Observer>
         {() => (
           <Cell style={{ width: WIDTH.JOB }}>
-            {`${member.userJob}/${member.position}`}
+            {`${member.userJob || '-'}/${member.position || '-'}`}
           </Cell>
         )}
       </Observer>
@@ -218,7 +218,7 @@ const MemberPage = ({ roomId }) => {
   // };
 
   useEffect(() => {
-    store.fetchMembers({ roomId });
+    store.fetchMembers({ roomId, summary: false });
     // WWMS.addHandler('SYSTEM', 'room_setting', handleSystemMessage);
 
     return () => {

@@ -51,7 +51,6 @@ import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 const getIconStyle = (isDisabled = false) => {
   const { uiStore } = rootStore;
 
-  console.log('여기');
   return {
     width: 1.38,
     height: 1.38,

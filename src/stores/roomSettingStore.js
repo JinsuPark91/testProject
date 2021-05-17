@@ -11,6 +11,7 @@ const roomSettingStore = observable({
     try {
       const members = await RoomStore.fetchRoomMemberList({
         myUserId: UserStore.myProfile.id,
+        summary: false,
         roomId,
       });
       this.members = members;
