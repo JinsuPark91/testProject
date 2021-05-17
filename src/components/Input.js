@@ -29,6 +29,7 @@ const Input = React.forwardRef(
           onChange={handleChange}
           placeholder={placeholder}
           ref={ref}
+          autoFocus
         />
         {maxLength ? (
           <div className="input-counter">{`${value.length}/${maxLength}`}</div>

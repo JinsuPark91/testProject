@@ -16,6 +16,7 @@ import { WindowMail } from 'teespace-mail-app';
 import { Prompt } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useObserver } from 'mobx-react';
+import SpaceSide from '../components/main/SpaceSide';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
 import { Loader, Wrapper } from './MainPageStyle';
@@ -422,6 +423,7 @@ const MainPage = () => {
             return beforeRoute(location, action);
           }}
         />
+        <SpaceSide />
         {leftSide}
         {mainSide}
         <WindowManager />

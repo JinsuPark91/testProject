@@ -1827,3 +1827,69 @@ export const GroupIcon = React.memo(
     );
   },
 );
+
+export const HorizontalViewMoreIcon = React.memo(
+  ({ width = 1, height = 1, color = 'rgb(107, 107, 107)' }) => {
+    const defaultWidth = 17;
+    const defaultHeight = 17;
+
+    return (
+      <svg
+        width={`${width}rem`}
+        height={`${height}rem`}
+        viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
+      >
+        <g
+          fill="none"
+          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
+            (height * REM_UNIT) / defaultHeight
+          })`}
+          fillRule="evenodd"
+        >
+          <g fill={color}>
+            <g>
+              <g>
+                <path
+                  d="M8.111 11.556c.553 0 1 .447 1 1 0 .552-.447 1-1 1-.553 0-1-.448-1-1 0-.553.447-1 1-1zm0-4.223c.553 0 1 .448 1 1 0 .553-.447 1-1 1-.553 0-1-.447-1-1 0-.552.447-1 1-1zm0-4.222c.553 0 1 .448 1 1 0 .553-.447 1-1 1-.553 0-1-.447-1-1 0-.552.447-1 1-1z"
+                  transform="translate(-17 -694) translate(17 694) rotate(90 8.111 8.333)"
+                />
+              </g>
+            </g>
+          </g>
+        </g>
+      </svg>
+    );
+  },
+);
+
+export const HomeIcon = React.memo(
+  ({ width = 1, height = 1, color = '#000' }) => {
+    const defaultWidth = 24;
+    const defaultHeight = 24;
+
+    return (
+      <svg
+        width={`${width}rem`}
+        height={`${height}rem`}
+        viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
+      >
+        <g
+          fill="none"
+          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
+            (height * REM_UNIT) / defaultHeight
+          })`}
+          fillRule="evenodd"
+        >
+          <g fill={color}>
+            <g>
+              <path
+                d="M21.318 12.685c.192.18.437.27.682.27.267 0 .534-.108.731-.32.377-.404.355-1.037-.05-1.413l-9.414-8.77c-.735-.609-1.8-.609-2.579.038l-9.37 8.732c-.404.376-.426 1.01-.05 1.413.377.405 1.01.427 1.413.05l1.372-1.278v7.997c0 1.43 1.212 2.594 2.701 2.594h10.474c1.5 0 2.718-1.172 2.718-2.612v-5.48c0-1.88-1.558-3.41-3.473-3.41-1.915 0-3.473 1.53-3.473 3.41V17.1c0 .553.447 1 1 1 .552 0 1-.447 1-1v-3.196c0-.778.66-1.409 1.473-1.409.812 0 1.473.631 1.473 1.41v5.48c0 .331-.329.611-.718.611H6.754c-.387 0-.7-.266-.7-.593V9.547l-.002-.004L12 4l9.318 8.685z"
+                transform="translate(-13 -13) translate(13 13)"
+              />
+            </g>
+          </g>
+        </g>
+      </svg>
+    );
+  },
+);

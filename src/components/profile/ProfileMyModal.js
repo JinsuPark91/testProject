@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { useStores } from '../../stores';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
-import SpaceEditModal from './SpaceEditModal';
+import GroupEditModal from './group/GroupEditModal';
 import SettingDialog from '../usersettings/SettingDialog';
 import MovePage from '../../utils/MovePage';
 import { getMainWaplURL } from '../../utils/UrlUtil';
@@ -97,7 +97,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   const handleSettingDialogOpen = useCallback(() => {
     setIsCreated(false);
     setSettingDialogVisible(true);
-    setSpaceListVisible(false);
+    // setSpaceListVisible(false);
   }, []);
   const handleCloseSettingDialog = useCallback(() => {
     setSettingDialogVisible(false);
@@ -107,15 +107,15 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
     setIsEditMode(i => !i);
   }, []);
 
-  const handleSpaceList = useCallback(async () => {
-    await spaceStore.fetchSpaces({
-      userId: myUserId,
-      isLocal: process.env.REACT_APP_ENV === 'local',
-    });
-    setSpaceListVisible(prevVisible => !prevVisible);
-    setIsCreated(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // const handleSpaceList = useCallback(async () => {
+  //   await spaceStore.fetchSpaces({
+  //     userId: myUserId,
+  //     isLocal: process.env.REACT_APP_ENV === 'local',
+  //   });
+  //   setSpaceListVisible(prevVisible => !prevVisible);
+  //   setIsCreated(false);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const handleLogout = async () => {
     // Close dialog first
@@ -128,7 +128,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   }, [thumbPhoto]);
 
   const handleCancel = useCallback(() => {
-    setSpaceListVisible(false);
+    // setSpaceListVisible(false);
     setTimeout(() => onCancel(), 1);
   }, [onCancel]);
 
@@ -146,7 +146,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
     logEvent('threedot', 'clickShowMemberList');
   }, []);
 
-  const handleOpenSpaceEditModal = useCallback(() => {
+  const handleOpenGroupEditModal = useCallback(() => {
     setIsSpaceEditDialogVisible(true);
   }, []);
 
@@ -195,7 +195,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
       ) : null}
       <Menu.Item onClick={handleOpenMemberModal}>{t('CM_USER_LIST')}</Menu.Item>
       {isSpaceAdmin() && !configStore.isFromCNU ? (
-        <Menu.Item onClick={handleOpenSpaceEditModal}>
+        <Menu.Item onClick={handleOpenGroupEditModal}>
           {t('CM_SPACE_EDIT')}
         </Menu.Item>
       ) : null}
@@ -298,7 +298,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
             <Title>{spaceStore.currentSpace?.name}</Title>
             {spaceStore.currentSpace?.domain}
           </Info>
-          {configStore.isFromCNU ? null : (
+          {/* {configStore.isFromCNU ? null : (
             <Tooltip
               placement="topLeft"
               color="#4C535D"
@@ -317,7 +317,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
                 <Blind>{t('CM_PROFILE_PROFILE_MENU_01')}</Blind>
               </Button>
             </Tooltip>
-          )}
+          )} */}
           <Dropdown
             trigger={['click']}
             overlay={moreMenu}
@@ -356,7 +356,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
           </UserSubArea>
         )}
       </Observer>
-      {spaceListVisible && (
+      {/* {spaceListVisible && (
         <ConvertDropdown>
           <ConvertNow>
             <LogoSmall checked>
@@ -412,7 +412,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
             {t('CM_GO_SPACES')}
           </ConvertMove>
         </ConvertDropdown>
-      )}
+      )} */}
       {isCreated && (
         <ProfileSpaceModal
           userName={myProfile.displayName}
@@ -455,14 +455,15 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
           }
         }}
       />
-      <SpaceEditModal
-        visible={isSpaceEditDialogVisible}
-        onClose={() => setIsSpaceEditDialogVisible(false)}
-        onSuccess={() => {
-          setToastText(t('CM_CHANGE_SAVE'));
-          setIsToastOpen(true);
-        }}
-      />
+      {isSpaceEditDialogVisible && (
+        <GroupEditModal
+          onClose={() => setIsSpaceEditDialogVisible(false)}
+          onSuccess={() => {
+            setToastText(t('CM_CHANGE_SAVE'));
+            setIsToastOpen(true);
+          }}
+        />
+      )}
       <Toast
         visible={isToastOpen}
         timeoutMs={1000}

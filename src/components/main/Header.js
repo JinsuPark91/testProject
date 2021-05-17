@@ -224,7 +224,7 @@ const Header = () => {
     if (found && found?.memberIdListString) {
       const userIdArr = found?.memberIdListString.split(',');
       const userIds =
-        userIdArr.length === 1
+        userIdArr.length === 1 && !found?.isDirectMsg
           ? userIdArr
           : userIdArr
               .filter(userId => userId !== userStore.myProfile.id)
@@ -390,7 +390,7 @@ const Header = () => {
             });
           }}
           onClose={handleCancelRoomMemeberModal}
-          position={{ top: '3.5rem', left: '17rem' }}
+          position={{ top: '3.5rem', left: '20.125rem' }}
         />
       );
     }
