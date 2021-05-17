@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useLocalStore, Observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -174,6 +174,14 @@ const Header = () => {
       addMemberModal: false,
     },
   }));
+
+  useEffect(() => {
+    const inviteUserHandler = EventBus.on('Platform:inviteUser', () => {
+      store.visible.addMemberModal = true;
+    });
+
+    return EventBus.off('Platform:inviteUser', inviteUserHandler);
+  }, []);
 
   const findRoom = () => {
     if (uiStore.resourceType !== 'f') {
