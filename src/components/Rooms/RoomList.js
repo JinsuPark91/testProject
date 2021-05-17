@@ -231,7 +231,7 @@ const RoomList = () => {
               onCancel={handleRoomMemeberModalCancel}
               width="17.5rem"
               top="calc(50% - 15rem)"
-              left="16.81rem"
+              left="19.935rem"
               isEdit={store.roomMemberAttr.isEdit}
             />
           );
@@ -254,7 +254,7 @@ const RoomList = () => {
                 });
               }}
               onClose={handleCloseProfileInfoModal}
-              position={{ left: '16.81rem' }}
+              position={{ left: '19.935rem' }}
             />
           ) : null;
         }}

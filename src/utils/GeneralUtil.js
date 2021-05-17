@@ -23,3 +23,9 @@ export const getLanguage = () => {
 
   return fallbackLanguage;
 };
+
+export const remToPixel = rem => {
+  return (
+    parseFloat(getComputedStyle(document.documentElement).fontSize, 10) * rem
+  );
+};

@@ -294,7 +294,7 @@ const RoomItemContent = React.memo(
                 } else {
                   const userIdArr = roomInfo.memberIdListString.split(',');
                   const userIds =
-                    userIdArr.length === 1
+                    userIdArr.length === 1 && !roomInfo.isDirectMsg
                       ? userIdArr
                       : userIdArr
                           .filter(userId => userId !== userStore.myProfile.id)
