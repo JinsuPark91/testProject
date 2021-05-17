@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Radio } from 'antd';
+import { useStores } from '../../stores';
 import ContentTitle from './ContentTitle';
 import SystemTheme from '../../assets/theme_system.svg';
 import LightTheme from '../../assets/theme_light.svg';
@@ -15,10 +16,13 @@ import {
 
 const ContentTheme = () => {
   const { t } = useTranslation();
-  const [value, setValue] = useState(1);
+  const { uiStore } = useStores();
+  const [value, setValue] = useState(uiStore.theme?.name);
 
   const handleChange = e => {
-    setValue(e.target.value);
+    const targetValue = e.target.value;
+    uiStore.setTheme(targetValue);
+    setValue(targetValue);
   };
 
   return (
@@ -32,19 +36,19 @@ const ContentTheme = () => {
         <Radio.Group onChange={handleChange} value={value}>
           <ThemeList>
             <ThemeItem>
-              <Radio value={1}>{t('CM_SETTING_09')}</Radio>
+              <Radio value="system">{t('CM_SETTING_09')}</Radio>
               <ThemeImage>
                 <ThemeThumb alt="systemTheme" src={SystemTheme} />
               </ThemeImage>
             </ThemeItem>
             <ThemeItem>
-              <Radio value={2}>{t('CM_SETTING_11')}</Radio>
+              <Radio value="white">{t('CM_SETTING_11')}</Radio>
               <ThemeImage>
                 <ThemeThumb alt="lightTheme" src={LightTheme} />
               </ThemeImage>
             </ThemeItem>
             <ThemeItem>
-              <Radio value={3}>{t('CM_SETTING_12')}</Radio>
+              <Radio value="dark">{t('CM_SETTING_12')}</Radio>
               <ThemeImage>
                 <ThemeThumb alt="darkTheme" src={DarkTheme} />
               </ThemeImage>

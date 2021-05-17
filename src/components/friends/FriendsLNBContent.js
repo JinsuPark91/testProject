@@ -55,7 +55,7 @@ const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
             });
           }}
           onClose={() => setIsInfoModalVisible(false)}
-          position={{ left: '16.81rem' }}
+          position={{ left: '19.935rem' }}
         />
       )}
       {isToastVisible && (

@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import { Modal } from 'antd';
+import Upload from 'rc-upload';
 
 export const Wrapper = styled(Modal)`
   .ant-modal-body {
@@ -162,4 +163,10 @@ export const Blind = styled.span`
   height: 1px;
   margin: -1px;
   overflow: hidden;
+`;
+
+export const StyledUpload = styled(Upload)`
+  &:focus {
+    outline: 0;
+  }
 `;
