@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { List, Menu, Dropdown, Tooltip } from 'antd';
 import styled, { css } from 'styled-components';
@@ -17,14 +17,14 @@ import {
   OpenChatBgIcon,
   ExportIcon,
 } from '../Icons';
-import { rootStore } from '../../stores';
-import mySign from '../../assets/wapl_me.svg';
+import { rootStore, useStores } from '../../stores';
 import uiStore from '../../stores/uiStore';
 
 const RoomDropdown = React.memo(
   ({ children, roomInfo, onMenuClick, onClickMenuItem }) => {
     const { t } = useTranslation();
     const { roomStore, userStore } = useCoreStores();
+    const { handlerStore } = useStores();
 
     const { id: roomId } = roomInfo;
     const myUserId = userStore.myProfile.id;
@@ -49,18 +49,21 @@ const RoomDropdown = React.memo(
       history.push(`/s/${roomInfo.id}/setting`);
     };
 
-    const updateRoomSetting = async options => {
-      try {
-        const result = await roomStore.updateRoomMemberSetting({
-          roomId,
-          myUserId,
-          ...options,
-        });
-        return result;
-      } catch (e) {
-        console.log('ROOM UPDATE FAILED : ', e);
-      }
-    };
+    const updateRoomSetting = useCallback(
+      async options => {
+        try {
+          const result = await roomStore.updateRoomMemberSetting({
+            roomId,
+            myUserId,
+            ...options,
+          });
+          return result;
+        } catch (e) {
+          console.log('ROOM UPDATE FAILED : ', e);
+        }
+      },
+      [myUserId, roomId, roomStore],
+    );
 
     const handleBookmarkDisable = e => {
       e.domEvent.stopPropagation();
@@ -78,33 +81,38 @@ const RoomDropdown = React.memo(
       onClickMenuItem({ key: 'enableBookmark' });
     };
 
-    const handleViewMember = e => {
-      e.domEvent.stopPropagation();
+    const handleViewMember = useCallback(
+      e => {
+        if (e) {
+          e.domEvent.stopPropagation();
+        }
 
-      //  1:1 방의 경우 상대 유저의 프로파일 정보를 보여줌.
-      const isDMRoom = roomInfo.isDirectMsg;
+        //  1:1 방의 경우 상대 유저의 프로파일 정보를 보여줌.
+        const isDMRoom = roomInfo.isDirectMsg;
 
-      setVisible(false);
+        setVisible(false);
 
-      if (isDMRoom) {
-        const targetUserId = roomInfo.memberIdListString
-          .split(',')
-          .find(userId => userId !== userStore.myProfile.id);
+        if (isDMRoom) {
+          const targetUserId = roomInfo.memberIdListString
+            .split(',')
+            .find(userId => userId !== myUserId);
 
-        onClickMenuItem({
-          key: 'profile',
-          item: targetUserId,
-        });
-      } else {
-        onClickMenuItem({
-          key: 'member',
-          item: roomInfo,
-          value: {
-            isEdit: false,
-          },
-        });
-      }
-    };
+          onClickMenuItem({
+            key: 'profile',
+            item: targetUserId,
+          });
+        } else {
+          onClickMenuItem({
+            key: 'member',
+            item: roomInfo,
+            value: {
+              isEdit: false,
+            },
+          });
+        }
+      },
+      [myUserId, onClickMenuItem, roomInfo],
+    );
 
     const handleForceRead = e => {
       e.domEvent.stopPropagation();
@@ -132,13 +140,19 @@ const RoomDropdown = React.memo(
       onClickMenuItem({ key: 'enableAlarm' });
     };
 
-    const handleAlarmDisable = e => {
-      e.domEvent.stopPropagation();
-      setVisible(false);
+    const handleAlarmDisable = useCallback(
+      e => {
+        if (e) {
+          e.domEvent.stopPropagation();
+        }
 
-      updateRoomSetting({ newIsAlarmUsed: false });
-      onClickMenuItem({ key: 'disableAlarm' });
-    };
+        setVisible(false);
+
+        updateRoomSetting({ newIsAlarmUsed: false });
+        onClickMenuItem({ key: 'disableAlarm' });
+      },
+      [onClickMenuItem, updateRoomSetting],
+    );
 
     const handleExit = e => {
       e.domEvent.stopPropagation();
@@ -219,6 +233,16 @@ const RoomDropdown = React.memo(
         </StyledMenu>
       );
     };
+
+    useEffect(() => {
+      handlerStore.register('/mute', roomId, handleAlarmDisable);
+      handlerStore.register('/org chart', roomId, handleViewMember);
+
+      return () => {
+        handlerStore.unregister('/mute', roomId);
+        handlerStore.register('/org chart', roomId, handleViewMember);
+      };
+    }, [handleAlarmDisable, handleViewMember, handlerStore, roomId]);
 
     return (
       <Dropdown
@@ -434,6 +458,7 @@ const RoomItem = React.memo(
     onClickRoomPhoto = () => {},
   }) => {
     const { componentStore } = useCoreStores();
+    const { handlerStore } = useStores();
     const FileDndDialog = componentStore.get('Talk:FileDndDialog');
     const [isDndDialogVisible, setDndDialogVisible] = useState(false);
     const [dndTargetFiles, setDndTargetFiles] = useState([]);
@@ -500,6 +525,14 @@ const RoomItem = React.memo(
     const handleCloseDndDialog = useCallback(() => {
       setDndDialogVisible(false);
     }, []);
+
+    useEffect(() => {
+      if (isMyRoom) {
+        handlerStore.register('/myroom', '', handleRoomClick);
+      }
+
+      return () => isMyRoom && handlerStore.unregister('/myroom');
+    }, [handleRoomClick, handlerStore, isMyRoom]);
 
     return (
       <StyledItem ref={drop} className="rooms__item" onClick={handleRoomClick}>

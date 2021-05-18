@@ -45,13 +45,11 @@ const HeaderProfile = observer(() => {
           </SettingImage>
         </ProfileIcon>
       </Tooltip>
-      {myModalVisible && (
-        <ProfileMyModal
-          visible={myModalVisible}
-          onCancel={toggleMyModal}
-          created={tutorialVisible}
-        />
-      )}
+      <ProfileMyModal
+        visible={myModalVisible}
+        onCancel={toggleMyModal}
+        created={tutorialVisible}
+      />
     </>
   );
 });
