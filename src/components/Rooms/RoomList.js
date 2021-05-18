@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer, useLocalStore } from 'mobx-react';
 import styled, { css } from 'styled-components';
@@ -19,6 +19,7 @@ import RoomItem from './RoomItem';
 import { useStores } from '../../stores';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
+import * as useCommand from '../../hook/Command';
 
 const RoomList = () => {
   const containerRef = useRef(null);
@@ -67,11 +68,11 @@ const RoomList = () => {
     EventBus.dispatch('Platform:initLNB');
   }, [i18n.language]);
 
-  const handleCreateRoom = () => {
+  const handleCreateRoom = useCallback(() => {
     store.visible.selectRoomTypeModal = true;
     EventBus.dispatch('Note:onEditClose');
     logEvent('main', 'clickRoomCreateBtn');
-  };
+  }, [store]);
 
   const handleSelectRoom = async roomInfo => {
     const isSameRoom =
@@ -106,29 +107,32 @@ const RoomList = () => {
     store.targetRoom = roomInfo;
   };
 
-  const handleClickMenuItem = ({ key, item, value }) => {
-    switch (key) {
-      case 'profile':
-        store.targetUserId = item;
-        store.visible.profileModal = true;
-        break;
-      case 'member':
-      case 'changeName':
-        store.roomMemberAttr = value;
-        store.targetRoom = item;
-        store.visible.roomMemberModal = true;
-        break;
-      case 'exitAdmin': // 룸 관리자가 '나가기' 버튼 누른 경우
-        store.exitTargetRoom = item;
-        store.visible.exitAdminModal = true;
-        break;
-      case 'exitNormal': // 일반 사용자가 '나가기' 버튼 누른 경우
-        store.exitTargetRoom = item;
-        store.visible.exitNormalModal = true;
-        break;
-      default:
-    }
-  };
+  const handleClickMenuItem = useCallback(
+    ({ key, item, value }) => {
+      switch (key) {
+        case 'profile':
+          store.targetUserId = item;
+          store.visible.profileModal = true;
+          break;
+        case 'member':
+        case 'changeName':
+          store.roomMemberAttr = value;
+          store.targetRoom = item;
+          store.visible.roomMemberModal = true;
+          break;
+        case 'exitAdmin': // 룸 관리자가 '나가기' 버튼 누른 경우
+          store.exitTargetRoom = item;
+          store.visible.exitAdminModal = true;
+          break;
+        case 'exitNormal': // 일반 사용자가 '나가기' 버튼 누른 경우
+          store.exitTargetRoom = item;
+          store.visible.exitNormalModal = true;
+          break;
+        default:
+      }
+    },
+    [store],
+  );
 
   const handleClickRoomPhoto = roomInfo => {
     // NOTE. 마이룸인 경우 나의 프로파일 정보를,
@@ -219,6 +223,11 @@ const RoomList = () => {
   };
 
   const hasMemberCreatePermission = authStore.hasPermission('members', 'C');
+
+  useCommand.NewRoom(handleCreateRoom);
+  useCommand.Mute();
+  useCommand.OrgChart();
+  useCommand.MyRoom();
 
   return (
     <Wrapper>

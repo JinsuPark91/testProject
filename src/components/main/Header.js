@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useCallback } from 'react';
 import { useLocalStore, Observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -47,6 +47,7 @@ import {
   OpenChatBgIcon,
 } from '../Icons';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
+import * as useCommand from '../../hook/Command';
 
 const getIconStyle = (isDisabled = false) => {
   const { uiStore } = rootStore;
@@ -264,27 +265,30 @@ const Header = () => {
 
   const handleSearch = () => EventBus.dispatch('Talk:OpenSearch');
 
-  const openSubApp = async appName => {
-    const queryParams = { ...getQueryParams(), sub: appName };
-    const queryString = getQueryString(queryParams);
+  const openSubApp = useCallback(
+    async appName => {
+      const queryParams = { ...getQueryParams(), sub: appName };
+      const queryString = getQueryString(queryParams);
 
-    if (uiStore.resourceType === 'f') {
-      try {
-        const response = await roomStore.getDMRoom(
-          userStore.myProfile.id,
-          userStore.myProfile.id,
-        );
-        if (!response.result) {
-          throw Error('DM ROOM GET FAILED');
+      if (uiStore.resourceType === 'f') {
+        try {
+          const response = await roomStore.getDMRoom(
+            userStore.myProfile.id,
+            userStore.myProfile.id,
+          );
+          if (!response.result) {
+            throw Error('DM ROOM GET FAILED');
+          }
+          history.push(`/s/${response.roomInfo.id}/talk?${queryString}`);
+        } catch (e) {
+          console.error(`Error is${e}`);
         }
-        history.push(`/s/${response.roomInfo.id}/talk?${queryString}`);
-      } catch (e) {
-        console.error(`Error is${e}`);
+      } else {
+        history.push(`${history.location.pathname}?${queryString}`);
       }
-    } else {
-      history.push(`${history.location.pathname}?${queryString}`);
-    }
-  };
+    },
+    [history, roomStore, uiStore.resourceType, userStore.myProfile.id],
+  );
 
   const closeSubApp = () => {
     const queryParams = getQueryParams();
@@ -362,9 +366,9 @@ const Header = () => {
     store.visible.roomProfileModal = false;
   };
 
-  const handleAddMember = () => {
+  const handleAddMember = useCallback(() => {
     store.visible.addMemberModal = true;
-  };
+  }, [store.visible]);
 
   const handleInviteUsers = async (_, resultRoomId) => {
     // 1:1 룸에 초대한 경우 새로운 룸이 생성되는데, 이 경우 그 룸으로 이동해야함.
@@ -441,6 +445,14 @@ const Header = () => {
       />
     );
   };
+
+  const handleNewNote = useCallback(() => {
+    openSubApp('note');
+    // Eventbus.~~~
+  }, [openSubApp]);
+
+  useCommand.InviteMember(handleAddMember);
+  useCommand.NewNote(handleNewNote);
 
   return (
     <Wrapper>
