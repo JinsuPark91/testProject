@@ -30,6 +30,8 @@ export const useCommandInviteMember = handler => {
             en: 'Invite new members to the room.',
           },
         });
+      } else if (!isValid && commandStore.get(command)) {
+        commandStore.unregister(command);
       }
     });
     return () => commandStore.get(command) && commandStore.unregister(command);
