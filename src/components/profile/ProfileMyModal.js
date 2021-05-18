@@ -22,6 +22,7 @@ import SettingDialog from '../usersettings/SettingDialog';
 import MovePage from '../../utils/MovePage';
 import { getMainWaplURL } from '../../utils/UrlUtil';
 import { isSpaceAdmin, getLanguage } from '../../utils/GeneralUtil';
+import * as useCommand from '../../hook/Command';
 import { ArrowRightIcon } from '../Icons';
 import {
   UserImage,
@@ -74,6 +75,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   const [isEditMode, setIsEditMode] = useState(false);
 
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
+  const [invitePeople, setInvitePeople] = useState([]);
   const [isFriendMemViewOpen, setIsFriendMemViewOpen] = useState(false);
 
   const [isToastOpen, setIsToastOpen] = useState(false);
@@ -132,10 +134,14 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
     setTimeout(() => onCancel(), 1);
   }, [onCancel]);
 
-  const handleOpenInviteModal = useCallback(() => {
-    setIsInviteDialogOpen(true);
-    logEvent('threedot', 'clickInviteMemberBtn');
-  }, []);
+  const handleOpenInviteModal = useCallback(
+    (mailAddr = []) => () => {
+      setInvitePeople(mailAddr);
+      setIsInviteDialogOpen(true);
+      logEvent('threedot', 'clickInviteMemberBtn');
+    },
+    [],
+  );
   const handleCancelInviteModal = useCallback(() => {
     setIsInviteDialogOpen(false);
   }, []);
@@ -189,7 +195,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   const moreMenu = (
     <Menu style={{ minWidth: '6.25rem' }}>
       {!isTmaxDomain && !isGuest && !configStore.isFromCNU ? (
-        <Menu.Item onClick={handleOpenInviteModal}>
+        <Menu.Item onClick={handleOpenInviteModal()}>
           {t('CM_USER_INVITE')}
         </Menu.Item>
       ) : null}
@@ -422,18 +428,6 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
           onClose={() => setIsCreated(false)}
         />
       )}
-      {settingDialogVisible && (
-        <SettingDialog
-          visible={settingDialogVisible}
-          onCancel={handleCloseSettingDialog}
-        />
-      )}
-      {isInviteDialogOpen && (
-        <AddFriendsByInvitationDialog
-          visible={isInviteDialogOpen}
-          onCancel={handleCancelInviteModal}
-        />
-      )}
       {isFriendMemViewOpen && (
         <AddFriendsBySearch
           isViewMode={isViewMode}
@@ -486,38 +480,58 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
     </>
   );
 
+  useCommand.Setting(handleSettingDialogOpen);
+  useCommand.InvitePeople(handleOpenInviteModal);
+
   return useObserver(() => (
-    <ProfileModal
-      visible={visible}
-      mask={isCreated}
-      maskClosable={!isCreated}
-      onCancel={handleCancel}
-      closable={false}
-      outLine
-      backgroundPhotoURL={getBackPhoto()}
-      width="17rem"
-      type="user"
-      userContent={userContent}
-      subContent={subContent}
-      footer={
-        <UserSettingArea>
-          <SettingButton type="text" onClick={handleSettingDialogOpen}>
-            {t('CM_SETTING')}
-          </SettingButton>
-          {!configStore.isFromCNU ? (
-            <>
-              <SettingBar />
-              <SettingButton type="text" onClick={handleOpenSupport}>
-                {t('CM_PROFILE_MENU_04')}
+    <>
+      {visible ? (
+        <ProfileModal
+          visible={visible}
+          mask={isCreated}
+          maskClosable={!isCreated}
+          onCancel={handleCancel}
+          closable={false}
+          outLine
+          backgroundPhotoURL={getBackPhoto()}
+          width="17rem"
+          type="user"
+          userContent={userContent}
+          subContent={subContent}
+          footer={
+            <UserSettingArea>
+              <SettingButton type="text" onClick={handleSettingDialogOpen}>
+                {t('CM_SETTING')}
               </SettingButton>
-            </>
-          ) : null}
-        </UserSettingArea>
-      }
-      transitionName=""
-      maskTransitionName=""
-      style={{ top: '2.875rem', margin: '0 1.25rem 0 auto' }}
-    />
+              {!configStore.isFromCNU ? (
+                <>
+                  <SettingBar />
+                  <SettingButton type="text" onClick={handleOpenSupport}>
+                    {t('CM_PROFILE_MENU_04')}
+                  </SettingButton>
+                </>
+              ) : null}
+            </UserSettingArea>
+          }
+          transitionName=""
+          maskTransitionName=""
+          style={{ top: '2.875rem', margin: '0 1.25rem 0 auto' }}
+        />
+      ) : null}
+      {settingDialogVisible && (
+        <SettingDialog
+          visible={settingDialogVisible}
+          onCancel={handleCloseSettingDialog}
+        />
+      )}
+      {isInviteDialogOpen && (
+        <AddFriendsByInvitationDialog
+          visible={isInviteDialogOpen}
+          mailList={invitePeople}
+          onCancel={handleCancelInviteModal}
+        />
+      )}
+    </>
   ));
 };
 
