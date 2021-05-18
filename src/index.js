@@ -10,6 +10,7 @@ import {
 import { I18nextProvider } from 'react-i18next';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { Observer } from 'mobx-react';
 import { i18n } from './i18n';
 import { rootStore } from './stores';
 // import MobileApp from './components/mobile/MobileApp';
@@ -90,18 +91,22 @@ initGA(global.env.PLATFORM_GA_ID);
 ReactDOM.render(
   <CoreStoreProvider config={getEnv()}>
     <I18nextProvider i18n={i18n}>
-      <ThemeProvider theme={rootStore.uiStore.theme}>
-        <GlobalCommonStyles />
-        <BrowserRouter>
-          <Switch>
-            {/* <Route path="/mobile" component={MobileApp} /> */}
-            <Route path="/">
-              <GlobalStyle />
-              <WebApp />
-            </Route>
-          </Switch>
-        </BrowserRouter>
-      </ThemeProvider>
+      <Observer>
+        {() => (
+          <ThemeProvider theme={rootStore.uiStore.theme}>
+            <GlobalCommonStyles />
+            <BrowserRouter>
+              <Switch>
+                {/* <Route path="/mobile" component={MobileApp} /> */}
+                <Route path="/">
+                  <GlobalStyle />
+                  <WebApp />
+                </Route>
+              </Switch>
+            </BrowserRouter>
+          </ThemeProvider>
+        )}
+      </Observer>
     </I18nextProvider>
   </CoreStoreProvider>,
   document.getElementById('root'),
