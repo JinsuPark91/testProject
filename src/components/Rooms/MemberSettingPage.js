@@ -40,9 +40,9 @@ const SubTab = ({ isOpenRoom = false }) => {
               // <SubTabItem className="alarm-badge">
               <SubTabItem>
                 <ItemText
-                  data-tab-key="waiting"
+                  data-tab-key="request"
                   className={
-                    store.subTabKey === 'waiting' ? 'sub-tab--active' : ''
+                    store.subTabKey === 'request' ? 'sub-tab--active' : ''
                   }
                   onClick={handleTabChange}
                 >
@@ -57,8 +57,8 @@ const SubTab = ({ isOpenRoom = false }) => {
         {() => (
           <SubTabItem>
             <ItemText
-              data-tab-key="blocked"
-              className={store.subTabKey === 'blocked' ? 'sub-tab--active' : ''}
+              data-tab-key="ban"
+              className={store.subTabKey === 'ban' ? 'sub-tab--active' : ''}
               onClick={handleTabChange}
             >
               {t('CM_ROOM_SETTING_BLOCK_MANAGE_PEOPLE_01')}
@@ -79,9 +79,9 @@ const MemberSettingPage = ({ roomId }) => {
     switch (store.subTabKey) {
       case 'member':
         return <SubMemberPage roomId={roomId} />;
-      case 'waiting':
+      case 'request':
         return <SubWaitingMemberPage roomId={roomId} />;
-      case 'blocked':
+      case 'ban':
         return <SubBlockedMemberPage roomId={roomId} />;
       default:
         return null;

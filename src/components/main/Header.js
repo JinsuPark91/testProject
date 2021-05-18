@@ -169,6 +169,7 @@ const Header = () => {
   const { roomStore, userStore, configStore } = useCoreStores();
   const store = useLocalStore(() => ({
     appConfirm: null,
+    inviteRoomId: null,
     visible: {
       roomProfileModal: false,
       addMemberModal: false,
@@ -176,9 +177,13 @@ const Header = () => {
   }));
 
   useEffect(() => {
-    const inviteUserHandler = EventBus.on('Platform:inviteUser', () => {
-      store.visible.addMemberModal = true;
-    });
+    const inviteUserHandler = EventBus.on(
+      'Platform:inviteUser',
+      ({ roomId }) => {
+        store.inviteRoomId = roomId;
+        store.visible.addMemberModal = true;
+      },
+    );
 
     return () => EventBus.off('Platform:inviteUser', inviteUserHandler);
   }, []);
@@ -557,7 +562,9 @@ const Header = () => {
                                   {() => (
                                     <RoomAddMemberModal
                                       visible={store.visible.addMemberModal}
-                                      roomId={findRoom()?.id}
+                                      roomId={
+                                        store.inviteRoomId || findRoom()?.id
+                                      }
                                       onInviteUsers={handleInviteUsers}
                                       onCancel={handleCancelInviteUsers}
                                     />

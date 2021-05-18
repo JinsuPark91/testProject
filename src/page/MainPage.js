@@ -313,6 +313,39 @@ const MainPage = () => {
       },
     );
 
+    const roomSettingHandler = EventBus.on(
+      'Platform:roomSetting',
+      ({ roomId, mainTab, subTab }) => {
+        history.push(`/s/${roomId}/setting`, { mainTab, subTab });
+      },
+    );
+
+    const directMessageHandler = EventBus.on(
+      'Platform:directMessage',
+      ({ userId }) => {
+        const moveTalk = roomId => history.push(`/s/${roomId}/talk`);
+
+        handleProfileMenuClick(
+          myUserId,
+          userId,
+          async roomInfo => {
+            const { lastUrl } = await historyStore.getHistory({
+              roomId: roomInfo.id,
+            });
+
+            if (lastUrl) history.push(lastUrl);
+            else moveTalk(roomInfo.id);
+          },
+          roomInfo => {
+            moveTalk(roomInfo.id);
+          },
+          roomInfo => {
+            moveTalk(roomInfo.id);
+          },
+        );
+      },
+    );
+
     WWMS.addHandler('SYSTEM', 'platform_wwms', handleSystemMessage);
 
     return () => {
@@ -322,6 +355,8 @@ const MainPage = () => {
       EventBus.off('onLayoutClose', closeHandler);
       EventBus.off('onMeetingOpen', openMeetingHandler);
       EventBus.off('CoreRequest:forbidden', errorHandler);
+      EventBus.off('Platform:banMembers', roomSettingHandler);
+      EventBus.off('Platform:directMessage', directMessageHandler);
       WWMS.removeHandler('SYSTEM', 'platform_wwms');
     };
   }, []);

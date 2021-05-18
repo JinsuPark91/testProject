@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { Observer } from 'mobx-react';
 import { Tabs } from 'antd';
@@ -15,6 +15,12 @@ const RoomSetting = ({ roomId }) => {
   const { roomSettingStore: store } = useStores();
   const { t } = useTranslation();
   const history = useHistory();
+  const location = useLocation();
+
+  useEffect(() => {
+    store.tabKey = location?.state?.mainTab || 'common';
+    store.subTabKey = location?.state?.subTab || 'member';
+  }, [location]);
 
   useEffect(() => {
     return () => {
