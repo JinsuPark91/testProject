@@ -26,6 +26,8 @@ export const useCommandMyRoom = () => {
             en: 'Go to My Room.',
           },
         });
+      } else if (isMyroom && commandStore.get(command)) {
+        commandStore.unregister(command);
       }
     });
 

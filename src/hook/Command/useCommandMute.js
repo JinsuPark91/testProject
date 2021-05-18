@@ -27,6 +27,8 @@ export const useCommandMute = () => {
             en: 'Turn off notification for the current room.',
           },
         });
+      } else if (isMyroom && commandStore.get(command)) {
+        commandStore.unregister(command);
       }
     });
 

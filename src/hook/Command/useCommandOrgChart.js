@@ -27,6 +27,8 @@ export const useCommandOrgChart = () => {
             en: 'Display Users list.',
           },
         });
+      } else if (isMyroom && commandStore.get(command)) {
+        commandStore.unregister(command);
       }
     });
 
