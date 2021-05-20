@@ -1,5 +1,7 @@
+/* eslint-disable react/no-array-index-key */
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { WaplSymbol } from './Icons';
 
 const getStyle = (index, count, defaultDiameter) => {
   switch (count) {
@@ -35,35 +37,47 @@ const getStyle = (index, count, defaultDiameter) => {
 
 function Photos({
   srcList,
-  isClickable = true,
+  isBotRoom = false,
   onClick = () => {},
   defaultDiameter = 2.125,
   className,
 }) {
+  const getPhotos = () => {
+    if (isBotRoom)
+      return (
+        <SymbolWrapper>
+          <WaplSymbol width={1.25} height={1.25} />
+        </SymbolWrapper>
+      );
+
+    if (srcList.length)
+      return srcList.map((src, index) => (
+        <UserPhoto
+          key={index}
+          styles={getStyle(index, srcList.length, defaultDiameter)}
+        >
+          <img src={src} alt="" />
+        </UserPhoto>
+      ));
+
+    return (
+      <img
+        src={`${process.env.PUBLIC_URL}/res/face/Profile_empty_qui.svg`}
+        alt=""
+      />
+    );
+  };
+
   return (
     <Wrapper
-      isClickable={isClickable}
+      isBotRoom={isBotRoom}
       onClick={e => {
-        if (isClickable) onClick(e);
+        if (!isBotRoom) onClick(e);
       }}
       defaultDiameter={defaultDiameter}
       className={className}
     >
-      {srcList.length ? (
-        srcList.map((src, index) => (
-          <UserPhoto
-            key={index}
-            styles={getStyle(index, srcList.length, defaultDiameter)}
-          >
-            <img src={src} alt="" />
-          </UserPhoto>
-        ))
-      ) : (
-        <img
-          src={`${process.env.PUBLIC_URL}/res/face/Profile_empty_quit.svg`}
-          alt=""
-        />
-      )}
+      {getPhotos()}
     </Wrapper>
   );
 }
@@ -74,7 +88,24 @@ const Wrapper = styled.div`
   position: relative;
   width: ${({ defaultDiameter }) => defaultDiameter}rem;
   height: ${({ defaultDiameter }) => defaultDiameter}rem;
-  cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'default')};
+  cursor: ${({ isBotRoom }) => (isBotRoom ? 'default' : 'pointer')};
+  ${({ isBotRoom }) =>
+    isBotRoom &&
+    css`
+      background: linear-gradient(224deg, #ff927e, #49423a);
+      padding: 1px;
+      border-radius: 50%;
+    `}
+`;
+
+const SymbolWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border-radius: 50%;
 `;
 
 const UserPhoto = styled.div`

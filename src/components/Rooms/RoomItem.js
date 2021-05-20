@@ -332,7 +332,7 @@ const RoomItemContent = React.memo(
                   <Photos
                     defaultDiameter="2.13"
                     srcList={userPhotos}
-                    isClickable={!roomInfo.isBotRoom}
+                    isBotRoom={roomInfo.isBotRoom}
                     onClick={handleClickRootPhoto}
                     className="photos rooms__item__photo"
                   />
