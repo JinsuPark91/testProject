@@ -39,7 +39,7 @@ export const FriendAddButton = styled.div`
   align-items: center;
   border-radius: 50%;
   background-color: ${props => props.theme.StateNormal};
-  box-shadow: 0 0 0.31rem 0 ${props => props.theme.AddRoomShadow};
+  box-shadow: 0 0 0.31rem 0 ${props => props.theme.ModalShadow};
   cursor: pointer;
 
   &:hover {

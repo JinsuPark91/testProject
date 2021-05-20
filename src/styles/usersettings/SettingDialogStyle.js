@@ -53,6 +53,9 @@ export const StyledMenu = styled(Menu)`
     &.ant-menu-item-selected {
       background-color: ${props => props.theme.SubStateDark};
     }
+    &:active {
+      background-color: ${props => props.theme.SubStateDark};
+    }
   }
 `;
 
