@@ -43,7 +43,7 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
       '.',
     );
     loginInfo = {
-      id: keycloak.tokenParsed.email,
+      id: keycloak.tokenParsed.preferred_username,
       deviceType: 'PC',
       domainUrl: domainName,
       isLocal: 'local',
@@ -64,7 +64,8 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
           try {
             if (
               authStore.user?.loginId &&
-              authStore.user?.loginId !== keycloak.tokenParsed?.email
+              authStore.user?.loginId !==
+                keycloak.tokenParsed?.preferred_username
             ) {
               await authStore.logout().then(() => {
                 Cookies.remove('ACCESS_TOKEN');
