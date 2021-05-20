@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useLocalStore, Observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -10,7 +10,6 @@ import {
 } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { useTranslation } from 'react-i18next';
-import { ThemeContext } from 'styled-components';
 import {
   Wrapper,
   TitleWrapper,
@@ -88,9 +87,9 @@ const apps = [
     name: 'note',
     tooltip: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_19',
     icons: {
-      active: <NoteActiveIcon {...getIconStyle()} />,
-      disabled: <NoteIcon {...getIconStyle(true)} />,
-      default: <NoteIcon {...getIconStyle()} />,
+      active: <NoteActiveIcon />,
+      disabled: <NoteIcon />,
+      default: <NoteIcon />,
     },
     isUsedInMyRoom: true,
     isSeperated: false,
@@ -100,9 +99,9 @@ const apps = [
     name: 'meeting',
     tooltip: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_20',
     icons: {
-      active: <MeetingActiveIcon {...getIconStyle()} />,
-      disabled: <MeetingIcon {...getIconStyle(true)} />,
-      default: <MeetingIcon {...getIconStyle()} />,
+      active: <MeetingActiveIcon />,
+      disabled: <MeetingIcon />,
+      default: <MeetingIcon />,
     },
     isUsedInMyRoom: false,
     isSeperated: false,
@@ -112,9 +111,9 @@ const apps = [
     name: 'files',
     tooltip: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_16',
     icons: {
-      active: <ViewFileActiveIcon {...getIconStyle()} />,
-      disabled: <ViewFileIcon {...getIconStyle(true)} />,
-      default: <ViewFileIcon {...getIconStyle()} />,
+      active: <ViewFileActiveIcon />,
+      disabled: <ViewFileIcon />,
+      default: <ViewFileIcon />,
     },
     isUsedInMyRoom: true,
     isSeperated: true,
@@ -132,7 +131,6 @@ const AppIcon = React.memo(
     activeIcon,
     disabledIcon,
     disabled,
-    color,
   }) => {
     const { t } = useTranslation();
 
@@ -142,9 +140,11 @@ const AppIcon = React.memo(
 
     let icon = defaultIcon;
     if (disabled) {
-      icon = disabledIcon;
+      icon = React.cloneElement(disabledIcon, { ...getIconStyle(true) });
     } else {
-      icon = isActive ? activeIcon : defaultIcon;
+      icon = React.cloneElement(isActive ? activeIcon : defaultIcon, {
+        ...getIconStyle(),
+      });
     }
 
     return (
@@ -155,15 +155,15 @@ const AppIcon = React.memo(
           onClick={handleAppClick}
           disabled={disabled}
         >
-          {React.cloneElement(icon, { color })}
+          {icon}
         </AppIconInner>
       </Tooltip>
     );
   },
 );
+AppIcon.displayName = 'AppIcon';
 
 const Header = () => {
-  const themeContext = useContext(ThemeContext);
   const history = useHistory();
   const { t, i18n } = useTranslation();
   const { uiStore } = useStores();
@@ -551,7 +551,10 @@ const Header = () => {
                         <Observer>
                           {() =>
                             !isMyRoom() &&
-                            userStore.myProfile?.isGuest === false && (
+                            !(
+                              userStore.myProfile?.isGuest ||
+                              findRoom()?.isBotRoom
+                            ) && (
                               <>
                                 <Tooltip
                                   placement="bottom"
@@ -620,7 +623,6 @@ const Header = () => {
                     <AppIcon
                       key={name}
                       isActive={isActive(name)}
-                      color={themeContext.NavyWhiteColor}
                       appName={name}
                       i18n={tooltip}
                       onClick={handleAppClick}
