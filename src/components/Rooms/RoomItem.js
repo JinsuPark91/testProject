@@ -176,7 +176,7 @@ const RoomDropdown = React.memo(
       const { isBotRoom } = roomInfo;
 
       return (
-        <StyledMenu>
+        <Menu>
           {
             // NOTE. 마이룸과 1:1 룸은 이름 변경할 수 있음
             // NOTE. 마이름은 메뉴 자체가 없다. (체크할 필요 없음)
@@ -230,7 +230,7 @@ const RoomDropdown = React.memo(
               {t('CM_LEAVE')}
             </Menu.Item>
           )}
-        </StyledMenu>
+        </Menu>
       );
     };
 
@@ -618,25 +618,6 @@ const ItemWrapper = styled.div`
     .rooms__item__config-button,
     .rooms__item__export-button {
       display: flex;
-    }
-  }
-`;
-const StyledMenu = styled(Menu)`
-  background: #ffffff;
-  border: 1px solid #d0ccc7;
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 0.25rem;
-
-  .ant-dropdown-menu-item {
-    font-size: 0.75rem;
-    color: #000;
-
-    &:hover {
-      background-color: #faf8f7;
-    }
-    &:active,
-    &:focus {
-      background-color: #f2efec;
     }
   }
 `;

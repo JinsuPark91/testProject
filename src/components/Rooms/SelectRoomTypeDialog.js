@@ -204,7 +204,7 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
                 height={1.88}
                 color={
                   isDisabled()
-                    ? themeContext.IconDisabled2
+                    ? themeContext.IconDisabled
                     : themeContext.IconNormal2
                 }
               />

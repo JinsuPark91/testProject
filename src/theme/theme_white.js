@@ -55,12 +55,10 @@ const colors = {
   BasicDark: '#232D3B',
 
   IconNormal: '#7b7671',
-  IconActive: '#48423B',
-  IconDisabled: '#e2dfdc',
-
   IconNormal2: '#232d3b',
+  IconActive: '#48423B',
   IconActive2: '#17202b',
-  IconDisabled2: '#e2dfdc',
+  IconDisabled: '#e2dfdc',
 
   // etc
   LnbNormal: '#232d3b',
@@ -69,7 +67,8 @@ const colors = {
   LnbLine: '#232D3B',
   HeaderIcon: '#232D3B',
   ModalLine: '#fff',
-  AddRoomShadow: 'rgba(0, 0, 0, 0.2)',
+  ModalShadow: 'rgba(0, 0, 0, 0.2)',
+  ToastColor: '#232D3B',
 };
 
 colors.name = 'white';

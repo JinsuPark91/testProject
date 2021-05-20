@@ -242,6 +242,7 @@ const SubWaitingMemberPage = ({ roomId }) => {
               fontSize: '0.81rem',
               fontWeight: '600',
               margin: '0 1.25rem',
+              color: `${props => props.theme.TextMain}`,
             }}
           >
             <Observer>

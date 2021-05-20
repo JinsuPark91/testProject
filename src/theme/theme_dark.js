@@ -44,8 +44,8 @@ const colors = {
   TextSub: '#aaa',
   TextSub2: '#8c8c8c',
   TextHinted: '#555',
-  TextPoinGreen: '#205855',
-  TextPoinOreange: '#ec6222',
+  TextPoinGreen: '#88d1c7',
+  TextPoinOreange: '#ff8459',
 
   LineOut: '#666',
   LineMain: '#333',
@@ -55,12 +55,10 @@ const colors = {
   BasicDark: '#fff',
 
   IconNormal: '#98928c',
-  IconActive: '#e4e4e4',
-  IconDisabled: '#424242',
-
   IconNormal2: '#e4e4e4',
+  IconActive: '#e4e4e4',
   IconActive2: '#fff',
-  IconDisabled2: '#424242',
+  IconDisabled: '#424242',
 
   // etc
   LnbNormal: '#171819',
@@ -69,7 +67,8 @@ const colors = {
   LnbLine: '#333',
   HeaderIcon: '#d9d9d9',
   ModalLine: '#333',
-  AddRoomShadow: 'rgba(255, 255, 255, 0.3)',
+  ModalShadow: 'rgba(255, 255, 255, 0.3)',
+  ToastColor: '#938d86',
 };
 
 colors.name = 'dark';

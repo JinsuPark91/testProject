@@ -19,7 +19,7 @@ export const ThemeItem = styled.li`
   .ant-radio-wrapper {
     font-size: 0.75rem;
     line-height: 0.94rem;
-    color: #000;
+    color: ${props => props.theme.TextMain};
     &-checked {
       + div::after {
         border: 2px solid #ec6222;

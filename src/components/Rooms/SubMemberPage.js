@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useTranslation, Trans } from 'react-i18next';
 import { Message, WaplSearch, WWMS } from 'teespace-core';
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import { Observer } from 'mobx-react';
 import { Button, Checkbox, Tooltip } from 'antd';
 import { FixedSizeList as List } from 'react-window';
@@ -287,6 +287,8 @@ const MemberPage = ({ roomId }) => {
     store.keyword = e.target.value;
   };
 
+  const themeContext = useContext(ThemeContext);
+
   return (
     <>
       <Observer>
@@ -366,6 +368,7 @@ const MemberPage = ({ roomId }) => {
               fontSize: '0.81rem',
               fontWeight: '600',
               margin: '0 1.25rem',
+              color: `${props => props.theme.TextMain}`,
             }}
           >
             <Observer>
@@ -373,7 +376,13 @@ const MemberPage = ({ roomId }) => {
                 <Trans
                   i18nKey="CM_ROOM_SETTING_MANAGE_PEOPLE_02"
                   components={{
-                    style: <span style={{ color: '#205855' }} />,
+                    style: (
+                      <span
+                        style={{
+                          color: themeContext.TextPoinGreen,
+                        }}
+                      />
+                    ),
                   }}
                   values={{ num: store.filteredMembers.length }}
                 />
