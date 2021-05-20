@@ -29,3 +29,10 @@ export const remToPixel = rem => {
     parseFloat(getComputedStyle(document.documentElement).fontSize, 10) * rem
   );
 };
+
+export const isDarkMode = () => {
+  return (
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  );
+};

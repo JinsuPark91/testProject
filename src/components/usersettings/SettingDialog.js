@@ -91,8 +91,7 @@ const SettingDialog = ({ visible, onCancel }) => {
           >
             <Menu.ItemGroup key="0" title={t('CM_SETTING_06')}>
               <Menu.Item key="1">{t('CM_SETTING_GENERAL_04')}</Menu.Item>
-              {/* 테마 관련 기능 완성 후 open */}
-              {/* <Menu.Item key="2">{t('CM_SETTING_GENERAL_01')}</Menu.Item> */}
+              <Menu.Item key="2">{t('CM_SETTING_GENERAL_01')}</Menu.Item>
             </Menu.ItemGroup>
             <Menu.ItemGroup key="3" title={t('CM_SETTING_08')}>
               <Menu.Item key="4">{t('CM_ROOMTITLE_TOOLTIP_04')}</Menu.Item>

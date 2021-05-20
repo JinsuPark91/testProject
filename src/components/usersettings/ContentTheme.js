@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Radio } from 'antd';
 import { useStores } from '../../stores';
 import ContentTitle from './ContentTitle';
+import { isDarkMode } from '../../utils/GeneralUtil';
 import SystemTheme from '../../assets/theme_system.svg';
 import LightTheme from '../../assets/theme_light.svg';
 import DarkTheme from '../../assets/theme_dark.svg';
@@ -17,11 +18,20 @@ import {
 const ContentTheme = () => {
   const { t } = useTranslation();
   const { uiStore } = useStores();
-  const [value, setValue] = useState(uiStore.theme?.name);
+  const [value, setValue] = useState(
+    localStorage.getItem('PlatformTheme') || 'system',
+  );
 
   const handleChange = e => {
     const targetValue = e.target.value;
-    uiStore.setTheme(targetValue);
+    if (targetValue !== 'system') {
+      localStorage.setItem('PlatformTheme', targetValue);
+      uiStore.setTheme(targetValue);
+    } else {
+      localStorage.removeItem('PlatformTheme');
+      if (isDarkMode()) uiStore.setTheme('dark');
+      else uiStore.setTheme('white');
+    }
     setValue(targetValue);
   };
 
