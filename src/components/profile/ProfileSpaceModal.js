@@ -74,7 +74,7 @@ const ButtonContainer = styled.div`
   }
 `;
 const LinkButton = styled(Button)`
-  color: #00493d;
+  color: ${props => props.theme.GreenVivid};
 `;
 
 function ProfileSpaceModal({

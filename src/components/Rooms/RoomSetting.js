@@ -122,9 +122,9 @@ const IconWrapper = styled.div`
 `;
 
 const TitleText = styled.span`
-  color: #000;
   font-size: 0.88rem;
   font-weight: bold;
+  color: ${props => props.theme.TextMain};
 `;
 
 const Content = styled.div`

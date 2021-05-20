@@ -432,7 +432,7 @@ const RoomItemContent = React.memo(
             className="rooms__item__export-button"
             onClick={handleExport}
           >
-            <ExportIcon width={1} height={1} color="#49423A" />
+            <ExportIcon width={1} height={1} color="#7B7671" />
           </IconWrapper>
         </Tooltip>
       </>
@@ -598,7 +598,7 @@ const ItemWrapper = styled.div`
   ${({ selected }) =>
     selected &&
     css`
-      background-color: #f2efec;
+      background-color: ${props => props.theme.StateDark};
     `}
 
   ${({ isActiveDropEffect }) =>
@@ -609,7 +609,7 @@ const ItemWrapper = styled.div`
     `}
 
   &:hover {
-    background: #faf8f7;
+    background-color: ${props => props.theme.StateBright};
 
     .rooms__item__unread {
       display: none;
@@ -642,6 +642,7 @@ const StyledMenu = styled(Menu)`
 `;
 
 const RoomMessage = styled.span`
+  margin-top: 0.125rem;
   overflow: hidden;
   margin-top: 0.125rem;
   text-overflow: ellipsis;
@@ -653,6 +654,7 @@ const RoomNameText = styled.span`
   font-size: 0.81rem;
   font-weight: 500;
   line-height: 1.19rem;
+  color: ${props => props.theme.TextMain};
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -737,7 +739,7 @@ const IconWrapper = styled.div`
   border-radius: 0.25rem;
   cursor: pointer;
   &:hover {
-    background: #eae6e0;
+    background-color: ${props => props.theme.StateLight};
   }
 `;
 const OpenChatIconBox = styled.div`

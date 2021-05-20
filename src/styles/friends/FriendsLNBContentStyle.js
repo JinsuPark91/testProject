@@ -37,7 +37,7 @@ export const StyleTitle = styled.p`
   font-size: 0.75rem;
   line-height: 1.13rem;
   font-weight: 500;
-  color: #000;
+  color: ${props => props.theme.TextMain};
 `;
 
 export const StyleText = styled(Text)`

@@ -23,8 +23,7 @@ export const LayoutWrap = styled.div`
 
 export const SiderArea = styled.div`
   width: 10.94rem;
-  background-color: #f7f4ef;
-  border-right: 1px solid #e3e7eb;
+  background-color: ${props => props.theme.SubStateNormal};
 `;
 
 export const ContentArea = styled.div`
@@ -35,7 +34,7 @@ export const ContentArea = styled.div`
 `;
 
 export const StyledMenu = styled(Menu)`
-  background-color: #f7f4ef;
+  background-color: ${props => props.theme.SubStateNormal};
   border: 0;
   .ant-menu-item-group-title {
     padding: 1.25rem 1.25rem 0.625rem;
@@ -48,12 +47,11 @@ export const StyledMenu = styled(Menu)`
     margin: 0 0.25rem !important;
     padding: 0 2.5rem;
     border-radius: 0.25rem;
-    background-color: #f7f4ef;
     font-size: 0.81rem;
     line-height: 2.38rem;
-    color: #000;
+    color: ${props => props.theme.TextMain};
     &.ant-menu-item-selected {
-      background-color: #ddd7cd;
+      background-color: ${props => props.theme.SubStateDark};
     }
   }
 `;
@@ -63,7 +61,7 @@ export const InnerList = styled.ul`
   height: 100%;
   padding: 1.56rem 1.25rem 1.25rem;
   font-size: 0.81rem;
-  color: #000;
+  color: ${props => props.theme.TextMain};
 `;
 
 export const InnerItem = styled.li`

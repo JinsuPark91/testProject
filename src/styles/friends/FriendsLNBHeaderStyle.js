@@ -38,17 +38,18 @@ export const FriendAddButton = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  background-color: #fff;
-  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  background-color: ${props => props.theme.StateNormal};
+  box-shadow: 0 0 0.31rem 0 ${props => props.theme.AddRoomShadow};
   cursor: pointer;
+
   &:hover {
-    background-color: #eae6e0;
-    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    background-color: ${props => props.theme.SubStateBright};
   }
+
   &:active {
-    background-color: #ddd7cd;
-    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    background-color: ${props => props.theme.SubStateDark};
   }
+
   & > img {
     width: 1.34rem;
     height: 1.34rem;

@@ -161,7 +161,7 @@ const AllAction = React.memo(({ itemId }) => {
         className="lnb-friend__export-icon friends__item__export-button"
         onClick={handleExport}
       >
-        <ExportIcon />
+        <ExportIcon color="#7B7671" />
       </MoreIconWrapper>
     </Tooltip>
   );

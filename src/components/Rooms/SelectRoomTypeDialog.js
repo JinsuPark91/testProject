@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
-import { Typography, Modal } from 'antd';
+import styled, { ThemeContext } from 'styled-components';
+import { Modal } from 'antd';
 import { useCoreStores, logEvent } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { PrivateRoomIcon, OpenChatIcon } from '../Icons';
@@ -9,12 +9,10 @@ import CreatePrivateRoomDialog from '../dialogs/CreatePrivateRoomDialog';
 import { useStores } from '../../stores';
 import OpenRoomHome from './OpenRoomHome';
 
-const { Title } = Typography;
-
 const VerticalBar = styled.div`
   height: 10rem;
   width: 1px;
-  background: #ddd9d4;
+  background: ${props => props.theme.LineMain};
   margin: 0 1rem;
 `;
 
@@ -33,16 +31,16 @@ const RoomInformation = styled.button`
   flex-flow: column wrap;
   align-items: center;
   border-radius: 0.875rem;
-  background: #fff;
+  background: ${props => props.theme.StateNormal};
   border: 0;
 
   &:hover {
     cursor: pointer;
-    background: #faf8f7;
+    background: ${props => props.theme.StateBright};
   }
 
   &:active {
-    background: #f2efec;
+    background: ${props => props.theme.StateDark};
   }
 
   &:disabled {
@@ -50,16 +48,19 @@ const RoomInformation = styled.button`
   }
 `;
 
-const StyledInfoTitle = styled(Title)`
+const StyledInfoTitle = styled.strong`
+  display: block;
+  margin-bottom: 0.63rem;
   font-size: 0.94rem;
   line-height: 1.38rem;
-  color: ${({ disabled }) => (disabled ? '#ccc' : '#000')};
+  color: ${({ disabled, theme }) =>
+    disabled ? theme.DisabledShape : theme.TextMain};
   letter-spacing: 0;
-  margin-bottom: 0.63rem;
 `;
 const StyledInfoText = styled.p`
   font-size: 0.75rem;
-  color: ${({ disabled }) => (disabled ? '#ccc' : '#696969')};
+  color: ${({ disabled, theme }) =>
+    disabled ? theme.DisabledShape : theme.TextSub};
   white-space: pre-line;
   letter-spacing: 0;
   text-align: center;
@@ -171,6 +172,8 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
     return userStore.myProfile.isGuest;
   };
 
+  const themeContext = useContext(ThemeContext);
+
   return (
     <>
       <OpenRoomHome
@@ -199,10 +202,14 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
               <PrivateRoomIcon
                 width={1.88}
                 height={1.88}
-                color={isDisabled() ? '#cccccc' : '#232D3B'}
+                color={
+                  isDisabled()
+                    ? themeContext.IconDisabled2
+                    : themeContext.IconNormal2
+                }
               />
             </div>
-            <StyledInfoTitle disabled={isDisabled()} level={4}>
+            <StyledInfoTitle disabled={isDisabled()}>
               {t('CM_CREATE_ROOM_OPTION_01')}
             </StyledInfoTitle>
             <StyledInfoText disabled={isDisabled()}>
@@ -212,9 +219,13 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
           <VerticalBar />
           <RoomInformation onClick={handleOpenRoomCreate}>
             <div style={{ marginBottom: '1.19rem' }}>
-              <OpenChatIcon width={1.88} height={1.88} color="#232D3B" />
+              <OpenChatIcon
+                width={1.88}
+                height={1.88}
+                color={themeContext.IconNormal2}
+              />
             </div>
-            <Title level={4}>{t('CM_CREATE_ROOM_OPTION_03')}</Title>
+            <StyledInfoTitle>{t('CM_CREATE_ROOM_OPTION_03')}</StyledInfoTitle>
             <StyledInfoText>{t('CM_CREATE_ROOM_OPTION_04')}</StyledInfoText>
           </RoomInformation>
         </SelectRoomType>
