@@ -363,7 +363,7 @@ const RoomList = () => {
               color={
                 hasMemberCreatePermission
                   ? themeContext.IconNormal2
-                  : themeContext.IconDisabled2
+                  : themeContext.IconDisabled
               }
             />
           </AddRoomIconWrapper>

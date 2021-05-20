@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { throttle } from 'lodash';
 import { useCoreStores, Tooltip } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { Modal, Dropdown, Menu } from 'antd';
 import { Observer } from 'mobx-react';
+import { ThemeContext } from 'styled-components';
 import MovePage from '../../utils/MovePage';
 import { getMainWaplURL } from '../../utils/UrlUtil';
 import { remToPixel } from '../../utils/GeneralUtil';
@@ -98,15 +99,17 @@ const SpaceSide = () => {
     } else window.location.href = getMainWaplURL('/select-space-type');
   };
 
+  const themeContext = useContext(ThemeContext);
+
   return (
     <Wrapper>
       <Tooltip title={t('CM_GO_SPACES')} placement="right" color="#4C535D">
         <ItemWrapper
-          background="#fff"
+          background={themeContext.StateNormal}
           style={{ marginTop: '0.55rem' }}
           onClick={() => MovePage('spaces')}
         >
-          <HomeIcon width={1.5} height={1.5} color="#232d3b" />
+          <HomeIcon width={1.5} height={1.5} color={themeContext.IconNormal2} />
         </ItemWrapper>
       </Tooltip>
       <HorizontalBar width={1.25} />
@@ -149,11 +152,11 @@ const SpaceSide = () => {
               overlay={spaceMenu}
               placement="topLeft"
             >
-              <ItemWrapper background="#fff">
+              <ItemWrapper background={themeContext.StateNormal}>
                 <HorizontalViewMoreIcon
                   width={1.5}
                   height={1.5}
-                  color="#232d3b"
+                  color={themeContext.IconNormal2}
                 />
               </ItemWrapper>
             </Dropdown>
@@ -166,8 +169,11 @@ const SpaceSide = () => {
         placement="right"
         color="#4C535D"
       >
-        <ItemWrapper background="#faf8f7" onClick={handleNewSpace}>
-          <AddIcon width={1} height={1} color="#7b7671" />
+        <ItemWrapper
+          background={themeContext.StateBright}
+          onClick={handleNewSpace}
+        >
+          <AddIcon width={1} height={1} color={themeContext.IconNormal} />
         </ItemWrapper>
       </Tooltip>
     </Wrapper>
