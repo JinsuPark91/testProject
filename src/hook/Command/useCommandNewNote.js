@@ -1,12 +1,16 @@
 /* eslint-disable import/prefer-default-export */
 import { useCallback, useEffect } from 'react';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, EventBus } from 'teespace-core';
 
 export const useCommandNewNote = propHandler => {
   const { commandStore } = useCoreStores();
-  const handler = useCallback(() => {
-    propHandler();
-  }, [propHandler]);
+  const handler = useCallback(
+    params => {
+      propHandler();
+      EventBus.dispatch('Note:Command:NewNote', params);
+    },
+    [propHandler],
+  );
 
   useEffect(() => {
     const command = '/new note';
