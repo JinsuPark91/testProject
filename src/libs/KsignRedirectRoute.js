@@ -7,6 +7,7 @@ import keycloak from './keycloak';
 import { LogoutTimer } from './logoutTimer';
 import HyperAuthRepository from './HyperAuthRepository.js';
 import { ssoType } from './auth';
+import NotFoundPage from '../page/NotFoundPage';
 
 export default function KsignRedirectRoute({ component: Component, ...rest }) {
   const { authStore } = useCoreStores();
@@ -100,8 +101,8 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
                 }
               }
             } catch (e) {
-              history.push('/privatelogin');
               console.error(e);
+              return <Route component={NotFoundPage} />;
             }
           })();
           return null;
@@ -184,8 +185,8 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
                 history.push(`/f/${authStore.user.id}/profile`);
               }
             } catch (e) {
-              window.location.href = `${window.location.protocol}//${mainURL}/domain/${domainName}`;
               console.error(e);
+              return <Route component={NotFoundPage} />;
             }
           })();
           return null;
