@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Observer } from 'mobx-react';
 import { useCoreStores, logEvent, EventBus } from 'teespace-core';
 import { MailSideView, MailStore } from 'teespace-mail-app';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import { Tooltip } from 'antd';
 import {
   ChattingIcon,
@@ -51,6 +52,8 @@ const LeftSide = () => {
     scrollTop(key);
   };
 
+  const themeContext = useContext(ThemeContext);
+
   return (
     <Wrapper>
       <Observer>
@@ -83,7 +86,11 @@ const LeftSide = () => {
                       }}
                     </Observer>
                     {uiStore.tabType === 'f' ? (
-                      <PeopleActiveIcon width={1.5} height={1.5} />
+                      <PeopleActiveIcon
+                        width={1.5}
+                        height={1.5}
+                        color={themeContext.BasicDark}
+                      />
                     ) : (
                       <PeopleIcon width={1.5} height={1.5} />
                     )}
@@ -124,7 +131,11 @@ const LeftSide = () => {
                       }}
                     </Observer>
                     {uiStore.tabType === 's' ? (
-                      <ChattingActiveIcon width={1.5} height={1.5} />
+                      <ChattingActiveIcon
+                        width={1.5}
+                        height={1.5}
+                        color={themeContext.BasicDark}
+                      />
                     ) : (
                       <ChattingIcon width={1.5} height={1.5} />
                     )}
@@ -150,7 +161,11 @@ const LeftSide = () => {
                           : MailStore.unreadTotalCount}
                       </UnreadCount>
                       {uiStore.tabType === 'm' ? (
-                        <MailActiveIcon width={1.5} height={1.5} />
+                        <MailActiveIcon
+                          width={1.5}
+                          height={1.5}
+                          color={themeContext.BasicDark}
+                        />
                       ) : (
                         <MailIcon width={1.5} height={1.5} />
                       )}

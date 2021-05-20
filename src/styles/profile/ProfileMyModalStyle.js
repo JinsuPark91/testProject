@@ -107,7 +107,7 @@ export const LogoutButton = styled(Button)`
 export const UserSpaceArea = styled.div`
   position: relative;
   padding: 0.625rem 0.5rem 1.06rem 0.875rem;
-  background-color: #fbf9f7;
+  background-color: ${props => props.theme.SubStateNormal};
   border-radius: 0 0 0.25rem 0.25rem;
   ${props =>
     !props.isEdit &&
@@ -119,7 +119,7 @@ export const UserSpaceArea = styled.div`
         left: 0;
         right: 0;
         height: 1rem;
-        background-color: #fbf9f7;
+        background-color: ${props.theme.SubStateNormal};
       }
     `};
 `;
@@ -142,11 +142,11 @@ export const DataBox = styled.div`
     background-position: center;
     background-size: 1rem 1rem;
     &:hover {
-      background-color: #f2efec;
+      background-color: ${props => props.theme.StateDark};
     }
     &:active,
     &:hover:active:focus {
-      background-color: #f2efec;
+      background-color: ${props => props.theme.StateDark};
     }
   }
   .btn-convert {
@@ -176,7 +176,7 @@ export const Logo = styled(Avatar)`
   font-weight: 500;
   color: #49423a;
   border-radius: 0.25rem;
-  background-color: #ebe6df;
+  background-color: ${props => props.theme.BeigeBright};
 `;
 export const Info = styled.p`
   overflow: hidden;
@@ -192,7 +192,7 @@ export const Title = styled.strong`
   display: block;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #000;
+  color: ${props => props.theme.TextMain};
   line-height: 1.25rem;
   text-overflow: ellipsis;
 `;
@@ -208,7 +208,7 @@ export const UserSubArea = styled.div`
   display: flex;
   align-items: center;
   padding: 1rem 0.56rem 1rem 1.69rem;
-  color: #000;
+  color: ${props => props.theme.TextMain};
   font-size: 0.81rem;
   font-weight: 500;
   & > img {
@@ -231,11 +231,11 @@ export const LanguageButton = styled.button`
   background-color: transparent;
   margin-left: auto;
   &:hover {
-    background-color: #f2efec;
+    background-color: ${props => props.theme.StateDark};
   }
   &:active,
   &:hover:active:focus {
-    background-color: #f2efec;
+    background-color: ${props => props.theme.StateDark};
   }
 `;
 export const ConvertDropdown = styled.div`
@@ -307,7 +307,7 @@ export const ConvertItem = styled.li`
   display: flex;
   align-items: center;
   padding: 0.3125rem 0.6875rem;
-  color: #000;
+  color: ${props => props.theme.TextMain};
   cursor: pointer;
   .ant-avatar {
     margin-right: 0.375rem;
@@ -353,10 +353,10 @@ export const AddText = styled.span`
 `;
 export const ConvertMove = styled.div`
   padding: 0.63rem 1.13rem;
-  border-top: 1px solid #eeedeb;
+  border-top: 1px solid ${props => props.theme.LineSub};
   font-size: 0.69rem;
   font-weight: 500;
-  color: #00493d;
+  color: ${props => props.theme.GreenVivid};
   cursor: pointer;
   svg {
     margin-right: 0.4rem;
@@ -370,7 +370,7 @@ export const UserSettingArea = styled.div`
   align-items: center;
   justify-content: center;
   padding: 0.625rem 0;
-  border-top: 1px solid #eeedeb;
+  border-top: 1px solid ${props => props.theme.LineSub};
 `;
 export const SettingButton = styled(Button)`
   min-width: 4.375rem;

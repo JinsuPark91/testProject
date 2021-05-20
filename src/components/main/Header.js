@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useContext } from 'react';
 import { useLocalStore, Observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -10,6 +10,7 @@ import {
 } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import {
   Wrapper,
   TitleWrapper,
@@ -54,7 +55,7 @@ const getIconStyle = (isDisabled = false) => {
   return {
     width: 1.38,
     height: 1.38,
-    color: isDisabled ? 'rgba(68, 77, 89, 0.3)' : uiStore.theme.NavyWhiteColor,
+    color: isDisabled ? 'rgba(68, 77, 89, 0.3)' : uiStore.theme.HeaderIcon,
   };
 };
 
@@ -454,6 +455,8 @@ const Header = () => {
   useCommand.InviteMember(handleAddMember);
   useCommand.NewNote(handleNewNote);
 
+  const themeContext = useContext(ThemeContext);
+
   return (
     <Wrapper>
       <TitleWrapper>
@@ -526,7 +529,7 @@ const Header = () => {
                                 <ExportIcon
                                   width={1.25}
                                   height={1.25}
-                                  color={uiStore.theme.NavyWhiteColor}
+                                  color={uiStore.theme.HeaderIcon}
                                 />
                               </IconWrapper>
                             </Tooltip>
@@ -542,7 +545,7 @@ const Header = () => {
                                 <SearchIcon
                                   width={1.25}
                                   height={1.25}
-                                  color={uiStore.theme.NavyWhiteColor}
+                                  color={uiStore.theme.HeaderIcon}
                                 />
                               </IconWrapper>
                             </Tooltip>
@@ -568,7 +571,7 @@ const Header = () => {
                                     <AddAcountIcon
                                       width={1.25}
                                       height={1.25}
-                                      color={uiStore.theme.NavyWhiteColor}
+                                      color={uiStore.theme.HeaderIcon}
                                     />
                                   </IconWrapper>
                                 </Tooltip>
@@ -623,6 +626,7 @@ const Header = () => {
                     <AppIcon
                       key={name}
                       isActive={isActive(name)}
+                      color={themeContext.HeaderIcon}
                       appName={name}
                       i18n={tooltip}
                       onClick={handleAppClick}

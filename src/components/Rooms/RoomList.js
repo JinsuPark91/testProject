@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer, useLocalStore } from 'mobx-react';
-import styled, { css } from 'styled-components';
+import styled, { css, ThemeContext } from 'styled-components';
 import {
   useCoreStores,
   Toast,
@@ -224,6 +224,8 @@ const RoomList = () => {
 
   const hasMemberCreatePermission = authStore.hasPermission('members', 'C');
 
+  const themeContext = useContext(ThemeContext);
+
   useCommand.NewRoom(handleCreateRoom);
   useCommand.Mute();
   useCommand.OrgChart();
@@ -240,7 +242,7 @@ const RoomList = () => {
               onCancel={handleRoomMemeberModalCancel}
               width="17.5rem"
               top="calc(50% - 15rem)"
-              left="19.935rem"
+              left="16.81rem"
               isEdit={store.roomMemberAttr.isEdit}
             />
           );
@@ -263,7 +265,7 @@ const RoomList = () => {
                 });
               }}
               onClose={handleCloseProfileInfoModal}
-              position={{ left: '19.935rem' }}
+              position={{ left: '16.81rem' }}
             />
           ) : null;
         }}
@@ -358,7 +360,11 @@ const RoomList = () => {
             <AddRoomIcon
               width={1.38}
               height={1.38}
-              color={hasMemberCreatePermission ? '#232D3B' : '#999'}
+              color={
+                hasMemberCreatePermission
+                  ? themeContext.IconNormal2
+                  : themeContext.IconDisabled2
+              }
             />
           </AddRoomIconWrapper>
         </Tooltip>
@@ -390,7 +396,7 @@ const RoomList = () => {
       <Observer>
         {() => {
           return configStore.isActivateComponent('Platform', 'LNB:Logo') ? (
-            <ButtomWrapper
+            <ButtonWrapper
               isScrollEnd={store.isScrollEnd}
               // onClick={() => {
               //   // EventBus.dispatch('Platform:inviteUser');
@@ -400,8 +406,8 @@ const RoomList = () => {
               //   });
               // }}
             >
-              <WaplLogo />
-            </ButtomWrapper>
+              <WaplLogo textColor={themeContext.BasicDark} />
+            </ButtonWrapper>
           ) : null;
         }}
       </Observer>
@@ -425,8 +431,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  // background: ${props => props.theme.bg_color};
-  background: #ffffff;
+  background-color: ${props => props.theme.StateNormal};
   overflow-y: auto;
   height: 100%;
 `;
@@ -452,22 +457,21 @@ const AddRoomIconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  background-color: #fff;
-  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  background-color: ${props => props.theme.StateNormal};
+  box-shadow: 0 0 0.31rem 0 ${props => props.theme.ModalShadow};
   pointer-events: ${({ $isDisable }) => ($isDisable ? 'none' : '')};
+  cursor: ${({ $isDisable }) => ($isDisable ? '' : 'pointer')};
 
   &:hover {
-    background-color: #ebe6df;
-    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    background-color: ${props => props.theme.SubStateBright};
   }
 
   &:active {
-    background-color: #ddd7cd;
-    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    background-color: ${props => props.theme.SubStateDark};
   }
 `;
 
-const ButtomWrapper = styled.div`
+const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -476,7 +480,8 @@ const ButtomWrapper = styled.div`
     return (
       !isScrollEnd &&
       css`
-        box-shadow: 0 -0.8125rem 0.75rem -0.1875rem #fff;
+        box-shadow: 0 -0.8125rem 0.75rem -0.1875rem
+          ${props => props.theme.StateNormal};
       `
     );
   }}
@@ -492,4 +497,5 @@ export const FriendSearch = styled(WaplSearch)`
     padding: 0;
   }
 `;
+
 export default RoomList;

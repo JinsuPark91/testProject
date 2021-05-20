@@ -7,9 +7,8 @@ export const Wrapper = styled.div`
   padding: 0 0.81rem 0 0.63rem;
   align-items: center;
   box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  border-bottom: 1px solid #ddd9d4;
-  background-color: ${props => props.theme.StateBeigeColor};
+  border-bottom: 1px solid ${props => props.theme.LineMain};
+  background-color: ${props => props.theme.StateNormal};
 `;
 
 export const TitleWrapper = styled.div`
@@ -79,7 +78,7 @@ export const AppIconInner = styled.button`
   cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
 
   &:hover {
-    background-color: #ebe6df;
+    background-color: ${props => props.theme.StateLight};
   }
 `;
 
@@ -90,18 +89,19 @@ export const UserMenu = styled.div`
 export const UserCountText = styled.div`
   margin-left: 0.25rem;
   font-size: 0.875rem;
-  opacity: 0.5;
+  color: #aaa;
 `;
 
 export const TitleText = styled.div`
   font-size: 0.875rem;
+  color: ${props => props.theme.TextMain};
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 `;
 
 export const IconWrapper = styled.button`
-  display: flex;
+  display: inline-flex;
   width: 2rem;
   height: 2rem;
   align-items: center;
@@ -114,7 +114,7 @@ export const IconWrapper = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #eae6e0;
+    background-color: ${props => props.theme.StateLight};
   }
 `;
 
