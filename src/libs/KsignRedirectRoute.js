@@ -3,13 +3,12 @@ import { Route, useHistory } from 'react-router-dom';
 import { useCoreStores, API } from 'teespace-core';
 import Cookies from 'js-cookie';
 import wwms from './wwms';
-import { useKeycloak } from '@react-keycloak/web';
+import keycloak from './keycloak';
 import { LogoutTimer } from './logoutTimer';
 import HyperAuthRepository from './HyperAuthRepository.js';
 import { ssoType } from './auth';
 
 export default function KsignRedirectRoute({ component: Component, ...rest }) {
-  const { keycloak } = useKeycloak();
   const { authStore } = useCoreStores();
   const history = useHistory();
   const getNibId = Cookies.get('NIBID');
@@ -120,7 +119,7 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
         '.',
       );
       loginInfo = {
-        id: keycloak.tokenParsed.email,
+        id: keycloak.tokenParsed.preferred_username,
         deviceType: 'PC',
         domainUrl: domainName,
         isLocal: 'local',
@@ -142,7 +141,8 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
             try {
               if (
                 authStore.user?.loginId &&
-                authStore.user?.loginId !== keycloak.tokenParsed?.email
+                authStore.user?.loginId !==
+                  keycloak.tokenParsed?.preferred_username
               ) {
                 await authStore.logout().then(() => {
                   Cookies.remove('ACCESS_TOKEN');
@@ -162,12 +162,6 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
                         domain: `.${window.location.host}`,
                       },
                 );
-                if (process.env.REACT_APP_ENV !== 'local') {
-                  if (!authStore.sessionInfo.isTermAgree) {
-                    window.location.href = `${window.location.protocol}//${mainURL}/first-login`;
-                    return null;
-                  }
-                }
               }
 
               if (process.env.REACT_APP_ENV !== 'local') {

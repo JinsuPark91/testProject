@@ -2,13 +2,12 @@ import React, { useEffect } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { useCoreStores } from 'teespace-core';
 import wwms from './wwms';
-import { useKeycloak } from '@react-keycloak/web';
+import keycloak from './keycloak';
 import Cookies from 'js-cookie';
 
 export default function PrivateKsignRoute({ component, ...rest }) {
   const { authStore } = useCoreStores();
   const getNibId = Cookies.get('NIBID');
-  const { keycloak } = useKeycloak();
 
   useEffect(() => {
     // NOTE. 사용자 인증이 된 상태에서 웹소켓 연결을 시도
@@ -43,7 +42,8 @@ export default function PrivateKsignRoute({ component, ...rest }) {
         render={({ location }) => {
           return authStore.isAuthenticated &&
             keycloak.authenticated &&
-            keycloak.tokenParsed.email === authStore.user?.loginId ? (
+            keycloak.tokenParsed.preferred_username ===
+              authStore.user?.loginId ? (
             React.createElement(component)
           ) : (
             <Redirect

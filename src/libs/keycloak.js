@@ -16,7 +16,11 @@ export const keycloakConfig = {
   // realm: 'demo', // keycloak admin에서 생성한 realm 이름
   // clientId: 'vanila', // keycloak admin에서 해당 app과 연결한 clientId
   // admin용
-  realm: 'tmax',
+  realm:
+    window.env.REACT_APP_HYPERAUTH_REALM === '%HYPERAUTH_REALM%'
+      ? process.env.REACT_APP_HYPERAUTH_REALM
+      : window.env.REACT_APP_HYPERAUTH_REALM ||
+        process.env.REACT_APP_HYPERAUTH_REALM,
   // clientId: 'account',
 };
 

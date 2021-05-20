@@ -5,6 +5,7 @@ REACT_APP_HSM_URL=http://222.122.67.70/hsm/superadmin-api
 REACT_APP_WEBSOCKET_URL=wss://tmp-g1ei.teespace.com/mqtt
 REACT_APP_HYPERMEETING_URL=https://dev.hypermeeting.biz
 REACT_APP_HYPERAUTH_URL=https://demoauth.tmaxoneaccount.com/auth
+REACT_APP_HYPERAUTH_REALM=tmax
 REACT_APP_HYPERAUTH_CLIENT_ID=hyperspace_dev
 REACT_APP_ENV=local
 REACT_APP_USE_PROXY=yes

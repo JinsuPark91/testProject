@@ -21,7 +21,8 @@ export default function PrivateRoute({ component, ...rest }) {
       render={({ location }) => {
         return authStore.isAuthenticated &&
           keycloak.authenticated &&
-          keycloak.tokenParsed.email === authStore.user?.loginId ? (
+          keycloak.tokenParsed.preferred_username ===
+            authStore.user?.loginId ? (
           React.createElement(component)
         ) : (
           <Redirect
