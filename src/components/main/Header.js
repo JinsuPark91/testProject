@@ -449,7 +449,7 @@ const Header = () => {
 
   const handleNewNote = useCallback(() => {
     openSubApp('note');
-    // Eventbus.~~~
+    EventBus.dispatch('onSlashCreateNote');
   }, [openSubApp]);
 
   useCommand.InviteMember(handleAddMember);
