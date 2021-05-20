@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import { Observer } from 'mobx-react';
 import { Tabs } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -37,22 +37,26 @@ const RoomSetting = ({ roomId }) => {
     store.changeTab(key);
   };
 
+  const themeContext = useContext(ThemeContext);
+
   return (
     <Wrapper>
-      <Header style={{ padding: '0 0.89rem' }}>
+      <Header>
         <Centered>
           <IconWrapper onClick={handleClose}>
-            <ArrowLeftIcon width={1} height={1} color="#000000" />
+            <ArrowLeftIcon
+              width={1}
+              height={1}
+              color={themeContext.IconNormal2}
+            />
           </IconWrapper>
-          <TitleText style={{ marginLeft: '0.5rem' }}>
-            {t('CM_ROOM_SETTING')}
-          </TitleText>
+          <TitleText>{t('CM_ROOM_SETTING')}</TitleText>
         </Centered>
         <Centered
           style={{ borderLeft: '1px solid #E3E7EB', paddingLeft: '0.7rem' }}
         >
           <IconWrapper onClick={handleClose}>
-            <CancelIcon width={1} height={1} color="#75757F" />
+            <CancelIcon width={1} height={1} color={themeContext.IconNormal} />
           </IconWrapper>
         </Centered>
       </Header>
@@ -105,6 +109,7 @@ const Header = styled.div`
   display: flex;
   flex-shrink: 0;
   height: 2.63rem;
+  padding: 0 0.89rem;
   align-items: center;
   justify-content: space-between;
 `;
@@ -117,11 +122,12 @@ const IconWrapper = styled.div`
   padding: 0.25rem;
   cursor: pointer;
   &:hover {
-    background: #eae6e0;
+    background: ${props => props.theme.StateLight};
   }
 `;
 
 const TitleText = styled.span`
+  margin-left: 0.5rem;
   font-size: 0.88rem;
   font-weight: bold;
   color: ${props => props.theme.TextMain};
