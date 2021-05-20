@@ -26,6 +26,7 @@ import FaviconChanger from '../components/common/FaviconChanger';
 import WindowManager from '../components/common/WindowManager';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 import { handleProfileMenuClick } from '../utils/ProfileUtil';
+import { isDarkMode } from '../utils/GeneralUtil';
 
 const MainPage = () => {
   const { t, i18n } = useTranslation();
@@ -166,6 +167,11 @@ const MainPage = () => {
         } else {
           i18n.changeLanguage(userStore.myProfile.language);
         }
+
+        // 기본 테마 설정
+        const platformTheme = localStorage.getItem('PlatformTheme');
+        if (platformTheme) uiStore.setTheme(platformTheme);
+        else if (isDarkMode()) uiStore.setTheme('dark');
 
         // 스페이스 화면에서 1:1 Talk나 1:1 Meeting을 선택한 경우
         if (resourceType === 'f' && profileAction) {
