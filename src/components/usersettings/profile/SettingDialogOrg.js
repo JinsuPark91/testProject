@@ -23,10 +23,7 @@ const SettingDialogOrg = () => {
       <Name>{t('CM_SETTING_CHANGE_INFO_COMPANY_04')}</Name>
       <Data>
         <TextArea>
-          <p>
-            {myProfile.orgName || '-'}/ {myProfile.position || '-'}/{' '}
-            {myProfile.job || '-'}
-          </p>
+          <p>{myProfile.getFullCompanyJob(true)}</p>
         </TextArea>
         <ButtonArea>
           <LockIconBox>
@@ -49,4 +46,4 @@ const SettingDialogOrg = () => {
   );
 };
 
-export default SettingDialogOrg;
+export default React.memo(SettingDialogOrg);

@@ -1,19 +1,26 @@
 import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { Observer } from 'mobx-react';
 import { Tabs } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeftIcon, CancelIcon } from '../Icons';
-import { RoomSettingStore as store } from '../../stores/RoomSettingStore';
+import { useStores } from '../../stores';
 import MemberSettingPage from './MemberSettingPage';
 import CommonSettingPage from './CommonSettingPage';
 
 const { TabPane } = Tabs;
 
 const RoomSetting = ({ roomId }) => {
+  const { roomSettingStore: store } = useStores();
   const { t } = useTranslation();
   const history = useHistory();
+  const location = useLocation();
+
+  useEffect(() => {
+    store.tabKey = location?.state?.mainTab || 'common';
+    store.subTabKey = location?.state?.subTab || 'member';
+  }, [location]);
 
   useEffect(() => {
     return () => {
@@ -61,7 +68,16 @@ const RoomSetting = ({ roomId }) => {
                 <CommonSettingPage roomId={roomId} />
               </TabPane>
 
-              <TabPane key="member" tab={t('CM_MEMBER_MANAGEMENT')}>
+              {/* AlarmBadge 추가 시 알림 뱃지 노출 */}
+              <TabPane
+                key="member"
+                tab={
+                  <>
+                    {t('CM_MEMBER_MANAGEMENT')}
+                    {/* <AlarmBadge /> */}
+                  </>
+                }
+              >
                 <MemberSettingPage roomId={roomId} />
               </TabPane>
             </StyledTabs>
@@ -106,9 +122,9 @@ const IconWrapper = styled.div`
 `;
 
 const TitleText = styled.span`
-  color: #000;
   font-size: 0.88rem;
   font-weight: bold;
+  color: ${props => props.theme.TextMain};
 `;
 
 const Content = styled.div`
@@ -120,27 +136,41 @@ const Content = styled.div`
 const StyledTabs = styled(Tabs)`
   width: 100%;
 
-  & .ant-tabs-content-holder {
+  .ant-tabs-content-holder {
     height: 100%;
   }
 
-  & .ant-tabs.default {
+  .ant-tabs.default {
     .ant-tabs-nav {
       height: 2.88rem;
       margin-bottom: 0;
     }
   }
 
-  & .ant-tabs-tab {
+  .ant-tabs-tab {
     flex: none !important;
     width: 7rem;
   }
 
-  & .ant-tabs-nav {
-    margin: 0 0 0.25rem 0;
+  .ant-tabs-tab-btn {
+    position: relative;
   }
 
-  & .ant-tabs-content {
+  .ant-tabs-nav {
+    margin: 0;
+  }
+
+  .ant-tabs-content {
     overflow-y: auto;
   }
+`;
+
+const AlarmBadge = styled.span`
+  position: absolute;
+  top: -1px;
+  right: -0.5rem;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background-color: #dc4547;
 `;

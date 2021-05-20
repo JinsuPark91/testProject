@@ -1,21 +1,21 @@
-import React from 'react';
-import UIStore from './UIStore';
+/* eslint-disable import/prefer-default-export */
 
-export const RootStore = {
-  uiStore: new UIStore(),
+import uiStore from './uiStore';
+import roomSettingStore from './roomSettingStore';
+import historyStore from './historyStore';
+import friendStore from './friendStore';
+import handlerStore from './handlerStore';
+
+const rootStore = {
+  uiStore,
+  roomSettingStore,
+  historyStore,
+  friendStore,
+  handlerStore,
 };
 
-export const StoreContext = React.createContext(RootStore);
-
-export const StoreProvider = ({ children, store }) => {
-  return (
-    <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
-  );
+const useStores = () => {
+  return rootStore;
 };
 
-export const useStore = () => React.useContext(StoreContext);
-
-export const withStore = Component => props => {
-  // eslint-disable-next-line react/jsx-props-no-spreading
-  return <Component {...props} store={useStore()} />;
-};
+export { useStores, rootStore };

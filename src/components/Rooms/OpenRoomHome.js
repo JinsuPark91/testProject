@@ -13,7 +13,7 @@ import NextArrowIcon from '../../assets/arrow_right_line.svg';
 import PrevArrowIcon from '../../assets/arrow_left_line.svg';
 import { SettingIcon, OpenChatIcon, AddIcon } from '../Icons';
 import CreatePublicRoomDialog from '../dialogs/CreatePublicRoomDialog';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 import Search from '../common/Search';
 
 const RoomButton = ({ roomInfo, onClick, disabled }) => {
@@ -56,6 +56,7 @@ const OpenRoomItem = ({ roomInfo, photo, onClick, onSettingClick }) => {
 
 function OpenRoomHome({ visible, onCancel }) {
   const { t } = useTranslation();
+  const { uiStore } = useStores();
 
   const initialStates = {
     createModalVisible: false,
@@ -211,7 +212,7 @@ function OpenRoomHome({ visible, onCancel }) {
     const { roomId } = await roomStore.createRoom(data);
 
     if (isStartMeeting) {
-      PlatformUIStore.openWindow({
+      uiStore.openWindow({
         id: roomId,
         type: 'meeting',
         name: null,

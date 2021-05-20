@@ -20,12 +20,11 @@ export const Wrapper = styled.div`
 export const FriendItemWrapper = styled.div`
   /* 조직도 조회, 추천친구 스타일 */
   display: flex;
+  margin: 0 0.25rem;
   white-space: nowrap;
   text-overflow: ellipsis;
-  cursor: pointer;
-
-  margin: 0 0.25rem;
   align-items: center;
+  cursor: pointer;
 
   /* icon */
   .ant-btn-circle {
@@ -62,12 +61,12 @@ export const FriendItemWrapper = styled.div`
   ${props =>
     props.isActive
       ? css`
-          background-color: #f2efec;
+          background-color: ${props.theme.StateDark};
           border-radius: 0.81rem;
         `
       : css`
           &:hover {
-            background-color: #faf8f7;
+            background-color: ${props.theme.StateBright};
             border-radius: 0.81rem;
           }
         `}
@@ -107,6 +106,7 @@ export const TitleForName = styled.span`
   font-size: 0.81rem;
   font-weight: 500;
   line-height: 1.19rem;
+  color: ${props => props.theme.TextMain};
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -166,7 +166,8 @@ export const MoreIconWrapper = styled.div`
   width: 1.5rem;
   height: 1.5rem;
   border-radius: 0.25rem;
+  color: #7b7671;
   &:hover {
-    background-color: #eae6e0;
+    background-color: ${props => props.theme.StateLight};
   }
 `;

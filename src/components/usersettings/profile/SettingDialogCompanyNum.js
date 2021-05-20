@@ -76,4 +76,4 @@ const SettingDialogCompanyNum = () => {
   );
 };
 
-export default SettingDialogCompanyNum;
+export default React.memo(SettingDialogCompanyNum);

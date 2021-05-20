@@ -76,4 +76,4 @@ const SettingDialogPhone = () => {
   );
 };
 
-export default SettingDialogPhone;
+export default React.memo(SettingDialogPhone);

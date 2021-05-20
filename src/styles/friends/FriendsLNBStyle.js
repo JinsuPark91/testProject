@@ -5,7 +5,7 @@ export const FriendsLnbWrapper = styled(Layout)`
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: #ffffff;
+  background-color: ${props => props.theme.StateNormal};
 `;
 
 const { Footer } = Layout;
@@ -16,8 +16,10 @@ export const FooterWrapper = styled(Footer)`
   justify-content: space-between;
   margin-top: auto;
   padding: 0.69rem 0.94rem;
-  background-color: #fff;
+  background-color: ${props => props.theme.StateNormal};
   box-shadow: ${props =>
-    props.shadow ? '0 -0.8125rem 0.75rem -0.1875rem #fff' : ''};
+    props.shadow
+      ? `0 -0.8125rem 0.75rem -0.1875rem ${props.theme.StateNormal};`
+      : ''};
   z-index: 5;
 `;

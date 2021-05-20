@@ -1,24 +1,22 @@
-import PlatformUIStore from '../stores/PlatformUIStore';
+import { rootStore } from '../stores';
+
+const { uiStore } = rootStore;
 
 let intervalId = null;
 const TIME = 1000;
 
 const check = () => {
-  const talkWindows = PlatformUIStore.getWindows('talk');
-  const meetingWindows = PlatformUIStore.getWindows('meeting');
+  const talkWindows = uiStore.getWindows('talk');
+  const meetingWindows = uiStore.getWindows('meeting');
 
   // 유효하지 않은 윈도우 검사하여 끄기.
   talkWindows
     .filter(windowInfo => windowInfo.handler && windowInfo.handler.closed)
-    .forEach(windowInfo =>
-      PlatformUIStore.closeWindow(windowInfo.type, windowInfo.id),
-    );
+    .forEach(windowInfo => uiStore.closeWindow(windowInfo.type, windowInfo.id));
 
   meetingWindows
     .filter(windowInfo => windowInfo.handler && windowInfo.handler.closed)
-    .forEach(windowInfo =>
-      PlatformUIStore.closeWindow(windowInfo.type, windowInfo.id),
-    );
+    .forEach(windowInfo => uiStore.closeWindow(windowInfo.type, windowInfo.id));
 };
 
 const clear = () => {

@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Observer } from 'mobx-react';
-import styled, { css } from 'styled-components';
+import { Observer, useLocalStore } from 'mobx-react';
+import styled, { css, ThemeContext } from 'styled-components';
 import {
   useCoreStores,
   Toast,
@@ -16,194 +16,179 @@ import { useTranslation } from 'react-i18next';
 import { throttle } from 'lodash';
 import { WaplLogo, AddRoomIcon } from '../Icons';
 import RoomItem from './RoomItem';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
+import * as useCommand from '../../hook/Command';
 
-function RoomList() {
+const RoomList = () => {
+  const containerRef = useRef(null);
   const { t, i18n } = useTranslation();
   const history = useHistory();
-  const [keyword, setKeyword] = useState('');
-  const [targetRoom, setTargetRoom] = useState(null);
-  const [exitTargetRoom, setExitTargetRoom] = useState(null);
-  const [isRoomMemberModalVisible, setIsRoomMemberModalVisible] = useState(
-    false,
-  );
-  const [isExitAdminModalVisible, setIsExitAdminModalVisible] = useState(false);
-  const [isExitNormalModalVisible, setIsExitNormalModalVisible] = useState(
-    false,
-  );
-  const [roomMemberAttr, setRoomMemberAttr] = useState({});
   const { roomStore, userStore, configStore, authStore } = useCoreStores();
-  const [isProfileInfoModalVisible, setIsProfileInfoModalVisible] = useState(
-    false,
-  );
-  const [targetUserId, setTargetUserId] = useState(null);
+  const { uiStore, historyStore } = useStores();
+  const store = useLocalStore(() => ({
+    keyword: '',
+    targetRoom: null,
+    exitTargetRoom: null,
+    targetUserId: null,
+    roomMemberAttr: {},
+    isScrollEnd: false,
+    toast: {
+      visible: false,
+      text: '',
+    },
+    visible: {
+      profileModal: false,
+      roomMemberModal: false,
+      exitAdminModal: false,
+      exitNormalModal: false,
+      selectRoomTypeModal: false,
+    },
+  }));
 
-  const [visible, setVisible] = useState({
-    selectRoomType: false,
-  });
-  const [toastText, setToastText] = useState('');
-  const [isToastVisible, setIsToastVisible] = useState(false);
-  const [isScrollEnd, setIsScrollEnd] = useState(false);
-
-  const containerRef = useRef(null);
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTo(0, 0);
     }
-  }, [PlatformUIStore.tabType]);
-
-  // LNB lastMessage i18n 임시
-  useEffect(() => {
-    EventBus.dispatch('Platform:initLNB');
-  }, [i18n.language]);
+  }, [uiStore.tabType]);
 
   const handleScroll = throttle(() => {
     const container = containerRef.current;
     const { scrollTop, clientHeight, scrollHeight } = container;
 
     if (scrollTop + clientHeight === scrollHeight) {
-      setIsScrollEnd(true);
+      store.isScrollEnd = true;
     } else {
-      setIsScrollEnd(false);
+      store.isScrollEnd = false;
     }
   }, 200);
 
-  const handleCreateRoom = () => {
-    setVisible({ ...visible, selectRoomType: true });
+  useEffect(() => {
+    EventBus.dispatch('Platform:initLNB');
+  }, [i18n.language]);
+
+  const handleCreateRoom = useCallback(() => {
+    store.visible.selectRoomTypeModal = true;
+    EventBus.dispatch('Note:onEditClose');
     logEvent('main', 'clickRoomCreateBtn');
+  }, [store]);
+
+  const handleSelectRoom = async roomInfo => {
+    const isSameRoom =
+      uiStore.resourceType === 's' && uiStore.resourceId === roomInfo.id;
+    if (isSameRoom) return;
+
+    const { lastUrl } = await historyStore.getHistory({ roomId: roomInfo.id });
+    if (lastUrl) {
+      history.push(lastUrl);
+    } else {
+      history.push(`/s/${roomInfo.id}/talk`);
+    }
   };
 
-  const handleSelectRoom = useCallback(
-    roomInfo => {
-      (async () => {
-        // NOTE : 같은 방을 누르면 history 부르지 않는다.
-        const isSameRoom =
-          PlatformUIStore.resourceType === 's' &&
-          PlatformUIStore.resourceId === roomInfo.id;
-        if (isSameRoom) return Promise.resolve();
-
-        try {
-          const routingHistory = (
-            await userStore.getRoutingHistory({
-              userId: userStore.myProfile.id,
-              roomId: roomInfo.id,
-            })
-          )?.[0];
-
-          history.push(routingHistory?.lastUrl || `/s/${roomInfo.id}/talk`);
-        } catch (err) {
-          console.log('[Platform] Get routing history 에러 : ', err);
-          history.push(`/s/${roomInfo.id}/talk`);
-        }
-      })();
-    },
-    [history, userStore],
-  );
-
   const handleChange = value => {
-    setKeyword(value);
+    store.keyword = value;
   };
 
   const handleClear = () => {
-    setKeyword('');
+    store.keyword = '';
   };
 
   const handleSelectRoomTypeCancel = () => {
-    setVisible(false);
+    store.visible.selectRoomTypeModal = false;
   };
 
   const handleRoomMemeberModalCancel = () => {
-    setIsRoomMemberModalVisible(false);
+    store.visible.roomMemberModal = false;
   };
 
-  const handleMenuClick = useCallback(roomInfo => {
-    setTargetRoom(roomInfo);
-  }, []);
+  const handleMenuClick = roomInfo => {
+    store.targetRoom = roomInfo;
+  };
 
-  const handleClickMenuItem = useCallback(({ key, item, value }) => {
-    switch (key) {
-      case 'profile':
-        setTargetUserId(item);
-        setIsProfileInfoModalVisible(true);
-        break;
-      case 'member':
-      case 'changeName':
-        setRoomMemberAttr(value);
-        setTargetRoom(item);
-        setIsRoomMemberModalVisible(true);
-        break;
-      case 'exitAdmin': // 룸 관리자가 '나가기' 버튼 누른 경우
-        setExitTargetRoom(item);
-        setIsExitAdminModalVisible(true);
-        break;
-      case 'exitNormal': // 일반 사용자가 '나가기' 버튼 누른 경우
-        setExitTargetRoom(item);
-        setIsExitNormalModalVisible(true);
-        break;
-      default:
-    }
-  }, []);
-
-  const handleClickRoomPhoto = useCallback(
-    roomInfo => {
-      // NOTE. 마이룸인 경우 나의 프로파일 정보를,
-      //  1:1 방의 경우 상대 유저의 프로파일 정보를 보여줌.
-      const isDMRoom = roomInfo.isDirectMsg;
-      const isMyRoom = roomInfo.type === 'WKS0001';
-
-      if (isMyRoom) {
-        setTargetUserId(userStore.myProfile.id);
-        setIsProfileInfoModalVisible(true);
-      } else if (isDMRoom) {
-        const found = roomInfo.memberIdListString
-          .split(',')
-          .find(userId => userId !== userStore.myProfile.id);
-
-        setTargetUserId(found);
-        setIsProfileInfoModalVisible(true);
-      } else {
-        setTargetRoom(roomInfo);
-        setRoomMemberAttr({ isEdit: false });
-        setIsRoomMemberModalVisible(true);
+  const handleClickMenuItem = useCallback(
+    ({ key, item, value }) => {
+      switch (key) {
+        case 'profile':
+          store.targetUserId = item;
+          store.visible.profileModal = true;
+          break;
+        case 'member':
+        case 'changeName':
+          store.roomMemberAttr = value;
+          store.targetRoom = item;
+          store.visible.roomMemberModal = true;
+          break;
+        case 'exitAdmin': // 룸 관리자가 '나가기' 버튼 누른 경우
+          store.exitTargetRoom = item;
+          store.visible.exitAdminModal = true;
+          break;
+        case 'exitNormal': // 일반 사용자가 '나가기' 버튼 누른 경우
+          store.exitTargetRoom = item;
+          store.visible.exitNormalModal = true;
+          break;
+        default:
       }
     },
-    [userStore],
+    [store],
   );
 
-  const handleCloseProfileInfoModal = useCallback(() => {
-    setIsProfileInfoModalVisible(false);
-  }, []);
+  const handleClickRoomPhoto = roomInfo => {
+    // NOTE. 마이룸인 경우 나의 프로파일 정보를,
+    //  1:1 방의 경우 상대 유저의 프로파일 정보를 보여줌.
+    const isDMRoom = roomInfo.isDirectMsg;
+    const isMyRoom = roomInfo.type === 'WKS0001';
 
-  const handleCloseExitAdminModal = useCallback(() => {
-    setIsExitAdminModalVisible(false);
-  }, []);
+    if (isMyRoom) {
+      store.targetUserId = userStore.myProfile.id;
+      store.visible.profileModal = true;
+    } else if (isDMRoom) {
+      const found = roomInfo.memberIdListString
+        .split(',')
+        .find(userId => userId !== userStore.myProfile.id);
 
-  const handleConfirmExitAdminModal = useCallback(() => {
-    if (exitTargetRoom === null) return;
+      store.targetUserId = found;
+      store.visible.profileModal = true;
+    } else {
+      store.targetRoom = roomInfo;
+      store.roomMemberAttr = { isEdit: false };
+      store.visible.roomMemberModal = true;
+    }
+  };
 
-    history.push(`/s/${exitTargetRoom.id}/setting`);
-    setIsExitAdminModalVisible(false);
-  }, [exitTargetRoom]);
+  const handleCloseProfileInfoModal = () => {
+    store.visible.profileModal = false;
+  };
 
-  const handleCloseExitNormalModal = useCallback(() => {
-    setIsExitNormalModalVisible(false);
-  }, []);
+  const handleCloseExitAdminModal = () => {
+    store.visible.exitAdminModal = false;
+  };
 
-  const handleConfirmExitNormalModal = useCallback(async () => {
-    if (exitTargetRoom === null) return;
+  const handleConfirmExitAdminModal = () => {
+    if (store.exitTargetRoom === null) return;
+
+    history.push(`/s/${store.exitTargetRoom.id}/setting`);
+    store.visible.exitAdminModal = false;
+  };
+
+  const handleCloseExitNormalModal = () => {
+    store.visible.exitNormalModal = false;
+  };
+
+  const handleConfirmExitNormalModal = async () => {
+    if (store.exitTargetRoom === null) return;
 
     try {
       const result = await roomStore.deleteRoomMember({
         userId: userStore.myProfile.id,
-        roomId: exitTargetRoom.id,
+        roomId: store.exitTargetRoom.id,
       });
 
       if (result) {
         if (
-          PlatformUIStore.resourceType === 's' &&
-          PlatformUIStore.resourceId === exitTargetRoom.id
+          uiStore.resourceType === 's' &&
+          uiStore.resourceId === store.exitTargetRoom.id
         ) {
           const firstRoomId = roomStore.getRoomArray()?.[0].id;
           if (firstRoomId) history.push(`/s/${firstRoomId}/talk`);
@@ -212,10 +197,10 @@ function RoomList() {
     } catch (e1) {
       console.log('DELETE ROOM MEMBER ERROR : ', e1);
     } finally {
-      setExitTargetRoom(null);
-      setIsExitNormalModalVisible(false);
+      store.exitTargetRoom = null;
+      store.visible.exitNormalModal = false;
     }
-  }, [exitTargetRoom, userStore, roomStore]);
+  };
 
   const getRoomName = roomInfo => {
     const isMyRoom = roomInfo.type === 'WKS0001';
@@ -228,14 +213,23 @@ function RoomList() {
   // TODO 멤버 이름으로 검색은 아직 안 됨. 이를 위해서는 모든 룸에 대한 멤버 목록을 가져와야함.
   const roomFilter = roomInfo =>
     roomInfo.isVisible &&
-    (!keyword ||
-      getRoomName(roomInfo)?.toLowerCase()?.includes(keyword.toLowerCase()));
+    (!store.keyword ||
+      getRoomName(roomInfo)
+        ?.toLowerCase()
+        ?.includes(store.keyword.toLowerCase()));
 
   const handleToastClose = () => {
-    setIsToastVisible(false);
+    store.toast.visible = false;
   };
 
   const hasMemberCreatePermission = authStore.hasPermission('members', 'C');
+
+  const themeContext = useContext(ThemeContext);
+
+  useCommand.NewRoom(handleCreateRoom);
+  useCommand.Mute();
+  useCommand.OrgChart();
+  useCommand.MyRoom();
 
   return (
     <Wrapper>
@@ -243,25 +237,26 @@ function RoomList() {
         {() => {
           return (
             <RoomInquiryModal
-              roomId={targetRoom?.id}
-              visible={isRoomMemberModalVisible}
+              roomId={store.targetRoom?.id}
+              visible={store.visible.roomMemberModal}
               onCancel={handleRoomMemeberModalCancel}
               width="17.5rem"
               top="calc(50% - 15rem)"
               left="16.81rem"
-              isEdit={roomMemberAttr.isEdit}
+              isEdit={store.roomMemberAttr.isEdit}
             />
           );
         }}
       </Observer>
+
       <Observer>
         {() => {
-          return targetUserId ? (
+          return store.targetUserId ? (
             <ProfileInfoModal
-              userId={targetUserId}
-              visible={isProfileInfoModalVisible}
+              userId={store.targetUserId}
+              visible={store.visible.profileModal}
               onClickMeeting={_roomId => {
-                PlatformUIStore.openWindow({
+                uiStore.openWindow({
                   id: _roomId,
                   type: 'meeting',
                   name: null,
@@ -276,58 +271,70 @@ function RoomList() {
         }}
       </Observer>
 
-      <Message
-        visible={isExitNormalModalVisible}
-        title={t('CM_Q_LEAVE_ROOM')}
-        subtitle={t('CM_DEL_ROOM_GUIDE')}
-        type="error"
-        btns={[
-          {
-            text: t('CM_LEAVE'),
-            type: 'solid',
-            onClick: handleConfirmExitNormalModal,
-          },
-          {
-            text: t('CM_CANCEL'),
-            type: 'outlined',
-            onClick: handleCloseExitNormalModal,
-          },
-        ]}
-      />
+      <Observer>
+        {() => (
+          <Message
+            visible={store.visible.exitNormalModal}
+            title={t('CM_Q_LEAVE_ROOM')}
+            subtitle={t('CM_DEL_ROOM_GUIDE')}
+            type="error"
+            btns={[
+              {
+                text: t('CM_LEAVE'),
+                type: 'solid',
+                onClick: handleConfirmExitNormalModal,
+              },
+              {
+                text: t('CM_CANCEL'),
+                type: 'outlined',
+                onClick: handleCloseExitNormalModal,
+              },
+            ]}
+          />
+        )}
+      </Observer>
 
-      <Message
-        visible={isExitAdminModalVisible}
-        title={t('CM_DEL_ROOM_GROUP_05')}
-        subtitle={t('CM_DEL_ROOM_GROUP_06')}
-        type="warning"
-        btns={[
-          {
-            text: t('CM_DEL_ROOM_GROUP_07'),
-            type: 'solid',
-            onClick: handleConfirmExitAdminModal,
-          },
-          {
-            text: t('CM_CANCEL'),
-            type: 'outlined',
-            onClick: handleCloseExitAdminModal,
-          },
-        ]}
-      />
+      <Observer>
+        {() => (
+          <Message
+            visible={store.visible.exitAdminModal}
+            title={t('CM_DEL_ROOM_GROUP_05')}
+            subtitle={t('CM_DEL_ROOM_GROUP_06')}
+            type="warning"
+            btns={[
+              {
+                text: t('CM_DEL_ROOM_GROUP_07'),
+                type: 'solid',
+                onClick: handleConfirmExitAdminModal,
+              },
+              {
+                text: t('CM_CANCEL'),
+                type: 'outlined',
+                onClick: handleCloseExitAdminModal,
+              },
+            ]}
+          />
+        )}
+      </Observer>
 
-      <SelectRoomTypeDialog
-        visible={visible.selectRoomType}
-        onCancel={handleSelectRoomTypeCancel}
-        onCreateRoom={({ selectedUsers, isNewRoom }) => {
-          if (isNewRoom) {
-            setIsToastVisible(true);
-            setToastText(
-              t('CM_INVITE_MEMBER', {
-                num: selectedUsers.length,
-              }),
-            );
-          }
-        }}
-      />
+      <Observer>
+        {() => (
+          <SelectRoomTypeDialog
+            visible={store.visible.selectRoomTypeModal}
+            onCancel={handleSelectRoomTypeCancel}
+            onCreateRoom={({ selectedUsers, isNewRoom }) => {
+              if (isNewRoom) {
+                store.toast = {
+                  visible: true,
+                  text: t('CM_INVITE_MEMBER', {
+                    num: selectedUsers.length,
+                  }),
+                };
+              }
+            }}
+          />
+        )}
+      </Observer>
 
       <TopWrapper>
         <FriendSearch
@@ -353,7 +360,11 @@ function RoomList() {
             <AddRoomIcon
               width={1.38}
               height={1.38}
-              color={hasMemberCreatePermission ? '#232D3B' : '#999'}
+              color={
+                hasMemberCreatePermission
+                  ? themeContext.IconNormal2
+                  : themeContext.IconDisabled2
+              }
             />
           </AddRoomIconWrapper>
         </Tooltip>
@@ -372,7 +383,6 @@ function RoomList() {
                 <RoomItem
                   key={roomInfo.id}
                   roomInfo={roomInfo}
-                  selected={PlatformUIStore.resourceId === roomInfo.id}
                   onClick={handleSelectRoom}
                   onMenuClick={handleMenuClick}
                   onClickMenuItem={handleClickMenuItem}
@@ -382,27 +392,46 @@ function RoomList() {
           }}
         </Observer>
       </RoomContainer>
-      {configStore.isActivateComponent('Platform', 'LNB:Logo') ? (
-        <ButtomWrapper isScrollEnd={isScrollEnd}>
-          <WaplLogo />
-        </ButtomWrapper>
-      ) : null}
-      <Toast
-        visible={isToastVisible}
-        timeoutMs={1000}
-        onClose={handleToastClose}
-      >
-        {toastText}
-      </Toast>
+
+      <Observer>
+        {() => {
+          return configStore.isActivateComponent('Platform', 'LNB:Logo') ? (
+            <ButtonWrapper
+              isScrollEnd={store.isScrollEnd}
+              // onClick={() => {
+              //   // EventBus.dispatch('Platform:inviteUser');
+              //   EventBus.dispatch('Platform:roomSetting', {
+              //     mainTab: 'member',
+              //     subTab: 'blocked',
+              //   });
+              // }}
+            >
+              <WaplLogo textColor={themeContext.BasicDark} />
+            </ButtonWrapper>
+          ) : null;
+        }}
+      </Observer>
+
+      <Observer>
+        {() => (
+          <Toast
+            visible={store.toast.visible}
+            timeoutMs={1000}
+            onClose={handleToastClose}
+          >
+            {store.toast.text}
+          </Toast>
+        )}
+      </Observer>
     </Wrapper>
   );
-}
+};
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: #ffffff;
+  background-color: ${props => props.theme.StateNormal};
   overflow-y: auto;
   height: 100%;
 `;
@@ -428,22 +457,21 @@ const AddRoomIconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  background-color: #fff;
-  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  background-color: ${props => props.theme.StateNormal};
+  box-shadow: 0 0 0.31rem 0 ${props => props.theme.ModalShadow};
   pointer-events: ${({ $isDisable }) => ($isDisable ? 'none' : '')};
+  cursor: ${({ $isDisable }) => ($isDisable ? '' : 'pointer')};
 
   &:hover {
-    background-color: #ebe6df;
-    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    background-color: ${props => props.theme.SubStateBright};
   }
 
   &:active {
-    background-color: #ddd7cd;
-    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    background-color: ${props => props.theme.SubStateDark};
   }
 `;
 
-const ButtomWrapper = styled.div`
+const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -452,7 +480,8 @@ const ButtomWrapper = styled.div`
     return (
       !isScrollEnd &&
       css`
-        box-shadow: 0 -0.8125rem 0.75rem -0.1875rem #fff;
+        box-shadow: 0 -0.8125rem 0.75rem -0.1875rem
+          ${props => props.theme.StateNormal};
       `
     );
   }}
@@ -468,4 +497,5 @@ export const FriendSearch = styled(WaplSearch)`
     padding: 0;
   }
 `;
+
 export default RoomList;

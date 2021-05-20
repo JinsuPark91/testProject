@@ -1,11 +1,12 @@
 import { RoomStore, UserStore } from 'teespace-core';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { rootStore } from '../../stores';
 
 export const getRoomId = () => {
+  const { uiStore } = rootStore;
   const targetId =
-    PlatformUIStore.resourceId === UserStore.myProfile.id
+    uiStore.resourceId === UserStore.myProfile.id
       ? RoomStore.getRoomArray()[0].id
-      : PlatformUIStore.resourceId;
+      : uiStore.resourceId;
   return targetId;
 };
 

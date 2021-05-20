@@ -6,7 +6,7 @@ import { Observer } from 'mobx-react';
 import { Button, Checkbox } from 'antd';
 import { FixedSizeList as List } from 'react-window';
 import Moment from 'react-moment';
-import { RoomSettingStore as store } from '../../stores/RoomSettingStore';
+import { useStores } from '../../stores';
 
 const remToPixel = rem => {
   return (
@@ -22,6 +22,8 @@ const WIDTH = {
 };
 
 const TableRow = ({ style, member }) => {
+  const { roomSettingStore: store } = useStores();
+
   const handleCheckChange = e => {
     if (e.target.checked) {
       store.selectedMembers.set(member.id, member);
@@ -64,6 +66,7 @@ const TableRow = ({ style, member }) => {
 
 const Table = () => {
   const { t } = useTranslation();
+  const { roomSettingStore: store } = useStores();
   const tableBodyRef = useRef(null);
   const [listHeight, setListHeight] = useState(0);
 
@@ -128,6 +131,7 @@ const Table = () => {
 
 const SubWaitingMemberPage = ({ roomId }) => {
   const { t } = useTranslation();
+  const { roomSettingStore: store } = useStores();
 
   // const handleSystemMessage = message => {
   //   console.log('setting page store : ', message);
@@ -245,7 +249,7 @@ const SubWaitingMemberPage = ({ roomId }) => {
                 <Trans
                   i18nKey="CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_02"
                   components={{
-                    styled: <span style={{ color: '#205855' }} />,
+                    style: <span style={{ color: '#205855' }} />,
                   }}
                   values={{ num: store.filteredMembers.length }}
                 />

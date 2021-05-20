@@ -9,7 +9,7 @@ import Photos from '../Photos';
 import Input from '../Input';
 import RoomAddMemberModal from './RoomAddMemberModal';
 import { getQueryString, getQueryParams } from '../../utils/UrlUtil';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 import {
   AddAcountIcon,
   ChattingIcon,
@@ -197,6 +197,7 @@ function RoomInquiryModal({
 }) {
   const { t } = useTranslation();
   const history = useHistory();
+  const { uiStore } = useStores();
 
   const initialStates = {
     userSelectDialogVisible: false,
@@ -305,7 +306,7 @@ function RoomInquiryModal({
   const handleMeeting = e => {
     // const queryParams = { ...getQueryParams(), sub: 'meeting' };
     const queryString = getQueryString(getQueryParams());
-    PlatformUIStore.openWindow({
+    uiStore.openWindow({
       id: roomInfo.id,
       type: 'meeting',
       name: null,
@@ -330,7 +331,7 @@ function RoomInquiryModal({
     setIsEditMode(false);
   };
 
-  const handleInvite = e => {
+  const handleInvite = () => {
     setUserSelectDialogVisible(true);
   };
 
@@ -370,7 +371,7 @@ function RoomInquiryModal({
 
   const handleClickProfileMeeting = useCallback(
     _roomId => {
-      PlatformUIStore.openWindow({
+      uiStore.openWindow({
         id: _roomId,
         type: 'meeting',
         name: null,

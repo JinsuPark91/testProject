@@ -5,9 +5,9 @@ import {
   SubTitle,
 } from '../../styles/usersettings/ContentTitleStyle';
 
-function ContentTitle({ title, subTitle }) {
+function ContentTitle({ title, subTitle, divider = true }) {
   return (
-    <ContentTitleWrap>
+    <ContentTitleWrap divider={divider}>
       <Title>
         <strong>{title}</strong>
       </Title>
@@ -16,4 +16,4 @@ function ContentTitle({ title, subTitle }) {
   );
 }
 
-export default ContentTitle;
+export default React.memo(ContentTitle);

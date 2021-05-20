@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
 import { useCoreStores, Message, Toast } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 import {
   handleProfileMenuClick,
@@ -29,6 +29,7 @@ import {
   UserInfoItem,
   BigText,
   StatusText,
+  GuestText,
   ButtonContainer,
   StyleIcon,
   UserInfoText,
@@ -60,6 +61,7 @@ const MainProfile = observer(({ userId = null }) => {
     roomStore,
     configStore,
   } = useCoreStores();
+  const { uiStore, historyStore } = useStores();
   const [isEditMode, setEditMode] = useState(false);
   const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
   const [toastText, setToastText] = useState('');
@@ -88,6 +90,7 @@ const MainProfile = observer(({ userId = null }) => {
   const profile = isMyId()
     ? userStore.myProfile
     : userStore.userProfiles[userId];
+  const { isGuest } = profile;
   const getBackPhoto = () => {
     return userStore.getBackgroundPhotoURL(userId);
   };
@@ -157,53 +160,54 @@ const MainProfile = observer(({ userId = null }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
+  const handleMoveTalkHistory = async roomInfo => {
+    const { lastUrl } = await historyStore.getHistory({
+      roomId: roomInfo.id,
+    });
+    if (lastUrl) history.push(lastUrl);
+    else history.push(`/s/${roomInfo.id}/talk`);
+  };
+  const handleMoveTalk = roomInfo => history.push(`/s/${roomInfo.id}/talk`);
+
+  const handleOpenMeeting = roomInfo => {
+    uiStore.openWindow({
+      id: roomInfo.id,
+      type: 'meeting',
+      name: null,
+      userCount: null,
+      handler: null,
+    });
+  };
+  const handleMoveMeetingHistory = async roomInfo => {
+    handleOpenMeeting(roomInfo);
+    await handleMoveTalkHistory(roomInfo);
+  };
+  const handleMoveMeeting = roomInfo => {
+    handleOpenMeeting(roomInfo);
+    handleMoveTalk(roomInfo);
+  };
+
   const handleTalkClick = async () => {
     const myUserId = userStore.myProfile.id;
     handleProfileMenuClick(
       myUserId,
       userId,
-      async roomInfo => {
-        const routingHistory = (
-          await userStore.getRoutingHistory({
-            userId: userStore.myProfile.id,
-            roomId: roomInfo.id,
-          })
-        )?.[0];
-        history.push(routingHistory?.lastUrl || `/s/${roomInfo.id}/talk`);
-      },
-      roomInfo => history.push(`/s/${roomInfo.id}/talk`),
-      newRoomInfo => history.push(`/s/${newRoomInfo?.id}/talk`),
+      handleMoveTalkHistory,
+      handleMoveTalk, // 나간 1:1 방에도 히스토리 따라가야 하는지 기획 확인 필요
+      handleMoveTalk,
     );
   };
 
   const handleMeetingClick = async () => {
     const myUserId = userStore.myProfile.id;
     // const queryParams = { ...getQueryParams(), sub: 'meeting' };
-    const queryString = getQueryString(getQueryParams());
-    const openMeeting = roomInfo => {
-      PlatformUIStore.openWindow({
-        id: roomInfo.id,
-        type: 'meeting',
-        name: null,
-        userCount: null,
-        handler: null,
-      });
-    };
+    // const queryString = getQueryString(getQueryParams());
     handleProfileMenuClick(
       myUserId,
       userId,
-      roomInfo => {
-        openMeeting(roomInfo);
-        history.push(`/s/${roomInfo.id}/talk?${queryString}`);
-      },
-      roomInfo => {
-        openMeeting(roomInfo);
-        history.push(`/s/${roomInfo.id}/talk?${queryString}`);
-      },
-      newRoomInfo => {
-        openMeeting(newRoomInfo);
-        history.push(`/s/${newRoomInfo?.id}/talk?${queryString}`);
-      },
+      handleMoveMeetingHistory,
+      handleMoveMeeting,
+      handleMoveMeeting,
     );
   };
 
@@ -300,6 +304,11 @@ const MainProfile = observer(({ userId = null }) => {
     if (isExistRoom) return false;
     return !hasPermission;
   };
+
+  const handleNumber = useCallback(number => {
+    if (number.length > 30) return number.substring(0, 30);
+    return number;
+  }, []);
 
   return (
     <>
@@ -466,8 +475,9 @@ const MainProfile = observer(({ userId = null }) => {
               )}
             </StatusText>
             {/* <Tooltip placement="bottom" title={t('CM_EDIT_ONLY_ADMIN')} color="#4C535D"></Tooltip> */}
+            {isGuest && <GuestText>{t('CM_GUEST')}</GuestText>}
             <UserInfoList>
-              {userType === 'USR0001' && (
+              {userType === 'USR0001' && !isGuest && (
                 <UserInfoItem style={{ alignItems: 'flex-start' }}>
                   <StyleOfficeIcon iconimg="address" />
                   <UserInfoText>
@@ -482,14 +492,15 @@ const MainProfile = observer(({ userId = null }) => {
                   </UserInfoText>
                 </UserInfoItem>
               )}
-              {userType === 'USR0001' && (
+              {userType === 'USR0001' && !isGuest && (
                 <UserInfoItem>
                   <StyleOfficeIcon iconimg="company" />
                   {isEditMode ? (
                     <StyleInput
                       onChange={e => {
+                        const companyText = handleNumber(e.target.value);
+                        setCompanyNum(companyText);
                         setIsChange(true);
-                        setCompanyNum(e.target.value);
                       }}
                       value={
                         companyNum !== undefined
@@ -510,8 +521,9 @@ const MainProfile = observer(({ userId = null }) => {
                 {isEditMode ? (
                   <StyleInput
                     onChange={e => {
+                      const phoneText = handleNumber(e.target.value);
+                      setPhone(phoneText);
                       setIsChange(true);
-                      setPhone(e.target.value);
                     }}
                     value={phone !== undefined ? phone : profile?.phone || ``}
                     placeholder={t('CM_B2C_CONTENTS_AREA_EMPTY_PAGE_35')}

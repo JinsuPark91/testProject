@@ -15,19 +15,21 @@ import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
 import { WindowMail } from 'teespace-mail-app';
 import { Prompt } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { ThemeProvider } from 'styled-components';
 import { useObserver } from 'mobx-react';
+import SpaceSide from '../components/main/SpaceSide';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
 import { Loader, Wrapper } from './MainPageStyle';
-import PlatformUIStore from '../stores/PlatformUIStore';
+import { useStores } from '../stores';
 import LoadingImg from '../assets/WAPL_Loading.gif';
 import FaviconChanger from '../components/common/FaviconChanger';
 import WindowManager from '../components/common/WindowManager';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
+import { handleProfileMenuClick } from '../utils/ProfileUtil';
 
 const MainPage = () => {
   const { t, i18n } = useTranslation();
+  const { uiStore, historyStore } = useStores();
   const [isLoading, setIsLoading] = useState(true);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [toastText, setToastText] = useState('');
@@ -43,6 +45,15 @@ const MainPage = () => {
   const url = window.location.origin; //  http://xxx.dev.teespace.net
   const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
   const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
+
+  /**
+   * /f/:userId?action=talk
+   * /f/:userId?action=meeting
+   * 위 주소로 각각 1:1 talk, 1:1 meeting 을 호출할 수 있음.
+   */
+  const query = new URLSearchParams(window.location.search);
+  const profileAction = query.get('action'); // profile 용 action
+
   let domainName;
   [domainName] = url.split(`//`)[1].split(`.`);
   /**
@@ -63,6 +74,52 @@ const MainPage = () => {
     }
   }, []);
 
+  const handleMoveTalkHistory = async roomInfo => {
+    const { lastUrl } = await historyStore.getHistory({
+      roomId: roomInfo.id,
+    });
+    if (lastUrl) history.push(lastUrl);
+    else history.push(`/s/${roomInfo.id}/talk`);
+  };
+  const handleMoveTalk = roomInfo => history.push(`/s/${roomInfo.id}/talk`);
+
+  const handleOpenMeeting = roomInfo => {
+    uiStore.openWindow({
+      id: roomInfo.id,
+      type: 'meeting',
+      name: null,
+      userCount: null,
+      handler: null,
+    });
+  };
+  const handleMoveMeetingHistory = async roomInfo => {
+    handleOpenMeeting(roomInfo);
+    await handleMoveTalkHistory(roomInfo);
+  };
+  const handleMoveMeeting = roomInfo => {
+    handleOpenMeeting(roomInfo);
+    handleMoveTalk(roomInfo);
+  };
+
+  const handleTalkClick = async () => {
+    handleProfileMenuClick(
+      myUserId,
+      resourceId,
+      handleMoveTalkHistory,
+      handleMoveTalk,
+      handleMoveTalk,
+    );
+  };
+  const handleMeetingClick = async () => {
+    handleProfileMenuClick(
+      myUserId,
+      resourceId,
+      handleMoveMeetingHistory,
+      handleMoveMeeting,
+      handleMoveMeeting,
+    );
+  };
+
   /*
     Loading 체크
   */
@@ -80,7 +137,7 @@ const MainPage = () => {
       // 프렌드 리스트를 불러오자
       friendStore.fetchFriends({ myUserId }),
       // 접속 정보를 불러오자.
-      userStore.getRoutingHistory({ userId: myUserId }),
+      historyStore.fetchHistories(),
       // 알림 세팅을 불러오자
       userStore.getAlarmList(myUserId),
     ])
@@ -96,13 +153,10 @@ const MainPage = () => {
           await userStore.fetchProfileList(friendIdList);
         }
 
-        const [, , , , histories, alarmList] = res;
+        // 알람 리스트 적용
+        const [, , , , , alarmList] = res;
         AlarmSetting.initAlarmSet(alarmList);
 
-        const lastUrl = histories?.[0]?.lastUrl;
-        return Promise.resolve(lastUrl);
-      })
-      .then(async lastUrl => {
         // 계정 langauge 적용. 없으면 브라우저 기본 langauge로 업데이트 한다.
         await userStore.getMyLanguage();
         if (!userStore.myProfile.language) {
@@ -113,11 +167,24 @@ const MainPage = () => {
           i18n.changeLanguage(userStore.myProfile.language);
         }
 
-        // NOTE : 마지막 접속 URL 로 Redirect 시킨다.
-        if (lastUrl) {
-          history.push(lastUrl);
+        // 스페이스 화면에서 1:1 Talk나 1:1 Meeting을 선택한 경우
+        if (resourceType === 'f' && profileAction) {
+          switch (profileAction) {
+            case 'talk':
+              handleTalkClick();
+              break;
+            case 'meeting':
+              handleMeetingClick();
+              break;
+            default:
+              break;
+          }
         }
-
+        // NOTE : 마지막 접속 URL 로 Redirect 시킨다.
+        else if (historyStore.lastHistory)
+          history.push(historyStore.lastHistory);
+      })
+      .then(() => {
         setIsLoading(false);
       })
       .catch(err => {
@@ -157,37 +224,34 @@ const MainPage = () => {
 
   // 묶어 놓으면, 하나 바뀔때도 다 바뀜
   useEffect(() => {
-    PlatformUIStore.resourceType = resourceType;
-    PlatformUIStore.tabType = resourceType;
+    uiStore.resourceType = resourceType;
+    uiStore.tabType = resourceType;
   }, [resourceType]);
 
   useEffect(() => {
     if (resourceType === 'm' && !isLoading) {
-      PlatformUIStore.resourceId = roomStore.getDMRoom(
-        myUserId,
-        myUserId,
-      ).roomInfo.id;
+      uiStore.resourceId = roomStore.getDMRoom(myUserId, myUserId).roomInfo.id;
     } else {
-      PlatformUIStore.resourceId = resourceId;
+      uiStore.resourceId = resourceId;
     }
   }, [isLoading, resourceId, resourceType, myUserId, roomStore]);
 
   useEffect(() => {
-    PlatformUIStore.mainApp = mainApp;
+    uiStore.mainApp = mainApp;
   }, [mainApp]);
 
   useEffect(() => {
-    PlatformUIStore.subApp = subApp;
+    uiStore.subApp = subApp;
     if (!subApp) {
-      PlatformUIStore.layout = 'close';
+      uiStore.layout = 'close';
     } else {
-      PlatformUIStore.layout = 'collapse';
+      uiStore.layout = 'collapse';
     }
   }, [subApp, resourceId]);
 
   const handleSystemMessage = message => {
-    const resType = PlatformUIStore.resourceType;
-    const resId = PlatformUIStore.resourceId;
+    const resType = uiStore.resourceType;
+    const resId = uiStore.resourceId;
 
     switch (message.NOTI_TYPE) {
       // 강퇴 또는 나가기
@@ -210,13 +274,13 @@ const MainPage = () => {
   */
   useEffect(() => {
     const fullHandler = EventBus.on('onLayoutFull', () => {
-      PlatformUIStore.layout = 'full';
+      uiStore.layout = 'full';
     });
     const expandHandler = EventBus.on('onLayoutExpand', () => {
-      PlatformUIStore.layout = 'expand';
+      uiStore.layout = 'expand';
     });
     const collapseHandler = EventBus.on('onLayoutCollapse', () => {
-      PlatformUIStore.layout = 'collapse';
+      uiStore.layout = 'collapse';
     });
     const closeHandler = EventBus.on('onLayoutClose', () => {
       const queryParams = getQueryParams();
@@ -226,7 +290,7 @@ const MainPage = () => {
       history.push(`${history.location.pathname}?${queryString}`);
     });
     const openMeetingHandler = EventBus.on('onMeetingOpen', ({ roomId }) => {
-      PlatformUIStore.openWindow({
+      uiStore.openWindow({
         id: roomId,
         type: 'meeting',
         name: null,
@@ -249,6 +313,39 @@ const MainPage = () => {
       },
     );
 
+    const roomSettingHandler = EventBus.on(
+      'Platform:roomSetting',
+      ({ roomId, mainTab, subTab }) => {
+        history.push(`/s/${roomId}/setting`, { mainTab, subTab });
+      },
+    );
+
+    const directMessageHandler = EventBus.on(
+      'Platform:directMessage',
+      ({ userId }) => {
+        const moveTalk = roomId => history.push(`/s/${roomId}/talk`);
+
+        handleProfileMenuClick(
+          myUserId,
+          userId,
+          async roomInfo => {
+            const { lastUrl } = await historyStore.getHistory({
+              roomId: roomInfo.id,
+            });
+
+            if (lastUrl) history.push(lastUrl);
+            else moveTalk(roomInfo.id);
+          },
+          roomInfo => {
+            moveTalk(roomInfo.id);
+          },
+          roomInfo => {
+            moveTalk(roomInfo.id);
+          },
+        );
+      },
+    );
+
     WWMS.addHandler('SYSTEM', 'platform_wwms', handleSystemMessage);
 
     return () => {
@@ -258,6 +355,8 @@ const MainPage = () => {
       EventBus.off('onLayoutClose', closeHandler);
       EventBus.off('onMeetingOpen', openMeetingHandler);
       EventBus.off('CoreRequest:forbidden', errorHandler);
+      EventBus.off('Platform:banMembers', roomSettingHandler);
+      EventBus.off('Platform:directMessage', directMessageHandler);
       WWMS.removeHandler('SYSTEM', 'platform_wwms');
     };
   }, []);
@@ -265,7 +364,7 @@ const MainPage = () => {
   const leftSide = useMemo(() => <LeftSide />, []);
   const mainSide = useMemo(() => <MainSide />, []);
 
-  const saveHistory = async (location, action) => {
+  const saveHistory = location => {
     // NOTE : 이 시점에서, resourceId, resouceType, mainApp, subApp 값은 아직 변경되지 않은 상태.
     const { pathname, search } = location;
     const pathArr = pathname.split('/');
@@ -291,16 +390,15 @@ const MainPage = () => {
       return;
     }
 
-    try {
-      await userStore.updateRoutingHistory({
-        userId: myUserId,
-        roomId: currentResourceId,
-        lastUrl: `${pathname}${search}`,
-        appInfo: `${currentMainApp || ''}/${currentSubApp || ''}`,
-      });
-    } catch (err) {
-      console.error('[Platform] History update 에러 : ', err);
-    }
+    const historyInfo = {
+      userId: myUserId,
+      roomId: currentResourceId,
+      lastUrl: `${pathname}${search}`,
+      appInfo: `${currentMainApp || ''}/${currentSubApp || ''}`,
+    };
+
+    userStore.updateRoutingHistory(historyInfo);
+    historyStore.updateHistory({ history: historyInfo });
   };
 
   const isRunning = appName => {
@@ -315,12 +413,12 @@ const MainPage = () => {
       isRoutable = isRoutable && noteBeforeRoute(location, action);
 
     if (isRunning('meeting')) {
-      if (PlatformUIStore.subAppState === AppState.RUNNING) {
+      if (uiStore.subAppState === AppState.RUNNING) {
         // NOTE. 미팅앱에서 빠져 나갈 것인지 묻는 상태로 진입
-        PlatformUIStore.subAppState = AppState.BEFORE_STOP;
-        PlatformUIStore.nextLocation = location;
+        uiStore.subAppState = AppState.BEFORE_STOP;
+        uiStore.nextLocation = location;
         isRoutable = false;
-      } else if (PlatformUIStore.subAppState === AppState.STOPPED) {
+      } else if (uiStore.subAppState === AppState.STOPPED) {
         // NOTE. 미팅의 경우 라우팅이 변경될 때 토크 상태의 히스토리가 저장되어야 함.
         //  그렇지 않으면 이 방에 들어올 때마다 미팅이 실행됨.
         saveHistory({ ...history.location, search: '' }, action);
@@ -334,7 +432,7 @@ const MainPage = () => {
 
       // NOTE. 서브앱으로 라우팅되는 경우 초기화 진행중 상태로 진입됨.
       if (!subApp) {
-        PlatformUIStore.subAppState = AppState.INITIALIZING;
+        uiStore.subAppState = AppState.INITIALIZING;
       }
     }
     return isRoutable;
@@ -346,46 +444,45 @@ const MainPage = () => {
         <img src={LoadingImg} alt="loader" />
       </Loader>
     ) : (
-      <ThemeProvider theme={PlatformUIStore.theme}>
-        <Wrapper>
-          <Toast
-            visible={isToastVisible}
-            timeoutMs={1000}
-            onClose={() => setIsToastVisible(false)}
-          >
-            {toastText}
-          </Toast>
-          <FaviconChanger />
-          <Prompt
-            message={(location, action) => {
-              return beforeRoute(location, action);
-            }}
-          />
-          {leftSide}
-          {mainSide}
-          <WindowManager />
-          {/* <PortalWindowManager /> */}
-          <WindowMail />
-          {isRefreshModalVisible && (
-            <Message
-              visible={isRefreshModalVisible}
-              title={t('CM_LOGIN_POLICY_10')}
-              subtitle={t('CM_LOGIN_POLICY_11')}
-              btns={[
-                {
-                  type: 'solid',
-                  shape: 'round',
-                  text: t('CM_LOGIN_POLICY_03'),
-                  onClick: () => {
-                    setIsRefreshModalVisible(false);
-                    window.location.reload();
-                  },
+      <Wrapper>
+        <Toast
+          visible={isToastVisible}
+          timeoutMs={1000}
+          onClose={() => setIsToastVisible(false)}
+        >
+          {toastText}
+        </Toast>
+        <FaviconChanger />
+        <Prompt
+          message={(location, action) => {
+            return beforeRoute(location, action);
+          }}
+        />
+        <SpaceSide />
+        {leftSide}
+        {mainSide}
+        <WindowManager />
+        {/* <PortalWindowManager /> */}
+        <WindowMail />
+        {isRefreshModalVisible && (
+          <Message
+            visible={isRefreshModalVisible}
+            title={t('CM_LOGIN_POLICY_10')}
+            subtitle={t('CM_LOGIN_POLICY_11')}
+            btns={[
+              {
+                type: 'solid',
+                shape: 'round',
+                text: t('CM_LOGIN_POLICY_03'),
+                onClick: () => {
+                  setIsRefreshModalVisible(false);
+                  window.location.reload();
                 },
-              ]}
-            />
-          )}
-        </Wrapper>
-      </ThemeProvider>
+              },
+            ]}
+          />
+        )}
+      </Wrapper>
     ),
   );
 };

@@ -17,19 +17,22 @@ export const CustomTabs = styled(Tabs)`
     width: 100%;
   }
   .ant-tabs-content {
-    border-right: 1px solid #ddd9d4;
+    border-right: 1px solid ${props => props.theme.LineMain};
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
   }
   .ant-tabs-nav {
     margin: 0;
+    &:before {
+      border-color: ${props => props.theme.LnbLine};
+      z-index: 5;
+    }
     .ant-tabs-ink-bar {
       height: 0;
     }
   }
   .ant-tabs-nav-list {
     flex: 1;
-    background-color: #232d3b;
   }
 
   .ant-tabs-nav-operations {
@@ -42,17 +45,17 @@ export const CustomTabs = styled(Tabs)`
     margin: 0;
     padding: 0;
     height: 3.13rem;
-    background-color: #232d3b;
+    background: ${props => props.theme.LnbNormal};
     font-size: 0;
     &:hover:not(.ant-tabs-tab-active) {
       .lnb__icon-wrapper {
-        background-color: #313a46;
+        background-color: ${props => props.theme.LnbHover};
       }
     }
   }
 
   .ant-tabs-tab-active .lnb__icon-wrapper {
-    background-color: #fff;
+    background-color: ${props => props.theme.LnbActive};
   }
 `;
 

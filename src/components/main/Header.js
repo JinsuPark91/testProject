@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { observer } from 'mobx-react';
+import React, { useEffect, useCallback, useContext } from 'react';
+import { useLocalStore, Observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import {
   useCoreStores,
@@ -10,6 +10,7 @@ import {
 } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import {
   Wrapper,
   TitleWrapper,
@@ -25,7 +26,7 @@ import {
   StyledPhotos,
   VerticalBar,
 } from './HeaderStyle';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores, rootStore } from '../../stores';
 import HeaderProfile from '../profile/HeaderProfile';
 import RoomInquiryModal from '../Rooms/RoomInquiryModal';
 import RoomAddMemberModal from '../Rooms/RoomAddMemberModal';
@@ -46,15 +47,80 @@ import {
   OpenChatBgIcon,
 } from '../Icons';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
-import useLocalObservable from '../../libs/useLocalObservable';
+import * as useCommand from '../../hook/Command';
 
 const getIconStyle = (isDisabled = false) => {
+  const { uiStore } = rootStore;
+
   return {
     width: 1.38,
     height: 1.38,
-    color: isDisabled ? 'rgba(68, 77, 89, 0.3)' : '#232D3B',
+    color: isDisabled ? 'rgba(68, 77, 89, 0.3)' : uiStore.theme.HeaderIcon,
   };
 };
+
+const apps = [
+  {
+    name: 'drive',
+    tooltip: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_18',
+    icons: {
+      active: <DriveActiveIcon {...getIconStyle()} />,
+      disabled: <DriveIcon {...getIconStyle(true)} />,
+      default: <DriveIcon {...getIconStyle()} />,
+    },
+    isUsedInMyRoom: true,
+    isSeperated: false,
+    isUsedInProfile: true,
+  },
+  {
+    name: 'calendar',
+    tooltip: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_17',
+    icons: {
+      active: <CalendarActiveIcon {...getIconStyle()} />,
+      disabled: <CalendarIcon {...getIconStyle(true)} />,
+      default: <CalendarIcon {...getIconStyle()} />,
+    },
+    isUsedInMyRoom: true,
+    isSeperated: false,
+    isUsedInProfile: true,
+  },
+  {
+    name: 'note',
+    tooltip: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_19',
+    icons: {
+      active: <NoteActiveIcon />,
+      disabled: <NoteIcon />,
+      default: <NoteIcon />,
+    },
+    isUsedInMyRoom: true,
+    isSeperated: false,
+    isUsedInProfile: true,
+  },
+  {
+    name: 'meeting',
+    tooltip: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_20',
+    icons: {
+      active: <MeetingActiveIcon />,
+      disabled: <MeetingIcon />,
+      default: <MeetingIcon />,
+    },
+    isUsedInMyRoom: false,
+    isSeperated: false,
+    isUsedInProfile: false,
+  },
+  {
+    name: 'files',
+    tooltip: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_16',
+    icons: {
+      active: <ViewFileActiveIcon />,
+      disabled: <ViewFileIcon />,
+      default: <ViewFileIcon />,
+    },
+    isUsedInMyRoom: true,
+    isSeperated: true,
+    isUsedInProfile: true,
+  },
+];
 
 const AppIcon = React.memo(
   ({
@@ -75,9 +141,11 @@ const AppIcon = React.memo(
 
     let icon = defaultIcon;
     if (disabled) {
-      icon = disabledIcon;
+      icon = React.cloneElement(disabledIcon, { ...getIconStyle(true) });
     } else {
-      icon = isActive ? activeIcon : defaultIcon;
+      icon = React.cloneElement(isActive ? activeIcon : defaultIcon, {
+        ...getIconStyle(),
+      });
     }
 
     return (
@@ -94,125 +162,37 @@ const AppIcon = React.memo(
     );
   },
 );
+AppIcon.displayName = 'AppIcon';
 
-const useActiveApp = () => {
-  const { configStore } = useCoreStores();
-
-  const driveApp = useMemo(
-    () => ({
-      name: 'drive',
-      i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_18',
-      icons: {
-        active: <DriveActiveIcon {...getIconStyle()} />,
-        disabled: <DriveIcon {...getIconStyle(true)} />,
-        default: <DriveIcon {...getIconStyle()} />,
-      },
-      isUsedInMyRoom: true,
-      isSeperated: false,
-      isUsedInProfile: true,
-    }),
-    [],
-  );
-  const calendarApp = useMemo(
-    () => ({
-      name: 'calendar',
-      i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_17',
-      icons: {
-        active: <CalendarActiveIcon {...getIconStyle()} />,
-        disabled: <CalendarIcon {...getIconStyle(true)} />,
-        default: <CalendarIcon {...getIconStyle()} />,
-      },
-      isUsedInMyRoom: true,
-      isSeperated: false,
-      isUsedInProfile: true,
-    }),
-    [],
-  );
-  const noteApp = useMemo(
-    () => ({
-      name: 'note',
-      i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_19',
-      icons: {
-        active: <NoteActiveIcon {...getIconStyle()} />,
-        disabled: <NoteIcon {...getIconStyle(true)} />,
-        default: <NoteIcon {...getIconStyle()} />,
-      },
-      isUsedInMyRoom: true,
-      isSeperated: false,
-      isUsedInProfile: true,
-    }),
-    [],
-  );
-  const meetingApp = useMemo(
-    () => ({
-      name: 'meeting',
-      i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_20',
-      icons: {
-        active: <MeetingActiveIcon {...getIconStyle()} />,
-        disabled: <MeetingIcon {...getIconStyle(true)} />,
-        default: <MeetingIcon {...getIconStyle()} />,
-      },
-      isUsedInMyRoom: false,
-      isSeperated: false,
-      isUsedInProfile: false,
-    }),
-    [],
-  );
-  const files = useMemo(
-    () => ({
-      name: 'files',
-      i18n: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_16',
-      icons: {
-        active: <ViewFileActiveIcon {...getIconStyle()} />,
-        disabled: <ViewFileIcon {...getIconStyle(true)} />,
-        default: <ViewFileIcon {...getIconStyle()} />,
-      },
-      isUsedInMyRoom: true,
-      isSeperated: true,
-      isUsedInProfile: true,
-    }),
-    [],
-  );
-
-  const state = useLocalObservable(() => ({
-    activeApps: [],
-    updateActiveApps() {
-      this.activeApps = [];
-
-      if (configStore.isActivateForCNU('Drive')) {
-        this.activeApps.push(driveApp);
-      }
-      this.activeApps.push(calendarApp);
-      this.activeApps.push(noteApp);
-      if (configStore.isActivateForCNU('Meeting')) {
-        this.activeApps.push(meetingApp);
-      }
-      if (configStore.isActivateForCNU('Files')) {
-        this.activeApps.push(files);
-      }
+const Header = () => {
+  const history = useHistory();
+  const { t, i18n } = useTranslation();
+  const { uiStore } = useStores();
+  const { roomStore, userStore, configStore } = useCoreStores();
+  const store = useLocalStore(() => ({
+    appConfirm: null,
+    inviteRoomId: null,
+    visible: {
+      roomProfileModal: false,
+      addMemberModal: false,
     },
   }));
 
   useEffect(() => {
-    state.updateActiveApps();
+    const inviteUserHandler = EventBus.on(
+      'Platform:inviteUser',
+      ({ roomId }) => {
+        store.inviteRoomId = roomId;
+        store.visible.addMemberModal = true;
+      },
+    );
+
+    return () => EventBus.off('Platform:inviteUser', inviteUserHandler);
   }, []);
 
-  return state.activeApps;
-};
-
-const Header = observer(() => {
-  const history = useHistory();
-  const { t, i18n } = useTranslation();
-  const { roomStore, userStore } = useCoreStores();
-  const [isRoomProfileVisible, setRoomProfileVisible] = useState(false);
-  const [isAddMemberVisible, setAddMemberVisible] = useState(false);
-  const [appConfirm, setAppConfirm] = useState();
-
-  const apps = useActiveApp();
-
   const findRoom = () => {
-    if (PlatformUIStore.resourceType !== 'f') {
-      return roomStore.getRoomMap().get(PlatformUIStore.resourceId);
+    if (uiStore.resourceType !== 'f') {
+      return roomStore.getRoomMap().get(uiStore.resourceId);
     }
     return null;
   };
@@ -221,7 +201,7 @@ const Header = observer(() => {
     const found = findRoom();
     if (found) {
       if (found?.type === 'WKS0001') {
-        return userStore.myProfile.nick || userStore.myProfile.name;
+        return userStore.myProfile.displayName;
       }
       if (found?.customName || found?.name) {
         return found?.customName || found?.name;
@@ -234,6 +214,11 @@ const Header = observer(() => {
   const isMyRoom = () => {
     const found = findRoom();
     return found?.type === 'WKS0001';
+  };
+
+  const isBotRoom = () => {
+    const found = findRoom();
+    return found?.isBotRoom;
   };
 
   const isDMRoom = () => {
@@ -254,7 +239,7 @@ const Header = observer(() => {
     if (found && found?.memberIdListString) {
       const userIdArr = found?.memberIdListString.split(',');
       const userIds =
-        userIdArr.length === 1
+        userIdArr.length === 1 && !found?.isDirectMsg
           ? userIdArr
           : userIdArr
               .filter(userId => userId !== userStore.myProfile.id)
@@ -270,7 +255,7 @@ const Header = observer(() => {
   const handleExport = () => {
     const roomInfo = findRoom();
 
-    PlatformUIStore.openWindow({
+    uiStore.openWindow({
       id: roomInfo.id,
       type: 'talk',
       name: roomInfo.name,
@@ -279,33 +264,32 @@ const Header = observer(() => {
     });
   };
 
-  const handleSearch = () => {
-    PlatformUIStore.isSearchVisible = true;
-    // Refactoring: Talk Web isSearchVisible 의존성 제거
-    EventBus.dispatch('Talk:OpenSearch');
-  };
+  const handleSearch = () => EventBus.dispatch('Talk:OpenSearch');
 
-  const openSubApp = async appName => {
-    const queryParams = { ...getQueryParams(), sub: appName };
-    const queryString = getQueryString(queryParams);
+  const openSubApp = useCallback(
+    async appName => {
+      const queryParams = { ...getQueryParams(), sub: appName };
+      const queryString = getQueryString(queryParams);
 
-    if (PlatformUIStore.resourceType === 'f') {
-      try {
-        const response = await roomStore.getDMRoom(
-          userStore.myProfile.id,
-          userStore.myProfile.id,
-        );
-        if (!response.result) {
-          throw Error('DM ROOM GET FAILED');
+      if (uiStore.resourceType === 'f') {
+        try {
+          const response = await roomStore.getDMRoom(
+            userStore.myProfile.id,
+            userStore.myProfile.id,
+          );
+          if (!response.result) {
+            throw Error('DM ROOM GET FAILED');
+          }
+          history.push(`/s/${response.roomInfo.id}/talk?${queryString}`);
+        } catch (e) {
+          console.error(`Error is${e}`);
         }
-        history.push(`/s/${response.roomInfo.id}/talk?${queryString}`);
-      } catch (e) {
-        console.error(`Error is${e}`);
+      } else {
+        history.push(`${history.location.pathname}?${queryString}`);
       }
-    } else {
-      history.push(`${history.location.pathname}?${queryString}`);
-    }
-  };
+    },
+    [history, roomStore, uiStore.resourceType, userStore.myProfile.id],
+  );
 
   const closeSubApp = () => {
     const queryParams = getQueryParams();
@@ -318,7 +302,7 @@ const Header = observer(() => {
   const openMeeting = () => {
     const roomInfo = findRoom();
 
-    PlatformUIStore.openWindow({
+    uiStore.openWindow({
       id: roomInfo.id,
       type: 'meeting',
       name: null,
@@ -330,33 +314,30 @@ const Header = observer(() => {
   const handleAppClick = async appName => {
     if (appName === 'meeting') {
       const { id } = findRoom();
-      const meetingWindow = PlatformUIStore.getWindow('meeting', id);
+      const meetingWindow = uiStore.getWindow('meeting', id);
       if (meetingWindow) {
-        PlatformUIStore.focusWindow('meeting', id);
+        uiStore.focusWindow('meeting', id);
       } else {
         const meetingAppConfirm = (
           <MeetingApp.ConfirmLaunchApp
             language={i18n.language}
             onConfirm={() => {
-              setAppConfirm(null);
+              store.appConfirm = null;
               openMeeting();
-
-              // openSubApp(appName);
             }}
             onCancel={() => {
-              setAppConfirm(null);
+              store.appConfirm = null;
             }}
           />
         );
-        setAppConfirm(meetingAppConfirm);
+        store.appConfirm = meetingAppConfirm;
       }
-    } else if (PlatformUIStore.subApp !== appName) {
+    } else if (uiStore.subApp !== appName) {
       openSubApp(appName);
     } else {
       closeSubApp();
     }
 
-    // 최대한 기존 코드 안 건드리려고 했는데, 수정해도 무방함
     switch (appName) {
       case 'drive':
         logEvent('gnb', 'clickTeeDriveBtn');
@@ -378,17 +359,17 @@ const Header = observer(() => {
     }
   };
 
-  const handleClickRoomPhoto = useCallback(() => {
-    setRoomProfileVisible(true);
-  }, []);
-
-  const handleCancelRoomMemeberModal = useCallback(() => {
-    setRoomProfileVisible(false);
-  }, []);
-
-  const handleAddMember = () => {
-    setAddMemberVisible(true);
+  const handleClickRoomPhoto = () => {
+    store.visible.roomProfileModal = true;
   };
+
+  const handleCancelRoomMemeberModal = () => {
+    store.visible.roomProfileModal = false;
+  };
+
+  const handleAddMember = useCallback(() => {
+    store.visible.addMemberModal = true;
+  }, [store.visible]);
 
   const handleInviteUsers = async (_, resultRoomId) => {
     // 1:1 룸에 초대한 경우 새로운 룸이 생성되는데, 이 경우 그 룸으로 이동해야함.
@@ -396,202 +377,273 @@ const Header = observer(() => {
       history.push(`/s/${resultRoomId}/talk`);
     }
 
-    setAddMemberVisible(false);
+    store.visible.addMemberModal = false;
   };
 
   const handleCancelInviteUsers = () => {
-    setAddMemberVisible(false);
+    store.visible.addMemberModal = false;
   };
 
   const currRoomInfo = findRoom();
-  let profileModal;
 
-  if (isMyRoom()) {
-    profileModal = (
-      <ProfileInfoModal
-        userId={userStore.myProfile.id}
-        visible={isRoomProfileVisible}
-        onClickMeeting={_roomId => {
-          PlatformUIStore.openWindow({
-            id: _roomId,
-            type: 'meeting',
-            name: null,
-            userCount: null,
-            handler: null,
-          });
-        }}
-        onClose={handleCancelRoomMemeberModal}
-        position={{ top: '3.5rem', left: '17rem' }}
-      />
-    );
-  } else if (currRoomInfo?.userCount === 2) {
-    const dmUserId = currRoomInfo.memberIdListString
-      .split(',')
-      .find(userId => userId !== userStore.myProfile.id);
+  const isActive = name => {
+    if (name === 'meeting')
+      return !!uiStore.getWindow('meeting', findRoom()?.id);
+    return uiStore.subApp === name;
+  };
 
-    profileModal = (
-      <ProfileInfoModal
-        userId={dmUserId}
-        visible={isRoomProfileVisible}
-        onClose={handleCancelRoomMemeberModal}
-        onClickMeeting={_roomId => {
-          PlatformUIStore.openWindow({
-            id: _roomId,
-            type: 'meeting',
-            name: null,
-            userCount: null,
-            handler: null,
-          });
-        }}
-        position={{ top: '3.5rem', left: '17rem' }}
-      />
-    );
-  } else {
-    profileModal = (
+  const getProfileModal = () => {
+    if (isMyRoom()) {
+      return (
+        <ProfileInfoModal
+          userId={userStore.myProfile.id}
+          visible={store.visible.roomProfileModal}
+          onClickMeeting={_roomId => {
+            uiStore.openWindow({
+              id: _roomId,
+              type: 'meeting',
+              name: null,
+              userCount: null,
+              handler: null,
+            });
+          }}
+          onClose={handleCancelRoomMemeberModal}
+          position={{ top: '3.5rem', left: '20.125rem' }}
+        />
+      );
+    }
+    if (currRoomInfo?.userCount === 2) {
+      const dmUserId = currRoomInfo.memberIdListString
+        .split(',')
+        .find(userId => userId !== userStore.myProfile.id);
+
+      return (
+        <ProfileInfoModal
+          userId={dmUserId}
+          visible={store.visible.roomProfileModal}
+          onClose={handleCancelRoomMemeberModal}
+          onClickMeeting={_roomId => {
+            uiStore.openWindow({
+              id: _roomId,
+              type: 'meeting',
+              name: null,
+              userCount: null,
+              handler: null,
+            });
+          }}
+          position={{ top: '3.5rem', left: '17rem' }}
+        />
+      );
+    }
+    return (
       <RoomInquiryModal
         roomId={findRoom()?.id}
-        visible={isRoomProfileVisible}
+        visible={store.visible.roomProfileModal}
         onCancel={handleCancelRoomMemeberModal}
         width="17.5rem"
         top="3.5rem"
         left="17rem"
       />
     );
-  }
+  };
+
+  const handleNewNote = useCallback(() => {
+    openSubApp('note');
+    // Eventbus.~~~
+  }, [openSubApp]);
+
+  useCommand.InviteMember(handleAddMember);
+  useCommand.NewNote(handleNewNote);
+
+  const themeContext = useContext(ThemeContext);
 
   return (
     <Wrapper>
       <TitleWrapper>
-        {PlatformUIStore.resourceType !== 'f' && (
-          <>
-            <Title>
-              <StyledPhotos
-                className="header__photo"
-                srcList={getUserPhotos()}
-                onClick={handleClickRoomPhoto}
-              />
-              {findRoom()?.type === 'WKS0003' && (
-                <div style={{ display: 'flex', marginRight: '0.25rem' }}>
-                  <OpenChatBgIcon
-                    width={1.125}
-                    height={1.125}
-                    color="rgb(0, 73, 61)"
-                  />
-                </div>
-              )}
-              <TitleText>{getRoomName()}</TitleText>
-              {!(isMyRoom() || isDMRoom()) ? (
-                <UserCountText>{getUserCount()}</UserCountText>
-              ) : null}
-              {profileModal}
-            </Title>
+        <Observer>
+          {() =>
+            uiStore.resourceType !== 'f' && (
+              <>
+                <Title>
+                  {/* 룸 사진 */}
+                  <Observer>
+                    {() => (
+                      <StyledPhotos
+                        className="header__photo"
+                        srcList={getUserPhotos()}
+                        onClick={handleClickRoomPhoto}
+                      />
+                    )}
+                  </Observer>
 
-            {PlatformUIStore.resourceType !== 'm' && (
-              <SystemIconContainer>
-                {PlatformUIStore.layout !== 'expand' && (
-                  <>
-                    <Tooltip
-                      placement="bottom"
-                      title={t('CM_TEMP_MINI_CHAT')}
-                      color="#4C535D"
-                    >
-                      <IconWrapper
-                        className="header__export-button"
-                        onClick={handleExport}
-                      >
-                        <ExportIcon
-                          width={1.25}
-                          height={1.25}
-                          color="#232D3B"
-                        />
-                      </IconWrapper>
-                    </Tooltip>
-                    <Tooltip
-                      placement="bottom"
-                      title={t('CM_ROOMTITLE_TOOLTIP_02')}
-                      color="#4C535D"
-                    >
-                      <IconWrapper
-                        className="header__search-button"
-                        onClick={handleSearch}
-                      >
-                        <SearchIcon
-                          width={1.25}
-                          height={1.25}
-                          color="#232D3B"
-                        />
-                      </IconWrapper>
-                    </Tooltip>
-                  </>
-                )}
-                {!isMyRoom() && userStore.myProfile?.isGuest === false && (
-                  <>
-                    <Tooltip
-                      placement="bottom"
-                      title={t('CM_ROOM_INVITE_USER')}
-                      color="#4C535D"
-                    >
-                      <IconWrapper
-                        className="header__invite-button"
-                        onClick={handleAddMember}
-                      >
-                        <AddAcountIcon
-                          width={1.25}
-                          height={1.25}
-                          color="#232D3B"
-                        />
-                      </IconWrapper>
-                    </Tooltip>
+                  {/* 오픈룸 아이콘 */}
+                  <Observer>
+                    {() =>
+                      findRoom()?.type === 'WKS0003' && (
+                        <div
+                          style={{ display: 'flex', marginRight: '0.25rem' }}
+                        >
+                          <OpenChatBgIcon
+                            width={1.125}
+                            height={1.125}
+                            color="rgb(0, 73, 61)"
+                          />
+                        </div>
+                      )
+                    }
+                  </Observer>
 
-                    <RoomAddMemberModal
-                      visible={isAddMemberVisible}
-                      roomId={findRoom()?.id}
-                      onInviteUsers={handleInviteUsers}
-                      onCancel={handleCancelInviteUsers}
-                    />
-                  </>
-                )}
-              </SystemIconContainer>
-            )}
-          </>
-        )}
+                  {/* 룸 이름 */}
+                  <Observer>
+                    {() => <TitleText>{getRoomName()}</TitleText>}
+                  </Observer>
+
+                  {/* 유저 수 */}
+                  <Observer>
+                    {() =>
+                      !(isMyRoom() || isDMRoom()) ? (
+                        <UserCountText>{getUserCount()}</UserCountText>
+                      ) : null
+                    }
+                  </Observer>
+
+                  {/* 모달 */}
+                  <Observer>{() => getProfileModal()}</Observer>
+                </Title>
+
+                <Observer>
+                  {() =>
+                    uiStore.resourceType !== 'm' && (
+                      <SystemIconContainer>
+                        {uiStore.layout !== 'expand' && (
+                          <>
+                            <Tooltip
+                              placement="bottom"
+                              title={t('CM_TEMP_MINI_CHAT')}
+                              color="#4C535D"
+                            >
+                              <IconWrapper
+                                className="header__export-button"
+                                onClick={handleExport}
+                              >
+                                <ExportIcon
+                                  width={1.25}
+                                  height={1.25}
+                                  color={uiStore.theme.HeaderIcon}
+                                />
+                              </IconWrapper>
+                            </Tooltip>
+                            <Tooltip
+                              placement="bottom"
+                              title={t('CM_ROOMTITLE_TOOLTIP_02')}
+                              color="#4C535D"
+                            >
+                              <IconWrapper
+                                className="header__search-button"
+                                onClick={handleSearch}
+                              >
+                                <SearchIcon
+                                  width={1.25}
+                                  height={1.25}
+                                  color={uiStore.theme.HeaderIcon}
+                                />
+                              </IconWrapper>
+                            </Tooltip>
+                          </>
+                        )}
+                        <Observer>
+                          {() =>
+                            !isMyRoom() &&
+                            !(
+                              userStore.myProfile?.isGuest ||
+                              findRoom()?.isBotRoom
+                            ) && (
+                              <>
+                                <Tooltip
+                                  placement="bottom"
+                                  title={t('CM_ROOM_INVITE_USER')}
+                                  color="#4C535D"
+                                >
+                                  <IconWrapper
+                                    className="header__invite-button"
+                                    onClick={handleAddMember}
+                                  >
+                                    <AddAcountIcon
+                                      width={1.25}
+                                      height={1.25}
+                                      color={uiStore.theme.HeaderIcon}
+                                    />
+                                  </IconWrapper>
+                                </Tooltip>
+
+                                <Observer>
+                                  {() => (
+                                    <RoomAddMemberModal
+                                      visible={store.visible.addMemberModal}
+                                      roomId={
+                                        store.inviteRoomId || findRoom()?.id
+                                      }
+                                      onInviteUsers={handleInviteUsers}
+                                      onCancel={handleCancelInviteUsers}
+                                    />
+                                  )}
+                                </Observer>
+                              </>
+                            )
+                          }
+                        </Observer>
+                      </SystemIconContainer>
+                    )
+                  }
+                </Observer>
+              </>
+            )
+          }
+        </Observer>
       </TitleWrapper>
 
       <AppIconContainer>
-        {appConfirm}
-        {apps.map(
-          ({
-            name,
-            i18n,
-            icons,
-            isUsedInMyRoom,
-            isSeperated,
-            isUsedInProfile,
-          }) => (
-            <AppIconbutton key={name}>
-              {isSeperated ? <VerticalBar /> : null}
-              <AppIcon
-                key={name}
-                // isActive={PlatformUIStore.subApp === name}
-                isActive={
-                  name !== 'meeting'
-                    ? PlatformUIStore.subApp === name
-                    : !!PlatformUIStore.getWindow('meeting', findRoom()?.id)
-                }
-                appName={name}
-                i18n={i18n}
-                onClick={handleAppClick}
-                defaultIcon={icons.default}
-                activeIcon={icons.active}
-                disabledIcon={icons.disabled}
-                disabled={
-                  (isMyRoom() && !isUsedInMyRoom) ||
-                  (PlatformUIStore.resourceType === 'f' && !isUsedInProfile)
-                }
-              />
-            </AppIconbutton>
-          ),
-        )}
+        <Observer>{() => store.appConfirm}</Observer>
+        <Observer>
+          {() =>
+            apps.map(
+              ({
+                name,
+                tooltip,
+                icons,
+                isUsedInMyRoom,
+                isSeperated,
+                isUsedInProfile,
+              }) =>
+                configStore.isActivateForCNU(
+                  `${name.charAt(0).toUpperCase()}${name.slice(
+                    1,
+                    name.length,
+                  )}`,
+                ) ? (
+                  <AppIconbutton key={name}>
+                    {isSeperated ? <VerticalBar /> : null}
+                    <AppIcon
+                      key={name}
+                      isActive={isActive(name)}
+                      color={themeContext.HeaderIcon}
+                      appName={name}
+                      i18n={tooltip}
+                      onClick={handleAppClick}
+                      defaultIcon={icons.default}
+                      activeIcon={icons.active}
+                      disabledIcon={icons.disabled}
+                      disabled={
+                        isBotRoom() ||
+                        (isMyRoom() && !isUsedInMyRoom) ||
+                        (uiStore.resourceType === 'f' && !isUsedInProfile)
+                      }
+                    />
+                  </AppIconbutton>
+                ) : null,
+            )
+          }
+        </Observer>
       </AppIconContainer>
 
       <UserMenu>
@@ -599,6 +651,6 @@ const Header = observer(() => {
       </UserMenu>
     </Wrapper>
   );
-});
+};
 
 export default Header;

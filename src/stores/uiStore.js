@@ -2,15 +2,11 @@
 import { observable, values } from 'mobx';
 import theme from '../theme';
 
-const PlatformUIStore = observable({
+const uiStore = observable({
   theme: theme.white,
 
   setTheme(name) {
     if (theme[name]) this.theme = theme[name];
-  },
-
-  getTheme() {
-    return this.theme.name;
   },
 
   /*
@@ -135,4 +131,4 @@ const PlatformUIStore = observable({
   },
 });
 
-export default PlatformUIStore;
+export default uiStore;

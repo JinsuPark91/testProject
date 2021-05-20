@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 import { LockLineIcon, CameraIcon, ImageIcon } from '../Icons';
 import { CloseIcon, SettingIcon } from './Icon';
 import {
@@ -56,6 +56,7 @@ const MobileProfile = observer(
     onClickCancelBtn = () => {},
   }) => {
     const history = useHistory();
+    const { uiStore } = useStores();
     const { userStore, authStore } = useCoreStores();
     const [isEditMode, setEditMode] = useState(editOnlyMode);
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
@@ -140,7 +141,7 @@ const MobileProfile = observer(
     }, [userId]);
 
     useEffect(() => {
-      PlatformUIStore.isProfileEditMode = isEditMode;
+      uiStore.isProfileEditMode = isEditMode;
     }, [isEditMode]);
 
     const handleMoveTalk = roomInfo => {

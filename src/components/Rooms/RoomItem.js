@@ -1,10 +1,10 @@
-import React, { useCallback, useState } from 'react';
+/* eslint-disable no-nested-ternary */
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { List, Menu, Dropdown, Tooltip } from 'antd';
 import styled, { css } from 'styled-components';
 import { Observer } from 'mobx-react';
-import { isEqual } from 'lodash';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, EventBus } from 'teespace-core';
 import { talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
 import { useTranslation } from 'react-i18next';
@@ -17,13 +17,14 @@ import {
   OpenChatBgIcon,
   ExportIcon,
 } from '../Icons';
-import PlatformUIStore from '../../stores/PlatformUIStore';
-import mySign from '../../assets/wapl_me.svg';
+import { rootStore, useStores } from '../../stores';
+import uiStore from '../../stores/uiStore';
 
 const RoomDropdown = React.memo(
   ({ children, roomInfo, onMenuClick, onClickMenuItem }) => {
     const { t } = useTranslation();
     const { roomStore, userStore } = useCoreStores();
+    const { handlerStore } = useStores();
 
     const { id: roomId } = roomInfo;
     const myUserId = userStore.myProfile.id;
@@ -48,18 +49,21 @@ const RoomDropdown = React.memo(
       history.push(`/s/${roomInfo.id}/setting`);
     };
 
-    const updateRoomSetting = async options => {
-      try {
-        const result = await roomStore.updateRoomMemberSetting({
-          roomId,
-          myUserId,
-          ...options,
-        });
-        return result;
-      } catch (e) {
-        console.log('ROOM UPDATE FAILED : ', e);
-      }
-    };
+    const updateRoomSetting = useCallback(
+      async options => {
+        try {
+          const result = await roomStore.updateRoomMemberSetting({
+            roomId,
+            myUserId,
+            ...options,
+          });
+          return result;
+        } catch (e) {
+          console.log('ROOM UPDATE FAILED : ', e);
+        }
+      },
+      [myUserId, roomId, roomStore],
+    );
 
     const handleBookmarkDisable = e => {
       e.domEvent.stopPropagation();
@@ -77,32 +81,43 @@ const RoomDropdown = React.memo(
       onClickMenuItem({ key: 'enableBookmark' });
     };
 
-    const handleViewMember = e => {
+    const handleViewMember = useCallback(
+      e => {
+        if (e) {
+          e.domEvent.stopPropagation();
+        }
+
+        //  1:1 방의 경우 상대 유저의 프로파일 정보를 보여줌.
+        const isDMRoom = roomInfo.isDirectMsg;
+
+        setVisible(false);
+
+        if (isDMRoom) {
+          const targetUserId = roomInfo.memberIdListString
+            .split(',')
+            .find(userId => userId !== myUserId);
+
+          onClickMenuItem({
+            key: 'profile',
+            item: targetUserId,
+          });
+        } else {
+          onClickMenuItem({
+            key: 'member',
+            item: roomInfo,
+            value: {
+              isEdit: false,
+            },
+          });
+        }
+      },
+      [myUserId, onClickMenuItem, roomInfo],
+    );
+
+    const handleForceRead = e => {
       e.domEvent.stopPropagation();
-
-      //  1:1 방의 경우 상대 유저의 프로파일 정보를 보여줌.
-      const isDMRoom = roomInfo.isDirectMsg;
-
       setVisible(false);
-
-      if (isDMRoom) {
-        const targetUserId = roomInfo.memberIdListString
-          .split(',')
-          .find(userId => userId !== userStore.myProfile.id);
-
-        onClickMenuItem({
-          key: 'profile',
-          item: targetUserId,
-        });
-      } else {
-        onClickMenuItem({
-          key: 'member',
-          item: roomInfo,
-          value: {
-            isEdit: false,
-          },
-        });
-      }
+      EventBus.dispatch('Platform:forceReadMessages', { roomId: roomInfo.id });
     };
 
     const handleNameChange = e => {
@@ -125,13 +140,19 @@ const RoomDropdown = React.memo(
       onClickMenuItem({ key: 'enableAlarm' });
     };
 
-    const handleAlarmDisable = e => {
-      e.domEvent.stopPropagation();
-      setVisible(false);
+    const handleAlarmDisable = useCallback(
+      e => {
+        if (e) {
+          e.domEvent.stopPropagation();
+        }
 
-      updateRoomSetting({ newIsAlarmUsed: false });
-      onClickMenuItem({ key: 'disableAlarm' });
-    };
+        setVisible(false);
+
+        updateRoomSetting({ newIsAlarmUsed: false });
+        onClickMenuItem({ key: 'disableAlarm' });
+      },
+      [onClickMenuItem, updateRoomSetting],
+    );
 
     const handleExit = e => {
       e.domEvent.stopPropagation();
@@ -152,19 +173,20 @@ const RoomDropdown = React.memo(
     const roomMenu = () => {
       const isDMRoom = roomInfo.isDirectMsg;
       const isAdmin = roomInfo.adminId === myUserId;
+      const { isBotRoom } = roomInfo;
 
       return (
         <StyledMenu>
           {
             // NOTE. 마이룸과 1:1 룸은 이름 변경할 수 있음
             // NOTE. 마이름은 메뉴 자체가 없다. (체크할 필요 없음)
-            !isDMRoom && (
+            !isBotRoom && !isDMRoom && (
               <Menu.Item key="changeName" onClick={handleNameChange}>
                 {t('CM_CHANGE_NAME_02')}
               </Menu.Item>
             )
           }
-          {roomInfo.isRoomBookmarked ? (
+          {isBotRoom ? null : roomInfo.isRoomBookmarked ? (
             <Menu.Item key="disableBookmark" onClick={handleBookmarkDisable}>
               {t('CM_FIX_TOP_ROOM_03')}
             </Menu.Item>
@@ -182,28 +204,45 @@ const RoomDropdown = React.memo(
               {t('CM_NOTI_SETTING_01')}
             </Menu.Item>
           )}
-          <Menu.Item key="member" onClick={handleViewMember}>
-            {t('CM_ROOM_CONTEXT_MENU_01')}
+          {!isBotRoom && (
+            <Menu.Item key="member" onClick={handleViewMember}>
+              {t('CM_ROOM_CONTEXT_MENU_01')}
+            </Menu.Item>
+          )}
+          <Menu.Item key="read" onClick={handleForceRead}>
+            {t('CM_READ_ALL')}
           </Menu.Item>
           {
             // NOTE. 마이룸과 1:1 룸은 룸설정 할 수 없음
             // NOTE. 1:1 방이 아니고, 내가 관리자면 세팅페이지를 볼수 있다.
-            !isDMRoom && isAdmin && (
+            !isBotRoom && !isDMRoom && isAdmin && (
               <Menu.Item key="setting" onClick={handleSetting}>
                 {t('CM_ROOM_SETTING')}
               </Menu.Item>
             )
           }
-          <Menu.Item
-            key="exit"
-            onClick={handleExit}
-            style={{ borderTop: '1px solid #D0CCC7' }}
-          >
-            {t('CM_LEAVE')}
-          </Menu.Item>
+          {!isBotRoom && (
+            <Menu.Item
+              key="exit"
+              onClick={handleExit}
+              style={{ borderTop: '1px solid #D0CCC7' }}
+            >
+              {t('CM_LEAVE')}
+            </Menu.Item>
+          )}
         </StyledMenu>
       );
     };
+
+    useEffect(() => {
+      handlerStore.register('/mute', roomId, handleAlarmDisable);
+      handlerStore.register('/org chart', roomId, handleViewMember);
+
+      return () => {
+        handlerStore.unregister('/mute', roomId);
+        handlerStore.register('/org chart', roomId, handleViewMember);
+      };
+    }, [handleAlarmDisable, handleViewMember, handlerStore, roomId]);
 
     return (
       <Dropdown
@@ -219,300 +258,336 @@ const RoomDropdown = React.memo(
   },
 );
 
-const RoomItemContent = ({
-  roomInfo,
-  isMyRoom,
-  onMenuClick,
-  onClickMenuItem,
-  onClickRoomPhoto,
-}) => {
-  const { t } = useTranslation();
-  const { userStore } = useCoreStores();
-  const isDMRoom = roomInfo.isDirectMsg;
+const RoomItemContent = React.memo(
+  ({ roomInfo, isMyRoom, onMenuClick, onClickMenuItem, onClickRoomPhoto }) => {
+    const { t } = useTranslation();
+    const { userStore } = useCoreStores();
 
-  const handleExport = e => {
-    e.stopPropagation();
+    const handleExport = e => {
+      e.stopPropagation();
 
-    PlatformUIStore.openWindow({
-      id: roomInfo.id,
-      type: 'talk',
-      name: roomInfo.name,
-      userCount: roomInfo.userCount,
-      handler: null,
-    });
-  };
+      uiStore.openWindow({
+        id: roomInfo.id,
+        type: 'talk',
+        name: roomInfo.name,
+        userCount: roomInfo.userCount,
+        handler: null,
+      });
+    };
 
-  const handleMenuClick = _roomInfo => {
-    onMenuClick(_roomInfo);
-  };
+    const handleMenuClick = _roomInfo => {
+      onMenuClick(_roomInfo);
+    };
 
-  const handleClickRootPhoto = e => {
-    // 룸 사진 클릭 시 룸 선택 안 되게 이벤트 전파 방지 처리
-    e.stopPropagation();
+    const handleClickRootPhoto = e => {
+      // 룸 사진 클릭 시 룸 선택 안 되게 이벤트 전파 방지 처리
+      e.stopPropagation();
 
-    onClickRoomPhoto(roomInfo);
-  };
+      onClickRoomPhoto(roomInfo);
+    };
 
-  return (
-    <>
-      <List.Item.Meta
-        avatar={
-          <Observer>
-            {() => {
-              let userPhotos = null;
-              if (isMyRoom) {
-                userPhotos = [
-                  userStore.getProfilePhotoURL(userStore.myProfile.id, 'small'),
-                ];
-              } else {
-                const userIdArr = roomInfo.memberIdListString.split(',');
-                const userIds =
-                  userIdArr.length === 1
-                    ? userIdArr
-                    : userIdArr
-                        .filter(userId => userId !== userStore.myProfile.id)
-                        .splice(0, 4);
+    const getIcon = () => {
+      if (roomInfo.type === 'WKS0003')
+        return (
+          <OpenChatIconBox>
+            <OpenChatBgIcon width={0.88} height={0.88} />
+          </OpenChatIconBox>
+        );
 
-                userPhotos = userIds.map(userId =>
-                  userStore.getProfilePhotoURL(userId, 'small'),
-                );
-              }
-              return (
-                <Photos
-                  defaultDiameter="2.13"
-                  srcList={userPhotos}
-                  onClick={handleClickRootPhoto}
-                  className="photos rooms__item__photo"
-                />
-              );
-            }}
-          </Observer>
-        }
-        title={
-          <>
+      if (isMyRoom) return <RoomTypeIcon>나</RoomTypeIcon>;
+      if (roomInfo.isBotRoom)
+        return <RoomTypeIcon>{t('CM_NOTI')}</RoomTypeIcon>;
+
+      return null;
+    };
+
+    return (
+      <>
+        <List.Item.Meta
+          avatar={
             <Observer>
-              {() => (
-                <>
-                  {roomInfo.type === 'WKS0003' && (
-                    <OpenChatIconBox>
-                      <OpenChatBgIcon width={0.88} height={0.88} />
-                    </OpenChatIconBox>
-                  )}
+              {() => {
+                let userPhotos = null;
+                if (isMyRoom) {
+                  userPhotos = [
+                    userStore.getProfilePhotoURL(
+                      userStore.myProfile.id,
+                      'small',
+                    ),
+                  ];
+                } else {
+                  const userIdArr = roomInfo.memberIdListString.split(',');
+                  const userIds =
+                    userIdArr.length === 1 && !roomInfo.isDirectMsg
+                      ? userIdArr
+                      : userIdArr
+                          .filter(userId => userId !== userStore.myProfile.id)
+                          .splice(0, 4);
+
+                  userPhotos = userIds.map(userId =>
+                    userStore.getProfilePhotoURL(userId, 'small'),
+                  );
+                }
+                return (
+                  <Photos
+                    defaultDiameter="2.13"
+                    srcList={userPhotos}
+                    isBotRoom={roomInfo.isBotRoom}
+                    onClick={handleClickRootPhoto}
+                    className="photos rooms__item__photo"
+                  />
+                );
+              }}
+            </Observer>
+          }
+          title={
+            <>
+              <Observer>
+                {() => (
                   <>
-                    {isMyRoom ? (
-                      <MyIcon>
-                        <img src={mySign} alt="me" />
-                      </MyIcon>
-                    ) : null}
+                    {getIcon()}
                     <RoomNameText>
                       {isMyRoom
                         ? userStore.myProfile.nick || userStore.myProfile.name
                         : roomInfo.customName || roomInfo.name}
                     </RoomNameText>
                   </>
-                </>
-              )}
-            </Observer>
-            {!(isMyRoom || roomInfo.isDirectMsg) ? (
-              <Observer>
-                {() => <UserCountText>{roomInfo.userCount}</UserCountText>}
+                )}
               </Observer>
-            ) : null}
+              {!(isMyRoom || roomInfo.isDirectMsg) ? (
+                <Observer>
+                  {() => <UserCountText>{roomInfo.userCount}</UserCountText>}
+                </Observer>
+              ) : null}
 
-            <Observer>
-              {() =>
-                roomInfo.isAlarmUsed ? null : (
-                  <TitleIconWrapper>
-                    <DisableAlarmIcon width={0.8} height={0.8} />
-                  </TitleIconWrapper>
-                )
-              }
-            </Observer>
-            <Observer>
-              {() =>
-                roomInfo.isRoomBookmarked ? (
-                  <TitleIconWrapper>
-                    <PinIcon width={0.8} height={0.8} />
-                  </TitleIconWrapper>
-                ) : null
-              }
-            </Observer>
-            {/* <UserTimeText className="rooms__item__unread">
+              <Observer>
+                {() =>
+                  roomInfo.isAlarmUsed ? null : (
+                    <TitleIconWrapper>
+                      <DisableAlarmIcon width={0.8} height={0.8} />
+                    </TitleIconWrapper>
+                  )
+                }
+              </Observer>
+              <Observer>
+                {() =>
+                  roomInfo.isRoomBookmarked ? (
+                    <TitleIconWrapper>
+                      <PinIcon width={0.8} height={0.8} />
+                    </TitleIconWrapper>
+                  ) : null
+                }
+              </Observer>
+              {/* <UserTimeText className="rooms__item__unread">
               오전 11:01
             </UserTimeText> */}
-          </>
-        }
-        description={
-          <>
-            <Observer>
-              {() => {
-                if (roomInfo.metadata?.lastMessage) {
-                  return (
-                    <RoomMessage>{roomInfo.metadata?.lastMessage}</RoomMessage>
-                  );
-                }
-                return null;
-              }}
-            </Observer>
-            <Observer>
-              {() => {
-                return roomInfo.metadata?.count ? (
-                  <UnreadCount
-                    className="rooms__item__unread"
-                    style={{
-                      width: roomInfo.metadata?.count < 10 && '0.875rem',
-                    }}
-                  >
-                    {roomInfo.metadata?.count > 99
-                      ? '99+'
-                      : roomInfo.metadata?.count}
-                  </UnreadCount>
-                ) : null;
-              }}
-            </Observer>
-          </>
-        }
-      />
-      {!isMyRoom && (
-        <RoomDropdown
-          roomInfo={roomInfo}
-          onMenuClick={handleMenuClick}
-          onClickMenuItem={onClickMenuItem}
-        >
-          <IconWrapper className="rooms__item__config-button">
-            <ViewMoreIcon />
+            </>
+          }
+          description={
+            <>
+              <Observer>
+                {() => {
+                  if (roomInfo.metadata?.lastMessage) {
+                    return (
+                      <RoomMessage>
+                        {roomInfo.metadata?.lastMessage}
+                      </RoomMessage>
+                    );
+                  }
+                  return null;
+                }}
+              </Observer>
+              <Observer>
+                {() => {
+                  return roomInfo.metadata?.count > 0 ? (
+                    <UnreadCount
+                      className="rooms__item__unread"
+                      style={{
+                        width: roomInfo.metadata?.count < 10 && '0.875rem',
+                      }}
+                    >
+                      {roomInfo.metadata?.count > 99
+                        ? '99+'
+                        : roomInfo.metadata?.count}
+                    </UnreadCount>
+                  ) : null;
+                }}
+              </Observer>
+            </>
+          }
+        />
+        {!isMyRoom && (
+          <RoomDropdown
+            roomInfo={roomInfo}
+            onMenuClick={handleMenuClick}
+            onClickMenuItem={onClickMenuItem}
+          >
+            <IconWrapper className="rooms__item__config-button">
+              <ViewMoreIcon />
+            </IconWrapper>
+          </RoomDropdown>
+        )}
+        <Tooltip placement="top" title={t('CM_TEMP_MINI_CHAT')} color="#4C535D">
+          <IconWrapper
+            className="rooms__item__export-button"
+            onClick={handleExport}
+          >
+            <ExportIcon width={1} height={1} color="#7B7671" />
           </IconWrapper>
-        </RoomDropdown>
-      )}
-      <Tooltip placement="top" title={t('CM_TEMP_MINI_CHAT')} color="#4C535D">
-        <IconWrapper
-          className="rooms__item__export-button"
-          onClick={handleExport}
-        >
-          <ExportIcon width={1} height={1} color="#49423A" />
-        </IconWrapper>
-      </Tooltip>
-    </>
-  );
-};
+        </Tooltip>
+      </>
+    );
+  },
+);
 
 // TODO: Content.js 와 동일한 함수로 리팩토링 필요
 const getRoomId = () => {
-  if (PlatformUIStore.resourceType !== 'f') {
-    return PlatformUIStore.resourceId;
+  const { uiStore } = rootStore;
+  if (uiStore.resourceType !== 'f') {
+    return uiStore.resourceId;
   }
   return null;
 };
 
-const RoomItem = ({
-  roomInfo,
-  selected,
-  onClick,
-  onMenuClick,
-  onClickMenuItem = () => {},
-  onClickRoomPhoto = () => {},
-}) => {
-  const { componentStore } = useCoreStores();
-  const FileDndDialog = componentStore.get('Talk:FileDndDialog');
-  const [isDndDialogVisible, setDndDialogVisible] = useState(false);
-  const [dndTargetFiles, setDndTargetFiles] = useState([]);
-  const [dndTargetRoom, setDndTargetRoom] = useState(getRoomId());
+const RoomItem = React.memo(
+  ({
+    roomInfo,
+    onClick,
+    onMenuClick,
+    onClickMenuItem = () => {},
+    onClickRoomPhoto = () => {},
+  }) => {
+    const { componentStore } = useCoreStores();
+    const { handlerStore } = useStores();
+    const FileDndDialog = componentStore.get('Talk:FileDndDialog');
+    const [isDndDialogVisible, setDndDialogVisible] = useState(false);
+    const [dndTargetFiles, setDndTargetFiles] = useState([]);
+    const [dndTargetRoom, setDndTargetRoom] = useState(getRoomId());
 
-  const isMyRoom = roomInfo.type === 'WKS0001';
+    const isMyRoom = roomInfo.type === 'WKS0001';
 
-  const [{ canDrop, isOver }, drop] = useDrop({
-    accept: ACCEPT_ITEMS,
-    drop: item => {
-      //
-      // Item Type에 따라서 처리해야 될 일들
-      //
-      if (TALK_ACCEPT_ITEMS.includes(item.type)) {
-        const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
-          item.type.toLowerCase(),
-        );
-        switch (type[1]) {
-          case 'note':
-            talkOnDrop({
-              room: roomInfo,
-              data: item.data,
-              type: type[1] ? type[1] : 'unknown',
-              target: 'Platform:Room',
-              currentRoomId: getRoomId(),
-            });
-            break;
-          case 'drive':
-            setDndDialogVisible(true);
-            setDndTargetFiles(item.data);
-            setDndTargetRoom(roomInfo.id);
-            break;
-          default:
-            break;
+    const [{ canDrop, isOver }, drop] = useDrop({
+      accept: ACCEPT_ITEMS,
+      drop: item => {
+        //
+        // Item Type에 따라서 처리해야 될 일들
+        //
+        if (TALK_ACCEPT_ITEMS.includes(item.type)) {
+          const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
+            item.type.toLowerCase(),
+          );
+          switch (type[1]) {
+            case 'note':
+              talkOnDrop({
+                room: roomInfo,
+                data: item.data,
+                type: type[1] ? type[1] : 'unknown',
+                target: 'Platform:Room',
+                currentRoomId: getRoomId(),
+              });
+              break;
+            case 'drive':
+              setDndDialogVisible(true);
+              setDndTargetFiles(item.data);
+              setDndTargetRoom(roomInfo.id);
+              break;
+            default:
+              break;
+          }
         }
+
+        // Drag 시작한 쪽이 정보를 알아야 하는 경우 고려
+        return {
+          source: item.type, // "Item:Note:Chapter"
+          sourceData: item.data,
+          target: 'Platform:Room',
+          targetData: roomInfo,
+        };
+      },
+      collect: monitor => {
+        return {
+          isOver: monitor.isOver(),
+          canDrop: monitor.canDrop(),
+        };
+      },
+    });
+
+    const isActive = canDrop && isOver;
+
+    const handleRoomClick = useCallback(() => {
+      onClick(roomInfo);
+    }, [onClick, roomInfo]);
+
+    const handleMenuClick = _roomInfo => {
+      onMenuClick(_roomInfo);
+    };
+
+    const handleCloseDndDialog = useCallback(() => {
+      setDndDialogVisible(false);
+    }, []);
+
+    useEffect(() => {
+      if (isMyRoom) {
+        handlerStore.register('/myroom', '', handleRoomClick);
       }
 
-      // Drag 시작한 쪽이 정보를 알아야 하는 경우 고려
-      return {
-        source: item.type, // "Item:Note:Chapter"
-        sourceData: item.data,
-        target: 'Platform:Room',
-        targetData: roomInfo,
-      };
-    },
-    collect: monitor => {
-      return {
-        isOver: monitor.isOver(),
-        canDrop: monitor.canDrop(),
-      };
-    },
-  });
+      return () => isMyRoom && handlerStore.unregister('/myroom');
+    }, [handleRoomClick, handlerStore, isMyRoom]);
 
-  const isActive = canDrop && isOver;
+    return (
+      <StyledItem ref={drop} className="rooms__item" onClick={handleRoomClick}>
+        <Observer>
+          {() => (
+            <ItemWrapper
+              selected={uiStore.resourceId === roomInfo.id}
+              isActiveDropEffect={isActive}
+            >
+              <RoomItemContent
+                roomInfo={roomInfo}
+                isMyRoom={isMyRoom}
+                onMenuClick={handleMenuClick}
+                onClickMenuItem={onClickMenuItem}
+                onClickRoomPhoto={onClickRoomPhoto}
+              />
+            </ItemWrapper>
+          )}
+        </Observer>
 
-  const handleRoomClick = useCallback(() => {
-    onClick(roomInfo);
-  }, [onClick, roomInfo]);
-
-  const handleMenuClick = _roomInfo => {
-    onMenuClick(_roomInfo);
-  };
-
-  const handleCloseDndDialog = useCallback(() => {
-    setDndDialogVisible(false);
-  }, []);
-
-  return (
-    <StyledItem ref={drop} className="rooms__item" onClick={handleRoomClick}>
-      <ItemWrapper selected={selected} isActiveDropEffect={isActive}>
-        <RoomItemContent
-          roomInfo={roomInfo}
-          isMyRoom={isMyRoom}
-          onMenuClick={handleMenuClick}
-          onClickMenuItem={onClickMenuItem}
-          onClickRoomPhoto={onClickRoomPhoto}
+        <FileDndDialog
+          visible={isDndDialogVisible}
+          target="Platform:Room"
+          targetRoomId={dndTargetRoom}
+          fileList={dndTargetFiles}
+          onClose={handleCloseDndDialog}
         />
-      </ItemWrapper>
-      <FileDndDialog
-        visible={isDndDialogVisible}
-        target="Platform:Room"
-        targetRoomId={dndTargetRoom}
-        fileList={dndTargetFiles}
-        onClose={handleCloseDndDialog}
-      />
-    </StyledItem>
-  );
-};
+      </StyledItem>
+    );
+  },
+);
 
-const MyIcon = styled.div`
-  width: 0.88rem;
+const RoomTypeIcon = styled.div`
+  display: flex;
+  align-items: center;
   height: 0.88rem;
-  flex-shrink: 0;
+  background: #232d3b;
+  padding: 0 0.19rem;
+  border-radius: 0.25rem;
+  font-size: 0.5rem;
+  color: #fff;
   margin-right: 0.25rem;
-  line-height: 0;
-  img {
-    width: 100%;
-    height: 100%;
-  }
 `;
+
+// const MyIcon = styled.div`
+//   width: 0.88rem;
+//   height: 0.88rem;
+//   flex-shrink: 0;
+//   margin-right: 0.25rem;
+//   line-height: 0;
+//   img {
+//     width: 100%;
+//     height: 100%;
+//   }
+// `;
 
 const ItemWrapper = styled.div`
   display: flex;
@@ -523,7 +598,7 @@ const ItemWrapper = styled.div`
   ${({ selected }) =>
     selected &&
     css`
-      background-color: #f2efec;
+      background-color: ${props => props.theme.StateDark};
     `}
 
   ${({ isActiveDropEffect }) =>
@@ -534,7 +609,7 @@ const ItemWrapper = styled.div`
     `}
 
   &:hover {
-    background: #faf8f7;
+    background-color: ${props => props.theme.StateBright};
 
     .rooms__item__unread {
       display: none;
@@ -567,7 +642,9 @@ const StyledMenu = styled(Menu)`
 `;
 
 const RoomMessage = styled.span`
+  margin-top: 0.125rem;
   overflow: hidden;
+  margin-top: 0.125rem;
   text-overflow: ellipsis;
   white-space: nowrap;
   color: #666;
@@ -577,6 +654,7 @@ const RoomNameText = styled.span`
   font-size: 0.81rem;
   font-weight: 500;
   line-height: 1.19rem;
+  color: ${props => props.theme.TextMain};
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -587,14 +665,6 @@ const UserCountText = styled.span`
   font-size: 0.81rem;
   line-height: 1.19rem;
   color: #aeaeae;
-`;
-
-const UserTimeText = styled.span`
-  margin-left: auto;
-  padding-left: 0.25rem;
-  font-size: 0.56rem;
-  color: #666;
-  white-space: nowrap;
 `;
 
 const StyledItem = styled.div`
@@ -632,7 +702,6 @@ const StyledItem = styled.div`
   }
   .ant-list-item-meta-description {
     display: flex;
-    margin-top: 0.125rem;
     align-items: center;
     justify-content: space-between;
     font-size: 0.69rem;
@@ -644,7 +713,7 @@ const StyledItem = styled.div`
 const UnreadCount = styled.div`
   width: 1.63rem;
   height: 0.875rem;
-  margin-left: 0.25rem;
+  margin: 0.125rem 0 0 0.25rem;
   font-size: 0.63rem;
   color: #fff;
   line-height: 0.8125rem;
@@ -670,7 +739,7 @@ const IconWrapper = styled.div`
   border-radius: 0.25rem;
   cursor: pointer;
   &:hover {
-    background: #eae6e0;
+    background-color: ${props => props.theme.StateLight};
   }
 `;
 const OpenChatIconBox = styled.div`
@@ -678,13 +747,4 @@ const OpenChatIconBox = styled.div`
   line-height: 0;
 `;
 
-export default React.memo(
-  RoomItem,
-  (prevProps, nextProps) =>
-    prevProps.selected === nextProps.selected &&
-    prevProps.onClick === nextProps.onClick &&
-    prevProps.onMenuClick === nextProps.onMenuClick &&
-    prevProps.onClickMenuItem === nextProps.onClickMenuItem &&
-    prevProps.onClickRoomPhoto === nextProps.onClickRoomPhoto &&
-    isEqual(prevProps.roomInfo, nextProps.roomInfo),
-);
+export default RoomItem;

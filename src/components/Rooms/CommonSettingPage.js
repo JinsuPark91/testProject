@@ -267,10 +267,10 @@ const SettingWrapper = styled.div`
 `;
 
 const SettingTitleText = styled.span`
-  font-size: 0.81rem;
-  color: #000;
-  font-weight: bold;
   margin-bottom: 0.31rem;
+  font-size: 0.81rem;
+  font-weight: bold;
+  color: ${props => props.theme.TextMain};
 `;
 
 const SettingTitleWrap = styled.div`

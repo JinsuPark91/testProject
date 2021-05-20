@@ -1,7 +1,7 @@
 import { observable } from 'mobx';
 import { RoomStore, UserStore } from 'teespace-core';
 
-const RoomSettingStore = observable({
+const roomSettingStore = observable({
   // 유저 데이터 관련
   member: null,
   members: [],
@@ -11,6 +11,7 @@ const RoomSettingStore = observable({
     try {
       const members = await RoomStore.fetchRoomMemberList({
         myUserId: UserStore.myProfile.id,
+        summary: false,
         roomId,
       });
       this.members = members;
@@ -216,4 +217,4 @@ const RoomSettingStore = observable({
   },
 });
 
-export { RoomSettingStore };
+export default roomSettingStore;

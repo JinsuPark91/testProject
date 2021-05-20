@@ -6,7 +6,7 @@ import { useDrop } from 'react-dnd';
 import { observer } from 'mobx-react';
 import { Tooltip } from 'antd';
 import { useCoreStores, Dropdown, Menu, Message } from 'teespace-core';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { rootStore } from '../../stores';
 import { ACCEPT_ITEMS, TALK_ACCEPT_ITEMS } from '../../utils/DndConstant';
 import { handleCheckNewFriend } from '../../utils/FriendsUtil';
 import { handleProfileMenuClick } from '../../utils/ProfileUtil';
@@ -25,6 +25,8 @@ import {
 } from '../../styles/friends/FriendItemStyle';
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 import mySign from '../../assets/wapl_me.svg';
+
+const { uiStore } = rootStore;
 
 const disableScroll = event => event.preventDefault();
 
@@ -100,7 +102,7 @@ const DropdownMenu = React.memo(
 );
 
 const OpenMiniTalk = roomInfo => {
-  PlatformUIStore.openWindow({
+  uiStore.openWindow({
     id: roomInfo.id,
     type: 'talk',
     name: roomInfo.name,
@@ -159,7 +161,7 @@ const AllAction = React.memo(({ itemId }) => {
         className="lnb-friend__export-icon friends__item__export-button"
         onClick={handleExport}
       >
-        <ExportIcon />
+        <ExportIcon color="#7B7671" />
       </MoreIconWrapper>
     </Tooltip>
   );
@@ -192,10 +194,10 @@ const FriendItem = observer(
     isActive = false,
     onClick,
     friendInfo,
+    handleOpenInfoModal,
+    handleSelectedId,
     handleOpenToast,
     handleToastText,
-    handleSelectedId,
-    handleInfoModalVisible,
   }) => {
     const { t } = useTranslation();
     const {
@@ -205,7 +207,7 @@ const FriendItem = observer(
       id: userId = '',
       profileStatusMsg,
     } = friendInfo;
-    const fullCompanyJob = friendInfo.getFullCompanyJob();
+    const fullCompanyJob = friendInfo.getFullCompanyJob(true);
     const history = useHistory();
     const {
       friendStore,
@@ -233,11 +235,6 @@ const FriendItem = observer(
         if (roomInfo && roomInfo.isVisible) return roomInfo;
         if (roomInfo && !roomInfo.isVisible) {
           await roomStore.activateRoom({ roomId: roomInfo.id });
-          // await roomStore.updateRoomMemberSetting({
-          //   roomId: roomInfo.id,
-          //   myUserId,
-          //   newIsVisible: true,
-          // });
           return roomInfo;
         }
 
@@ -296,7 +293,7 @@ const FriendItem = observer(
       if (e) e.stopPropagation();
       if (id) {
         handleSelectedId(id);
-        handleInfoModalVisible(true);
+        handleOpenInfoModal();
       }
     };
 

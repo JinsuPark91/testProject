@@ -10,7 +10,7 @@ import { App as MeetingApp } from 'teespace-meeting-app';
 import { useCoreStores, AppState } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import RoomSetting from '../Rooms/RoomSetting';
-import PlatformUIStore from '../../stores/PlatformUIStore';
+import { useStores } from '../../stores';
 import { Wrapper, Splitter } from './ContentStyle';
 import { MainAppContainer, SubAppContainer } from './AppContainer';
 import MainProfile from '../profile/MainProfile';
@@ -24,6 +24,7 @@ const remToPixel = rem => {
 const Content = () => {
   const { i18n } = useTranslation();
   const { userStore, roomStore } = useCoreStores();
+  const { uiStore } = useStores();
   const history = useHistory();
   const splitRef = useRef(null);
   const contentRef = useRef(null);
@@ -31,20 +32,20 @@ const Content = () => {
 
   useEffect(() => {
     if (contentRef) {
-      PlatformUIStore.content.rect = contentRef.current.getBoundingClientRect();
+      uiStore.content.rect = contentRef.current.getBoundingClientRect();
     }
   });
 
   const getRoomId = () => {
-    if (PlatformUIStore.resourceType !== 'f') {
-      return PlatformUIStore.resourceId;
+    if (uiStore.resourceType !== 'f') {
+      return uiStore.resourceId;
     }
     return null;
   };
 
   const getChannelId = type => {
     const roomId = getRoomId();
-    if (PlatformUIStore.resourceType !== 'f') {
+    if (uiStore.resourceType !== 'f') {
       return roomStore
         .getRoomMap()
         .get(roomId)
@@ -53,7 +54,7 @@ const Content = () => {
     return null;
   };
 
-  const handleSplitDragStart = ratio => {
+  const handleSplitDragStart = () => {
     const splitter = splitRef?.current?.parent;
     const gutter = splitter.childNodes[1];
 
@@ -62,7 +63,7 @@ const Content = () => {
     }
   };
 
-  const handleSplitDragEnd = ratio => {
+  const handleSplitDragEnd = () => {
     const splitter = splitRef?.current?.parent;
     const gutter = splitter.childNodes[1];
 
@@ -78,7 +79,7 @@ const Content = () => {
           <Talk
             roomId={getRoomId()}
             channelId={getChannelId('CHN0001')}
-            layoutState={PlatformUIStore.layout}
+            layoutState={uiStore.layout}
             language={i18n.language}
             isMini={false}
           />
@@ -89,7 +90,7 @@ const Content = () => {
             roomId={getRoomId()}
             language={i18n.language}
             channelId={getChannelId('CHN0003')}
-            layoutState={PlatformUIStore.layout}
+            layoutState={uiStore.layout}
           />
         );
       case 'drive':
@@ -99,7 +100,7 @@ const Content = () => {
             roomId={getRoomId()}
             language={i18n.language}
             channelId={getChannelId('CHN0006')}
-            layoutState={PlatformUIStore.layout}
+            layoutState={uiStore.layout}
           />
         );
       case 'files':
@@ -109,7 +110,7 @@ const Content = () => {
             roomId={getRoomId()}
             language={i18n.language}
             channelId={getChannelId('CHN0006')}
-            layoutState={PlatformUIStore.layout}
+            layoutState={uiStore.layout}
           />
         );
       case 'calendar':
@@ -118,7 +119,7 @@ const Content = () => {
             roomId={getRoomId()}
             language={i18n.language}
             channelId={getChannelId('CHN0005')}
-            layoutState={PlatformUIStore.layout}
+            layoutState={uiStore.layout}
           />
         );
       case 'meeting':
@@ -127,12 +128,12 @@ const Content = () => {
             roomId={getRoomId()}
             language={i18n.language}
             channelId={getChannelId('CHN0005')}
-            layoutState={PlatformUIStore.layout}
-            appState={PlatformUIStore.subAppState}
+            layoutState={uiStore.layout}
+            appState={uiStore.subAppState}
             onChangeAppState={state => {
-              PlatformUIStore.subAppState = state;
+              uiStore.subAppState = state;
               if (state === AppState.STOPPED) {
-                history.push(PlatformUIStore.nextLocation);
+                history.push(uiStore.nextLocation);
               }
             }}
           />
@@ -142,7 +143,7 @@ const Content = () => {
       case 'mailsub':
         return <MailSubView roomId={getRoomId()} language={i18n.language} />;
       case 'profile':
-        return <MainProfile userId={PlatformUIStore.resourceId} />;
+        return <MainProfile userId={uiStore.resourceId} />;
       case 'setting':
         return <RoomSetting roomId={getRoomId()} />;
       default:
@@ -164,7 +165,7 @@ const Content = () => {
           return (
             <Splitter
               sizes={
-                PlatformUIStore.resourceType === 'm'
+                uiStore.resourceType === 'm'
                   ? [38, 62]
                   : [mainDefaultWidth, subDefaultWidth]
               }
@@ -189,14 +190,11 @@ const Content = () => {
               ref={splitRef}
             >
               <MainAppContainer>
-                {getApplication(PlatformUIStore.mainApp)}
+                {getApplication(uiStore.mainApp)}
               </MainAppContainer>
 
-              <SubAppContainer
-                layoutState={PlatformUIStore.layout}
-                splitRef={splitRef}
-              >
-                {getApplication(PlatformUIStore.subApp)}
+              <SubAppContainer layoutState={uiStore.layout} splitRef={splitRef}>
+                {getApplication(uiStore.subApp)}
               </SubAppContainer>
             </Splitter>
           );
