@@ -43,6 +43,7 @@ const AddFriendsButton = () => {
           isViewMode={false}
           onCancelAddFriends={() => setIsAddFriendModalVisible(false)}
           isTopOrg={false}
+          isMeVisible={false}
         />
       )}
     </>
