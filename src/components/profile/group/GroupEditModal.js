@@ -9,7 +9,6 @@ import {
   handleCheckValidUrl,
   handleCheckValidEngUrl,
 } from '../../../libs/Regex';
-import { isBasicPlan } from '../../../utils/GeneralUtil';
 import { Wrapper } from '../../../styles/profile/SpaceEditModalStyle';
 
 const GroupEditModal = ({ onClose, onSuccess }) => {
@@ -93,22 +92,27 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
     const isLocal = process.env.REACT_APP_ENV === 'local';
     let updatedInfo = {};
 
-    if (!isBasicPlan() && newAddress !== getCurrentSpaceAddress()) {
+    if (newAddress !== getCurrentSpaceAddress()) {
       const res = await spaceStore.searchSpaceByDomain({
         domain: newAddress,
       });
-
       if (res) {
         setUrlWarningText(t('CM_PROFILE_SPACE_STANDARD'));
         setIsUrlWarningVisible(true);
         return;
       }
-      updatedInfo = {
-        name: newSpaceName,
-        domain: newAddress,
-      };
+
+      if (newSpaceName !== currentSpace?.name) {
+        updatedInfo = {
+          name: newSpaceName,
+          domain: newAddress,
+        };
+      } else {
+        updatedInfo = {
+          domain: newAddress,
+        };
+      }
     } else {
-      // url 변경 없는 경우
       updatedInfo = {
         name: newSpaceName,
       };
