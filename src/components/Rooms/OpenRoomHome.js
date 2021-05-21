@@ -260,11 +260,8 @@ function OpenRoomHome({ visible, onCancel }) {
   };
 
   const handleRequestOK = async () => {
-    const myUserId = userStore.myProfile.id;
-
     try {
       await roomStore.requestEnterRoom({
-        myUserId,
         roomId: currentOpenRoom.id,
       });
     } catch (err) {

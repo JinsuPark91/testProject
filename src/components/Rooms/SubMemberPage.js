@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useTranslation, Trans } from 'react-i18next';
-import { Message, WaplSearch, WWMS } from 'teespace-core';
+import { Message, WaplSearch } from 'teespace-core';
 import styled, { ThemeContext } from 'styled-components';
 import { Observer } from 'mobx-react';
 import { Button, Checkbox, Tooltip } from 'antd';
@@ -33,15 +33,15 @@ const TableRow = ({ style, member }) => {
   const isAdmin = () => member.role === 'WKS0004';
 
   const handleTransfer = () => {
-    store.member = member;
+    store.targetMember = member;
     store.open('transfer');
   };
 
   const handleCheckChange = e => {
     if (e.target.checked) {
-      store.selectedMembers.set(member.id, member);
+      store.selectedRoomMembers.set(member.id, member);
     } else {
-      store.selectedMembers.delete(member.id);
+      store.selectedRoomMembers.delete(member.id);
     }
   };
 
@@ -78,7 +78,7 @@ const TableRow = ({ style, member }) => {
             {() => (
               <Checkbox
                 className="check-round"
-                checked={store.selectedMembers.has(member.id)}
+                checked={store.selectedRoomMembers.has(member.id)}
                 onChange={handleCheckChange}
               />
             )}
@@ -135,13 +135,17 @@ const Table = () => {
 
   const handleAllCheckChange = e => {
     if (e.target.checked) {
-      store.selectedMembers.replace(
+      store.selectedRoomMembers.replace(
         new Map(
-          store.filteredMembersWithoutMe.map(member => [member.id, member]),
+          store
+            .getFilteredMembers({ withoutMe: true })
+            .map(member => [member.id, member]),
         ),
       );
     } else {
-      store.selectedMembers.clear();
+      store
+        .getFilteredMembers({ withoutMe: true })
+        .map(member => store.selectedRoomMembers.delete(member.id));
     }
   };
 
@@ -153,7 +157,7 @@ const Table = () => {
             {() => (
               <Checkbox
                 className="check-round"
-                checked={store.isAllChecked(true)}
+                checked={store.isAllChecked({ withoutMe: true })}
                 onChange={handleAllCheckChange}
               />
             )}
@@ -179,19 +183,23 @@ const Table = () => {
       </TableHeader>
       <TableBody ref={tableBodyRef}>
         <Observer>
-          {() => (
-            <List
-              height={listHeight}
-              itemCount={store.filteredMembers.length}
-              itemSize={remToPixel(3.19)}
-              width="100%"
-            >
-              {({ index, style }) => {
-                const member = store.filteredMembers[index];
-                return <TableRow style={style} member={member} />;
-              }}
-            </List>
-          )}
+          {() => {
+            const filteredMembers = store.getFilteredMembers({
+              withoutMe: false,
+            });
+            return (
+              <List
+                height={listHeight}
+                itemCount={filteredMembers.length}
+                itemSize={remToPixel(3.19)}
+                width="100%"
+              >
+                {({ index, style }) => (
+                  <TableRow style={style} member={filteredMembers[index]} />
+                )}
+              </List>
+            );
+          }}
         </Observer>
       </TableBody>
     </>
@@ -217,22 +225,22 @@ const MemberPage = ({ roomId }) => {
   //   }
   // };
 
-  useEffect(() => {
-    store.fetchMembers({ roomId, summary: false });
-    // WWMS.addHandler('SYSTEM', 'room_setting', handleSystemMessage);
+  // useEffect(() => {
+  //   store.fetchMembers({ roomId, summary: false });
+  //   // WWMS.addHandler('SYSTEM', 'room_setting', handleSystemMessage);
 
-    return () => {
-      store.members = [];
-      store.keyword = '';
-      store.toastMessage = '';
-      store.toastVisible = '';
-      store.selectedMembers.clear();
-      // WWMS.removeHandler('SYSTEM', 'room_setting');
-    };
-  }, [roomId]);
+  //   return () => {
+  //     store.members = [];
+  //     store.keyword = '';
+  //     store.toastMessage = '';
+  //     store.toastVisible = '';
+  //     store.selectedMembers.clear();
+  //     // WWMS.removeHandler('SYSTEM', 'room_setting');
+  //   };
+  // }, [roomId]);
 
   const handleTransferOk = async () => {
-    const userId = store.member.id;
+    const userId = store.targetMember.id;
     await store.transferAdmin({ roomId, userId });
     store.close('transfer');
     history.push(`/s/${roomId}/talk`);
@@ -248,13 +256,16 @@ const MemberPage = ({ roomId }) => {
 
   const handleKickoutOK = async () => {
     try {
-      const userIdList = Array.from(store.selectedMembers.keys());
+      const userIdList = Array.from(store.selectedRoomMembers.keys());
       const result = await store.kickoutMembers({ roomId, userIdList });
       if (result) {
-        await store.fetchMembers({ roomId });
+        await Promise.all([
+          store.fetchMembers({ roomId }),
+          store.fetchBlockedMembers({ roomId }),
+        ]);
       }
 
-      store.selectedMembers.clear();
+      store.selectedRoomMembers.clear();
     } catch (err) {
       console.log('강퇴 / 밴 실패 : ', err);
     }
@@ -262,7 +273,7 @@ const MemberPage = ({ roomId }) => {
   };
 
   const handleKickoutCancel = () => {
-    store.selectedMembers.clear();
+    store.selectedRoomMembers.clear();
     store.close('kickout');
   };
 
@@ -307,7 +318,7 @@ const MemberPage = ({ roomId }) => {
           <Message
             visible={store.transferVisible}
             title={t('CM_ROOM_SETTING_MANAGE_PEOPLE_05', {
-              name: store.member?.nick || '',
+              name: store.targetMember?.nick || '',
             })}
             subtitle={t('CM_ROOM_SETTING_MANAGE_PEOPLE_06')}
             type="error"
@@ -384,7 +395,9 @@ const MemberPage = ({ roomId }) => {
                       />
                     ),
                   }}
-                  values={{ num: store.filteredMembers.length }}
+                  values={{
+                    num: store.getFilteredMembers({ withoutMe: false }).length,
+                  }}
                 />
               )}
             </Observer>
@@ -403,7 +416,7 @@ const MemberPage = ({ roomId }) => {
                 type="outlined"
                 size="small"
                 onClick={handleKickout}
-                disabled={!store.selectedMembers.size}
+                disabled={!store.selectedRoomMembers.size}
               >
                 {t('CM_REMOVE')}
               </Button>

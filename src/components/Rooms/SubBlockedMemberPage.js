@@ -26,9 +26,9 @@ const TableRow = ({ style, member }) => {
   const { roomSettingStore: store } = useStores();
   const handleCheckChange = e => {
     if (e.target.checked) {
-      store.selectedMembers.set(member.id, member);
+      store.selectedBanMembers.set(member.id, member);
     } else {
-      store.selectedMembers.delete(member.id);
+      store.selectedBanMembers.delete(member.id);
     }
   };
 
@@ -41,7 +41,7 @@ const TableRow = ({ style, member }) => {
           {() => (
             <Checkbox
               className="check-round"
-              checked={store.selectedMembers.has(member.id)}
+              checked={store.selectedBanMembers.has(member.id)}
               onChange={handleCheckChange}
             />
           )}
@@ -84,11 +84,17 @@ const Table = () => {
 
   const handleAllCheckChange = e => {
     if (e.target.checked) {
-      store.selectedMembers.replace(
-        new Map(store.filteredMembers.map(member => [member.id, member])),
+      store.selectedBanMembers.replace(
+        new Map(
+          store
+            .getFilteredMembers({ withoutMe: false })
+            .map(member => [member.id, member]),
+        ),
       );
     } else {
-      store.selectedMembers.clear();
+      store
+        .getFilteredMembers({ withoutMe: false })
+        .map(member => store.selectedBanMembers.delete(member.id));
     }
   };
 
@@ -100,7 +106,7 @@ const Table = () => {
             {() => (
               <Checkbox
                 className="check-round"
-                checked={store.isAllChecked(false)}
+                checked={store.isAllChecked({ withoutMe: false })}
                 onChange={handleAllCheckChange}
               />
             )}
@@ -120,19 +126,24 @@ const Table = () => {
       </TableHeader>
       <TableBody ref={tableBodyRef}>
         <Observer>
-          {() => (
-            <List
-              height={listHeight}
-              itemCount={store.filteredMembers.length}
-              itemSize={remToPixel(3.19)}
-              width="100%"
-            >
-              {({ index, style }) => {
-                const member = store.filteredMembers[index];
-                return <TableRow style={style} member={member} />;
-              }}
-            </List>
-          )}
+          {() => {
+            const filteredMembers = store.getFilteredMembers({
+              withoutMe: false,
+            });
+
+            return (
+              <List
+                height={listHeight}
+                itemCount={filteredMembers.length}
+                itemSize={remToPixel(3.19)}
+                width="100%"
+              >
+                {({ index, style }) => (
+                  <TableRow style={style} member={filteredMembers[index]} />
+                )}
+              </List>
+            );
+          }}
         </Observer>
       </TableBody>
     </>
@@ -143,30 +154,30 @@ const SubWaitingMemberPage = ({ roomId }) => {
   const { t } = useTranslation();
   const { roomSettingStore: store } = useStores();
 
-  useEffect(() => {
-    store.fetchBlockedMembers({ roomId });
+  // useEffect(() => {
+  //   store.fetchBlockedMembers({ roomId });
 
-    return () => {
-      store.members = [];
-      store.keyword = '';
-      store.toastMessage = '';
-      store.toastVisible = '';
-      store.selectedMembers.clear();
-    };
-  }, [roomId]);
+  //   return () => {
+  //     store.members = [];
+  //     store.keyword = '';
+  //     store.toastMessage = '';
+  //     store.toastVisible = '';
+  //     store.selectedMembers.clear();
+  //   };
+  // }, [roomId]);
 
   const handleUnblock = async () => {
-    const userIdList = Array.from(store.selectedMembers.keys());
+    const userIdList = Array.from(store.selectedBanMembers.keys());
     const result = await store.disableBan({ roomId, userIdList });
     if (result) {
       await store.fetchBlockedMembers({ roomId });
       store.open(
         'toast',
         t('CM_ROOM_SETTING_MANAGE_PEOPLE_04', {
-          num: store.selectedMembers.size,
+          num: store.selectedBanMembers.size,
         }),
       );
-      store.selectedMembers.clear();
+      store.selectedBanMembers.clear();
     }
   };
 
@@ -219,14 +230,16 @@ const SubWaitingMemberPage = ({ roomId }) => {
                   components={{
                     style: <span style={{ color: '#205855' }} />,
                   }}
-                  values={{ num: store.filteredMembers.length }}
+                  values={{
+                    num: store.getFilteredMembers({ withoutMe: false }).length,
+                  }}
                 />
               )}
             </Observer>
           </span>
           <Observer>
             {() => {
-              const isEmpty = !store.selectedMembers.size;
+              const isEmpty = !store.selectedBanMembers.size;
               const style = { marginRight: '0.5rem' };
               if (!isEmpty) {
                 style.backgroundColor = '#205855';

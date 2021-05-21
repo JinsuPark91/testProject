@@ -2,10 +2,16 @@ import { observable } from 'mobx';
 import { RoomStore, UserStore } from 'teespace-core';
 
 const roomSettingStore = observable({
-  // 유저 데이터 관련
-  member: null,
-  members: [],
-  selectedMembers: new Map(),
+  targetMember: null,
+
+  roomMembers: [],
+  selectedRoomMembers: new Map(),
+
+  requestMembers: [],
+  selectedRequestMembers: new Map(),
+
+  banMembers: [],
+  selectedBanMembers: new Map(),
 
   async fetchMembers({ roomId }) {
     try {
@@ -14,7 +20,7 @@ const roomSettingStore = observable({
         summary: false,
         roomId,
       });
-      this.members = members;
+      this.roomMembers = members;
     } catch (err) {
       console.log('member list get error : ', err);
     }
@@ -33,7 +39,7 @@ const roomSettingStore = observable({
         members = await UserStore.fetchProfileList(userIdList);
       }
 
-      this.members = members;
+      this.banMembers = members;
     } catch (err) {
       console.log('blocked member list get error : ', err);
     }
@@ -59,9 +65,9 @@ const roomSettingStore = observable({
             });
           }
         });
-        this.members = profiles;
+        this.requestMembers = profiles;
       } else {
-        this.members = [];
+        this.requestMembers = [];
       }
     } catch (err) {
       console.log('입장 요청 멤버 조회 에러 : ', err);
@@ -146,20 +152,44 @@ const roomSettingStore = observable({
 
   // 검색 관련
   keyword: '',
-  get filteredMembers() {
-    return (
-      this.members?.filter(
+  getFilteredMembers({ withoutMe = false }) {
+    // mainTab member인 경우
+    if (this.tabKey === 'member') {
+      let targetList = [];
+      switch (this.subTabKey) {
+        case 'member':
+          targetList = this.roomMembers;
+          break;
+        case 'request':
+          targetList = this.requestMembers;
+          break;
+        case 'ban':
+          targetList = this.banMembers;
+          break;
+        default:
+          targetList = [];
+          break;
+      }
+
+      // keyword로 거른다
+      const filtered = targetList.filter(
         member =>
           !!member?.nick?.includes(this.keyword) ||
           !!member?.orgName?.includes(this.keyword) ||
           !!member?.position?.includes(this.keyword),
-      ) || []
-    );
-  },
+      );
 
-  get filteredMembersWithoutMe() {
-    const myId = UserStore.myProfile.id;
-    return this.filteredMembers.filter(member => member.id !== myId);
+      // 나를 제외한다
+      if (withoutMe) {
+        const myId = UserStore.myProfile.id;
+        return filtered.filter(member => member.id !== myId);
+      }
+
+      return filtered;
+    }
+
+    // mainTab common인 경우
+    return [];
   },
 
   //  탭 관련
@@ -175,6 +205,20 @@ const roomSettingStore = observable({
 
   changeSubTab(key) {
     this.subTabKey = key;
+    this.keyword = '';
+    switch (this.subTabKey) {
+      case 'member':
+        this.selectedRoomMembers.clear();
+        break;
+      case 'request':
+        this.selectedRequestMembers.clear();
+        break;
+      case 'ban':
+        this.selectedBanMembers.clear();
+        break;
+      default:
+        break;
+    }
   },
 
   // 다이얼로그 관련
@@ -198,22 +242,37 @@ const roomSettingStore = observable({
     }
   },
 
-  // 테이블 관련
-  isAllChecked(withoutMe = false) {
-    const members = withoutMe
-      ? this.filteredMembersWithoutMe
-      : this.filteredMembers;
+  isAllChecked({ withoutMe = false }) {
+    const members = this.getFilteredMembers({ withoutMe });
     const { length } = members;
 
     if (!length) return false;
 
-    for (let i = 0; i < length; i += 1) {
-      if (!this.selectedMembers.has(members[i].id)) {
-        return false;
-      }
+    let targetSelectedMembers = null;
+    switch (this.subTabKey) {
+      case 'member':
+        targetSelectedMembers = this.selectedRoomMembers;
+        break;
+      case 'request':
+        targetSelectedMembers = this.selectedRequestMembers;
+        break;
+      case 'ban':
+        targetSelectedMembers = this.selectedBanMembers;
+        break;
+      default:
+        targetSelectedMembers = null;
+        break;
     }
 
-    return true;
+    if (targetSelectedMembers) {
+      for (let i = 0; i < length; i += 1) {
+        if (!targetSelectedMembers.has(members[i].id)) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
   },
 });
 
