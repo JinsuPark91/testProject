@@ -1,37 +1,8 @@
-import styled, { css, keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 export const ProfileIcon = styled.div`
   position: relative;
   cursor: pointer;
-`;
-
-// const jump = keyframes`
-//   0% {
-//     top: 0.1rem;
-//   }
-//   50% {
-//     top: -0.3rem;
-//   }
-//   100% {
-//     top: 0.1rem;
-//   }
-// }
-// `;
-
-// ${props =>
-//   props.count > 0 &&
-//   css`
-//     animation: ${jump} 1s ease-in-out;
-//   `}
-
-export const NewBadge = styled.div`
-  position: absolute;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background-color: #dc4547;
-  top: 0.1rem;
-  right: 0.1rem;
 `;
 
 export const ThumbImage = styled.img`
