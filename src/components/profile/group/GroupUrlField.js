@@ -28,13 +28,13 @@ const GroupNameField = ({
           placement="bottomLeft"
           color="#4C535D"
         >
-          <UrlInputBox disabled={isBasicPlan}>
+          <UrlInputBox disabled>
             <input value={urlAddress} disabled />
             <UrlText>{getMainURL()}</UrlText>
           </UrlInputBox>
         </Tooltip>
       ) : (
-        <UrlInputBox disabled={isBasicPlan()}>
+        <UrlInputBox>
           <input
             value={urlAddress}
             onChange={handleChange}
