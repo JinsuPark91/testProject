@@ -378,6 +378,23 @@ const RoomItemContent = React.memo(
                   ) : null
                 }
               </Observer>
+
+              <Observer>
+                {() => {
+                  return roomInfo.isBotRoom && roomInfo.metadata?.count > 0 ? (
+                    <UnreadCount
+                      className="rooms__item__unread"
+                      style={{
+                        width: roomInfo.metadata?.count < 10 && '0.875rem',
+                      }}
+                    >
+                      {roomInfo.metadata?.count > 99
+                        ? '99+'
+                        : roomInfo.metadata?.count}
+                    </UnreadCount>
+                  ) : null;
+                }}
+              </Observer>
               {/* <UserTimeText className="rooms__item__unread">
               오전 11:01
             </UserTimeText> */}
@@ -397,9 +414,10 @@ const RoomItemContent = React.memo(
                   return null;
                 }}
               </Observer>
+
               <Observer>
                 {() => {
-                  return roomInfo.metadata?.count > 0 ? (
+                  return !roomInfo.isBotRoom && roomInfo.metadata?.count > 0 ? (
                     <UnreadCount
                       className="rooms__item__unread"
                       style={{
