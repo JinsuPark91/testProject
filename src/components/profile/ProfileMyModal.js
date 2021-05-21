@@ -83,9 +83,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   const [isViewMode, setIsViewMode] = useState(true);
 
   const [isRoomDialogVisible, setIsRoomDialogVisible] = useState(false);
-  const [isSpaceEditDialogVisible, setIsSpaceEditDialogVisible] = useState(
-    false,
-  );
+  const [isGroupEditModalVisible, setIsGroupEditModalVisible] = useState(false);
   const [
     isNewSpaceErrorMessagVisible,
     setIsNewSpaceErrorMessageVisible,
@@ -153,7 +151,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   }, []);
 
   const handleOpenGroupEditModal = useCallback(() => {
-    setIsSpaceEditDialogVisible(true);
+    setIsGroupEditModalVisible(true);
   }, []);
 
   const handleAddFriend = useCallback(async () => {
@@ -433,6 +431,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
           isViewMode={isViewMode}
           onCancelAddFriends={() => setIsFriendMemViewOpen(false)}
           isTopOrg={false}
+          isMeVisible
         />
       )}
       <SelectRoomTypeDialog
@@ -449,9 +448,9 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
           }
         }}
       />
-      {isSpaceEditDialogVisible && (
+      {isGroupEditModalVisible && (
         <GroupEditModal
-          onClose={() => setIsSpaceEditDialogVisible(false)}
+          onClose={() => setIsGroupEditModalVisible(false)}
           onSuccess={() => {
             setToastText(t('CM_CHANGE_SAVE'));
             setIsToastOpen(true);

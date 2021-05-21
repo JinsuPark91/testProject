@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useContext } from 'react';
+import React, { useEffect, useCallback, useContext, useState } from 'react';
 import { useLocalStore, Observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -7,6 +7,7 @@ import {
   logEvent,
   EventBus,
   Tooltip,
+  AddFriendsByInvitationDialog,
 } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { useTranslation } from 'react-i18next';
@@ -166,6 +167,7 @@ AppIcon.displayName = 'AppIcon';
 
 const Header = () => {
   const history = useHistory();
+  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
   const { t, i18n } = useTranslation();
   const { uiStore } = useStores();
   const { roomStore, userStore, configStore } = useCoreStores();
@@ -179,13 +181,9 @@ const Header = () => {
   }));
 
   useEffect(() => {
-    const inviteUserHandler = EventBus.on(
-      'Platform:inviteUser',
-      ({ roomId }) => {
-        store.inviteRoomId = roomId;
-        store.visible.addMemberModal = true;
-      },
-    );
+    const inviteUserHandler = EventBus.on('Platform:inviteUser', () => {
+      setIsInviteDialogOpen(true);
+    });
 
     return () => EventBus.off('Platform:inviteUser', inviteUserHandler);
   }, []);
@@ -359,6 +357,10 @@ const Header = () => {
     }
   };
 
+  const handleCancelInviteModal = () => {
+    setIsInviteDialogOpen(false);
+  };
+
   const handleClickRoomPhoto = () => {
     store.visible.roomProfileModal = true;
   };
@@ -459,6 +461,13 @@ const Header = () => {
 
   return (
     <Wrapper>
+      {isInviteDialogOpen && (
+        <AddFriendsByInvitationDialog
+          visible={isInviteDialogOpen}
+          mailList={[]}
+          onCancel={handleCancelInviteModal}
+        />
+      )}
       <TitleWrapper>
         <Observer>
           {() =>
