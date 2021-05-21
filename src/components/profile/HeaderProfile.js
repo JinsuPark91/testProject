@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import ProfileMyModal from './ProfileMyModal';
 import {
   ProfileIcon,
-  NewBadge,
   ThumbImage,
   SettingImage,
 } from '../../styles/profile/HeaderProfileStyle';
@@ -13,15 +12,11 @@ import settingIcon from '../../assets/setting.svg';
 
 const HeaderProfile = observer(() => {
   const { t } = useTranslation();
-  const { userStore, authStore, spaceStore } = useCoreStores();
+  const { userStore, authStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
   const { isFirstLogin } = authStore.sessionInfo;
   const [myModalVisible, setMyModalVisible] = useState(isFirstLogin);
   const [tutorialVisible, setTutorialVisible] = useState(isFirstLogin);
-
-  const unreadSpace = spaceStore.spaceList?.find(
-    elem => elem.totalUnreadRoomCount > 0,
-  );
 
   const thumbPhoto = userStore.getProfilePhotoURL(myUserId, 'small');
 
@@ -38,7 +33,6 @@ const HeaderProfile = observer(() => {
         color="#4C535D"
       >
         <ProfileIcon className="header__profile-button" onClick={toggleMyModal}>
-          {unreadSpace && <NewBadge />}
           <ThumbImage src={thumbPhoto} />
           <SettingImage>
             <img alt="settingIcon" src={settingIcon} />
