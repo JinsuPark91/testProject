@@ -382,16 +382,18 @@ const RoomItemContent = React.memo(
               <Observer>
                 {() => {
                   return roomInfo.isBotRoom && roomInfo.metadata?.count > 0 ? (
-                    <UnreadCount
-                      className="rooms__item__unread"
-                      style={{
-                        width: roomInfo.metadata?.count < 10 && '0.875rem',
-                      }}
-                    >
-                      {roomInfo.metadata?.count > 99
-                        ? '99+'
-                        : roomInfo.metadata?.count}
-                    </UnreadCount>
+                    <UnreadCountWrap>
+                      <UnreadCount
+                        className="rooms__item__unread"
+                        style={{
+                          width: roomInfo.metadata?.count < 10 && '0.875rem',
+                        }}
+                      >
+                        {roomInfo.metadata?.count > 99
+                          ? '99+'
+                          : roomInfo.metadata?.count}
+                      </UnreadCount>
+                    </UnreadCountWrap>
                   ) : null;
                 }}
               </Observer>
@@ -721,6 +723,14 @@ const UnreadCount = styled.div`
   background-color: #dc4547;
   text-align: center;
   flex-shrink: 0;
+`;
+
+const UnreadCountWrap = styled.div`
+  margin-left: auto;
+  padding-left: 0.25rem;
+  ${UnreadCount} {
+    margin: 0;
+  }
 `;
 
 const TitleIconWrapper = styled.div`
