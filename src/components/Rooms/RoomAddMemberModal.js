@@ -147,15 +147,7 @@ function RoomAddMemberModal({
 }
 
 const FlexModal = styled(Modal)`
-  font-size: 16px;
-  display: flex;
-  justify-content: center;
-
-  & .ant-modal-header {
-    border-bottom: 1px solid #e3e7eb;
-  }
-
-  & .ant-modal-body {
+  .ant-modal-body {
     padding: 0;
   }
 `;
@@ -165,7 +157,7 @@ const ButtonContainer = styled.div`
   padding: 1.06rem 0;
   align-items: center;
   justify-content: center;
-  border-top: 1px solid #e3e7eb;
+  border-top: 1px solid ${props => props.theme.LineMain};
 `;
 
 export default RoomAddMemberModal;

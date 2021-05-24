@@ -44,15 +44,16 @@ const Wrapper = styled.div`
   align-items: center;
   padding: 0 0.75rem;
   height: 1.75rem;
-  background: ${({ disabled }) => (disabled ? '#cccccc' : '#fff')};
-  ${({ disabled }) =>
+  background: ${({ disabled, theme }) =>
+    disabled ? `${theme.DisabledShape}` : `${theme.StateNormal}`};
+  ${({ disabled, theme }) =>
     disabled &&
     css`
-      color: #fff;
+      color: ${theme.TextMain};
       cursor: not-allowed;
     `}
   border-radius: 0.25rem;
-  border: 1px solid #d0ccc7;
+  border: 1px solid ${props => props.theme.LineOut};
 
   &:hover {
     ${({ disabled }) =>
@@ -63,10 +64,10 @@ const Wrapper = styled.div`
   }
 
   &:not(:disabled):focus-within {
-    border: 1px solid #7b7671;
+    border: 1px solid ${props => props.theme.IconNormal};
   }
 
-  & input {
+  input {
     background: transparent;
     margin-right: 0.5rem;
     height: 1.13rem;
@@ -82,11 +83,11 @@ const Wrapper = styled.div`
     width: 100%;
 
     ::placeholder {
-      color: #c9c4be;
+      color: ${props => props.theme.IconHinted};
     }
 
     :disabled::placeholder {
-      color: #fff;
+      color: ${props => props.theme.DisabledText};
     }
 
     :focus {
@@ -94,8 +95,9 @@ const Wrapper = styled.div`
     }
   }
 
-  & .input-counter {
-    color: ${({ disabled }) => (disabled ? '#fff' : '#C9C4BE')};
+  .input-counter {
+    color: ${({ disabled, theme }) =>
+      disabled ? `${theme.DisabledText}` : `${theme.Iconmain}`};
   }
 `;
 

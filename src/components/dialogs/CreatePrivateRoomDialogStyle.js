@@ -11,7 +11,6 @@ export const ConfigTitleText = styled.span`
   margin-left: 0.38rem;
   font-size: 0.81rem;
   line-height: 0.94rem;
-  color: #000;
   font-weight: 500;
 `;
 
@@ -24,15 +23,7 @@ export const ConfigDescriptionText = styled.div`
 `;
 
 export const FlexModal = styled(Modal)`
-  font-size: 16px;
-  display: flex;
-  justify-content: center;
-
-  & .ant-modal-header {
-    border-bottom: 1px solid #e3e7eb;
-  }
-
-  & .ant-modal-body {
+  .ant-modal-body {
     padding: 0;
   }
 `;
@@ -40,7 +31,7 @@ export const FlexModal = styled(Modal)`
 export const ConfigWrapper = styled.div`
   width: 32.5rem;
   padding: 0.19rem 1.88rem 1.19rem;
-  border: solid #e3e7eb;
+  border: solid ${props => props.theme.LineMain};
   border-width: 1px 0;
 `;
 
