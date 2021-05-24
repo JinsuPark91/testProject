@@ -59,6 +59,7 @@ export const SpaceBox = styled.div`
       background-image: url('${backgroundURL}');
       background-repeat: no-repeat;
       background-size: cover;
+      background-position: center;
     `}
 `;
 
