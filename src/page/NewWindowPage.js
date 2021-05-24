@@ -204,7 +204,11 @@ const Header = ({ roomId, onSearch }) => {
   return (
     <HeaderWrapper>
       {getModal()}
-      <Photos srcList={info.srcs} onClick={handlePhotoClick} />
+      <Photos
+        srcList={info.srcs}
+        onClick={handlePhotoClick}
+        className="header__room-photo"
+      />
       <span className="header__room-name">{info.name}</span>
 
       {info.isDMRoom || info.isMyRoom ? null : (
@@ -231,10 +235,17 @@ const HeaderWrapper = styled.div`
   height: 3.75rem;
   padding: 0 1.25rem 0 0.69rem;
   border-bottom: 1px solid #ddd9d4;
+  overflow: hidden;
+
+  & .header__room-name {
+    flex-shrink: 0;
+  }
 
   & .header__room-name {
     font-size: 0.875rem;
     margin-left: 0.63rem;
+    overflow: hidden;
+    flex: 1;
   }
 
   & .header__user-count {
