@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import { Modal } from 'antd';
 import { useCoreStores, Message, logEvent } from 'teespace-core';
 import { Observer } from 'mobx-react';
@@ -20,10 +20,11 @@ const RoomButton = ({ roomInfo, onClick, disabled }) => {
   const handleClick = () => {
     onClick(roomInfo);
   };
+  const themeContext = useContext(ThemeContext);
 
   return (
     <RoomJoinBtn onClick={handleClick} disabled={disabled}>
-      <OpenChatIcon width={1} height={1} color="#7B7671" />
+      <OpenChatIcon width={1} height={1} color={themeContext.IconNormal} />
     </RoomJoinBtn>
   );
 };
@@ -595,7 +596,7 @@ const OpenRoomName = styled.div`
 
 const RoomListBox = styled.div`
   padding: 0.94rem 0 0.75rem;
-  border-bottom: 1px solid #eeedeb;
+  border-bottom: 1px solid ${props => props.theme.LineSub};
 `;
 
 const RecommendRoomListBox = styled.div`
@@ -623,7 +624,7 @@ const RoomTitle = styled.p`
   font-size: 0.75rem;
   font-weight: 500;
   line-height: 1.13rem;
-  color: #000;
+  color: ${props => props.theme.TextMain};
 `;
 
 const RoomOpenTitle = styled(RoomTitle)`
@@ -631,10 +632,10 @@ const RoomOpenTitle = styled(RoomTitle)`
 `;
 
 const RoomCount = styled.span`
-  color: #000;
   opacity: 0.5;
   font-size: 0.75rem;
   margin-left: 0.5rem;
+  color: ${props => props.theme.TextMain};
 `;
 
 const ItemAddBtn = styled.button`
@@ -669,23 +670,22 @@ const RoomSearchForm = styled.div`
 `;
 const RecomRoomTitle = styled.p`
   font-size: 0.81rem;
-  color: #000000;
-  letter-spacing: 0;
+  color: ${props => props.theme.TextMain};
   overflow-x: hidden;
   text-overflow: ellipsis;
 `;
 
 const AdminText = styled.p`
-  color: #696969;
   overflow-x: hidden;
   text-overflow: ellipsis;
   font-size: 0.63rem;
+  color: #696969;
 `;
 
 const SearchTitle = styled.p`
   font-weight: 500;
   font-size: 0.94rem;
-  color: #000000;
+  color: ${props => props.theme.TextMain};
   letter-spacing: 0;
   text-align: center;
   margin-bottom: 0.63rem;
@@ -694,7 +694,7 @@ const SearchTitle = styled.p`
 const SearchSubText = styled.p`
   font-weight: 400;
   font-size: 0.75rem;
-  color: #696969;
+  color: ${props => props.theme.TextMain};
   letter-spacing: 0;
   text-align: center;
 `;
@@ -709,7 +709,7 @@ const RoomJoinBtn = styled.button`
   border-radius: 0.25rem;
 
   &:hover {
-    background-color: #f2efec;
+    background-color: ${props => props.theme.StateDark};
   }
 
   span {
@@ -729,12 +729,12 @@ const IconWrapper = styled.div`
   right: -0.375rem;
   width: 1.25rem;
   height: 1.25rem;
-  background: #efefef;
+  background: ${props => props.theme.SubStateNormal};
   border-radius: 50%;
   z-index: 1;
 
   &:hover {
-    background: #ccc;
+    background: ${props => props.theme.SubStateBright};
   }
 `;
 
