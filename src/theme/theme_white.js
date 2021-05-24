@@ -24,11 +24,11 @@ const colors = {
   GreenDark: '#133d3b',
   GreenVivid: '#88d1c7',
 
-  Oreange: '#ec6222',
-  OreangeBright: '#ee9266',
-  OreangeLight: '#ed7e49',
-  OreangeDark: '#d05319',
-  OreangeVivid: '#ff8459',
+  Orange: '#ec6222',
+  OrangeBright: '#ee9266',
+  OrangeLight: '#ed7e49',
+  OrangeDark: '#d05319',
+  OrangeVivid: '#ff8459',
 
   Beige: '#f7f4ef',
   BeigeBright: '#ebe6df',
@@ -45,7 +45,7 @@ const colors = {
   TextSub2: '#aeaeae',
   TextHinted: '#d7d7d7',
   TextPoinGreen: '#205855',
-  TextPoinOreange: '#ec6222',
+  TextPoinOrange: '#ec6222',
 
   LineOut: '#d0ccc7',
   LineMain: '#ddd9d4',
