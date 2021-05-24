@@ -485,6 +485,7 @@ const RoomItem = React.memo(
     const [dndTargetRoom, setDndTargetRoom] = useState(getRoomId());
 
     const isMyRoom = roomInfo.type === 'WKS0001';
+    const { isBotRoom } = roomInfo;
 
     const [{ canDrop, isOver }, drop] = useDrop({
       accept: ACCEPT_ITEMS,
@@ -492,6 +493,7 @@ const RoomItem = React.memo(
         //
         // Item Type에 따라서 처리해야 될 일들
         //
+        if (isBotRoom) return null;
         if (TALK_ACCEPT_ITEMS.includes(item.type)) {
           const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
             item.type.toLowerCase(),
@@ -532,7 +534,7 @@ const RoomItem = React.memo(
       },
     });
 
-    const isActive = canDrop && isOver;
+    const isActive = !isBotRoom && canDrop && isOver;
 
     const handleRoomClick = useCallback(() => {
       onClick(roomInfo);
