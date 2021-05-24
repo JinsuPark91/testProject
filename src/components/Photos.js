@@ -43,13 +43,6 @@ function Photos({
   className,
 }) {
   const getPhotos = () => {
-    if (isBotRoom)
-      return (
-        <SymbolWrapper>
-          <WaplSymbol width={1.25} height={1.25} />
-        </SymbolWrapper>
-      );
-
     if (srcList.length)
       return srcList.map((src, index) => (
         <UserPhoto

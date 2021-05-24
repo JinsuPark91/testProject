@@ -362,7 +362,8 @@ const Header = () => {
   };
 
   const handleClickRoomPhoto = () => {
-    store.visible.roomProfileModal = true;
+    if(!isBotRoom())
+      store.visible.roomProfileModal = true;
   };
 
   const handleCancelRoomMemeberModal = () => {
@@ -478,6 +479,7 @@ const Header = () => {
                   <Observer>
                     {() => (
                       <StyledPhotos
+                        isBotRoom={isBotRoom()}
                         className="header__photo"
                         srcList={getUserPhotos()}
                         onClick={handleClickRoomPhoto}
