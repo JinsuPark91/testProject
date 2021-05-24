@@ -52,6 +52,14 @@ export const SpaceBox = styled.div`
       line-height: 1.625rem;
       border: 1px solid ${props.theme.CoreVivid};
     `}
+
+  ${({ backgroundURL }) =>
+    backgroundURL &&
+    css`
+      background-image: url('${backgroundURL}');
+      background-repeat: no-repeat;
+      background-size: cover;
+    `}
 `;
 
 export const UnreadSpaceNumber = styled.div`

@@ -19,7 +19,7 @@ import {
 import { HomeIcon, HorizontalViewMoreIcon, AddIcon } from '../Icons';
 
 const SpaceItem = React.memo(
-  ({ checked, spaceName, spaceUnreadCount, spaceDomain }) => {
+  ({ checked, spaceName, backgroundURL, spaceUnreadCount, spaceDomain }) => {
     return (
       <Tooltip title={spaceName} placement="right" color="#4C535D">
         <SpaceBox
@@ -27,13 +27,14 @@ const SpaceItem = React.memo(
           onClick={() => {
             window.location.href = `${window.location.protocol}//${spaceDomain}`;
           }}
+          backgroundURL={backgroundURL}
         >
           {spaceUnreadCount > 0 && (
             <UnreadSpaceNumber>
               {spaceUnreadCount > 99 ? '99+' : spaceUnreadCount}
             </UnreadSpaceNumber>
           )}
-          {spaceName[0]}
+          {!backgroundURL && spaceName[0]}
         </SpaceBox>
       </Tooltip>
     );
@@ -120,6 +121,7 @@ const SpaceSide = () => {
               key={spaceInfo.id}
               checked={spaceInfo.id === spaceStore.currentSpace.id}
               spaceName={spaceInfo.name}
+              backgroundURL={spaceInfo.profilePhotoURL}
               spaceUnreadCount={spaceInfo.totalUnreadRoomCount}
               spaceDomain={spaceInfo.domain}
             />
