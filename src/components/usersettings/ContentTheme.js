@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Radio } from 'antd';
+import { useCoreStores } from 'teespace-core';
 import { useStores } from '../../stores';
 import ContentTitle from './ContentTitle';
 import { isDarkMode } from '../../utils/GeneralUtil';
@@ -17,18 +18,21 @@ import {
 
 const ContentTheme = () => {
   const { t } = useTranslation();
+  const { userStore } = useCoreStores();
   const { uiStore } = useStores();
-  const [value, setValue] = useState(
-    localStorage.getItem('PlatformTheme') || 'system',
-  );
+  const [value, setValue] = useState(userStore.myProfile.theme);
 
   const handleChange = e => {
     const targetValue = e.target.value;
     if (targetValue !== 'system') {
-      localStorage.setItem('PlatformTheme', targetValue);
+      userStore.updateMyDomainSetting({
+        theme: targetValue,
+      });
       uiStore.setTheme(targetValue);
     } else {
-      localStorage.removeItem('PlatformTheme');
+      userStore.updateMyDomainSetting({
+        theme: 'system',
+      });
       if (isDarkMode()) uiStore.setTheme('dark');
       else uiStore.setTheme('white');
     }

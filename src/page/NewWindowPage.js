@@ -42,9 +42,9 @@ const NewWindowPage = () => {
       await friendStore.fetchFriends({ myUserId });
       setChannelId(channelInfo.id);
 
-      await userStore.getMyLanguage();
+      await userStore.getMyDomainSetting();
       if (!userStore.myProfile.language) {
-        await userStore.updateMyLanguage({
+        await userStore.updateMyDomainSetting({
           language: i18n.language,
         });
       } else i18n.changeLanguage(userStore.myProfile.language);

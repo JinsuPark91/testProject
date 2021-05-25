@@ -1,5 +1,5 @@
-import { colors as dark } from './theme_dark.js';
-import { colors as white } from './theme_white.js';
+import { colors as dark } from './theme_dark';
+import { colors as white } from './theme_white';
 
 const theme = {
   dark,
