@@ -39,8 +39,8 @@ const NewWindowPage = () => {
       );
 
       // 프렌드 리스트를 불러오자
-      await friendStore.fetchFriends({ myUserId }),
-        setChannelId(channelInfo.id);
+      await friendStore.fetchFriends({ myUserId });
+      setChannelId(channelInfo.id);
     } catch (err) {
       console.error('Mini Talk Error : ', err);
     }

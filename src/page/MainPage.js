@@ -435,14 +435,14 @@ const MainPage = () => {
       } else if (uiStore.subAppState === AppState.STOPPED) {
         // NOTE. 미팅의 경우 라우팅이 변경될 때 토크 상태의 히스토리가 저장되어야 함.
         //  그렇지 않으면 이 방에 들어올 때마다 미팅이 실행됨.
-        saveHistory({ ...history.location, search: '' }, action);
+        saveHistory({ ...history.location, search: '' });
       } else {
         // DO NOTHING
       }
     }
 
     if (isRoutable) {
-      saveHistory(location, action);
+      saveHistory(location);
 
       // NOTE. 서브앱으로 라우팅되는 경우 초기화 진행중 상태로 진입됨.
       if (!subApp) {
