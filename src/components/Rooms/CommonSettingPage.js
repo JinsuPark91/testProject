@@ -24,8 +24,8 @@ const CommonSettingPage = ({ roomId }) => {
 
   useEffect(() => {
     if (roomInfo) {
-      const name = roomInfo?.customName || roomInfo?.name;
-      setValue(name.substring(0, 20) || '');
+      const name = roomInfo?.oriName;
+      setValue(name.substring(0, 50) || '');
 
       const isPrivate = roomInfo.type === 'WKS0002';
       setIsPrivateRoom(isPrivate);
@@ -158,7 +158,7 @@ const CommonSettingPage = ({ roomId }) => {
           maxLength={50}
           value={value}
           onChange={handleChange}
-          placeholder={roomInfo?.name}
+          placeholder={roomInfo?.oriName}
         />
         <Button
           type="solid"
