@@ -172,8 +172,9 @@ const MainPage = () => {
         }
 
         // 기본 테마 설정
-        const platformTheme = localStorage.getItem('PlatformTheme');
-        if (platformTheme) uiStore.setTheme(platformTheme);
+        const platformTheme = userStore.myProfile.theme;
+        if (platformTheme && platformTheme !== 'system')
+          uiStore.setTheme(platformTheme);
         else if (isDarkMode()) uiStore.setTheme('dark');
 
         // 스페이스 화면에서 1:1 Talk나 1:1 Meeting을 선택한 경우
