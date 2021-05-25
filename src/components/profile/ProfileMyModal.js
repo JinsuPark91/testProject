@@ -212,7 +212,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   );
 
   const handleChangeLanguage = async language => {
-    const result = await userStore.updateMyLanguage({ language });
+    const result = await userStore.updateMyDomainSetting({ language });
     if (result) {
       i18n.changeLanguage(language).then((t, err) => {
         if (err) return console.log(`error is..${err}`);

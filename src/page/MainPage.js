@@ -162,9 +162,9 @@ const MainPage = () => {
         AlarmSetting.initAlarmSet(alarmList);
 
         // 계정 langauge 적용. 없으면 브라우저 기본 langauge로 업데이트 한다.
-        await userStore.getMyLanguage();
+        await userStore.getMyDomainSetting();
         if (!userStore.myProfile.language) {
-          await userStore.updateMyLanguage({
+          await userStore.updateMyDomainSetting({
             language: i18n.language,
           });
         } else {
