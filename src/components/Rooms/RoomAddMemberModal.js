@@ -99,11 +99,7 @@ function RoomAddMemberModal({
   return (
     isLoaded && (
       <FlexModal
-        title={
-          <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>
-            {t('CM_ROOM_INVITE_USER')}
-          </div>
-        }
+        title={t('CM_ROOM_INVITE_USER')}
         visible={visible}
         closable
         onCancel={handleCancel}
@@ -147,6 +143,9 @@ function RoomAddMemberModal({
 }
 
 const FlexModal = styled(Modal)`
+  display: flex;
+  justify-content: center;
+
   .ant-modal-body {
     padding: 0;
   }

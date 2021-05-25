@@ -138,19 +138,20 @@ const SettingButton = styled.button`
   font-size: 0.69rem;
   opacity: 0.9;
   cursor: pointer;
-  &:hover {
-    background-color: ${props => props.theme.CoreBright};
-  }
-  &:active,
-  &:focus {
-    background-color: ${props => props.theme.CoreVivid};
-  }
   & + & {
     margin-left: 0.5625rem;
   }
-
+  &:not(:disabled) {
+    &:hover {
+      background-color: ${props => props.theme.CoreBright};
+    }
+    &:active,
+    &:focus {
+      background-color: ${props => props.theme.CoreLight};
+    }
+  }
   &:disabled {
-    color: #646464;
+    color: ${props => props.theme.DisabledText2};
     &:hover {
       cursor: not-allowed;
     }
