@@ -260,7 +260,6 @@ function RoomInquiryModal({
     if (roomId && visible) {
       const foundRoom = roomStore.getRoomMap().get(roomId);
       setRoomInfo(foundRoom);
-
       setRoomName(foundRoom.customName || foundRoom.name);
       setMemberPhotos(getUserPhotos(foundRoom));
       // NOTE. 수정 모드인 경우 기존 내용을 선택하고, 포커스 설정
@@ -419,9 +418,7 @@ function RoomInquiryModal({
               />
             ) : (
               <p>
-                {roomInfo?.isMyRoom
-                  ? userStore.myProfile.name
-                  : roomInfo?.customName || roomInfo?.name}
+                {roomInfo?.isMyRoom ? userStore.myProfile.name : roomInfo?.name}
               </p>
             )}
           </GroupTitle>

@@ -355,17 +355,8 @@ const RoomList = () => {
           <AddRoomIconWrapper
             className="rooms__create-button"
             onClick={handleCreateRoom}
-            $isDisable={!hasMemberCreatePermission}
           >
-            <AddRoomIcon
-              width={1.38}
-              height={1.38}
-              color={
-                hasMemberCreatePermission
-                  ? themeContext.IconNormal2
-                  : themeContext.IconDisabled
-              }
-            />
+            <AddRoomIcon width={1.38} height={1.38} />
           </AddRoomIconWrapper>
         </Tooltip>
       </TopWrapper>
