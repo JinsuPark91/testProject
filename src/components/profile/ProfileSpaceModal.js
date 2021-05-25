@@ -10,9 +10,9 @@ const SpaceInformation = styled.div`
   left: -24.125rem;
   bottom: 0;
   width: 22.81rem;
-  padding: 1.91rem 1rem 0.875rem;
+  padding: 1.91rem 1rem 0.625rem;
   border-radius: 0.625rem;
-  background: #fff;
+  background: ${props => props.theme.StateNormal};
   text-align: center;
   z-index: 1000;
   &:before {
@@ -22,7 +22,7 @@ const SpaceInformation = styled.div`
     right: -0.875rem;
     display: block;
     border-top: 0.4375rem solid transparent;
-    border-left: 0.875rem solid #fff;
+    border-left: 0.875rem solid ${props => props.theme.StateNormal};
     border-bottom: 0.4375rem solid transparent;
   }
 `;
@@ -32,7 +32,7 @@ const Title = styled.strong`
   font-size: 1.25rem;
   font-weight: normal;
   line-height: 1.81rem;
-  color: #000;
+  color: ${props => props.theme.TextMain};
 `;
 
 const Description = styled.p`
@@ -40,7 +40,7 @@ const Description = styled.p`
   font-size: 0.75rem;
   white-space: pre-line;
   line-height: 1.13rem;
-  color: #868686;
+  color: ${props => props.theme.TextSub};
 `;
 
 const SubDescription = styled(Description)`
@@ -49,32 +49,23 @@ const SubDescription = styled(Description)`
 `;
 
 const ButtonContainer = styled.div`
-  margin-bottom: 0.375rem;
-  .ant-btn {
+  .ant-btn-solid {
     width: 9.25rem;
-    &:only-child {
+    &:only-of-type {
       width: 16.06rem;
     }
-    &:last-child {
-      border-color: #205855;
-      background-color: #205855;
-      &:hover {
-        border-color: #698c87;
-        background-color: #698c87;
-      }
-      &:active,
-      &:focus {
-        border-color: #133d3b;
-        background-color: #133d3b;
-      }
-    }
-    & + .ant-btn {
+    & + .ant-btn-solid {
       margin-left: 0.5rem;
     }
   }
-`;
-const LinkButton = styled(Button)`
-  color: ${props => props.theme.GreenVivid};
+  .ant-btn-link {
+    margin-top: 0.375rem;
+    color: ${props => props.theme.GreenVivid};
+    &:active,
+    &:hover:active:focus {
+      color: ${props => props.theme.GreenVivid};
+    }
+  }
 `;
 
 function ProfileSpaceModal({
@@ -120,12 +111,16 @@ function ProfileSpaceModal({
           <Button type="solid" onClick={handleAddMember}>
             {t('CM_USER_INVITE')}
           </Button>
-          <Button type="solid" onClick={handleAdminPage}>
+          <Button
+            type="solid"
+            className="color-green"
+            onClick={handleAdminPage}
+          >
             {t('CM_ADMIN_PAGE')}
           </Button>
-          <LinkButton type="link" onClick={onClose}>
+          <Button type="link" onClick={onClose}>
             {t('CM_SKIP')}
-          </LinkButton>
+          </Button>
         </>
       );
     }
@@ -134,12 +129,12 @@ function ProfileSpaceModal({
         <Button type="solid" onClick={handleAddFriend}>
           {t('CM_ADD_PHOTO_FRIENDS')}
         </Button>
-        <Button type="solid" onClick={handleCreateRoom}>
+        <Button type="solid" className="color-green" onClick={handleCreateRoom}>
           {t('CM_CREATE_ROOM')}
         </Button>
-        <LinkButton type="link" onClick={onClose}>
+        <Button type="link" onClick={onClose}>
           {t('CM_SKIP')}
-        </LinkButton>
+        </Button>
       </>
     );
   };

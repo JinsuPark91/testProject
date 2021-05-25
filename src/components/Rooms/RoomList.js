@@ -356,7 +356,11 @@ const RoomList = () => {
             className="rooms__create-button"
             onClick={handleCreateRoom}
           >
-            <AddRoomIcon width={1.38} height={1.38} />
+            <AddRoomIcon
+              width={1.38}
+              height={1.38}
+              color={themeContext.IconNormal2}
+            />
           </AddRoomIconWrapper>
         </Tooltip>
       </TopWrapper>
