@@ -39,8 +39,15 @@ const NewWindowPage = () => {
       );
 
       // 프렌드 리스트를 불러오자
-      await friendStore.fetchFriends({ myUserId }),
-        setChannelId(channelInfo.id);
+      await friendStore.fetchFriends({ myUserId });
+      setChannelId(channelInfo.id);
+
+      await userStore.getMyLanguage();
+      if (!userStore.myProfile.language) {
+        await userStore.updateMyLanguage({
+          language: i18n.language,
+        });
+      } else i18n.changeLanguage(userStore.myProfile.language);
     } catch (err) {
       console.error('Mini Talk Error : ', err);
     }
