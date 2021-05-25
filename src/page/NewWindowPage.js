@@ -41,6 +41,13 @@ const NewWindowPage = () => {
       // 프렌드 리스트를 불러오자
       await friendStore.fetchFriends({ myUserId });
       setChannelId(channelInfo.id);
+
+      await userStore.getMyDomainSetting();
+      if (!userStore.myProfile.language) {
+        await userStore.updateMyDomainSetting({
+          language: i18n.language,
+        });
+      } else i18n.changeLanguage(userStore.myProfile.language);
     } catch (err) {
       console.error('Mini Talk Error : ', err);
     }
