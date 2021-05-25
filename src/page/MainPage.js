@@ -35,6 +35,9 @@ const MainPage = () => {
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [toastText, setToastText] = useState('');
   const [isRefreshModalVisible, setIsRefreshModalVisible] = useState(false);
+  const [isInvalidRoomModalVisible, setIsInvalidRoomModalVisible] = useState(
+    false,
+  );
 
   const history = useHistory();
   const { resourceType, resourceId, mainApp } = useParams();
@@ -322,7 +325,12 @@ const MainPage = () => {
     const roomSettingHandler = EventBus.on(
       'Platform:roomSetting',
       ({ roomId, mainTab, subTab }) => {
-        history.push(`/s/${roomId}/setting`, { mainTab, subTab });
+        const targetRoom = roomStore.getRoom(roomId);
+        if (targetRoom) {
+          history.push(`/s/${roomId}/setting`, { mainTab, subTab });
+        } else {
+          setIsInvalidRoomModalVisible(true);
+        }
       },
     );
 
@@ -470,6 +478,23 @@ const MainPage = () => {
         <WindowManager />
         {/* <PortalWindowManager /> */}
         <WindowMail />
+        {isInvalidRoomModalVisible && (
+          <Message
+            visible={isInvalidRoomModalVisible}
+            title={t('CM_INVALID_ROOM')}
+            subTitle=""
+            btns={[
+              {
+                type: 'solid',
+                shape: 'round',
+                text: t('CM_LOGIN_POLICY_03'),
+                onClick: () => {
+                  setIsInvalidRoomModalVisible(false);
+                },
+              },
+            ]}
+          />
+        )}
         {isRefreshModalVisible && (
           <Message
             visible={isRefreshModalVisible}
