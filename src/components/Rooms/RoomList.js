@@ -340,8 +340,14 @@ const RoomList = () => {
         <FriendSearch
           className="friendSearch"
           type="underline"
-          searchIconColor={{ active: '#000', default: '#000' }}
-          clearIconColor={{ active: '#17202B', default: '#C6CED6' }}
+          searchIconColor={{
+            active: themeContext.IconActive2,
+            default: themeContext.TextHinted,
+          }}
+          clearIconColor={{
+            active: themeContext.ClearActiveIcon,
+            default: themeContext.ClearNormalIcon,
+          }}
           onChange={handleChange}
           onClear={handleClear}
           placeholder={t('CM_SEARCH_NAME')}

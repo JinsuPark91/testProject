@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { ThemeContext } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import AddFriendsButton from './AddFriendsButton';
 import {
@@ -13,14 +14,21 @@ import {
 
 const FriendsLNBHeader = ({ handleInputChange, handleInputClear }) => {
   const { t } = useTranslation();
+  const themeContext = useContext(ThemeContext);
 
   return (
     <SearchBox>
       <FriendSearch
         className="friendSearch"
         type="underline"
-        searchIconColor={{ active: '#000', default: '#000' }}
-        clearIconColor={{ active: '#17202B', default: '#C6CED6' }}
+        searchIconColor={{
+          active: themeContext.IconActive2,
+          default: themeContext.TextHinted,
+        }}
+        clearIconColor={{
+          active: themeContext.ClearActiveIcon,
+          default: themeContext.ClearNormalIcon,
+        }}
         onChange={handleInputChange}
         onClear={handleInputClear}
         placeholder={t('CM_B2C_LNB_EMPTY_PAGE_06')}
