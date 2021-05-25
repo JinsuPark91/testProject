@@ -19,6 +19,9 @@ export const ButtonContainer = styled.div`
 `;
 
 export const FlexModal = styled(Modal)`
+  display: flex;
+  justify-content: center;
+
   .ant-modal-body {
     padding: 0;
   }
@@ -27,7 +30,7 @@ export const FlexModal = styled(Modal)`
 export const Description = styled.div`
   font-size: 0.69rem;
   line-height: 1.06rem;
-  color: #8d8d8d;
+  color: ${props => props.theme.TextSub};
 `;
 
 export const ConfigWrapper = styled.div`
@@ -41,5 +44,5 @@ export const Title = styled.div`
   font-size: 0.81rem;
   line-height: 1.13rem;
   font-weight: 500;
-  color: #000;
+  color: ${props => props.theme.TextMain};
 `;

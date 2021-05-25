@@ -12,7 +12,7 @@ const colors = {
   SubStateDark: '#313438',
   SubStateVivid: '#fff',
 
-  CoreNormal: '#7b7671',
+  CoreNormal: '#938d86',
   CoreBright: '#645f5b',
   CoreLight: '#5c5753',
   CoreDark: '#4b4744',

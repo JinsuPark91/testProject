@@ -84,25 +84,26 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
                   history.push(
                     `${stateFrom.pathname}${props.location.state?.from.search}`,
                   );
-                } else {
-                  if (getRoutingPath?.includes('/mobile')) {
-                    const exceptMobilePath = getRoutingPath.replace(
-                      '/mobile',
-                      '',
-                    );
-                    if (exceptMobilePath.includes('/login')) {
-                      history.push(`/friend`);
-                    } else {
-                      history.push(exceptMobilePath);
-                    }
+                } else if (getRoutingPath?.includes('/mobile')) {
+                  const exceptMobilePath = getRoutingPath.replace(
+                    '/mobile',
+                    '',
+                  );
+                  if (exceptMobilePath.includes('/login')) {
+                    history.push(`/friend`);
                   } else {
+                    history.push(exceptMobilePath);
+                  }
+                } else {
+                  if (getRoutingPath?.includes('/login')) {
                     history.push(`/f/${authStore.user.id}/profile`);
+                  } else {
+                    history.push(getRoutingPath);
                   }
                 }
               }
             } catch (e) {
               console.error(e);
-              return <Route component={NotFoundPage} />;
             }
           })();
           return null;
@@ -186,7 +187,6 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
               }
             } catch (e) {
               console.error(e);
-              return <Route component={NotFoundPage} />;
             }
           })();
           return null;

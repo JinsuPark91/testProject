@@ -23,6 +23,9 @@ export const ConfigDescriptionText = styled.div`
 `;
 
 export const FlexModal = styled(Modal)`
+  display: flex;
+  justify-content: center;
+
   .ant-modal-body {
     padding: 0;
   }
