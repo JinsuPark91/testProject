@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { WaplSearch, Toast } from 'teespace-core';
+import { WaplSearch, Toast, useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import { Observer } from 'mobx-react';
 import { Button, Checkbox } from 'antd';
@@ -14,16 +14,17 @@ const remToPixel = rem => {
 };
 
 const WIDTH = {
-  CHECKBOX: '5%',
-  NICK: '15%',
-  LOGIN_ID: '25%',
-  TEAM: '15%',
-  JOB: '15%',
-  PHONE: '25%',
+  CHECKBOX: 5,
+  NICK: 15,
+  LOGIN_ID: 25,
+  TEAM: 15,
+  JOB: 15,
+  PHONE: 25,
 };
 
-const TableRow = ({ style, member }) => {
+const TableRow = ({ style, member, isB2C }) => {
   const { roomSettingStore: store } = useStores();
+
   const handleCheckChange = e => {
     if (e.target.checked) {
       store.selectedBanMembers.set(member.id, member);
@@ -36,7 +37,7 @@ const TableRow = ({ style, member }) => {
 
   return (
     <RowWrapper style={style}>
-      <Cell style={{ width: WIDTH.CHECKBOX }}>
+      <Cell style={{ width: `${WIDTH.CHECKBOX}%` }}>
         <Observer>
           {() => (
             <Checkbox
@@ -48,23 +49,41 @@ const TableRow = ({ style, member }) => {
         </Observer>
       </Cell>
       <Observer>
-        {() => <Cell style={{ width: WIDTH.NICK }}>{member.nick}</Cell>}
-      </Observer>
-      <Observer>
-        {() => <Cell style={{ width: WIDTH.LOGIN_ID }}>{member.loginId}</Cell>}
-      </Observer>
-      <Observer>
-        {() => <Cell style={{ width: WIDTH.TEAM }}>{member.orgName}</Cell>}
-      </Observer>
-      <Observer>
         {() => (
-          <Cell style={{ width: WIDTH.JOB }}>
-            {`${member.job || '-'}/${member.position || '-'}`}
+          <Cell style={{ width: `${WIDTH.NICK + (isB2C ? 10 : 0)}%` }}>
+            {member.nick}
           </Cell>
         )}
       </Observer>
       <Observer>
-        {() => <Cell style={{ width: WIDTH.PHONE }}>{member.phone}</Cell>}
+        {() => (
+          <Cell style={{ width: `${WIDTH.LOGIN_ID + (isB2C ? 10 : 0)}%` }}>
+            {member.loginId}
+          </Cell>
+        )}
+      </Observer>
+      <Observer>
+        {() =>
+          isB2C ? null : (
+            <Cell style={{ width: `${WIDTH.TEAM}%` }}>{member.orgName}</Cell>
+          )
+        }
+      </Observer>
+      <Observer>
+        {() =>
+          isB2C ? null : (
+            <Cell style={{ width: `${WIDTH.JOB}%` }}>
+              {`${member.job || '-'}/${member.position || '-'}`}
+            </Cell>
+          )
+        }
+      </Observer>
+      <Observer>
+        {() => (
+          <Cell style={{ width: `${WIDTH.PHONE + (isB2C ? 10 : 0)}%` }}>
+            {member.phone}
+          </Cell>
+        )}
       </Observer>
     </RowWrapper>
   );
@@ -73,8 +92,10 @@ const TableRow = ({ style, member }) => {
 const Table = () => {
   const { t } = useTranslation();
   const { roomSettingStore: store } = useStores();
+  const { spaceStore } = useCoreStores();
   const tableBodyRef = useRef(null);
   const [listHeight, setListHeight] = useState(0);
+  const isB2C = spaceStore.currentSpace.type === 'B2C';
 
   useEffect(() => {
     if (tableBodyRef.current) {
@@ -101,7 +122,7 @@ const Table = () => {
   return (
     <>
       <TableHeader>
-        <HeaderCell style={{ width: WIDTH.CHECKBOX }}>
+        <HeaderCell style={{ width: `${WIDTH.CHECKBOX}%` }}>
           <Observer>
             {() => (
               <Checkbox
@@ -112,15 +133,23 @@ const Table = () => {
             )}
           </Observer>
         </HeaderCell>
-        <HeaderCell style={{ width: WIDTH.NICK }}>
+        <HeaderCell style={{ width: `${WIDTH.NICK + (isB2C ? 10 : 0)}%` }}>
           {t('CM_NICKNAME')}
         </HeaderCell>
-        <HeaderCell style={{ width: WIDTH.LOGIN_ID }}>{t('CM_ID')}</HeaderCell>
-        <HeaderCell style={{ width: WIDTH.TEAM }}>{t('CM_TEAM')}</HeaderCell>
-        <HeaderCell style={{ width: WIDTH.JOB }}>
-          {t('CM_TITLE_POSITION')}
+        <HeaderCell style={{ width: `${WIDTH.LOGIN_ID + (isB2C ? 10 : 0)}%` }}>
+          {t('CM_ID')}
         </HeaderCell>
-        <HeaderCell style={{ width: WIDTH.PHONE }}>
+        {isB2C ? null : (
+          <>
+            <HeaderCell style={{ width: `${WIDTH.TEAM}%` }}>
+              {t('CM_TEAM')}
+            </HeaderCell>
+            <HeaderCell style={{ width: `${WIDTH.JOB}%` }}>
+              {t('CM_TITLE_POSITION')}
+            </HeaderCell>
+          </>
+        )}
+        <HeaderCell style={{ width: `${WIDTH.PHONE + (isB2C ? 10 : 0)}%` }}>
           {t('CM_MOBILE_NUMBER')}
         </HeaderCell>
       </TableHeader>
@@ -139,7 +168,11 @@ const Table = () => {
                 width="100%"
               >
                 {({ index, style }) => (
-                  <TableRow style={style} member={filteredMembers[index]} />
+                  <TableRow
+                    style={style}
+                    member={filteredMembers[index]}
+                    isB2C={isB2C}
+                  />
                 )}
               </List>
             );
