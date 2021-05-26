@@ -18,8 +18,7 @@ import {
 
 const ContentTheme = () => {
   const { t } = useTranslation();
-  const { userStore } = useCoreStores();
-  const { uiStore } = useStores();
+  const { userStore, themeStore } = useCoreStores();
   const [value, setValue] = useState(userStore.myProfile.theme);
 
   const handleChange = e => {
@@ -28,13 +27,13 @@ const ContentTheme = () => {
       userStore.updateMyDomainSetting({
         theme: targetValue,
       });
-      uiStore.setTheme(targetValue);
+      themeStore.setTheme(targetValue);
     } else {
       userStore.updateMyDomainSetting({
         theme: 'system',
       });
-      if (isDarkMode()) uiStore.setTheme('dark');
-      else uiStore.setTheme('white');
+      if (isDarkMode()) themeStore.setTheme('dark');
+      else themeStore.setTheme('white');
     }
     setValue(targetValue);
   };

@@ -43,7 +43,13 @@ const MainPage = () => {
   const { resourceType, resourceId, mainApp } = useParams();
   const { sub: subApp } = getQueryParams(history.location.search);
 
-  const { roomStore, userStore, friendStore, spaceStore } = useCoreStores();
+  const {
+    roomStore,
+    userStore,
+    friendStore,
+    spaceStore,
+    themeStore,
+  } = useCoreStores();
   const myUserId = userStore.myProfile.id;
 
   const url = window.location.origin; //  http://xxx.dev.teespace.net
@@ -174,8 +180,8 @@ const MainPage = () => {
         // 기본 테마 설정
         const platformTheme = userStore.myProfile.theme;
         if (platformTheme && platformTheme !== 'system')
-          uiStore.setTheme(platformTheme);
-        else if (isDarkMode()) uiStore.setTheme('dark');
+          themeStore.setTheme(platformTheme);
+        else if (isDarkMode()) themeStore.setTheme('dark');
 
         // 스페이스 화면에서 1:1 Talk나 1:1 Meeting을 선택한 경우
         if (resourceType === 'f' && profileAction) {

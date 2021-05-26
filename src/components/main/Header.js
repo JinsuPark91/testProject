@@ -8,6 +8,7 @@ import {
   EventBus,
   Tooltip,
   AddFriendsByInvitationDialog,
+  ThemeStore,
 } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +28,7 @@ import {
   StyledPhotos,
   VerticalBar,
 } from './HeaderStyle';
-import { useStores, rootStore } from '../../stores';
+import { useStores } from '../../stores';
 import HeaderProfile from '../profile/HeaderProfile';
 import RoomInquiryModal from '../Rooms/RoomInquiryModal';
 import RoomAddMemberModal from '../Rooms/RoomAddMemberModal';
@@ -51,12 +52,10 @@ import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 import * as useCommand from '../../hook/Command';
 
 const getIconStyle = (isDisabled = false) => {
-  const { uiStore } = rootStore;
-
   return {
     width: 1.38,
     height: 1.38,
-    color: isDisabled ? 'rgba(68, 77, 89, 0.3)' : uiStore.theme.HeaderIcon,
+    color: isDisabled ? 'rgba(68, 77, 89, 0.3)' : ThemeStore.theme.HeaderIcon,
   };
 };
 
@@ -170,7 +169,7 @@ const Header = () => {
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
   const { t, i18n } = useTranslation();
   const { uiStore } = useStores();
-  const { roomStore, userStore, configStore } = useCoreStores();
+  const { roomStore, userStore, configStore, themeStore } = useCoreStores();
   const store = useLocalStore(() => ({
     appConfirm: null,
     inviteRoomId: null,
@@ -362,8 +361,7 @@ const Header = () => {
   };
 
   const handleClickRoomPhoto = () => {
-    if(!isBotRoom())
-      store.visible.roomProfileModal = true;
+    if (!isBotRoom()) store.visible.roomProfileModal = true;
   };
 
   const handleCancelRoomMemeberModal = () => {
@@ -540,7 +538,7 @@ const Header = () => {
                                 <ExportIcon
                                   width={1.25}
                                   height={1.25}
-                                  color={uiStore.theme.HeaderIcon}
+                                  color={themeStore.theme.HeaderIcon}
                                 />
                               </IconWrapper>
                             </Tooltip>
@@ -556,7 +554,7 @@ const Header = () => {
                                 <SearchIcon
                                   width={1.25}
                                   height={1.25}
-                                  color={uiStore.theme.HeaderIcon}
+                                  color={themeStore.theme.HeaderIcon}
                                 />
                               </IconWrapper>
                             </Tooltip>
@@ -582,7 +580,7 @@ const Header = () => {
                                     <AddAcountIcon
                                       width={1.25}
                                       height={1.25}
-                                      color={uiStore.theme.HeaderIcon}
+                                      color={themeStore.theme.HeaderIcon}
                                     />
                                   </IconWrapper>
                                 </Tooltip>

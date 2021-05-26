@@ -6,13 +6,14 @@ import {
   GlobalCommonStyles,
   API,
   initGA,
+  ThemeStore,
 } from 'teespace-core';
 import { I18nextProvider } from 'react-i18next';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import { i18n } from './i18n';
-import { rootStore } from './stores';
+
 // import MobileApp from './components/mobile/MobileApp';
 import WebApp from './App';
 import * as serviceWorker from './serviceWorker';
@@ -93,7 +94,7 @@ ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <Observer>
         {() => (
-          <ThemeProvider theme={rootStore.uiStore.theme}>
+          <ThemeProvider theme={ThemeStore.theme}>
             <GlobalCommonStyles />
             <BrowserRouter>
               <Switch>
