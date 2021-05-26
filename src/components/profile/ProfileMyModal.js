@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { Button, Dropdown, Menu, Checkbox } from 'antd';
 import {
   useCoreStores,
@@ -62,6 +62,7 @@ import {
 } from '../../styles/profile/ProfileMyModalStyle';
 import { ReactComponent as SquareSpaceIcon } from '../../assets/card_view.svg';
 import LanguageIcon from '../../assets/language.svg';
+import { ThemeContext } from 'styled-components';
 
 const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   const { t, i18n } = useTranslation();
@@ -93,6 +94,8 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   const { isGuest } = myProfile;
   const myUserId = myProfile.id;
   const thumbPhoto = userStore.getProfilePhotoURL(myUserId, 'medium');
+
+  const themeContext = useContext(ThemeContext);
 
   const handleSettingDialogOpen = useCallback(() => {
     setIsCreated(false);
@@ -329,7 +332,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
           >
             <Tooltip
               placement="topLeft"
-              color="#4C535D"
+              color={themeContext.CoreLight}
               title={t('CM_PROFILE_PROFILE_MENU_02')}
             >
               <Button className="btn-more">

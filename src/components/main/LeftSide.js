@@ -69,7 +69,7 @@ const LeftSide = () => {
                 <Tooltip
                   title={t('CM_FRIENDS_LIST')}
                   placement="bottom"
-                  color="#4C535D"
+                  color={themeContext.CoreLight}
                 >
                   <IconWrapper className="lnb__icon-wrapper lnb__friends">
                     <Observer>
@@ -107,7 +107,7 @@ const LeftSide = () => {
                 <Tooltip
                   title={t('CM_COMMUNICATION_BAR_02')}
                   placement="bottom"
-                  color="#4C535D"
+                  color={themeContext.CoreLight}
                 >
                   <IconWrapper className="lnb__icon-wrapper lnb__rooms">
                     <Observer>
@@ -152,7 +152,7 @@ const LeftSide = () => {
                   <Tooltip
                     title={t('CM_COMMUNICATION_BAR_03')}
                     placement="bottom"
-                    color="#4C535D"
+                    color={themeContext.CoreLight}
                   >
                     <IconWrapper className="lnb__icon-wrapper lnb__mail">
                       <UnreadCount isVisible={MailStore.unreadTotalCount > 0}>

@@ -20,8 +20,13 @@ import { HomeIcon, HorizontalViewMoreIcon, AddIcon } from '../Icons';
 
 const SpaceItem = React.memo(
   ({ checked, spaceName, backgroundURL, spaceUnreadCount, spaceDomain }) => {
+    const themeContext = useContext(ThemeContext);
     return (
-      <Tooltip title={spaceName} placement="right" color="#4C535D">
+      <Tooltip
+        title={spaceName}
+        placement="right"
+        color={themeContext.CoreLight}
+      >
         <SpaceBox
           checked={checked}
           onClick={() => {
@@ -104,7 +109,11 @@ const SpaceSide = () => {
 
   return (
     <Wrapper>
-      <Tooltip title={t('CM_GO_SPACES')} placement="right" color="#4C535D">
+      <Tooltip
+        title={t('CM_GO_SPACES')}
+        placement="right"
+        color={themeContext.CoreLight}
+      >
         <ItemWrapper
           background={themeContext.StateNormal}
           style={{ marginTop: '0.55rem' }}
@@ -169,7 +178,7 @@ const SpaceSide = () => {
       <Tooltip
         title={t('CM_CREATE_CONTENTS_AREA_02')}
         placement="right"
-        color="#4C535D"
+        color={themeContext.CoreLight}
       >
         <ItemWrapper
           background={themeContext.StateBright}

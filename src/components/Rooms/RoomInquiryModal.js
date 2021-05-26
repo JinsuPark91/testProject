@@ -496,7 +496,7 @@ function RoomInquiryModal({
               <Tooltip
                 placement="bottom"
                 title={t('CM_ROOM_ADMIN')}
-                color="#4C535D"
+                color={themeContext.CoreLight}
               >
                 <IconWrapper>
                   <LeaderIcon width={1.13} height={1.13} color="#205855" />

@@ -45,6 +45,8 @@ const TableRow = ({ style, member, isB2C }) => {
     }
   };
 
+  const themeContext = useContext(ThemeContext);
+
   const getMemberType = () => {
     switch (member.grade) {
       case 'member':
@@ -67,7 +69,7 @@ const TableRow = ({ style, member, isB2C }) => {
           <Tooltip
             placement="bottom"
             title={t('CM_ROOM_ADMIN')}
-            color="#4C535D"
+            color={themeContext.CoreLight}
           >
             <IconWrapper>
               <LeaderIcon width={1.13} height={1.13} color="#205855" />

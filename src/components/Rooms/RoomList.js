@@ -354,7 +354,7 @@ const RoomList = () => {
         <Tooltip
           title={t('CM_CREATE_ROOM')}
           placement="bottomLeft"
-          color="#4C535D"
+          color={themeContext.CoreLight}
         >
           <AddRoomIconWrapper
             className="rooms__create-button"
