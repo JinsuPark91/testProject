@@ -25,7 +25,7 @@ const CommonSettingPage = ({ roomId }) => {
   useEffect(() => {
     if (roomInfo) {
       const name = roomInfo?.oriName;
-      setValue(name.substring(0, 50) || '');
+      setValue(name?.substring(0, 50) || roomInfo.name?.substring(0, 50) || '');
 
       const isPrivate = roomInfo.type === 'WKS0002';
       setIsPrivateRoom(isPrivate);
