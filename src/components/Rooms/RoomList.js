@@ -222,8 +222,6 @@ const RoomList = () => {
     store.toast.visible = false;
   };
 
-  const hasMemberCreatePermission = authStore.hasPermission('members', 'C');
-
   const themeContext = useContext(ThemeContext);
 
   useCommand.NewRoom(handleCreateRoom);
@@ -377,8 +375,11 @@ const RoomList = () => {
       >
         <Observer>
           {() => {
-            return roomStore
-              .getRoomArray()
+            const botRoom = roomStore.getBotRoom();
+            const rooms = roomStore.getRoomArray();
+            if (botRoom) rooms.splice(1, 0, botRoom);
+
+            return rooms
               .filter(roomFilter)
               .map(roomInfo => (
                 <RoomItem
@@ -397,16 +398,7 @@ const RoomList = () => {
       <Observer>
         {() => {
           return configStore.isActivateComponent('Platform', 'LNB:Logo') ? (
-            <ButtonWrapper
-              isScrollEnd={store.isScrollEnd}
-              // onClick={() => {
-              //   // EventBus.dispatch('Platform:inviteUser');
-              //   EventBus.dispatch('Platform:roomSetting', {
-              //     mainTab: 'member',
-              //     subTab: 'blocked',
-              //   });
-              // }}
-            >
+            <ButtonWrapper isScrollEnd={store.isScrollEnd}>
               <WaplLogo textColor={themeContext.BasicDark} />
             </ButtonWrapper>
           ) : null;
