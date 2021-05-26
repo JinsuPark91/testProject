@@ -7,7 +7,6 @@ import keycloak from './keycloak';
 import { LogoutTimer } from './logoutTimer';
 import HyperAuthRepository from './HyperAuthRepository.js';
 import { ssoType } from './auth';
-import NotFoundPage from '../page/NotFoundPage';
 
 export default function KsignRedirectRoute({ component: Component, ...rest }) {
   const { authStore } = useCoreStores();
@@ -16,9 +15,13 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
   const url = window.location.origin; //  http://xxx.dev.teespace.net
   const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
   const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
-
+  //for guset
+  const searchParams = new URLSearchParams(window.location.search);
+  const getLoginId = searchParams.get('loginId');
+  const getDeviceId = searchParams.get('deviceId');
+  const getPath = searchParams.get('path');
   useEffect(() => {
-    if (getNibId) {
+    if (getNibId || getLoginId) {
       // NOTE. 사용자 인증이 된 상태에서 웹소켓 연결을 시도
       if (!wwms.isConnected && authStore.isAuthenticated) {
         wwms.connect(authStore.user.id);
@@ -47,11 +50,6 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
 
   if (getNibId) {
     //index.jsp 탈 경우
-    // const { authStore } = useCoreStores();
-    // const history = useHistory();
-    const searchParams = new URLSearchParams(window.location.search);
-    const getLoginId = searchParams.get('loginId');
-    const getDeviceId = searchParams.get('deviceId');
 
     let loginInfo;
     if (window.location.pathname.includes('/mobile')) {
@@ -59,13 +57,13 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
         // ksign 용 로그인 input
         deviceType: 'Mobile',
         authorizeType: 'Ksign',
-        ssoType: ssoType,
+        ssoType,
       };
     } else {
       loginInfo = {
         deviceType: 'PC',
         authorizeType: 'Ksign',
-        ssoType: ssoType,
+        ssoType,
       };
     }
 
@@ -110,6 +108,56 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
         }}
       />
     );
+  }
+  //for guest
+  else if (getLoginId && getDeviceId && getPath) {
+    let loginInfo;
+    loginInfo = {
+      // ksign 용 로그인 input
+      deviceType: 'Mobile',
+      authorizeType: 'Ksign',
+      id: getLoginId,
+      deviceId: getDeviceId,
+      ssoType,
+    };
+
+    return (
+      <Route
+        {...rest}
+        render={props => {
+          (async () => {
+            try {
+              const stateFrom = props.location.state?.from;
+
+              const res = await authStore.login(loginInfo);
+              if (res) {
+                if (stateFrom) {
+                  history.push(
+                    `${stateFrom.pathname}${props.location.state?.from.search}`,
+                  );
+                } else if (getPath.includes('/mobile')) {
+                  const exceptMobilePath = getPath.replace('/mobile', '');
+                  if (exceptMobilePath.includes('/login')) {
+                    history.push(`/friend`);
+                  } else {
+                    history.push(exceptMobilePath);
+                  }
+                } else {
+                  if (getPath.includes('/login')) {
+                    history.push(`/f/${authStore.user.id}/profile`);
+                  } else {
+                    history.push(getPath);
+                  }
+                }
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          })();
+          return null;
+        }}
+      />
+    );
   } else {
     //ssoType은 ksign이나, hyperauth 타야되는 경우(ksign 인증 x)
 
@@ -125,14 +173,14 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
         deviceType: 'PC',
         domainUrl: domainName,
         isLocal: 'local',
-        ssoType: ssoType,
+        ssoType,
       };
     } else {
       [domainName] = url.split(`//`)[1].split(`.`);
       loginInfo = {
         deviceType: 'PC',
         domainUrl: '',
-        ssoType: ssoType,
+        ssoType,
       };
     }
     return (
