@@ -4,8 +4,14 @@ import { ReactKeycloakProvider } from '@react-keycloak/web';
 import Cookies from 'js-cookie';
 
 export default ({ children }) => {
+  //for guset
+  const searchParams = new URLSearchParams(window.location.search);
+  const getLoginId = searchParams.get('loginId');
+  const getDeviceId = searchParams.get('deviceId');
+  const getPath = searchParams.get('path');
   const getNibId = Cookies.get('NIBID');
-  if (getNibId) {
+
+  if (getNibId || (getLoginId && getDeviceId && getPath)) {
     return <>{children}</>;
   } else {
     const isLocal = process.env.REACT_APP_ENV === 'local';
