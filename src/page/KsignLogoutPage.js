@@ -18,7 +18,7 @@ const KsignLogoutPage = () => {
       wwms.disconnect();
       Cookies.remove('ACCESS_TOKEN');
       Cookies.remove('DEVICE_TYPE');
-      if (getNibId) {
+      if (getNibId || authStore.user.grade === 'guest') {
         window.location.href = `/cnu/sso/logout.jsp`;
       } else {
         await keycloak.logout({

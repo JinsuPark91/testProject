@@ -15,7 +15,7 @@ export default function PrivateKsignRoute({ component, ...rest }) {
       wwms.connect(authStore.user.id, authStore.user.loginId);
     }
   }, [authStore.user.id, authStore.user.loginId, authStore.isAuthenticated]);
-  if (getNibId) {
+  if (getNibId || authStore.user.grade === 'guest') {
     return (
       <Route
         {...rest}
