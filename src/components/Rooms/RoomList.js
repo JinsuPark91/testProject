@@ -375,10 +375,7 @@ const RoomList = () => {
       >
         <Observer>
           {() => {
-            const botRoom = roomStore.getBotRoom();
-            const rooms = roomStore.getRoomArray();
-            if (botRoom) rooms.splice(1, 0, botRoom);
-
+            const rooms = roomStore.getRoomArray(true);
             return rooms
               .filter(roomFilter)
               .map(roomInfo => (
