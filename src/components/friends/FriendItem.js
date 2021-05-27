@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { talkOnDrop } from 'teespace-talk-app';
@@ -25,6 +25,7 @@ import {
 } from '../../styles/friends/FriendItemStyle';
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 import mySign from '../../assets/wapl_me.svg';
+import { ThemeContext } from 'styled-components';
 
 const { uiStore } = rootStore;
 
@@ -155,8 +156,14 @@ const AllAction = React.memo(({ itemId }) => {
     );
   };
 
+  const themeContext = useContext(ThemeContext);
+
   return (
-    <Tooltip placement="top" title={t('CM_TEMP_MINI_CHAT')} color="#4C535D">
+    <Tooltip
+      placement="top"
+      title={t('CM_TEMP_MINI_CHAT')}
+      color={themeContext.CoreLight}
+    >
       <MoreIconWrapper
         className="lnb-friend__export-icon friends__item__export-button"
         onClick={handleExport}

@@ -1,8 +1,8 @@
 /* eslint-disable no-nested-ternary */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { List, Menu, Dropdown, Tooltip } from 'antd';
-import styled, { css } from 'styled-components';
+import styled, { css, ThemeContext } from 'styled-components';
 import { Observer } from 'mobx-react';
 import { useCoreStores, EventBus } from 'teespace-core';
 import { talkOnDrop } from 'teespace-talk-app';
@@ -286,6 +286,8 @@ const RoomItemContent = React.memo(
       onClickRoomPhoto(roomInfo);
     };
 
+    const themeContext = useContext(ThemeContext);
+
     const getIcon = () => {
       if (roomInfo.type === 'WKS0003')
         return (
@@ -447,7 +449,11 @@ const RoomItemContent = React.memo(
             </IconWrapper>
           </RoomDropdown>
         )}
-        <Tooltip placement="top" title={t('CM_TEMP_MINI_CHAT')} color="#4C535D">
+        <Tooltip
+          placement="top"
+          title={t('CM_TEMP_MINI_CHAT')}
+          color={themeContext.CoreLight}
+        >
           <IconWrapper
             className="rooms__item__export-button"
             onClick={handleExport}

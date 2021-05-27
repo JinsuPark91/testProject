@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { useCoreStores, Tooltip } from 'teespace-core';
 import { observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,7 @@ import {
   SettingImage,
 } from '../../styles/profile/HeaderProfileStyle';
 import settingIcon from '../../assets/setting.svg';
+import { ThemeContext } from 'styled-components';
 
 const HeaderProfile = observer(() => {
   const { t } = useTranslation();
@@ -24,13 +25,13 @@ const HeaderProfile = observer(() => {
     setMyModalVisible(v => !v);
     if (tutorialVisible) setTutorialVisible(false);
   }, [tutorialVisible]);
-
+  const themeContext = useContext(ThemeContext);
   return (
     <>
       <Tooltip
         placement="bottomLeft"
         title={t('CM_ROOMTITLE_TOOLTIP_04')}
-        color="#4C535D"
+        color={themeContext.CoreLight}
       >
         <ProfileIcon className="header__profile-button" onClick={toggleMyModal}>
           <ThumbImage src={thumbPhoto} />

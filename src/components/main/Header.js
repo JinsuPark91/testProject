@@ -134,7 +134,7 @@ const AppIcon = React.memo(
     disabled,
   }) => {
     const { t } = useTranslation();
-
+    const themeContext = useContext(ThemeContext);
     const handleAppClick = () => {
       onClick(appName);
     };
@@ -149,7 +149,11 @@ const AppIcon = React.memo(
     }
 
     return (
-      <Tooltip placement="bottom" title={t(i18n)} color="#4C535D">
+      <Tooltip
+        placement="bottom"
+        title={t(i18n)}
+        color={themeContext.CoreLight}
+      >
         <AppIconInner
           className={`header__${appName}-button`}
           key={appName}
@@ -529,7 +533,7 @@ const Header = () => {
                             <Tooltip
                               placement="bottom"
                               title={t('CM_TEMP_MINI_CHAT')}
-                              color="#4C535D"
+                              color={themeContext.CoreLight}
                             >
                               <IconWrapper
                                 className="header__export-button"
@@ -545,7 +549,7 @@ const Header = () => {
                             <Tooltip
                               placement="bottom"
                               title={t('CM_ROOMTITLE_TOOLTIP_02')}
-                              color="#4C535D"
+                              color={themeContext.CoreLight}
                             >
                               <IconWrapper
                                 className="header__search-button"
@@ -571,7 +575,7 @@ const Header = () => {
                                 <Tooltip
                                   placement="bottom"
                                   title={t('CM_ROOM_INVITE_USER')}
-                                  color="#4C535D"
+                                  color={themeContext.CoreLight}
                                 >
                                   <IconWrapper
                                     className="header__invite-button"
