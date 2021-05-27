@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
 import {
@@ -7,6 +7,7 @@ import {
   ErrorIcon,
 } from '../../../styles/profile/SpaceEditModalStyle';
 import errorIcon from '../../../assets/ts_error.svg';
+import { ThemeContext } from 'styled-components';
 
 const GroupNameField = ({ spaceName, handleChange }) => {
   const { t } = useTranslation();
@@ -26,6 +27,8 @@ const GroupNameField = ({ spaceName, handleChange }) => {
     return () => setIsNameWarningVisible(false);
   }, []);
 
+  const themeContext = useContext(ThemeContext);
+
   return (
     <>
       <SubTitle>{t('CM_SPACE_NAME')}</SubTitle>
@@ -42,7 +45,7 @@ const GroupNameField = ({ spaceName, handleChange }) => {
         <ErrorIcon visible={isNameWarningVisible}>
           <Tooltip
             title={t('CM_ENTER_SPACE_NAME')}
-            color="#4C535D"
+            color={themeContext.CoreLight}
             placement="top"
             visible={isNameWarningVisible}
           >

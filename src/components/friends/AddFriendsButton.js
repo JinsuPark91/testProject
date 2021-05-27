@@ -14,7 +14,7 @@ const AddButton = React.memo(({ onOpen }) => {
     <Tooltip
       title={t('CM_ADD_PHOTO_FRIENDS')}
       placement="bottomLeft"
-      color="#4C535D"
+      color={themeContext.CoreLight}
     >
       <FriendAddButton className="friends__add-button" onClick={onOpen}>
         <AddAcountIcon

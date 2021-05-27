@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   FloatingMenu,
   MainButton,
   ChildButton,
 } from 'react-floating-button-menu';
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import Draggable from 'react-draggable';
 import { Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -27,9 +27,15 @@ const ChildItem = ({ roomInfo, onItemClick, onItemClose }) => {
     onItemClose(roomInfo);
   };
 
+  const themeContext = useContext(ThemeContext);
+
   return (
     <ChildItemWrapper onClick={handleClick}>
-      <Tooltip placement="top" title={roomInfo.name} color="#4C535D">
+      <Tooltip
+        placement="top"
+        title={roomInfo.name}
+        color={themeContext.CoreLight}
+      >
         <div>{roomInfo.name.slice(0, 4)}</div>
       </Tooltip>
       <div style={{ height: '1rem' }}>
@@ -38,7 +44,7 @@ const ChildItem = ({ roomInfo, onItemClick, onItemClose }) => {
       <Tooltip
         placement="bottom"
         title={t('CM_POPUP_TALK_MULTI_02')}
-        color="#4C535D"
+        color={themeContext.CoreLight}
       >
         <div className="close-button" onClick={handleClose}>
           <CancelIcon width={0.8} height={0.8} color="#ffffff" />
