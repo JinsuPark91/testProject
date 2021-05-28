@@ -375,7 +375,7 @@ const RoomList = () => {
       >
         <Observer>
           {() => {
-            const rooms = roomStore.getRoomArray(false); // 추후 알림봇 사용할경우 true flag 넣어줄것
+            const rooms = roomStore.getRoomArray(true);
             return rooms
               .filter(roomFilter)
               .map(roomInfo => (
