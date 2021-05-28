@@ -188,7 +188,7 @@ const RoomDropdown = React.memo(
               </Menu.Item>
             )
           }
-          {isBotRoom ? null : roomInfo.isRoomBookmarked ? (
+          {roomInfo.isRoomBookmarked ? (
             <Menu.Item key="disableBookmark" onClick={handleBookmarkDisable}>
               {t('CM_FIX_TOP_ROOM_03')}
             </Menu.Item>
