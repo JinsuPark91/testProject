@@ -19,17 +19,16 @@ export const ItemWrapper = styled.div`
   flex: 0 0 2rem;
   border-radius: 0.375rem;
   background-color: ${({ background, theme }) =>
-    background || `${theme.BeigeBright}`};
+    background || `${theme.SubStateLight}`};
   font-size: 0.75rem;
   margin-top: 0.813rem;
-  color: #49423a;
   cursor: pointer;
 `;
 
 export const HorizontalBar = styled.div`
   width: ${({ width }) => width}rem;
   margin-top: 0.55rem;
-  border-bottom: 1px solid #ddd7ce;
+  border-bottom: 1px solid ${props => props.theme.LineMain};
 `;
 
 export const SpaceBox = styled.div`
@@ -42,15 +41,15 @@ export const SpaceBox = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 0.375rem;
-  background-color: ${props => props.theme.BeigeBright};
-  color: ${props => props.theme.CoreVivid};
+  background-color: ${props => props.theme.SubStateBright};
+  color: ${props => props.theme.TextSub4};
   margin: ${props => (props.isDropdown ? '0 0.625rem 0 0' : '0.813rem 0 0 0')};
   cursor: pointer;
   ${props =>
     props.checked &&
     css`
       line-height: 1.625rem;
-      border: 1px solid ${props.theme.CoreVivid};
+      border: 2px solid ${props.theme.SpaceLine};
     `}
 
   ${({ backgroundURL }) =>
@@ -64,19 +63,19 @@ export const SpaceBox = styled.div`
 `;
 
 export const UnreadSpaceNumber = styled.div`
+  display: flex;
   position: absolute;
-  line-height: 1.025;
   top: 0.1rem;
   right: 0.1rem;
-  background-color: rgb(220, 69, 71);
-  color: rgb(255, 255, 255);
-  font-size: 0.475rem;
-  font-weight: 400;
-  display: flex;
+  padding: 0 0.125rem;
   justify-content: center;
   align-items: center;
-  border-radius: 0.4rem;
-  padding: 0 0.2rem;
+  border-radius: 0.5rem;
+  background-color: rgb(220, 69, 71);
+  font-size: 0.475rem;
+  font-weight: 400;
+  line-height: 0.625rem;
+  color: rgb(255, 255, 255);
 `;
 
 export const DropdownWrapper = styled.div`

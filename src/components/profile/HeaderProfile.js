@@ -2,14 +2,14 @@ import React, { useState, useCallback, useContext } from 'react';
 import { useCoreStores, Tooltip } from 'teespace-core';
 import { observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import ProfileMyModal from './ProfileMyModal';
 import {
   ProfileIcon,
   ThumbImage,
   SettingImage,
 } from '../../styles/profile/HeaderProfileStyle';
-import settingIcon from '../../assets/setting.svg';
-import { ThemeContext } from 'styled-components';
+import { SettingIcon } from '../Icons';
 
 const HeaderProfile = observer(() => {
   const { t } = useTranslation();
@@ -36,7 +36,11 @@ const HeaderProfile = observer(() => {
         <ProfileIcon className="header__profile-button" onClick={toggleMyModal}>
           <ThumbImage src={thumbPhoto} />
           <SettingImage>
-            <img alt="settingIcon" src={settingIcon} />
+            <SettingIcon
+              width={0.75}
+              height={0.75}
+              color={themeContext.HeaderIcon}
+            />
           </SettingImage>
         </ProfileIcon>
       </Tooltip>

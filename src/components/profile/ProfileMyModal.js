@@ -14,6 +14,7 @@ import {
 import { useHistory } from 'react-router-dom';
 import { useObserver, Observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import { useStores } from '../../stores';
 import ProfileSpaceModal from './ProfileSpaceModal';
 import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
@@ -23,7 +24,7 @@ import MovePage from '../../utils/MovePage';
 import { getMainWaplURL } from '../../utils/UrlUtil';
 import { isSpaceAdmin, getLanguage } from '../../utils/GeneralUtil';
 import * as useCommand from '../../hook/Command';
-import { ArrowRightIcon } from '../Icons';
+import { ArrowRightIcon, LanguageIcon } from '../Icons';
 import {
   UserImage,
   UserName,
@@ -59,10 +60,9 @@ import {
   UserSettingArea,
   SettingButton,
   SettingBar,
+  LanguageIconWrap,
 } from '../../styles/profile/ProfileMyModalStyle';
 import { ReactComponent as SquareSpaceIcon } from '../../assets/card_view.svg';
-import LanguageIcon from '../../assets/language.svg';
-import { ThemeContext } from 'styled-components';
 
 const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   const { t, i18n } = useTranslation();
@@ -345,7 +345,13 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
       <Observer>
         {() => (
           <UserSubArea>
-            <img alt="lang" src={LanguageIcon} />
+            <LanguageIconWrap>
+              <LanguageIcon
+                width={1.25}
+                height={1.25}
+                color={themeContext.IconNormal}
+              />
+            </LanguageIconWrap>
             {t('CM_PROFILE_MENU_02', {
               language: getLanguage()?.includes('ko')
                 ? t('CM_KOREAN')
@@ -357,7 +363,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
               placement="bottomRight"
             >
               <LanguageButton className="header-profile__language-button">
-                <ArrowRightIcon color="#7B7671" />
+                <ArrowRightIcon color={themeContext.IconNormal} />
               </LanguageButton>
             </Dropdown>
           </UserSubArea>

@@ -21,7 +21,7 @@ export const FormItem = styled(FormItemMain)`
   min-height: 3.313rem;
   margin-top: 0;
   padding: 0.5625rem 0;
-  border-top: 1px solid #d8d8d8;
+  border-top: 1px solid ${props => props.theme.LineSub};
   &:first-of-type {
     border-top: 0;
   }

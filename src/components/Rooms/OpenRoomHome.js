@@ -56,6 +56,8 @@ const OpenRoomItem = ({ roomInfo, photo, onClick, onSettingClick }) => {
 };
 
 function OpenRoomHome({ visible, onCancel }) {
+  const themeContext = useContext(ThemeContext);
+
   const { t } = useTranslation();
   const { uiStore } = useStores();
 
@@ -484,7 +486,7 @@ function OpenRoomHome({ visible, onCancel }) {
                               <AddIcon
                                 width="1.25"
                                 height="1.25"
-                                color="#7B7671"
+                                color={themeContext.IconNormal}
                               />
                             </ItemAddBtn>
                             {openRooms.map(openRoom => {
@@ -632,10 +634,9 @@ const RoomOpenTitle = styled(RoomTitle)`
 `;
 
 const RoomCount = styled.span`
-  opacity: 0.5;
-  font-size: 0.75rem;
   margin-left: 0.5rem;
-  color: ${props => props.theme.TextMain};
+  font-size: 0.75rem;
+  color: ${props => props.theme.TextSub2};
 `;
 
 const ItemAddBtn = styled.button`
@@ -644,7 +645,7 @@ const ItemAddBtn = styled.button`
   height: 3.75rem;
   margin: 0 auto;
   border-radius: 50%;
-  background-color: #f7f4ef;
+  background-color: ${props => props.theme.SubStateNormal};
   border: none;
   vertical-align: top;
   font-size: 0;

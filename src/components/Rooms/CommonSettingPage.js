@@ -284,6 +284,6 @@ const SettingTitleWrap = styled.div`
 
 const SettingDescriptionText = styled.span`
   font-size: 0.75rem;
-  color: #777;
+  color: ${props => props.theme.TextSub};
   font-weight: 300;
 `;

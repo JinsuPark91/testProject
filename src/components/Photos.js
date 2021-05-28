@@ -118,7 +118,6 @@ const UserPhoto = styled.div`
     bottom: 0;
   }
   line-height: 0;
-  background-color: #fff;
   border-radius: 50%;
   &:after {
     content: '';

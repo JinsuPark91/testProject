@@ -144,7 +144,6 @@ export const UserImageWrapper = styled.div`
   position: relative;
   width: 6.88rem;
   height: 6.88rem;
-  background: #fff;
   border-radius: 50%;
   &:after {
     content: '';

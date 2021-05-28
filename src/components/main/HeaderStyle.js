@@ -46,7 +46,7 @@ export const AppIconContainer = styled.div`
     width: 1px;
     height: 1.5rem;
     margin-top: -0.75rem;
-    background-color: #ddd9d4;
+    background-color: ${props => props.theme.LineMain};
   }
   &:before {
     left: 0;

@@ -11,13 +11,13 @@ export const Splitter = styled(Split)`
   display: flex;
   width: 100%;
   height: 100%;
-  background: #f2ede6;
+  background: ${props => props.theme.SubStateNormal};
   & .gutter {
-    border-right: 1px solid #e3e7eb;
-    cursor: ew-resize;
     display: flex;
+    border-right: 1px solid ${props => props.theme.LineMain};
     align-items: center;
     justify-content: center;
+    cursor: ew-resize;
   }
 
   & .gutter__rect {
@@ -26,19 +26,18 @@ export const Splitter = styled(Split)`
   }
 
   & .gutter:hover:not(.gutter--active) {
-    background: #ebe6df;
+    background: ${props => props.theme.SubStateBright};
 
     .gutter__rect {
-      background: #9ba0a4;
+      background: ${props => props.theme.IconNormal};
     }
   }
 
   & .gutter--active {
-    opacity: 0.7;
-    background: #d9d0c2;
+    background: ${props => props.theme.SubStateDark};
 
     .gutter__rect {
-      background: #ffffff;
+      background: #fff;
     }
   }
 `;
