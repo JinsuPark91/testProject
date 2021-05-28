@@ -129,6 +129,7 @@ const Header = ({ roomId, onSearch }) => {
     srcs: [],
     userCount: 0,
     memberIdListString: '',
+    isBotRoom: false,
     isDMRoom: false,
     isMyRoom: false,
   });
@@ -160,6 +161,7 @@ const Header = ({ roomId, onSearch }) => {
         isDirectMsg: isDMRoom,
         type,
         userCount,
+        isBotRoom,
         memberIdListString,
       } = targetRoomInfo;
       const name = getRoomName(targetRoomInfo);
@@ -170,6 +172,7 @@ const Header = ({ roomId, onSearch }) => {
         userCount,
         memberIdListString,
         isDMRoom,
+        isBotRoom,
         isMyRoom: type === 'WKS0001',
       });
     }
@@ -224,6 +227,7 @@ const Header = ({ roomId, onSearch }) => {
     <HeaderWrapper>
       {getModal()}
       <Photos
+        isBotRoom={info.isBotRoom}
         srcList={info.srcs}
         onClick={handlePhotoClick}
         className="header__room-photo"
