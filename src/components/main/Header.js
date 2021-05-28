@@ -389,8 +389,6 @@ const Header = () => {
     store.visible.addMemberModal = false;
   };
 
-  const currRoomInfo = findRoom();
-
   const isActive = name => {
     if (name === 'meeting')
       return !!uiStore.getWindow('meeting', findRoom()?.id);
@@ -417,9 +415,9 @@ const Header = () => {
         />
       );
     }
-    if (currRoomInfo?.userCount === 2) {
-      const dmUserId = currRoomInfo.memberIdListString
-        .split(',')
+    if (findRoom()?.userCount === 2) {
+      const dmUserId = findRoom()
+        .memberIdListString.split(',')
         .find(userId => userId !== userStore.myProfile.id);
 
       return (
