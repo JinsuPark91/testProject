@@ -11,10 +11,17 @@ import Photos from '../components/Photos';
 import { SearchIcon } from '../components/Icons';
 import WindowManager from '../components/common/WindowManager';
 import { useStores } from '../stores';
+import { isDarkMode } from '../utils/GeneralUtil';
 
 const NewWindowPage = () => {
   const { resourceId: roomId, mainApp } = useParams();
-  const { roomStore, userStore, spaceStore, friendStore } = useCoreStores();
+  const {
+    roomStore,
+    userStore,
+    spaceStore,
+    friendStore,
+    themeStore,
+  } = useCoreStores();
   const { i18n } = useTranslation();
   const myUserId = userStore.myProfile.id;
 
@@ -48,6 +55,11 @@ const NewWindowPage = () => {
           language: i18n.language,
         });
       } else i18n.changeLanguage(userStore.myProfile.language);
+
+      const platformTheme = userStore.myProfile.theme;
+      if (platformTheme && platformTheme !== 'system')
+        themeStore.setTheme(platformTheme);
+      else if (isDarkMode()) themeStore.setTheme('dark');
     } catch (err) {
       console.error('Mini Talk Error : ', err);
     }
