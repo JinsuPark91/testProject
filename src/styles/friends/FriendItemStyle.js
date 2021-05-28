@@ -92,7 +92,7 @@ export const TextStatus = styled.div`
   font-size: 0.69rem;
   line-height: 1rem;
   font-weight: 300;
-  color: #7f7f7f;
+  color: ${props => props.theme.TextSub};
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
@@ -136,9 +136,8 @@ export const StyledAvatar = styled.div`
   width: 2.13rem;
   height: 2.13rem;
   margin: 0.0652rem 0;
-  border: 1px solid #fff;
+  border: 1px solid ${props => props.theme.StateNormal};
   border-radius: 50%;
-  background-color: #fff;
   img {
     width: 100%;
     height: 100%;
@@ -148,15 +147,16 @@ export const StyledAvatar = styled.div`
 `;
 
 export const MeWrapper = styled.div`
-  width: 0.88rem;
-  height: 0.88rem;
-  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 0.875rem;
   margin-right: 0.25rem;
-  line-height: 0;
-  img {
-    width: 100%;
-    height: 100%;
-  }
+  padding: 0 0.19rem;
+  background-color: ${props => props.theme.CoreNormal};
+  border-radius: 0.25rem;
+  font-size: 0.5rem;
+  color: #fff;
 `;
 
 export const MoreIconWrapper = styled.div`

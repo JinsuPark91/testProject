@@ -23,9 +23,5 @@ export const SettingImage = styled.div`
   width: 1.06rem;
   height: 1.06rem;
   border-radius: 50%;
-  background-color: #fff;
-  img {
-    width: 0.81rem;
-    height: 0.81rem;
-  }
+  background-color: ${props => props.theme.StateNormal};
 `;

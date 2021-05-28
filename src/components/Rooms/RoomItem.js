@@ -170,6 +170,8 @@ const RoomDropdown = React.memo(
       return false;
     };
 
+    const themeContext = useContext(ThemeContext);
+
     const roomMenu = () => {
       const isDMRoom = roomInfo.isDirectMsg;
       const isAdmin = roomInfo.adminId === myUserId;
@@ -225,7 +227,9 @@ const RoomDropdown = React.memo(
             <Menu.Item
               key="exit"
               onClick={handleExit}
-              style={{ borderTop: '1px solid #D0CCC7' }}
+              style={{
+                borderTop: `1px solid ${themeContext.LineMain}`,
+              }}
             >
               {t('CM_LEAVE')}
             </Menu.Item>
@@ -385,12 +389,7 @@ const RoomItemContent = React.memo(
                 {() => {
                   return roomInfo.isBotRoom && roomInfo.metadata?.count > 0 ? (
                     <UnreadCountWrap>
-                      <UnreadCount
-                        className="rooms__item__unread"
-                        style={{
-                          width: roomInfo.metadata?.count < 10 && '0.875rem',
-                        }}
-                      >
+                      <UnreadCount className="rooms__item__unread">
                         {roomInfo.metadata?.count > 99
                           ? '99+'
                           : roomInfo.metadata?.count}
@@ -422,12 +421,7 @@ const RoomItemContent = React.memo(
               <Observer>
                 {() => {
                   return !roomInfo.isBotRoom && roomInfo.metadata?.count > 0 ? (
-                    <UnreadCount
-                      className="rooms__item__unread"
-                      style={{
-                        width: roomInfo.metadata?.count < 10 && '0.875rem',
-                      }}
-                    >
+                    <UnreadCount className="rooms__item__unread">
                       {roomInfo.metadata?.count > 99
                         ? '99+'
                         : roomInfo.metadata?.count}
@@ -594,28 +588,17 @@ const RoomItem = React.memo(
 );
 
 const RoomTypeIcon = styled.div`
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  height: 0.88rem;
-  background: #232d3b;
+  justify-content: center;
+  height: 0.875rem;
+  margin-right: 0.25rem;
   padding: 0 0.19rem;
+  background-color: ${props => props.theme.CoreNormal};
   border-radius: 0.25rem;
   font-size: 0.5rem;
   color: #fff;
-  margin-right: 0.25rem;
 `;
-
-// const MyIcon = styled.div`
-//   width: 0.88rem;
-//   height: 0.88rem;
-//   flex-shrink: 0;
-//   margin-right: 0.25rem;
-//   line-height: 0;
-//   img {
-//     width: 100%;
-//     height: 100%;
-//   }
-// `;
 
 const ItemWrapper = styled.div`
   display: flex;
@@ -651,12 +634,11 @@ const ItemWrapper = styled.div`
 `;
 
 const RoomMessage = styled.span`
-  margin-top: 0.125rem;
   overflow: hidden;
   margin-top: 0.125rem;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #666;
+  color: ${props => props.theme.TextSub};
 `;
 
 const RoomNameText = styled.span`
@@ -673,7 +655,7 @@ const UserCountText = styled.span`
   margin-left: 0.25rem;
   font-size: 0.81rem;
   line-height: 1.19rem;
-  color: #aeaeae;
+  color: ${props => props.theme.TextSub2};
 `;
 
 const StyledItem = styled.div`
@@ -689,7 +671,7 @@ const StyledItem = styled.div`
     position: relative;
     margin: 0.0652rem 0.4375rem 0.0652rem 0;
     .photos > div {
-      border: 1px solid #fff;
+      border: 1px solid ${props => props.theme.StateNormal};
       &::after {
         display: none;
       }
@@ -720,9 +702,9 @@ const StyledItem = styled.div`
 `;
 
 const UnreadCount = styled.div`
-  width: 1.63rem;
   height: 0.875rem;
   margin: 0.125rem 0 0 0.25rem;
+  padding: 0 0.25rem;
   font-size: 0.63rem;
   color: #fff;
   line-height: 0.8125rem;

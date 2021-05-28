@@ -9,7 +9,6 @@ export const UserImage = styled.span`
   width: 3.75rem;
   height: 3.75rem;
   border-radius: 50%;
-  background-color: #fff;
   &:after {
     content: '';
     position: absolute;
@@ -127,7 +126,7 @@ export const DataName = styled.p`
   margin-bottom: 0.5rem;
   font-size: 0.63rem;
   line-height: 0.94rem;
-  color: #777;
+  color: ${props => props.theme.TextSub};
 `;
 export const DataBox = styled.div`
   display: flex;
@@ -174,16 +173,16 @@ export const Logo = styled(Avatar)`
   font-size: 1.125rem;
   line-height: 2.5rem;
   font-weight: 500;
-  color: #49423a;
+  color: ${props => props.theme.TextSub4};
   border-radius: 0.25rem;
-  background-color: ${props => props.theme.BeigeBright};
+  background-color: ${props => props.theme.SubStateBright};
 `;
 export const Info = styled.p`
   overflow: hidden;
   flex: 1;
   margin: 0 0.625rem;
   font-size: 0.6875rem;
-  color: #777;
+  color: ${props => props.theme.TextSub};
   white-space: nowrap;
   text-overflow: ellipsis;
 `;
@@ -204,6 +203,10 @@ export const Blind = styled.span`
   margin: -1px;
   overflow: hidden;
 `;
+export const LanguageIconWrap = styled.span`
+  display: inline-block;
+  margin-right: 0.63rem;
+`;
 export const UserSubArea = styled.div`
   display: flex;
   align-items: center;
@@ -211,11 +214,6 @@ export const UserSubArea = styled.div`
   color: ${props => props.theme.TextMain};
   font-size: 0.81rem;
   font-weight: 500;
-  & > img {
-    width: 1.25rem;
-    height: 1.25rem;
-    margin-right: 0.63rem;
-  }
   & + & {
     border-top: 1px solid #e3e7eb;
   }
@@ -322,7 +320,8 @@ export const ItemText = styled.p`
   text-overflow: ellipsis;
   font-size: 0.75rem;
   font-weight: 500;
-  color: ${props => (props.addSpace ? '#666666' : '#000000')};
+  color: ${props =>
+    props.addSpace ? `${props.theme.TextSub}` : `${props.theme.TextMain}`};
 `;
 export const ConvertBox = styled.div`
   padding: 0.31rem 0;
@@ -349,7 +348,7 @@ export const AddBox = styled.span`
 `;
 export const AddText = styled.span`
   font-size: 0.75rem;
-  color: #666;
+  color: ${props => props.theme.TextSub};
 `;
 export const ConvertMove = styled.div`
   padding: 0.63rem 1.13rem;

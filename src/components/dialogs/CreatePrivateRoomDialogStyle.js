@@ -1,5 +1,5 @@
 import { Modal } from 'antd';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 export const ConfigTitle = styled.div`
   display: flex;
@@ -19,7 +19,7 @@ export const ConfigDescriptionText = styled.div`
   white-space: pre-line;
   font-size: 0.75rem;
   line-height: 1rem;
-  color: #777;
+  color: ${props => props.theme.TextSub};
 `;
 
 export const FlexModal = styled(Modal)`

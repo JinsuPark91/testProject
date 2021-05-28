@@ -1,10 +1,13 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const ContentTitleWrap = styled.div`
   margin: 0 1.25rem;
   padding: 1.25rem 0;
-  border-bottom: ${props =>
-    props.divider ? `1px solid ${props.theme.LineMain}` : ''};
+  ${props =>
+    props.divider &&
+    css`
+      border-bottom: 1px solid ${props.theme.LineMain};
+    `}
 `;
 
 export const Title = styled.p`
@@ -19,6 +22,6 @@ export const SubTitle = styled.span`
   display: block;
   margin-top: 0.38rem;
   font-size: 0.75rem;
-  color: #8d8d8d;
+  color: ${props => props.theme.TextSub};
   line-height: 1.13rem;
 `;

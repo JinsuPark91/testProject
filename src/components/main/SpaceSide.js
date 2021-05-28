@@ -184,7 +184,7 @@ const SpaceSide = () => {
           background={themeContext.StateBright}
           onClick={handleNewSpace}
         >
-          <AddIcon width={1} height={1} color={themeContext.IconNormal} />
+          <AddIcon width={1} height={1} color={themeContext.IconHinted} />
         </ItemWrapper>
       </Tooltip>
     </Wrapper>

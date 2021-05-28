@@ -6,6 +6,7 @@ import { useDrop } from 'react-dnd';
 import { observer } from 'mobx-react';
 import { Tooltip } from 'antd';
 import { useCoreStores, Dropdown, Menu, Message } from 'teespace-core';
+import { ThemeContext } from 'styled-components';
 import { rootStore } from '../../stores';
 import { ACCEPT_ITEMS, TALK_ACCEPT_ITEMS } from '../../utils/DndConstant';
 import { handleCheckNewFriend } from '../../utils/FriendsUtil';
@@ -24,8 +25,6 @@ import {
   MoreIconWrapper,
 } from '../../styles/friends/FriendItemStyle';
 import { ViewMoreIcon, ExportIcon } from '../Icons';
-import mySign from '../../assets/wapl_me.svg';
-import { ThemeContext } from 'styled-components';
 
 const { uiStore } = rootStore;
 
@@ -59,11 +58,7 @@ const TextComponent = React.memo(({ displayName, fullCompanyJob, mode }) => {
 
   return (
     <TextComponentBox>
-      {mode === 'me' && (
-        <MeWrapper>
-          <img src={mySign} alt="me" />
-        </MeWrapper>
-      )}
+      {mode === 'me' && <MeWrapper>나</MeWrapper>}
       <TitleForName>{fullDisplayName}</TitleForName>
     </TextComponentBox>
   );
