@@ -34,7 +34,6 @@ const MainPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [toastText, setToastText] = useState('');
-  const [isRefreshModalVisible, setIsRefreshModalVisible] = useState(false);
   const [isInvalidRoomModalVisible, setIsInvalidRoomModalVisible] = useState(
     false,
   );
@@ -173,9 +172,7 @@ const MainPage = () => {
           await userStore.updateMyDomainSetting({
             language: i18n.language,
           });
-        } else {
-          i18n.changeLanguage(userStore.myProfile.language);
-        }
+        } else i18n.changeLanguage(userStore.myProfile.language);
 
         // 기본 테마 설정
         const platformTheme = userStore.myProfile.theme;
@@ -497,24 +494,6 @@ const MainPage = () => {
                 text: t('CM_LOGIN_POLICY_03'),
                 onClick: () => {
                   setIsInvalidRoomModalVisible(false);
-                },
-              },
-            ]}
-          />
-        )}
-        {isRefreshModalVisible && (
-          <Message
-            visible={isRefreshModalVisible}
-            title={t('CM_LOGIN_POLICY_10')}
-            subtitle={t('CM_LOGIN_POLICY_11')}
-            btns={[
-              {
-                type: 'solid',
-                shape: 'round',
-                text: t('CM_LOGIN_POLICY_03'),
-                onClick: () => {
-                  setIsRefreshModalVisible(false);
-                  window.location.reload();
                 },
               },
             ]}

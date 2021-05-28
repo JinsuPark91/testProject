@@ -434,7 +434,7 @@ const Header = () => {
               handler: null,
             });
           }}
-          position={{ top: '3.5rem', left: '17rem' }}
+          position={{ top: '3.5rem', left: '20.125rem' }}
         />
       );
     }
@@ -445,7 +445,7 @@ const Header = () => {
         onCancel={handleCancelRoomMemeberModal}
         width="17.5rem"
         top="3.5rem"
-        left="17rem"
+        left="20.125rem"
       />
     );
   };

@@ -11,7 +11,7 @@ export const ThemeList = styled.ul`
 export const ThemeItem = styled.li`
   display: flex;
   width: 9.375rem;
-  flex-direction: column-reverse;
+  flex-direction: column;
   margin-right: 3.31rem;
   &:last-child {
     margin-right: 0;
@@ -50,4 +50,10 @@ export const ThemeImage = styled.div`
 
 export const ThemeThumb = styled.img`
   width: 100%;
+`;
+
+export const SystemText = styled.span`
+  margin-top: 0.5rem;
+  font-size: 0.69rem;
+  color: #aeaeae;
 `;
