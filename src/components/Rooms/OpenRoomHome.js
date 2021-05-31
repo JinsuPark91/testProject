@@ -264,9 +264,13 @@ function OpenRoomHome({ visible, onCancel }) {
 
   const handleRequestOK = async () => {
     try {
-      await roomStore.requestEnterRoom({
-        roomId: currentOpenRoom.id,
-      });
+      if (!currentOpenRoom.isBanned) {
+        await roomStore.requestEnterRoom({
+          roomId: currentOpenRoom.id,
+        });
+      } else {
+        // 뭔가 팝업 뜨면서 막혀야됨
+      }
     } catch (err) {
       console.log('입장 요청 에러');
     }
@@ -314,9 +318,8 @@ function OpenRoomHome({ visible, onCancel }) {
                   <RecomRoomTitle>
                     {roomInfo.customName || roomInfo.name}
                   </RecomRoomTitle>
-                  <AdminText>{`${t('CM_ROOM_ADMIN')} ${
-                    roomInfo.adminName
-                  }`}</AdminText>
+                  <AdminText>{`${t('CM_ROOM_ADMIN')} ${roomInfo.adminName
+                    }`}</AdminText>
                 </div>
               )}
             </Observer>
