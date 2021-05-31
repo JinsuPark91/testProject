@@ -37,8 +37,8 @@ const HeaderProfile = observer(() => {
           <ThumbImage src={thumbPhoto} />
           <SettingImage>
             <SettingIcon
-              width={0.75}
-              height={0.75}
+              width={0.875}
+              height={0.875}
               color={themeContext.HeaderIcon}
             />
           </SettingImage>

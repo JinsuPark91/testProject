@@ -161,7 +161,9 @@ function OpenRoomHome({ visible, onCancel }) {
 
   const handleJoin = async roomInfo => {
     setCurrentOpenRoom(roomInfo);
-    if (roomInfo.isJoined) {
+    if (roomInfo.isBanned) {
+      setEnterFailModalVisible(true);
+    } else if (roomInfo.isJoined) {
       history.push(`/s/${roomInfo.id}/talk`);
       closeHomeModal();
     } else if (roomInfo.isJoinable) {
@@ -314,9 +316,8 @@ function OpenRoomHome({ visible, onCancel }) {
                   <RecomRoomTitle>
                     {roomInfo.customName || roomInfo.name}
                   </RecomRoomTitle>
-                  <AdminText>{`${t('CM_ROOM_ADMIN')} ${
-                    roomInfo.adminName
-                  }`}</AdminText>
+                  <AdminText>{`${t('CM_ROOM_ADMIN')} ${roomInfo.adminName
+                    }`}</AdminText>
                 </div>
               )}
             </Observer>
