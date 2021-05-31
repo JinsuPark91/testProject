@@ -253,28 +253,29 @@ const Wrapper = styled.div`
 `;
 
 const HeaderWrapper = styled.div`
+  overflow: hidden;
   display: flex;
   align-items: center;
   height: 3.75rem;
   padding: 0 1.25rem 0 0.69rem;
-  border-bottom: 1px solid #ddd9d4;
-  overflow: hidden;
-
-  & .header__room-name {
+  border-bottom: 1px solid ${props => props.theme.LineMain};
+  background-color: ${props => props.theme.StateNormal};
+  .header__room-name {
     flex-shrink: 0;
   }
 
-  & .header__room-name {
-    font-size: 0.875rem;
-    margin-left: 0.63rem;
+  .header__room-name {
     overflow: hidden;
+    margin-left: 0.63rem;
     flex: 1;
+    font-size: 0.875rem;
+    color: ${props => props.theme.TextMain};
   }
 
-  & .header__user-count {
-    font-size: 0.875rem;
+  .header__user-count {
     margin-left: 0.31rem;
-    opacity: 0.5;
+    font-size: 0.875rem;
+    color: ${props => props.theme.TextSub2};
   }
 `;
 
@@ -289,7 +290,7 @@ const IconWrapper = styled.div`
   margin-left: auto;
 
   &:hover {
-    background-color: #eae6e0;
+    background-color: ${props => props.theme.StateLight};
   }
 `;
 

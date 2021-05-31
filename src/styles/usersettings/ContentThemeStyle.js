@@ -44,7 +44,7 @@ export const ThemeImage = styled.div`
     top: 0;
     bottom: 0;
     border-radius: 0.63rem;
-    border: 1px solid #e3e7eb;
+    border: 1px solid ${props => props.theme.IconHinted};
   }
 `;
 
@@ -55,5 +55,5 @@ export const ThemeThumb = styled.img`
 export const SystemText = styled.span`
   margin-top: 0.5rem;
   font-size: 0.69rem;
-  color: #aeaeae;
+  color: ${props => props.theme.TextSub2};
 `;
