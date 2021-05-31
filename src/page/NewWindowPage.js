@@ -5,6 +5,7 @@ import { App as MeetingApp } from 'teespace-meeting-app';
 import { EventBus, useCoreStores, ProfileInfoModal } from 'teespace-core';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import { Observer } from 'mobx-react';
 import LoadingImg from '../assets/WAPL_Loading.gif';
 import RoomInquiryModal from '../components/Rooms/RoomInquiryModal';
 import Photos from '../components/Photos';
@@ -124,16 +125,11 @@ export default NewWindowPage;
 const Header = ({ roomId, onSearch }) => {
   const { uiStore } = useStores();
   const { roomStore, userStore } = useCoreStores();
-  const [info, setInfo] = useState({
-    name: '',
-    srcs: [],
-    userCount: 0,
-    memberIdListString: '',
-    isBotRoom: false,
-    isDMRoom: false,
-    isMyRoom: false,
-  });
   const [modalVisible, setModalVisible] = useState(false);
+
+  const getRoom = () => {
+    return roomStore.getRoom(roomId);
+  };
 
   const getRoomName = roomInfo => {
     const { type, customName, name } = roomInfo;
@@ -147,36 +143,15 @@ const Header = ({ roomId, onSearch }) => {
 
   const getSrcs = roomInfo => {
     const { isDirectMsg: isDMRoom, memberIdListString } = roomInfo;
-    let userIds = memberIdListString.split(',').splice(0, 4);
+    let userIds = memberIdListString
+      .split(',')
+      .filter(userId => userId !== userStore.myProfile.id)
+      .splice(0, 4);
     if (isDMRoom)
       userIds = userIds.filter(userId => userId !== userStore.myProfile.id);
 
     return userIds.map(userId => userStore.getProfilePhotoURL(userId, 'small'));
   };
-
-  useEffect(() => {
-    if (roomId) {
-      const targetRoomInfo = roomStore.getRoom(roomId);
-      const {
-        isDirectMsg: isDMRoom,
-        type,
-        userCount,
-        isBotRoom,
-        memberIdListString,
-      } = targetRoomInfo;
-      const name = getRoomName(targetRoomInfo);
-      const srcs = getSrcs(targetRoomInfo);
-      setInfo({
-        name,
-        srcs,
-        userCount,
-        memberIdListString,
-        isDMRoom,
-        isBotRoom,
-        isMyRoom: type === 'WKS0001',
-      });
-    }
-  }, [roomId]);
 
   const handlePhotoClick = () => {
     setModalVisible(true);
@@ -187,6 +162,8 @@ const Header = ({ roomId, onSearch }) => {
   };
 
   const getModal = () => {
+    const info = getRoom();
+    if (!info) return null;
     if (info.isMyRoom || info.userCount === 2) {
       const userIds = info.isMyRoom
         ? userStore.myProfile.id
@@ -226,17 +203,40 @@ const Header = ({ roomId, onSearch }) => {
   return (
     <HeaderWrapper>
       {getModal()}
-      <Photos
-        isBotRoom={info.isBotRoom}
-        srcList={info.srcs}
-        onClick={handlePhotoClick}
-        className="header__room-photo"
-      />
-      <span className="header__room-name">{info.name}</span>
 
-      {info.isDMRoom || info.isMyRoom ? null : (
-        <span className="header__user-count">{info.userCount}</span>
-      )}
+      <Observer>
+        {() => {
+          const info = getRoom();
+          if (!info) return null;
+
+          return (
+            <Photos
+              isBotRoom={info.isBotRoom}
+              srcList={getSrcs(info)}
+              onClick={handlePhotoClick}
+              className="header__room-photo"
+            />
+          );
+        }}
+      </Observer>
+
+      <Observer>
+        {() => {
+          const info = getRoom();
+          if (!info) return null;
+
+          return <span className="header__room-name">{getRoomName(info)}</span>;
+        }}
+      </Observer>
+
+      <Observer>
+        {() => {
+          const info = getRoom();
+          if (!info || info.isDMRoom || info.isMyRoom) return null;
+          return <span className="header__user-count">{info.userCount}</span>;
+        }}
+      </Observer>
+
       <IconWrapper onClick={onSearch}>
         <SearchIcon width={1.38} height={1.38} />
       </IconWrapper>
