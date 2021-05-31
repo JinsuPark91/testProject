@@ -161,7 +161,9 @@ function OpenRoomHome({ visible, onCancel }) {
 
   const handleJoin = async roomInfo => {
     setCurrentOpenRoom(roomInfo);
-    if (roomInfo.isJoined) {
+    if (roomInfo.isBanned) {
+      setEnterFailModalVisible(true);
+    } else if (roomInfo.isJoined) {
       history.push(`/s/${roomInfo.id}/talk`);
       closeHomeModal();
     } else if (roomInfo.isJoinable) {
@@ -264,13 +266,9 @@ function OpenRoomHome({ visible, onCancel }) {
 
   const handleRequestOK = async () => {
     try {
-      if (!currentOpenRoom.isBanned) {
-        await roomStore.requestEnterRoom({
-          roomId: currentOpenRoom.id,
-        });
-      } else {
-        // 뭔가 팝업 뜨면서 막혀야됨
-      }
+      await roomStore.requestEnterRoom({
+        roomId: currentOpenRoom.id,
+      });
     } catch (err) {
       console.log('입장 요청 에러');
     }
