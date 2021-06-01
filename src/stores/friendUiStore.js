@@ -1,6 +1,6 @@
 import { observable } from 'mobx';
 
-const FriendStore = observable({
+const friendUiStore = observable({
   activeFriendId: '',
   actvieFavFriendId: '',
 
@@ -23,4 +23,4 @@ const FriendStore = observable({
   },
 });
 
-export default FriendStore;
+export default friendUiStore;
