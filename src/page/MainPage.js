@@ -195,7 +195,7 @@ const MainPage = () => {
         }
         // NOTE : 마지막 접속 URL 로 Redirect 시킨다.
         else if (historyStore.lastHistory)
-          history.push(historyStore.lastHistory);
+          history.push(historyStore.lastHistory.lastUrl);
       })
       .then(() => {
         setIsLoading(false);

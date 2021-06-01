@@ -10,25 +10,20 @@ import { useStores } from '../../stores';
 
 const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
   const { uiStore } = useStores();
-
   const [isInfoModalVisible, setIsInfoModalVisible] = useState(false);
   const [selectedId, setSelectedId] = useState('');
 
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [toastText, setToastText] = useState('');
 
-  const handleOpenInfoModal = useCallback(() => {
+  const handleOpenInfoModal = useCallback(value => {
+    setSelectedId(value);
     setIsInfoModalVisible(true);
   }, []);
-  const handleSelectedId = useCallback(value => {
-    setSelectedId(value);
-  }, []);
 
-  const handleOpenToast = useCallback(() => {
-    setIsToastVisible(true);
-  }, []);
-  const handleToastText = useCallback(value => {
+  const handleOpenToast = useCallback(value => {
     setToastText(value);
+    setIsToastVisible(true);
   }, []);
 
   return (
@@ -37,9 +32,7 @@ const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
         searchKeyword={searchKeyword}
         handleShadow={handleShadow}
         handleOpenInfoModal={handleOpenInfoModal}
-        handleSelectedId={handleSelectedId}
         handleOpenToast={handleOpenToast}
-        handleToastText={handleToastText}
       />
       {isInfoModalVisible && (
         <ProfileInfoModal

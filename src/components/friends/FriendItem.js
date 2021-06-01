@@ -197,9 +197,7 @@ const FriendItem = observer(
     onClick,
     friendInfo,
     handleOpenInfoModal,
-    handleSelectedId,
     handleOpenToast,
-    handleToastText,
   }) => {
     const { t } = useTranslation();
     const {
@@ -293,73 +291,8 @@ const FriendItem = observer(
 
     const handleSelectPhoto = (e, id = '') => {
       if (e) e.stopPropagation();
-      if (id) {
-        handleSelectedId(id);
-        handleOpenInfoModal();
-      }
+      if (id) handleOpenInfoModal(id);
     };
-
-    // const talkWindowOpen = usePortalWindow();
-
-    // const handleTalkWindowOpen = async e => {
-    //   if (e) e.stopPropagation();
-    //   try {
-    //     const targetId = friendInfo.friendId || myUserId;
-    //     const { roomInfo } = await roomStore.getDMRoom(myUserId, targetId);
-
-    //     if (roomInfo) {
-    //       if (!roomInfo.isVisible) {
-    //         await roomStore.updateRoomMemberSetting({
-    //           roomId: roomInfo.id,
-    //           myUserId,
-    //           newIsVisible: true,
-    //         });
-    //       }
-    //       talkWindowOpen({
-    //         element: (
-    //           <Talk
-    //             roomId={roomInfo.id}
-    //             channelId={
-    //               roomStore
-    //                 .getRoomMap()
-    //                 .get(roomInfo.id)
-    //                 ?.channelList?.find(channel => channel.type === 'CHN0001')
-    //                 ?.id
-    //             }
-    //           />
-    //         ),
-    //         opts: 'width=600, height=900',
-    //         title: 'mini-talk',
-    //       });
-    //     } else {
-    //       const { dmRoomId } = await roomStore.createRoom({
-    //         creatorId: myUserId,
-    //         userList:
-    //           myUserId === targetId
-    //             ? [{ userId: myUserId }]
-    //             : [{ userId: myUserId }, { userId: targetId }],
-    //       });
-    //       talkWindowOpen({
-    //         element: (
-    //           <Talk
-    //             roomId={dmRoomId}
-    //             channelId={
-    //               roomStore
-    //                 .getRoomMap()
-    //                 .get(dmRoomId)
-    //                 ?.channelList?.find(channel => channel.type === 'CHN0001')
-    //                 ?.id
-    //             }
-    //           />
-    //         ),
-    //         opts: 'width=600, height=900',
-    //         title: 'mini-talk',
-    //       });
-    //     }
-    //   } catch (e) {
-    //     console.error(`Error is${e}`);
-    //   }
-    // };
 
     const handleDropdownVisible = useCallback(visible => {
       setDropdownVisible(visible);
@@ -380,8 +313,7 @@ const FriendItem = observer(
       } catch (error) {
         console.log(error);
       }
-      handleToastText(t('CM_BOOKMARK_03'));
-      handleOpenToast();
+      handleOpenToast(t('CM_BOOKMARK_03'));
     };
 
     const handleCancelBookmark = async ({ domEvent: e }) => {
@@ -391,8 +323,7 @@ const FriendItem = observer(
         friendId: itemId,
         isFav: false,
       });
-      handleToastText(t('CM_BOOKMARK_02'));
-      handleOpenToast();
+      handleOpenToast(t('CM_BOOKMARK_02'));
     };
 
     const handleMoveItem = targetId => {
