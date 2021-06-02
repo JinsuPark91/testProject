@@ -71,6 +71,13 @@ const uiStore = observable({
     ).length;
   },
 
+  // drag and drop
+  dnd: {
+    roomId: null,
+    files: [],
+    isVisible: false,
+  },
+
   // ref
   content: {
     rect: null,

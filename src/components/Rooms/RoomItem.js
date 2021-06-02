@@ -476,13 +476,7 @@ const RoomItem = ({
   onClickMenuItem = () => {},
   onClickRoomPhoto = () => {},
 }) => {
-  const { componentStore } = useCoreStores();
   const { handlerStore } = useStores();
-  const FileDndDialog = componentStore.get('Talk:FileDndDialog');
-  const [isDndDialogVisible, setDndDialogVisible] = useState(false);
-  const [dndTargetFiles, setDndTargetFiles] = useState([]);
-  const [dndTargetRoom, setDndTargetRoom] = useState(getRoomId());
-
   const isMyRoom = roomInfo.type === 'WKS0001';
   const { isBotRoom } = roomInfo;
 
@@ -498,7 +492,7 @@ const RoomItem = ({
           item.type.toLowerCase(),
         );
         switch (type[1]) {
-          case 'note':
+          case 'note': {
             talkOnDrop({
               room: roomInfo,
               data: item.data,
@@ -507,11 +501,17 @@ const RoomItem = ({
               currentRoomId: getRoomId(),
             });
             break;
-          case 'drive':
-            setDndDialogVisible(true);
-            setDndTargetFiles(item.data);
-            setDndTargetRoom(roomInfo.id);
+          }
+          case 'drive': {
+            const dnd = {
+              roomId: roomInfo.id,
+              isVisible: true,
+              files: item.data,
+            };
+
+            uiStore.dnd = dnd;
             break;
+          }
           default:
             break;
         }
@@ -543,10 +543,6 @@ const RoomItem = ({
     onMenuClick(_roomInfo);
   };
 
-  const handleCloseDndDialog = useCallback(() => {
-    setDndDialogVisible(false);
-  }, []);
-
   useEffect(() => {
     if (isMyRoom) {
       handlerStore.register('/myroom', '', handleRoomClick);
@@ -573,14 +569,6 @@ const RoomItem = ({
           </ItemWrapper>
         )}
       </Observer>
-
-      <FileDndDialog
-        visible={isDndDialogVisible}
-        target="Platform:Room"
-        targetRoomId={dndTargetRoom}
-        fileList={dndTargetFiles}
-        onClose={handleCloseDndDialog}
-      />
     </StyledItem>
   );
 };

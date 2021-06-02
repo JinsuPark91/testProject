@@ -25,7 +25,7 @@ const RoomList = React.memo(() => {
   const containerRef = useRef(null);
   const { t, i18n } = useTranslation();
   const history = useHistory();
-  const { roomStore, userStore, configStore } = useCoreStores();
+  const { roomStore, userStore, configStore, componentStore } = useCoreStores();
   const { uiStore, historyStore } = useStores();
   const store = useLocalStore(() => ({
     keyword: '',
@@ -223,6 +223,8 @@ const RoomList = React.memo(() => {
   };
 
   const themeContext = useContext(ThemeContext);
+
+  const FileDndDialog = componentStore.get('Talk:FileDndDialog');
 
   useCommand.NewRoom(handleCreateRoom);
   useCommand.Mute();
@@ -422,6 +424,22 @@ const RoomList = React.memo(() => {
             {store.toast.text}
           </Toast>
         )}
+      </Observer>
+
+      <Observer>
+        {() =>
+          uiStore.dnd.roomId ? (
+            <FileDndDialog
+              visible={uiStore.dnd.isVisible}
+              target="Platform:Room"
+              targetRoomId={uiStore.dnd.roomId}
+              fileList={uiStore.dnd.files}
+              onClose={() => {
+                uiStore.dnd.isVisible = false;
+              }}
+            />
+          ) : null
+        }
       </Observer>
     </Wrapper>
   );
