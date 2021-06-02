@@ -469,123 +469,121 @@ const getRoomId = () => {
   return null;
 };
 
-const RoomItem = React.memo(
-  ({
-    roomInfo,
-    onClick,
-    onMenuClick,
-    onClickMenuItem = () => {},
-    onClickRoomPhoto = () => {},
-  }) => {
-    const { componentStore } = useCoreStores();
-    const { handlerStore } = useStores();
-    const FileDndDialog = componentStore.get('Talk:FileDndDialog');
-    const [isDndDialogVisible, setDndDialogVisible] = useState(false);
-    const [dndTargetFiles, setDndTargetFiles] = useState([]);
-    const [dndTargetRoom, setDndTargetRoom] = useState(getRoomId());
+const RoomItem = ({
+  roomInfo,
+  onClick,
+  onMenuClick,
+  onClickMenuItem = () => {},
+  onClickRoomPhoto = () => {},
+}) => {
+  const { componentStore } = useCoreStores();
+  const { handlerStore } = useStores();
+  const FileDndDialog = componentStore.get('Talk:FileDndDialog');
+  const [isDndDialogVisible, setDndDialogVisible] = useState(false);
+  const [dndTargetFiles, setDndTargetFiles] = useState([]);
+  const [dndTargetRoom, setDndTargetRoom] = useState(getRoomId());
 
-    const isMyRoom = roomInfo.type === 'WKS0001';
-    const { isBotRoom } = roomInfo;
+  const isMyRoom = roomInfo.type === 'WKS0001';
+  const { isBotRoom } = roomInfo;
 
-    const [{ canDrop, isOver }, drop] = useDrop({
-      accept: ACCEPT_ITEMS,
-      drop: item => {
-        //
-        // Item Type에 따라서 처리해야 될 일들
-        //
-        if (isBotRoom) return null;
-        if (TALK_ACCEPT_ITEMS.includes(item.type)) {
-          const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
-            item.type.toLowerCase(),
-          );
-          switch (type[1]) {
-            case 'note':
-              talkOnDrop({
-                room: roomInfo,
-                data: item.data,
-                type: type[1] ? type[1] : 'unknown',
-                target: 'Platform:Room',
-                currentRoomId: getRoomId(),
-              });
-              break;
-            case 'drive':
-              setDndDialogVisible(true);
-              setDndTargetFiles(item.data);
-              setDndTargetRoom(roomInfo.id);
-              break;
-            default:
-              break;
-          }
+  const [{ canDrop, isOver }, drop] = useDrop({
+    accept: ACCEPT_ITEMS,
+    drop: item => {
+      //
+      // Item Type에 따라서 처리해야 될 일들
+      //
+      if (isBotRoom) return null;
+      if (TALK_ACCEPT_ITEMS.includes(item.type)) {
+        const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
+          item.type.toLowerCase(),
+        );
+        switch (type[1]) {
+          case 'note':
+            talkOnDrop({
+              room: roomInfo,
+              data: item.data,
+              type: type[1] ? type[1] : 'unknown',
+              target: 'Platform:Room',
+              currentRoomId: getRoomId(),
+            });
+            break;
+          case 'drive':
+            setDndDialogVisible(true);
+            setDndTargetFiles(item.data);
+            setDndTargetRoom(roomInfo.id);
+            break;
+          default:
+            break;
         }
-
-        // Drag 시작한 쪽이 정보를 알아야 하는 경우 고려
-        return {
-          source: item.type, // "Item:Note:Chapter"
-          sourceData: item.data,
-          target: 'Platform:Room',
-          targetData: roomInfo,
-        };
-      },
-      collect: monitor => {
-        return {
-          isOver: monitor.isOver(),
-          canDrop: monitor.canDrop(),
-        };
-      },
-    });
-
-    const isActive = !isBotRoom && canDrop && isOver;
-
-    const handleRoomClick = useCallback(() => {
-      onClick(roomInfo);
-    }, [onClick, roomInfo]);
-
-    const handleMenuClick = _roomInfo => {
-      onMenuClick(_roomInfo);
-    };
-
-    const handleCloseDndDialog = useCallback(() => {
-      setDndDialogVisible(false);
-    }, []);
-
-    useEffect(() => {
-      if (isMyRoom) {
-        handlerStore.register('/myroom', '', handleRoomClick);
       }
 
-      return () => isMyRoom && handlerStore.unregister('/myroom');
-    }, [handleRoomClick, handlerStore, isMyRoom]);
+      // Drag 시작한 쪽이 정보를 알아야 하는 경우 고려
+      return {
+        source: item.type, // "Item:Note:Chapter"
+        sourceData: item.data,
+        target: 'Platform:Room',
+        targetData: roomInfo,
+      };
+    },
+    collect: monitor => {
+      return {
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      };
+    },
+  });
 
-    return (
-      <StyledItem ref={drop} className="rooms__item" onClick={handleRoomClick}>
-        <Observer>
-          {() => (
-            <ItemWrapper
-              selected={uiStore.resourceId === roomInfo.id}
-              isActiveDropEffect={isActive}
-            >
-              <RoomItemContent
-                roomInfo={roomInfo}
-                isMyRoom={isMyRoom}
-                onMenuClick={handleMenuClick}
-                onClickMenuItem={onClickMenuItem}
-                onClickRoomPhoto={onClickRoomPhoto}
-              />
-            </ItemWrapper>
-          )}
-        </Observer>
+  const isActive = !isBotRoom && canDrop && isOver;
 
-        <FileDndDialog
-          visible={isDndDialogVisible}
-          target="Platform:Room"
-          targetRoomId={dndTargetRoom}
-          fileList={dndTargetFiles}
-          onClose={handleCloseDndDialog}
-        />
-      </StyledItem>
-    );
-  },
-);
+  const handleRoomClick = useCallback(() => {
+    onClick(roomInfo);
+  }, [onClick, roomInfo]);
+
+  const handleMenuClick = _roomInfo => {
+    onMenuClick(_roomInfo);
+  };
+
+  const handleCloseDndDialog = useCallback(() => {
+    setDndDialogVisible(false);
+  }, []);
+
+  useEffect(() => {
+    if (isMyRoom) {
+      handlerStore.register('/myroom', '', handleRoomClick);
+    }
+
+    return () => isMyRoom && handlerStore.unregister('/myroom');
+  }, [handleRoomClick, handlerStore, isMyRoom]);
+
+  return (
+    <StyledItem ref={drop} className="rooms__item" onClick={handleRoomClick}>
+      <Observer>
+        {() => (
+          <ItemWrapper
+            selected={uiStore.resourceId === roomInfo.id}
+            isActiveDropEffect={isActive}
+          >
+            <RoomItemContent
+              roomInfo={roomInfo}
+              isMyRoom={isMyRoom}
+              onMenuClick={handleMenuClick}
+              onClickMenuItem={onClickMenuItem}
+              onClickRoomPhoto={onClickRoomPhoto}
+            />
+          </ItemWrapper>
+        )}
+      </Observer>
+
+      <FileDndDialog
+        visible={isDndDialogVisible}
+        target="Platform:Room"
+        targetRoomId={dndTargetRoom}
+        fileList={dndTargetFiles}
+        onClose={handleCloseDndDialog}
+      />
+    </StyledItem>
+  );
+};
 
 const RoomTypeIcon = styled.div`
   display: inline-flex;

@@ -1,5 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { observable, values } from 'mobx';
+import { RoomStore, FriendStore } from 'teespace-core';
+import { handleCheckNewFriend } from '../utils/FriendsUtil';
 
 const uiStore = observable({
   /*
@@ -53,7 +55,21 @@ const uiStore = observable({
   },
 
   // [TODO] : Talk 안정화 될때까지 임시
-  totalUnreadCount: 0,
+  get totalUnreadCount() {
+    return RoomStore.getRoomArray()
+      .filter(roomInfo => roomInfo.isVisible)
+      .reduce(
+        (accumulator, roomInfo) =>
+          accumulator + parseInt(roomInfo.metadata.count ?? '0', 10),
+        0,
+      );
+  },
+
+  get newFriendCount() {
+    return FriendStore.friendInfoList?.filter(elem =>
+      handleCheckNewFriend(elem),
+    ).length;
+  },
 
   // ref
   content: {

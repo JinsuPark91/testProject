@@ -21,11 +21,11 @@ import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
 import * as useCommand from '../../hook/Command';
 
-const RoomList = () => {
+const RoomList = React.memo(() => {
   const containerRef = useRef(null);
   const { t, i18n } = useTranslation();
   const history = useHistory();
-  const { roomStore, userStore, configStore, authStore } = useCoreStores();
+  const { roomStore, userStore, configStore } = useCoreStores();
   const { uiStore, historyStore } = useStores();
   const store = useLocalStore(() => ({
     keyword: '',
@@ -374,9 +374,9 @@ const RoomList = () => {
         onScroll={handleScroll}
       >
         <Observer>
-          {() => {
-            const rooms = roomStore.getRoomArray(true);
-            return rooms
+          {() =>
+            roomStore
+              .getRoomArray(true)
               .filter(roomFilter)
               .map(roomInfo => (
                 <RoomItem
@@ -387,15 +387,25 @@ const RoomList = () => {
                   onClickMenuItem={handleClickMenuItem}
                   onClickRoomPhoto={handleClickRoomPhoto}
                 />
-              ));
-          }}
+              ))
+          }
         </Observer>
       </RoomContainer>
 
       <Observer>
         {() => {
           return configStore.isActivateComponent('Platform', 'LNB:Logo') ? (
-            <ButtonWrapper isScrollEnd={store.isScrollEnd}>
+            <ButtonWrapper
+              isScrollEnd={store.isScrollEnd}
+              // onClick={() => {
+              //   // const currentTheme = themeStore.theme;
+              //   // if (currentTheme.name === 'white') themeStore.setTheme('dark');
+              //   // else themeStore.setTheme('white');
+              //   roomStore.activateRoom({
+              //     roomId: '9830c62a-e815-4e60-bffe-1c864ac8cf32',
+              //   });
+              // }}
+            >
               <WaplLogo textColor={themeContext.BasicDark} />
             </ButtonWrapper>
           ) : null;
@@ -415,7 +425,7 @@ const RoomList = () => {
       </Observer>
     </Wrapper>
   );
-};
+});
 
 const Wrapper = styled.div`
   display: flex;
