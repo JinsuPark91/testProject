@@ -55,7 +55,9 @@ const getIconStyle = (isDisabled = false) => {
   return {
     width: 1.38,
     height: 1.38,
-    color: isDisabled ? 'rgba(68, 77, 89, 0.3)' : ThemeStore.theme.HeaderIcon,
+    color: isDisabled
+      ? ThemeStore.theme.IconDisabled
+      : ThemeStore.theme.HeaderIcon,
   };
 };
 
