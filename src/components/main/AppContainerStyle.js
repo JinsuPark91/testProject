@@ -4,7 +4,7 @@ export const Wrapper = styled.div`
   display: flex;
   flex: auto;
   min-width: 26.25rem;
-  background-color: ${props => props.theme.BasicLight};
+  background-color: ${props => props.theme.StateNormal};
 `;
 
 export const SubWrapper = styled(Wrapper)`
