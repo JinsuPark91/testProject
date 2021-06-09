@@ -40,75 +40,79 @@ const FriendListBox = styled.div`
   overflow-y: auto;
   height: 100%;
 `;
+
 const MyInfoBox = styled.div`
   margin-top: 0.5rem;
 `;
+
 const MyInfoItem = styled(MobileFriendItem)`
   padding: 0 1rem;
 `;
 
-const FriendList = ({ myInfo, friendList, isFriendEditMode }) => {
-  const friendNum = friendList.length;
-  const noFriend = friendNum === 0;
+const NoFriendText = styled.div`
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const MyItem = React.memo(() => {
+  const { userStore } = useCoreStores();
+  const { myProfile } = userStore;
 
   return (
     <>
       <MyInfoBox>
-        <MyInfoItem
-          key={myInfo?.id}
-          friendInfo={myInfo}
-          isMe
-          friendEditMode={isFriendEditMode}
-        />
+        <MyInfoItem friendInfo={myProfile} isMe />
       </MyInfoBox>
       <ListDivider />
-      {noFriend ? (
-        <div>프렌즈가 없습니다.</div>
-      ) : (
-        <>
-          <FriendListHeader>
-            <FriendTitle>프렌즈</FriendTitle>
-            <Num>{friendNum}</Num>
-          </FriendListHeader>
-          <div>
-            {friendList.map(friendInfo => (
-              <MobileFriendItem
-                key={friendInfo?.friendId || friendInfo?.id}
-                friendInfo={friendInfo}
-                isMe={false}
-                friendEditMode={isFriendEditMode}
-              />
-            ))}
-          </div>
-        </>
-      )}
     </>
   );
-};
+});
 
 const MobileFriend = () => {
-  const { userStore, friendStore } = useCoreStores();
-  const [friendEditMode, setFriendEditMode] = useState(false);
+  const { friendStore } = useCoreStores();
+  const [isEditMode, setIsEditMode] = useState(false);
 
-  const handleFriendEditMode = () => {
-    setFriendEditMode(!friendEditMode);
-  };
+  const handleEditMode = () => setIsEditMode(!isEditMode);
 
   return (
     <>
       <MobileFriendHeader
-        friendEditMode={friendEditMode}
-        handleFriendEditMode={handleFriendEditMode}
+        isEditMode={isEditMode}
+        handleEditMode={handleEditMode}
       />
       <FriendListBox>
         <Observer>
-          {() => (
-            <FriendList
-              myInfo={userStore.myProfile}
-              friendList={friendStore.friendInfoList}
-              isFriendEditMode={friendEditMode}
-            />
-          )}
+          {() => {
+            const friendList = friendStore.friendInfoList;
+            const friendNum = friendList.length;
+            const noFriend = friendList.length === 0;
+
+            return (
+              <>
+                <MyItem />
+                {noFriend ? (
+                  <NoFriendText>프렌즈가 없습니다.</NoFriendText>
+                ) : (
+                  <>
+                    <FriendListHeader>
+                      <FriendTitle>프렌즈</FriendTitle>
+                      <Num>{friendNum}</Num>
+                    </FriendListHeader>
+                    {friendList.map(friendInfo => (
+                      <MobileFriendItem
+                        key={friendInfo?.friendId || friendInfo?.id}
+                        friendInfo={friendInfo}
+                        isMe={false}
+                        isEditMode={isEditMode}
+                      />
+                    ))}
+                  </>
+                )}
+              </>
+            );
+          }}
         </Observer>
       </FriendListBox>
     </>
