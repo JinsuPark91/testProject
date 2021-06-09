@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { useStores } from '../../stores';
 import { LockLineIcon, CameraIcon, ImageIcon } from '../Icons';
-import { CloseIcon, SettingIcon } from './Icon';
+import { CloseIcon } from './Icon';
 import {
   handleProfileMenuClick,
   toBase64,
@@ -51,7 +51,6 @@ const MobileProfile = observer(
   ({
     userId = null,
     editOnlyMode = false,
-    onModeChange = null,
     onClickSaveBtn = () => {},
     onClickCancelBtn = () => {},
   }) => {
@@ -60,8 +59,6 @@ const MobileProfile = observer(
     const { userStore, authStore } = useCoreStores();
     const [isEditMode, setEditMode] = useState(editOnlyMode);
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
-    const [toastText, setToastText] = useState('');
-    const [isToastVisible, setIsToastVisible] = useState(false);
     const [isChange, setIsChange] = useState(false);
     const [userType, setUserType] = useState('');
 
@@ -142,11 +139,9 @@ const MobileProfile = observer(
 
     useEffect(() => {
       uiStore.isProfileEditMode = isEditMode;
-    }, [isEditMode]);
+    }, [uiStore, isEditMode]);
 
-    const handleMoveTalk = roomInfo => {
-      history.push(`/talk/${roomInfo.id}`);
-    };
+    const handleMoveTalk = roomInfo => history.push(`/talk/${roomInfo.id}`);
 
     const handleTalkClick = async () => {
       const myUserId = userStore.myProfile.id;
@@ -228,22 +223,16 @@ const MobileProfile = observer(
       onClickCancelBtn();
     };
 
-    const handleExitCancel = () => {
-      setCancelDialogVisible(false);
-    };
+    const handleExitCancel = () => setCancelDialogVisible(false);
 
     const handleCancel = () => {
-      if (isChange) {
-        setCancelDialogVisible(true);
-      } else {
-        handleExit();
-      }
+      if (isChange) setCancelDialogVisible(true);
+      else handleExit();
     };
 
     // FIXME: 추후 Talk에서의 프로필 고려 필요
-    const handleMoveFriend = () => {
+    const handleMoveFriend = () =>
       history.push(`/friend/${userStore.myProfile.id}`);
-    };
 
     // check edit mode
     const editEnabled = editOnlyMode || isEditMode;
@@ -371,7 +360,7 @@ const MobileProfile = observer(
                   <UserInfoItem style={{ alignItems: 'flex-start' }}>
                     <StyleOfficeIcon iconimg="address" />
                     <UserInfoText>
-                      <span>{profile?.getFullCompanyJob()}</span>
+                      <span>{profile?.getFullCompanyJob() || '-'}</span>
                       {editEnabled && (
                         <LockIconBox>
                           <LockLineIcon width="0.88" height="0.88" />

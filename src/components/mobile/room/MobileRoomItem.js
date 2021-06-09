@@ -106,6 +106,7 @@ const CheckboxLabel = styled.label`
   border-radius: 50%;
   margin: 0;
 `;
+
 const MobileRoomItem = ({
   index,
   roomInfo,
@@ -119,16 +120,14 @@ const MobileRoomItem = ({
   const myUserId = userStore.myProfile.id;
   const isMyRoom = roomInfo.type === 'WKS0001';
   const isDMRoom = roomInfo.isDirectMsg;
+  const { isBotRoom } = roomInfo;
 
   const getRoomPhoto = () => {
     let roomPhoto = null;
-    if (isMyRoom) {
-      roomPhoto = [userStore.getProfilePhotoURL(myUserId, 'small')];
-    } else {
+    if (isMyRoom) roomPhoto = [userStore.getProfilePhotoURL(myUserId, 'small')];
+    else {
       let userIds = roomInfo.memberIdListString.split(',').splice(0, 4);
-      if (isDMRoom) {
-        userIds = userIds.filter(userId => userId !== myUserId);
-      }
+      if (isDMRoom) userIds = userIds.filter(userId => userId !== myUserId);
       roomPhoto = userIds.map(userId =>
         userStore.getProfilePhotoURL(userId, 'small'),
       );
@@ -144,9 +143,8 @@ const MobileRoomItem = ({
     history.push(`/talk/${roomInfo?.id}`);
   };
 
-  const handleClickCheckBox = e => {
-    e.stopPropagation();
-  };
+  const handleClickCheckBox = e => e.stopPropagation();
+
   const handleCheckDelete = () => {
     const isAdmin = roomInfo.adminId === myUserId;
     const isAlone = roomInfo.userCount === 1;
@@ -190,7 +188,7 @@ const MobileRoomItem = ({
           </Bottom>
         </Content>
         <Side>
-          {!isMyRoom && roomEditMode && (
+          {!isMyRoom && !isBotRoom && roomEditMode && (
             <CheckBox onClick={handleClickCheckBox}>
               <CheckboxInput
                 type="checkbox"

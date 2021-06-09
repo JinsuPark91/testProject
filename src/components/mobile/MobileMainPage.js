@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
-import { Observer } from 'mobx-react';
+import { useParams } from 'react-router-dom';
 import { EventBus, useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import { useStores } from '../../stores';
@@ -27,18 +26,27 @@ const Loader = styled.div`
 const MobileMainPage = () => {
   const { resourceType, resourceId } = useParams();
   const { uiStore } = useStores();
-  const { userStore, friendStore, roomStore } = useCoreStores();
+  const { spaceStore, userStore, friendStore, roomStore } = useCoreStores();
   const [isLoading, setIsLoading] = useState(true);
-  const history = useHistory();
   const myUserId = userStore.myProfile.id;
 
   useEffect(() => {
     Promise.all([
+      spaceStore.fetchSpaces({
+        userId: myUserId,
+        isLocal: process.env.REACT_APP_ENV === 'local',
+      }),
       userStore.fetchRoomUserProfileList({}),
       friendStore.fetchFriends({ myUserId }),
       roomStore.fetchRoomList({ myUserId }),
     ]).then(async () => {
       EventBus.dispatch('Platform:initLNB');
+      if (friendStore.friendInfoList.length) {
+        const friendIdList = friendStore.friendInfoList.map(
+          elem => elem.friendId,
+        );
+        await userStore.fetchProfileList(friendIdList);
+      }
       setIsLoading(false);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,7 +55,7 @@ const MobileMainPage = () => {
   useEffect(() => {
     uiStore.resourceType = resourceType;
     uiStore.resourceId = resourceId;
-  }, [resourceType, resourceId]);
+  }, [uiStore, resourceType, resourceId]);
 
   if (isLoading) {
     return (
@@ -60,9 +68,7 @@ const MobileMainPage = () => {
   return (
     <Wrapper>
       <MobileContent />
-      <Observer>
-        {() => !uiStore.isProfileEditMode && <MobileFooter />}
-      </Observer>
+      <MobileFooter />
     </Wrapper>
   );
 };

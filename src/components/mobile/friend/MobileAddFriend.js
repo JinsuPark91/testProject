@@ -41,9 +41,8 @@ const MobileAddFriend = () => {
   const history = useHistory();
   const { userStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
-  const handleCancel = () => {
-    history.push(`/friend/${myUserId}`);
-  };
+
+  const handleCancel = () => history.push(`/friend/${myUserId}`);
 
   const remToPixel = rem => {
     return (
