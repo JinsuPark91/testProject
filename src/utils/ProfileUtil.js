@@ -115,6 +115,17 @@ export const getCompanyNumber = profile => {
   return getMobileNumber(profile, false);
 };
 
+export const getFileExtension = file => {
+  const fileName = file.name;
+  const fileNameLength = fileName.length;
+  const fileLastDot = fileName.lastIndexOf('.') + 1;
+  const fileExtension = fileName
+    .substring(fileLastDot, fileNameLength)
+    .toLowerCase();
+
+  return fileExtension;
+};
+
 export const updateMyProfile = async info => {
   const { myProfile } = UserStore;
   const {
@@ -138,14 +149,8 @@ export const updateMyProfile = async info => {
   let extension;
   if (thumbFile !== undefined) {
     if (thumbFile) {
-      const thumbFileName = thumbFile.name;
-      const thumbFileNameLength = thumbFileName.length;
-      const thumbFileLastDot = thumbFileName.lastIndexOf('.') + 1;
-      const thumbFileExtension = thumbFileName
-        .substring(thumbFileLastDot, thumbFileNameLength)
-        .toLowerCase();
       file = thumbFile;
-      extension = thumbFileExtension;
+      extension = getFileExtension(thumbFile);
     } else if (thumbFile === null) {
       file = null;
       extension = 'default';
@@ -156,14 +161,8 @@ export const updateMyProfile = async info => {
 
   if (backgroundFile !== undefined) {
     if (backgroundFile) {
-      const backgroundFileName = backgroundFile.name;
-      const backgroundFileNameLength = backgroundFileName.length;
-      const backgroundFileLastDot = backgroundFileName.lastIndexOf('.') + 1;
-      const backgroundFileExtension = backgroundFileName
-        .substring(backgroundFileLastDot, backgroundFileNameLength)
-        .toLowerCase();
       file = backgroundFile;
-      extension = backgroundFileExtension;
+      extension = getFileExtension(backgroundFile);
     } else if (backgroundFile === null) {
       file = null;
       extension = 'default';

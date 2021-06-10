@@ -9,6 +9,7 @@ import {
   handleCheckValidUrl,
   handleCheckValidEngUrl,
 } from '../../../libs/Regex';
+import { getFileExtension } from '../../../utils/ProfileUtil';
 import { Wrapper } from '../../../styles/profile/SpaceEditModalStyle';
 
 const GroupEditModal = ({ onClose, onSuccess }) => {
@@ -21,7 +22,8 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
       currentSpace?.domain?.slice(0, currentSpace?.domain?.indexOf('.')) || ''
     );
   };
-  const [groupPhoto, setGroupPhoto] = useState(undefined);
+  const [groupPhoto, setGroupPhoto] = useState(currentSpace?.profilePhotoURL);
+  const [groupPhotoFile, setGroupPhotoFile] = useState(undefined);
 
   const [newSpaceName, setNewSpaceName] = useState(currentSpace?.name || '');
   const [newAddress, setNewAddress] = useState(getCurrentSpaceAddress());
@@ -31,19 +33,25 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
 
   const [isWarningPopupVisible, setIsWarningPopupVisible] = useState(false);
 
-  const handleChangeCheck = () => {
+  const isUnchanged = () => {
     return (
+      groupPhotoFile === undefined &&
       newSpaceName === currentSpace?.name &&
       newAddress === getCurrentSpaceAddress()
     );
   };
-  const handleCheckDisable = () => {
-    return handleChangeCheck() || !(newSpaceName && newAddress.length >= 3);
+  const isDisabled = () => {
+    return isUnchanged() || !(newSpaceName && newAddress.length >= 3);
   };
 
   const handleChangePhoto = useCallback(file => {
-    if (file) setGroupPhoto(URL.createObjectURL(file));
-    else setGroupPhoto(undefined);
+    if (file) {
+      setGroupPhoto(URL.createObjectURL(file));
+      setGroupPhotoFile(file);
+    } else {
+      setGroupPhoto(null);
+      setGroupPhotoFile(null);
+    }
   }, []);
 
   const handleChangeName = useCallback(value => {
@@ -63,15 +71,14 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
       setUrlWarningText(t('CM_ENTER_SPACE_URL'));
       setIsUrlWarningVisible(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newAddress]);
+  }, [newAddress, t]);
 
   const handleCloseModal = () => {
     if (isWarningPopupVisible) setIsUrlWarningVisible(false);
     else onClose();
   };
   const handleCancel = () => {
-    if (handleChangeCheck()) onClose();
+    if (isUnchanged()) onClose();
     else setIsWarningPopupVisible(true);
   };
 
@@ -86,6 +93,19 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
       setUrlWarningText(t('CM_POLICY_ALPHABET'));
       setIsUrlWarningVisible(true);
       return;
+    }
+
+    // 사진 업데이트
+    let extension;
+    if (groupPhotoFile !== undefined) {
+      if (groupPhotoFile) extension = getFileExtension(groupPhotoFile);
+      else if (groupPhoto === null) extension = 'default';
+
+      await spaceStore.updateCurrentSpaceProfilePhoto({
+        extension,
+        file: groupPhotoFile,
+        deviceType: 'PC',
+      });
     }
 
     const userId = userStore.myProfile.id;
@@ -150,7 +170,7 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
               style={{ marginRight: '0.5rem' }}
               type="solid"
               onClick={handleConfirm}
-              disabled={handleCheckDisable()}
+              disabled={isDisabled()}
             >
               {t('CM_SAVE')}
             </Button>
@@ -160,10 +180,10 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
           </>
         }
       >
-        {/* <GroupImageField
+        <GroupImageField
           groupPhoto={groupPhoto}
           handleChange={handleChangePhoto}
-        /> */}
+        />
         <GroupNameField
           spaceName={newSpaceName}
           handleChange={handleChangeName}
