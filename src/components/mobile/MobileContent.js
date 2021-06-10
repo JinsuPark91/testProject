@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 // import { NoteApp } from 'teespace-note-app';
 // import { CalendarApp } from 'teespace-calendar-app';
-import { useCoreStores } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import styled from 'styled-components';
 import { useStores } from '../../stores';
@@ -12,7 +11,7 @@ import MobileRoom from './room/MobileRoom';
 import MobileRoomCreatePage from './room/MobileRoomCreatePage';
 import MobileTalk from './apps/MobileTalk';
 // import MobileSelect from './apps/MobileSelect';
-import { getRoomId } from './MobileUtil';
+import { getRoomId, findRoom } from './MobileUtil';
 
 const Container = styled.div`
   padding-top: 2.88rem;
@@ -25,45 +24,14 @@ const Container = styled.div`
       : 'auto'};
 `;
 
-//  ${props => {
-//   switch (props.appType) {
-//     case 'friend':
-//     case 'profile':
-//     case 'room':
-//     case 'talk': {
-//       return css`
-//         height: 100%;
-//         overflow-y: auto;
-//       `;
-//     }
-//     case 'addroom': {
-//       return css``;
-//     }
-//     case 'addfriend': {
-//       return css``;
-//     }
-//   }
-// }}
-
 const MobileContent = () => {
   const { uiStore } = useStores();
-  const { roomStore } = useCoreStores();
   const [isMemberSelected, setIsMemberSelected] = useState(false);
 
-  const handleToggleSelected = () => {
-    setIsMemberSelected(!isMemberSelected);
-  };
-
-  const handleSearchClose = () => {
-    uiStore.isSearchVisible = false;
-  };
+  const handleToggleSelected = () => setIsMemberSelected(!isMemberSelected);
 
   const getChannelId = type => {
-    const roomId = getRoomId();
-    return roomStore
-      .getRoomMap()
-      .get(roomId)
-      ?.channelList?.find(channel => channel.type === type)?.id;
+    return findRoom()?.channelList?.find(channel => channel.type === type)?.id;
   };
 
   const getApplication = appType => {
@@ -83,8 +51,6 @@ const MobileContent = () => {
           <MobileTalk
             roomId={getRoomId()}
             channelId={getChannelId('CHN0001')}
-            isSearchInputVisible={uiStore.isSearchVisible}
-            onSearchClose={handleSearchClose}
             isMini={false}
           />
         );

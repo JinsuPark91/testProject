@@ -55,12 +55,10 @@ const MobileRoom = () => {
 
   const roomFilter = room => room.isVisible;
   const getRoomArray = () => {
-    return roomStore.getRoomArray().filter(roomFilter);
+    return roomStore.getRoomArray(true).filter(roomFilter);
   };
 
-  const handleRoomEditMode = () => {
-    setRoomEditMode(!roomEditMode);
-  };
+  const handleRoomEditMode = () => setRoomEditMode(!roomEditMode);
 
   const handleRoomIdList = roomId => {
     const roomIdSet = new Set(roomIdDeleteList);

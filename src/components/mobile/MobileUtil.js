@@ -10,7 +10,7 @@ export const getRoomId = () => {
   return targetId;
 };
 
-const findRoom = () => {
+export const findRoom = () => {
   const targetId = getRoomId();
   return RoomStore.getRoomMap().get(targetId);
 };
