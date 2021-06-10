@@ -482,7 +482,7 @@ const MainProfile = observer(({ userId = null }) => {
                   <StyleOfficeIcon iconimg="address" />
                   <UserInfoText>
                     <span style={{ whiteSpace: 'break-spaces' }}>
-                      {profile?.getFullCompanyJob()}
+                      {profile?.getFullCompanyJob() || '-'}
                     </span>
                     {isEditMode && (
                       <LockIconBox>
