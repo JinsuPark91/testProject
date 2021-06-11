@@ -7,6 +7,7 @@ import { useStores } from '../../stores';
 import MobileFriend from './friend/MobileFriend';
 import MobileAddFriend from './friend/MobileAddFriend';
 import MobileProfile from './MobileProfile';
+import MobileProfileImage from './MobileProfileImage';
 import MobileRoom from './room/MobileRoom';
 import MobileRoomCreatePage from './room/MobileRoomCreatePage';
 import MobileTalk from './apps/MobileTalk';
@@ -42,6 +43,8 @@ const MobileContent = () => {
         return <MobileAddFriend />;
       case 'profile':
         return <MobileProfile userId={uiStore.resourceId} />;
+      case 'image':
+        return <MobileProfileImage userId={uiStore.resourceId} />;
       case 'room':
         return <MobileRoom />;
       case 'addroom':
