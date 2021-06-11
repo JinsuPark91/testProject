@@ -150,6 +150,7 @@ const SpaceSide = () => {
                     key={spaceInfo.id}
                     checked={spaceInfo.id === spaceStore.currentSpace.id}
                     spaceName={spaceInfo.name}
+                    backgroundURL={spaceInfo.profilePhotoURL}
                     spaceUnreadCount={spaceInfo.totalUnreadRoomCount}
                     spaceDomain={spaceInfo.domain}
                   />
