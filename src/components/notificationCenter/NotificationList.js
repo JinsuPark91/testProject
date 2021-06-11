@@ -31,7 +31,9 @@ const NotificationList = ({ items, hasMore, isLoading, loadMore }) => {
         item={items[index]}
       />
     ) : (
-      <div style={style}>Loading...</div>
+      <Loader style={style}>
+        <img src={`${process.env.PUBLIC_URL}/loading.png`} alt="loading" />
+      </Loader>
     );
 
   return (
@@ -94,5 +96,22 @@ const Middot = styled.div`
     font-size: 1rem;
     font-weight: bold;
     content: '\\00b7';
+  }
+`;
+
+const Loader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & > img {
+    animation: rotate_image 2s linear infinite;
+    transform-origin: 50% 50%;
+  }
+
+  @keyframes rotate_image {
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `;
