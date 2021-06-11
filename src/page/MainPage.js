@@ -433,6 +433,11 @@ const MainPage = () => {
     if (isRunning('note'))
       isRoutable = isRoutable && noteBeforeRoute(location, action);
 
+    // 메일팀 요청
+    if (isRoutable) {
+      isRoutable = mailBeforeRoute(location, action);
+    }
+
     if (isRunning('meeting')) {
       if (uiStore.subAppState === AppState.RUNNING) {
         // NOTE. 미팅앱에서 빠져 나갈 것인지 묻는 상태로 진입
