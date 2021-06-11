@@ -75,20 +75,16 @@ const MobileRoomHeader = ({
 }) => {
   const history = useHistory();
   const { userStore, roomStore } = useCoreStores();
-  const [roomLeaveMessageVisible, setRoomMessageVisible] = useState(false);
+  const [isMessageVisible, setIsMessageVisible] = useState(false);
   const myUserId = userStore.myProfile.id;
 
-  const handleCreateRoom = () => {
-    history.push(`/addroom/${myUserId}`);
-  };
+  const handleCreateRoom = () => history.push(`/addroom/${myUserId}`);
 
-  const handleClickLeave = () => {
+  const handleLeaveClick = () => {
     if (!roomIdDeleteList.length) return;
-    setRoomMessageVisible(true);
+    setIsMessageVisible(true);
   };
-  const handleCancel = () => {
-    setRoomMessageVisible(false);
-  };
+  const handleCancel = () => setIsMessageVisible(false);
 
   const handleLeaveRoom = async () => {
     // TODO: 룸 한번에 나가는 서비스 있는지 확인
@@ -113,30 +109,32 @@ const MobileRoomHeader = ({
           </IconButtonBox>
           <EditTitle>편집</EditTitle>
           <IconButtonBox>
-            <TextButton onClick={handleClickLeave} type="ghost">
+            <TextButton onClick={handleLeaveClick} type="ghost">
               나가기
             </TextButton>
           </IconButtonBox>
         </Header>
-        <MobileMessage
-          visible={roomLeaveMessageVisible}
-          title="룸에서 나가시겠습니까?"
-          type="warning"
-          btns={[
-            {
-              type: 'outlined',
-              shape: 'round',
-              text: '취소',
-              onClick: handleCancel,
-            },
-            {
-              type: 'solid',
-              shape: 'round',
-              text: '나가기',
-              onClick: handleLeaveRoom,
-            },
-          ]}
-        />
+        {isMessageVisible && (
+          <MobileMessage
+            visible={isMessageVisible}
+            title="룸에서 나가시겠습니까?"
+            type="warning"
+            btns={[
+              {
+                type: 'outlined',
+                shape: 'round',
+                text: '취소',
+                onClick: handleCancel,
+              },
+              {
+                type: 'solid',
+                shape: 'round',
+                text: '나가기',
+                onClick: handleLeaveRoom,
+              },
+            ]}
+          />
+        )}
       </>
     );
   }

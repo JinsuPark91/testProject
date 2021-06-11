@@ -100,8 +100,6 @@ const MobileFooter = () => {
     return <NewBadge>{number > 99 ? '99+' : number}</NewBadge>;
   };
 
-  if (uiStore.isProfileEditMode) return null;
-
   return (
     <Wrapper>
       <FooterTab
@@ -148,4 +146,4 @@ const MobileFooter = () => {
   );
 };
 
-export default MobileFooter;
+export default React.memo(MobileFooter);

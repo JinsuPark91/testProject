@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { EventBus, useCoreStores } from 'teespace-core';
+import { Observer } from 'mobx-react';
 import styled from 'styled-components';
 import { useStores } from '../../stores';
 import MobileContent from './MobileContent';
@@ -24,6 +25,7 @@ const Loader = styled.div`
 `;
 
 const MobileMainPage = () => {
+  const history = useHistory();
   const { resourceType, resourceId } = useParams();
   const { uiStore } = useStores();
   const { spaceStore, userStore, friendStore, roomStore } = useCoreStores();
@@ -47,6 +49,8 @@ const MobileMainPage = () => {
         );
         await userStore.fetchProfileList(friendIdList);
       }
+      // 룸 목록으로 항상 이동
+      history.push('/room');
       setIsLoading(false);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -55,6 +59,11 @@ const MobileMainPage = () => {
   useEffect(() => {
     uiStore.resourceType = resourceType;
     uiStore.resourceId = resourceId;
+
+    // TODO: 더 좋은 방법 고민
+    if (resourceType === 'profile' || resourceType === 'image')
+      uiStore.isFooterVisible = false;
+    else uiStore.isFooterVisible = true;
   }, [uiStore, resourceType, resourceId]);
 
   if (isLoading) {
@@ -68,7 +77,16 @@ const MobileMainPage = () => {
   return (
     <Wrapper>
       <MobileContent />
-      <MobileFooter />
+      <Observer>
+        {() => {
+          const isVisible =
+            uiStore.resourceType !== 'profile' &&
+            uiStore.resourceType !== 'image';
+
+          if (!isVisible) return null;
+          return <MobileFooter />;
+        }}
+      </Observer>
     </Wrapper>
   );
 };
