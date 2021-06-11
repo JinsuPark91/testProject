@@ -11,10 +11,9 @@ const uiStore = observable({
   resourceType: null,
 
   /*
-    FIXME: 추후 좋은 방법 고민, 프로필 수정 모드도 history로 관리?
-    모바일 웹뷰용 프로필 수정 모드 판단
+    모바일 웹뷰용 Footer visibility
   */
-  isProfileEditMode: false,
+  isFooterVisible: true,
 
   /*
     Tab Type : 선택된 탭 s / f / m
