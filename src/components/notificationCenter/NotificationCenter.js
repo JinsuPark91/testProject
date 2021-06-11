@@ -7,6 +7,8 @@ import NotificationList from './NotificationList';
 
 const { TabPane } = Tabs;
 
+const MASK_CLASS_NAME = 'modal-mask';
+
 const NotificationCenter = ({ visible, onClose }) => {
   const { notificationStore } = useCoreStores();
 
@@ -19,16 +21,12 @@ const NotificationCenter = ({ visible, onClose }) => {
     notificationStore.tabKey = key;
   };
 
+  const handleClose = e => {
+    if (e.target.className.includes(MASK_CLASS_NAME)) onClose();
+  };
+
   return (
-    <StyledModal
-      width="fit-content"
-      closable
-      style={{ top: '3.755rem', right: '0.625rem', position: 'absolute' }}
-      visible={visible}
-      footer={null}
-      mask={false}
-      onCancel={onClose}
-    >
+    <Mask className={MASK_CLASS_NAME} visible={visible} onClick={handleClose}>
       <Wrapper>
         <Tabs defaultActiveKey="mention" onChange={handleTabChange}>
           <TabPane tab="멘션" key="mention">
@@ -61,22 +59,27 @@ const NotificationCenter = ({ visible, onClose }) => {
           </TabPane>
         </Tabs>
       </Wrapper>
-    </StyledModal>
+    </Mask>
   );
 };
 
 export default NotificationCenter;
 
-const StyledModal = styled(Modal)`
-  & .ant-modal-body {
-    padding: 0;
-  }
-
-  & .ant-modal-close {
-    display: none;
-  }
+const Mask = styled.div`
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 6;
+  display: ${({ visible }) => (visible ? 'block' : 'none')};
 `;
 
 const Wrapper = styled.div`
   width: 22.375rem;
+  position: fixed;
+  top: 3.755rem;
+  right: 0.625rem;
+  z-index: 7;
+  background: #fff;
+  border-radius: 0.25rem;
+  border: 1px solid #ddd9d4;
 `;
