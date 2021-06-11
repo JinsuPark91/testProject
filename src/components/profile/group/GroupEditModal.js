@@ -132,7 +132,7 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
           domain: newAddress,
         };
       }
-    } else {
+    } else if (newSpaceName !== currentSpace.name) {
       updatedInfo = {
         name: newSpaceName,
       };
