@@ -32,6 +32,8 @@ const uiStore = observable({
   */
   isSearchVisible: false,
 
+  isNotificationCenterVisible: false,
+
   // modal
   roomMemberModal: {
     isEdit: false,

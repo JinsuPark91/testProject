@@ -12,7 +12,7 @@ import {
   Message,
 } from 'teespace-core';
 import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
-import { WindowMail } from 'teespace-mail-app';
+import { WindowMail, beforeRoute as mailBeforeRoute } from 'teespace-mail-app';
 import { Prompt } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useObserver } from 'mobx-react';
@@ -27,6 +27,7 @@ import WindowManager from '../components/common/WindowManager';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 import { handleProfileMenuClick } from '../utils/ProfileUtil';
 import { isDarkMode } from '../utils/GeneralUtil';
+import { NotificationCenter } from '../components/notificationCenter';
 
 const MainPage = () => {
   const { t, i18n } = useTranslation();
@@ -426,6 +427,8 @@ const MainPage = () => {
   const beforeRoute = (location, action) => {
     let isRoutable = true;
 
+    isRoutable = mailBeforeRoute(location, action); // true false:(mail쓰기)
+
     // 각 앱의 beforeRoute 를 받아서 처리하자.
     if (isRunning('note'))
       isRoutable = isRoutable && noteBeforeRoute(location, action);
@@ -463,6 +466,12 @@ const MainPage = () => {
       </Loader>
     ) : (
       <Wrapper>
+        <NotificationCenter
+          visible={uiStore.isNotificationCenterVisible}
+          onClose={() => {
+            uiStore.isNotificationCenterVisible = false;
+          }}
+        />
         <Toast
           visible={isToastVisible}
           timeoutMs={1000}
