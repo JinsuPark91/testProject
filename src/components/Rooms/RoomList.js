@@ -20,6 +20,7 @@ import { useStores } from '../../stores';
 import SelectRoomTypeDialog from './SelectRoomTypeDialog';
 import RoomInquiryModal from './RoomInquiryModal';
 import * as useCommand from '../../hook/Command';
+import { getLeftDistance } from '../../utils/GeneralUtil';
 
 const RoomList = React.memo(() => {
   const containerRef = useRef(null);
@@ -242,7 +243,7 @@ const RoomList = React.memo(() => {
               onCancel={handleRoomMemeberModalCancel}
               width="17.5rem"
               top="calc(50% - 15rem)"
-              left="19.935rem"
+              left={getLeftDistance()}
               isEdit={store.roomMemberAttr.isEdit}
             />
           );
@@ -265,7 +266,9 @@ const RoomList = React.memo(() => {
                 });
               }}
               onClose={handleCloseProfileInfoModal}
-              position={{ left: '19.935rem' }}
+              position={{
+                left: getLeftDistance(),
+              }}
             />
           ) : null;
         }}

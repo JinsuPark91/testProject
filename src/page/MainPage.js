@@ -49,6 +49,7 @@ const MainPage = () => {
     friendStore,
     spaceStore,
     themeStore,
+    configStore,
   } = useCoreStores();
   const myUserId = userStore.myProfile.id;
 
@@ -490,7 +491,7 @@ const MainPage = () => {
             return beforeRoute(location, action);
           }}
         />
-        <SpaceSide />
+        {!configStore.isFromCNU && <SpaceSide />}
         {leftSide}
         {mainSide}
         <WindowManager />
