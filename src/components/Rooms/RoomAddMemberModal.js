@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Button, Modal } from 'antd';
+import { Button } from 'antd';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import { useCoreStores, ItemSelector } from 'teespace-core';
+import { useCoreStores, ItemSelector, Modal } from 'teespace-core';
 
 function RoomAddMemberModal({
   visible = false,
@@ -98,7 +98,7 @@ function RoomAddMemberModal({
 
   return (
     isLoaded && (
-      <FlexModal
+      <Modal
         title={t('CM_ROOM_INVITE_USER')}
         visible={visible}
         closable
@@ -137,19 +137,10 @@ function RoomAddMemberModal({
             {t('CM_CANCEL')}
           </Button>
         </ButtonContainer>
-      </FlexModal>
+      </Modal>
     )
   );
 }
-
-const FlexModal = styled(Modal)`
-  display: flex;
-  justify-content: center;
-
-  .ant-modal-body {
-    padding: 0;
-  }
-`;
 
 const ButtonContainer = styled.div`
   display: flex;
