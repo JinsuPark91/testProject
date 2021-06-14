@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useCoreStores, MobileMessage } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
+import { useLongPress } from 'use-long-press';
 import Photos from '../../Photos';
 import { getMessageTime } from '../../../utils/TimeUtil';
 import CheckIcon from '../../../assets/check.svg';
-
+import { DisableAlarmIcon } from '../../Icons';
+import RoomModal from './MobileRoomModal';
+import { Observer } from 'mobx-react';
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
@@ -107,6 +110,12 @@ const CheckboxLabel = styled.label`
   margin: 0;
 `;
 
+const TitleIconWrapper = styled.div`
+  display: flex;
+  flex: 0 0 0.81rem;
+  padding: 0 0.15rem;
+`;
+
 const MobileRoomItem = ({
   index,
   roomInfo,
@@ -115,6 +124,7 @@ const MobileRoomItem = ({
 }) => {
   const [isMessageVisible, setIsMessageVisible] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [isRoomModalVisible, setIsRoomModalVisible] = useState(false);
   const history = useHistory();
   const { userStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
@@ -156,9 +166,22 @@ const MobileRoomItem = ({
     handleRoomIdList(roomInfo.id);
   };
 
+  const handleOpenRoomModal = useCallback(() => {
+    if (isMyRoom) return;
+    setIsRoomModalVisible(true);
+  }, [isMyRoom]);
+  const handleCloseModal = useCallback(() => {
+    setIsRoomModalVisible(false);
+  }, []);
+
+  const bind = useLongPress(handleOpenRoomModal, {
+    threshold: 300,
+    captureEvent: true,
+  });
+
   return (
     <>
-      <Wrapper onClick={handleClickRoom}>
+      <Wrapper {...bind} onClick={handleClickRoom}>
         {getRoomPhoto()}
         <Content>
           <Header>
@@ -175,6 +198,15 @@ const MobileRoomItem = ({
                 {getMessageTime(roomInfo.metadata?.lastMessageDate)}
               </LastDate>
             )}
+            <Observer>
+              {() =>
+                roomInfo.isAlarmUsed ? null : (
+                  <TitleIconWrapper>
+                    <DisableAlarmIcon width={0.8} height={0.8} />
+                  </TitleIconWrapper>
+                )
+              }
+            </Observer>
           </Header>
           <Bottom>
             <LastMessage>{roomInfo.metadata?.lastMessage}</LastMessage>
@@ -202,19 +234,24 @@ const MobileRoomItem = ({
           )}
         </Side>
       </Wrapper>
-      <MobileMessage
-        visible={isMessageVisible}
-        title="룸 관리자인 룸은 나갈 수 없습니다."
-        type="warning"
-        btns={[
-          {
-            type: 'outlined',
-            shape: 'round',
-            text: '확인',
-            onClick: () => setIsMessageVisible(false),
-          },
-        ]}
-      />
+      {isMessageVisible && (
+        <MobileMessage
+          visible={isMessageVisible}
+          title="룸 관리자인 룸은 나갈 수 없습니다."
+          type="warning"
+          btns={[
+            {
+              type: 'outlined',
+              shape: 'round',
+              text: '확인',
+              onClick: () => setIsMessageVisible(false),
+            },
+          ]}
+        />
+      )}
+      {isRoomModalVisible ? (
+        <RoomModal roomInfo={roomInfo} onCancel={handleCloseModal} />
+      ) : null}
     </>
   );
 };
