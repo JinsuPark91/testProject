@@ -96,7 +96,7 @@ const MobileFooter = () => {
   const handleSelectTab = key => history.push(`/${key}/${myUserId}`);
 
   const newBadgeView = number => {
-    if (number <= 0) return null;
+    if (!number || number <= 0) return null;
     return <NewBadge>{number > 99 ? '99+' : number}</NewBadge>;
   };
 

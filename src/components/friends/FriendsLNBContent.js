@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { ProfileInfoModal, Toast } from 'teespace-core';
 import FriendsLNBList from './FriendsLNBList';
 import { useStores } from '../../stores';
+import { getLeftDistance } from '../../utils/GeneralUtil';
 
 /**
  * @param {string} searchKeyword - 프렌즈 검색 키워드
@@ -48,7 +49,7 @@ const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
             });
           }}
           onClose={() => setIsInfoModalVisible(false)}
-          position={{ left: '19.935rem' }}
+          position={{ left: getLeftDistance() }}
         />
       )}
       {isToastVisible && (

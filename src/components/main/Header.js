@@ -49,6 +49,7 @@ import {
   OpenChatBgIcon,
 } from '../Icons';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
+import { getLeftDistance } from '../../utils/GeneralUtil';
 import * as useCommand from '../../hook/Command';
 
 const getIconStyle = (isDisabled = false) => {
@@ -413,7 +414,7 @@ const Header = () => {
             });
           }}
           onClose={handleCancelRoomMemeberModal}
-          position={{ top: '3.5rem', left: '20.125rem' }}
+          position={{ top: '3.5rem', left: getLeftDistance(0.19) }}
         />
       );
     }
@@ -436,7 +437,7 @@ const Header = () => {
               handler: null,
             });
           }}
-          position={{ top: '3.5rem', left: '20.125rem' }}
+          position={{ top: '3.5rem', left: getLeftDistance(0.19) }}
         />
       );
     }
@@ -447,7 +448,7 @@ const Header = () => {
         onCancel={handleCancelRoomMemeberModal}
         width="17.5rem"
         top="3.5rem"
-        left="20.125rem"
+        left={getLeftDistance(0.19)}
       />
     );
   };
