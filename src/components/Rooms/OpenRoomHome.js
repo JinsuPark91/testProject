@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled, { ThemeContext } from 'styled-components';
-import { Modal } from 'antd';
-import { useCoreStores, Message, logEvent } from 'teespace-core';
+// import { Modal } from 'antd';
+import { useCoreStores, Message, logEvent, Modal } from 'teespace-core';
 import { Observer } from 'mobx-react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -423,19 +423,13 @@ function OpenRoomHome({ visible, onCancel }) {
         onOk={handleCreatePublicRoomOk}
         onCancel={handleCreatePublicRoomCancel}
       />
-      <StyledModal
+      <Modal
         title={t('CM_OPEN_ROOM_HOME_01')}
         visible={visible}
         mask={false}
-        footer={false}
+        footer={null}
         onCancel={closeHomeModal}
-        width="100%"
         destroyOnClose
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          margin: 'unset',
-        }}
       >
         <OpenHomeForm>
           <Search
@@ -561,23 +555,15 @@ function OpenRoomHome({ visible, onCancel }) {
             </RecommendRoomListBox>
           )}
         </OpenHomeForm>
-      </StyledModal>
+      </Modal>
     </>
   );
 }
 
-const StyledModal = styled(Modal)`
-  .ant-modal-body {
-    padding: 0;
-  }
-
-  .ant-modal-content {
-    width: 24.38rem;
-  }
-`;
 const OpenHomeForm = styled.div`
   display: flex;
   flex-direction: column;
+  width : 24.38rem;
   height: 29.75rem;
   padding: 0.63rem 0.94rem;
 `;
