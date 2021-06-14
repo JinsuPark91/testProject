@@ -1,4 +1,3 @@
-import { Modal } from 'antd';
 import styled from 'styled-components';
 
 export const InfoContainer = styled.div`
@@ -15,15 +14,6 @@ export const ButtonContainer = styled.div`
 
   button:not(:last-child) {
     margin-right: 0.38rem;
-  }
-`;
-
-export const FlexModal = styled(Modal)`
-  display: flex;
-  justify-content: center;
-
-  .ant-modal-body {
-    padding: 0;
   }
 `;
 

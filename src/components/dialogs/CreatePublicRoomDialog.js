@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ItemSelector, useCoreStores, logEvent } from 'teespace-core';
+import { ItemSelector, useCoreStores, logEvent, Modal } from 'teespace-core';
 import { Checkbox, Button, Switch } from 'antd';
 import { useTranslation } from 'react-i18next';
 import {
-  FlexModal,
   Description,
   Title,
   InfoContainer,
@@ -91,7 +90,7 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
   };
 
   return (
-    <FlexModal
+    <Modal
       title={step === 0 ? t('CM_CREATE_OPEN_ROOM') : t('CM_ROOM_INVITE_USER')}
       visible={visible}
       onCancel={handleCancel}
@@ -182,7 +181,7 @@ const CreatePublicRoomDialog = ({ visible, onOk, onCancel }) => {
           </ButtonContainer>
         </>
       )}
-    </FlexModal>
+    </Modal>
   );
 };
 
