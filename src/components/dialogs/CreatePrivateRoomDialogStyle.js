@@ -1,4 +1,3 @@
-import { Modal } from 'antd';
 import styled from 'styled-components';
 
 export const ConfigTitle = styled.div`
@@ -20,15 +19,6 @@ export const ConfigDescriptionText = styled.div`
   font-size: 0.75rem;
   line-height: 1rem;
   color: ${props => props.theme.TextSub};
-`;
-
-export const FlexModal = styled(Modal)`
-  display: flex;
-  justify-content: center;
-
-  .ant-modal-body {
-    padding: 0;
-  }
 `;
 
 export const ConfigWrapper = styled.div`

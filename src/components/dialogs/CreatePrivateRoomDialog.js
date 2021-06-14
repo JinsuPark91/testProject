@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { ItemSelector, useCoreStores, logEvent } from 'teespace-core';
+import { ItemSelector, useCoreStores, logEvent, Modal } from 'teespace-core';
 import { Checkbox, Button } from 'antd';
 import { useTranslation } from 'react-i18next';
 import {
@@ -8,7 +8,6 @@ import {
   ConfigDescriptionText,
   ConfigWrapper,
   ButtonContainer,
-  FlexModal,
 } from './CreatePrivateRoomDialogStyle';
 import Input from '../Input';
 
@@ -65,7 +64,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
   };
 
   return (
-    <FlexModal
+    <Modal
       visible={visible}
       onCancel={handleCancel}
       onOk={handleOk}
@@ -136,7 +135,7 @@ const CreatePrivateRoomDialog = ({ visible, onOk, onCancel }) => {
           </Button>
         </ButtonContainer>
       </>
-    </FlexModal>
+    </Modal>
   );
 };
 
