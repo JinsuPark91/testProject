@@ -6,7 +6,7 @@ import { useLongPress } from 'use-long-press';
 import Photos from '../../Photos';
 import { getMessageTime } from '../../../utils/TimeUtil';
 import CheckIcon from '../../../assets/check.svg';
-import { DisableAlarmIcon } from '../../Icons';
+import { MobileAlarmIcon } from '../../Icons';
 import RoomModal from './MobileRoomModal';
 import { Observer } from 'mobx-react';
 const Wrapper = styled.div`
@@ -190,6 +190,19 @@ const MobileRoomItem = ({
                 ? userStore.myProfile.displayName
                 : roomInfo.customName || roomInfo.name}
             </Name>
+            <Observer>
+              {() =>
+                roomInfo.isAlarmUsed ? null : (
+                  <TitleIconWrapper>
+                    <MobileAlarmIcon
+                      width={0.8}
+                      height={0.8}
+                      color={'#e2dfdc'}
+                    />
+                  </TitleIconWrapper>
+                )
+              }
+            </Observer>
             {!isMyRoom && !isDMRoom && (
               <UserCount>{roomInfo.userCount}</UserCount>
             )}
@@ -198,15 +211,6 @@ const MobileRoomItem = ({
                 {getMessageTime(roomInfo.metadata?.lastMessageDate)}
               </LastDate>
             )}
-            <Observer>
-              {() =>
-                roomInfo.isAlarmUsed ? null : (
-                  <TitleIconWrapper>
-                    <DisableAlarmIcon width={0.8} height={0.8} />
-                  </TitleIconWrapper>
-                )
-              }
-            </Observer>
           </Header>
           <Bottom>
             <LastMessage>{roomInfo.metadata?.lastMessage}</LastMessage>
