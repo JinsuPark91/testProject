@@ -69,6 +69,7 @@
   "CM_SEARCH_NAME": "Search room name or user",
   "CM_ADD_PHOTO_FRIENDS": "Add Friend",
   "CM_B2C_LNB_EMPTY_PAGE_03": "Welcome {{name}}.\nTry creating a room!",
+  "CM_B2C_LNB_EMPTY_PAGE_03_GUEST": "Welcome {{name}}.",
   "CM_B2C_LNB_EMPTY_PAGE_04": "Experience various apps\nusing Talk with other users.",
   "CM_CREATE_ROOM": "Create Room",
   "CM_B2C_LNB_EMPTY_PAGE_06": "Search friends",
@@ -506,5 +507,5 @@
   "CM_TEMP_MINI_CHAT": "Mini Chat",
   "TEMP_DELETE_FRIEND": "Delete friend",
   "TEMP_GUEST_ACCESS_DENIED": "Access denied",
-  "CM_INVALID_ROOM" : "The room does not exist."
+  "CM_INVALID_ROOM": "The room does not exist."
 }

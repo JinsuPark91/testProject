@@ -376,21 +376,48 @@ const RoomList = React.memo(() => {
         onScroll={handleScroll}
       >
         <Observer>
-          {() =>
-            roomStore
-              .getRoomArray(true)
-              .filter(roomFilter)
-              .map(roomInfo => (
-                <RoomItem
-                  key={roomInfo.id}
-                  roomInfo={roomInfo}
-                  onClick={handleSelectRoom}
-                  onMenuClick={handleMenuClick}
-                  onClickMenuItem={handleClickMenuItem}
-                  onClickRoomPhoto={handleClickRoomPhoto}
-                />
-              ))
-          }
+          {() => {
+            // 봇룸 제외하고 방 1개(내방)일 경우 비었다고 판단
+            const isEmpty =
+              roomStore
+                .getRoomArray(false)
+                .filter(roomInfo => roomInfo.isVisible).length === 1;
+
+            return (
+              <>
+                {roomStore
+                  .getRoomArray(true)
+                  .filter(roomFilter)
+                  .map(roomInfo => (
+                    <RoomItem
+                      key={roomInfo.id}
+                      roomInfo={roomInfo}
+                      onClick={handleSelectRoom}
+                      onMenuClick={handleMenuClick}
+                      onClickMenuItem={handleClickMenuItem}
+                      onClickRoomPhoto={handleClickRoomPhoto}
+                    />
+                  ))}
+                {isEmpty ? (
+                  <Empty>
+                    <EmptyTitle>
+                      {t(
+                        userStore.myProfile.isGuest
+                          ? 'CM_B2C_LNB_EMPTY_PAGE_03_GUEST'
+                          : 'CM_B2C_LNB_EMPTY_PAGE_03',
+                        {
+                          name: userStore.myProfile.name,
+                        },
+                      )}
+                    </EmptyTitle>
+                    <EmptyDescription>
+                      {t('CM_B2C_LNB_EMPTY_PAGE_04')}
+                    </EmptyDescription>
+                  </Empty>
+                ) : null}
+              </>
+            );
+          }}
         </Observer>
       </RoomContainer>
 
@@ -464,6 +491,8 @@ const TopWrapper = styled.div`
 `;
 
 const RoomContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   overflow: hidden auto;
   flex: 1;
 `;
@@ -504,6 +533,29 @@ const ButtonWrapper = styled.div`
     );
   }}
   z-index: 5;
+`;
+
+const Empty = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  flex: 1;
+`;
+
+const EmptyTitle = styled.div`
+  white-space: pre;
+  text-align: center;
+  font-size: 0.938rem;
+  color: #000;
+  margin-bottom: 0.938rem;
+`;
+
+const EmptyDescription = styled.div`
+  white-space: pre;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #666;
+  margin-bottom: 3.125rem;
 `;
 
 export const FriendSearch = styled(WaplSearch)`
