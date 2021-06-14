@@ -1,4 +1,4 @@
-import { UserStore, SpaceStore } from 'teespace-core';
+import { UserStore, SpaceStore, ConfigStore } from 'teespace-core';
 import { fallbackLanguage } from '../i18n';
 
 export const isB2B = () => {
@@ -35,4 +35,12 @@ export const isDarkMode = () => {
     window.matchMedia &&
     window.matchMedia('(prefers-color-scheme: dark)').matches
   );
+};
+
+// For LNB Modal
+export const getLeftDistance = adjust => {
+  let distance = ConfigStore.isFromCNU ? 16.81 : 19.935;
+  if (adjust) distance += adjust;
+
+  return `${distance}rem`;
 };
