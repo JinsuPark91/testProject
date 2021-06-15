@@ -229,8 +229,10 @@ const RoomList = React.memo(() => {
 
   useCommand.NewRoom(handleCreateRoom);
   useCommand.Mute();
+  useCommand.Unmute();
   useCommand.OrgChart();
   useCommand.MyRoom();
+  useCommand.Leave();
 
   return (
     <Wrapper>

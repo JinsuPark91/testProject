@@ -120,11 +120,11 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     // Close dialog first
     if (onCancel) onCancel();
     history.push('/logout');
-  };
+  }, []);
 
   const revokeURL = useCallback(() => {
     URL.revokeObjectURL(thumbPhoto);
@@ -490,6 +490,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
 
   useCommand.Setting(handleSettingDialogOpen);
   useCommand.InvitePeople(handleOpenInviteModal);
+  useCommand.Logout(handleLogout);
 
   return useObserver(() => (
     <>

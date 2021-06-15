@@ -132,13 +132,19 @@ const RoomDropdown = React.memo(
       });
     };
 
-    const handleAlarmEnable = e => {
-      e.domEvent.stopPropagation();
-      setVisible(false);
+    const handleAlarmEnable = useCallback(
+      e => {
+        if (e) {
+          e.domEvent.stopPropagation();
+        }
 
-      updateRoomSetting({ newIsAlarmUsed: true });
-      onClickMenuItem({ key: 'enableAlarm' });
-    };
+        setVisible(false);
+
+        updateRoomSetting({ newIsAlarmUsed: true });
+        onClickMenuItem({ key: 'enableAlarm' });
+      },
+      [onClickMenuItem, updateRoomSetting],
+    );
 
     const handleAlarmDisable = useCallback(
       e => {
@@ -154,21 +160,25 @@ const RoomDropdown = React.memo(
       [onClickMenuItem, updateRoomSetting],
     );
 
-    const handleExit = e => {
-      e.domEvent.stopPropagation();
+    const handleExit = useCallback(
+      e => {
+        if (e) {
+          e.domEvent.stopPropagation();
+        }
+        const isDMRoom = roomInfo.isDirectMsg;
+        const isAdmin = roomInfo.adminId === myUserId;
+        const isAlone = roomInfo.userCount === 1;
 
-      const isDMRoom = roomInfo.isDirectMsg;
-      const isAdmin = roomInfo.adminId === myUserId;
-      const isAlone = roomInfo.userCount === 1;
-
-      setVisible(false);
-      if (isAdmin && !isDMRoom && !isAlone) {
-        onClickMenuItem({ key: 'exitAdmin', item: roomInfo });
-      } else {
-        onClickMenuItem({ key: 'exitNormal', item: roomInfo });
-      }
-      return false;
-    };
+        setVisible(false);
+        if (isAdmin && !isDMRoom && !isAlone) {
+          onClickMenuItem({ key: 'exitAdmin', item: roomInfo });
+        } else {
+          onClickMenuItem({ key: 'exitNormal', item: roomInfo });
+        }
+        return false;
+      },
+      [myUserId, onClickMenuItem, roomInfo],
+    );
 
     const themeContext = useContext(ThemeContext);
 
@@ -240,13 +250,24 @@ const RoomDropdown = React.memo(
 
     useEffect(() => {
       handlerStore.register('/mute', roomId, handleAlarmDisable);
+      handlerStore.register('/unmute', roomId, handleAlarmEnable);
       handlerStore.register('/org chart', roomId, handleViewMember);
+      handlerStore.register('/leave', roomId, handleExit);
 
       return () => {
         handlerStore.unregister('/mute', roomId);
-        handlerStore.register('/org chart', roomId, handleViewMember);
+        handlerStore.unregister('/unmute', roomId);
+        handlerStore.unregister('/org chart', roomId);
+        handlerStore.unregister('/leave', roomId);
       };
-    }, [handleAlarmDisable, handleViewMember, handlerStore, roomId]);
+    }, [
+      handleAlarmDisable,
+      handleAlarmEnable,
+      handleViewMember,
+      handleExit,
+      handlerStore,
+      roomId,
+    ]);
 
     return (
       <Dropdown
