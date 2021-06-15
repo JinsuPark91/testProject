@@ -445,9 +445,16 @@ const Header = () => {
     EventBus.dispatch('Drive:Command:SearchDrive');
   }, [openSubApp]);
 
+  const handleOpenApp = appName => () => {
+    openSubApp(appName);
+  };
+
   useCommand.InviteMember(handleAddMember);
   useCommand.NewNote(handleNewNote);
   useCommand.SearchDrive(handleSearchDrive);
+  useCommand.OpenCalendar(handleOpenApp('calendar'));
+  useCommand.OpenDrive(handleOpenApp('drive'));
+  useCommand.OpenNote(handleOpenApp('note'));
 
   const themeContext = useContext(ThemeContext);
 
