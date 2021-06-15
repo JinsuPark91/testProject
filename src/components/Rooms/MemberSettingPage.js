@@ -148,7 +148,7 @@ const SubTabItem = styled.li`
     width: 1px;
     height: 0.75rem;
     margin: 0.25rem 0.75rem 0;
-    background-color: #d0ccc7;
+    background-color: ${props => props.theme.LineOut};
     vertical-align: top;
   }
 

@@ -273,18 +273,15 @@ const SubWaitingMemberPage = ({ roomId }) => {
           <Observer>
             {() => {
               const isEmpty = !store.selectedBanMembers.size;
-              const style = { marginRight: '0.5rem' };
-              if (!isEmpty) {
-                style.backgroundColor = '#205855';
-              }
 
               return (
                 <Button
                   type="solid"
                   size="small"
-                  style={style}
+                  style={{ marginRight: '0.5rem' }}
                   onClick={handleUnblock}
                   disabled={isEmpty}
+                  className={!isEmpty && 'color-green'}
                 >
                   {t('CM_ROOM_SETTING_BLOCK_MANAGE_PEOPLE_03')}
                 </Button>

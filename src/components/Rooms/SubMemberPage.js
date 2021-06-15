@@ -443,8 +443,9 @@ const MemberPage = ({ roomId }) => {
           <Button
             type="solid"
             size="small"
-            style={{ backgroundColor: '#205855', marginRight: '0.5rem' }}
+            style={{ marginRight: '0.5rem' }}
             onClick={handleInvite}
+            className="color-green"
           >
             {`+ ${t('CM_ROOM_INVITE_USER')}`}
           </Button>

@@ -97,7 +97,7 @@ const Wrapper = styled.div`
 
   .input-counter {
     color: ${({ disabled, theme }) =>
-      disabled ? `${theme.DisabledText}` : `${theme.Iconmain}`};
+      disabled ? `${theme.DisabledText}` : `${theme.TextSub}`};
   }
 `;
 
