@@ -75,7 +75,7 @@ const MobileFriendItem = ({ friendInfo, isMe, isEditMode }) => {
   const myUserId = userStore.myProfile.id;
   const userId = isMe ? myUserId : friendInfo.friendId || friendInfo.id;
 
-  const fullCompanyJob = friendInfo.getFullCompanyJob(true);
+  const fullCompanyJob = friendInfo.getFullCompanyJob(1);
   const fullCompanyJobTxt = fullCompanyJob ? `(${fullCompanyJob})` : '';
   const isNewFriend = handleCheckNewFriend(friendInfo);
 

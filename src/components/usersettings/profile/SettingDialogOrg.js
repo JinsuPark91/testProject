@@ -23,7 +23,7 @@ const SettingDialogOrg = () => {
       <Name>{t('CM_SETTING_CHANGE_INFO_COMPANY_04')}</Name>
       <Data>
         <TextArea>
-          <p>{myProfile.getFullCompanyJob(true)}</p>
+          <p>{myProfile.getFullCompanyJob(1)}</p>
         </TextArea>
         <ButtonArea>
           <LockIconBox>
