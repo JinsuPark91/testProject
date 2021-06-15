@@ -43,7 +43,7 @@ function Photos({
   className,
 }) {
   const getPhotos = () => {
-    if (srcList.length)
+    if (srcList.length && Array.isArray(srcList)) {
       return srcList.map((src, index) => (
         <UserPhoto
           key={index}
@@ -52,11 +52,12 @@ function Photos({
           <img src={src} alt="" />
         </UserPhoto>
       ));
+    }
 
     return (
       <img
-        src={`${process.env.PUBLIC_URL}/res/face/Profile_empty_qui.svg`}
-        alt=""
+        src={`${process.env.PUBLIC_URL}/res/face/Profile_empty_quit.svg`}
+        alt="empty"
       />
     );
   };

@@ -238,24 +238,6 @@ const Header = () => {
     return null;
   };
 
-  const getUserPhotos = () => {
-    const found = findRoom();
-    if (found && found?.memberIdListString) {
-      const userIdArr = found?.memberIdListString.split(',');
-      const userIds =
-        userIdArr.length === 1 && !found?.isDirectMsg
-          ? userIdArr
-          : userIdArr
-              .filter(userId => userId !== userStore.myProfile.id)
-              .splice(0, 4);
-
-      return userIds.map(
-        userId => `${userStore.getProfilePhotoURL(userId, 'small')}`,
-      );
-    }
-    return [];
-  };
-
   const handleExport = () => {
     const roomInfo = findRoom();
 
@@ -490,7 +472,7 @@ const Header = () => {
                       <StyledPhotos
                         isBotRoom={isBotRoom()}
                         className="header__photo"
-                        srcList={getUserPhotos()}
+                        srcList={roomStore.getRoomPhoto(findRoom()?.id)}
                         onClick={handleClickRoomPhoto}
                       />
                     )}

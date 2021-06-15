@@ -135,22 +135,10 @@ const Header = ({ roomId, onSearch }) => {
     const { type, customName, name } = roomInfo;
     switch (type) {
       case 'WKS0001':
-        return userStore.myProfile.nick || userStore.myProfile.name;
+        return userStore.myProfile.displayName;
       default:
         return customName || name;
     }
-  };
-
-  const getSrcs = roomInfo => {
-    const { isDirectMsg: isDMRoom, memberIdListString } = roomInfo;
-    let userIds = memberIdListString
-      .split(',')
-      .filter(userId => userId !== userStore.myProfile.id)
-      .splice(0, 4);
-    if (isDMRoom)
-      userIds = userIds.filter(userId => userId !== userStore.myProfile.id);
-
-    return userIds.map(userId => userStore.getProfilePhotoURL(userId, 'small'));
   };
 
   const handlePhotoClick = () => {
@@ -212,7 +200,7 @@ const Header = ({ roomId, onSearch }) => {
           return (
             <Photos
               isBotRoom={info.isBotRoom}
-              srcList={getSrcs(info)}
+              srcList={roomStore.getRoomPhoto(info.id)}
               onClick={handlePhotoClick}
               className="header__room-photo"
             />
@@ -232,7 +220,7 @@ const Header = ({ roomId, onSearch }) => {
       <Observer>
         {() => {
           const info = getRoom();
-          if (!info || info.isDMRoom || info.isMyRoom) return null;
+          if (!info || info.isDirectMsg || info.isMyRoom) return null;
           return <span className="header__user-count">{info.userCount}</span>;
         }}
       </Observer>
@@ -267,7 +255,6 @@ const HeaderWrapper = styled.div`
   .header__room-name {
     overflow: hidden;
     margin-left: 0.63rem;
-    flex: 1;
     font-size: 0.875rem;
     color: ${props => props.theme.TextMain};
   }

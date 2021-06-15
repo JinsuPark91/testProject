@@ -39,7 +39,13 @@ export const isDarkMode = () => {
 
 // For LNB Modal
 export const getLeftDistance = adjust => {
-  let distance = ConfigStore.isFromCNU ? 16.81 : 19.935;
+  const MODAL_LEFT_WITH_GROUP = 19.935;
+  const MODAL_LEFT_WITHOUT_GROUP = 16.81;
+
+  let distance = ConfigStore.isFromCNU
+    ? MODAL_LEFT_WITHOUT_GROUP
+    : MODAL_LEFT_WITH_GROUP;
+
   if (adjust) distance += adjust;
 
   return `${distance}rem`;
