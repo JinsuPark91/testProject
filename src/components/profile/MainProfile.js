@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
-import { useCoreStores, Message, Toast } from 'teespace-core';
+import { useCoreStores, Message, Toast, Tooltip } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import { useStores } from '../../stores';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 import {
@@ -33,6 +34,7 @@ import {
   ButtonContainer,
   StyleIcon,
   UserInfoText,
+  UserOrgText,
   StyleOfficeIcon,
   EditNameInput,
   StyleInput,
@@ -61,6 +63,7 @@ const MainProfile = observer(({ userId = null }) => {
     roomStore,
     configStore,
   } = useCoreStores();
+  const themeContext = useContext(ThemeContext);
   const { uiStore, historyStore } = useStores();
   const [isEditMode, setEditMode] = useState(false);
   const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
@@ -310,6 +313,28 @@ const MainProfile = observer(({ userId = null }) => {
     return number;
   }, []);
 
+  const getUserOrgInfo = () => {
+    const VIEW_COUNT = 3;
+    const userOrgCount = profile?.concurrentCount;
+    const userOrgSubText =
+      profile?.getFullCompanyJob(VIEW_COUNT).replaceAll(',', '\n') || '-';
+
+    if (userOrgCount <= VIEW_COUNT)
+      return <UserOrgText>{userOrgSubText}</UserOrgText>;
+
+    const userOrgFullText = profile?.getFullCompanyJob().replaceAll(',', '\n');
+    return (
+      <Tooltip
+        placement="bottom"
+        title={userOrgFullText}
+        color={themeContext.CoreLight}
+        overlayStyle={{ whiteSpace: 'pre-line' }}
+      >
+        <UserOrgText>{userOrgSubText}</UserOrgText>
+      </Tooltip>
+    );
+  };
+
   return (
     <>
       <Wrapper imageSrc={renderBackgroundPhoto}>
@@ -481,9 +506,7 @@ const MainProfile = observer(({ userId = null }) => {
                 <UserInfoItem style={{ alignItems: 'flex-start' }}>
                   <StyleOfficeIcon iconimg="address" />
                   <UserInfoText>
-                    <span style={{ whiteSpace: 'break-spaces' }}>
-                      {profile?.getFullCompanyJob() || '-'}
-                    </span>
+                    {getUserOrgInfo()}
                     {isEditMode && (
                       <LockIconBox>
                         <LockLineIcon width="0.88" height="0.88" />

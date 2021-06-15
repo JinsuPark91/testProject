@@ -283,6 +283,10 @@ export const UserInfoText = styled.div`
   }
 `;
 
+export const UserOrgText = styled.span`
+  white-space: pre-line !important;
+`;
+
 export const StyleOfficeIcon = styled.em`
   display: inline-block;
   width: 1.25rem;
