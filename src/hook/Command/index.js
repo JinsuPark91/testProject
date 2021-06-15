@@ -1,3 +1,4 @@
+import { useCommandAnnounce } from './useCommandAnnounce';
 import { useCommandMute } from './useCommandMute';
 import { useCommandUnmute } from './useCommandUnmute';
 import { useCommandMyRoom } from './useCommandMyRoom';
@@ -11,6 +12,7 @@ import { useCommandLeave } from './useCommandLeave';
 import { useCommandLogout } from './useCommandLogout';
 
 export {
+  useCommandAnnounce,
   useCommandMute,
   useCommandUnmute,
   useCommandMyRoom,
@@ -22,6 +24,7 @@ export {
   useCommandNewNote,
   useCommandLeave,
   useCommandLogout,
+  useCommandAnnounce as Announce,
   useCommandMute as Mute,
   useCommandUnmute as Unmute,
   useCommandMyRoom as MyRoom,

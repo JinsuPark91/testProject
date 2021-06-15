@@ -227,6 +227,7 @@ const RoomList = React.memo(() => {
 
   const FileDndDialog = componentStore.get('Talk:FileDndDialog');
 
+  useCommand.Announce();
   useCommand.NewRoom(handleCreateRoom);
   useCommand.Mute();
   useCommand.Unmute();
