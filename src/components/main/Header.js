@@ -458,8 +458,14 @@ const Header = () => {
     EventBus.dispatch('onSlashCreateNote');
   }, [openSubApp]);
 
+  const handleSearchDrive = useCallback(() => {
+    openSubApp('drive');
+    EventBus.dispatch('Drive:Command:SearchDrive');
+  }, [openSubApp]);
+
   useCommand.InviteMember(handleAddMember);
   useCommand.NewNote(handleNewNote);
+  useCommand.SearchDrive(handleSearchDrive);
 
   const themeContext = useContext(ThemeContext);
 

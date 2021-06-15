@@ -8,8 +8,7 @@ import { useCommandSetting } from './useCommandSetting';
 import { useCommandInviteMember } from './useCommandInviteMember';
 import { useCommandInvitePeople } from './useCommandInvitePeople';
 import { useCommandNewNote } from './useCommandNewNote';
-import { useCommandLeave } from './useCommandLeave';
-import { useCommandLogout } from './useCommandLogout';
+import { useCommandSearchDrive } from './useCommandSearchDrive';
 
 export {
   useCommandAnnounce,
@@ -34,6 +33,5 @@ export {
   useCommandInviteMember as InviteMember,
   useCommandInvitePeople as InvitePeople,
   useCommandNewNote as NewNote,
-  useCommandLeave as Leave,
-  useCommandLogout as Logout,
+  useCommandSearchDrive as SearchDrive,
 };
