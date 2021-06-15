@@ -491,6 +491,7 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   useCommand.Setting(handleSettingDialogOpen);
   useCommand.InvitePeople(handleOpenInviteModal);
   useCommand.Logout(handleLogout);
+  useCommand.Help(handleOpenSupport);
 
   return useObserver(() => (
     <>
