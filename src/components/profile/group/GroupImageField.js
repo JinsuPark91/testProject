@@ -46,7 +46,11 @@ const GroupImageField = ({ groupPhoto, handleChange }) => {
   return (
     <>
       <SpaceImage>
-        <img alt="groupImg" src={groupPhoto} />
+        {groupPhoto ? (
+          <img alt="groupImg" src={groupPhoto} />
+        ) : (
+          <span>{spaceStore.currentSpace?.name[0]}</span>
+        )}
         <ImageChangeBox>
           <Dropdown
             trigger={['click']}

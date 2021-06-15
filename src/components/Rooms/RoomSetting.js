@@ -52,13 +52,11 @@ const RoomSetting = ({ roomId }) => {
           </IconWrapper>
           <TitleText>{t('CM_ROOM_SETTING')}</TitleText>
         </Centered>
-        <Centered
-          style={{ borderLeft: '1px solid #E3E7EB', paddingLeft: '0.7rem' }}
-        >
+        <CloseArea>
           <IconWrapper onClick={handleClose}>
             <CancelIcon width={1} height={1} color={themeContext.IconNormal} />
           </IconWrapper>
-        </Centered>
+        </CloseArea>
       </Header>
       <Content>
         <Observer>
@@ -98,6 +96,11 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+`;
+
+const CloseArea = styled.div`
+  padding-left: 0.7rem;
+  border-left: 1px solid ${props => props.theme.LineSub};
 `;
 
 const Centered = styled.div`

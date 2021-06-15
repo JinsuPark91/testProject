@@ -179,7 +179,6 @@ const StyledInput = styled(Input)`
   }
   .input-counter {
     font-size: 0.69rem;
-    color: #bdc6d3;
   }
 `;
 

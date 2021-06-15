@@ -103,10 +103,19 @@ export const UrlText = styled.span`
 `;
 
 export const SpaceImage = styled.div`
+  overflow: hidden;
+  display: flex;
   position: relative;
-  margin: 0 auto 1.875rem;
+  align-items: center;
+  justify-content: center;
   width: 4.88rem;
   height: 4.88rem;
+  margin: 0 auto 1.875rem;
+  border-radius: 0.88rem;
+  background-color: ${props => props.theme.SubStateBright};
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: ${props => props.theme.TextSub4};
 
   &:after {
     content: '';
@@ -123,7 +132,6 @@ export const SpaceImage = styled.div`
   img {
     width: 100%;
     height: 100%;
-    border-radius: 0.88rem;
     object-fit: cover;
   }
 `;

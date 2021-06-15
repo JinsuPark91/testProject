@@ -241,7 +241,7 @@ export const ConvertDropdown = styled.div`
   left: -12.5rem;
   width: 12rem;
   top: 15.63rem;
-  border: 1px solid #c6ced6;
+  border: 1px solid ${props => props.theme.ModalLine};
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
   border-radius: 0.25rem;
   background-color: #fff;

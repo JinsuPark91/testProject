@@ -44,6 +44,7 @@ export const ItemInfo = styled.div`
 
 export const ItemTitle = styled.label`
   display: block;
+  margin: 0;
   font-size: 0.75rem;
   line-height: 1.13rem;
   color: ${props => props.theme.TextSub};
