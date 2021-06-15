@@ -495,8 +495,8 @@ const RoomItem = ({
   roomInfo,
   onClick,
   onMenuClick,
-  onClickMenuItem = () => { },
-  onClickRoomPhoto = () => { },
+  onClickMenuItem = () => {},
+  onClickRoomPhoto = () => {},
 }) => {
   const { handlerStore } = useStores();
   const isMyRoom = roomInfo.type === 'WKS0001';
@@ -572,6 +572,14 @@ const RoomItem = ({
 
     return () => isMyRoom && handlerStore.unregister('/myroom');
   }, [handleRoomClick, handlerStore, isMyRoom]);
+
+  useEffect(() => {
+    if (isBotRoom) {
+      handlerStore.register('/announce', '', handleRoomClick);
+    }
+
+    return () => isBotRoom && handlerStore.unregister('/announce');
+  }, [handleRoomClick, handlerStore, isBotRoom]);
 
   return (
     <StyledItem ref={drop} className="rooms__item" onClick={handleRoomClick}>
