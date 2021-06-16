@@ -188,7 +188,6 @@ function OpenRoomHome({ visible, onCancel }) {
   const getUserPhotos = memberString => {
     return memberString
       .split(',')
-      .filter(userId => userId !== userStore.myProfile.id)
       .splice(0, 4)
       .map(userId => `${userStore.getProfilePhotoURL(userId, 'small')}`);
   };
@@ -316,8 +315,9 @@ function OpenRoomHome({ visible, onCancel }) {
                   <RecomRoomTitle>
                     {roomInfo.customName || roomInfo.name}
                   </RecomRoomTitle>
-                  <AdminText>{`${t('CM_ROOM_ADMIN')} ${roomInfo.adminName
-                    }`}</AdminText>
+                  <AdminText>{`${t('CM_ROOM_ADMIN')} ${
+                    roomInfo.adminName
+                  }`}</AdminText>
                 </div>
               )}
             </Observer>
@@ -563,7 +563,7 @@ function OpenRoomHome({ visible, onCancel }) {
 const OpenHomeForm = styled.div`
   display: flex;
   flex-direction: column;
-  width : 24.38rem;
+  width: 24.38rem;
   height: 29.75rem;
   padding: 0.63rem 0.94rem;
 `;
