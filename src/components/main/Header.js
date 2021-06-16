@@ -440,10 +440,10 @@ const Header = () => {
     EventBus.dispatch('onSlashCreateNote');
   }, [openSubApp]);
 
-  const handleSearchDrive = useCallback(() => {
-    openSubApp('drive');
-    EventBus.dispatch('Drive:Command:SearchDrive');
-  }, [openSubApp]);
+  // const handleSearchDrive = useCallback(() => {
+  //   openSubApp('drive');
+  //   EventBus.dispatch('Drive:Command:SearchDrive');
+  // }, [openSubApp]);
 
   const handleOpenApp = appName => () => {
     openSubApp(appName);
@@ -451,7 +451,7 @@ const Header = () => {
 
   useCommand.InviteMember(handleAddMember);
   useCommand.NewNote(handleNewNote);
-  useCommand.SearchDrive(handleSearchDrive);
+  // useCommand.SearchDrive(handleSearchDrive);
   useCommand.OpenCalendar(handleOpenApp('calendar'));
   useCommand.OpenDrive(handleOpenApp('drive'));
   useCommand.OpenNote(handleOpenApp('note'));

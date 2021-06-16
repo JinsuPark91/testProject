@@ -9,7 +9,7 @@ import { useCommandHelp } from './useCommandHelp';
 import { useCommandInviteMember } from './useCommandInviteMember';
 import { useCommandInvitePeople } from './useCommandInvitePeople';
 import { useCommandNewNote } from './useCommandNewNote';
-import { useCommandSearchDrive } from './useCommandSearchDrive';
+// import { useCommandSearchDrive } from './useCommandSearchDrive';
 import { useCommandLeave } from './useCommandLeave';
 import { useCommandLogout } from './useCommandLogout';
 import {
@@ -30,7 +30,7 @@ export {
   useCommandInviteMember,
   useCommandInvitePeople,
   useCommandNewNote,
-  useCommandSearchDrive,
+  // useCommandSearchDrive,
   useCommandLeave,
   useCommandLogout,
   useCommandOpenCalendar,
@@ -47,7 +47,7 @@ export {
   useCommandInviteMember as InviteMember,
   useCommandInvitePeople as InvitePeople,
   useCommandNewNote as NewNote,
-  useCommandSearchDrive as SearchDrive,
+  // useCommandSearchDrive as SearchDrive,
   useCommandLeave as Leave,
   useCommandLogout as Logout,
   useCommandOpenCalendar as OpenCalendar,
