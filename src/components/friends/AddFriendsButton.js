@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { logEvent, AddFriendsBySearch } from 'teespace-core';
-import { Tooltip } from 'antd';
+import { logEvent, AddFriendsBySearch, Tooltip } from 'teespace-core';
 import { ThemeContext } from 'styled-components';
 import { FriendAddButton } from '../../styles/friends/FriendsLNBHeaderStyle';
 import { AddAcountIcon } from '../Icons';

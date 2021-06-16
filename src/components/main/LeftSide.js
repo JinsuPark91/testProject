@@ -1,10 +1,9 @@
 import React, { useContext, useMemo } from 'react';
 import { Observer } from 'mobx-react';
-import { useCoreStores, logEvent, EventBus } from 'teespace-core';
+import { useCoreStores, logEvent, EventBus, Tooltip } from 'teespace-core';
 import { MailSideView, MailStore } from 'teespace-mail-app';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Tooltip } from 'antd';
 import {
   ChattingIcon,
   ChattingActiveIcon,

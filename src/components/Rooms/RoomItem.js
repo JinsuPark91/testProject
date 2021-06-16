@@ -1,10 +1,10 @@
 /* eslint-disable no-nested-ternary */
 import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { List, Menu, Dropdown, Tooltip } from 'antd';
+import { List, Menu, Dropdown } from 'antd';
 import styled, { css, ThemeContext } from 'styled-components';
 import { Observer } from 'mobx-react';
-import { useCoreStores, EventBus } from 'teespace-core';
+import { useCoreStores, EventBus, Tooltip } from 'teespace-core';
 import { talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
 import { useTranslation } from 'react-i18next';

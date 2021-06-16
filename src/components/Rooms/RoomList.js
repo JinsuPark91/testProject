@@ -10,8 +10,8 @@ import {
   logEvent,
   WaplSearch,
   EventBus,
+  Tooltip,
 } from 'teespace-core';
-import { Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { throttle } from 'lodash';
 import { WaplLogo, AddRoomIcon } from '../Icons';

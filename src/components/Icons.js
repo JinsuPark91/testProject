@@ -1,6 +1,6 @@
 import React from 'react';
 import { useObserver } from 'mobx-react';
-import { Tooltip } from 'antd';
+import { Tooltip } from 'teespace-core';
 
 const REM_UNIT = 16;
 

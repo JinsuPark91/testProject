@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Tooltip } from 'antd';
+import { Tooltip } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { isBasicPlan } from '../../../utils/GeneralUtil';
 import { getMainURL } from '../../../utils/UrlUtil';

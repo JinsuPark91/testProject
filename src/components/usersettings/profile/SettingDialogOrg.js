@@ -1,7 +1,6 @@
 import React from 'react';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, Tooltip } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
-import { Tooltip } from 'antd';
 import {
   InnerItem,
   Name,

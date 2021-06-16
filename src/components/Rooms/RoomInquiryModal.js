@@ -8,8 +8,13 @@ import React, {
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
 import styled, { ThemeContext } from 'styled-components';
-import { Button, Tooltip } from 'antd';
-import { useCoreStores, ProfileInfoModal, ProfileModal } from 'teespace-core';
+import { Button } from 'antd';
+import {
+  useCoreStores,
+  ProfileInfoModal,
+  ProfileModal,
+  Tooltip,
+} from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import Photos from '../Photos';
 import Input from '../Input';

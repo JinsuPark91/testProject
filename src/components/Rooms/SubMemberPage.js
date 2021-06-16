@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useTranslation, Trans } from 'react-i18next';
-import { Message, WaplSearch, useCoreStores } from 'teespace-core';
+import { Message, WaplSearch, useCoreStores, Tooltip } from 'teespace-core';
 import styled, { ThemeContext } from 'styled-components';
 import { Observer } from 'mobx-react';
-import { Button, Checkbox, Tooltip } from 'antd';
+import { Button, Checkbox } from 'antd';
 import { FixedSizeList as List } from 'react-window';
 import { LeaderIcon } from '../Icons';
 import RoomAddMemberModal from './RoomAddMemberModal';

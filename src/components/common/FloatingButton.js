@@ -6,7 +6,7 @@ import {
 } from 'react-floating-button-menu';
 import styled, { ThemeContext } from 'styled-components';
 import Draggable from 'react-draggable';
-import { Tooltip } from 'antd';
+import { Tooltip } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { MiniChatIcon, CancelIcon, ArrowDownIcon, ArrowUpIcon } from '../Icons';
 
