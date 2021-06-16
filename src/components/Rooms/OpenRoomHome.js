@@ -186,8 +186,12 @@ function OpenRoomHome({ visible, onCancel }) {
   };
 
   const getUserPhotos = memberString => {
-    return memberString
-      .split(',')
+    let userIdList = memberString.split(',');
+    if (userIdList.length !== 1) {
+      userIdList = userIdList.filter(elem => elem !== userStore.myProfile.id);
+    }
+
+    return userIdList
       .splice(0, 4)
       .map(userId => `${userStore.getProfilePhotoURL(userId, 'small')}`);
   };
