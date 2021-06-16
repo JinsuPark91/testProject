@@ -99,7 +99,7 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
     let extension;
     if (groupPhotoFile !== undefined) {
       if (groupPhotoFile) extension = getFileExtension(groupPhotoFile);
-      else if (groupPhoto === null) extension = 'default';
+      else if (groupPhotoFile === null) extension = 'default';
 
       await spaceStore.updateCurrentSpaceProfilePhoto({
         extension,
