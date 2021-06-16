@@ -57,7 +57,7 @@ const uiStore = observable({
 
   // [TODO] : Talk 안정화 될때까지 임시
   get totalUnreadCount() {
-    return RoomStore.getRoomArray()
+    return RoomStore.getRoomArray(true)
       .filter(roomInfo => roomInfo.isVisible)
       .reduce(
         (accumulator, roomInfo) =>
