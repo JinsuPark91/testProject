@@ -73,7 +73,8 @@ const MainPage = () => {
 
   useEffect(() => {
     if (resourceType === 'm' && !isLoaded) {
-      uiStore.resourceId = roomStore.getDMRoom(myUserId, myUserId).roomInfo.id;
+      const { roomInfo } = roomStore.getDMRoom(myUserId, myUserId);
+      if (roomInfo) uiStore.resourceId = roomInfo.id;
     } else {
       uiStore.resourceId = resourceId;
     }
