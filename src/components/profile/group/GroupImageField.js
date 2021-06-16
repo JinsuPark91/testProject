@@ -15,18 +15,25 @@ const GroupImageField = ({ groupPhoto, handleChange }) => {
   const { spaceStore } = useCoreStores();
   const [isDisabled, setDisabled] = useState(!groupPhoto);
 
+  const [isVisible, setIsVisible] = useState(false);
+
   const handleChangePhoto = file => {
-    handleChange(file);
     setDisabled(false);
+    handleChange(file);
   };
 
   const handleChangeToDefaultPhoto = () => {
-    handleChange(null);
     setDisabled(true);
+    handleChange(null);
   };
 
+  const handleVisibleChange = flag => {
+    if (flag !== isVisible) setIsVisible(flag);
+  };
+
+  // TODO: dropdown 자동으로 닫히지 않는 이슈 분석
   const imageChangeMenu = (
-    <Menu>
+    <Menu onClick={() => setIsVisible(false)}>
       <Menu.Item>
         <StyledUpload
           component="div"
@@ -56,6 +63,8 @@ const GroupImageField = ({ groupPhoto, handleChange }) => {
             trigger={['click']}
             overlay={imageChangeMenu}
             placement="bottomLeft"
+            visible={isVisible}
+            onVisibleChange={handleVisibleChange}
           >
             <ImageChangButton>
               <Blind>Change Profile Image</Blind>
