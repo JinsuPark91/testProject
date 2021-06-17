@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from 'antd';
-import { useCoreStores, Toast } from 'teespace-core';
+import { useCoreStores } from 'teespace-core';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
 import { useStores } from '../../stores';
@@ -14,8 +14,6 @@ const CommonSettingPage = ({ roomId }) => {
   const [value, setValue] = useState('');
   const [isChanged, setIsChanged] = useState(false);
   const [isPrivateRoom, setIsPrivateRoom] = useState(false);
-  const [isToastVisible, setIsToastVisible] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
 
   const { roomStore, userStore } = useCoreStores();
   const history = useHistory();
@@ -53,8 +51,12 @@ const CommonSettingPage = ({ roomId }) => {
         setIsChanged(false);
         // NOTE : roomInfo.adminName 에 값이 없음.
         // const admin = await userStore.getProfile({ userId: roomInfo.adminId });
-        setToastMessage(t('CM_CHANGE_SAVE'));
-        setIsToastVisible(true);
+        uiStore.openToast({
+          text: t('CM_CHANGE_SAVE'),
+          onClose: () => {
+            uiStore.closeToast();
+          },
+        });
       } else throw Error(`result:${result}`);
     } catch (err) {
       console.error(`[Platform] change name error, ${err}`);
@@ -148,19 +150,8 @@ const CommonSettingPage = ({ roomId }) => {
     setIsChanged(true);
   };
 
-  const handleToastClose = () => {
-    setIsToastVisible(false);
-  };
-
   return (
     <Wrapper style={{ padding: '2.56rem 3.75rem' }}>
-      <Toast
-        visible={isToastVisible}
-        timeoutMs={1000}
-        onClose={handleToastClose}
-      >
-        {toastMessage}
-      </Toast>
       <SettingWrapper>
         <SettingTitleText>{t('CM_ROOM_SETTING_BAISC_02')}</SettingTitleText>
         <SettingDescriptionText style={{ marginBottom: '0.81rem' }}>
@@ -261,15 +252,6 @@ const SettingTitleText = styled.span`
   font-size: 0.81rem;
   font-weight: bold;
   color: ${props => props.theme.TextMain};
-`;
-
-const SettingTitleWrap = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  ${SettingTitleText} {
-    margin-bottom: 0;
-  }
 `;
 
 const SettingDescriptionText = styled.span`

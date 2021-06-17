@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
-import { useCoreStores, Toast, Tooltip } from 'teespace-core';
+import { useCoreStores, Tooltip } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { useStores } from '../../stores';
@@ -65,8 +65,6 @@ const MainProfile = observer(({ userId = null }) => {
   const themeContext = useContext(ThemeContext);
   const { uiStore, historyStore } = useStores();
   const [isEditMode, setEditMode] = useState(false);
-  const [toastText, setToastText] = useState('');
-  const [isToastVisible, setIsToastVisible] = useState(false);
   const [isChange, setIsChange] = useState(false);
   const [userType, setUserType] = useState('');
 
@@ -307,10 +305,16 @@ const MainProfile = observer(({ userId = null }) => {
         isFav,
       });
 
-      if (isFav) setToastText(t('CM_BOOKMARK_03'));
-      else setToastText(t('CM_BOOKMARK_02'));
+      let text = '';
+      if (isFav) text = t('CM_BOOKMARK_03');
+      else text = t('CM_BOOKMARK_02');
 
-      setIsToastVisible(true);
+      uiStore.openToast({
+        text,
+        onClose: () => {
+          uiStore.closeToast();
+        },
+      });
     } catch (e) {
       console.log(`Toggle Favorites Error is...${e}`);
     }
@@ -599,13 +603,6 @@ const MainProfile = observer(({ userId = null }) => {
           </ContentBody>
         </Content>
       </Wrapper>
-      <Toast
-        visible={isToastVisible}
-        timeoutMs={1000}
-        onClose={() => setIsToastVisible(false)}
-      >
-        {toastText}
-      </Toast>
     </>
   );
 });

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { ProfileInfoModal, Toast } from 'teespace-core';
+import { ProfileInfoModal } from 'teespace-core';
 import FriendsLNBList from './FriendsLNBList';
 import { useStores } from '../../stores';
 import { getLeftDistance } from '../../utils/GeneralUtil';
@@ -14,17 +14,18 @@ const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
   const [isInfoModalVisible, setIsInfoModalVisible] = useState(false);
   const [selectedId, setSelectedId] = useState('');
 
-  const [isToastVisible, setIsToastVisible] = useState(false);
-  const [toastText, setToastText] = useState('');
-
   const handleOpenInfoModal = useCallback(value => {
     setSelectedId(value);
     setIsInfoModalVisible(true);
   }, []);
 
   const handleOpenToast = useCallback(value => {
-    setToastText(value);
-    setIsToastVisible(true);
+    uiStore.openToast({
+      text: value,
+      onClose: () => {
+        uiStore.closeToast();
+      },
+    });
   }, []);
 
   return (
@@ -51,15 +52,6 @@ const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
           onClose={() => setIsInfoModalVisible(false)}
           position={{ left: getLeftDistance() }}
         />
-      )}
-      {isToastVisible && (
-        <Toast
-          visible={isToastVisible}
-          timeoutMs={1000}
-          onClose={() => setIsToastVisible(false)}
-        >
-          {toastText}
-        </Toast>
       )}
     </>
   );

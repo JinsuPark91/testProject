@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { WaplSearch, Toast } from 'teespace-core';
+import { WaplSearch } from 'teespace-core';
 import styled from 'styled-components';
 import { Observer } from 'mobx-react';
 import { Button, Checkbox } from 'antd';
@@ -141,35 +141,7 @@ const Table = () => {
 
 const SubWaitingMemberPage = ({ roomId }) => {
   const { t } = useTranslation();
-  const { roomSettingStore: store } = useStores();
-
-  // const handleSystemMessage = message => {
-  //   console.log('setting page store : ', message);
-  //   if (message.SPACE_ID !== roomId) return;
-
-  //   switch (message.NOTI_TYPE) {
-  //     case 'memberRequest':
-  //       store.fetchRequestMembers({ roomId });
-
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   store.fetchRequestMembers({ roomId });
-  //   // WWMS.addHandler('SYSTEM', 'room_setting', handleSystemMessage);
-
-  //   return () => {
-  //     store.members = [];
-  //     store.keyword = '';
-  //     store.toastMessage = '';
-  //     store.toastVisible = false;
-  //     store.selectedMembers.clear();
-  //     // WWMS.removeHandler('SYSTEM', 'room_setting');
-  //   };
-  // }, [roomId]);
+  const { roomSettingStore: store, uiStore } = useStores();
 
   const handleAccept = async () => {
     const userIdList = Array.from(store.selectedRequestMembers.keys());
@@ -178,12 +150,14 @@ const SubWaitingMemberPage = ({ roomId }) => {
       const result = await store.acceptUsers({ roomId, userIdList });
       if (result) {
         await store.fetchRequestMembers({ roomId });
-        store.open(
-          'toast',
-          t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_07', {
+        uiStore.openToast({
+          text: t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_07', {
             num: store.selectedRequestMembers.size,
           }),
-        );
+          onClose: () => {
+            uiStore.closeToast();
+          },
+        });
       }
 
       store.selectedRequestMembers.clear();
@@ -199,12 +173,11 @@ const SubWaitingMemberPage = ({ roomId }) => {
       const result = await store.rejectUsers({ roomId, userIdList });
       if (result) {
         await store.fetchRequestMembers({ roomId });
-        store.open(
-          'toast',
-          t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_08', {
+        uiStore.openToast({
+          text: t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_08', {
             num: store.selectedRequestMembers.size,
           }),
-        );
+        });
 
         store.selectedRequestMembers.clear();
       }
@@ -221,23 +194,8 @@ const SubWaitingMemberPage = ({ roomId }) => {
     store.keyword = e.target.value;
   };
 
-  const handleToastClose = () => {
-    store.close('toast');
-  };
-
   return (
     <>
-      <Observer>
-        {() => (
-          <Toast
-            visible={store.toastVisible}
-            timeoutMs={1000}
-            onClose={handleToastClose}
-          >
-            {store.toastMessage}
-          </Toast>
-        )}
-      </Observer>
       <div
         style={{
           display: 'flex',
