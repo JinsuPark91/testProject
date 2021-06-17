@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { observable, values } from 'mobx';
+import { observable, transaction, values } from 'mobx';
 import { RoomStore, FriendStore } from 'teespace-core';
 import { handleCheckNewFriend } from '../utils/FriendsUtil';
 
@@ -32,6 +32,72 @@ const uiStore = observable({
   isSearchVisible: false,
 
   isNotificationCenterVisible: false,
+
+  // Common Toast, Message
+  isToastVisible: false,
+  toastText: '',
+  toastTimeout: 1000,
+  toastSize: 'medium',
+  toastLinks: [],
+  toastOnClose: () => {},
+  openToast({
+    text = '',
+    timeout = 1000,
+    size = 'medium',
+    links = [],
+    onClose = () => {},
+  }) {
+    transaction(() => {
+      this.toastText = text;
+      this.toastTimeout = timeout;
+      this.toastSize = size;
+      this.toastLinks = links;
+      this.toastOnClose = onClose;
+      this.isToastVisible = true;
+    });
+  },
+  closeToast() {
+    transaction(() => {
+      this.isToastVisible = false;
+      this.toastText = '';
+      this.toastTimeout = 1000;
+      this.toastSize = 'medium';
+      this.toastLinks = [];
+      this.toastOnClose = () => {};
+    });
+  },
+  isMessageVisible: false,
+  messageType: '',
+  messageTitle: '',
+  messageSubTitle: '',
+  messageButton: [],
+  messageCustomBadge: null,
+  openMessage({
+    type = '',
+    title = '',
+    subTitle = '',
+    buttons = [],
+    customBadge = null,
+  }) {
+    transaction(() => {
+      this.messageType = type;
+      this.messageTitle = title;
+      this.messageSubTitle = subTitle;
+      this.messageButton = buttons;
+      this.messageCustomBadge = customBadge;
+      this.isMessageVisible = true;
+    });
+  },
+  closeMessage() {
+    transaction(() => {
+      this.isMessageVisible = false;
+      this.messageType = '';
+      this.messageTitle = '';
+      this.messageSubTitle = '';
+      this.messageButton = [];
+      this.messageCustomBadge = null;
+    });
+  },
 
   // modal
   roomMemberModal: {

@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import {
   EventBus,
@@ -14,7 +14,8 @@ import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
 import { WindowMail, beforeRoute as mailBeforeRoute } from 'teespace-mail-app';
 import { Prompt } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useObserver } from 'mobx-react';
+import { transaction } from 'mobx';
+import { Observer } from 'mobx-react';
 import SpaceSide from '../components/main/SpaceSide';
 import LeftSide from '../components/main/LeftSide';
 import MainSide from '../components/main/MainSide';
@@ -26,17 +27,11 @@ import WindowManager from '../components/common/WindowManager';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 import { handleProfileMenuClick } from '../utils/ProfileUtil';
 import { NotificationCenter } from '../components/notificationCenter';
-import { useInitialize } from './../hook';
+import { useInitialize } from '../hook';
 
 const MainPage = () => {
   const { t } = useTranslation();
   const { uiStore, historyStore } = useStores();
-  const [isToastVisible, setIsToastVisible] = useState(false);
-  const [toastText, setToastText] = useState('');
-  const [isInvalidRoomModalVisible, setIsInvalidRoomModalVisible] = useState(
-    false,
-  );
-
   const history = useHistory();
   const { resourceType, resourceId, mainApp } = useParams();
   const { sub: subApp } = getQueryParams(history.location.search);
@@ -148,8 +143,10 @@ const MainPage = () => {
         const { status } = response;
         switch (status) {
           case 403:
-            setToastText(t('TEMP_GUEST_ACCESS_DENIED'));
-            setIsToastVisible(true);
+            transaction(() => {
+              uiStore.toastText = t('TEMP_GUEST_ACCESS_DENIED');
+              uiStore.isToastVisible = true;
+            });
             break;
           default:
             break;
@@ -164,7 +161,19 @@ const MainPage = () => {
         if (targetRoom) {
           history.push(`/s/${roomId}/setting`, { mainTab, subTab });
         } else {
-          setIsInvalidRoomModalVisible(true);
+          uiStore.openMessage({
+            title: t('CM_INVALID_ROOM'),
+            buttons: [
+              {
+                type: 'solid',
+                shape: 'round',
+                text: t('CM_LOGIN_POLICY_03'),
+                onClick: () => {
+                  uiStore.isMessageVisible = false;
+                },
+              },
+            ],
+          });
         }
       },
     );
@@ -294,57 +303,73 @@ const MainPage = () => {
     return isRoutable;
   };
 
-  return useObserver(() =>
-    !isLoaded ? (
-      <Loader>
-        <img src={LoadingImg} alt="loader" />
-      </Loader>
-    ) : (
-      <Wrapper>
-        <NotificationCenter
-          visible={uiStore.isNotificationCenterVisible}
-          onClose={() => {
-            uiStore.isNotificationCenterVisible = false;
-          }}
-        />
-        <Toast
-          visible={isToastVisible}
-          timeoutMs={1000}
-          onClose={() => setIsToastVisible(false)}
-        >
-          {toastText}
-        </Toast>
-        <FaviconChanger />
-        <Prompt
-          message={(location, action) => {
-            return beforeRoute(location, action);
-          }}
-        />
-        {!configStore.isFromCNU && <SpaceSide />}
-        {leftSide}
-        {mainSide}
-        <WindowManager />
-        {/* <PortalWindowManager /> */}
-        <WindowMail />
-        {isInvalidRoomModalVisible && (
-          <Message
-            visible={isInvalidRoomModalVisible}
-            title={t('CM_INVALID_ROOM')}
-            subTitle=""
-            btns={[
-              {
-                type: 'solid',
-                shape: 'round',
-                text: t('CM_LOGIN_POLICY_03'),
-                onClick: () => {
-                  setIsInvalidRoomModalVisible(false);
-                },
-              },
-            ]}
+  return !isLoaded ? (
+    <Loader>
+      <img src={LoadingImg} alt="loader" />
+    </Loader>
+  ) : (
+    <Wrapper>
+      {/* Notification Center */}
+      <Observer>
+        {() => (
+          <NotificationCenter
+            visible={uiStore.isNotificationCenterVisible}
+            onClose={() => {
+              uiStore.isNotificationCenterVisible = false;
+            }}
           />
         )}
-      </Wrapper>
-    ),
+      </Observer>
+
+      {/* Common Toast */}
+      <Observer>
+        {() => (
+          <Toast
+            visible={uiStore.isToastVisible}
+            timeoutMs={uiStore.toastTimeout}
+            links={uiStore.toastLinks}
+            size={uiStore.toastSize}
+            onClose={uiStore.toastOnClose}
+          >
+            {uiStore.toastText}
+          </Toast>
+        )}
+      </Observer>
+
+      {/* Common Message */}
+      <Observer>
+        {() => (
+          <Message
+            visible={uiStore.isMessageVisible}
+            type={uiStore.messageType}
+            title={uiStore.messageTitle}
+            subTitle={uiStore.messageSubTitle}
+            btns={uiStore.messageButton}
+            customBadge={uiStore.messageCustomBadge}
+          />
+        )}
+      </Observer>
+
+      {/* Favicon Changer */}
+      <FaviconChanger />
+
+      {/* Window Manager */}
+      <WindowManager />
+      <WindowMail />
+
+      {/* History Save */}
+      <Prompt
+        message={(location, action) => {
+          return beforeRoute(location, action);
+        }}
+      />
+
+      <Observer>
+        {() => (!configStore.isFromCNU ? <SpaceSide /> : null)}
+      </Observer>
+      {leftSide}
+      {mainSide}
+    </Wrapper>
   );
 };
 
