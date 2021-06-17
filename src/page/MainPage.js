@@ -344,7 +344,7 @@ const MainPage = () => {
             visible={uiStore.isMessageVisible}
             type={uiStore.messageType}
             title={uiStore.messageTitle}
-            subTitle={uiStore.messageSubTitle}
+            subtitle={uiStore.messageSubTitle}
             btns={uiStore.messageButton}
             customBadge={uiStore.messageCustomBadge}
           />

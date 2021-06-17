@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useTranslation, Trans } from 'react-i18next';
-import { Message, WaplSearch, useCoreStores, Tooltip } from 'teespace-core';
+import { WaplSearch, useCoreStores, Tooltip } from 'teespace-core';
 import styled, { ThemeContext } from 'styled-components';
 import { Observer } from 'mobx-react';
 import { Button, Checkbox } from 'antd';
@@ -27,14 +27,46 @@ const WIDTH = {
   BUTTON: 15,
 };
 
-const TableRow = ({ style, member, isB2C }) => {
-  const { roomSettingStore: store } = useStores();
+const TableRow = ({ style, member, isB2C, roomId }) => {
+  const history = useHistory();
+  const { roomSettingStore: store, uiStore } = useStores();
   const { t } = useTranslation();
   const isAdmin = () => member.role === 'WKS0004';
 
+  const handleTransferOk = async () => {
+    const userId = store.targetMember.id;
+    await store.transferAdmin({ roomId, userId });
+    uiStore.closeMessage();
+    history.push(`/s/${roomId}/talk`);
+  };
+
+  const handleTransferCancel = () => {
+    uiStore.closeMessage();
+  };
+
   const handleTransfer = () => {
     store.targetMember = member;
-    store.open('transfer');
+    uiStore.openMessage({
+      title: t('CM_ROOM_SETTING_MANAGE_PEOPLE_05', {
+        name: store.targetMember?.nick || '',
+      }),
+      subTitle: t('CM_ROOM_SETTING_MANAGE_PEOPLE_06'),
+      type: 'error',
+      buttons: [
+        {
+          type: 'solid',
+          shape: 'round',
+          text: t('CM_LOGIN_POLICY_03'),
+          onClick: handleTransferOk,
+        },
+        {
+          type: 'outlined',
+          shape: 'round',
+          text: t('CM_CANCEL'),
+          onClick: handleTransferCancel,
+        },
+      ],
+    });
   };
 
   const handleCheckChange = e => {
@@ -145,7 +177,7 @@ const TableRow = ({ style, member, isB2C }) => {
   );
 };
 
-const Table = () => {
+const Table = ({ roomId }) => {
   const { t } = useTranslation();
   const { roomSettingStore: store } = useStores();
   const { spaceStore } = useCoreStores();
@@ -233,6 +265,7 @@ const Table = () => {
                     style={style}
                     member={filteredMembers[index]}
                     isB2C={isB2C}
+                    roomId={roomId}
                   />
                 )}
               </List>
@@ -246,51 +279,7 @@ const Table = () => {
 
 const MemberPage = ({ roomId }) => {
   const { t } = useTranslation();
-  const { roomSettingStore: store } = useStores();
-  const history = useHistory();
-
-  // const handleSystemMessage = message => {
-  //   console.log('**** noti type : ', message.NOTI_TYPE);
-  //   if (message.SPACE_ID !== roomId) return;
-  //   switch (message.NOTI_TYPE) {
-  //     case 'addMember':
-  //     case 'removeMember':
-  //       store.fetchMembers({ roomId });
-
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   store.fetchMembers({ roomId, summary: false });
-  //   // WWMS.addHandler('SYSTEM', 'room_setting', handleSystemMessage);
-
-  //   return () => {
-  //     store.members = [];
-  //     store.keyword = '';
-  //     store.toastMessage = '';
-  //     store.toastVisible = '';
-  //     store.selectedMembers.clear();
-  //     // WWMS.removeHandler('SYSTEM', 'room_setting');
-  //   };
-  // }, [roomId]);
-
-  const handleTransferOk = async () => {
-    const userId = store.targetMember.id;
-    await store.transferAdmin({ roomId, userId });
-    store.close('transfer');
-    history.push(`/s/${roomId}/talk`);
-  };
-
-  const handleTransferCancel = () => {
-    store.close('transfer');
-  };
-
-  const handleKickout = () => {
-    store.open('kickout');
-  };
+  const { roomSettingStore: store, uiStore } = useStores();
 
   const handleKickoutOK = async () => {
     try {
@@ -307,25 +296,47 @@ const MemberPage = ({ roomId }) => {
     } catch (err) {
       console.log('강퇴 / 밴 실패 : ', err);
     }
-    store.close('kickout');
+    uiStore.closeMessage();
   };
 
   const handleKickoutCancel = () => {
     store.selectedRoomMembers.clear();
-    store.close('kickout');
+    uiStore.closeMessage();
+  };
+
+  const handleKickout = () => {
+    uiStore.openMessage({
+      title: t('CM_ROOM_SETTING_FORCED_EXIT_01'),
+      subTitle: t('CM_ROOM_SETTING_FORCED_EXIT_02'),
+      type: 'error',
+      buttons: [
+        {
+          type: 'solid',
+          shape: 'round',
+          text: t('CM_LOGIN_POLICY_03'),
+          onClick: handleKickoutOK,
+        },
+        {
+          type: 'outlined',
+          shape: 'round',
+          text: t('CM_CANCEL'),
+          onClick: handleKickoutCancel,
+        },
+      ],
+    });
   };
 
   const handleInvite = () => {
-    store.open('invite');
+    store.inviteVisible = true;
   };
 
   const handleInviteOk = async () => {
     await store.fetchMembers({ roomId });
-    store.close('invite');
+    store.inviteVisible = false;
   };
 
   const handleInviteCancel = () => {
-    store.close('invite');
+    store.inviteVisible = false;
   };
 
   const handleSearchClear = () => {
@@ -347,58 +358,6 @@ const MemberPage = ({ roomId }) => {
             roomId={roomId}
             onInviteUsers={handleInviteOk}
             onCancel={handleInviteCancel}
-          />
-        )}
-      </Observer>
-
-      <Observer>
-        {() => (
-          <Message
-            visible={store.transferVisible}
-            title={t('CM_ROOM_SETTING_MANAGE_PEOPLE_05', {
-              name: store.targetMember?.nick || '',
-            })}
-            subtitle={t('CM_ROOM_SETTING_MANAGE_PEOPLE_06')}
-            type="error"
-            btns={[
-              {
-                type: 'solid',
-                shape: 'round',
-                text: t('CM_LOGIN_POLICY_03'),
-                onClick: handleTransferOk,
-              },
-              {
-                type: 'outlined',
-                shape: 'round',
-                text: t('CM_CANCEL'),
-                onClick: handleTransferCancel,
-              },
-            ]}
-          />
-        )}
-      </Observer>
-
-      <Observer>
-        {() => (
-          <Message
-            visible={store.kickoutVisible}
-            title={t('CM_ROOM_SETTING_FORCED_EXIT_01')}
-            subtitle={t('CM_ROOM_SETTING_FORCED_EXIT_02')}
-            type="error"
-            btns={[
-              {
-                type: 'solid',
-                shape: 'round',
-                text: t('CM_LOGIN_POLICY_03'),
-                onClick: handleKickoutOK,
-              },
-              {
-                type: 'outlined',
-                shape: 'round',
-                text: t('CM_CANCEL'),
-                onClick: handleKickoutCancel,
-              },
-            ]}
           />
         )}
       </Observer>
@@ -474,7 +433,7 @@ const MemberPage = ({ roomId }) => {
         </div>
       </div>
 
-      <Table />
+      <Table roomId={roomId} />
     </>
   );
 };

@@ -222,25 +222,7 @@ const roomSettingStore = observable({
   },
 
   // 다이얼로그 관련
-  transferVisible: false,
-  kickoutVisible: false,
   inviteVisible: false,
-  toastVisible: false,
-  toastMessage: '',
-
-  open(key, toastMessage = '') {
-    this[`${key}Visible`] = true;
-    if (key === 'toast') {
-      this.toastMessage = toastMessage;
-    }
-  },
-
-  close(key) {
-    this[`${key}Visible`] = false;
-    if (key === 'toast') {
-      this.toastMessage = '';
-    }
-  },
 
   isAllChecked({ withoutMe = false }) {
     const members = this.getFilteredMembers({ withoutMe });

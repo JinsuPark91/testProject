@@ -2,11 +2,10 @@ import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
-import { useCoreStores, Message, Toast, Tooltip } from 'teespace-core';
+import { useCoreStores, Toast, Tooltip } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { useStores } from '../../stores';
-import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 import {
   handleProfileMenuClick,
   getCompanyNumber,
@@ -66,7 +65,6 @@ const MainProfile = observer(({ userId = null }) => {
   const themeContext = useContext(ThemeContext);
   const { uiStore, historyStore } = useStores();
   const [isEditMode, setEditMode] = useState(false);
-  const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
   const [toastText, setToastText] = useState('');
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [isChange, setIsChange] = useState(false);
@@ -272,10 +270,30 @@ const MainProfile = observer(({ userId = null }) => {
     setIsChange(false);
     setEditMode(false);
     resetLocalInputData();
-    setCancelDialogVisible(false);
+    uiStore.closeMessage();
   };
   const handleCancel = () => {
-    if (isChange) setCancelDialogVisible(true);
+    if (isChange)
+      uiStore.openMessage({
+        title: t('CM_Q_EXIT_SAVE'),
+        type: 'error',
+        buttons: [
+          {
+            type: 'solid',
+            shape: 'round',
+            text: t('CM_LEAVE'),
+            onClick: handleExit,
+          },
+          {
+            type: 'outlined',
+            shape: 'round',
+            text: t('CM_CANCEL'),
+            onClick: () => {
+              uiStore.closeMessage();
+            },
+          },
+        ],
+      });
     else handleExit();
   };
 
@@ -581,27 +599,6 @@ const MainProfile = observer(({ userId = null }) => {
           </ContentBody>
         </Content>
       </Wrapper>
-      {cancelDialogVisible && (
-        <Message
-          visible={cancelDialogVisible}
-          title={t('CM_Q_EXIT_SAVE')}
-          type="error"
-          btns={[
-            {
-              type: 'solid',
-              shape: 'round',
-              text: t('CM_LEAVE'),
-              onClick: handleExit,
-            },
-            {
-              type: 'outlined',
-              shape: 'round',
-              text: t('CM_CANCEL'),
-              onClick: () => setCancelDialogVisible(false),
-            },
-          ]}
-        />
-      )}
       <Toast
         visible={isToastVisible}
         timeoutMs={1000}

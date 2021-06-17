@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { WaplSearch, Toast, useCoreStores } from 'teespace-core';
+import { WaplSearch, useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import { Observer } from 'mobx-react';
 import { Button, Checkbox } from 'antd';
@@ -185,31 +185,22 @@ const Table = () => {
 
 const SubWaitingMemberPage = ({ roomId }) => {
   const { t } = useTranslation();
-  const { roomSettingStore: store } = useStores();
-
-  // useEffect(() => {
-  //   store.fetchBlockedMembers({ roomId });
-
-  //   return () => {
-  //     store.members = [];
-  //     store.keyword = '';
-  //     store.toastMessage = '';
-  //     store.toastVisible = '';
-  //     store.selectedMembers.clear();
-  //   };
-  // }, [roomId]);
+  const { roomSettingStore: store, uiStore } = useStores();
 
   const handleUnblock = async () => {
     const userIdList = Array.from(store.selectedBanMembers.keys());
     const result = await store.disableBan({ roomId, userIdList });
     if (result) {
       await store.fetchBlockedMembers({ roomId });
-      store.open(
-        'toast',
-        t('CM_ROOM_SETTING_MANAGE_PEOPLE_04', {
+      uiStore.openToast({
+        text: t('CM_ROOM_SETTING_MANAGE_PEOPLE_04', {
           num: store.selectedBanMembers.size,
         }),
-      );
+        onClose: () => {
+          uiStore.closeToast();
+        },
+      });
+
       store.selectedBanMembers.clear();
     }
   };
@@ -222,23 +213,8 @@ const SubWaitingMemberPage = ({ roomId }) => {
     store.keyword = e.target.value;
   };
 
-  const handleToastClose = () => {
-    store.close('toast');
-  };
-
   return (
     <>
-      <Observer>
-        {() => (
-          <Toast
-            visible={store.toastVisible}
-            timeoutMs={1000}
-            onClose={handleToastClose}
-          >
-            {store.toastMessage}
-          </Toast>
-        )}
-      </Observer>
       <div
         style={{
           display: 'flex',
