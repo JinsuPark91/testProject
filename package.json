@@ -165,6 +165,7 @@
     "rollup-plugin-peer-deps-external": "^2.2.3",
     "rollup-plugin-postcss": "^3.1.8",
     "rollup-plugin-url": "^3.0.1",
-    "rollup-plugin-visualizer": "^4.1.1"
+    "rollup-plugin-visualizer": "^4.1.1",
+    "terser-webpack-plugin": "^4.2.3"
   }
 }
