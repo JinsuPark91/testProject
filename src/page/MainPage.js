@@ -181,6 +181,7 @@ const MainPage = () => {
     const directMessageHandler = EventBus.on(
       'Platform:directMessage',
       ({ userId }) => {
+        uiStore.tabType = 's';
         const moveTalk = roomId => history.push(`/s/${roomId}/talk`);
 
         handleProfileMenuClick(
