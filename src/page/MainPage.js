@@ -26,7 +26,7 @@ import WindowManager from '../components/common/WindowManager';
 import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 import { handleProfileMenuClick } from '../utils/ProfileUtil';
 import { NotificationCenter } from '../components/notificationCenter';
-import { useInitialize } from './../hook';
+import { useInitialize } from '../hook';
 
 const MainPage = () => {
   const { t } = useTranslation();
@@ -172,6 +172,7 @@ const MainPage = () => {
     const directMessageHandler = EventBus.on(
       'Platform:directMessage',
       ({ userId }) => {
+        uiStore.tabType = 's';
         const moveTalk = roomId => history.push(`/s/${roomId}/talk`);
 
         handleProfileMenuClick(
