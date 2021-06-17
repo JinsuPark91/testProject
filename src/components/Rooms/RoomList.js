@@ -4,9 +4,7 @@ import { Observer, useLocalStore } from 'mobx-react';
 import styled, { css, ThemeContext } from 'styled-components';
 import {
   useCoreStores,
-  Toast,
   ProfileInfoModal,
-  Message,
   logEvent,
   WaplSearch,
   EventBus,
@@ -35,15 +33,9 @@ const RoomList = React.memo(() => {
     targetUserId: null,
     roomMemberAttr: {},
     isScrollEnd: false,
-    toast: {
-      visible: false,
-      text: '',
-    },
     visible: {
       profileModal: false,
       roomMemberModal: false,
-      exitAdminModal: false,
-      exitNormalModal: false,
       selectRoomTypeModal: false,
     },
   }));
@@ -108,6 +100,39 @@ const RoomList = React.memo(() => {
     store.targetRoom = roomInfo;
   };
 
+  const handleConfirmExitNormalModal = async () => {
+    if (store.exitTargetRoom === null) return;
+
+    try {
+      const result = await roomStore.deleteRoomMember({
+        userId: userStore.myProfile.id,
+        roomId: store.exitTargetRoom.id,
+      });
+
+      if (result) {
+        if (
+          uiStore.resourceType === 's' &&
+          uiStore.resourceId === store.exitTargetRoom.id
+        ) {
+          const firstRoomId = roomStore.getRoomArray()?.[0].id;
+          if (firstRoomId) history.push(`/s/${firstRoomId}/talk`);
+        }
+      }
+    } catch (e1) {
+      console.log('DELETE ROOM MEMBER ERROR : ', e1);
+    } finally {
+      store.exitTargetRoom = null;
+      uiStore.closeMessage();
+    }
+  };
+
+  const handleConfirmExitAdminModal = () => {
+    if (store.exitTargetRoom === null) return;
+
+    history.push(`/s/${store.exitTargetRoom.id}/setting`);
+    uiStore.closeMessage();
+  };
+
   const handleClickMenuItem = useCallback(
     ({ key, item, value }) => {
       switch (key) {
@@ -123,11 +148,47 @@ const RoomList = React.memo(() => {
           break;
         case 'exitAdmin': // 룸 관리자가 '나가기' 버튼 누른 경우
           store.exitTargetRoom = item;
-          store.visible.exitAdminModal = true;
+          uiStore.openMessage({
+            title: t('CM_DEL_ROOM_GROUP_05'),
+            subTitle: t('CM_DEL_ROOM_GROUP_06'),
+            type: 'warning',
+            buttons: [
+              {
+                text: t('CM_DEL_ROOM_GROUP_07'),
+                type: 'solid',
+                onClick: handleConfirmExitAdminModal,
+              },
+              {
+                text: t('CM_CANCEL'),
+                type: 'outlined',
+                onClick: () => {
+                  uiStore.closeMessage();
+                },
+              },
+            ],
+          });
           break;
         case 'exitNormal': // 일반 사용자가 '나가기' 버튼 누른 경우
           store.exitTargetRoom = item;
-          store.visible.exitNormalModal = true;
+          uiStore.openMessage({
+            title: t('CM_Q_LEAVE_ROOM'),
+            subTitle: t('CM_DEL_ROOM_GUIDE'),
+            type: 'error',
+            buttons: [
+              {
+                text: t('CM_LEAVE'),
+                type: 'solid',
+                onClick: handleConfirmExitNormalModal,
+              },
+              {
+                text: t('CM_CANCEL'),
+                type: 'outlined',
+                onClick: () => {
+                  uiStore.closeMessage();
+                },
+              },
+            ],
+          });
           break;
         default:
       }
@@ -162,47 +223,6 @@ const RoomList = React.memo(() => {
     store.visible.profileModal = false;
   };
 
-  const handleCloseExitAdminModal = () => {
-    store.visible.exitAdminModal = false;
-  };
-
-  const handleConfirmExitAdminModal = () => {
-    if (store.exitTargetRoom === null) return;
-
-    history.push(`/s/${store.exitTargetRoom.id}/setting`);
-    store.visible.exitAdminModal = false;
-  };
-
-  const handleCloseExitNormalModal = () => {
-    store.visible.exitNormalModal = false;
-  };
-
-  const handleConfirmExitNormalModal = async () => {
-    if (store.exitTargetRoom === null) return;
-
-    try {
-      const result = await roomStore.deleteRoomMember({
-        userId: userStore.myProfile.id,
-        roomId: store.exitTargetRoom.id,
-      });
-
-      if (result) {
-        if (
-          uiStore.resourceType === 's' &&
-          uiStore.resourceId === store.exitTargetRoom.id
-        ) {
-          const firstRoomId = roomStore.getRoomArray()?.[0].id;
-          if (firstRoomId) history.push(`/s/${firstRoomId}/talk`);
-        }
-      }
-    } catch (e1) {
-      console.log('DELETE ROOM MEMBER ERROR : ', e1);
-    } finally {
-      store.exitTargetRoom = null;
-      store.visible.exitNormalModal = false;
-    }
-  };
-
   const getRoomName = roomInfo => {
     const isMyRoom = roomInfo.type === 'WKS0001';
     return isMyRoom
@@ -218,10 +238,6 @@ const RoomList = React.memo(() => {
       getRoomName(roomInfo)
         ?.toLowerCase()
         ?.includes(store.keyword.toLowerCase()));
-
-  const handleToastClose = () => {
-    store.toast.visible = false;
-  };
 
   const themeContext = useContext(ThemeContext);
 
@@ -279,63 +295,19 @@ const RoomList = React.memo(() => {
 
       <Observer>
         {() => (
-          <Message
-            visible={store.visible.exitNormalModal}
-            title={t('CM_Q_LEAVE_ROOM')}
-            subtitle={t('CM_DEL_ROOM_GUIDE')}
-            type="error"
-            btns={[
-              {
-                text: t('CM_LEAVE'),
-                type: 'solid',
-                onClick: handleConfirmExitNormalModal,
-              },
-              {
-                text: t('CM_CANCEL'),
-                type: 'outlined',
-                onClick: handleCloseExitNormalModal,
-              },
-            ]}
-          />
-        )}
-      </Observer>
-
-      <Observer>
-        {() => (
-          <Message
-            visible={store.visible.exitAdminModal}
-            title={t('CM_DEL_ROOM_GROUP_05')}
-            subtitle={t('CM_DEL_ROOM_GROUP_06')}
-            type="warning"
-            btns={[
-              {
-                text: t('CM_DEL_ROOM_GROUP_07'),
-                type: 'solid',
-                onClick: handleConfirmExitAdminModal,
-              },
-              {
-                text: t('CM_CANCEL'),
-                type: 'outlined',
-                onClick: handleCloseExitAdminModal,
-              },
-            ]}
-          />
-        )}
-      </Observer>
-
-      <Observer>
-        {() => (
           <SelectRoomTypeDialog
             visible={store.visible.selectRoomTypeModal}
             onCancel={handleSelectRoomTypeCancel}
             onCreateRoom={({ selectedUsers, isNewRoom }) => {
               if (isNewRoom) {
-                store.toast = {
-                  visible: true,
+                uiStore.openToast({
                   text: t('CM_INVITE_MEMBER', {
                     num: selectedUsers.length,
                   }),
-                };
+                  onClose: () => {
+                    uiStore.closeToast();
+                  },
+                });
               }
             }}
           />
@@ -430,33 +402,11 @@ const RoomList = React.memo(() => {
       <Observer>
         {() => {
           return configStore.isActivateComponent('Platform', 'LNB:Logo') ? (
-            <ButtonWrapper
-              isScrollEnd={store.isScrollEnd}
-              // onClick={() => {
-              //   // const currentTheme = themeStore.theme;
-              //   // if (currentTheme.name === 'white') themeStore.setTheme('dark');
-              //   // else themeStore.setTheme('white');
-              //   roomStore.activateRoom({
-              //     roomId: '9830c62a-e815-4e60-bffe-1c864ac8cf32',
-              //   });
-              // }}
-            >
+            <ButtonWrapper isScrollEnd={store.isScrollEnd}>
               <WaplLogo textColor={themeContext.BasicDark} />
             </ButtonWrapper>
           ) : null;
         }}
-      </Observer>
-
-      <Observer>
-        {() => (
-          <Toast
-            visible={store.toast.visible}
-            timeoutMs={1000}
-            onClose={handleToastClose}
-          >
-            {store.toast.text}
-          </Toast>
-        )}
       </Observer>
 
       <Observer>
