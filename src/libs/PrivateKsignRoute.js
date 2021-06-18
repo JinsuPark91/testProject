@@ -8,6 +8,7 @@ import Cookies from 'js-cookie';
 export default function PrivateKsignRoute({ component, ...rest }) {
   const { authStore } = useCoreStores();
   const getNibId = Cookies.get('NIBID');
+  const getKsignId = Cookies.get('KSIGN_ID');
 
   useEffect(() => {
     // NOTE. 사용자 인증이 된 상태에서 웹소켓 연결을 시도
@@ -15,7 +16,7 @@ export default function PrivateKsignRoute({ component, ...rest }) {
       wwms.connect(authStore.user.id, authStore.user.loginId);
     }
   }, [authStore.user.id, authStore.user.loginId, authStore.isAuthenticated]);
-  if (getNibId || authStore.user.grade === 'guest') {
+  if (getNibId || getKsignId || authStore.user.grade === 'guest') {
     return (
       <Route
         {...rest}

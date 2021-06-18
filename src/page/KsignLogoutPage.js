@@ -18,6 +18,8 @@ const KsignLogoutPage = () => {
       wwms.disconnect();
       Cookies.remove('ACCESS_TOKEN');
       Cookies.remove('DEVICE_TYPE');
+      Cookies.remove('ID_TOKEN');
+      Cookies.remove('KSIGN_ID');
       if (getNibId || authStore.user.grade === 'guest') {
         window.location.href = `/cnu/sso/logout.jsp`;
       } else {
