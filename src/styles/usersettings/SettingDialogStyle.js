@@ -1,13 +1,11 @@
 import styled from 'styled-components';
-import { Modal, Menu } from 'antd';
+import { Modal } from 'teespace-core';
+import { Menu } from 'antd';
 import Upload from 'rc-upload';
 import CameraIcon from '../../assets/camera.svg';
 import InputCounter from '../../components/Input';
 
 export const DialogWrap = styled(Modal)`
-  .ant-modal-body {
-    padding: 0;
-  }
   .ant-modal-footer {
     height: 3.8rem;
     padding: 0.64rem 0;
