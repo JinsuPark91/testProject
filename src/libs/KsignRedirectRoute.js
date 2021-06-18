@@ -89,7 +89,7 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
                     '',
                   );
                   if (exceptMobilePath.includes('/login')) {
-                    history.push(`/friend`);
+                    history.push(`/room`);
                   } else {
                     history.push(exceptMobilePath);
                   }
@@ -139,7 +139,7 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
                 } else if (getPath.includes('/mobile')) {
                   const exceptMobilePath = getPath.replace('/mobile', '');
                   if (exceptMobilePath.includes('/login')) {
-                    history.push(`/friend`);
+                    history.push(`/room`);
                   } else {
                     history.push(exceptMobilePath);
                   }
