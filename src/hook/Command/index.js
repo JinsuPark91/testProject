@@ -9,14 +9,10 @@ import { useCommandHelp } from './useCommandHelp';
 import { useCommandInviteMember } from './useCommandInviteMember';
 import { useCommandInvitePeople } from './useCommandInvitePeople';
 import { useCommandNewNote } from './useCommandNewNote';
-// import { useCommandSearchDrive } from './useCommandSearchDrive';
+import { useCommandSearchDrive } from './useCommandSearchDrive';
 import { useCommandLeave } from './useCommandLeave';
 import { useCommandLogout } from './useCommandLogout';
-import {
-  useCommandOpenNote,
-  useCommandOpenCalendar,
-  useCommandOpenDrive,
-} from './useCommandOpenApp';
+import { useCommandOpenApp } from './useCommandOpenApp';
 
 export {
   useCommandAnnounce,
@@ -30,12 +26,10 @@ export {
   useCommandInviteMember,
   useCommandInvitePeople,
   useCommandNewNote,
-  // useCommandSearchDrive,
+  useCommandSearchDrive,
   useCommandLeave,
   useCommandLogout,
-  useCommandOpenCalendar,
-  useCommandOpenDrive,
-  useCommandOpenNote,
+  useCommandOpenApp,
   useCommandAnnounce as Announce,
   useCommandMute as Mute,
   useCommandUnmute as Unmute,
@@ -47,10 +41,8 @@ export {
   useCommandInviteMember as InviteMember,
   useCommandInvitePeople as InvitePeople,
   useCommandNewNote as NewNote,
-  // useCommandSearchDrive as SearchDrive,
+  useCommandSearchDrive as SearchDrive,
   useCommandLeave as Leave,
   useCommandLogout as Logout,
-  useCommandOpenCalendar as OpenCalendar,
-  useCommandOpenDrive as OpenDrive,
-  useCommandOpenNote as OpenNote,
+  useCommandOpenApp as OpenApp,
 };

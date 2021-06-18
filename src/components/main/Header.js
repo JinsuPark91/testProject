@@ -440,21 +440,22 @@ const Header = () => {
     EventBus.dispatch('onSlashCreateNote');
   }, [openSubApp]);
 
-  // const handleSearchDrive = useCallback(() => {
-  //   openSubApp('drive');
-  //   EventBus.dispatch('Drive:Command:SearchDrive');
-  // }, [openSubApp]);
+  const handleSearchDrive = useCallback(() => {
+    openSubApp('drive');
+    EventBus.dispatch('Drive:Command:SearchDrive');
+  }, [openSubApp]);
 
   const handleOpenApp = appName => () => {
-    openSubApp(appName);
+    handleAppClick(appName);
   };
 
   useCommand.InviteMember(handleAddMember);
   useCommand.NewNote(handleNewNote);
-  // useCommand.SearchDrive(handleSearchDrive);
-  useCommand.OpenCalendar(handleOpenApp('calendar'));
-  useCommand.OpenDrive(handleOpenApp('drive'));
-  useCommand.OpenNote(handleOpenApp('note'));
+  useCommand.SearchDrive(handleSearchDrive);
+  useCommand.OpenApp('calendar', handleOpenApp('calendar'));
+  useCommand.OpenApp('drive', handleOpenApp('drive'));
+  useCommand.OpenApp('note', handleOpenApp('note'));
+  useCommand.OpenApp('meeting', handleOpenApp('meeting'));
 
   const themeContext = useContext(ThemeContext);
 
