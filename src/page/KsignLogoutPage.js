@@ -2,14 +2,15 @@ import React, { useEffect } from 'react';
 import { useCoreStores } from 'teespace-core';
 import Cookies from 'js-cookie';
 import wwms from '../libs/wwms';
-import { useKeycloak } from '@react-keycloak/web';
+import keycloak from '../libs/keycloak';
 
 const KsignLogoutPage = () => {
   const { authStore } = useCoreStores();
-  const { keycloak } = useKeycloak();
   const url = window.location.origin; //  http://xxx.dev.teespace.net
   const redirectURL = `${url}/login`;
   const getNibId = Cookies.get('NIBID');
+  const getKsignId = Cookies.get('KSIGN_ID');
+  const getIdToken = Cookies.get('ID_TOKEN');
 
   useEffect(() => {
     const logoutLogic = async () => {
@@ -20,7 +21,12 @@ const KsignLogoutPage = () => {
       Cookies.remove('DEVICE_TYPE');
       Cookies.remove('ID_TOKEN');
       Cookies.remove('KSIGN_ID');
-      if (getNibId || authStore.user.grade === 'guest') {
+      if (
+        getNibId ||
+        getKsignId ||
+        getIdToken ||
+        authStore.user.grade === 'guest'
+      ) {
         window.location.href = `/cnu/sso/logout.jsp`;
       } else {
         await keycloak.logout({
