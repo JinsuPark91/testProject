@@ -3,23 +3,29 @@ import { useCoreStores, MobileMessage } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLongPress } from 'use-long-press';
+import { Observer } from 'mobx-react';
 import Photos from '../../Photos';
 import { getMessageTime } from '../../../utils/TimeUtil';
 import CheckIcon from '../../../assets/check.svg';
 import { MobileAlarmIcon } from '../../Icons';
 import RoomModal from './MobileRoomModal';
-import { Observer } from 'mobx-react';
+
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
   padding: 0.81rem 1rem;
   cursor: pointer;
+
+  & div {
+    flex-shrink: 1;
+  }
 `;
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  width: calc(100% - 2.25rem);
+  width: ${props =>
+    props.isEditMode ? 'calc(100% - 3.88rem)' : 'calc(100% - 2.75rem)'};
   height: 100%;
   margin-left: 0.5rem;
 `;
@@ -183,7 +189,7 @@ const MobileRoomItem = ({
     <>
       <Wrapper {...bind} onClick={handleClickRoom}>
         {getRoomPhoto()}
-        <Content>
+        <Content isEditMode={roomEditMode}>
           <Header>
             <Name>
               {isMyRoom
@@ -194,11 +200,7 @@ const MobileRoomItem = ({
               {() =>
                 roomInfo.isAlarmUsed ? null : (
                   <TitleIconWrapper>
-                    <MobileAlarmIcon
-                      width={0.8}
-                      height={0.8}
-                      color={'#e2dfdc'}
-                    />
+                    <MobileAlarmIcon width={0.8} height={0.8} color="#e2dfdc" />
                   </TitleIconWrapper>
                 )
               }
