@@ -53,6 +53,12 @@ const InviteButton = styled(Button)`
   }
 `;
 
+const remToPixel = rem => {
+  return (
+    parseFloat(getComputedStyle(document.documentElement).fontSize, 10) * rem
+  );
+};
+
 const MobileRoomCreatePage = ({ onTabChange }) => {
   const history = useHistory();
   const { userStore, roomStore } = useCoreStores();
@@ -71,20 +77,16 @@ const MobileRoomCreatePage = ({ onTabChange }) => {
       type: 'private',
     });
     const checkRoom = roomStore.getRoomMap().get(roomId);
-    console.log(JSON.stringify(checkRoom));
+
     if (checkRoom && !checkRoom.isVisible) {
-      await roomStore.updateRoomMemberSetting({
+      await roomStore.activateRoom({
         roomId,
-        myUserId,
-        newIsVisible: true,
       });
     }
     history.push(`/talk/${roomId}`);
   };
 
-  const handleCancel = () => {
-    history.push(`/room/${myUserId}`);
-  };
+  const handleCancel = () => history.push(`/room/${myUserId}`);
 
   const handleSelectedUserChange = useCallback(({ userArray }) => {
     const filteredUsers = userArray.filter(
@@ -94,11 +96,6 @@ const MobileRoomCreatePage = ({ onTabChange }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const remToPixel = rem => {
-    return (
-      parseFloat(getComputedStyle(document.documentElement).fontSize, 10) * rem
-    );
-  };
   // 3 + 0.76 + 0.76 + 1.88 + 3.25 + 3.13 + 2.69
   const otherHeight = remToPixel(15.4);
   const height = window.innerHeight - otherHeight;

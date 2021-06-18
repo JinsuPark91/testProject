@@ -1,5 +1,5 @@
-import React from 'react';
-import { Tooltip } from 'antd';
+import React, { useContext } from 'react';
+import { Tooltip } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { isBasicPlan } from '../../../utils/GeneralUtil';
 import { getMainURL } from '../../../utils/UrlUtil';
@@ -10,6 +10,7 @@ import {
   UrlText,
 } from '../../../styles/profile/SpaceEditModalStyle';
 import errorIcon from '../../../assets/ts_error.svg';
+import { ThemeContext } from 'styled-components';
 
 const GroupNameField = ({
   urlAddress,
@@ -19,6 +20,7 @@ const GroupNameField = ({
   warningText,
 }) => {
   const { t } = useTranslation();
+  const themeContext = useContext(ThemeContext);
   return (
     <>
       <SubTitle>URL</SubTitle>
@@ -26,15 +28,15 @@ const GroupNameField = ({
         <Tooltip
           title={t('CM_PROFILE_SPACE_BASIC')}
           placement="bottomLeft"
-          color="#4C535D"
+          color={themeContext.CoreLight}
         >
-          <UrlInputBox disabled={isBasicPlan}>
+          <UrlInputBox disabled>
             <input value={urlAddress} disabled />
             <UrlText>{getMainURL()}</UrlText>
           </UrlInputBox>
         </Tooltip>
       ) : (
-        <UrlInputBox disabled={isBasicPlan()}>
+        <UrlInputBox>
           <input
             value={urlAddress}
             onChange={handleChange}
@@ -44,7 +46,7 @@ const GroupNameField = ({
           <ErrorIcon visible={warningVisible}>
             <Tooltip
               title={warningText}
-              color="#4C535D"
+              color={themeContext.CoreLight}
               placement="top"
               visible={warningVisible}
             >

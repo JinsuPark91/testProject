@@ -25,7 +25,7 @@ const ContentLanguage = () => {
     : t('CM_ENGLISH');
 
   const handleChange = async language => {
-    const result = await userStore.updateMyLanguage({ language });
+    const result = await userStore.updateMyDomainSetting({ language });
     if (result) {
       i18n.changeLanguage(language).then((t, err) => {
         if (err) return console.log(`error is..${err}`);

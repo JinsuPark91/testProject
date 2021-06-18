@@ -2,20 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from 'antd';
-import { useCoreStores, Toast, Message, Switch } from 'teespace-core';
+import { useCoreStores } from 'teespace-core';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
+import { useStores } from '../../stores';
 import Input from '../Input';
 
 const CommonSettingPage = ({ roomId }) => {
   const { t } = useTranslation();
+  const { uiStore } = useStores();
   const [value, setValue] = useState('');
   const [isChanged, setIsChanged] = useState(false);
   const [isPrivateRoom, setIsPrivateRoom] = useState(false);
-  const [isToastVisible, setIsToastVisible] = useState(false);
-  const [isDeleteWarningVisible, setIsDeleteWarningVisible] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [isWarningVisible, setIsWarningVisible] = useState(false);
 
   const { roomStore, userStore } = useCoreStores();
   const history = useHistory();
@@ -24,8 +22,8 @@ const CommonSettingPage = ({ roomId }) => {
 
   useEffect(() => {
     if (roomInfo) {
-      const name = roomInfo?.customName || roomInfo?.name;
-      setValue(name.substring(0, 20) || '');
+      const name = roomInfo?.oriName;
+      setValue(name?.substring(0, 50) || roomInfo.name?.substring(0, 50) || '');
 
       const isPrivate = roomInfo.type === 'WKS0002';
       setIsPrivateRoom(isPrivate);
@@ -53,16 +51,16 @@ const CommonSettingPage = ({ roomId }) => {
         setIsChanged(false);
         // NOTE : roomInfo.adminName 에 값이 없음.
         // const admin = await userStore.getProfile({ userId: roomInfo.adminId });
-        setToastMessage(t('CM_CHANGE_SAVE'));
-        setIsToastVisible(true);
+        uiStore.openToast({
+          text: t('CM_CHANGE_SAVE'),
+          onClose: () => {
+            uiStore.closeToast();
+          },
+        });
       } else throw Error(`result:${result}`);
     } catch (err) {
       console.error(`[Platform] change name error, ${err}`);
     }
-  };
-
-  const handleClickModeChange = () => {
-    setIsWarningVisible(true);
   };
 
   const handleConfirmModeChange = async () => {
@@ -76,20 +74,32 @@ const CommonSettingPage = ({ roomId }) => {
     } catch (err) {
       console.error(`[Platform] private room failed, ${err}`);
     } finally {
-      setIsWarningVisible(false);
+      uiStore.closeMessage();
     }
   };
 
-  const handleCancelModeChange = () => {
-    setIsWarningVisible(false);
-  };
-
-  const handleDelete = () => {
-    setIsDeleteWarningVisible(true);
-  };
-
-  const handleDeleteCancel = () => {
-    setIsDeleteWarningVisible(false);
+  const handleClickModeChange = () => {
+    uiStore.openMessage({
+      title: t('CM_ROOM_SETTING_BAISC_06'),
+      subTitle: t('CM_ROOM_SETTING_BAISC_07'),
+      type: 'error',
+      buttons: [
+        {
+          type: 'solid',
+          shape: 'default',
+          text: t('CM_CHANGE_02'),
+          onClick: handleConfirmModeChange,
+        },
+        {
+          type: 'outlined',
+          shape: 'default',
+          text: t('CM_CANCEL'),
+          onClick: () => {
+            uiStore.closeMessage();
+          },
+        },
+      ],
+    });
   };
 
   const handleDeleteOk = async () => {
@@ -107,8 +117,32 @@ const CommonSettingPage = ({ roomId }) => {
     } catch (err) {
       console.error(`[Platform] 룸 삭제 실패, ${err}`);
     } finally {
-      setIsDeleteWarningVisible(false);
+      uiStore.closeMessage();
     }
+  };
+
+  const handleDelete = () => {
+    uiStore.openMessage({
+      title: t('CM_ROOM_SETTING_BAISC_10'),
+      subTitle: t('CM_ROOM_SETTING_BAISC_11'),
+      type: 'error',
+      buttons: [
+        {
+          type: 'solid',
+          shape: 'default',
+          text: t('CM_DEL'),
+          onClick: handleDeleteOk,
+        },
+        {
+          type: 'outlined',
+          shape: 'default',
+          text: t('CM_CANCEL'),
+          onClick: () => {
+            uiStore.closeMessage();
+          },
+        },
+      ],
+    });
   };
 
   const handleChange = text => {
@@ -116,39 +150,8 @@ const CommonSettingPage = ({ roomId }) => {
     setIsChanged(true);
   };
 
-  const handleToastClose = () => {
-    setIsToastVisible(false);
-  };
-
   return (
     <Wrapper style={{ padding: '2.56rem 3.75rem' }}>
-      <Message
-        visible={isDeleteWarningVisible}
-        title={t('CM_ROOM_SETTING_BAISC_10')}
-        subtitle={t('CM_ROOM_SETTING_BAISC_11')}
-        type="error"
-        btns={[
-          {
-            type: 'solid',
-            shape: 'default',
-            text: t('CM_DEL'),
-            onClick: handleDeleteOk,
-          },
-          {
-            type: 'outlined',
-            shape: 'default',
-            text: t('CM_CANCEL'),
-            onClick: handleDeleteCancel,
-          },
-        ]}
-      />
-      <Toast
-        visible={isToastVisible}
-        timeoutMs={1000}
-        onClose={handleToastClose}
-      >
-        {toastMessage}
-      </Toast>
       <SettingWrapper>
         <SettingTitleText>{t('CM_ROOM_SETTING_BAISC_02')}</SettingTitleText>
         <SettingDescriptionText style={{ marginBottom: '0.81rem' }}>
@@ -158,7 +161,7 @@ const CommonSettingPage = ({ roomId }) => {
           maxLength={50}
           value={value}
           onChange={handleChange}
-          placeholder={roomInfo?.name}
+          placeholder={roomInfo?.oriName}
         />
         <Button
           type="solid"
@@ -197,36 +200,14 @@ const CommonSettingPage = ({ roomId }) => {
             {t('CM_ROOM_SETTING_BAISC_05')}
           </SettingDescriptionText>
           {!isPrivateRoom && (
-            <>
-              <Message
-                visible={isWarningVisible}
-                title={t('CM_ROOM_SETTING_BAISC_06')}
-                subtitle={t('CM_ROOM_SETTING_BAISC_07')}
-                type="error"
-                btns={[
-                  {
-                    type: 'solid',
-                    shape: 'default',
-                    text: t('CM_CHANGE_02'),
-                    onClick: handleConfirmModeChange,
-                  },
-                  {
-                    type: 'outlined',
-                    shape: 'default',
-                    text: t('CM_CANCEL'),
-                    onClick: handleCancelModeChange,
-                  },
-                ]}
-              />
-              <Button
-                type="solid"
-                shape="default"
-                style={{ marginTop: '0.81rem', alignSelf: 'flex-end' }}
-                onClick={handleClickModeChange}
-              >
-                {t('CM_CHANGE_02')}
-              </Button>
-            </>
+            <Button
+              type="solid"
+              shape="default"
+              style={{ marginTop: '0.81rem', alignSelf: 'flex-end' }}
+              onClick={handleClickModeChange}
+            >
+              {t('CM_CHANGE_02')}
+            </Button>
           )}
         </SettingWrapper>
       ) : null}
@@ -273,17 +254,8 @@ const SettingTitleText = styled.span`
   color: ${props => props.theme.TextMain};
 `;
 
-const SettingTitleWrap = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  ${SettingTitleText} {
-    margin-bottom: 0;
-  }
-`;
-
 const SettingDescriptionText = styled.span`
   font-size: 0.75rem;
-  color: #777;
+  color: ${props => props.theme.TextSub};
   font-weight: 300;
 `;

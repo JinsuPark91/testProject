@@ -1,7 +1,6 @@
 import React from 'react';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, Tooltip } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
-import { Tooltip } from 'antd';
 import {
   InnerItem,
   Name,
@@ -23,7 +22,7 @@ const SettingDialogOrg = () => {
       <Name>{t('CM_SETTING_CHANGE_INFO_COMPANY_04')}</Name>
       <Data>
         <TextArea>
-          <p>{myProfile.getFullCompanyJob(true)}</p>
+          <p>{myProfile.getFullCompanyJob(1)}</p>
         </TextArea>
         <ButtonArea>
           <LockIconBox>

@@ -1,7 +1,8 @@
 import React, { useState, useCallback } from 'react';
-import { ProfileInfoModal, Toast } from 'teespace-core';
+import { ProfileInfoModal } from 'teespace-core';
 import FriendsLNBList from './FriendsLNBList';
 import { useStores } from '../../stores';
+import { getLeftDistance } from '../../utils/GeneralUtil';
 
 /**
  * @param {string} searchKeyword - 프렌즈 검색 키워드
@@ -10,25 +11,21 @@ import { useStores } from '../../stores';
 
 const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
   const { uiStore } = useStores();
-
   const [isInfoModalVisible, setIsInfoModalVisible] = useState(false);
   const [selectedId, setSelectedId] = useState('');
 
-  const [isToastVisible, setIsToastVisible] = useState(false);
-  const [toastText, setToastText] = useState('');
-
-  const handleOpenInfoModal = useCallback(() => {
+  const handleOpenInfoModal = useCallback(value => {
+    setSelectedId(value);
     setIsInfoModalVisible(true);
   }, []);
-  const handleSelectedId = useCallback(value => {
-    setSelectedId(value);
-  }, []);
 
-  const handleOpenToast = useCallback(() => {
-    setIsToastVisible(true);
-  }, []);
-  const handleToastText = useCallback(value => {
-    setToastText(value);
+  const handleOpenToast = useCallback(value => {
+    uiStore.openToast({
+      text: value,
+      onClose: () => {
+        uiStore.closeToast();
+      },
+    });
   }, []);
 
   return (
@@ -37,9 +34,7 @@ const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
         searchKeyword={searchKeyword}
         handleShadow={handleShadow}
         handleOpenInfoModal={handleOpenInfoModal}
-        handleSelectedId={handleSelectedId}
         handleOpenToast={handleOpenToast}
-        handleToastText={handleToastText}
       />
       {isInfoModalVisible && (
         <ProfileInfoModal
@@ -55,17 +50,8 @@ const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
             });
           }}
           onClose={() => setIsInfoModalVisible(false)}
-          position={{ left: '19.935rem' }}
+          position={{ left: getLeftDistance() }}
         />
-      )}
-      {isToastVisible && (
-        <Toast
-          visible={isToastVisible}
-          timeoutMs={1000}
-          onClose={() => setIsToastVisible(false)}
-        >
-          {toastText}
-        </Toast>
       )}
     </>
   );

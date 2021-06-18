@@ -1,9 +1,20 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useContext,
+} from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
-import styled from 'styled-components';
-import { Button, Tooltip } from 'antd';
-import { useCoreStores, ProfileInfoModal, ProfileModal } from 'teespace-core';
+import styled, { ThemeContext } from 'styled-components';
+import { Button } from 'antd';
+import {
+  useCoreStores,
+  ProfileInfoModal,
+  ProfileModal,
+  Tooltip,
+} from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import Photos from '../Photos';
 import Input from '../Input';
@@ -39,10 +50,10 @@ const AddButton = styled.button`
   width: 100%;
   height: 3.13rem;
   background-color: transparent;
-  border: solid #e3e7eb;
+  border: solid ${props => props.theme.LineMain};
   border-width: 1px 0 0;
   font-size: 0.81rem;
-  color: #3b3b3b;
+  color: ${props => props.theme.TextSub};
   outline: none;
   cursor: pointer;
 
@@ -93,7 +104,7 @@ const UserName = styled.p`
   padding-left: 0.5rem;
   font-size: 0.75rem;
   line-height: 1.13rem;
-  color: #000;
+  color: ${props => props.theme.TextMain};
 `;
 const GroupTitle = styled.div`
   padding: 0.44rem 1.25rem 0;
@@ -132,19 +143,20 @@ const SettingButton = styled.button`
   font-size: 0.69rem;
   opacity: 0.9;
   cursor: pointer;
-  &:hover {
-    background-color: #313a46;
-  }
-  &:active,
-  &:focus {
-    background-color: #0c1724;
-  }
   & + & {
     margin-left: 0.5625rem;
   }
-
+  &:not(:disabled) {
+    &:hover {
+      background-color: ${props => props.theme.CoreBright};
+    }
+    &:active,
+    &:focus {
+      background-color: ${props => props.theme.CoreLight};
+    }
+  }
   &:disabled {
-    color: #646464;
+    color: ${props => props.theme.DisabledText2};
     &:hover {
       cursor: not-allowed;
     }
@@ -172,7 +184,6 @@ const StyledInput = styled(Input)`
   }
   .input-counter {
     font-size: 0.69rem;
-    color: #bdc6d3;
   }
 `;
 
@@ -254,7 +265,6 @@ function RoomInquiryModal({
     if (roomId && visible) {
       const foundRoom = roomStore.getRoomMap().get(roomId);
       setRoomInfo(foundRoom);
-
       setRoomName(foundRoom.customName || foundRoom.name);
       setMemberPhotos(getUserPhotos(foundRoom));
       // NOTE. 수정 모드인 경우 기존 내용을 선택하고, 포커스 설정
@@ -395,6 +405,8 @@ function RoomInquiryModal({
     return false;
   };
 
+  const themeContext = useContext(ThemeContext);
+
   const userContent = (
     <InquiryContentwrap>
       <StyledPhotos srcList={memberPhotos} defaultDiameter="3.75" />
@@ -411,9 +423,7 @@ function RoomInquiryModal({
               />
             ) : (
               <p>
-                {roomInfo?.isMyRoom
-                  ? userStore.myProfile.name
-                  : roomInfo?.customName || roomInfo?.name}
+                {roomInfo?.isMyRoom ? userStore.myProfile.name : roomInfo?.name}
               </p>
             )}
           </GroupTitle>
@@ -490,7 +500,7 @@ function RoomInquiryModal({
               <Tooltip
                 placement="bottom"
                 title={t('CM_ROOM_ADMIN')}
-                color="#4C535D"
+                color={themeContext.CoreLight}
               >
                 <IconWrapper>
                   <LeaderIcon width={1.13} height={1.13} color="#205855" />
@@ -521,7 +531,11 @@ function RoomInquiryModal({
     const { isGuest } = userStore.myProfile;
     return isGuest ? null : (
       <AddButton onClick={handleInvite}>
-        <AddAcountIcon width="1.25" height="1.25" color="#232D3B" />
+        <AddAcountIcon
+          width="1.25"
+          height="1.25"
+          color={themeContext.IconNormal2}
+        />
         {t('CM_ROOM_INVITE_USER')}
       </AddButton>
     );

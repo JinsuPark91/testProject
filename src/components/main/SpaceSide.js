@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { throttle } from 'lodash';
 import { useCoreStores, Tooltip } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { Modal, Dropdown, Menu } from 'antd';
 import { Observer } from 'mobx-react';
+import { ThemeContext } from 'styled-components';
 import MovePage from '../../utils/MovePage';
 import { getMainWaplURL } from '../../utils/UrlUtil';
 import { remToPixel } from '../../utils/GeneralUtil';
@@ -18,21 +19,27 @@ import {
 import { HomeIcon, HorizontalViewMoreIcon, AddIcon } from '../Icons';
 
 const SpaceItem = React.memo(
-  ({ checked, spaceName, spaceUnreadCount, spaceDomain }) => {
+  ({ checked, spaceName, backgroundURL, spaceUnreadCount, spaceDomain }) => {
+    const themeContext = useContext(ThemeContext);
     return (
-      <Tooltip title={spaceName} placement="right" color="#4C535D">
+      <Tooltip
+        title={spaceName}
+        placement="right"
+        color={themeContext.CoreLight}
+      >
         <SpaceBox
           checked={checked}
           onClick={() => {
             window.location.href = `${window.location.protocol}//${spaceDomain}`;
           }}
+          backgroundURL={backgroundURL}
         >
           {spaceUnreadCount > 0 && (
             <UnreadSpaceNumber>
               {spaceUnreadCount > 99 ? '99+' : spaceUnreadCount}
             </UnreadSpaceNumber>
           )}
-          {spaceName[0]}
+          {!backgroundURL && spaceName[0]}
         </SpaceBox>
       </Tooltip>
     );
@@ -98,15 +105,21 @@ const SpaceSide = () => {
     } else window.location.href = getMainWaplURL('/select-space-type');
   };
 
+  const themeContext = useContext(ThemeContext);
+
   return (
     <Wrapper>
-      <Tooltip title={t('CM_GO_SPACES')} placement="right" color="#4C535D">
+      <Tooltip
+        title={t('CM_GO_SPACES')}
+        placement="right"
+        color={themeContext.CoreLight}
+      >
         <ItemWrapper
-          background="#fff"
+          background={themeContext.StateNormal}
           style={{ marginTop: '0.55rem' }}
           onClick={() => MovePage('spaces')}
         >
-          <HomeIcon width={1.5} height={1.5} color="#232d3b" />
+          <HomeIcon width={1.5} height={1.5} color={themeContext.IconNormal2} />
         </ItemWrapper>
       </Tooltip>
       <HorizontalBar width={1.25} />
@@ -117,6 +130,7 @@ const SpaceSide = () => {
               key={spaceInfo.id}
               checked={spaceInfo.id === spaceStore.currentSpace.id}
               spaceName={spaceInfo.name}
+              backgroundURL={spaceInfo.profilePhotoURL}
               spaceUnreadCount={spaceInfo.totalUnreadRoomCount}
               spaceDomain={spaceInfo.domain}
             />
@@ -136,6 +150,7 @@ const SpaceSide = () => {
                     key={spaceInfo.id}
                     checked={spaceInfo.id === spaceStore.currentSpace.id}
                     spaceName={spaceInfo.name}
+                    backgroundURL={spaceInfo.profilePhotoURL}
                     spaceUnreadCount={spaceInfo.totalUnreadRoomCount}
                     spaceDomain={spaceInfo.domain}
                   />
@@ -149,11 +164,11 @@ const SpaceSide = () => {
               overlay={spaceMenu}
               placement="topLeft"
             >
-              <ItemWrapper background="#fff">
+              <ItemWrapper background={themeContext.StateNormal}>
                 <HorizontalViewMoreIcon
                   width={1.5}
                   height={1.5}
-                  color="#232d3b"
+                  color={themeContext.IconNormal2}
                 />
               </ItemWrapper>
             </Dropdown>
@@ -164,10 +179,13 @@ const SpaceSide = () => {
       <Tooltip
         title={t('CM_CREATE_CONTENTS_AREA_02')}
         placement="right"
-        color="#4C535D"
+        color={themeContext.CoreLight}
       >
-        <ItemWrapper background="#faf8f7" onClick={handleNewSpace}>
-          <AddIcon width={1} height={1} color="#7b7671" />
+        <ItemWrapper
+          background={themeContext.StateBright}
+          onClick={handleNewSpace}
+        >
+          <AddIcon width={1} height={1} color={themeContext.IconHinted} />
         </ItemWrapper>
       </Tooltip>
     </Wrapper>

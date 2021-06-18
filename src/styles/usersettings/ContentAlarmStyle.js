@@ -21,7 +21,7 @@ export const FormItem = styled(FormItemMain)`
   min-height: 3.313rem;
   margin-top: 0;
   padding: 0.5625rem 0;
-  border-top: 1px solid #d8d8d8;
+  border-top: 1px solid ${props => props.theme.LineSub};
   &:first-of-type {
     border-top: 0;
   }
@@ -44,18 +44,19 @@ export const ItemInfo = styled.div`
 
 export const ItemTitle = styled.label`
   display: block;
+  margin: 0;
   font-size: 0.75rem;
   line-height: 1.13rem;
-  color: #777;
+  color: ${props => props.theme.TextSub};
 `;
 
 export const ItemTitleBlack = styled(ItemTitle)`
-  color: #000;
+  color: ${props => props.theme.TextMain};
 `;
 
 export const ItemSub = styled.div`
   margin: 0.63rem 0 0.4375rem;
-  color: ${props => (props.isEmail ? '#818181' : '#000000')};
+  color: ${props => (props.isEmail ? '#818181' : `${props.theme.TextMain}`)};
   font-size: ${props => (props.isSmall ? '0.75rem' : '0.81rem')};
   .ant-checkbox-wrapper {
     font-size: 0.81rem;
@@ -89,25 +90,26 @@ export const SoundButton = styled(Button)`
     transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
   }
   &:hover {
-    background-color: #f7f4ef;
-    border-color: #f7f4ef;
+    background-color: ${props => props.theme.SubStateNormal};
+    background-color: ${props => props.theme.SubStateNormal};
+    border-color: ${props => props.theme.SubStateNormal};
     svg {
-      color: #7b7671;
+      color: ${props => props.theme.IconNormal};
     }
   }
   &:active,
   &:focus {
-    background-color: #ddd7cd;
-    border-color: #ddd7cd;
+    background-color: ${props => props.theme.SubStateDark};
+    border-color: ${props => props.theme.SubStateDark};
     svg {
-      color: #48423b;
+      color: ${props => props.theme.IconActive};
     }
   }
   ${props =>
     props.checked &&
     css`
       svg {
-        color: #48423b;
+        color: ${props.theme.IconActive};
       }
     `}
 `;

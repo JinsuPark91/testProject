@@ -13,7 +13,6 @@ export const ContentWrapper = styled.div`
 export const WelcomeWrapper = styled.div`
   margin: auto auto 3.13rem;
   text-align: center;
-  color: #232d3b;
 `;
 
 export const FriendListBox = styled.div`
@@ -22,7 +21,7 @@ export const FriendListBox = styled.div`
     display: block;
     height: 1px;
     margin: 0.25rem 0.75rem;
-    background-color: #e3e7eb;
+    background-color: ${props => props.theme.LineSub};
   }
 
   &:last-of-type {
@@ -43,19 +42,21 @@ export const StyleTitle = styled.p`
 export const StyleText = styled(Text)`
   margin-left: 0.25rem;
   font-size: 0.81rem;
-  color: #7f7f7f;
+  color: ${props => props.theme.TextSub2};
 `;
 
 export const StyledInfoTitle = styled.p`
   margin-bottom: 0.94rem;
   font-size: 0.94rem;
   line-height: 1.38rem;
+  color: ${props => props.theme.TextMain};
   white-space: pre-line;
 `;
 
 export const StyledSubInfo = styled.p`
   font-size: 0.75rem;
   line-height: 1.06rem;
+  color: ${props => props.theme.TextSub};
   white-space: pre-line;
 `;
 
@@ -65,7 +66,7 @@ export const MemberItemWrapper = styled.div`
     content: '';
     height: 1px;
     margin: 0.25rem 0.75rem;
-    background-color: #e3e7eb;
+    background-color: ${props => props.theme.LineSub};
   }
 `;
 
@@ -77,4 +78,7 @@ export const GroupAvatar = styled.div`
   height: 2rem;
   border-radius: 50%;
   background-color: #205855;
+  svg {
+    margin-top: -1px;
+  }
 `;

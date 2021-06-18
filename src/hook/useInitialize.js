@@ -1,0 +1,194 @@
+import { useEffect, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
+import { useCoreStores, EventBus, AlarmSetting, WWMS } from 'teespace-core';
+import { useStores } from './../stores';
+import { isDarkMode } from './../utils/GeneralUtil';
+import { handleProfileMenuClick } from './../utils/ProfileUtil';
+import { useTranslation } from 'react-i18next';
+
+const useInitialize = () => {
+  const {
+    spaceStore,
+    roomStore,
+    userStore,
+    friendStore,
+    themeStore,
+  } = useCoreStores();
+  const { uiStore, historyStore } = useStores();
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const { t, i18n } = useTranslation();
+  const { resourceType, resourceId, mainApp } = useParams();
+  const history = useHistory();
+
+  const url = window.location.origin; //  http://xxx.dev.teespace.net
+  const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
+  const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
+
+  /**
+   * /f/:userId?action=talk
+   * /f/:userId?action=meeting
+   * 위 주소로 각각 1:1 talk, 1:1 meeting 을 호출할 수 있음.
+   */
+  const query = new URLSearchParams(window.location.search);
+  const profileAction = query.get('action'); // profile 용 action
+
+  let domainName;
+  [domainName] = url.split(`//`)[1].split(`.`);
+
+  const myUserId = userStore.myProfile.id;
+
+  const handleMoveTalkHistory = async roomInfo => {
+    const { lastUrl } = await historyStore.getHistory({
+      roomId: roomInfo.id,
+    });
+    if (lastUrl) history.push(lastUrl);
+    else history.push(`/s/${roomInfo.id}/talk`);
+  };
+  const handleMoveTalk = roomInfo => history.push(`/s/${roomInfo.id}/talk`);
+
+  const handleOpenMeeting = roomInfo => {
+    uiStore.openWindow({
+      id: roomInfo.id,
+      type: 'meeting',
+      name: null,
+      userCount: null,
+      handler: null,
+    });
+  };
+
+  const handleMoveMeetingHistory = async roomInfo => {
+    handleOpenMeeting(roomInfo);
+    await handleMoveTalkHistory(roomInfo);
+  };
+  const handleMoveMeeting = roomInfo => {
+    handleOpenMeeting(roomInfo);
+    handleMoveTalk(roomInfo);
+  };
+
+  const handleTalkClick = async () => {
+    handleProfileMenuClick(
+      myUserId,
+      resourceId,
+      handleMoveTalkHistory,
+      handleMoveTalk,
+      handleMoveTalk,
+    );
+  };
+  const handleMeetingClick = async () => {
+    handleProfileMenuClick(
+      myUserId,
+      resourceId,
+      handleMoveMeetingHistory,
+      handleMoveMeeting,
+      handleMoveMeeting,
+    );
+  };
+
+  useEffect(() => {
+    Promise.all([
+      // 스페이스를 불러오자
+      spaceStore.fetchSpaces({
+        userId: myUserId,
+        isLocal: process.env.REACT_APP_ENV === 'local',
+      }),
+      // 룸을 불러오자
+      roomStore.fetchRoomList({ myUserId }),
+      // 유저 프로필을 불러오자
+      userStore.fetchRoomUserProfileList({}),
+      // 프렌드 리스트를 불러오자
+      friendStore.fetchFriends({ myUserId }),
+      // 접속 정보를 불러오자.
+      historyStore.fetchHistories(),
+      // 알림 세팅을 불러오자
+      userStore.getAlarmList(myUserId),
+    ])
+      .then(async res => {
+        // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
+        EventBus.dispatch('Platform:initLNB');
+
+        // 프렌즈 프로필은 모두 가져오자
+        if (friendStore.friendInfoList.length) {
+          const friendIdList = friendStore.friendInfoList.map(
+            elem => elem.friendId,
+          );
+          await userStore.fetchProfileList(friendIdList);
+        }
+
+        // 알람 리스트 적용
+        const [, , , , , alarmList] = res;
+        AlarmSetting.initAlarmSet(alarmList);
+
+        // 계정 langauge 적용. 없으면 브라우저 기본 langauge로 업데이트 한다.
+        await userStore.getMyDomainSetting();
+        if (!userStore.myProfile.language) {
+          await userStore.updateMyDomainSetting({
+            language: i18n.language,
+          });
+        } else i18n.changeLanguage(userStore.myProfile.language);
+
+        // 기본 테마 설정
+        const platformTheme = userStore.myProfile.theme;
+        if (platformTheme && platformTheme !== 'system')
+          themeStore.setTheme(platformTheme);
+        else if (isDarkMode()) themeStore.setTheme('dark');
+
+        // 스페이스 화면에서 1:1 Talk나 1:1 Meeting을 선택한 경우
+        if (resourceType === 'f' && profileAction) {
+          switch (profileAction) {
+            case 'talk':
+              handleTalkClick();
+              break;
+            case 'meeting':
+              handleMeetingClick();
+              break;
+            default:
+              break;
+          }
+        }
+        // NOTE : 마지막 접속 URL 로 Redirect 시킨다.
+        else if (historyStore.lastHistory)
+          history.push(historyStore.lastHistory.lastUrl);
+      })
+      .then(() => {
+        setIsLoaded(true);
+      })
+      .catch(err => {
+        if (process.env.REACT_APP_ENV === 'local') {
+          setTimeout(() => {
+            history.push('/logout');
+          }, 1000);
+        } else {
+          window.location.href = `${window.location.protocol}//${mainURL}/domain/${domainName}`;
+        }
+        console.log(err);
+      });
+
+    // NOTE : RECONNECT 임시 처리
+    WWMS.setOnReconnect(() => {
+      Promise.all([
+        // 룸을 불러오자
+        roomStore.fetchRoomList({ myUserId }),
+      ])
+        .then(() => {
+          // talk init (fetch room 이후.)
+          // NOTE: 이벤트명은 core에서 불릴 것 같지만, 플랫폼에서 불러줌
+          EventBus.dispatch('Platform:reconnectWebSocket');
+        })
+        .catch(err => {
+          if (process.env.REACT_APP_ENV === 'local') {
+            setTimeout(() => {
+              history.push('/logout');
+            }, 1000);
+          } else {
+            window.location.href = `${window.location.protocol}//${mainURL}/domain/${domainName}`;
+          }
+          console.log(err);
+        });
+    });
+  }, []);
+
+  return isLoaded;
+};
+
+export default useInitialize;

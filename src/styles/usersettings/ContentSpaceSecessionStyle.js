@@ -10,7 +10,7 @@ export const ContentDataWrap = styled.div`
 export const ContentGroup = styled.div`
   padding: 0.63rem 0 1.25rem;
   & + & {
-    border-top: 1px solid #d8d8d8;
+    border-top: 1px solid ${props => props.theme.LineSub};
   }
 `;
 
@@ -18,7 +18,7 @@ export const GroupTitle = styled.p`
   margin-bottom: 1.25rem;
   font-size: 0.75rem;
   line-height: 1.13rem;
-  color: #777;
+  color: ${props => props.theme.TextSub};
 `;
 
 export const GroupTitleBlack = styled(GroupTitle)`
@@ -83,7 +83,7 @@ export const SpaceInfo = styled.p`
   margin-left: 0.63rem;
   font-size: 0.69rem;
   line-height: 0.875rem;
-  color: #777;
+  color: ${props => props.theme.TextSub};
   white-space: nowrap;
   text-overflow: ellipsis;
 `;

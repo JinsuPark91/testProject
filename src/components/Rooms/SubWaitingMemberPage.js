@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { WaplSearch, Toast, WWMS } from 'teespace-core';
+import { WaplSearch } from 'teespace-core';
 import styled from 'styled-components';
 import { Observer } from 'mobx-react';
 import { Button, Checkbox } from 'antd';
@@ -26,9 +26,9 @@ const TableRow = ({ style, member }) => {
 
   const handleCheckChange = e => {
     if (e.target.checked) {
-      store.selectedMembers.set(member.id, member);
+      store.selectedRequestMembers.set(member.id, member);
     } else {
-      store.selectedMembers.delete(member.id);
+      store.selectedRequestMembers.delete(member.id);
     }
   };
 
@@ -41,7 +41,7 @@ const TableRow = ({ style, member }) => {
           {() => (
             <Checkbox
               className="check-round"
-              checked={store.selectedMembers.has(member.id)}
+              checked={store.selectedRequestMembers.has(member.id)}
               onChange={handleCheckChange}
             />
           )}
@@ -78,11 +78,17 @@ const Table = () => {
 
   const handleAllCheckChange = e => {
     if (e.target.checked) {
-      store.selectedMembers.replace(
-        new Map(store.filteredMembers.map(member => [member.id, member])),
+      store.selectedRequestMembers.replace(
+        new Map(
+          store
+            .getFilteredMembers({ withoutMe: false })
+            .map(member => [member.id, member]),
+        ),
       );
     } else {
-      store.selectedMembers.clear();
+      store
+        .getFilteredMembers({ withoutMe: false })
+        .map(member => store.selectedRequestMembers.delete(member.id));
     }
   };
 
@@ -94,7 +100,7 @@ const Table = () => {
             {() => (
               <Checkbox
                 className="check-round"
-                checked={store.isAllChecked(false)}
+                checked={store.isAllChecked({ withoutMe: false })}
                 onChange={handleAllCheckChange}
               />
             )}
@@ -110,19 +116,23 @@ const Table = () => {
       </TableHeader>
       <TableBody ref={tableBodyRef}>
         <Observer>
-          {() => (
-            <List
-              height={listHeight}
-              itemCount={store.filteredMembers.length}
-              itemSize={remToPixel(3.19)}
-              width="100%"
-            >
-              {({ index, style }) => {
-                const member = store.filteredMembers[index];
-                return <TableRow style={style} member={member} />;
-              }}
-            </List>
-          )}
+          {() => {
+            const filteredMembers = store.getFilteredMembers({
+              withoutMe: false,
+            });
+            return (
+              <List
+                height={listHeight}
+                itemCount={filteredMembers.length}
+                itemSize={remToPixel(3.19)}
+                width="100%"
+              >
+                {({ index, style }) => (
+                  <TableRow style={style} member={filteredMembers[index]} />
+                )}
+              </List>
+            );
+          }}
         </Observer>
       </TableBody>
     </>
@@ -131,72 +141,45 @@ const Table = () => {
 
 const SubWaitingMemberPage = ({ roomId }) => {
   const { t } = useTranslation();
-  const { roomSettingStore: store } = useStores();
-
-  // const handleSystemMessage = message => {
-  //   console.log('setting page store : ', message);
-  //   if (message.SPACE_ID !== roomId) return;
-
-  //   switch (message.NOTI_TYPE) {
-  //     case 'memberRequest':
-  //       store.fetchRequestMembers({ roomId });
-
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
-  useEffect(() => {
-    store.fetchRequestMembers({ roomId });
-    // WWMS.addHandler('SYSTEM', 'room_setting', handleSystemMessage);
-
-    return () => {
-      store.members = [];
-      store.keyword = '';
-      store.toastMessage = '';
-      store.toastVisible = false;
-      store.selectedMembers.clear();
-      // WWMS.removeHandler('SYSTEM', 'room_setting');
-    };
-  }, [roomId]);
+  const { roomSettingStore: store, uiStore } = useStores();
 
   const handleAccept = async () => {
-    const userIdList = Array.from(store.selectedMembers.keys());
+    const userIdList = Array.from(store.selectedRequestMembers.keys());
 
     try {
       const result = await store.acceptUsers({ roomId, userIdList });
       if (result) {
         await store.fetchRequestMembers({ roomId });
-        store.open(
-          'toast',
-          t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_07', {
-            num: store.selectedMembers.size,
+        uiStore.openToast({
+          text: t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_07', {
+            num: store.selectedRequestMembers.size,
           }),
-        );
+          onClose: () => {
+            uiStore.closeToast();
+          },
+        });
       }
 
-      store.selectedMembers.clear();
+      store.selectedRequestMembers.clear();
     } catch (err) {
       console.log('입장 허가 에러 : ', err);
     }
   };
 
   const handleReject = async () => {
-    const userIdList = Array.from(store.selectedMembers.keys());
+    const userIdList = Array.from(store.selectedRequestMembers.keys());
 
     try {
       const result = await store.rejectUsers({ roomId, userIdList });
       if (result) {
         await store.fetchRequestMembers({ roomId });
-        store.open(
-          'toast',
-          t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_08', {
-            num: store.selectedMembers.size,
+        uiStore.openToast({
+          text: t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_08', {
+            num: store.selectedRequestMembers.size,
           }),
-        );
+        });
 
-        store.selectedMembers.clear();
+        store.selectedRequestMembers.clear();
       }
     } catch (err) {
       console.log('입장 거절 에러 : ', err);
@@ -211,23 +194,8 @@ const SubWaitingMemberPage = ({ roomId }) => {
     store.keyword = e.target.value;
   };
 
-  const handleToastClose = () => {
-    store.close('toast');
-  };
-
   return (
     <>
-      <Observer>
-        {() => (
-          <Toast
-            visible={store.toastVisible}
-            timeoutMs={1000}
-            onClose={handleToastClose}
-          >
-            {store.toastMessage}
-          </Toast>
-        )}
-      </Observer>
       <div
         style={{
           display: 'flex',
@@ -242,6 +210,7 @@ const SubWaitingMemberPage = ({ roomId }) => {
               fontSize: '0.81rem',
               fontWeight: '600',
               margin: '0 1.25rem',
+              color: `${props => props.theme.TextMain}`,
             }}
           >
             <Observer>
@@ -251,27 +220,26 @@ const SubWaitingMemberPage = ({ roomId }) => {
                   components={{
                     style: <span style={{ color: '#205855' }} />,
                   }}
-                  values={{ num: store.filteredMembers.length }}
+                  values={{
+                    num: store.getFilteredMembers({ withoutMe: false }).length,
+                  }}
                 />
               )}
             </Observer>
           </span>
           <Observer>
             {() => {
-              const isEmpty = !store.selectedMembers.size;
-              const style = { marginRight: '0.5rem' };
-              if (!isEmpty) {
-                style.backgroundColor = '#205855';
-              }
+              const isEmpty = !store.selectedRequestMembers.size;
 
               return (
                 <>
                   <Button
                     type="solid"
                     size="small"
-                    style={style}
+                    style={{ marginRight: '0.5rem' }}
                     onClick={handleAccept}
                     disabled={isEmpty}
+                    className={!isEmpty && 'color-green'}
                   >
                     {t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_03')}
                   </Button>

@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useTranslation, Trans } from 'react-i18next';
-import { Message, WaplSearch, WWMS } from 'teespace-core';
-import styled from 'styled-components';
+import { WaplSearch, useCoreStores, Tooltip } from 'teespace-core';
+import styled, { ThemeContext } from 'styled-components';
 import { Observer } from 'mobx-react';
-import { Button, Checkbox, Tooltip } from 'antd';
+import { Button, Checkbox } from 'antd';
 import { FixedSizeList as List } from 'react-window';
 import { LeaderIcon } from '../Icons';
 import RoomAddMemberModal from './RoomAddMemberModal';
@@ -17,33 +17,67 @@ const remToPixel = rem => {
 };
 
 const WIDTH = {
-  CHECKBOX: '5%',
-  NICK: '10%',
-  LOGIN_ID: '20%',
-  TEAM: '10%',
-  JOB: '10%',
-  PHONE: '15%',
-  ROLE: '15%',
-  BUTTON: '15%',
+  CHECKBOX: 5,
+  NICK: 10,
+  LOGIN_ID: 20,
+  TEAM: 10,
+  JOB: 10,
+  PHONE: 15,
+  ROLE: 15,
+  BUTTON: 15,
 };
 
-const TableRow = ({ style, member }) => {
-  const { roomSettingStore: store } = useStores();
+const TableRow = ({ style, member, isB2C, roomId }) => {
+  const history = useHistory();
+  const { roomSettingStore: store, uiStore } = useStores();
   const { t } = useTranslation();
   const isAdmin = () => member.role === 'WKS0004';
 
+  const handleTransferOk = async () => {
+    const userId = store.targetMember.id;
+    await store.transferAdmin({ roomId, userId });
+    uiStore.closeMessage();
+    history.push(`/s/${roomId}/talk`);
+  };
+
+  const handleTransferCancel = () => {
+    uiStore.closeMessage();
+  };
+
   const handleTransfer = () => {
-    store.member = member;
-    store.open('transfer');
+    store.targetMember = member;
+    uiStore.openMessage({
+      title: t('CM_ROOM_SETTING_MANAGE_PEOPLE_05', {
+        name: store.targetMember?.nick || '',
+      }),
+      subTitle: t('CM_ROOM_SETTING_MANAGE_PEOPLE_06'),
+      type: 'error',
+      buttons: [
+        {
+          type: 'solid',
+          shape: 'round',
+          text: t('CM_LOGIN_POLICY_03'),
+          onClick: handleTransferOk,
+        },
+        {
+          type: 'outlined',
+          shape: 'round',
+          text: t('CM_CANCEL'),
+          onClick: handleTransferCancel,
+        },
+      ],
+    });
   };
 
   const handleCheckChange = e => {
     if (e.target.checked) {
-      store.selectedMembers.set(member.id, member);
+      store.selectedRoomMembers.set(member.id, member);
     } else {
-      store.selectedMembers.delete(member.id);
+      store.selectedRoomMembers.delete(member.id);
     }
   };
+
+  const themeContext = useContext(ThemeContext);
 
   const getMemberType = () => {
     switch (member.grade) {
@@ -62,12 +96,12 @@ const TableRow = ({ style, member }) => {
 
   return (
     <RowWrapper style={style}>
-      <Cell style={{ width: WIDTH.CHECKBOX }}>
+      <Cell style={{ width: `${WIDTH.CHECKBOX}%` }}>
         {isAdmin() ? (
           <Tooltip
             placement="bottom"
             title={t('CM_ROOM_ADMIN')}
-            color="#4C535D"
+            color={themeContext.CoreLight}
           >
             <IconWrapper>
               <LeaderIcon width={1.13} height={1.13} color="#205855" />
@@ -78,7 +112,7 @@ const TableRow = ({ style, member }) => {
             {() => (
               <Checkbox
                 className="check-round"
-                checked={store.selectedMembers.has(member.id)}
+                checked={store.selectedRoomMembers.has(member.id)}
                 onChange={handleCheckChange}
               />
             )}
@@ -86,28 +120,50 @@ const TableRow = ({ style, member }) => {
         )}
       </Cell>
       <Observer>
-        {() => <Cell style={{ width: WIDTH.NICK }}>{member.nick}</Cell>}
-      </Observer>
-      <Observer>
-        {() => <Cell style={{ width: WIDTH.LOGIN_ID }}>{member.loginId}</Cell>}
-      </Observer>
-      <Observer>
-        {() => <Cell style={{ width: WIDTH.TEAM }}>{member.orgName}</Cell>}
-      </Observer>
-      <Observer>
         {() => (
-          <Cell style={{ width: WIDTH.JOB }}>
-            {`${member.userJob || '-'}/${member.position || '-'}`}
+          <Cell style={{ width: `${WIDTH.NICK + (isB2C ? 5 : 0)}%` }}>
+            {member.nick}
           </Cell>
         )}
       </Observer>
       <Observer>
-        {() => <Cell style={{ width: WIDTH.PHONE }}>{member.userPhone}</Cell>}
+        {() => (
+          <Cell style={{ width: `${WIDTH.LOGIN_ID + (isB2C ? 5 : 0)}%` }}>
+            {member.loginId}
+          </Cell>
+        )}
       </Observer>
       <Observer>
-        {() => <Cell style={{ width: WIDTH.ROLE }}>{getMemberType()}</Cell>}
+        {() =>
+          isB2C ? null : (
+            <Cell style={{ width: `${WIDTH.TEAM}%` }}>{member.orgName}</Cell>
+          )
+        }
       </Observer>
-      <Cell style={{ width: WIDTH.BUTTON }}>
+      <Observer>
+        {() =>
+          isB2C ? null : (
+            <Cell style={{ width: `${WIDTH.JOB}%` }}>
+              {`${member.userJob || '-'}/${member.position || '-'}`}
+            </Cell>
+          )
+        }
+      </Observer>
+      <Observer>
+        {() => (
+          <Cell style={{ width: `${WIDTH.PHONE + (isB2C ? 5 : 0)}%` }}>
+            {member.userPhone}
+          </Cell>
+        )}
+      </Observer>
+      <Observer>
+        {() => (
+          <Cell style={{ width: `${WIDTH.ROLE + (isB2C ? 5 : 0)}%` }}>
+            {getMemberType()}
+          </Cell>
+        )}
+      </Observer>
+      <Cell style={{ width: `${WIDTH.BUTTON}%` }}>
         <Button
           type="solid"
           size="small"
@@ -121,11 +177,13 @@ const TableRow = ({ style, member }) => {
   );
 };
 
-const Table = () => {
+const Table = ({ roomId }) => {
   const { t } = useTranslation();
   const { roomSettingStore: store } = useStores();
+  const { spaceStore } = useCoreStores();
   const tableBodyRef = useRef(null);
   const [listHeight, setListHeight] = useState(0);
+  const isB2C = spaceStore.currentSpace.type === 'B2C';
 
   useEffect(() => {
     if (tableBodyRef.current) {
@@ -135,63 +193,84 @@ const Table = () => {
 
   const handleAllCheckChange = e => {
     if (e.target.checked) {
-      store.selectedMembers.replace(
+      store.selectedRoomMembers.replace(
         new Map(
-          store.filteredMembersWithoutMe.map(member => [member.id, member]),
+          store
+            .getFilteredMembers({ withoutMe: true })
+            .map(member => [member.id, member]),
         ),
       );
     } else {
-      store.selectedMembers.clear();
+      store
+        .getFilteredMembers({ withoutMe: true })
+        .map(member => store.selectedRoomMembers.delete(member.id));
     }
   };
 
   return (
     <>
       <TableHeader>
-        <HeaderCell style={{ width: WIDTH.CHECKBOX }}>
+        <HeaderCell style={{ width: `${WIDTH.CHECKBOX}%` }}>
           <Observer>
             {() => (
               <Checkbox
                 className="check-round"
-                checked={store.isAllChecked(true)}
+                checked={store.isAllChecked({ withoutMe: true })}
                 onChange={handleAllCheckChange}
               />
             )}
           </Observer>
         </HeaderCell>
-        <HeaderCell style={{ width: WIDTH.NICK }}>
+        <HeaderCell style={{ width: `${WIDTH.NICK + (isB2C ? 5 : 0)}%` }}>
           {t('CM_NICKNAME')}
         </HeaderCell>
-        <HeaderCell style={{ width: WIDTH.LOGIN_ID }}>{t('CM_ID')}</HeaderCell>
-        <HeaderCell style={{ width: WIDTH.TEAM }}>{t('CM_TEAM')}</HeaderCell>
-        <HeaderCell style={{ width: WIDTH.JOB }}>
-          {t('CM_TITLE_POSITION')}
+        <HeaderCell style={{ width: `${WIDTH.LOGIN_ID + (isB2C ? 5 : 0)}%` }}>
+          {t('CM_ID')}
         </HeaderCell>
-        <HeaderCell style={{ width: WIDTH.PHONE }}>
+        {isB2C ? null : (
+          <>
+            <HeaderCell style={{ width: `${WIDTH.TEAM}%` }}>
+              {t('CM_TEAM')}
+            </HeaderCell>
+            <HeaderCell style={{ width: `${WIDTH.JOB}%` }}>
+              {t('CM_TITLE_POSITION')}
+            </HeaderCell>
+          </>
+        )}
+        <HeaderCell style={{ width: `${WIDTH.PHONE + (isB2C ? 5 : 0)}%` }}>
           {t('CM_MOBILE_NUMBER')}
         </HeaderCell>
-        <HeaderCell style={{ width: WIDTH.ROLE }}>
+        <HeaderCell style={{ width: `${WIDTH.ROLE + (isB2C ? 5 : 0)}%` }}>
           {t('CM_SPACE_PERMISSION')}
         </HeaderCell>
-        <HeaderCell style={{ width: WIDTH.BUTTON }}>
+        <HeaderCell style={{ width: `${WIDTH.BUTTON}%` }}>
           {t('CM_ROOM_PERMISSION_TRANSFER')}
         </HeaderCell>
       </TableHeader>
       <TableBody ref={tableBodyRef}>
         <Observer>
-          {() => (
-            <List
-              height={listHeight}
-              itemCount={store.filteredMembers.length}
-              itemSize={remToPixel(3.19)}
-              width="100%"
-            >
-              {({ index, style }) => {
-                const member = store.filteredMembers[index];
-                return <TableRow style={style} member={member} />;
-              }}
-            </List>
-          )}
+          {() => {
+            const filteredMembers = store.getFilteredMembers({
+              withoutMe: false,
+            });
+            return (
+              <List
+                height={listHeight}
+                itemCount={filteredMembers.length}
+                itemSize={remToPixel(3.19)}
+                width="100%"
+              >
+                {({ index, style }) => (
+                  <TableRow
+                    style={style}
+                    member={filteredMembers[index]}
+                    isB2C={isB2C}
+                    roomId={roomId}
+                  />
+                )}
+              </List>
+            );
+          }}
         </Observer>
       </TableBody>
     </>
@@ -200,83 +279,64 @@ const Table = () => {
 
 const MemberPage = ({ roomId }) => {
   const { t } = useTranslation();
-  const { roomSettingStore: store } = useStores();
-  const history = useHistory();
-
-  // const handleSystemMessage = message => {
-  //   console.log('**** noti type : ', message.NOTI_TYPE);
-  //   if (message.SPACE_ID !== roomId) return;
-  //   switch (message.NOTI_TYPE) {
-  //     case 'addMember':
-  //     case 'removeMember':
-  //       store.fetchMembers({ roomId });
-
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
-  useEffect(() => {
-    store.fetchMembers({ roomId, summary: false });
-    // WWMS.addHandler('SYSTEM', 'room_setting', handleSystemMessage);
-
-    return () => {
-      store.members = [];
-      store.keyword = '';
-      store.toastMessage = '';
-      store.toastVisible = '';
-      store.selectedMembers.clear();
-      // WWMS.removeHandler('SYSTEM', 'room_setting');
-    };
-  }, [roomId]);
-
-  const handleTransferOk = async () => {
-    const userId = store.member.id;
-    await store.transferAdmin({ roomId, userId });
-    store.close('transfer');
-    history.push(`/s/${roomId}/talk`);
-  };
-
-  const handleTransferCancel = () => {
-    store.close('transfer');
-  };
-
-  const handleKickout = () => {
-    store.open('kickout');
-  };
+  const { roomSettingStore: store, uiStore } = useStores();
 
   const handleKickoutOK = async () => {
     try {
-      const userIdList = Array.from(store.selectedMembers.keys());
+      const userIdList = Array.from(store.selectedRoomMembers.keys());
       const result = await store.kickoutMembers({ roomId, userIdList });
       if (result) {
-        await store.fetchMembers({ roomId });
+        await Promise.all([
+          store.fetchMembers({ roomId }),
+          store.fetchBlockedMembers({ roomId }),
+        ]);
       }
 
-      store.selectedMembers.clear();
+      store.selectedRoomMembers.clear();
     } catch (err) {
       console.log('강퇴 / 밴 실패 : ', err);
     }
-    store.close('kickout');
+    uiStore.closeMessage();
   };
 
   const handleKickoutCancel = () => {
-    store.selectedMembers.clear();
-    store.close('kickout');
+    store.selectedRoomMembers.clear();
+    uiStore.closeMessage();
+  };
+
+  const handleKickout = () => {
+    uiStore.openMessage({
+      title: t('CM_ROOM_SETTING_FORCED_EXIT_01'),
+      subTitle: t('CM_ROOM_SETTING_FORCED_EXIT_02'),
+      type: 'error',
+      buttons: [
+        {
+          type: 'solid',
+          shape: 'round',
+          text: t('CM_LOGIN_POLICY_03'),
+          onClick: handleKickoutOK,
+        },
+        {
+          type: 'outlined',
+          shape: 'round',
+          text: t('CM_CANCEL'),
+          onClick: handleKickoutCancel,
+        },
+      ],
+    });
   };
 
   const handleInvite = () => {
-    store.open('invite');
+    store.inviteVisible = true;
   };
 
   const handleInviteOk = async () => {
     await store.fetchMembers({ roomId });
-    store.close('invite');
+    store.inviteVisible = false;
   };
 
   const handleInviteCancel = () => {
-    store.close('invite');
+    store.inviteVisible = false;
   };
 
   const handleSearchClear = () => {
@@ -287,6 +347,8 @@ const MemberPage = ({ roomId }) => {
     store.keyword = e.target.value;
   };
 
+  const themeContext = useContext(ThemeContext);
+
   return (
     <>
       <Observer>
@@ -296,58 +358,6 @@ const MemberPage = ({ roomId }) => {
             roomId={roomId}
             onInviteUsers={handleInviteOk}
             onCancel={handleInviteCancel}
-          />
-        )}
-      </Observer>
-
-      <Observer>
-        {() => (
-          <Message
-            visible={store.transferVisible}
-            title={t('CM_ROOM_SETTING_MANAGE_PEOPLE_05', {
-              name: store.member?.nick || '',
-            })}
-            subtitle={t('CM_ROOM_SETTING_MANAGE_PEOPLE_06')}
-            type="error"
-            btns={[
-              {
-                type: 'solid',
-                shape: 'round',
-                text: t('CM_LOGIN_POLICY_03'),
-                onClick: handleTransferOk,
-              },
-              {
-                type: 'outlined',
-                shape: 'round',
-                text: t('CM_CANCEL'),
-                onClick: handleTransferCancel,
-              },
-            ]}
-          />
-        )}
-      </Observer>
-
-      <Observer>
-        {() => (
-          <Message
-            visible={store.kickoutVisible}
-            title={t('CM_ROOM_SETTING_FORCED_EXIT_01')}
-            subtitle={t('CM_ROOM_SETTING_FORCED_EXIT_02')}
-            type="error"
-            btns={[
-              {
-                type: 'solid',
-                shape: 'round',
-                text: t('CM_LOGIN_POLICY_03'),
-                onClick: handleKickoutOK,
-              },
-              {
-                type: 'outlined',
-                shape: 'round',
-                text: t('CM_CANCEL'),
-                onClick: handleKickoutCancel,
-              },
-            ]}
           />
         )}
       </Observer>
@@ -366,6 +376,7 @@ const MemberPage = ({ roomId }) => {
               fontSize: '0.81rem',
               fontWeight: '600',
               margin: '0 1.25rem',
+              color: `${props => props.theme.TextMain}`,
             }}
           >
             <Observer>
@@ -373,9 +384,17 @@ const MemberPage = ({ roomId }) => {
                 <Trans
                   i18nKey="CM_ROOM_SETTING_MANAGE_PEOPLE_02"
                   components={{
-                    style: <span style={{ color: '#205855' }} />,
+                    style: (
+                      <span
+                        style={{
+                          color: themeContext.TextPoinGreen,
+                        }}
+                      />
+                    ),
                   }}
-                  values={{ num: store.filteredMembers.length }}
+                  values={{
+                    num: store.getFilteredMembers({ withoutMe: false }).length,
+                  }}
                 />
               )}
             </Observer>
@@ -383,8 +402,9 @@ const MemberPage = ({ roomId }) => {
           <Button
             type="solid"
             size="small"
-            style={{ backgroundColor: '#205855', marginRight: '0.5rem' }}
+            style={{ marginRight: '0.5rem' }}
             onClick={handleInvite}
+            className="color-green"
           >
             {`+ ${t('CM_ROOM_INVITE_USER')}`}
           </Button>
@@ -394,7 +414,7 @@ const MemberPage = ({ roomId }) => {
                 type="outlined"
                 size="small"
                 onClick={handleKickout}
-                disabled={!store.selectedMembers.size}
+                disabled={!store.selectedRoomMembers.size}
               >
                 {t('CM_REMOVE')}
               </Button>
@@ -413,7 +433,7 @@ const MemberPage = ({ roomId }) => {
         </div>
       </div>
 
-      <Table />
+      <Table roomId={roomId} />
     </>
   );
 };

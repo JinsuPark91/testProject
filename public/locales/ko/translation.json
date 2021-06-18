@@ -69,6 +69,7 @@
   "CM_SEARCH_NAME": "룸 이름, 구성원 검색",
   "CM_ADD_PHOTO_FRIENDS": "프렌즈 추가",
   "CM_B2C_LNB_EMPTY_PAGE_03": "{{name}}님, 환영합니다.\n룸을 만들어 보세요!",
+  "CM_B2C_LNB_EMPTY_PAGE_03_GUEST": "{{name}}님, 환영합니다.",
   "CM_B2C_LNB_EMPTY_PAGE_04": "구성원들과 Talk을 중심으로\n다양한 앱을 경험할 수 있습니다.",
   "CM_CREATE_ROOM": "룸 만들기",
   "CM_B2C_LNB_EMPTY_PAGE_06": "프렌즈 검색",
@@ -145,8 +146,8 @@
   "CM_SETTING_06": "기본 설정",
   "CM_SETTING_07": "언어 설정",
   "CM_SETTING_08": "그룹 설정",
-  "CM_SETTING_09": "시스템 설정 모드",
-  "CM_SETTING_10": "시스템 설정에 따라 라이트/다크 모드로 자동 전환됩니다.",
+  "CM_SETTING_09": "OS 설정 따라가기",
+  "CM_SETTING_10": "OS 설정에 따라 라이트/다크 모드로 자동 전환됩니다.",
   "CM_SETTING_11": "라이트 모드",
   "CM_SETTING_12": "다크 모드",
   "CM_SETTING_13": "어드민은 그룹 탈퇴를 할 수 없습니다.￦n그룹 탈퇴를 원하신다면, 어드민 페이지에서 다른 멤버에게 권한을 이양하신 후 다시 시도해 주시기 바랍니다.",
@@ -488,7 +489,8 @@
   "CM_OPEN_ROOM_HOME_13": "{{name}}\n룸 관리자의 참여 승인이 필요한 룸입니다.\n참여를 요청하시겠습니까?",
   "CM_OPEN_ROOM_HOME_14": "참여 요청",
   "CM_OPEN_ROOM_HOME_15": "{{name}} 오픈 룸 참여가 요청되었습니다.",
-  "CM_OPEN_ROOM_HOME_16": "{{name}}\n참여가 불가능한 오픈 룸입니다.\n룸 관리자의 참여 제한 해제가 필요합니다.",
+  "CM_OPEN_ROOM_HOME_16": "참여가 불가능한 오픈 룸입니다.",
+  "CM_OPEN_ROOM_HOME_17": "룸 관리자의 참여 제한 해제가 필요합니다.",
   "CM_ROOM_INVITE_BLOCK_ROOM_TOOLTIP": "{{num}}명의 참여가 요청되었습니다.",
   "CM_ROOM_INVITE_BLOCK": "참여 제한",
   "CM_PROFILE_POPUP_TOOLTIP_01": "확대",
@@ -505,5 +507,6 @@
   "TEST_REQUEST_OK": "요청",
   "CM_TEMP_MINI_CHAT": "미니 채팅",
   "TEMP_DELETE_FRIEND": "프렌즈 삭제",
-  "TEMP_GUEST_ACCESS_DENIED": "게스트는 사용할 수 없는 기능입니다."
+  "TEMP_GUEST_ACCESS_DENIED": "게스트는 사용할 수 없는 기능입니다.",
+  "CM_INVALID_ROOM": "존재하지 않는 룸 입니다."
 }

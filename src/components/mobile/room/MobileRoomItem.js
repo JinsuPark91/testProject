@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useCoreStores, MobileMessage } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
+import { useLongPress } from 'use-long-press';
 import Photos from '../../Photos';
 import { getMessageTime } from '../../../utils/TimeUtil';
 import CheckIcon from '../../../assets/check.svg';
-
+import { MobileAlarmIcon } from '../../Icons';
+import RoomModal from './MobileRoomModal';
+import { Observer } from 'mobx-react';
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
@@ -106,6 +109,13 @@ const CheckboxLabel = styled.label`
   border-radius: 50%;
   margin: 0;
 `;
+
+const TitleIconWrapper = styled.div`
+  display: flex;
+  flex: 0 0 0.81rem;
+  padding: 0 0.15rem;
+`;
+
 const MobileRoomItem = ({
   index,
   roomInfo,
@@ -114,21 +124,20 @@ const MobileRoomItem = ({
 }) => {
   const [isMessageVisible, setIsMessageVisible] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [isRoomModalVisible, setIsRoomModalVisible] = useState(false);
   const history = useHistory();
   const { userStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
   const isMyRoom = roomInfo.type === 'WKS0001';
   const isDMRoom = roomInfo.isDirectMsg;
+  const { isBotRoom } = roomInfo;
 
   const getRoomPhoto = () => {
     let roomPhoto = null;
-    if (isMyRoom) {
-      roomPhoto = [userStore.getProfilePhotoURL(myUserId, 'small')];
-    } else {
+    if (isMyRoom) roomPhoto = [userStore.getProfilePhotoURL(myUserId, 'small')];
+    else {
       let userIds = roomInfo.memberIdListString.split(',').splice(0, 4);
-      if (isDMRoom) {
-        userIds = userIds.filter(userId => userId !== myUserId);
-      }
+      if (isDMRoom) userIds = userIds.filter(userId => userId !== myUserId);
       roomPhoto = userIds.map(userId =>
         userStore.getProfilePhotoURL(userId, 'small'),
       );
@@ -144,9 +153,8 @@ const MobileRoomItem = ({
     history.push(`/talk/${roomInfo?.id}`);
   };
 
-  const handleClickCheckBox = e => {
-    e.stopPropagation();
-  };
+  const handleClickCheckBox = e => e.stopPropagation();
+
   const handleCheckDelete = () => {
     const isAdmin = roomInfo.adminId === myUserId;
     const isAlone = roomInfo.userCount === 1;
@@ -158,9 +166,22 @@ const MobileRoomItem = ({
     handleRoomIdList(roomInfo.id);
   };
 
+  const handleOpenRoomModal = useCallback(() => {
+    if (isMyRoom) return;
+    setIsRoomModalVisible(true);
+  }, [isMyRoom]);
+  const handleCloseModal = useCallback(() => {
+    setIsRoomModalVisible(false);
+  }, []);
+
+  const bind = useLongPress(handleOpenRoomModal, {
+    threshold: 300,
+    captureEvent: true,
+  });
+
   return (
     <>
-      <Wrapper onClick={handleClickRoom}>
+      <Wrapper {...bind} onClick={handleClickRoom}>
         {getRoomPhoto()}
         <Content>
           <Header>
@@ -169,6 +190,19 @@ const MobileRoomItem = ({
                 ? userStore.myProfile.displayName
                 : roomInfo.customName || roomInfo.name}
             </Name>
+            <Observer>
+              {() =>
+                roomInfo.isAlarmUsed ? null : (
+                  <TitleIconWrapper>
+                    <MobileAlarmIcon
+                      width={0.8}
+                      height={0.8}
+                      color={'#e2dfdc'}
+                    />
+                  </TitleIconWrapper>
+                )
+              }
+            </Observer>
             {!isMyRoom && !isDMRoom && (
               <UserCount>{roomInfo.userCount}</UserCount>
             )}
@@ -190,7 +224,7 @@ const MobileRoomItem = ({
           </Bottom>
         </Content>
         <Side>
-          {!isMyRoom && roomEditMode && (
+          {!isMyRoom && !isBotRoom && roomEditMode && (
             <CheckBox onClick={handleClickCheckBox}>
               <CheckboxInput
                 type="checkbox"
@@ -204,19 +238,24 @@ const MobileRoomItem = ({
           )}
         </Side>
       </Wrapper>
-      <MobileMessage
-        visible={isMessageVisible}
-        title="룸 관리자인 룸은 나갈 수 없습니다."
-        type="warning"
-        btns={[
-          {
-            type: 'outlined',
-            shape: 'round',
-            text: '확인',
-            onClick: () => setIsMessageVisible(false),
-          },
-        ]}
-      />
+      {isMessageVisible && (
+        <MobileMessage
+          visible={isMessageVisible}
+          title="룸 관리자인 룸은 나갈 수 없습니다."
+          type="warning"
+          btns={[
+            {
+              type: 'outlined',
+              shape: 'round',
+              text: '확인',
+              onClick: () => setIsMessageVisible(false),
+            },
+          ]}
+        />
+      )}
+      {isRoomModalVisible ? (
+        <RoomModal roomInfo={roomInfo} onCancel={handleCloseModal} />
+      ) : null}
     </>
   );
 };

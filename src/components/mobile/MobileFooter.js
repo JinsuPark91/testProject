@@ -7,7 +7,6 @@ import { Tabs } from 'antd';
 import { ChattingIcon } from '../Icons';
 import { FriendsIcon } from './Icon';
 import { useStores } from '../../stores';
-import { handleCheckNewFriend } from '../../utils/FriendsUtil';
 
 const Wrapper = styled.div`
   position: fixed;
@@ -17,7 +16,7 @@ const Wrapper = styled.div`
 `;
 
 const NewBadge = styled.div`
-  display: ${({ isVisible }) => (isVisible ? 'flex' : 'none')};
+  display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
@@ -90,18 +89,15 @@ const { TabPane } = FooterTab;
 
 const MobileFooter = () => {
   const { uiStore } = useStores();
+  const { userStore } = useCoreStores();
   const history = useHistory();
-  const { userStore, friendStore, roomStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
 
-  const handleSelectTab = key => {
-    history.push(`/${key}/${myUserId}`);
-  };
+  const handleSelectTab = key => history.push(`/${key}/${myUserId}`);
 
   const newBadgeView = number => {
-    return (
-      <NewBadge isVisible={number > 0}>{number > 99 ? '99+' : number}</NewBadge>
-    );
+    if (!number || number <= 0) return null;
+    return <NewBadge>{number > 99 ? '99+' : number}</NewBadge>;
   };
 
   return (
@@ -117,10 +113,7 @@ const MobileFooter = () => {
             <IconWrapper className="icon-wrapper">
               <Observer>
                 {() => {
-                  const newFriendNum = friendStore.friendInfoList?.filter(
-                    elem => handleCheckNewFriend(elem),
-                  ).length;
-                  return newBadgeView(newFriendNum);
+                  return newBadgeView(uiStore.newFriendCount);
                 }}
               </Observer>
               <FriendsIcon width={1.75} height={1.75} />
@@ -133,15 +126,6 @@ const MobileFooter = () => {
             <IconWrapper className="icon-wrapper">
               <Observer>
                 {() => {
-                  uiStore.totalUnreadCount = roomStore
-                    .getRoomArray()
-                    .filter(roomInfo => roomInfo.isVisible)
-                    .reduce(
-                      (accumulator, roomInfo) =>
-                        accumulator +
-                        parseInt(roomInfo.metadata.count ?? '0', 10),
-                      0,
-                    );
                   return newBadgeView(uiStore.totalUnreadCount);
                 }}
               </Observer>
@@ -162,4 +146,4 @@ const MobileFooter = () => {
   );
 };
 
-export default MobileFooter;
+export default React.memo(MobileFooter);

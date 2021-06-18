@@ -1,13 +1,14 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
-import { Modal } from 'antd';
-import { useCoreStores, Message, logEvent } from 'teespace-core';
-import { Observer } from 'mobx-react';
+import styled, { ThemeContext } from 'styled-components';
+// import { Modal } from 'antd';
+import { useCoreStores, logEvent, Modal } from 'teespace-core';
+import { Observer, useLocalStore } from 'mobx-react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useTranslation, Trans } from 'react-i18next';
+import { transaction } from 'mobx';
 import Photos from '../Photos';
 import NextArrowIcon from '../../assets/arrow_right_line.svg';
 import PrevArrowIcon from '../../assets/arrow_left_line.svg';
@@ -20,10 +21,11 @@ const RoomButton = ({ roomInfo, onClick, disabled }) => {
   const handleClick = () => {
     onClick(roomInfo);
   };
+  const themeContext = useContext(ThemeContext);
 
   return (
     <RoomJoinBtn onClick={handleClick} disabled={disabled}>
-      <OpenChatIcon width={1} height={1} color="#7B7671" />
+      <OpenChatIcon width={1} height={1} color={themeContext.IconNormal} />
     </RoomJoinBtn>
   );
 };
@@ -55,34 +57,16 @@ const OpenRoomItem = ({ roomInfo, photo, onClick, onSettingClick }) => {
 };
 
 function OpenRoomHome({ visible, onCancel }) {
+  const themeContext = useContext(ThemeContext);
+
   const { t } = useTranslation();
   const { uiStore } = useStores();
 
-  const initialStates = {
+  const store = useLocalStore(() => ({
     createModalVisible: false,
-    enterModalVisible: false,
-    enterFailModalVisible: false,
-    requestModalVisible: false,
     keyword: '',
     currentOpenRoom: null,
-  };
-
-  const [createModalVisible, setCreateModalVisibie] = useState(
-    initialStates.createModalVisible,
-  );
-  const [enterModalVisible, setEnterModalVisible] = useState(
-    initialStates.enterModalVisible,
-  );
-  const [requestModalVisible, setRequestModalVisible] = useState(
-    initialStates.requestModalVisible,
-  );
-  const [keyword, setKeyword] = useState(initialStates.keyword);
-  const [currentOpenRoom, setCurrentOpenRoom] = useState(
-    initialStates.currentOpenRoom,
-  );
-  const [enterFailModalVisible, setEnterFailModalVisible] = useState(
-    initialStates.enterFailModalVisible,
-  );
+  }));
 
   const { roomStore, userStore } = useCoreStores();
   const history = useHistory();
@@ -95,70 +79,153 @@ function OpenRoomHome({ visible, onCancel }) {
         return res;
       };
 
-      // const fetchRecommandOpenRoomList = async () => {
-      //   const res = await roomStore.fetchRecommandRoomList(
-      //     userStore.myProfile.id,
-      //   );
-      //   return res;
-      // };
-
       fetchOpenRoomList();
-      // Promise.all([fetchOpenRoomList(), fetchRecommandOpenRoomList()]);
+    } else {
+      transaction(() => {
+        store.createModalVisible = false;
+        store.keyword = '';
+        store.currentOpenRoom = null;
+      });
     }
   }, [visible]);
 
-  const clearState = () => {
-    setCreateModalVisibie(initialStates.createModalVisible);
-    setKeyword(initialStates.keyword);
-    setEnterModalVisible(initialStates.enterModalVisible);
-    setRequestModalVisible(initialStates.requestModalVisible);
-    setCurrentOpenRoom(initialStates.currentOpenRoom);
-  };
-
   const closeHomeModal = () => {
-    clearState();
     onCancel();
   };
 
-  const openCreateModel = () => {
-    setCreateModalVisibie(true);
+  const closeCreateModal = () => {
+    store.createModalVisible = false;
   };
 
-  const closeCreateModal = () => {
-    setCreateModalVisibie(false);
+  const openFailRoomEnter = () => {
+    uiStore.openMessage({
+      title: t('CM_OPEN_ROOM_HOME_16'),
+      subTitle: t('CM_OPEN_ROOM_HOME_17'),
+      buttons: [
+        {
+          type: 'solid',
+          text: t('CM_LOGIN_POLICY_03'),
+          onClick: () => {
+            uiStore.closeMessage();
+          },
+        },
+      ],
+    });
+  };
+
+  const handleConfirmEnter = async () => {
+    const myUserId = userStore.myProfile.id;
+    try {
+      const res = await roomStore.enterRoom({
+        myUserId,
+        roomId: store.currentOpenRoom.id,
+      });
+
+      if (!res.result) {
+        openFailRoomEnter();
+      } else if (res?.roomId) {
+        history.push(`/s/${store.currentOpenRoom.id}/talk`);
+        uiStore.closeMessage();
+        closeHomeModal();
+      }
+      logEvent('room', 'clickEnterOpenRoomBtn');
+    } catch (err) {
+      console.error('ROOM ENTER ERROR : ', err);
+      openFailRoomEnter();
+    }
   };
 
   const openEnterModal = () => {
-    setEnterModalVisible(true);
+    uiStore.openMessage({
+      title: store.currentOpenRoom.name,
+      subTitle: t('CM_OPEN_ROOM_HOME_06'),
+      type: 'custom',
+      customBadge: (
+        <CustomBadge>
+          <Photos
+            srcList={roomStore.getRoomPhoto(store.currentOpenRoom.id)}
+            defaultDiameter="2.26"
+          />
+        </CustomBadge>
+      ),
+      buttons: [
+        {
+          type: 'solid',
+          text: t('CM_OPEN_ROOM_HOME_07'),
+          onClick: handleConfirmEnter,
+        },
+        {
+          type: 'outlined',
+          text: t('CM_CANCEL'),
+          onClick: () => {
+            uiStore.closeMessage();
+          },
+        },
+      ],
+    });
   };
 
-  const closeEnterModal = () => {
-    setEnterModalVisible(false);
+  const handleRequestOK = async () => {
+    try {
+      await roomStore.requestEnterRoom({
+        roomId: store.currentOpenRoom.id,
+      });
+    } catch (err) {
+      console.log('입장 요청 에러');
+    }
+
+    uiStore.closeMessage();
+    closeHomeModal();
   };
 
   const openRequestModal = () => {
-    setRequestModalVisible(true);
+    uiStore.openMessage({
+      title: store.currentOpenRoom.name,
+      subTitle: t('TEST_REQUEST'),
+      type: 'custom',
+      customBadge: (
+        <CustomBadge>
+          <Photos
+            srcList={roomStore.getRoomPhoto(store.currentOpenRoom.id)}
+            defaultDiameter="2.26"
+          />
+        </CustomBadge>
+      ),
+      buttons: [
+        {
+          type: 'solid',
+          text: t('TEST_REQUEST_OK'),
+          onClick: handleRequestOK,
+        },
+        {
+          type: 'outlined',
+          text: t('CM_CANCEL'),
+          onClick: () => {
+            uiStore.closeMessage();
+          },
+        },
+      ],
+    });
   };
 
-  const closeRequestModal = () => {
-    setRequestModalVisible(false);
+  const handleCreateRoom = () => {
+    store.createModalVisible = true;
   };
-
-  const handleCreateRoom = useCallback(() => {
-    openCreateModel();
-  }, []);
 
   const handleKeywordChange = value => {
-    setKeyword(value);
+    store.keyword = value;
   };
 
   const handleKeywordClear = () => {
-    setKeyword(initialStates.keyword);
+    store.keyword = '';
   };
 
   const handleJoin = async roomInfo => {
-    setCurrentOpenRoom(roomInfo);
-    if (roomInfo.isJoined) {
+    store.currentOpenRoom = roomInfo;
+
+    if (roomInfo.isBanned) {
+      openFailRoomEnter();
+    } else if (roomInfo.isJoined) {
       history.push(`/s/${roomInfo.id}/talk`);
       closeHomeModal();
     } else if (roomInfo.isJoinable) {
@@ -178,14 +245,6 @@ function OpenRoomHome({ visible, onCancel }) {
   const handleSettingClick = roomInfo => {
     closeHomeModal();
     history.push(`/s/${roomInfo.id}/setting`);
-  };
-
-  const getUserPhotos = memberString => {
-    return memberString
-      .split(',')
-      .filter(userId => userId !== userStore.myProfile.id)
-      .splice(0, 4)
-      .map(userId => `${userStore.getProfilePhotoURL(userId, 'small')}`);
   };
 
   // Public Room
@@ -228,57 +287,6 @@ function OpenRoomHome({ visible, onCancel }) {
     closeCreateModal();
   };
 
-  const handleConfirmEnter = async () => {
-    const myUserId = userStore.myProfile.id;
-
-    const failRoomEnter = () => {
-      setEnterFailModalVisible(true);
-    };
-
-    try {
-      const res = await roomStore.enterRoom({
-        myUserId,
-        roomId: currentOpenRoom.id,
-      });
-
-      if (!res.result) {
-        failRoomEnter();
-      } else if (res?.roomId) {
-        history.push(`/s/${currentOpenRoom.id}/talk`);
-        closeEnterModal();
-        closeHomeModal();
-      }
-      logEvent('room', 'clickEnterOpenRoomBtn');
-    } catch (err) {
-      console.error('ROOM ENTER ERROR : ', err);
-      failRoomEnter();
-    }
-  };
-
-  const handleCancelEnter = () => {
-    closeEnterModal();
-  };
-
-  const handleRequestOK = async () => {
-    const myUserId = userStore.myProfile.id;
-
-    try {
-      await roomStore.requestEnterRoom({
-        myUserId,
-        roomId: currentOpenRoom.id,
-      });
-    } catch (err) {
-      console.log('입장 요청 에러');
-    }
-
-    closeRequestModal();
-    closeHomeModal();
-  };
-
-  const handleRequestCancel = () => {
-    closeRequestModal();
-  };
-
   const getRoomItems = searchKeyword => {
     const rooms = roomStore
       .getOpenRoomArray()
@@ -296,7 +304,7 @@ function OpenRoomHome({ visible, onCancel }) {
           <RoomListItem key={roomInfo.id}>
             <div style={{ flex: '0 0 2.26rem', marginRight: '0.63rem' }}>
               <Photos
-                srcList={getUserPhotos(roomInfo.memberIdListString)}
+                srcList={roomStore.getRoomPhoto(roomInfo.id)}
                 defaultDiameter="1.75"
               />
             </div>
@@ -338,7 +346,7 @@ function OpenRoomHome({ visible, onCancel }) {
             components={{
               style: <SearchTitle />,
             }}
-            values={{ result: keyword }}
+            values={{ result: store.keyword }}
           />
         </SearchSubText>
       </RoomSearchForm>
@@ -347,94 +355,23 @@ function OpenRoomHome({ visible, onCancel }) {
 
   return (
     <>
-      {currentOpenRoom && (
-        <>
-          <Message
-            visible={requestModalVisible}
-            title={currentOpenRoom.name}
-            subtitle={t('TEST_REQUEST')}
-            type="custom"
-            customBadge={
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Photos
-                  srcList={getUserPhotos(currentOpenRoom.memberIdListString)}
-                  defaultDiameter="2.26"
-                />
-              </div>
-            }
-            btns={[
-              {
-                type: 'solid',
-                text: t('TEST_REQUEST_OK'),
-                onClick: handleRequestOK,
-              },
-              {
-                type: 'outlined',
-                text: t('CM_CANCEL'),
-                onClick: handleRequestCancel,
-              },
-            ]}
+      <Observer>
+        {() => (
+          <CreatePublicRoomDialog
+            visible={store.createModalVisible}
+            onOk={handleCreatePublicRoomOk}
+            onCancel={handleCreatePublicRoomCancel}
           />
-          <Message
-            visible={enterModalVisible}
-            title={currentOpenRoom.name}
-            subtitle={t('CM_OPEN_ROOM_HOME_06')}
-            type="custom"
-            customBadge={
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Photos
-                  srcList={getUserPhotos(currentOpenRoom.memberIdListString)}
-                  defaultDiameter="2.26"
-                />
-              </div>
-            }
-            btns={[
-              {
-                type: 'solid',
-                text: t('CM_OPEN_ROOM_HOME_07'),
-                onClick: handleConfirmEnter,
-              },
-              {
-                type: 'outlined',
-                text: t('CM_CANCEL'),
-                onClick: handleCancelEnter,
-              },
-            ]}
-          />
-          <Message
-            visible={enterFailModalVisible}
-            title="참여가 불가능한 오픈 룸입니다."
-            subtitle="룸 관리자의 참여 제한 해제가 필요합니다."
-            btns={[
-              {
-                type: 'solid',
-                text: '확인',
-                onClick: () => {
-                  setEnterFailModalVisible(false);
-                },
-              },
-            ]}
-          />
-        </>
-      )}
-      <CreatePublicRoomDialog
-        visible={createModalVisible}
-        onOk={handleCreatePublicRoomOk}
-        onCancel={handleCreatePublicRoomCancel}
-      />
-      <StyledModal
+        )}
+      </Observer>
+
+      <Modal
         title={t('CM_OPEN_ROOM_HOME_01')}
         visible={visible}
         mask={false}
-        footer={false}
+        footer={null}
         onCancel={closeHomeModal}
-        width="100%"
         destroyOnClose
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          margin: 'unset',
-        }}
       >
         <OpenHomeForm>
           <Search
@@ -444,139 +381,133 @@ function OpenRoomHome({ visible, onCancel }) {
             searchIconColor={{ active: '#48423B', default: '#48423B' }}
             type="border"
           />
-          {!keyword ? (
-            <>
-              {isGuest ? null : (
-                <RoomListBox>
-                  <Observer>
-                    {() => {
-                      const openRooms = roomStore
-                        .getOpenRoomArray()
-                        .filter(
-                          roomInfo =>
-                            roomInfo.adminId === userStore.myProfile.id &&
-                            roomInfo.isJoined,
-                        );
+          <Observer>
+            {() =>
+              !store.keyword ? (
+                <>
+                  {isGuest ? null : (
+                    <RoomListBox>
+                      <Observer>
+                        {() => {
+                          const openRooms = roomStore
+                            .getOpenRoomArray()
+                            .filter(
+                              roomInfo =>
+                                roomInfo.adminId === userStore.myProfile.id &&
+                                roomInfo.isJoined,
+                            );
 
-                      const remain = (openRooms.length + 1) % 4;
-                      const dummyArray = Array.from(
-                        Array(remain ? 4 - remain : 0).keys(),
-                      );
+                          const remain = (openRooms.length + 1) % 4;
+                          const dummyArray = Array.from(
+                            Array(remain ? 4 - remain : 0).keys(),
+                          );
 
-                      return (
-                        <>
-                          <RoomTitle>
-                            <Trans
-                              i18nKey="CM_OPEN_ROOM_HOME_03"
-                              components={{
-                                style: <RoomCount />,
-                              }}
-                              values={{ num: openRooms.length }}
-                            />
-                          </RoomTitle>
-                          <StyledSlider
-                            arrows
-                            initialSlide={0}
-                            slidesToShow={4}
-                            slidesToScroll={4}
-                            infinite={false}
-                          >
-                            <ItemAddBtn onClick={handleCreateRoom}>
-                              <span>{t('CM_CREATE_OPEN_ROOM')}</span>
-                              <AddIcon
-                                width="1.25"
-                                height="1.25"
-                                color="#7B7671"
-                              />
-                            </ItemAddBtn>
-                            {openRooms.map(openRoom => {
-                              return (
-                                <OpenRoomItem
-                                  key={openRoom.id}
-                                  roomInfo={openRoom}
-                                  photo={getUserPhotos(
-                                    openRoom.memberIdListString,
-                                  )}
-                                  onClick={handleRoomClick}
-                                  onSettingClick={handleSettingClick}
+                          return (
+                            <>
+                              <RoomTitle>
+                                <Trans
+                                  i18nKey="CM_OPEN_ROOM_HOME_03"
+                                  components={{
+                                    style: <RoomCount />,
+                                  }}
+                                  values={{ num: openRooms.length }}
                                 />
-                              );
-                            })}
-                            {dummyArray.map(key => {
-                              return <div key={key} />;
-                            })}
-                          </StyledSlider>
-                        </>
-                      );
-                    }}
-                  </Observer>
-                </RoomListBox>
-              )}
-              <RecommendRoomListBox>
-                <RoomOpenTitle>{t('CM_OPEN_ROOM_HOME_04')}</RoomOpenTitle>
-                <Observer>
-                  {() => (
-                    <RoomList>
-                      {roomStore
-                        .getOpenRoomArray()
-                        .filter(roomInfo => !roomInfo.isJoined)
-                        .map(roomInfo => (
-                          <RoomListItem key={roomInfo.id}>
-                            <OpenRoomPhotos
-                              srcList={getUserPhotos(
-                                roomInfo.memberIdListString,
-                              )}
-                              defaultDiameter="2.26"
-                            />
-                            <RecomRoomTitle
-                              style={{
-                                flex: 1,
-                                marginLeft: '0.38rem',
-                                whiteSpace: 'nowrap',
-                              }}
-                            >
-                              {roomInfo.customName || roomInfo.name}
-                            </RecomRoomTitle>
-                            <JoinedText>
-                              {roomInfo.isJoined
-                                ? t('CM_OPEN_ROOM_HOME_10')
-                                : ''}
-                            </JoinedText>
-                            <RoomButton
-                              roomInfo={roomInfo}
-                              onClick={handleJoin}
-                              disabled={roomInfo.isJoined}
-                            />
-                          </RoomListItem>
-                        ))}
-                    </RoomList>
+                              </RoomTitle>
+                              <StyledSlider
+                                arrows
+                                initialSlide={0}
+                                slidesToShow={4}
+                                slidesToScroll={4}
+                                infinite={false}
+                              >
+                                <ItemAddBtn onClick={handleCreateRoom}>
+                                  <span>{t('CM_CREATE_OPEN_ROOM')}</span>
+                                  <AddIcon
+                                    width="1.25"
+                                    height="1.25"
+                                    color={themeContext.IconNormal}
+                                  />
+                                </ItemAddBtn>
+                                {openRooms.map(openRoom => {
+                                  return (
+                                    <OpenRoomItem
+                                      key={openRoom.id}
+                                      roomInfo={openRoom}
+                                      photo={roomStore.getRoomPhoto(
+                                        openRoom.id,
+                                      )}
+                                      onClick={handleRoomClick}
+                                      onSettingClick={handleSettingClick}
+                                    />
+                                  );
+                                })}
+                                {dummyArray.map(key => {
+                                  return <div key={key} />;
+                                })}
+                              </StyledSlider>
+                            </>
+                          );
+                        }}
+                      </Observer>
+                    </RoomListBox>
                   )}
-                </Observer>
-              </RecommendRoomListBox>
-            </>
-          ) : (
-            <RecommendRoomListBox>
-              <RoomList>{getRoomItems(keyword)}</RoomList>
-            </RecommendRoomListBox>
-          )}
+                  <RecommendRoomListBox>
+                    <RoomOpenTitle>{t('CM_OPEN_ROOM_HOME_04')}</RoomOpenTitle>
+                    <Observer>
+                      {() => (
+                        <RoomList>
+                          {roomStore
+                            .getOpenRoomArray()
+                            .filter(roomInfo => !roomInfo.isJoined)
+                            .map(roomInfo => (
+                              <RoomListItem key={roomInfo.id}>
+                                <OpenRoomPhotos
+                                  srcList={roomStore.getRoomPhoto(roomInfo.id)}
+                                  defaultDiameter="2.26"
+                                />
+                                <RecomRoomTitle
+                                  style={{
+                                    flex: 1,
+                                    marginLeft: '0.38rem',
+                                    whiteSpace: 'nowrap',
+                                  }}
+                                >
+                                  {roomInfo.customName || roomInfo.name}
+                                </RecomRoomTitle>
+                                <JoinedText>
+                                  {roomInfo.isJoined
+                                    ? t('CM_OPEN_ROOM_HOME_10')
+                                    : ''}
+                                </JoinedText>
+                                <RoomButton
+                                  roomInfo={roomInfo}
+                                  onClick={handleJoin}
+                                  disabled={roomInfo.isJoined}
+                                />
+                              </RoomListItem>
+                            ))}
+                        </RoomList>
+                      )}
+                    </Observer>
+                  </RecommendRoomListBox>
+                </>
+              ) : (
+                <RecommendRoomListBox>
+                  <RoomList>{getRoomItems(store.keyword)}</RoomList>
+                </RecommendRoomListBox>
+              )
+            }
+          </Observer>
         </OpenHomeForm>
-      </StyledModal>
+      </Modal>
     </>
   );
 }
 
-const StyledModal = styled(Modal)`
-  .ant-modal-body {
-    padding: 0;
-  }
-
-  .ant-modal-content {
-    width: 24.38rem;
-  }
-`;
 const OpenHomeForm = styled.div`
   display: flex;
   flex-direction: column;
+  width: 24.38rem;
   height: 29.75rem;
   padding: 0.63rem 0.94rem;
 `;
@@ -598,7 +529,7 @@ const OpenRoomName = styled.div`
 
 const RoomListBox = styled.div`
   padding: 0.94rem 0 0.75rem;
-  border-bottom: 1px solid #eeedeb;
+  border-bottom: 1px solid ${props => props.theme.LineSub};
 `;
 
 const RecommendRoomListBox = styled.div`
@@ -626,7 +557,7 @@ const RoomTitle = styled.p`
   font-size: 0.75rem;
   font-weight: 500;
   line-height: 1.13rem;
-  color: #000;
+  color: ${props => props.theme.TextMain};
 `;
 
 const RoomOpenTitle = styled(RoomTitle)`
@@ -634,10 +565,9 @@ const RoomOpenTitle = styled(RoomTitle)`
 `;
 
 const RoomCount = styled.span`
-  color: #000;
-  opacity: 0.5;
-  font-size: 0.75rem;
   margin-left: 0.5rem;
+  font-size: 0.75rem;
+  color: ${props => props.theme.TextSub2};
 `;
 
 const ItemAddBtn = styled.button`
@@ -646,7 +576,7 @@ const ItemAddBtn = styled.button`
   height: 3.75rem;
   margin: 0 auto;
   border-radius: 50%;
-  background-color: #f7f4ef;
+  background-color: ${props => props.theme.SubStateNormal};
   border: none;
   vertical-align: top;
   font-size: 0;
@@ -672,23 +602,22 @@ const RoomSearchForm = styled.div`
 `;
 const RecomRoomTitle = styled.p`
   font-size: 0.81rem;
-  color: #000000;
-  letter-spacing: 0;
+  color: ${props => props.theme.TextMain};
   overflow-x: hidden;
   text-overflow: ellipsis;
 `;
 
 const AdminText = styled.p`
-  color: #696969;
   overflow-x: hidden;
   text-overflow: ellipsis;
   font-size: 0.63rem;
+  color: #696969;
 `;
 
 const SearchTitle = styled.p`
   font-weight: 500;
   font-size: 0.94rem;
-  color: #000000;
+  color: ${props => props.theme.TextMain};
   letter-spacing: 0;
   text-align: center;
   margin-bottom: 0.63rem;
@@ -697,7 +626,7 @@ const SearchTitle = styled.p`
 const SearchSubText = styled.p`
   font-weight: 400;
   font-size: 0.75rem;
-  color: #696969;
+  color: ${props => props.theme.TextMain};
   letter-spacing: 0;
   text-align: center;
 `;
@@ -712,7 +641,7 @@ const RoomJoinBtn = styled.button`
   border-radius: 0.25rem;
 
   &:hover {
-    background-color: #f2efec;
+    background-color: ${props => props.theme.StateDark};
   }
 
   span {
@@ -732,12 +661,12 @@ const IconWrapper = styled.div`
   right: -0.375rem;
   width: 1.25rem;
   height: 1.25rem;
-  background: #efefef;
+  background: ${props => props.theme.SubStateNormal};
   border-radius: 50%;
   z-index: 1;
 
   &:hover {
-    background: #ccc;
+    background: ${props => props.theme.SubStateBright};
   }
 `;
 
@@ -784,6 +713,11 @@ const StyledSlider = styled(Slider)`
 
 const OpenRoomPhotos = styled(Photos)`
   cursor: default;
+`;
+
+const CustomBadge = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 export default OpenRoomHome;

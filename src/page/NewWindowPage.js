@@ -5,16 +5,24 @@ import { App as MeetingApp } from 'teespace-meeting-app';
 import { EventBus, useCoreStores, ProfileInfoModal } from 'teespace-core';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import { Observer } from 'mobx-react';
 import LoadingImg from '../assets/WAPL_Loading.gif';
 import RoomInquiryModal from '../components/Rooms/RoomInquiryModal';
 import Photos from '../components/Photos';
 import { SearchIcon } from '../components/Icons';
 import WindowManager from '../components/common/WindowManager';
 import { useStores } from '../stores';
+import { isDarkMode } from '../utils/GeneralUtil';
 
 const NewWindowPage = () => {
   const { resourceId: roomId, mainApp } = useParams();
-  const { roomStore, userStore, spaceStore, friendStore } = useCoreStores();
+  const {
+    roomStore,
+    userStore,
+    spaceStore,
+    friendStore,
+    themeStore,
+  } = useCoreStores();
   const { i18n } = useTranslation();
   const myUserId = userStore.myProfile.id;
 
@@ -39,8 +47,20 @@ const NewWindowPage = () => {
       );
 
       // 프렌드 리스트를 불러오자
-      await friendStore.fetchFriends({ myUserId }),
-        setChannelId(channelInfo.id);
+      await friendStore.fetchFriends({ myUserId });
+      setChannelId(channelInfo.id);
+
+      await userStore.getMyDomainSetting();
+      if (!userStore.myProfile.language) {
+        await userStore.updateMyDomainSetting({
+          language: i18n.language,
+        });
+      } else i18n.changeLanguage(userStore.myProfile.language);
+
+      const platformTheme = userStore.myProfile.theme;
+      if (platformTheme && platformTheme !== 'system')
+        themeStore.setTheme(platformTheme);
+      else if (isDarkMode()) themeStore.setTheme('dark');
     } catch (err) {
       console.error('Mini Talk Error : ', err);
     }
@@ -105,56 +125,21 @@ export default NewWindowPage;
 const Header = ({ roomId, onSearch }) => {
   const { uiStore } = useStores();
   const { roomStore, userStore } = useCoreStores();
-  const [info, setInfo] = useState({
-    name: '',
-    srcs: [],
-    userCount: 0,
-    memberIdListString: '',
-    isDMRoom: false,
-    isMyRoom: false,
-  });
   const [modalVisible, setModalVisible] = useState(false);
+
+  const getRoom = () => {
+    return roomStore.getRoom(roomId);
+  };
 
   const getRoomName = roomInfo => {
     const { type, customName, name } = roomInfo;
     switch (type) {
       case 'WKS0001':
-        return userStore.myProfile.nick || userStore.myProfile.name;
+        return userStore.myProfile.displayName;
       default:
         return customName || name;
     }
   };
-
-  const getSrcs = roomInfo => {
-    const { isDirectMsg: isDMRoom, memberIdListString } = roomInfo;
-    let userIds = memberIdListString.split(',').splice(0, 4);
-    if (isDMRoom)
-      userIds = userIds.filter(userId => userId !== userStore.myProfile.id);
-
-    return userIds.map(userId => userStore.getProfilePhotoURL(userId, 'small'));
-  };
-
-  useEffect(() => {
-    if (roomId) {
-      const targetRoomInfo = roomStore.getRoom(roomId);
-      const {
-        isDirectMsg: isDMRoom,
-        type,
-        userCount,
-        memberIdListString,
-      } = targetRoomInfo;
-      const name = getRoomName(targetRoomInfo);
-      const srcs = getSrcs(targetRoomInfo);
-      setInfo({
-        name,
-        srcs,
-        userCount,
-        memberIdListString,
-        isDMRoom,
-        isMyRoom: type === 'WKS0001',
-      });
-    }
-  }, [roomId]);
 
   const handlePhotoClick = () => {
     setModalVisible(true);
@@ -165,6 +150,8 @@ const Header = ({ roomId, onSearch }) => {
   };
 
   const getModal = () => {
+    const info = getRoom();
+    if (!info) return null;
     if (info.isMyRoom || info.userCount === 2) {
       const userIds = info.isMyRoom
         ? userStore.myProfile.id
@@ -204,12 +191,40 @@ const Header = ({ roomId, onSearch }) => {
   return (
     <HeaderWrapper>
       {getModal()}
-      <Photos srcList={info.srcs} onClick={handlePhotoClick} />
-      <span className="header__room-name">{info.name}</span>
 
-      {info.isDMRoom || info.isMyRoom ? null : (
-        <span className="header__user-count">{info.userCount}</span>
-      )}
+      <Observer>
+        {() => {
+          const info = getRoom();
+          if (!info) return null;
+
+          return (
+            <Photos
+              isBotRoom={info.isBotRoom}
+              srcList={roomStore.getRoomPhoto(info.id)}
+              onClick={handlePhotoClick}
+              className="header__room-photo"
+            />
+          );
+        }}
+      </Observer>
+
+      <Observer>
+        {() => {
+          const info = getRoom();
+          if (!info) return null;
+
+          return <span className="header__room-name">{getRoomName(info)}</span>;
+        }}
+      </Observer>
+
+      <Observer>
+        {() => {
+          const info = getRoom();
+          if (!info || info.isDirectMsg || info.isMyRoom) return null;
+          return <span className="header__user-count">{info.userCount}</span>;
+        }}
+      </Observer>
+
       <IconWrapper onClick={onSearch}>
         <SearchIcon width={1.38} height={1.38} />
       </IconWrapper>
@@ -226,21 +241,28 @@ const Wrapper = styled.div`
 `;
 
 const HeaderWrapper = styled.div`
+  overflow: hidden;
   display: flex;
   align-items: center;
   height: 3.75rem;
   padding: 0 1.25rem 0 0.69rem;
-  border-bottom: 1px solid #ddd9d4;
-
-  & .header__room-name {
-    font-size: 0.875rem;
-    margin-left: 0.63rem;
+  border-bottom: 1px solid ${props => props.theme.LineMain};
+  background-color: ${props => props.theme.StateNormal};
+  .header__room-name {
+    flex-shrink: 0;
   }
 
-  & .header__user-count {
+  .header__room-name {
+    overflow: hidden;
+    margin-left: 0.63rem;
     font-size: 0.875rem;
+    color: ${props => props.theme.TextMain};
+  }
+
+  .header__user-count {
     margin-left: 0.31rem;
-    opacity: 0.5;
+    font-size: 0.875rem;
+    color: ${props => props.theme.TextSub2};
   }
 `;
 
@@ -255,7 +277,7 @@ const IconWrapper = styled.div`
   margin-left: auto;
 
   &:hover {
-    background-color: #eae6e0;
+    background-color: ${props => props.theme.StateLight};
   }
 `;
 

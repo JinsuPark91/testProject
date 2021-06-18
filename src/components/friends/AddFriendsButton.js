@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { logEvent, AddFriendsBySearch } from 'teespace-core';
-import { Tooltip } from 'antd';
+import { logEvent, AddFriendsBySearch, Tooltip } from 'teespace-core';
 import { ThemeContext } from 'styled-components';
 import { FriendAddButton } from '../../styles/friends/FriendsLNBHeaderStyle';
 import { AddAcountIcon } from '../Icons';
@@ -14,7 +13,7 @@ const AddButton = React.memo(({ onOpen }) => {
     <Tooltip
       title={t('CM_ADD_PHOTO_FRIENDS')}
       placement="bottomLeft"
-      color="#4C535D"
+      color={themeContext.CoreLight}
     >
       <FriendAddButton className="friends__add-button" onClick={onOpen}>
         <AddAcountIcon
@@ -43,6 +42,7 @@ const AddFriendsButton = () => {
           isViewMode={false}
           onCancelAddFriends={() => setIsAddFriendModalVisible(false)}
           isTopOrg={false}
+          isMeVisible={false}
         />
       )}
     </>

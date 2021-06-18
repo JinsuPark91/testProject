@@ -1,10 +1,10 @@
 /* eslint-disable no-nested-ternary */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { List, Menu, Dropdown, Tooltip } from 'antd';
-import styled, { css } from 'styled-components';
+import { List, Menu, Dropdown } from 'antd';
+import styled, { css, ThemeContext } from 'styled-components';
 import { Observer } from 'mobx-react';
-import { useCoreStores, EventBus } from 'teespace-core';
+import { useCoreStores, EventBus, Tooltip } from 'teespace-core';
 import { talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
 import { useTranslation } from 'react-i18next';
@@ -132,13 +132,19 @@ const RoomDropdown = React.memo(
       });
     };
 
-    const handleAlarmEnable = e => {
-      e.domEvent.stopPropagation();
-      setVisible(false);
+    const handleAlarmEnable = useCallback(
+      e => {
+        if (e) {
+          e.domEvent.stopPropagation();
+        }
 
-      updateRoomSetting({ newIsAlarmUsed: true });
-      onClickMenuItem({ key: 'enableAlarm' });
-    };
+        setVisible(false);
+
+        updateRoomSetting({ newIsAlarmUsed: true });
+        onClickMenuItem({ key: 'enableAlarm' });
+      },
+      [onClickMenuItem, updateRoomSetting],
+    );
 
     const handleAlarmDisable = useCallback(
       e => {
@@ -154,21 +160,27 @@ const RoomDropdown = React.memo(
       [onClickMenuItem, updateRoomSetting],
     );
 
-    const handleExit = e => {
-      e.domEvent.stopPropagation();
+    const handleExit = useCallback(
+      e => {
+        if (e) {
+          e.domEvent.stopPropagation();
+        }
+        const isDMRoom = roomInfo.isDirectMsg;
+        const isAdmin = roomInfo.adminId === myUserId;
+        const isAlone = roomInfo.userCount === 1;
 
-      const isDMRoom = roomInfo.isDirectMsg;
-      const isAdmin = roomInfo.adminId === myUserId;
-      const isAlone = roomInfo.userCount === 1;
+        setVisible(false);
+        if (isAdmin && !isDMRoom && !isAlone) {
+          onClickMenuItem({ key: 'exitAdmin', item: roomInfo });
+        } else {
+          onClickMenuItem({ key: 'exitNormal', item: roomInfo });
+        }
+        return false;
+      },
+      [myUserId, onClickMenuItem, roomInfo],
+    );
 
-      setVisible(false);
-      if (isAdmin && !isDMRoom && !isAlone) {
-        onClickMenuItem({ key: 'exitAdmin', item: roomInfo });
-      } else {
-        onClickMenuItem({ key: 'exitNormal', item: roomInfo });
-      }
-      return false;
-    };
+    const themeContext = useContext(ThemeContext);
 
     const roomMenu = () => {
       const isDMRoom = roomInfo.isDirectMsg;
@@ -176,7 +188,7 @@ const RoomDropdown = React.memo(
       const { isBotRoom } = roomInfo;
 
       return (
-        <StyledMenu>
+        <Menu>
           {
             // NOTE. 마이룸과 1:1 룸은 이름 변경할 수 있음
             // NOTE. 마이름은 메뉴 자체가 없다. (체크할 필요 없음)
@@ -186,7 +198,7 @@ const RoomDropdown = React.memo(
               </Menu.Item>
             )
           }
-          {isBotRoom ? null : roomInfo.isRoomBookmarked ? (
+          {roomInfo.isRoomBookmarked ? (
             <Menu.Item key="disableBookmark" onClick={handleBookmarkDisable}>
               {t('CM_FIX_TOP_ROOM_03')}
             </Menu.Item>
@@ -225,24 +237,37 @@ const RoomDropdown = React.memo(
             <Menu.Item
               key="exit"
               onClick={handleExit}
-              style={{ borderTop: '1px solid #D0CCC7' }}
+              style={{
+                borderTop: `1px solid ${themeContext.LineMain}`,
+              }}
             >
               {t('CM_LEAVE')}
             </Menu.Item>
           )}
-        </StyledMenu>
+        </Menu>
       );
     };
 
     useEffect(() => {
       handlerStore.register('/mute', roomId, handleAlarmDisable);
+      handlerStore.register('/unmute', roomId, handleAlarmEnable);
       handlerStore.register('/org chart', roomId, handleViewMember);
+      handlerStore.register('/leave', roomId, handleExit);
 
       return () => {
         handlerStore.unregister('/mute', roomId);
-        handlerStore.register('/org chart', roomId, handleViewMember);
+        handlerStore.unregister('/unmute', roomId);
+        handlerStore.unregister('/org chart', roomId);
+        handlerStore.unregister('/leave', roomId);
       };
-    }, [handleAlarmDisable, handleViewMember, handlerStore, roomId]);
+    }, [
+      handleAlarmDisable,
+      handleAlarmEnable,
+      handleViewMember,
+      handleExit,
+      handlerStore,
+      roomId,
+    ]);
 
     return (
       <Dropdown
@@ -261,7 +286,7 @@ const RoomDropdown = React.memo(
 const RoomItemContent = React.memo(
   ({ roomInfo, isMyRoom, onMenuClick, onClickMenuItem, onClickRoomPhoto }) => {
     const { t } = useTranslation();
-    const { userStore } = useCoreStores();
+    const { userStore, roomStore } = useCoreStores();
 
     const handleExport = e => {
       e.stopPropagation();
@@ -285,6 +310,8 @@ const RoomItemContent = React.memo(
 
       onClickRoomPhoto(roomInfo);
     };
+
+    const themeContext = useContext(ThemeContext);
 
     const getIcon = () => {
       if (roomInfo.type === 'WKS0003')
@@ -316,17 +343,18 @@ const RoomItemContent = React.memo(
                     ),
                   ];
                 } else {
-                  const userIdArr = roomInfo.memberIdListString.split(',');
-                  const userIds =
-                    userIdArr.length === 1 && !roomInfo.isDirectMsg
-                      ? userIdArr
-                      : userIdArr
-                          .filter(userId => userId !== userStore.myProfile.id)
-                          .splice(0, 4);
+                  // const userIdArr = roomInfo.memberIdListString.split(',');
+                  // const userIds =
+                  //   userIdArr.length === 1 && !roomInfo.isDirectMsg
+                  //     ? userIdArr
+                  //     : userIdArr
+                  //         .filter(userId => userId !== userStore.myProfile.id)
+                  //         .splice(0, 4);
 
-                  userPhotos = userIds.map(userId =>
-                    userStore.getProfilePhotoURL(userId, 'small'),
-                  );
+                  // userPhotos = userIds.map(userId =>
+                  //   userStore.getProfilePhotoURL(userId, 'small'),
+                  // );
+                  userPhotos = roomStore.getRoomPhoto(roomInfo.id, 4);
                 }
                 return (
                   <Photos
@@ -378,6 +406,20 @@ const RoomItemContent = React.memo(
                   ) : null
                 }
               </Observer>
+
+              <Observer>
+                {() => {
+                  return roomInfo.isBotRoom && roomInfo.metadata?.count > 0 ? (
+                    <UnreadCountWrap>
+                      <UnreadCount className="rooms__item__unread">
+                        {roomInfo.metadata?.count > 99
+                          ? '99+'
+                          : roomInfo.metadata?.count}
+                      </UnreadCount>
+                    </UnreadCountWrap>
+                  ) : null;
+                }}
+              </Observer>
               {/* <UserTimeText className="rooms__item__unread">
               오전 11:01
             </UserTimeText> */}
@@ -397,15 +439,11 @@ const RoomItemContent = React.memo(
                   return null;
                 }}
               </Observer>
+
               <Observer>
                 {() => {
-                  return roomInfo.metadata?.count > 0 ? (
-                    <UnreadCount
-                      className="rooms__item__unread"
-                      style={{
-                        width: roomInfo.metadata?.count < 10 && '0.875rem',
-                      }}
-                    >
+                  return !roomInfo.isBotRoom && roomInfo.metadata?.count > 0 ? (
+                    <UnreadCount className="rooms__item__unread">
                       {roomInfo.metadata?.count > 99
                         ? '99+'
                         : roomInfo.metadata?.count}
@@ -427,7 +465,11 @@ const RoomItemContent = React.memo(
             </IconWrapper>
           </RoomDropdown>
         )}
-        <Tooltip placement="top" title={t('CM_TEMP_MINI_CHAT')} color="#4C535D">
+        <Tooltip
+          placement="top"
+          title={t('CM_TEMP_MINI_CHAT')}
+          color={themeContext.CoreLight}
+        >
           <IconWrapper
             className="rooms__item__export-button"
             onClick={handleExport}
@@ -449,145 +491,130 @@ const getRoomId = () => {
   return null;
 };
 
-const RoomItem = React.memo(
-  ({
-    roomInfo,
-    onClick,
-    onMenuClick,
-    onClickMenuItem = () => {},
-    onClickRoomPhoto = () => {},
-  }) => {
-    const { componentStore } = useCoreStores();
-    const { handlerStore } = useStores();
-    const FileDndDialog = componentStore.get('Talk:FileDndDialog');
-    const [isDndDialogVisible, setDndDialogVisible] = useState(false);
-    const [dndTargetFiles, setDndTargetFiles] = useState([]);
-    const [dndTargetRoom, setDndTargetRoom] = useState(getRoomId());
+const RoomItem = ({
+  roomInfo,
+  onClick,
+  onMenuClick,
+  onClickMenuItem = () => {},
+  onClickRoomPhoto = () => {},
+}) => {
+  const { handlerStore } = useStores();
+  const isMyRoom = roomInfo.type === 'WKS0001';
+  const { isBotRoom } = roomInfo;
 
-    const isMyRoom = roomInfo.type === 'WKS0001';
-
-    const [{ canDrop, isOver }, drop] = useDrop({
-      accept: ACCEPT_ITEMS,
-      drop: item => {
-        //
-        // Item Type에 따라서 처리해야 될 일들
-        //
-        if (TALK_ACCEPT_ITEMS.includes(item.type)) {
-          const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
-            item.type.toLowerCase(),
-          );
-          switch (type[1]) {
-            case 'note':
-              talkOnDrop({
-                room: roomInfo,
-                data: item.data,
-                type: type[1] ? type[1] : 'unknown',
-                target: 'Platform:Room',
-                currentRoomId: getRoomId(),
-              });
-              break;
-            case 'drive':
-              setDndDialogVisible(true);
-              setDndTargetFiles(item.data);
-              setDndTargetRoom(roomInfo.id);
-              break;
-            default:
-              break;
+  const [{ canDrop, isOver }, drop] = useDrop({
+    accept: ACCEPT_ITEMS,
+    drop: item => {
+      //
+      // Item Type에 따라서 처리해야 될 일들
+      //
+      if (isBotRoom) return null;
+      if (TALK_ACCEPT_ITEMS.includes(item.type)) {
+        const type = /[a-zA-Z]+:([a-zA-Z]+):[a-zA-Z]+/.exec(
+          item.type.toLowerCase(),
+        );
+        switch (type[1]) {
+          case 'note': {
+            talkOnDrop({
+              room: roomInfo,
+              data: item.data,
+              type: type[1] ? type[1] : 'unknown',
+              target: 'Platform:Room',
+              currentRoomId: getRoomId(),
+            });
+            break;
           }
+          case 'drive': {
+            const dnd = {
+              roomId: roomInfo.id,
+              isVisible: true,
+              files: item.data,
+            };
+
+            uiStore.dnd = dnd;
+            break;
+          }
+          default:
+            break;
         }
-
-        // Drag 시작한 쪽이 정보를 알아야 하는 경우 고려
-        return {
-          source: item.type, // "Item:Note:Chapter"
-          sourceData: item.data,
-          target: 'Platform:Room',
-          targetData: roomInfo,
-        };
-      },
-      collect: monitor => {
-        return {
-          isOver: monitor.isOver(),
-          canDrop: monitor.canDrop(),
-        };
-      },
-    });
-
-    const isActive = canDrop && isOver;
-
-    const handleRoomClick = useCallback(() => {
-      onClick(roomInfo);
-    }, [onClick, roomInfo]);
-
-    const handleMenuClick = _roomInfo => {
-      onMenuClick(_roomInfo);
-    };
-
-    const handleCloseDndDialog = useCallback(() => {
-      setDndDialogVisible(false);
-    }, []);
-
-    useEffect(() => {
-      if (isMyRoom) {
-        handlerStore.register('/myroom', '', handleRoomClick);
       }
 
-      return () => isMyRoom && handlerStore.unregister('/myroom');
-    }, [handleRoomClick, handlerStore, isMyRoom]);
+      // Drag 시작한 쪽이 정보를 알아야 하는 경우 고려
+      return {
+        source: item.type, // "Item:Note:Chapter"
+        sourceData: item.data,
+        target: 'Platform:Room',
+        targetData: roomInfo,
+      };
+    },
+    collect: monitor => {
+      return {
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      };
+    },
+  });
 
-    return (
-      <StyledItem ref={drop} className="rooms__item" onClick={handleRoomClick}>
-        <Observer>
-          {() => (
-            <ItemWrapper
-              selected={uiStore.resourceId === roomInfo.id}
-              isActiveDropEffect={isActive}
-            >
-              <RoomItemContent
-                roomInfo={roomInfo}
-                isMyRoom={isMyRoom}
-                onMenuClick={handleMenuClick}
-                onClickMenuItem={onClickMenuItem}
-                onClickRoomPhoto={onClickRoomPhoto}
-              />
-            </ItemWrapper>
-          )}
-        </Observer>
+  const isActive = !isBotRoom && canDrop && isOver;
 
-        <FileDndDialog
-          visible={isDndDialogVisible}
-          target="Platform:Room"
-          targetRoomId={dndTargetRoom}
-          fileList={dndTargetFiles}
-          onClose={handleCloseDndDialog}
-        />
-      </StyledItem>
-    );
-  },
-);
+  const handleRoomClick = useCallback(() => {
+    onClick(roomInfo);
+  }, [onClick, roomInfo]);
+
+  const handleMenuClick = _roomInfo => {
+    onMenuClick(_roomInfo);
+  };
+
+  useEffect(() => {
+    if (isMyRoom) {
+      handlerStore.register('/myroom', '', handleRoomClick);
+    }
+
+    return () => isMyRoom && handlerStore.unregister('/myroom');
+  }, [handleRoomClick, handlerStore, isMyRoom]);
+
+  useEffect(() => {
+    if (isBotRoom) {
+      handlerStore.register('/announce', '', handleRoomClick);
+    }
+
+    return () => isBotRoom && handlerStore.unregister('/announce');
+  }, [handleRoomClick, handlerStore, isBotRoom]);
+
+  return (
+    <StyledItem ref={drop} className="rooms__item" onClick={handleRoomClick}>
+      <Observer>
+        {() => (
+          <ItemWrapper
+            selected={uiStore.resourceId === roomInfo.id}
+            isActiveDropEffect={isActive}
+          >
+            <RoomItemContent
+              roomInfo={roomInfo}
+              isMyRoom={isMyRoom}
+              onMenuClick={handleMenuClick}
+              onClickMenuItem={onClickMenuItem}
+              onClickRoomPhoto={onClickRoomPhoto}
+            />
+          </ItemWrapper>
+        )}
+      </Observer>
+    </StyledItem>
+  );
+};
 
 const RoomTypeIcon = styled.div`
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  height: 0.88rem;
-  background: #232d3b;
+  justify-content: center;
+  height: 0.875rem;
+  margin-right: 0.25rem;
   padding: 0 0.19rem;
+  background-color: ${props => props.theme.CoreNormal};
   border-radius: 0.25rem;
   font-size: 0.5rem;
   color: #fff;
-  margin-right: 0.25rem;
 `;
-
-// const MyIcon = styled.div`
-//   width: 0.88rem;
-//   height: 0.88rem;
-//   flex-shrink: 0;
-//   margin-right: 0.25rem;
-//   line-height: 0;
-//   img {
-//     width: 100%;
-//     height: 100%;
-//   }
-// `;
 
 const ItemWrapper = styled.div`
   display: flex;
@@ -621,33 +648,13 @@ const ItemWrapper = styled.div`
     }
   }
 `;
-const StyledMenu = styled(Menu)`
-  background: #ffffff;
-  border: 1px solid #d0ccc7;
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 0.25rem;
-
-  .ant-dropdown-menu-item {
-    font-size: 0.75rem;
-    color: #000;
-
-    &:hover {
-      background-color: #faf8f7;
-    }
-    &:active,
-    &:focus {
-      background-color: #f2efec;
-    }
-  }
-`;
 
 const RoomMessage = styled.span`
-  margin-top: 0.125rem;
   overflow: hidden;
   margin-top: 0.125rem;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #666;
+  color: ${props => props.theme.TextSub};
 `;
 
 const RoomNameText = styled.span`
@@ -664,7 +671,7 @@ const UserCountText = styled.span`
   margin-left: 0.25rem;
   font-size: 0.81rem;
   line-height: 1.19rem;
-  color: #aeaeae;
+  color: ${props => props.theme.TextSub2};
 `;
 
 const StyledItem = styled.div`
@@ -680,7 +687,7 @@ const StyledItem = styled.div`
     position: relative;
     margin: 0.0652rem 0.4375rem 0.0652rem 0;
     .photos > div {
-      border: 1px solid #fff;
+      border: 1px solid ${props => props.theme.StateNormal};
       &::after {
         display: none;
       }
@@ -711,9 +718,9 @@ const StyledItem = styled.div`
 `;
 
 const UnreadCount = styled.div`
-  width: 1.63rem;
   height: 0.875rem;
   margin: 0.125rem 0 0 0.25rem;
+  padding: 0 0.25rem;
   font-size: 0.63rem;
   color: #fff;
   line-height: 0.8125rem;
@@ -722,6 +729,14 @@ const UnreadCount = styled.div`
   background-color: #dc4547;
   text-align: center;
   flex-shrink: 0;
+`;
+
+const UnreadCountWrap = styled.div`
+  margin-left: auto;
+  padding-left: 0.25rem;
+  ${UnreadCount} {
+    margin: 0;
+  }
 `;
 
 const TitleIconWrapper = styled.div`

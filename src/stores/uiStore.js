@@ -1,14 +1,9 @@
 /* eslint-disable no-underscore-dangle */
-import { observable, values } from 'mobx';
-import theme from '../theme';
+import { observable, transaction, values } from 'mobx';
+import { RoomStore, FriendStore } from 'teespace-core';
+import { handleCheckNewFriend } from '../utils/FriendsUtil';
 
 const uiStore = observable({
-  theme: theme.white,
-
-  setTheme(name) {
-    if (theme[name]) this.theme = theme[name];
-  },
-
   /*
     Resource Type : URL 상의 s / f / m
     충남대의 경우 friend / room /....
@@ -16,10 +11,9 @@ const uiStore = observable({
   resourceType: null,
 
   /*
-    FIXME: 추후 좋은 방법 고민, 프로필 수정 모드도 history로 관리?
-    모바일 웹뷰용 프로필 수정 모드 판단
+    모바일 웹뷰용 Footer visibility
   */
-  isProfileEditMode: false,
+  isFooterVisible: true,
 
   /*
     Tab Type : 선택된 탭 s / f / m
@@ -36,6 +30,74 @@ const uiStore = observable({
     Talk Search Input visibility
   */
   isSearchVisible: false,
+
+  isNotificationCenterVisible: false,
+
+  // Common Toast, Message
+  isToastVisible: false,
+  toastText: '',
+  toastTimeout: 1000,
+  toastSize: 'medium',
+  toastLinks: [],
+  toastOnClose: () => {},
+  openToast({
+    text = '',
+    timeout = 1000,
+    size = 'medium',
+    links = [],
+    onClose = () => {},
+  }) {
+    transaction(() => {
+      this.toastText = text;
+      this.toastTimeout = timeout;
+      this.toastSize = size;
+      this.toastLinks = links;
+      this.toastOnClose = onClose;
+      this.isToastVisible = true;
+    });
+  },
+  closeToast() {
+    transaction(() => {
+      this.isToastVisible = false;
+      this.toastText = '';
+      this.toastTimeout = 1000;
+      this.toastSize = 'medium';
+      this.toastLinks = [];
+      this.toastOnClose = () => {};
+    });
+  },
+  isMessageVisible: false,
+  messageType: '',
+  messageTitle: '',
+  messageSubTitle: '',
+  messageButton: [],
+  messageCustomBadge: null,
+  openMessage({
+    type = '',
+    title = '',
+    subTitle = '',
+    buttons = [],
+    customBadge = null,
+  }) {
+    transaction(() => {
+      this.messageType = type;
+      this.messageTitle = title;
+      this.messageSubTitle = subTitle;
+      this.messageButton = buttons;
+      this.messageCustomBadge = customBadge;
+      this.isMessageVisible = true;
+    });
+  },
+  closeMessage() {
+    transaction(() => {
+      this.isMessageVisible = false;
+      this.messageType = '';
+      this.messageTitle = '';
+      this.messageSubTitle = '';
+      this.messageButton = [];
+      this.messageCustomBadge = null;
+    });
+  },
 
   // modal
   roomMemberModal: {
@@ -60,7 +122,28 @@ const uiStore = observable({
   },
 
   // [TODO] : Talk 안정화 될때까지 임시
-  totalUnreadCount: 0,
+  get totalUnreadCount() {
+    return RoomStore.getRoomArray(true)
+      .filter(roomInfo => roomInfo.isVisible)
+      .reduce(
+        (accumulator, roomInfo) =>
+          accumulator + parseInt(roomInfo.metadata.count ?? '0', 10),
+        0,
+      );
+  },
+
+  get newFriendCount() {
+    return FriendStore.friendInfoList?.filter(elem =>
+      handleCheckNewFriend(elem),
+    ).length;
+  },
+
+  // drag and drop
+  dnd: {
+    roomId: null,
+    files: [],
+    isVisible: false,
+  },
 
   // ref
   content: {

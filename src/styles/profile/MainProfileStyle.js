@@ -144,7 +144,6 @@ export const UserImageWrapper = styled.div`
   position: relative;
   width: 6.88rem;
   height: 6.88rem;
-  background: #fff;
   border-radius: 50%;
   &:after {
     content: '';
@@ -282,6 +281,10 @@ export const UserInfoText = styled.div`
     white-space: nowrap;
     text-overflow: ellipsis;
   }
+`;
+
+export const UserOrgText = styled.span`
+  white-space: pre-line !important;
 `;
 
 export const StyleOfficeIcon = styled.em`

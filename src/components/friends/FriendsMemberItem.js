@@ -50,7 +50,7 @@ const FriendsMemberItem = () => {
           isViewMode={false}
           onCancelAddFriends={() => setIsMemberModalVisible(false)}
           isTopOrg
-          isMeOnlyVisible
+          isMeVisible
         />
       )}
     </>

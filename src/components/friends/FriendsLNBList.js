@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useObserver } from 'mobx-react';
+import React from 'react';
+import { useObserver, useLocalStore } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { useStores } from '../../stores';
@@ -38,15 +38,16 @@ const FriendsLNBList = ({
   searchKeyword,
   handleShadow,
   handleOpenInfoModal,
-  handleSelectedId,
   handleOpenToast,
-  handleToastText,
 }) => {
   const { t } = useTranslation();
   const { uiStore } = useStores();
   const { userStore, friendStore } = useCoreStores();
-  const [favFriendActiveId, setFavFriendActiveId] = useState('');
-  const [friendActiveId, setFriendActiveId] = useState('');
+
+  const store = useLocalStore(() => ({
+    friendActiveId: '',
+    favFriendActiveId: '',
+  }));
 
   const handleScroll = () => {
     const friendContainer = document.getElementById('lnb__friend-container');
@@ -63,12 +64,12 @@ const FriendsLNBList = ({
   };
 
   const handleFavFriendActive = friendId => {
-    setFavFriendActiveId(friendId);
-    setFriendActiveId('');
+    store.favFriendActiveId = friendId;
+    store.friendActiveId = '';
   };
   const handleFriendActive = friendId => {
-    setFavFriendActiveId('');
-    setFriendActiveId(friendId);
+    store.favFriendActiveId = '';
+    store.friendActiveId = friendId;
   };
 
   const filteredFriendList = friendStore.friendInfoList.filter(friendInfo =>
@@ -89,9 +90,7 @@ const FriendsLNBList = ({
               activeFriendId === friendInfo.friendId
             }
             handleOpenInfoModal={handleOpenInfoModal}
-            handleSelectedId={handleSelectedId}
             handleOpenToast={handleOpenToast}
-            handleToastText={handleToastText}
           />
         ))}
       </>
@@ -107,7 +106,7 @@ const FriendsLNBList = ({
             <FriendList
               friendList={friendStore.favoriteFriendInfoList}
               onClick={handleFavFriendActive}
-              activeFriendId={favFriendActiveId}
+              activeFriendId={store.favFriendActiveId}
             />
           </FriendListBox>
         )}
@@ -119,7 +118,7 @@ const FriendsLNBList = ({
           <FriendList
             friendList={filteredFriendList}
             onClick={handleFriendActive}
-            activeFriendId={friendActiveId}
+            activeFriendId={store.friendActiveId}
           />
         </FriendListBox>
       </>
@@ -134,10 +133,9 @@ const FriendsLNBList = ({
             onClick={handleFriendActive}
             isActive={
               uiStore.resourceType === 'f' &&
-              friendActiveId === userStore.myProfile.id
+              store.friendActiveId === userStore.myProfile.id
             }
             handleOpenInfoModal={handleOpenInfoModal}
-            handleSelectedId={handleSelectedId}
           />
         </FriendListBox>
         <FriendsMemberItem />

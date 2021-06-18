@@ -60,19 +60,21 @@ export const CustomTabs = styled(Tabs)`
 `;
 
 export const UnreadCount = styled.div`
-  display: ${({ isVisible }) => (isVisible ? 'flex' : 'none')};
-  align-items: center;
-  justify-content: center;
-  padding: 0 0.25rem;
+  display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
   position: absolute;
   top: 0.31rem;
   left: 50%;
+  height: 0.875rem;
   margin-left: 0.75rem;
+  padding: 0 0.25rem;
   font-size: 0.69rem;
-  font-weight: 400;
   color: #fff;
+  line-height: 0.8125rem;
+  font-weight: 400;
   border-radius: 0.56rem;
   background-color: #dc4547;
+  text-align: center;
+  flex-shrink: 0;
 `;
 
 export const IconWrapper = styled.div`

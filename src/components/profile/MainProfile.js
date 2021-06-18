@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
-import { useCoreStores, Message, Toast } from 'teespace-core';
+import { useCoreStores, Tooltip } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import { useStores } from '../../stores';
-import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 import {
   handleProfileMenuClick,
   getCompanyNumber,
@@ -33,6 +33,7 @@ import {
   ButtonContainer,
   StyleIcon,
   UserInfoText,
+  UserOrgText,
   StyleOfficeIcon,
   EditNameInput,
   StyleInput,
@@ -61,11 +62,9 @@ const MainProfile = observer(({ userId = null }) => {
     roomStore,
     configStore,
   } = useCoreStores();
+  const themeContext = useContext(ThemeContext);
   const { uiStore, historyStore } = useStores();
   const [isEditMode, setEditMode] = useState(false);
-  const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
-  const [toastText, setToastText] = useState('');
-  const [isToastVisible, setIsToastVisible] = useState(false);
   const [isChange, setIsChange] = useState(false);
   const [userType, setUserType] = useState('');
 
@@ -269,10 +268,30 @@ const MainProfile = observer(({ userId = null }) => {
     setIsChange(false);
     setEditMode(false);
     resetLocalInputData();
-    setCancelDialogVisible(false);
+    uiStore.closeMessage();
   };
   const handleCancel = () => {
-    if (isChange) setCancelDialogVisible(true);
+    if (isChange)
+      uiStore.openMessage({
+        title: t('CM_Q_EXIT_SAVE'),
+        type: 'error',
+        buttons: [
+          {
+            type: 'solid',
+            shape: 'round',
+            text: t('CM_LEAVE'),
+            onClick: handleExit,
+          },
+          {
+            type: 'outlined',
+            shape: 'round',
+            text: t('CM_CANCEL'),
+            onClick: () => {
+              uiStore.closeMessage();
+            },
+          },
+        ],
+      });
     else handleExit();
   };
 
@@ -286,10 +305,16 @@ const MainProfile = observer(({ userId = null }) => {
         isFav,
       });
 
-      if (isFav) setToastText(t('CM_BOOKMARK_03'));
-      else setToastText(t('CM_BOOKMARK_02'));
+      let text = '';
+      if (isFav) text = t('CM_BOOKMARK_03');
+      else text = t('CM_BOOKMARK_02');
 
-      setIsToastVisible(true);
+      uiStore.openToast({
+        text,
+        onClose: () => {
+          uiStore.closeToast();
+        },
+      });
     } catch (e) {
       console.log(`Toggle Favorites Error is...${e}`);
     }
@@ -309,6 +334,28 @@ const MainProfile = observer(({ userId = null }) => {
     if (number.length > 30) return number.substring(0, 30);
     return number;
   }, []);
+
+  const getUserOrgInfo = () => {
+    const VIEW_COUNT = 3;
+    const userOrgCount = profile?.concurrentCount;
+    const userOrgSubText =
+      profile?.getFullCompanyJob(VIEW_COUNT).replaceAll(',', '\n') || '-';
+
+    if (userOrgCount <= VIEW_COUNT)
+      return <UserOrgText>{userOrgSubText}</UserOrgText>;
+
+    const userOrgFullText = profile?.getFullCompanyJob().replaceAll(',', '\n');
+    return (
+      <Tooltip
+        placement="bottom"
+        title={userOrgFullText}
+        color={themeContext.CoreLight}
+        overlayStyle={{ whiteSpace: 'pre-line' }}
+      >
+        <UserOrgText>{userOrgSubText}</UserOrgText>
+      </Tooltip>
+    );
+  };
 
   return (
     <>
@@ -481,9 +528,7 @@ const MainProfile = observer(({ userId = null }) => {
                 <UserInfoItem style={{ alignItems: 'flex-start' }}>
                   <StyleOfficeIcon iconimg="address" />
                   <UserInfoText>
-                    <span style={{ whiteSpace: 'break-spaces' }}>
-                      {profile?.getFullCompanyJob()}
-                    </span>
+                    {getUserOrgInfo()}
                     {isEditMode && (
                       <LockIconBox>
                         <LockLineIcon width="0.88" height="0.88" />
@@ -558,34 +603,6 @@ const MainProfile = observer(({ userId = null }) => {
           </ContentBody>
         </Content>
       </Wrapper>
-      {cancelDialogVisible && (
-        <Message
-          visible={cancelDialogVisible}
-          title={t('CM_Q_EXIT_SAVE')}
-          type="error"
-          btns={[
-            {
-              type: 'solid',
-              shape: 'round',
-              text: t('CM_LEAVE'),
-              onClick: handleExit,
-            },
-            {
-              type: 'outlined',
-              shape: 'round',
-              text: t('CM_CANCEL'),
-              onClick: () => setCancelDialogVisible(false),
-            },
-          ]}
-        />
-      )}
-      <Toast
-        visible={isToastVisible}
-        timeoutMs={1000}
-        onClose={() => setIsToastVisible(false)}
-      >
-        {toastText}
-      </Toast>
     </>
   );
 });

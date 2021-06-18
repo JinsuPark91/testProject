@@ -43,14 +43,7 @@ function Photos({
   className,
 }) {
   const getPhotos = () => {
-    if (isBotRoom)
-      return (
-        <SymbolWrapper>
-          <WaplSymbol width={1.25} height={1.25} />
-        </SymbolWrapper>
-      );
-
-    if (srcList.length)
+    if (srcList.length && Array.isArray(srcList)) {
       return srcList.map((src, index) => (
         <UserPhoto
           key={index}
@@ -59,11 +52,12 @@ function Photos({
           <img src={src} alt="" />
         </UserPhoto>
       ));
+    }
 
     return (
       <img
-        src={`${process.env.PUBLIC_URL}/res/face/Profile_empty_qui.svg`}
-        alt=""
+        src={`${process.env.PUBLIC_URL}/res/face/Profile_empty_quit.svg`}
+        alt="empty"
       />
     );
   };
@@ -89,13 +83,6 @@ const Wrapper = styled.div`
   width: ${({ defaultDiameter }) => defaultDiameter}rem;
   height: ${({ defaultDiameter }) => defaultDiameter}rem;
   cursor: ${({ isBotRoom }) => (isBotRoom ? 'default' : 'pointer')};
-  ${({ isBotRoom }) =>
-    isBotRoom &&
-    css`
-      background: linear-gradient(224deg, #ff927e, #49423a);
-      padding: 1px;
-      border-radius: 50%;
-    `}
 `;
 
 const SymbolWrapper = styled.div`
@@ -109,6 +96,7 @@ const SymbolWrapper = styled.div`
 `;
 
 const UserPhoto = styled.div`
+  overflow: hidden;
   position: absolute;
   ${({ styles: { diameter, top, left, right, bottom } }) => {
     return css`
@@ -125,7 +113,6 @@ const UserPhoto = styled.div`
     bottom: 0;
   }
   line-height: 0;
-  background-color: #fff;
   border-radius: 50%;
   &:after {
     content: '';
@@ -140,7 +127,6 @@ const UserPhoto = styled.div`
   img {
     width: 100%;
     height: 100%;
-    border-radius: 50%;
     object-fit: cover;
   }
 `;

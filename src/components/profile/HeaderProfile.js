@@ -1,27 +1,23 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { useCoreStores, Tooltip } from 'teespace-core';
 import { observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import ProfileMyModal from './ProfileMyModal';
 import {
   ProfileIcon,
-  NewBadge,
   ThumbImage,
   SettingImage,
 } from '../../styles/profile/HeaderProfileStyle';
-import settingIcon from '../../assets/setting.svg';
+import { SettingIcon } from '../Icons';
 
 const HeaderProfile = observer(() => {
   const { t } = useTranslation();
-  const { userStore, authStore, spaceStore } = useCoreStores();
+  const { userStore, authStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
   const { isFirstLogin } = authStore.sessionInfo;
   const [myModalVisible, setMyModalVisible] = useState(isFirstLogin);
   const [tutorialVisible, setTutorialVisible] = useState(isFirstLogin);
-
-  const spaceUnreadCount =
-    spaceStore.totalUnreadSpaceCount -
-    spaceStore.currentSpace?.totalUnreadRoomCount;
 
   const thumbPhoto = userStore.getProfilePhotoURL(myUserId, 'small');
 
@@ -29,19 +25,22 @@ const HeaderProfile = observer(() => {
     setMyModalVisible(v => !v);
     if (tutorialVisible) setTutorialVisible(false);
   }, [tutorialVisible]);
-
+  const themeContext = useContext(ThemeContext);
   return (
     <>
       <Tooltip
         placement="bottomLeft"
         title={t('CM_ROOMTITLE_TOOLTIP_04')}
-        color="#4C535D"
+        color={themeContext.CoreLight}
       >
         <ProfileIcon className="header__profile-button" onClick={toggleMyModal}>
-          {spaceUnreadCount > 0 && <NewBadge />}
           <ThumbImage src={thumbPhoto} />
           <SettingImage>
-            <img alt="settingIcon" src={settingIcon} />
+            <SettingIcon
+              width={0.875}
+              height={0.875}
+              color={themeContext.HeaderIcon}
+            />
           </SettingImage>
         </ProfileIcon>
       </Tooltip>

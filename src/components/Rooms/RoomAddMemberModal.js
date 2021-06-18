@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Button, Modal } from 'antd';
+import { Button } from 'antd';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import { useCoreStores, ItemSelector } from 'teespace-core';
+import { useCoreStores, ItemSelector, Modal } from 'teespace-core';
 
 function RoomAddMemberModal({
   visible = false,
@@ -98,12 +98,8 @@ function RoomAddMemberModal({
 
   return (
     isLoaded && (
-      <FlexModal
-        title={
-          <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>
-            {t('CM_ROOM_INVITE_USER')}
-          </div>
-        }
+      <Modal
+        title={t('CM_ROOM_INVITE_USER')}
         visible={visible}
         closable
         onCancel={handleCancel}
@@ -141,31 +137,17 @@ function RoomAddMemberModal({
             {t('CM_CANCEL')}
           </Button>
         </ButtonContainer>
-      </FlexModal>
+      </Modal>
     )
   );
 }
-
-const FlexModal = styled(Modal)`
-  font-size: 16px;
-  display: flex;
-  justify-content: center;
-
-  & .ant-modal-header {
-    border-bottom: 1px solid #e3e7eb;
-  }
-
-  & .ant-modal-body {
-    padding: 0;
-  }
-`;
 
 const ButtonContainer = styled.div`
   display: flex;
   padding: 1.06rem 0;
   align-items: center;
   justify-content: center;
-  border-top: 1px solid #e3e7eb;
+  border-top: 1px solid ${props => props.theme.LineMain};
 `;
 
 export default RoomAddMemberModal;

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { WaplSearch, Toast } from 'teespace-core';
+import { WaplSearch, useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import { Observer } from 'mobx-react';
 import { Button, Checkbox } from 'antd';
@@ -14,21 +14,22 @@ const remToPixel = rem => {
 };
 
 const WIDTH = {
-  CHECKBOX: '5%',
-  NICK: '15%',
-  LOGIN_ID: '25%',
-  TEAM: '15%',
-  JOB: '15%',
-  PHONE: '25%',
+  CHECKBOX: 5,
+  NICK: 15,
+  LOGIN_ID: 25,
+  TEAM: 15,
+  JOB: 15,
+  PHONE: 25,
 };
 
-const TableRow = ({ style, member }) => {
+const TableRow = ({ style, member, isB2C }) => {
   const { roomSettingStore: store } = useStores();
+
   const handleCheckChange = e => {
     if (e.target.checked) {
-      store.selectedMembers.set(member.id, member);
+      store.selectedBanMembers.set(member.id, member);
     } else {
-      store.selectedMembers.delete(member.id);
+      store.selectedBanMembers.delete(member.id);
     }
   };
 
@@ -36,35 +37,53 @@ const TableRow = ({ style, member }) => {
 
   return (
     <RowWrapper style={style}>
-      <Cell style={{ width: WIDTH.CHECKBOX }}>
+      <Cell style={{ width: `${WIDTH.CHECKBOX}%` }}>
         <Observer>
           {() => (
             <Checkbox
               className="check-round"
-              checked={store.selectedMembers.has(member.id)}
+              checked={store.selectedBanMembers.has(member.id)}
               onChange={handleCheckChange}
             />
           )}
         </Observer>
       </Cell>
       <Observer>
-        {() => <Cell style={{ width: WIDTH.NICK }}>{member.nick}</Cell>}
-      </Observer>
-      <Observer>
-        {() => <Cell style={{ width: WIDTH.LOGIN_ID }}>{member.loginId}</Cell>}
-      </Observer>
-      <Observer>
-        {() => <Cell style={{ width: WIDTH.TEAM }}>{member.orgName}</Cell>}
-      </Observer>
-      <Observer>
         {() => (
-          <Cell style={{ width: WIDTH.JOB }}>
-            {`${member.job || '-'}/${member.position || '-'}`}
+          <Cell style={{ width: `${WIDTH.NICK + (isB2C ? 10 : 0)}%` }}>
+            {member.nick}
           </Cell>
         )}
       </Observer>
       <Observer>
-        {() => <Cell style={{ width: WIDTH.PHONE }}>{member.phone}</Cell>}
+        {() => (
+          <Cell style={{ width: `${WIDTH.LOGIN_ID + (isB2C ? 10 : 0)}%` }}>
+            {member.loginId}
+          </Cell>
+        )}
+      </Observer>
+      <Observer>
+        {() =>
+          isB2C ? null : (
+            <Cell style={{ width: `${WIDTH.TEAM}%` }}>{member.orgName}</Cell>
+          )
+        }
+      </Observer>
+      <Observer>
+        {() =>
+          isB2C ? null : (
+            <Cell style={{ width: `${WIDTH.JOB}%` }}>
+              {`${member.job || '-'}/${member.position || '-'}`}
+            </Cell>
+          )
+        }
+      </Observer>
+      <Observer>
+        {() => (
+          <Cell style={{ width: `${WIDTH.PHONE + (isB2C ? 10 : 0)}%` }}>
+            {member.phone}
+          </Cell>
+        )}
       </Observer>
     </RowWrapper>
   );
@@ -73,8 +92,10 @@ const TableRow = ({ style, member }) => {
 const Table = () => {
   const { t } = useTranslation();
   const { roomSettingStore: store } = useStores();
+  const { spaceStore } = useCoreStores();
   const tableBodyRef = useRef(null);
   const [listHeight, setListHeight] = useState(0);
+  const isB2C = spaceStore.currentSpace.type === 'B2C';
 
   useEffect(() => {
     if (tableBodyRef.current) {
@@ -84,55 +105,78 @@ const Table = () => {
 
   const handleAllCheckChange = e => {
     if (e.target.checked) {
-      store.selectedMembers.replace(
-        new Map(store.filteredMembers.map(member => [member.id, member])),
+      store.selectedBanMembers.replace(
+        new Map(
+          store
+            .getFilteredMembers({ withoutMe: false })
+            .map(member => [member.id, member]),
+        ),
       );
     } else {
-      store.selectedMembers.clear();
+      store
+        .getFilteredMembers({ withoutMe: false })
+        .map(member => store.selectedBanMembers.delete(member.id));
     }
   };
 
   return (
     <>
       <TableHeader>
-        <HeaderCell style={{ width: WIDTH.CHECKBOX }}>
+        <HeaderCell style={{ width: `${WIDTH.CHECKBOX}%` }}>
           <Observer>
             {() => (
               <Checkbox
                 className="check-round"
-                checked={store.isAllChecked(false)}
+                checked={store.isAllChecked({ withoutMe: false })}
                 onChange={handleAllCheckChange}
               />
             )}
           </Observer>
         </HeaderCell>
-        <HeaderCell style={{ width: WIDTH.NICK }}>
+        <HeaderCell style={{ width: `${WIDTH.NICK + (isB2C ? 10 : 0)}%` }}>
           {t('CM_NICKNAME')}
         </HeaderCell>
-        <HeaderCell style={{ width: WIDTH.LOGIN_ID }}>{t('CM_ID')}</HeaderCell>
-        <HeaderCell style={{ width: WIDTH.TEAM }}>{t('CM_TEAM')}</HeaderCell>
-        <HeaderCell style={{ width: WIDTH.JOB }}>
-          {t('CM_TITLE_POSITION')}
+        <HeaderCell style={{ width: `${WIDTH.LOGIN_ID + (isB2C ? 10 : 0)}%` }}>
+          {t('CM_ID')}
         </HeaderCell>
-        <HeaderCell style={{ width: WIDTH.PHONE }}>
+        {isB2C ? null : (
+          <>
+            <HeaderCell style={{ width: `${WIDTH.TEAM}%` }}>
+              {t('CM_TEAM')}
+            </HeaderCell>
+            <HeaderCell style={{ width: `${WIDTH.JOB}%` }}>
+              {t('CM_TITLE_POSITION')}
+            </HeaderCell>
+          </>
+        )}
+        <HeaderCell style={{ width: `${WIDTH.PHONE + (isB2C ? 10 : 0)}%` }}>
           {t('CM_MOBILE_NUMBER')}
         </HeaderCell>
       </TableHeader>
       <TableBody ref={tableBodyRef}>
         <Observer>
-          {() => (
-            <List
-              height={listHeight}
-              itemCount={store.filteredMembers.length}
-              itemSize={remToPixel(3.19)}
-              width="100%"
-            >
-              {({ index, style }) => {
-                const member = store.filteredMembers[index];
-                return <TableRow style={style} member={member} />;
-              }}
-            </List>
-          )}
+          {() => {
+            const filteredMembers = store.getFilteredMembers({
+              withoutMe: false,
+            });
+
+            return (
+              <List
+                height={listHeight}
+                itemCount={filteredMembers.length}
+                itemSize={remToPixel(3.19)}
+                width="100%"
+              >
+                {({ index, style }) => (
+                  <TableRow
+                    style={style}
+                    member={filteredMembers[index]}
+                    isB2C={isB2C}
+                  />
+                )}
+              </List>
+            );
+          }}
         </Observer>
       </TableBody>
     </>
@@ -141,32 +185,23 @@ const Table = () => {
 
 const SubWaitingMemberPage = ({ roomId }) => {
   const { t } = useTranslation();
-  const { roomSettingStore: store } = useStores();
-
-  useEffect(() => {
-    store.fetchBlockedMembers({ roomId });
-
-    return () => {
-      store.members = [];
-      store.keyword = '';
-      store.toastMessage = '';
-      store.toastVisible = '';
-      store.selectedMembers.clear();
-    };
-  }, [roomId]);
+  const { roomSettingStore: store, uiStore } = useStores();
 
   const handleUnblock = async () => {
-    const userIdList = Array.from(store.selectedMembers.keys());
+    const userIdList = Array.from(store.selectedBanMembers.keys());
     const result = await store.disableBan({ roomId, userIdList });
     if (result) {
       await store.fetchBlockedMembers({ roomId });
-      store.open(
-        'toast',
-        t('CM_ROOM_SETTING_MANAGE_PEOPLE_04', {
-          num: store.selectedMembers.size,
+      uiStore.openToast({
+        text: t('CM_ROOM_SETTING_MANAGE_PEOPLE_04', {
+          num: store.selectedBanMembers.size,
         }),
-      );
-      store.selectedMembers.clear();
+        onClose: () => {
+          uiStore.closeToast();
+        },
+      });
+
+      store.selectedBanMembers.clear();
     }
   };
 
@@ -178,23 +213,8 @@ const SubWaitingMemberPage = ({ roomId }) => {
     store.keyword = e.target.value;
   };
 
-  const handleToastClose = () => {
-    store.close('toast');
-  };
-
   return (
     <>
-      <Observer>
-        {() => (
-          <Toast
-            visible={store.toastVisible}
-            timeoutMs={1000}
-            onClose={handleToastClose}
-          >
-            {store.toastMessage}
-          </Toast>
-        )}
-      </Observer>
       <div
         style={{
           display: 'flex',
@@ -209,6 +229,7 @@ const SubWaitingMemberPage = ({ roomId }) => {
               fontSize: '0.81rem',
               fontWeight: '600',
               margin: '0 1.25rem',
+              color: `${props => props.theme.TextMain}`,
             }}
           >
             <Observer>
@@ -218,26 +239,25 @@ const SubWaitingMemberPage = ({ roomId }) => {
                   components={{
                     style: <span style={{ color: '#205855' }} />,
                   }}
-                  values={{ num: store.filteredMembers.length }}
+                  values={{
+                    num: store.getFilteredMembers({ withoutMe: false }).length,
+                  }}
                 />
               )}
             </Observer>
           </span>
           <Observer>
             {() => {
-              const isEmpty = !store.selectedMembers.size;
-              const style = { marginRight: '0.5rem' };
-              if (!isEmpty) {
-                style.backgroundColor = '#205855';
-              }
+              const isEmpty = !store.selectedBanMembers.size;
 
               return (
                 <Button
                   type="solid"
                   size="small"
-                  style={style}
+                  style={{ marginRight: '0.5rem' }}
                   onClick={handleUnblock}
                   disabled={isEmpty}
+                  className={!isEmpty && 'color-green'}
                 >
                   {t('CM_ROOM_SETTING_BLOCK_MANAGE_PEOPLE_03')}
                 </Button>

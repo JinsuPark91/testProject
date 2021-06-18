@@ -10,7 +10,7 @@ export const Wrapper = styled(Modal)`
 
 export const SubTitle = styled.div`
   font-size: 0.81rem;
-  color: #000000;
+  color: ${props => props.theme.TextMain};
   margin: 1.25rem 0 0.44rem 0;
 `;
 
@@ -19,16 +19,15 @@ export const NameInputBox = styled.div`
   align-items: center;
   padding: 0 0 0 0.75rem;
   height: 1.88rem;
-  background: #fff;
+  background: ${props => props.theme.StateNormal};
   border-radius: 0.25rem;
-  border: 0.06rem solid #d0ccc7;
+  border: 0.06rem solid ${props => props.theme.LineOut};
   &:not(:disabled):focus-within {
-    border: 1px solid #7b7671;
+    border: 1px solid ${props => props.theme.Iconmain};
   }
 
   &:hover {
-    background-color: #faf8f7;
-    border: 0.06rem solid #d0ccc7;
+    background-color: ${props => props.theme.StateBright};
   }
 
   & input {
@@ -45,24 +44,24 @@ export const UrlInputBox = styled.div`
   align-items: center;
   padding: 0 0.75rem;
   height: 1.88rem;
-  background: ${({ disabled }) => (disabled ? '#cccccc' : '#fff')};
-  ${({ disabled }) =>
+  background: ${({ disabled, theme }) =>
+    disabled ? `${theme.DisabledShape}` : `${theme.StateNormal}`};
+  ${({ disabled, theme }) =>
     disabled
       ? css`
-          color: #fff;
+          color: ${theme.DisabledText};
           cursor: not-allowed;
         `
       : css`
           &:hover {
-            background-color: #faf8f7;
-            border: 0.06rem solid #d0ccc7;
+            background-color: ${theme.StateBright};
           }
         `}
 
   border-radius: 0.25rem;
-  border: 0.06rem solid #d0ccc7;
+  border: 0.06rem solid ${props => props.theme.LineOut};
   &:not(:disabled):focus-within {
-    border: 1px solid #7b7671;
+    border: 1px solid ${props => props.theme.Iconmain};
   }
 
   & input {
@@ -81,11 +80,11 @@ export const UrlInputBox = styled.div`
     width: 100%;
 
     ::placeholder {
-      color: #bdc6d3;
+      color: ${props => props.theme.IconHinted};
     }
 
     :disabled::placeholder {
-      color: #fff;
+      color: ${props => props.theme.DisabledText};
     }
 
     :focus {
@@ -104,10 +103,19 @@ export const UrlText = styled.span`
 `;
 
 export const SpaceImage = styled.div`
+  overflow: hidden;
+  display: flex;
   position: relative;
-  margin: 0 auto 1.875rem;
+  align-items: center;
+  justify-content: center;
   width: 4.88rem;
   height: 4.88rem;
+  margin: 0 auto 1.875rem;
+  border-radius: 0.88rem;
+  background-color: ${props => props.theme.SubStateBright};
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: ${props => props.theme.TextSub4};
 
   &:after {
     content: '';
@@ -124,7 +132,6 @@ export const SpaceImage = styled.div`
   img {
     width: 100%;
     height: 100%;
-    border-radius: 0.88rem;
     object-fit: cover;
   }
 `;

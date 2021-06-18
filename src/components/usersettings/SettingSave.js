@@ -1,16 +1,34 @@
-import React, { useState, useCallback } from 'react';
-import { useCoreStores, Message, Button } from 'teespace-core';
+import React, { useCallback } from 'react';
+import { useCoreStores, Button } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import MovePage from '../../utils/MovePage';
+import { useStores } from '../../stores';
 
 const SettingSave = ({ onCancel, inputPassword }) => {
   const { t } = useTranslation();
-  const [isMessageOpen, setIsMessageOpen] = useState(false);
   const { userStore, authStore, spaceStore } = useCoreStores();
+  const { uiStore } = useStores();
 
   const handleToggleMessage = () => {
-    setIsMessageOpen(!isMessageOpen);
+    const [title, subTitle] = t('CM_INCORRECT_PWD').split('\n');
+
+    uiStore.openMessage({
+      title,
+      subTitle,
+      type: 'error',
+      buttons: [
+        {
+          type: 'solid',
+          shape: 'round',
+          text: t('CM_LOGIN_POLICY_03'),
+          onClick: () => {
+            uiStore.closeMessage();
+          },
+        },
+      ],
+    });
   };
+
   const handleMoveSpacePage = useCallback(() => {
     MovePage('spaces');
   }, []);
@@ -30,8 +48,6 @@ const SettingSave = ({ onCancel, inputPassword }) => {
     }
   };
 
-  const title = t('CM_INCORRECT_PWD').split('\n');
-
   return (
     <>
       <Button type="solid" onClick={onCancel}>
@@ -40,22 +56,6 @@ const SettingSave = ({ onCancel, inputPassword }) => {
       <Button onClick={handleInputPassword} type="outlined">
         {t('CM_LOGIN_POLICY_03')}
       </Button>
-      {isMessageOpen && (
-        <Message
-          visible={isMessageOpen}
-          title={title[0]}
-          subtitle={title[1]}
-          type="error"
-          btns={[
-            {
-              type: 'solid',
-              shape: 'round',
-              text: t('CM_LOGIN_POLICY_03'),
-              onClick: handleToggleMessage,
-            },
-          ]}
-        />
-      )}
     </>
   );
 };

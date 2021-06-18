@@ -11,7 +11,7 @@ export const ThemeList = styled.ul`
 export const ThemeItem = styled.li`
   display: flex;
   width: 9.375rem;
-  flex-direction: column-reverse;
+  flex-direction: column;
   margin-right: 3.31rem;
   &:last-child {
     margin-right: 0;
@@ -19,7 +19,7 @@ export const ThemeItem = styled.li`
   .ant-radio-wrapper {
     font-size: 0.75rem;
     line-height: 0.94rem;
-    color: #000;
+    color: ${props => props.theme.TextMain};
     &-checked {
       + div::after {
         border: 2px solid #ec6222;
@@ -44,10 +44,16 @@ export const ThemeImage = styled.div`
     top: 0;
     bottom: 0;
     border-radius: 0.63rem;
-    border: 1px solid #e3e7eb;
+    border: 1px solid ${props => props.theme.IconHinted};
   }
 `;
 
 export const ThemeThumb = styled.img`
   width: 100%;
+`;
+
+export const SystemText = styled.span`
+  margin-top: 0.5rem;
+  font-size: 0.69rem;
+  color: ${props => props.theme.TextSub2};
 `;

@@ -3,14 +3,14 @@
 import uiStore from './uiStore';
 import roomSettingStore from './roomSettingStore';
 import historyStore from './historyStore';
-import friendStore from './friendStore';
+import friendUiStore from './friendUiStore';
 import handlerStore from './handlerStore';
 
 const rootStore = {
   uiStore,
   roomSettingStore,
   historyStore,
-  friendStore,
+  friendUiStore,
   handlerStore,
 };
 

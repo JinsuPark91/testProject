@@ -1,9 +1,9 @@
 /* eslint-disable no-underscore-dangle */
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
-import { useCoreStores } from 'teespace-core';
+import { useCoreStores, WWMS } from 'teespace-core';
 import { useStores } from '../../stores';
 import SubMemberPage from './SubMemberPage';
 import SubWaitingMemberPage from './SubWaitingMemberPage';
@@ -37,8 +37,9 @@ const SubTab = ({ isOpenRoom = false }) => {
           <Observer>
             {() => (
               // "alarm-badge" className 추가 시 알림 뱃지 노출
-              // <SubTabItem className="alarm-badge">
-              <SubTabItem>
+              <SubTabItem
+                className={store.requestMembers.length ? 'alarm-badge' : ''}
+              >
                 <ItemText
                   data-tab-key="request"
                   className={
@@ -74,6 +75,30 @@ const MemberSettingPage = ({ roomId }) => {
   const { roomStore } = useCoreStores();
   const { roomSettingStore: store } = useStores();
   const roomInfo = roomStore.getRoom(roomId);
+
+  useEffect(() => {
+    Promise.all([
+      store.fetchMembers({ roomId }),
+      store.fetchRequestMembers({ roomId }),
+      store.fetchBlockedMembers({ roomId }),
+    ]);
+
+    const handleSystemMessage = message => {
+      if (message.SPACE_ID !== roomId) return;
+
+      switch (message.NOTI_TYPE) {
+        case 'memberRequest':
+          store.fetchRequestMembers({ roomId });
+          break;
+        default:
+          break;
+      }
+    };
+
+    WWMS.addHandler('SYSTEM', 'room_setting', handleSystemMessage);
+
+    return () => WWMS.removeHandler('SYSTEM', 'room_setting');
+  }, []);
 
   const subPage = () => {
     switch (store.subTabKey) {
@@ -123,7 +148,7 @@ const SubTabItem = styled.li`
     width: 1px;
     height: 0.75rem;
     margin: 0.25rem 0.75rem 0;
-    background-color: #d0ccc7;
+    background-color: ${props => props.theme.LineOut};
     vertical-align: top;
   }
 

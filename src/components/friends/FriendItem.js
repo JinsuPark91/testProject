@@ -1,11 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
 import { observer } from 'mobx-react';
-import { Tooltip } from 'antd';
-import { useCoreStores, Dropdown, Menu, Message } from 'teespace-core';
+import { useCoreStores, Dropdown, Menu, Message, Tooltip } from 'teespace-core';
+import { ThemeContext } from 'styled-components';
 import { rootStore } from '../../stores';
 import { ACCEPT_ITEMS, TALK_ACCEPT_ITEMS } from '../../utils/DndConstant';
 import { handleCheckNewFriend } from '../../utils/FriendsUtil';
@@ -24,7 +24,6 @@ import {
   MoreIconWrapper,
 } from '../../styles/friends/FriendItemStyle';
 import { ViewMoreIcon, ExportIcon } from '../Icons';
-import mySign from '../../assets/wapl_me.svg';
 
 const { uiStore } = rootStore;
 
@@ -58,11 +57,7 @@ const TextComponent = React.memo(({ displayName, fullCompanyJob, mode }) => {
 
   return (
     <TextComponentBox>
-      {mode === 'me' && (
-        <MeWrapper>
-          <img src={mySign} alt="me" />
-        </MeWrapper>
-      )}
+      {mode === 'me' && <MeWrapper>나</MeWrapper>}
       <TitleForName>{fullDisplayName}</TitleForName>
     </TextComponentBox>
   );
@@ -155,8 +150,14 @@ const AllAction = React.memo(({ itemId }) => {
     );
   };
 
+  const themeContext = useContext(ThemeContext);
+
   return (
-    <Tooltip placement="top" title={t('CM_TEMP_MINI_CHAT')} color="#4C535D">
+    <Tooltip
+      placement="top"
+      title={t('CM_TEMP_MINI_CHAT')}
+      color={themeContext.CoreLight}
+    >
       <MoreIconWrapper
         className="lnb-friend__export-icon friends__item__export-button"
         onClick={handleExport}
@@ -195,9 +196,7 @@ const FriendItem = observer(
     onClick,
     friendInfo,
     handleOpenInfoModal,
-    handleSelectedId,
     handleOpenToast,
-    handleToastText,
   }) => {
     const { t } = useTranslation();
     const {
@@ -207,7 +206,7 @@ const FriendItem = observer(
       id: userId = '',
       profileStatusMsg,
     } = friendInfo;
-    const fullCompanyJob = friendInfo.getFullCompanyJob(true);
+    const fullCompanyJob = friendInfo.getFullCompanyJob(1);
     const history = useHistory();
     const {
       friendStore,
@@ -291,73 +290,8 @@ const FriendItem = observer(
 
     const handleSelectPhoto = (e, id = '') => {
       if (e) e.stopPropagation();
-      if (id) {
-        handleSelectedId(id);
-        handleOpenInfoModal();
-      }
+      if (id) handleOpenInfoModal(id);
     };
-
-    // const talkWindowOpen = usePortalWindow();
-
-    // const handleTalkWindowOpen = async e => {
-    //   if (e) e.stopPropagation();
-    //   try {
-    //     const targetId = friendInfo.friendId || myUserId;
-    //     const { roomInfo } = await roomStore.getDMRoom(myUserId, targetId);
-
-    //     if (roomInfo) {
-    //       if (!roomInfo.isVisible) {
-    //         await roomStore.updateRoomMemberSetting({
-    //           roomId: roomInfo.id,
-    //           myUserId,
-    //           newIsVisible: true,
-    //         });
-    //       }
-    //       talkWindowOpen({
-    //         element: (
-    //           <Talk
-    //             roomId={roomInfo.id}
-    //             channelId={
-    //               roomStore
-    //                 .getRoomMap()
-    //                 .get(roomInfo.id)
-    //                 ?.channelList?.find(channel => channel.type === 'CHN0001')
-    //                 ?.id
-    //             }
-    //           />
-    //         ),
-    //         opts: 'width=600, height=900',
-    //         title: 'mini-talk',
-    //       });
-    //     } else {
-    //       const { dmRoomId } = await roomStore.createRoom({
-    //         creatorId: myUserId,
-    //         userList:
-    //           myUserId === targetId
-    //             ? [{ userId: myUserId }]
-    //             : [{ userId: myUserId }, { userId: targetId }],
-    //       });
-    //       talkWindowOpen({
-    //         element: (
-    //           <Talk
-    //             roomId={dmRoomId}
-    //             channelId={
-    //               roomStore
-    //                 .getRoomMap()
-    //                 .get(dmRoomId)
-    //                 ?.channelList?.find(channel => channel.type === 'CHN0001')
-    //                 ?.id
-    //             }
-    //           />
-    //         ),
-    //         opts: 'width=600, height=900',
-    //         title: 'mini-talk',
-    //       });
-    //     }
-    //   } catch (e) {
-    //     console.error(`Error is${e}`);
-    //   }
-    // };
 
     const handleDropdownVisible = useCallback(visible => {
       setDropdownVisible(visible);
@@ -378,8 +312,7 @@ const FriendItem = observer(
       } catch (error) {
         console.log(error);
       }
-      handleToastText(t('CM_BOOKMARK_03'));
-      handleOpenToast();
+      handleOpenToast(t('CM_BOOKMARK_03'));
     };
 
     const handleCancelBookmark = async ({ domEvent: e }) => {
@@ -389,8 +322,7 @@ const FriendItem = observer(
         friendId: itemId,
         isFav: false,
       });
-      handleToastText(t('CM_BOOKMARK_02'));
-      handleOpenToast();
+      handleOpenToast(t('CM_BOOKMARK_02'));
     };
 
     const handleMoveItem = targetId => {

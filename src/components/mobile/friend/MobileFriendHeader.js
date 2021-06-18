@@ -1,9 +1,10 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
+import { Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { Button } from 'antd';
-import { AddRoomIcon, AddFriendsIcon, EditIcon, CloseIcon } from '../Icon';
+import { AddFriendsIcon, EditIcon, CloseIcon } from '../Icon';
 import settingicon from '../../../assets/setting_2.svg';
 
 const Header = styled.div`
@@ -82,24 +83,20 @@ const ProfileImgBox = styled.div`
   }
 `;
 
-const MobileFriendHeader = ({ friendEditMode, handleFriendEditMode }) => {
+const MobileFriendHeader = ({ isEditMode, handleEditMode }) => {
   const history = useHistory();
   const { userStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
   const profilePhoto = userStore.getProfilePhotoURL(myUserId, 'small');
 
-  const handleClickMyProfile = () => {
-    history.push(`/profile/${myUserId}`);
-  };
+  const handleClickMyProfile = () => history.push(`/profile/${myUserId}`);
 
-  const handleAddFriend = () => {
-    history.push(`/addfriend/${myUserId}`);
-  };
+  const handleAddFriend = () => history.push(`/addfriend/${myUserId}`);
 
-  if (friendEditMode) {
+  if (isEditMode) {
     return (
       <Header>
-        <ButtonBox onClick={handleFriendEditMode}>
+        <ButtonBox onClick={handleEditMode}>
           <IconButton type="ghost" icon={<CloseIcon />} />
         </ButtonBox>
         <EditTitle>편집</EditTitle>
@@ -111,24 +108,19 @@ const MobileFriendHeader = ({ friendEditMode, handleFriendEditMode }) => {
     <FriendHeader>
       <HeaderTitle>프렌즈</HeaderTitle>
       <ButtonsBox>
-        {/* <IconButton type="ghost" icon={<AddRoomIcon />} /> */}
         <IconButton
           onClick={handleAddFriend}
           type="ghost"
           icon={<AddFriendsIcon />}
         />
-        <IconButton
-          onClick={handleFriendEditMode}
-          type="ghost"
-          icon={<EditIcon />}
-        />
+        <IconButton onClick={handleEditMode} type="ghost" icon={<EditIcon />} />
       </ButtonsBox>
       <ProfileButton
         onClick={handleClickMyProfile}
         type="ghost"
         icon={
           <ProfileImgBox>
-            <img alt="profilePhoto" src={profilePhoto} />
+            <img alt="myPhoto" src={profilePhoto} />
           </ProfileImgBox>
         }
       />

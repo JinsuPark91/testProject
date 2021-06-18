@@ -53,6 +53,9 @@ export const StyledMenu = styled(Menu)`
     &.ant-menu-item-selected {
       background-color: ${props => props.theme.SubStateDark};
     }
+    &:active {
+      background-color: ${props => props.theme.SubStateDark};
+    }
   }
 `;
 
@@ -171,7 +174,6 @@ export const EditNameInput = styled(InputCounter)`
   height: 1.875rem;
   .input-counter {
     font-size: 0.69rem;
-    color: #bdc6d3;
   }
 `;
 

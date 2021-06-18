@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useContext } from 'react';
+import React, { useEffect, useCallback, useContext, useState } from 'react';
 import { useLocalStore, Observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -7,6 +7,8 @@ import {
   logEvent,
   EventBus,
   Tooltip,
+  AddFriendsByInvitationDialog,
+  ThemeStore,
 } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +28,7 @@ import {
   StyledPhotos,
   VerticalBar,
 } from './HeaderStyle';
-import { useStores, rootStore } from '../../stores';
+import { useStores } from '../../stores';
 import HeaderProfile from '../profile/HeaderProfile';
 import RoomInquiryModal from '../Rooms/RoomInquiryModal';
 import RoomAddMemberModal from '../Rooms/RoomAddMemberModal';
@@ -47,15 +49,16 @@ import {
   OpenChatBgIcon,
 } from '../Icons';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
+import { getLeftDistance } from '../../utils/GeneralUtil';
 import * as useCommand from '../../hook/Command';
 
 const getIconStyle = (isDisabled = false) => {
-  const { uiStore } = rootStore;
-
   return {
     width: 1.38,
     height: 1.38,
-    color: isDisabled ? 'rgba(68, 77, 89, 0.3)' : uiStore.theme.HeaderIcon,
+    color: isDisabled
+      ? ThemeStore.theme.IconDisabled
+      : ThemeStore.theme.HeaderIcon,
   };
 };
 
@@ -134,7 +137,7 @@ const AppIcon = React.memo(
     disabled,
   }) => {
     const { t } = useTranslation();
-
+    const themeContext = useContext(ThemeContext);
     const handleAppClick = () => {
       onClick(appName);
     };
@@ -149,7 +152,11 @@ const AppIcon = React.memo(
     }
 
     return (
-      <Tooltip placement="bottom" title={t(i18n)} color="#4C535D">
+      <Tooltip
+        placement="bottom"
+        title={t(i18n)}
+        color={themeContext.CoreLight}
+      >
         <AppIconInner
           className={`header__${appName}-button`}
           key={appName}
@@ -166,9 +173,10 @@ AppIcon.displayName = 'AppIcon';
 
 const Header = () => {
   const history = useHistory();
+  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
   const { t, i18n } = useTranslation();
   const { uiStore } = useStores();
-  const { roomStore, userStore, configStore } = useCoreStores();
+  const { roomStore, userStore, configStore, themeStore } = useCoreStores();
   const store = useLocalStore(() => ({
     appConfirm: null,
     inviteRoomId: null,
@@ -179,13 +187,9 @@ const Header = () => {
   }));
 
   useEffect(() => {
-    const inviteUserHandler = EventBus.on(
-      'Platform:inviteUser',
-      ({ roomId }) => {
-        store.inviteRoomId = roomId;
-        store.visible.addMemberModal = true;
-      },
-    );
+    const inviteUserHandler = EventBus.on('Platform:inviteUser', () => {
+      setIsInviteDialogOpen(true);
+    });
 
     return () => EventBus.off('Platform:inviteUser', inviteUserHandler);
   }, []);
@@ -232,24 +236,6 @@ const Header = () => {
       return found.userCount;
     }
     return null;
-  };
-
-  const getUserPhotos = () => {
-    const found = findRoom();
-    if (found && found?.memberIdListString) {
-      const userIdArr = found?.memberIdListString.split(',');
-      const userIds =
-        userIdArr.length === 1 && !found?.isDirectMsg
-          ? userIdArr
-          : userIdArr
-              .filter(userId => userId !== userStore.myProfile.id)
-              .splice(0, 4);
-
-      return userIds.map(
-        userId => `${userStore.getProfilePhotoURL(userId, 'small')}`,
-      );
-    }
-    return [];
   };
 
   const handleExport = () => {
@@ -359,8 +345,12 @@ const Header = () => {
     }
   };
 
+  const handleCancelInviteModal = () => {
+    setIsInviteDialogOpen(false);
+  };
+
   const handleClickRoomPhoto = () => {
-    store.visible.roomProfileModal = true;
+    if (!isBotRoom()) store.visible.roomProfileModal = true;
   };
 
   const handleCancelRoomMemeberModal = () => {
@@ -384,8 +374,6 @@ const Header = () => {
     store.visible.addMemberModal = false;
   };
 
-  const currRoomInfo = findRoom();
-
   const isActive = name => {
     if (name === 'meeting')
       return !!uiStore.getWindow('meeting', findRoom()?.id);
@@ -408,13 +396,13 @@ const Header = () => {
             });
           }}
           onClose={handleCancelRoomMemeberModal}
-          position={{ top: '3.5rem', left: '20.125rem' }}
+          position={{ top: '3.5rem', left: getLeftDistance(0.19) }}
         />
       );
     }
-    if (currRoomInfo?.userCount === 2) {
-      const dmUserId = currRoomInfo.memberIdListString
-        .split(',')
+    if (findRoom()?.userCount === 2) {
+      const dmUserId = findRoom()
+        .memberIdListString.split(',')
         .find(userId => userId !== userStore.myProfile.id);
 
       return (
@@ -431,7 +419,7 @@ const Header = () => {
               handler: null,
             });
           }}
-          position={{ top: '3.5rem', left: '17rem' }}
+          position={{ top: '3.5rem', left: getLeftDistance(0.19) }}
         />
       );
     }
@@ -442,23 +430,43 @@ const Header = () => {
         onCancel={handleCancelRoomMemeberModal}
         width="17.5rem"
         top="3.5rem"
-        left="17rem"
+        left={getLeftDistance(0.19)}
       />
     );
   };
 
   const handleNewNote = useCallback(() => {
     openSubApp('note');
-    // Eventbus.~~~
+    EventBus.dispatch('onSlashCreateNote');
   }, [openSubApp]);
+
+  // const handleSearchDrive = useCallback(() => {
+  //   openSubApp('drive');
+  //   EventBus.dispatch('Drive:Command:SearchDrive');
+  // }, [openSubApp]);
+
+  const handleOpenApp = appName => () => {
+    openSubApp(appName);
+  };
 
   useCommand.InviteMember(handleAddMember);
   useCommand.NewNote(handleNewNote);
+  // useCommand.SearchDrive(handleSearchDrive);
+  useCommand.OpenCalendar(handleOpenApp('calendar'));
+  useCommand.OpenDrive(handleOpenApp('drive'));
+  useCommand.OpenNote(handleOpenApp('note'));
 
   const themeContext = useContext(ThemeContext);
 
   return (
     <Wrapper>
+      {isInviteDialogOpen && (
+        <AddFriendsByInvitationDialog
+          visible={isInviteDialogOpen}
+          mailList={[]}
+          onCancel={handleCancelInviteModal}
+        />
+      )}
       <TitleWrapper>
         <Observer>
           {() =>
@@ -469,8 +477,9 @@ const Header = () => {
                   <Observer>
                     {() => (
                       <StyledPhotos
+                        isBotRoom={isBotRoom()}
                         className="header__photo"
-                        srcList={getUserPhotos()}
+                        srcList={roomStore.getRoomPhoto(findRoom()?.id)}
                         onClick={handleClickRoomPhoto}
                       />
                     )}
@@ -520,7 +529,7 @@ const Header = () => {
                             <Tooltip
                               placement="bottom"
                               title={t('CM_TEMP_MINI_CHAT')}
-                              color="#4C535D"
+                              color={themeContext.CoreLight}
                             >
                               <IconWrapper
                                 className="header__export-button"
@@ -529,14 +538,14 @@ const Header = () => {
                                 <ExportIcon
                                   width={1.25}
                                   height={1.25}
-                                  color={uiStore.theme.HeaderIcon}
+                                  color={themeStore.theme.HeaderIcon}
                                 />
                               </IconWrapper>
                             </Tooltip>
                             <Tooltip
                               placement="bottom"
                               title={t('CM_ROOMTITLE_TOOLTIP_02')}
-                              color="#4C535D"
+                              color={themeContext.CoreLight}
                             >
                               <IconWrapper
                                 className="header__search-button"
@@ -545,7 +554,7 @@ const Header = () => {
                                 <SearchIcon
                                   width={1.25}
                                   height={1.25}
-                                  color={uiStore.theme.HeaderIcon}
+                                  color={themeStore.theme.HeaderIcon}
                                 />
                               </IconWrapper>
                             </Tooltip>
@@ -562,7 +571,7 @@ const Header = () => {
                                 <Tooltip
                                   placement="bottom"
                                   title={t('CM_ROOM_INVITE_USER')}
-                                  color="#4C535D"
+                                  color={themeContext.CoreLight}
                                 >
                                   <IconWrapper
                                     className="header__invite-button"
@@ -571,7 +580,7 @@ const Header = () => {
                                     <AddAcountIcon
                                       width={1.25}
                                       height={1.25}
-                                      color={uiStore.theme.HeaderIcon}
+                                      color={themeStore.theme.HeaderIcon}
                                     />
                                   </IconWrapper>
                                 </Tooltip>

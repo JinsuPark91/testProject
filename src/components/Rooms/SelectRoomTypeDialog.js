@@ -1,8 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled, { ThemeContext } from 'styled-components';
-import { Modal } from 'antd';
-import { useCoreStores, logEvent } from 'teespace-core';
+import { useCoreStores, logEvent, Modal } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { PrivateRoomIcon, OpenChatIcon } from '../Icons';
 import CreatePrivateRoomDialog from '../dialogs/CreatePrivateRoomDialog';
@@ -65,17 +64,6 @@ const StyledInfoText = styled.p`
   letter-spacing: 0;
   text-align: center;
   line-height: 1rem;
-`;
-
-const StyledModal = styled(Modal)`
-  .ant-modal-body {
-    padding: 0;
-  }
-
-  .ant-modal-close .ant-modal-close-x {
-    color: #7b7671;
-    font-size: 1.06rem;
-  }
 `;
 
 function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
@@ -185,7 +173,7 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
         onOk={handleCreatePrivateRoomOk}
         onCancel={handleCreatePrivateRoomCancel}
       />
-      <StyledModal
+      <Modal
         visible={visible}
         mask={false}
         footer={null}
@@ -204,7 +192,7 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
                 height={1.88}
                 color={
                   isDisabled()
-                    ? themeContext.IconDisabled2
+                    ? themeContext.IconDisabled
                     : themeContext.IconNormal2
                 }
               />
@@ -229,7 +217,7 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
             <StyledInfoText>{t('CM_CREATE_ROOM_OPTION_04')}</StyledInfoText>
           </RoomInformation>
         </SelectRoomType>
-      </StyledModal>
+      </Modal>
     </>
   );
 }
