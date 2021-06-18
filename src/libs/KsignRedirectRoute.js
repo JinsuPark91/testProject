@@ -20,8 +20,9 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
   const getLoginId = searchParams.get('loginId');
   const getDeviceId = searchParams.get('deviceId');
   const getPath = searchParams.get('path');
+  const getIdToken = Cookies.get('ID_TOKEN');
   useEffect(() => {
-    if (getNibId || getLoginId) {
+    if (getNibId || getLoginId || getIdToken) {
       // NOTE. 사용자 인증이 된 상태에서 웹소켓 연결을 시도
       if (!wwms.isConnected && authStore.isAuthenticated) {
         wwms.connect(authStore.user.id);
@@ -110,7 +111,7 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
     );
   }
   //for guest
-  else if (getLoginId && getDeviceId && getPath) {
+  else if ((getLoginId && getDeviceId && getPath) || getIdToken) {
     let loginInfo;
     loginInfo = {
       // ksign 용 로그인 input

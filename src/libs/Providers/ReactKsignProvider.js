@@ -10,8 +10,9 @@ export default ({ children }) => {
   const getDeviceId = searchParams.get('deviceId');
   const getPath = searchParams.get('path');
   const getNibId = Cookies.get('NIBID');
+  const getIdToken = Cookies.get('ID_TOKEN');
 
-  if (getNibId || (getLoginId && getDeviceId && getPath)) {
+  if (getNibId || (getLoginId && getDeviceId && getPath) || getIdToken) {
     return <>{children}</>;
   } else {
     const isLocal = process.env.REACT_APP_ENV === 'local';
