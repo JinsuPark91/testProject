@@ -64,7 +64,7 @@ const MainPage = () => {
   useEffect(() => {
     uiStore.resourceType = resourceType;
     uiStore.tabType = resourceType;
-  }, [resourceType]);
+  }, [uiStore, resourceType]);
 
   useEffect(() => {
     if (resourceType === 'm' && isLoaded) {
@@ -73,20 +73,17 @@ const MainPage = () => {
     } else {
       uiStore.resourceId = resourceId;
     }
-  }, [isLoaded, resourceId, resourceType, myUserId, roomStore]);
+  }, [uiStore, isLoaded, resourceId, resourceType, myUserId, roomStore]);
 
   useEffect(() => {
     uiStore.mainApp = mainApp;
-  }, [mainApp]);
+  }, [uiStore, mainApp]);
 
   useEffect(() => {
     uiStore.subApp = subApp;
-    if (!subApp) {
-      uiStore.layout = 'close';
-    } else {
-      uiStore.layout = 'collapse';
-    }
-  }, [subApp, resourceId]);
+    if (!subApp) uiStore.layout = 'close';
+    else uiStore.layout = 'collapse';
+  }, [uiStore, subApp]);
 
   const handleSystemMessage = message => {
     const resType = uiStore.resourceType;

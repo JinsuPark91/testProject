@@ -33,7 +33,7 @@ const CommonSettingPage = ({ roomId }) => {
   const getConvertedTime = timestamp => {
     if (timestamp) {
       return DateTime.fromFormat(timestamp, 'yyyy-MM-dd HH:mm:ss.S z')
-        .toFormat('yyyy.MM.dd a hh:mm')
+        .toFormat('yyyy.MM.dd') // a hh:mm
         .replace('AM', t('CM_TEMP_AM'))
         .replace('PM', t('CM_TEMP_PM'));
     }

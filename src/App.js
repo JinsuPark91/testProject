@@ -25,17 +25,19 @@ import {
   initApp as initCalendarApp,
   initializeApp as initializeCalendarApp,
 } from 'teespace-calendar-app';
-import AdminPage from './page/AdminPage';
-import NotFoundPage from './page/NotFoundPage';
-import SignUpPage from './page/SignUpPage';
-import SignUpFormPage from './page/SignUpFormPage';
-import SignUpCompletePage from './page/SignUpCompletePage';
-import DriveSharedFilePage from './page/DriveSharedFilePage';
-import OfficeFilePage from './page/OffiveFilePage';
-import NewWindowPage from './page/NewWindowPage';
-import MainPage from './page/MainPage';
+import {
+  AdminPage,
+  NotFoundPage,
+  SignUpPage,
+  SignUpFormPage,
+  SignUpCompletePage,
+  DriveSharedFilePage,
+  OfficeFilePage,
+  MainPage,
+  NewWindowPage,
+  PrivateLoginPage,
+} from './page';
 import RedirectablePublicRoute from './libs/RedirectablePublicRoute';
-import { getQueryParams } from './utils/UrlUtil';
 import initMonitoringLog from './libs/monitoringLog';
 import {
   AuthProvider,
@@ -43,7 +45,7 @@ import {
   PrivateAuthRoute,
   LogoutComponent,
 } from './libs/auth';
-import PrivateLoginPage from './page/PrivateLoginPage';
+import { getQueryParams } from './utils/UrlUtil';
 
 const hydrate = create();
 
@@ -51,8 +53,6 @@ function App() {
   const [isHydrating, setIsHydrating] = useState(false);
   const { userStore } = useCoreStores();
   const history = useHistory();
-  const url = window.location.origin; //  http://xxx.dev.teespace.net
-  const isLocal = process.env.REACT_APP_ENV === 'local';
 
   // MiniTalk 임시.
   const { mini: isMini } = getQueryParams(window.location.search);
@@ -75,7 +75,6 @@ function App() {
     Promise.all([hydrate('user', userStore)])
       .then(() => {
         userStore.initHydratedMyProfile({});
-        userStore.myProfile.setLanguage(sessionStorage.getItem('language'));
         setIsHydrating(true);
       })
       .catch(e => console.error(e));

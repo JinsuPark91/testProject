@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useCoreStores, EventBus, AlarmSetting, WWMS } from 'teespace-core';
-import { useStores } from './../stores';
-import { isDarkMode } from './../utils/GeneralUtil';
-import { handleProfileMenuClick } from './../utils/ProfileUtil';
 import { useTranslation } from 'react-i18next';
+import { useStores } from '../stores';
+import { isDarkMode } from '../utils/GeneralUtil';
+import { handleProfileMenuClick } from '../utils/ProfileUtil';
 
 const useInitialize = () => {
   const {
@@ -17,8 +17,8 @@ const useInitialize = () => {
   const { uiStore, historyStore } = useStores();
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const { t, i18n } = useTranslation();
-  const { resourceType, resourceId, mainApp } = useParams();
+  const { i18n } = useTranslation();
+  const { resourceType, resourceId } = useParams();
   const history = useHistory();
 
   const url = window.location.origin; //  http://xxx.dev.teespace.net

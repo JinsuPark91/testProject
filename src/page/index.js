@@ -1,0 +1,10 @@
+export { default as AdminPage } from './AdminPage';
+export { default as NotFoundPage } from './NotFoundPage';
+export { default as SignUpPage } from './SignUpPage';
+export { default as SignUpFormPage } from './SignUpFormPage';
+export { default as SignUpCompletePage } from './SignUpCompletePage';
+export { default as DriveSharedFilePage } from './DriveSharedFilePage';
+export { default as OfficeFilePage } from './OfficeFilePage';
+export { default as NewWindowPage } from './NewWindowPage';
+export { default as MainPage } from './MainPage';
+export { default as PrivateLoginPage } from './PrivateLoginPage';
