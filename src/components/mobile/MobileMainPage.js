@@ -49,8 +49,8 @@ const MobileMainPage = () => {
         );
         await userStore.fetchProfileList(friendIdList);
       }
-      // 룸 목록으로 항상 이동
-      history.push('/room');
+      // 룸 목록으로 항상 이동 -> 로그인 후 /room으로 이동되게끔 변경하면서 삭제
+      // history.push('/room');
       setIsLoading(false);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
