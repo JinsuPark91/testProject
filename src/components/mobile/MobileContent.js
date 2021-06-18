@@ -55,6 +55,7 @@ const MobileContent = () => {
             roomId={getRoomId()}
             channelId={getChannelId('CHN0001')}
             isMini={false}
+            opts={{ autofocus: false }}
           />
         );
       // 2021. 3월 배포 제외
