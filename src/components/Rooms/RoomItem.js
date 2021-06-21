@@ -343,17 +343,6 @@ const RoomItemContent = React.memo(
                     ),
                   ];
                 } else {
-                  // const userIdArr = roomInfo.memberIdListString.split(',');
-                  // const userIds =
-                  //   userIdArr.length === 1 && !roomInfo.isDirectMsg
-                  //     ? userIdArr
-                  //     : userIdArr
-                  //         .filter(userId => userId !== userStore.myProfile.id)
-                  //         .splice(0, 4);
-
-                  // userPhotos = userIds.map(userId =>
-                  //   userStore.getProfilePhotoURL(userId, 'small'),
-                  // );
                   userPhotos = roomStore.getRoomPhoto(roomInfo.id, 4);
                 }
                 return (
@@ -495,8 +484,8 @@ const RoomItem = ({
   roomInfo,
   onClick,
   onMenuClick,
-  onClickMenuItem = () => {},
-  onClickRoomPhoto = () => {},
+  onClickMenuItem = () => { },
+  onClickRoomPhoto = () => { },
 }) => {
   const { handlerStore } = useStores();
   const isMyRoom = roomInfo.type === 'WKS0001';
