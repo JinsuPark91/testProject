@@ -141,15 +141,15 @@ const SubTabWrap = styled.ul`
 
 const SubTabItem = styled.li`
   position: relative;
+  display: inline-flex;
+  align-items: center;
 
   & + &::before {
     content: '';
-    display: inline-block;
     width: 1px;
     height: 0.75rem;
-    margin: 0.25rem 0.75rem 0;
+    margin: 0 0.75rem;
     background-color: ${props => props.theme.LineOut};
-    vertical-align: top;
   }
 
   &.alarm-badge::after {

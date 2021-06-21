@@ -12,6 +12,7 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
   const { authStore } = useCoreStores();
   const history = useHistory();
   const getNibId = Cookies.get('NIBID');
+  const getKsignId = Cookies.get('KSIGN_ID');
   const url = window.location.origin; //  http://xxx.dev.teespace.net
   const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
   const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
@@ -20,8 +21,9 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
   const getLoginId = searchParams.get('loginId');
   const getDeviceId = searchParams.get('deviceId');
   const getPath = searchParams.get('path');
+  const getIdToken = Cookies.get('ID_TOKEN');
   useEffect(() => {
-    if (getNibId || getLoginId) {
+    if (getNibId || getKsignId || getLoginId || getIdToken) {
       // NOTE. 사용자 인증이 된 상태에서 웹소켓 연결을 시도
       if (!wwms.isConnected && authStore.isAuthenticated) {
         wwms.connect(authStore.user.id);
@@ -48,7 +50,7 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
     }
   }, [authStore.user.id, authStore.isAuthenticated]);
 
-  if (getNibId) {
+  if (getNibId || getKsignId) {
     //index.jsp 탈 경우
 
     let loginInfo;
@@ -78,6 +80,16 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
 
               const res = await authStore.login(loginInfo);
               if (res) {
+                Cookies.set(
+                  'KSIGN_ID',
+                  true,
+                  process.env.REACT_APP_ENV === 'local'
+                    ? {}
+                    : {
+                        domain: `.${mainURL}`,
+                      },
+                );
+                Cookies.remove('NIBID');
                 if (stateFrom) {
                   history.push(
                     `${stateFrom.pathname}${props.location.state?.from.search}`,
@@ -88,7 +100,7 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
                     '',
                   );
                   if (exceptMobilePath.includes('/login')) {
-                    history.push(`/friend`);
+                    history.push(`/room`);
                   } else {
                     history.push(exceptMobilePath);
                   }
@@ -110,7 +122,7 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
     );
   }
   //for guest
-  else if (getLoginId && getDeviceId && getPath) {
+  else if ((getLoginId && getDeviceId && getPath) || getIdToken) {
     let loginInfo;
     loginInfo = {
       // ksign 용 로그인 input
@@ -138,7 +150,7 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
                 } else if (getPath.includes('/mobile')) {
                   const exceptMobilePath = getPath.replace('/mobile', '');
                   if (exceptMobilePath.includes('/login')) {
-                    history.push(`/friend`);
+                    history.push(`/room`);
                   } else {
                     history.push(exceptMobilePath);
                   }
