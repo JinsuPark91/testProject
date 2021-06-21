@@ -39,13 +39,13 @@ const uiStore = observable({
   toastTimeout: 1000,
   toastSize: 'medium',
   toastLinks: [],
-  toastOnClose: () => {},
+  toastOnClose: () => { },
   openToast({
     text = '',
     timeout = 1000,
     size = 'medium',
     links = [],
-    onClose = () => {},
+    onClose = () => { },
   }) {
     transaction(() => {
       this.toastText = text;
@@ -63,7 +63,7 @@ const uiStore = observable({
       this.toastTimeout = 1000;
       this.toastSize = 'medium';
       this.toastLinks = [];
-      this.toastOnClose = () => {};
+      this.toastOnClose = () => { };
     });
   },
   isMessageVisible: false,
@@ -211,6 +211,32 @@ const uiStore = observable({
       const { id: windowId } = window;
       this.closeWindow(type, windowId);
     });
+  },
+
+  // profileEmoticon 용 store
+  statusCode: 'STA0000',
+  get statusText() {
+    let text;
+    switch (this.statusCode) {
+      case 'STA0001':
+        text = '연락 가능';
+        break;
+      case 'STA0002':
+        text = '부재중';
+        break;
+      case 'STA0003':
+        text = '휴가중';
+        break;
+      case 'STA0004':
+        text = '회의중';
+        break;
+      default:
+        text = '내 상태 추가';
+    }
+    return text;
+  },
+  setStatusCode(data) {
+    this.statusCode = data;
   },
 });
 
