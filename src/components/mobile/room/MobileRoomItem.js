@@ -16,10 +16,6 @@ const Wrapper = styled.div`
   justify-content: flex-start;
   padding: 0.81rem 1rem;
   cursor: pointer;
-
-  & div {
-    flex-shrink: 1;
-  }
 `;
 const Content = styled.div`
   display: flex;
@@ -91,6 +87,8 @@ const MessageCount = styled.div`
 const CheckBox = styled.div`
   width: 1.13rem;
   height: 1.13rem;
+  display: flex;
+  flex-shrink: 0;
 `;
 const CheckboxInput = styled.input`
   display: none;
