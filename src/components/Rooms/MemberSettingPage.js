@@ -87,6 +87,10 @@ const MemberSettingPage = ({ roomId }) => {
       if (message.SPACE_ID !== roomId) return;
 
       switch (message.NOTI_TYPE) {
+        case 'addMember':
+        case 'removeMember':
+          store.fetchMembers({ roomId });
+          break;
         case 'memberRequest':
           store.fetchRequestMembers({ roomId });
           break;
@@ -112,6 +116,8 @@ const MemberSettingPage = ({ roomId }) => {
         return null;
     }
   };
+
+  if (!roomInfo) return null;
 
   return (
     <Wrapper>
