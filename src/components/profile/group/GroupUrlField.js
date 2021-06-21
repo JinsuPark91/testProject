@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Tooltip } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import { isBasicPlan } from '../../../utils/GeneralUtil';
 import { getMainURL } from '../../../utils/UrlUtil';
 import {
@@ -10,7 +11,6 @@ import {
   UrlText,
 } from '../../../styles/profile/SpaceEditModalStyle';
 import errorIcon from '../../../assets/ts_error.svg';
-import { ThemeContext } from 'styled-components';
 
 const GroupNameField = ({
   urlAddress,

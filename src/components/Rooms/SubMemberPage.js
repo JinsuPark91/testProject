@@ -287,7 +287,7 @@ const MemberPage = ({ roomId }) => {
       const result = await store.kickoutMembers({ roomId, userIdList });
       if (result) {
         await Promise.all([
-          store.fetchMembers({ roomId }),
+          // store.fetchMembers({ roomId }),  // MemberSettingPage의 WWMS hanlder에서 호출
           store.fetchBlockedMembers({ roomId }),
         ]);
       }

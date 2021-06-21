@@ -150,6 +150,8 @@ const CommonSettingPage = ({ roomId }) => {
     setIsChanged(true);
   };
 
+  if (!roomInfo) return null;
+
   return (
     <Wrapper style={{ padding: '2.56rem 3.75rem' }}>
       <SettingWrapper>

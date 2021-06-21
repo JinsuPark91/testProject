@@ -362,9 +362,7 @@ const MainPage = () => {
         }}
       />
 
-      <Observer>
-        {() => (!configStore.isFromCNU ? <SpaceSide /> : null)}
-      </Observer>
+      {!configStore.isFromCNU ? <SpaceSide /> : null}
       {leftSide}
       {mainSide}
     </Wrapper>
