@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
-import { useCoreStores, Tooltip } from 'teespace-core';
+import { useCoreStores, Tooltip, StatusSelector } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { useStores } from '../../stores';
@@ -43,6 +43,7 @@ import {
   ImageChange,
   CameraBox,
   ButtonCancel,
+  StatusSelectorWrapper,
 } from '../../styles/profile/MainProfileStyle';
 import {
   LockLineIcon,
@@ -138,6 +139,15 @@ const MainProfile = observer(({ userId = null }) => {
   };
 
   const isValidInputData = () => !!nick;
+
+  const isSelectable = () => {
+    return userId === userStore.myProfile.id;
+  };
+
+  const isShownStatusSelector = () => {
+    const userProfile = userStore.userProfiles[userId];
+    return userId === userStore.myProfile.id || userProfile.status;
+  };
 
   useEffect(() => {
     if (isEditMode) {
@@ -446,6 +456,11 @@ const MainProfile = observer(({ userId = null }) => {
               </BookMarkButton>
             )}
           </ContentTop>
+          {!isEditMode && isShownStatusSelector() && (
+            <StatusSelectorWrapper>
+              <StatusSelector selectable={isSelectable()} />
+            </StatusSelectorWrapper>
+          )}
           <ContentBody>
             <UserImageWrapper position="br">
               <UserImage src={renderProfilePhoto} />
@@ -501,6 +516,7 @@ const MainProfile = observer(({ userId = null }) => {
             {!isEditMode && (
               <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
             )}
+
             <StatusText isEditMode={isEditMode}>
               {isEditMode ? (
                 <EditNameInput

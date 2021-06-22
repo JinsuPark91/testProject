@@ -1,14 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Dropdown, Button, Menu } from 'antd';
-import { Observer } from 'mobx-react';
+import { Dropdown, Menu } from 'antd';
+import { Observer, useLocalStore } from 'mobx-react';
 import { Icons, useCoreStores } from 'teespace-core';
-import { useStores } from '../../stores';
 
-const StatusSelector = ({ editable = false }) => {
-  const { uiStore } = useStores();
+const StatusSelector = ({ selectable = false }) => {
   const { userStore } = useCoreStores();
   const [isSelected, setIsSelected] = useState(false);
+
+  const store = useLocalStore(() => ({
+    statusCode: 'STA0000',
+    statusText() {
+      let text;
+      switch (store.statusCode) {
+        case 'STA0001':
+          text = '연락 가능';
+          break;
+        case 'STA0002':
+          text = '부재중';
+          break;
+        case 'STA0003':
+          text = '휴가중';
+          break;
+        case 'STA0004':
+          text = '회의중';
+          break;
+        default:
+          text = '내 상태 추가';
+      }
+      return text;
+    },
+    setStatusCode(data) {
+      store.statusCode = data;
+    },
+  }));
 
   const {
     ProfileEmoticonEmptyIcon,
@@ -36,7 +61,7 @@ const StatusSelector = ({ editable = false }) => {
 
   useEffect(() => {
     const code = userStore.myProfile.status;
-    uiStore.setStatusCode(code);
+    store.setStatusCode(code);
   }, []);
 
   const renderIcon = (code, isForSelector) => {
@@ -71,7 +96,7 @@ const StatusSelector = ({ editable = false }) => {
       {statusArray.map(status => {
         const statusCode = statusMap[status];
         const handleClick = async () => {
-          uiStore.setStatusCode(statusCode);
+          store.setStatusCode(statusCode);
           setIsSelected(false);
           await userStore.updateProfileStatus({ status: statusCode });
         };
@@ -88,8 +113,8 @@ const StatusSelector = ({ editable = false }) => {
   return (
     <Observer>
       {() => (
-        <SelectorWrapper>
-          {editable && (
+        <>
+          {selectable && (
             <Dropdown
               overlay={menu}
               trigger={['click']}
@@ -99,32 +124,26 @@ const StatusSelector = ({ editable = false }) => {
               <Wrapper
                 className={
                   isSelected
-                    ? 'selected selector-editable'
-                    : 'selector-editable'
+                    ? 'selected selector-selectable'
+                    : 'selector-selectable'
                 }
               >
-                {renderIcon(uiStore.statusCode, true)}
-                <StyledButton>{uiStore.statusText}</StyledButton>
+                {renderIcon(store.statusCode, true)}
+                <StyledButton>{store.statusText()}</StyledButton>
               </Wrapper>
             </Dropdown>
           )}
-          {!editable && (
+          {!selectable && (
             <Wrapper>
-              {renderIcon(uiStore.statusCode, true)}
-              <StyledButton>{uiStore.statusText}</StyledButton>
+              {renderIcon(store.statusCode, true)}
+              <StyledButton>{store.statusText()}</StyledButton>
             </Wrapper>
           )}
-        </SelectorWrapper>
+        </>
       )}
     </Observer>
   );
 };
-
-const SelectorWrapper = styled.div`
-  position: absolute;
-  top: 13.45rem;
-  z-index: 100;
-`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -137,7 +156,7 @@ const Wrapper = styled.div`
   width: 6rem;
   height: 1.438rem;
   background: rgba(255, 255, 255, 0.1);
-  &.selector-editable {
+  &.selector-selectable {
     cursor: pointer;
     &:hover {
       background: rgba(250, 248, 247, 0.3);
@@ -165,11 +184,12 @@ const MenuItem = styled(Menu.Item)``;
 
 const NewMenu = styled(Menu)`
   left: 6.25rem;
-  top: -1.6rem;
+  top: -1.8rem;
   width: 6rem;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.2);
   border-width: 0px;
+  padding: 0;
   & > .ant-dropdown-menu-item {
     margin: 0.187rem 0;
   }

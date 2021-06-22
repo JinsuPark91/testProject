@@ -464,3 +464,9 @@ export const ButtonCancel = styled(Button)`
   border-color: #f7f4ef !important;
   color: #3b3b3b !important;
 `;
+
+export const StatusSelectorWrapper = styled.div`
+  position: absolute;
+  top: 13.45rem;
+  z-index: 100;
+`;
