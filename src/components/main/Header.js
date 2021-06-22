@@ -47,6 +47,8 @@ import {
   MeetingIcon,
   MeetingActiveIcon,
   OpenChatBgIcon,
+  AlarmOnActiveIcon,
+  AlarmOnIcon,
 } from '../Icons';
 import { getQueryParams, getQueryString } from '../../utils/UrlUtil';
 import { getLeftDistance } from '../../utils/GeneralUtil';
@@ -72,7 +74,6 @@ const apps = [
       default: <DriveIcon {...getIconStyle()} />,
     },
     isUsedInMyRoom: true,
-    isSeperated: false,
     isUsedInProfile: true,
   },
   {
@@ -84,7 +85,6 @@ const apps = [
       default: <CalendarIcon {...getIconStyle()} />,
     },
     isUsedInMyRoom: true,
-    isSeperated: false,
     isUsedInProfile: true,
   },
   {
@@ -96,7 +96,6 @@ const apps = [
       default: <NoteIcon />,
     },
     isUsedInMyRoom: true,
-    isSeperated: false,
     isUsedInProfile: true,
   },
   {
@@ -108,7 +107,6 @@ const apps = [
       default: <MeetingIcon />,
     },
     isUsedInMyRoom: false,
-    isSeperated: false,
     isUsedInProfile: false,
   },
   {
@@ -120,7 +118,17 @@ const apps = [
       default: <ViewFileIcon />,
     },
     isUsedInMyRoom: true,
-    isSeperated: true,
+    isUsedInProfile: true,
+  },
+  {
+    name: 'noti',
+    tooltip: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_29',
+    icons: {
+      active: <AlarmOnActiveIcon />,
+      disabled: <AlarmOnIcon />,
+      default: <AlarmOnIcon />,
+    },
+    isUsedInMyRoom: true,
     isUsedInProfile: true,
   },
 ];
@@ -318,6 +326,8 @@ const Header = () => {
         );
         store.appConfirm = meetingAppConfirm;
       }
+    } else if (appName === 'noti') {
+      uiStore.isNotificationCenterVisible = true;
     } else if (uiStore.subApp !== appName) {
       openSubApp(appName);
     } else {
@@ -617,14 +627,7 @@ const Header = () => {
         <Observer>
           {() =>
             apps.map(
-              ({
-                name,
-                tooltip,
-                icons,
-                isUsedInMyRoom,
-                isSeperated,
-                isUsedInProfile,
-              }) =>
+              ({ name, tooltip, icons, isUsedInMyRoom, isUsedInProfile }) =>
                 configStore.isActivateForCNU(
                   `${name.charAt(0).toUpperCase()}${name.slice(
                     1,
@@ -632,9 +635,7 @@ const Header = () => {
                   )}`,
                 ) ? (
                   <AppIconbutton key={name}>
-                    {isSeperated ? <VerticalBar /> : null}
                     <AppIcon
-                      key={name}
                       isActive={isActive(name)}
                       color={themeContext.HeaderIcon}
                       appName={name}

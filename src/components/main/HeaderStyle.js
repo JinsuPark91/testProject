@@ -76,7 +76,6 @@ export const AppIconInner = styled.button`
   pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
   opacity: 0.85;
   cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
-
   &:hover {
     background-color: ${props => props.theme.StateLight};
   }
@@ -125,7 +124,7 @@ export const StyledPhotos = styled(Photos)`
 
 export const VerticalBar = styled.div`
   width: 1px;
-  height: 100%;
-  background: #ddd9d4;
-  margin-right: 0.4rem;
+  height: 1.5rem;
+  background: ${props => props.theme.LineMain};
+  margin: 0 0.4rem;
 `;

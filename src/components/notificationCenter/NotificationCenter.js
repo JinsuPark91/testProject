@@ -1,31 +1,33 @@
 import React, { useEffect } from 'react';
-import { Modal } from 'antd';
-import { useCoreStores, Tabs } from 'teespace-core';
-import { Observer } from 'mobx-react';
+import { useCoreStores, Tabs, Modal } from 'teespace-core';
+import { Observer, useLocalStore } from 'mobx-react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import NotificationList from './NotificationList';
 
 const { TabPane } = Tabs;
 
-const MASK_CLASS_NAME = 'modal-mask';
-
+const LIMIT = 15;
 const NotificationCenter = ({ visible, onClose }) => {
   const { t } = useTranslation();
   const { notificationStore } = useCoreStores();
 
+  const handleClose = () => {
+    onClose();
+  };
+
   useEffect(() => {
-    // fetchMentions();
-    // fetchHistories();
+    notificationStore.fetchNotificationList({
+      type: 'mention',
+      offset: 0,
+      limit: LIMIT,
+    });
+    notificationStore.fetchNotificationList({
+      type: 'history',
+      offset: 0,
+      limit: LIMIT,
+    });
   }, []);
-
-  const handleTabChange = key => {
-    notificationStore.tabKey = key;
-  };
-
-  const handleClose = e => {
-    if (e.target.className.includes(MASK_CLASS_NAME)) onClose();
-  };
 
   const Tab = ({ title, unreadCount }) => (
     <TabWrapper>
@@ -39,9 +41,17 @@ const NotificationCenter = ({ visible, onClose }) => {
   );
 
   return (
-    <Mask className={MASK_CLASS_NAME} visible={visible} onClick={handleClose}>
+    <StyledModal
+      closable={false}
+      mask={false}
+      width="100%"
+      visible={visible}
+      onCancel={handleClose}
+      footer={null}
+      style={{ top: '3.7rem' }}
+    >
       <Wrapper>
-        <Tabs defaultActiveKey="mention" onChange={handleTabChange}>
+        <Tabs defaultActiveKey="mention">
           <TabPane
             tab={
               <Observer>
@@ -62,7 +72,11 @@ const NotificationCenter = ({ visible, onClose }) => {
                   hasMore={notificationStore.mention.hasMore}
                   isLoading={notificationStore.mention.isLoading}
                   loadMore={() => {
-                    console.log('Fetch More Function');
+                    notificationStore.fetchNotificationList({
+                      type: 'mention',
+                      offset: notificationStore.mentions.length,
+                      limit: LIMIT,
+                    });
                   }}
                 />
               )}
@@ -88,7 +102,11 @@ const NotificationCenter = ({ visible, onClose }) => {
                   hasMore={notificationStore.history.hasMore}
                   isLoading={notificationStore.history.isLoading}
                   loadMore={() => {
-                    console.log('Fetch More Function');
+                    notificationStore.fetchNotifications({
+                      type: 'history',
+                      offset: notificationStore.histories.length,
+                      limit: LIMIT,
+                    });
                   }}
                 />
               )}
@@ -96,29 +114,21 @@ const NotificationCenter = ({ visible, onClose }) => {
           </TabPane>
         </Tabs>
       </Wrapper>
-    </Mask>
+    </StyledModal>
   );
 };
 
 export default NotificationCenter;
 
-const Mask = styled.div`
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  z-index: 6;
-  display: ${({ visible }) => (visible ? 'block' : 'none')};
+const StyledModal = styled(Modal)`
+  &.ant-modal {
+    justify-content: flex-end;
+  }
 `;
 
 const Wrapper = styled.div`
   width: 22.375rem;
-  position: fixed;
-  top: 3.755rem;
-  right: 0.625rem;
-  z-index: 7;
   background: #fff;
-  border-radius: 0.25rem;
-  border: 1px solid #ddd9d4;
 `;
 
 const TabWrapper = styled.div`

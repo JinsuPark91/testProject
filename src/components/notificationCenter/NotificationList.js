@@ -1,19 +1,32 @@
-import React from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable consistent-return */
+import React, { useRef, useEffect, useCallback, useMemo } from 'react';
 import { FixedSizeList as List } from 'react-window';
-import InfiniteLoader from 'react-window-infinite-loader';
 import { useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import { throttle } from 'lodash';
 import NotificationItem from './NotificationItem';
 import { remToPixel } from '../../utils/GeneralUtil';
 
 const NotificationList = ({ items, hasMore, isLoading, loadMore }) => {
+  console.log('******* items : ', items);
+  const outerRef = useRef(null);
   const { t } = useTranslation();
   const { notificationStore } = useCoreStores();
-
   const itemCount = hasMore ? items.length + 1 : items.length;
   const isItemLoaded = index => !hasMore || index < items.length;
-  const loadMoreItems = isLoading ? () => {} : loadMore;
+
+  const handleScroll = throttle(() => {
+    if (!outerRef?.current) return;
+    const { scrollTop, clientHeight, scrollHeight } = outerRef.current;
+
+    if (scrollTop + clientHeight === scrollHeight) {
+      if (hasMore && !isLoading) {
+        loadMore();
+      }
+    }
+  }, 200);
 
   const handleReadAll = () => {
     notificationStore.readAll(items);
@@ -23,7 +36,7 @@ const NotificationList = ({ items, hasMore, isLoading, loadMore }) => {
     notificationStore.deleteReadAll(items);
   };
 
-  const Item = ({ index, style }) =>
+  const Item = ({ style, index }) =>
     isItemLoaded(index) ? (
       <NotificationItem
         key={items[index].id}
@@ -44,23 +57,15 @@ const NotificationList = ({ items, hasMore, isLoading, loadMore }) => {
         <Button onClick={handleDeleteReadAll}>{t('CM_DEL_READ_NOTI')}</Button>
       </Buttons>
 
-      <InfiniteLoader
-        isItemLoaded={isItemLoaded}
+      <List
+        height={remToPixel(20)}
         itemCount={itemCount}
-        loadMoreItems={loadMoreItems}
+        itemSize={remToPixel(4)}
+        outerRef={outerRef}
+        onScroll={handleScroll}
       >
-        {({ onItemsRendered, ref }) => (
-          <List
-            height={remToPixel(20)}
-            itemCount={itemCount}
-            itemSize={remToPixel(4)}
-            onItemsRendered={onItemsRendered}
-            ref={ref}
-          >
-            {Item}
-          </List>
-        )}
-      </InfiniteLoader>
+        {Item}
+      </List>
     </>
   );
 };
