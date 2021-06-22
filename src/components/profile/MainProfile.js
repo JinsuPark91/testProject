@@ -68,7 +68,6 @@ const MainProfile = observer(({ userId = null }) => {
   const [isEditMode, setEditMode] = useState(false);
   const [isChange, setIsChange] = useState(false);
   const [userType, setUserType] = useState('');
-  const [isShownSelector, setIsShownSelector] = useState(false);
   // NOTE. Setting state to undefined means the state is not changed
   //  This undefined is different from empty('')
   const [nick, setNick] = useState(undefined);
@@ -160,13 +159,6 @@ const MainProfile = observer(({ userId = null }) => {
 
       const userAuthInfo = authStore.user;
       setUserType(userAuthInfo.type);
-
-      if (
-        (userProfile.status && userProfile.status !== 'STA0000') ||
-        userId === userStore.myProfile.id
-      )
-        setIsShownSelector(true);
-      else setIsShownSelector(false);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
@@ -458,7 +450,7 @@ const MainProfile = observer(({ userId = null }) => {
               </BookMarkButton>
             )}
           </ContentTop>
-          {!isEditMode && isShownSelector && (
+          {!isEditMode && (
             <StatusSelectorWrapper>
               <StatusSelector userId={userId} selectable={isSelectable()} />
             </StatusSelectorWrapper>
