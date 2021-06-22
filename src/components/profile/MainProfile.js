@@ -43,6 +43,7 @@ import {
   ImageChange,
   CameraBox,
   ButtonCancel,
+  StatusSelectorWrapper,
 } from '../../styles/profile/MainProfileStyle';
 import {
   LockLineIcon,
@@ -50,6 +51,7 @@ import {
   MeetingIcon,
   CameraIcon,
 } from '../Icons';
+import StatusSelector from './StatusSelector';
 
 const MainProfile = observer(({ userId = null }) => {
   const history = useHistory();
@@ -138,6 +140,15 @@ const MainProfile = observer(({ userId = null }) => {
   };
 
   const isValidInputData = () => !!nick;
+
+  const isSelectable = () => {
+    return userId === userStore.myProfile.id;
+  };
+
+  const isShownStatusSelector = () => {
+    const userProfile = userStore.userProfiles[userId];
+    return userId === userStore.myProfile.id || userProfile.status;
+  };
 
   useEffect(() => {
     if (isEditMode) {
@@ -446,6 +457,11 @@ const MainProfile = observer(({ userId = null }) => {
               </BookMarkButton>
             )}
           </ContentTop>
+          {!isEditMode && isShownStatusSelector() && (
+            <StatusSelectorWrapper>
+              <StatusSelector selectable={isSelectable()} />
+            </StatusSelectorWrapper>
+          )}
           <ContentBody>
             <UserImageWrapper position="br">
               <UserImage src={renderProfilePhoto} />
@@ -501,6 +517,7 @@ const MainProfile = observer(({ userId = null }) => {
             {!isEditMode && (
               <UserEmailText>{`(${profile?.loginId})`}</UserEmailText>
             )}
+
             <StatusText isEditMode={isEditMode}>
               {isEditMode ? (
                 <EditNameInput
