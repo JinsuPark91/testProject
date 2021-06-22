@@ -9,7 +9,7 @@ import { throttle } from 'lodash';
 import NotificationItem from './NotificationItem';
 import { remToPixel } from '../../utils/GeneralUtil';
 
-const NotificationList = ({ items, hasMore, isLoading, loadMore }) => {
+const NotificationList = ({ items, hasMore, isLoading, loadMore, type }) => {
   const outerRef = useRef(null);
   const { t } = useTranslation();
   const { notificationStore } = useCoreStores();
@@ -28,17 +28,17 @@ const NotificationList = ({ items, hasMore, isLoading, loadMore }) => {
   }, 200);
 
   const handleReadAll = () => {
-    notificationStore.readAll(items);
+    notificationStore.readNotificationList({ type });
   };
 
   const handleDeleteReadAll = () => {
-    notificationStore.deleteReadAll(items);
+    notificationStore.deleteNotificationList({ type, isOnlyForRead: true });
   };
 
   const Item = ({ style, index }) =>
     isItemLoaded(index) ? (
       <NotificationItem
-        key={items[index].id}
+        key={items[index].notificationId}
         style={style}
         item={items[index]}
       />

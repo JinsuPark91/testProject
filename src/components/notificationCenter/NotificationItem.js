@@ -23,7 +23,11 @@ const NotificationItem = ({ style, item }) => {
 
   const handleDelete = e => {
     e.stopPropagation();
-    notificationStore.delete(item.type, item.id);
+
+    notificationStore.deleteNotification({
+      id: item.notificationId,
+      type: item.notificationType,
+    });
   };
 
   return (

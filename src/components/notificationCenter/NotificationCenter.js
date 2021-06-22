@@ -68,6 +68,7 @@ const NotificationCenter = ({ visible, onClose }) => {
             <Observer>
               {() => (
                 <NotificationList
+                  type="mention"
                   items={notificationStore.mentions}
                   hasMore={notificationStore.mention.hasMore}
                   isLoading={notificationStore.mention.isLoading}
@@ -98,6 +99,7 @@ const NotificationCenter = ({ visible, onClose }) => {
             <Observer>
               {() => (
                 <NotificationList
+                  type="history"
                   items={notificationStore.histories}
                   hasMore={notificationStore.history.hasMore}
                   isLoading={notificationStore.history.isLoading}
