@@ -15,14 +15,14 @@ const NotificationItem = ({ style, item }) => {
   // const content = JSON.parse(item.content);
 
   const handleClick = () => {
-    console.log('ITEM CLICK!! : ', item);
-    push(`/s/${item.roomId}/talk`);
-    uiStore.isNotificationCenterVisible = false;
+    if (item.roomId) {
+      push(`/s/${item.roomId}/talk`);
+      uiStore.isNotificationCenterVisible = false;
+    }
   };
 
   const handleDelete = e => {
     e.stopPropagation();
-    console.log('ITEM DELETE!! : ', item);
     notificationStore.delete(item.type, item.id);
   };
 

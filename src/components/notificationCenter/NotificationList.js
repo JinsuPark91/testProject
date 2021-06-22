@@ -10,7 +10,6 @@ import NotificationItem from './NotificationItem';
 import { remToPixel } from '../../utils/GeneralUtil';
 
 const NotificationList = ({ items, hasMore, isLoading, loadMore }) => {
-  console.log('******* items : ', items);
   const outerRef = useRef(null);
   const { t } = useTranslation();
   const { notificationStore } = useCoreStores();
