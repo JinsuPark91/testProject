@@ -1,14 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Dropdown, Menu } from 'antd';
-import { Observer } from 'mobx-react';
+import { Observer, useLocalStore } from 'mobx-react';
 import { Icons, useCoreStores } from 'teespace-core';
-import { useStores } from '../../stores';
 
 const StatusSelector = ({ selectable = false }) => {
-  const { uiStore } = useStores();
   const { userStore } = useCoreStores();
   const [isSelected, setIsSelected] = useState(false);
+
+  const store = useLocalStore(() => ({
+    statusCode: 'STA0000',
+    statusText() {
+      let text;
+      switch (store.statusCode) {
+        case 'STA0001':
+          text = '연락 가능';
+          break;
+        case 'STA0002':
+          text = '부재중';
+          break;
+        case 'STA0003':
+          text = '휴가중';
+          break;
+        case 'STA0004':
+          text = '회의중';
+          break;
+        default:
+          text = '내 상태 추가';
+      }
+      return text;
+    },
+    setStatusCode(data) {
+      store.statusCode = data;
+    },
+  }));
 
   const {
     ProfileEmoticonEmptyIcon,
@@ -36,7 +61,7 @@ const StatusSelector = ({ selectable = false }) => {
 
   useEffect(() => {
     const code = userStore.myProfile.status;
-    uiStore.setStatusCode(code);
+    store.setStatusCode(code);
   }, []);
 
   const renderIcon = (code, isForSelector) => {
@@ -71,7 +96,7 @@ const StatusSelector = ({ selectable = false }) => {
       {statusArray.map(status => {
         const statusCode = statusMap[status];
         const handleClick = async () => {
-          uiStore.setStatusCode(statusCode);
+          store.setStatusCode(statusCode);
           setIsSelected(false);
           await userStore.updateProfileStatus({ status: statusCode });
         };
@@ -103,15 +128,15 @@ const StatusSelector = ({ selectable = false }) => {
                     : 'selector-selectable'
                 }
               >
-                {renderIcon(uiStore.statusCode, true)}
-                <StyledButton>{uiStore.statusText}</StyledButton>
+                {renderIcon(store.statusCode, true)}
+                <StyledButton>{store.statusText()}</StyledButton>
               </Wrapper>
             </Dropdown>
           )}
           {!selectable && (
             <Wrapper>
-              {renderIcon(uiStore.statusCode, true)}
-              <StyledButton>{uiStore.statusText}</StyledButton>
+              {renderIcon(store.statusCode, true)}
+              <StyledButton>{store.statusText()}</StyledButton>
             </Wrapper>
           )}
         </>
