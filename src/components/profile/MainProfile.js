@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
-import { useCoreStores, Tooltip } from 'teespace-core';
+import { useCoreStores, Tooltip, StatusSelector } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { useStores } from '../../stores';
@@ -51,7 +51,6 @@ import {
   MeetingIcon,
   CameraIcon,
 } from '../Icons';
-import StatusSelector from './StatusSelector';
 
 const MainProfile = observer(({ userId = null }) => {
   const history = useHistory();
