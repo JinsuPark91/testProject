@@ -335,7 +335,6 @@ const RoomItemContent = React.memo(
     } = Icons;
 
     const renderStatusIcon = code => {
-      console.log(code);
       if (code === 'STA0001') {
         return <ProfileEmoticonNormalIcon width={0.875} height={0.875} />;
       }
