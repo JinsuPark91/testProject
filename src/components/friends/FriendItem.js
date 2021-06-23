@@ -233,10 +233,10 @@ const FriendItem = observer(
     ] = useState(false);
 
     const {
-      ProfileEmoticonNormalIcon,
-      ProfileEmoticonMissedIcon,
-      ProfileEmoticonVacationIcon,
-      ProfileEmoticonMeetingIcon,
+      ProfileEmotionNormalIcon,
+      ProfileEmotionMissedIcon,
+      ProfileEmotionVacationIcon,
+      ProfileEmotionMeetingIcon,
     } = Icons;
 
     const userStatus = friendInfo.status;
@@ -244,16 +244,16 @@ const FriendItem = observer(
     const renderStatusIcon = code => {
       console.log(code);
       if (code === 'STA0001') {
-        return <ProfileEmoticonNormalIcon width={0.875} height={0.875} />;
+        return <ProfileEmotionNormalIcon width={0.875} height={0.875} />;
       }
       if (code === 'STA0002') {
-        return <ProfileEmoticonMissedIcon width={0.875} height={0.875} />;
+        return <ProfileEmotionMissedIcon width={0.875} height={0.875} />;
       }
       if (code === 'STA0003') {
-        return <ProfileEmoticonVacationIcon width={0.875} height={0.875} />;
+        return <ProfileEmotionVacationIcon width={0.875} height={0.875} />;
       }
       if (code === 'STA0004') {
-        return <ProfileEmoticonMeetingIcon width={0.875} height={0.875} />;
+        return <ProfileEmotionMeetingIcon width={0.875} height={0.875} />;
       }
       return null;
     };
