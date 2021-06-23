@@ -385,6 +385,7 @@ const Header = () => {
   };
 
   const isActive = name => {
+    if (name === 'noti') return uiStore.isNotificationCenterVisible;
     if (name === 'meeting')
       return !!uiStore.getWindow('meeting', findRoom()?.id);
     return uiStore.subApp === name;
