@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { List, Menu, Dropdown } from 'antd';
 import styled, { css, ThemeContext } from 'styled-components';
 import { Observer } from 'mobx-react';
-import { useCoreStores, EventBus, Tooltip } from 'teespace-core';
+import { useCoreStores, EventBus, Tooltip, Icons } from 'teespace-core';
 import { talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +29,6 @@ const RoomDropdown = React.memo(
     const { id: roomId } = roomInfo;
     const myUserId = userStore.myProfile.id;
     const [visible, setVisible] = useState(false);
-
     const history = useHistory();
 
     const handleVisibleChange = flag => {
@@ -328,6 +327,30 @@ const RoomItemContent = React.memo(
       return null;
     };
 
+    const {
+      ProfileEmoticonNormalIcon,
+      ProfileEmoticonMissedIcon,
+      ProfileEmoticonVacationIcon,
+      ProfileEmoticonMeetingIcon,
+    } = Icons;
+
+    const renderStatusIcon = code => {
+      console.log(code);
+      if (code === 'STA0001') {
+        return <ProfileEmoticonNormalIcon width={0.875} height={0.875} />;
+      }
+      if (code === 'STA0002') {
+        return <ProfileEmoticonMissedIcon width={0.875} height={0.875} />;
+      }
+      if (code === 'STA0003') {
+        return <ProfileEmoticonVacationIcon width={0.875} height={0.875} />;
+      }
+      if (code === 'STA0004') {
+        return <ProfileEmoticonMeetingIcon width={0.875} height={0.875} />;
+      }
+      return null;
+    };
+
     return (
       <>
         <List.Item.Meta
@@ -335,6 +358,8 @@ const RoomItemContent = React.memo(
             <Observer>
               {() => {
                 let userPhotos = null;
+                let userStatus = null;
+                const isDMRoom = roomInfo.isDirectMsg;
                 if (isMyRoom) {
                   userPhotos = [
                     userStore.getProfilePhotoURL(
@@ -342,17 +367,30 @@ const RoomItemContent = React.memo(
                       'small',
                     ),
                   ];
+                  userStatus = userStore.myProfile.status;
+                } else if (isDMRoom) {
+                  const userIdArr = roomInfo.memberIdListString.split(',');
+                  const userId = userIdArr.filter(
+                    Id => Id !== userStore.myProfile.id,
+                  )[0];
+                  userStatus = userStore.userProfiles[userId].status;
+                  userPhotos = roomStore.getRoomPhoto(roomInfo.id, 1);
                 } else {
                   userPhotos = roomStore.getRoomPhoto(roomInfo.id, 4);
                 }
                 return (
-                  <Photos
-                    defaultDiameter="2.13"
-                    srcList={userPhotos}
-                    isBotRoom={roomInfo.isBotRoom}
-                    onClick={handleClickRootPhoto}
-                    className="photos rooms__item__photo"
-                  />
+                  <>
+                    <Photos
+                      defaultDiameter="2.13"
+                      srcList={userPhotos}
+                      isBotRoom={roomInfo.isBotRoom}
+                      onClick={handleClickRootPhoto}
+                      className="photos rooms__item__photo"
+                    />
+                    <StatusIconWrapper>
+                      {renderStatusIcon(userStatus)}
+                    </StatusIconWrapper>
+                  </>
                 );
               }}
             </Observer>
@@ -749,6 +787,15 @@ const IconWrapper = styled.div`
 const OpenChatIconBox = styled.div`
   margin-right: 0.25rem;
   line-height: 0;
+`;
+
+const StatusIconWrapper = styled.div`
+  position: absolute;
+  display: flex;
+  border-radius: 50%;
+  background-color: white;
+  top: 1.3rem;
+  left: 1.3rem;
 `;
 
 export default RoomItem;
