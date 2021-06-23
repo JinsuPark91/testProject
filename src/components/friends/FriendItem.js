@@ -4,7 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { talkOnDrop } from 'teespace-talk-app';
 import { useDrop } from 'react-dnd';
 import { observer } from 'mobx-react';
-import { useCoreStores, Dropdown, Menu, Message, Tooltip } from 'teespace-core';
+import {
+  useCoreStores,
+  Dropdown,
+  Menu,
+  Message,
+  Tooltip,
+  Icons,
+} from 'teespace-core';
 import { ThemeContext } from 'styled-components';
 import { rootStore } from '../../stores';
 import { ACCEPT_ITEMS, TALK_ACCEPT_ITEMS } from '../../utils/DndConstant';
@@ -22,6 +29,7 @@ import {
   StyledAvatar,
   MeWrapper,
   MoreIconWrapper,
+  StatusIconWrapper,
 } from '../../styles/friends/FriendItemStyle';
 import { ViewMoreIcon, ExportIcon } from '../Icons';
 
@@ -224,6 +232,32 @@ const FriendItem = observer(
       setVisibleRemoveFriendMessage,
     ] = useState(false);
 
+    const {
+      ProfileEmoticonNormalIcon,
+      ProfileEmoticonMissedIcon,
+      ProfileEmoticonVacationIcon,
+      ProfileEmoticonMeetingIcon,
+    } = Icons;
+
+    const userStatus = friendInfo.status;
+
+    const renderStatusIcon = code => {
+      console.log(code);
+      if (code === 'STA0001') {
+        return <ProfileEmoticonNormalIcon width={0.875} height={0.875} />;
+      }
+      if (code === 'STA0002') {
+        return <ProfileEmoticonMissedIcon width={0.875} height={0.875} />;
+      }
+      if (code === 'STA0003') {
+        return <ProfileEmoticonVacationIcon width={0.875} height={0.875} />;
+      }
+      if (code === 'STA0004') {
+        return <ProfileEmoticonMeetingIcon width={0.875} height={0.875} />;
+      }
+      return null;
+    };
+
     const myUserId = userStore.myProfile.id;
     const itemId = friendId || userId;
     const isNewFriend = handleCheckNewFriend(friendInfo);
@@ -382,6 +416,7 @@ const FriendItem = observer(
             itemId={itemId}
             handleClickPhoto={handleSelectPhoto}
           />
+          <StatusIconWrapper>{renderStatusIcon(userStatus)}</StatusIconWrapper>
           <TextWrapper>
             <TextComponent
               displayName={displayName}

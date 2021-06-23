@@ -25,6 +25,7 @@ export const FriendItemWrapper = styled.div`
   text-overflow: ellipsis;
   align-items: center;
   cursor: pointer;
+  position: relative;
 
   /* icon */
   .ant-btn-circle {
@@ -170,4 +171,13 @@ export const MoreIconWrapper = styled.div`
   &:hover {
     background-color: ${props => props.theme.StateLight};
   }
+`;
+
+export const StatusIconWrapper = styled.div`
+  position: absolute;
+  display: flex;
+  border-radius: 50%;
+  background-color: white;
+  top: 2.07rem;
+  left: 1.8rem;
 `;
