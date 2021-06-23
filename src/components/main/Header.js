@@ -9,6 +9,7 @@ import {
   Tooltip,
   AddFriendsByInvitationDialog,
   ThemeStore,
+  NotificationStore,
 } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +27,7 @@ import {
   SystemIconContainer,
   AppIconInner,
   StyledPhotos,
-  VerticalBar,
+  NewAlarm,
 } from './HeaderStyle';
 import { useStores } from '../../stores';
 import HeaderProfile from '../profile/HeaderProfile';
@@ -136,6 +137,7 @@ const apps = [
 const AppIcon = React.memo(
   ({
     isActive,
+    isNewAlarm,
     appName,
     i18n,
     onClick,
@@ -172,6 +174,7 @@ const AppIcon = React.memo(
           disabled={disabled}
         >
           {icon}
+          {isNewAlarm ? <NewAlarm /> : null}
         </AppIconInner>
       </Tooltip>
     );
@@ -184,7 +187,13 @@ const Header = () => {
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
   const { t, i18n } = useTranslation();
   const { uiStore } = useStores();
-  const { roomStore, userStore, configStore, themeStore } = useCoreStores();
+  const {
+    roomStore,
+    userStore,
+    configStore,
+    themeStore,
+    notificationStore,
+  } = useCoreStores();
   const store = useLocalStore(() => ({
     appConfirm: null,
     inviteRoomId: null,
@@ -385,6 +394,7 @@ const Header = () => {
   };
 
   const isActive = name => {
+    if (name === 'noti') return uiStore.isNotificationCenterVisible;
     if (name === 'meeting')
       return !!uiStore.getWindow('meeting', findRoom()?.id);
     return uiStore.subApp === name;
@@ -468,6 +478,13 @@ const Header = () => {
   useCommand.OpenApp('meeting', handleOpenApp('meeting'));
 
   const themeContext = useContext(ThemeContext);
+
+  const existNewAlarm = appName => {
+    return (
+      appName === 'noti' &&
+      (notificationStore.mentions.length || notificationStore.histories.length)
+    );
+  };
 
   return (
     <Wrapper>
@@ -637,6 +654,7 @@ const Header = () => {
                   <AppIconbutton key={name}>
                     <AppIcon
                       isActive={isActive(name)}
+                      isNewAlarm={existNewAlarm(name)}
                       color={themeContext.HeaderIcon}
                       appName={name}
                       i18n={tooltip}
