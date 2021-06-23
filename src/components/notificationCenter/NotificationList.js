@@ -10,11 +10,13 @@ import NotificationItem from './NotificationItem';
 import { remToPixel } from '../../utils/GeneralUtil';
 
 const NotificationList = ({ items, hasMore, isLoading, loadMore, type }) => {
+  const height = 20;
   const outerRef = useRef(null);
   const { t } = useTranslation();
   const { notificationStore } = useCoreStores();
   const itemCount = hasMore ? items.length + 1 : items.length;
   const isItemLoaded = index => !hasMore || index < items.length;
+  const isEmpty = !items.length;
 
   const handleScroll = throttle(() => {
     if (!outerRef?.current) return;
@@ -51,20 +53,31 @@ const NotificationList = ({ items, hasMore, isLoading, loadMore, type }) => {
   return (
     <>
       <Buttons>
-        <Button onClick={handleReadAll}>{t('CM_READ_ALL')}</Button>
+        <Button onClick={handleReadAll} disabled={isEmpty}>
+          {t('CM_READ_ALL')}
+        </Button>
         <Middot />
-        <Button onClick={handleDeleteReadAll}>{t('CM_DEL_READ_NOTI')}</Button>
+        <Button onClick={handleDeleteReadAll} disabled={isEmpty}>
+          {t('CM_DEL_READ_NOTI')}
+        </Button>
       </Buttons>
 
-      <List
-        height={remToPixel(20)}
-        itemCount={itemCount}
-        itemSize={remToPixel(4)}
-        outerRef={outerRef}
-        onScroll={handleScroll}
-      >
-        {Item}
-      </List>
+      {isEmpty ? (
+        <EmptyMessage height={height}>
+          <BoldText>{t('CM_NO_NOTI')}</BoldText>
+          <Text>{t('CM_NOTI_STORE')}</Text>
+        </EmptyMessage>
+      ) : (
+        <List
+          height={remToPixel(height)}
+          itemCount={itemCount}
+          itemSize={remToPixel(4)}
+          outerRef={outerRef}
+          onScroll={handleScroll}
+        >
+          {Item}
+        </List>
+      )}
     </>
   );
 };
@@ -86,12 +99,17 @@ const Button = styled.button`
   padding: 0 0.5rem;
   border-radius: 0.25rem;
 
-  &:hover {
+  &:not(:disabled):hover {
     background-color: #faf8f7;
   }
 
-  &:active {
+  &:not(:disabled):active {
     background-color: #f2efec;
+  }
+
+  &:disabled {
+    color: #bbbbbb;
+    cursor: not-allowed;
   }
 `;
 
@@ -118,4 +136,25 @@ const Loader = styled.div`
       transform: rotate(360deg);
     }
   }
+`;
+
+const EmptyMessage = styled.div`
+  display: flex;
+  height: ${({ height = 0 }) => height}rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 3rem;
+`;
+
+const BoldText = styled.span`
+  font-size: 0.875rem;
+  color: #666666;
+  font-weight: bold;
+  margin-bottom: 0.375rem;
+`;
+
+const Text = styled.span`
+  font-size: 0.75rem;
+  color: #666666;
 `;
