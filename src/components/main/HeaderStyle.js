@@ -1,6 +1,16 @@
 import styled from 'styled-components';
 import Photos from '../Photos';
 
+export const NewAlarm = styled.div`
+  width: 0.375rem;
+  height: 0.375rem;
+  position: absolute;
+  background: #dc4547;
+  border-radius: 50%;
+  top: 0.3rem;
+  right: 0.3rem;
+`;
+
 export const Wrapper = styled.div`
   display: flex;
   height: 3.13rem;
@@ -65,6 +75,7 @@ export const AppIconbutton = styled.div`
 `;
 
 export const AppIconInner = styled.button`
+  position: relative;
   display: inline-flex;
   width: 2rem;
   height: 2rem;
