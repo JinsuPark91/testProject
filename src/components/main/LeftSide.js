@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useCallback } from 'react';
 import { Observer } from 'mobx-react';
 import { useCoreStores, logEvent, EventBus, Tooltip } from 'teespace-core';
 import { MailSideView, MailStore } from 'teespace-mail-app';
@@ -16,6 +16,7 @@ import FriendLnb from '../friends/FriendsLNB';
 import RoomList from '../Rooms/RoomList';
 import { Wrapper, CustomTabs, UnreadCount, IconWrapper } from './LeftSideStyle';
 import { useStores } from '../../stores';
+import * as useCommand from '../../hook/Command';
 
 const { TabPane } = CustomTabs;
 
@@ -49,6 +50,11 @@ const LeftSide = () => {
     }
     scrollTop(key);
   };
+
+  const handleOpenMail = useCallback(() => {
+    handleSelectTab('m');
+    EventBus.dispatch('Mail:Command:OpenMail');
+  }, []);
 
   const themeContext = useContext(ThemeContext);
 
@@ -174,6 +180,8 @@ const LeftSide = () => {
       </TabPane>
     ) : null,
   );
+
+  useCommand.OpenApp('mail', handleOpenMail);
 
   return (
     <Wrapper>
