@@ -2,6 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { useCoreStores, Icons } from 'teespace-core';
+import { AlarmPlainMessage } from 'teespace-talk-app';
 import { Trans } from 'react-i18next';
 import { DateTime } from 'luxon';
 import { useStores } from '../../stores';
@@ -57,15 +58,19 @@ const NotificationItem = ({ style, item }) => {
           <Row>
             <Ellipsis>
               <NormalText onClick={handleClick}>
-                <Trans
-                  i18nKey={item.bodyKey}
-                  components={{
-                    style: <BoldText />,
-                  }}
-                  values={{
-                    value: item.bodyValue,
-                  }}
-                />
+                {item.type === 'mention' ? (
+                  <MentionMessage noticeBody={item.bodyComponent} />
+                ) : (
+                  <Trans
+                    i18nKey={item.bodyKey}
+                    components={{
+                      style: <BoldText />,
+                    }}
+                    values={{
+                      value: item.bodyValue,
+                    }}
+                  />
+                )}
               </NormalText>
             </Ellipsis>
 
@@ -171,4 +176,11 @@ const LightText = styled(UnderLineText)`
   font-size: 0.625rem;
   color: #aaaaaa;
   white-space: nowrap;
+`;
+
+const MentionMessage = styled(AlarmPlainMessage)`
+  .message-emoji {
+    width: 0.85rem;
+    vertical-align: text-bottom;
+  }
 `;
