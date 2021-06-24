@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useContext } from 'react';
-import { Button, Dropdown, Menu, Checkbox } from 'antd';
+import { Button, Dropdown, Menu } from 'antd';
 import {
   useCoreStores,
   Tooltip,
@@ -21,7 +21,6 @@ import SelectRoomTypeDialog from '../Rooms/SelectRoomTypeDialog';
 import GroupEditModal from './group/GroupEditModal';
 import SettingDialog from '../usersettings/SettingDialog';
 import MovePage from '../../utils/MovePage';
-import { getMainWaplURL } from '../../utils/UrlUtil';
 import { isSpaceAdmin, getLanguage } from '../../utils/GeneralUtil';
 import * as useCommand from '../../hook/Command';
 import { ArrowRightIcon, LanguageIcon } from '../Icons';
@@ -36,27 +35,12 @@ import {
   UserSpaceArea,
   DataName,
   DataBox,
-  NewBadge,
   Logo,
   Info,
   Title,
   Blind,
   UserSubArea,
   LanguageButton,
-  ConvertDropdown,
-  ConvertNow,
-  LogoSmall,
-  LogoNumber,
-  NowInfo,
-  NowTitle,
-  ConvertList,
-  ConvertItem,
-  ItemText,
-  ConvertBox,
-  ConvertAdd,
-  AddBox,
-  AddText,
-  ConvertMove,
   UserSettingArea,
   SettingButton,
   SettingBar,
@@ -110,16 +94,6 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
     setIsEditMode(i => !i);
   }, []);
 
-  // const handleSpaceList = useCallback(async () => {
-  //   await spaceStore.fetchSpaces({
-  //     userId: myUserId,
-  //     isLocal: process.env.REACT_APP_ENV === 'local',
-  //   });
-  //   setSpaceListVisible(prevVisible => !prevVisible);
-  //   setIsCreated(false);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
   const handleLogout = useCallback(async () => {
     // Close dialog first
     if (onCancel) onCancel();
@@ -165,23 +139,12 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   const handleMoveAdminPage = useCallback(() => {
     window.open(`${window.location.origin}/admin`);
   }, []);
-  const handleMoveSpacePage = useCallback(() => {
-    MovePage('spaces');
-  }, []);
   const handleMovePasswordPage = useCallback(() => {
     MovePage('account?open=password');
   }, []);
   const handleOpenSupport = useCallback(() => {
     MovePage('support', true);
   }, []);
-
-  const handleClickNewSpace = () => {
-    const adminSpace = spaceStore.getAdminSpaces({
-      loginId: myProfile.loginId,
-    });
-    if (adminSpace.length >= 3) setIsNewSpaceErrorMessageVisible(true);
-    else window.location.href = getMainWaplURL('/select-space-type');
-  };
 
   const getBackPhoto = () => {
     return userStore.getBackgroundPhotoURL(myUserId);
@@ -305,26 +268,6 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
             <Title>{spaceStore.currentSpace?.name}</Title>
             {spaceStore.currentSpace?.domain}
           </Info>
-          {/* {configStore.isFromCNU ? null : (
-            <Tooltip
-              placement="topLeft"
-              color="#4C535D"
-              title={t('CM_PROFILE_PROFILE_MENU_01')}
-            >
-              <Button className="btn-convert" onClick={handleSpaceList}>
-                <Observer>
-                  {() => {
-                    const spaceUnreadCount =
-                      spaceStore.totalUnreadSpaceCount -
-                      spaceStore.currentSpace?.totalUnreadRoomCount;
-                    if (spaceUnreadCount > 0) return <NewBadge />;
-                    return null;
-                  }}
-                </Observer>
-                <Blind>{t('CM_PROFILE_PROFILE_MENU_01')}</Blind>
-              </Button>
-            </Tooltip>
-          )} */}
           <Dropdown
             trigger={['click']}
             overlay={moreMenu}
@@ -369,63 +312,6 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
           </UserSubArea>
         )}
       </Observer>
-      {/* {spaceListVisible && (
-        <ConvertDropdown>
-          <ConvertNow>
-            <LogoSmall checked>
-              {spaceStore.currentSpace?.totalUnreadRoomCount > 0 && (
-                <LogoNumber>
-                  {spaceStore.currentSpace?.totalUnreadRoomCount > 99
-                    ? '99+'
-                    : spaceStore.currentSpace?.totalUnreadRoomCount}
-                </LogoNumber>
-              )}
-              {spaceStore.currentSpace?.name[0]}
-            </LogoSmall>
-            <NowInfo>
-              <NowTitle>{spaceStore.currentSpace?.name}</NowTitle>
-              {t('CM_SWITCH_SPACE_01')}
-            </NowInfo>
-            <Checkbox checked className="check-round" />
-          </ConvertNow>
-          <ConvertBox>
-            {spaceStore.spaceList.length > 1 && (
-              <ConvertList>
-                {spaceStore.spaceList
-                  .filter(elem => elem?.id !== spaceStore.currentSpace?.id)
-                  .map(elem => (
-                    <ConvertItem
-                      onClick={() => {
-                        window.location.href = `${window.location.protocol}//${elem.domain}`;
-                      }}
-                      key={elem?.id}
-                    >
-                      <LogoSmall>
-                        {elem?.totalUnreadRoomCount > 0 && (
-                          <LogoNumber>
-                            {elem.totalUnreadRoomCount > 99
-                              ? '99+'
-                              : elem.totalUnreadRoomCount}
-                          </LogoNumber>
-                        )}
-                        {elem?.name[0]}
-                      </LogoSmall>
-                      <ItemText>{elem?.name}</ItemText>
-                    </ConvertItem>
-                  ))}
-              </ConvertList>
-            )}
-            <ConvertAdd onClick={handleClickNewSpace}>
-              <AddBox>+</AddBox>
-              <AddText addSpace>{t('CM_CREATE_CONTENTS_AREA_02')}</AddText>
-            </ConvertAdd>
-          </ConvertBox>
-          <ConvertMove onClick={handleMoveSpacePage}>
-            <SquareSpaceIcon />
-            {t('CM_GO_SPACES')}
-          </ConvertMove>
-        </ConvertDropdown>
-      )} */}
       {isCreated && (
         <ProfileSpaceModal
           userName={myProfile.displayName}

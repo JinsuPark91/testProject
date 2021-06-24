@@ -37,7 +37,7 @@ function RoomAddMemberModal({
     } else {
       setisLoaded(false);
     }
-  }, [roomId, visible]);
+  }, [roomStore, userStore, roomId, visible]);
 
   const handleSelectedUserChange = useCallback(
     ({ userArray }) => {
@@ -60,31 +60,41 @@ function RoomAddMemberModal({
 
   const handleInviteUsers = async () => {
     const myUserId = userStore.myProfile.id;
+    const roomInfo = roomStore.getRoom(roomId);
 
     try {
-      const { result, roomId: resultRoomId } = await roomStore.inviteNewMembers(
-        {
+      // 내가 관리자가 아닌 입장 제한 오픈 룸은 입장 요청
+      if (
+        roomInfo.type === 'WKS0003' &&
+        !roomInfo.isJoinable &&
+        roomInfo.adminId !== myUserId
+      ) {
+        const userIdList = selectedUsers.map(user => user.friendId || user.id);
+        await roomStore.requestEnterRoom({
+          roomId,
+          userIdList,
+        });
+      } else {
+        const {
+          result,
+          roomId: resultRoomId,
+        } = await roomStore.inviteNewMembers({
           myUserId,
           roomId,
           newMemberList: selectedUsers.map(user => ({
             userId: user.friendId || user.id,
           })),
-        },
-      );
+        });
 
-      if (!result) {
-        throw Error('[Platform] Invite Member failed.');
+        if (!result) throw Error('[Platform] Invite Member failed.');
+        onInviteUsers(selectedUsers, resultRoomId);
       }
-
-      onInviteUsers(selectedUsers, resultRoomId);
     } catch (e) {
       console.error('[Platform] Invite Member Error : ', e);
     }
   };
 
-  const handleCancel = () => {
-    onCancel();
-  };
+  const handleCancel = () => onCancel();
 
   const getDisabledIds = () => {
     const originMemberIds = members.map(member => member.friendId || member.id);

@@ -3,26 +3,20 @@ import { RoomStore, UserStore } from 'teespace-core';
 export const handleProfileMenuClick = async (
   myUserId,
   targetUserId,
-  visibleRoomFunction,
-  hiddenRoomFunction,
-  noRoomFunction,
+  handleVisibleRoom,
+  handleNoRoom,
 ) => {
   const { roomInfo } = RoomStore.getDMRoom(myUserId, targetUserId);
   // 이미 룸리스트에 있는 경우
   try {
     if (roomInfo && roomInfo.isVisible) {
-      await visibleRoomFunction(roomInfo);
+      await handleVisibleRoom(roomInfo);
       return;
     }
     // 방은 있지만 룸리스트에 없는 경우 (나간경우)
     if (roomInfo && !roomInfo.isVisible) {
       await RoomStore.activateRoom({ roomId: roomInfo.id });
-      // await RoomStore.updateRoomMemberSetting({
-      //   roomId: roomInfo.id,
-      //   myUserId,
-      //   newIsVisible: true,
-      // });
-      hiddenRoomFunction(roomInfo);
+      handleNoRoom(roomInfo);
       return;
     }
     // 아예 방이 없는 경우 (한번도 대화한적이 없음)
@@ -31,7 +25,7 @@ export const handleProfileMenuClick = async (
       userList: [{ userId: targetUserId }],
     });
     const newRoomInfo = RoomStore.getDMRoom(myUserId, targetUserId)?.roomInfo;
-    noRoomFunction(newRoomInfo);
+    handleNoRoom(newRoomInfo);
   } catch (e) {
     console.error(`Error is${e}`);
   }
