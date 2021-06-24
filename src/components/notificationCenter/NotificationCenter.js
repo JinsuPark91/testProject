@@ -104,7 +104,7 @@ const NotificationCenter = ({ visible, onClose }) => {
                   hasMore={notificationStore.history.hasMore}
                   isLoading={notificationStore.history.isLoading}
                   loadMore={() => {
-                    notificationStore.fetchNotifications({
+                    notificationStore.fetchNotificationList({
                       type: 'history',
                       offset: notificationStore.histories.length,
                       limit: LIMIT,

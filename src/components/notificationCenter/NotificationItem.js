@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { useCoreStores, Icons } from 'teespace-core';
 import { Trans } from 'react-i18next';
+import { DateTime } from 'luxon';
 import { useStores } from '../../stores';
 import Photos from '../Photos';
 
@@ -10,16 +11,8 @@ const { CloseIcon } = Icons;
 
 const NotificationItem = ({ style, item }) => {
   const { push } = useHistory();
-  const { notificationStore, roomStore } = useCoreStores();
+  const { notificationStore, roomStore, userStore } = useCoreStores();
   const { uiStore } = useStores();
-  // const content = JSON.parse(item.content);
-
-  const handleClick = () => {
-    if (item.roomId) {
-      push(`/s/${item.roomId}/talk`);
-      uiStore.isNotificationCenterVisible = false;
-    }
-  };
 
   const handleDelete = e => {
     e.stopPropagation();
@@ -30,13 +23,31 @@ const NotificationItem = ({ style, item }) => {
     });
   };
 
+  const handleClick = async () => {
+    await notificationStore.readNotification({
+      type: item.type,
+      notiId: item.id,
+    });
+
+    if (!item.roomId) return;
+    push(`/s/${item.roomId}/talk`);
+    uiStore.isNotificationCenterVisible = false;
+  };
+
+  const getUserDisplayName = userId =>
+    userStore.userProfiles[userId].displayName;
+
+  const getDateFormat = (timestamp, format) =>
+    DateTime.fromFormat(timestamp, 'yyyy-MM-dd HH:mm:ss.S z').toFormat(format);
+
   return (
-    <Wrapper style={style} onClick={handleClick}>
+    <Wrapper style={style} isRead={item.isRead}>
       <InnerWrapper>
         {/* 사진 */}
         <PhotoWrapper>
           <Photos
             srcList={roomStore.getRoomPhoto(item.roomId, 4)}
+            isClickable={false}
             defaultDiameter="2.625"
           />
         </PhotoWrapper>
@@ -45,18 +56,17 @@ const NotificationItem = ({ style, item }) => {
           {/* 상단 */}
           <Row>
             <Ellipsis>
-              <BoldText>{item.notificationBody}</BoldText>
-              {/* <NormalText>
+              <NormalText onClick={handleClick}>
                 <Trans
-                  i18nKey={content.key}
+                  i18nKey={item.bodyKey}
                   components={{
                     style: <BoldText />,
                   }}
                   values={{
-                    value: content.value,
+                    value: item.bodyValue,
                   }}
                 />
-              </NormalText> */}
+              </NormalText>
             </Ellipsis>
 
             <IconWrapper>
@@ -72,9 +82,13 @@ const NotificationItem = ({ style, item }) => {
           {/* 하단 */}
           <Row>
             <Ellipsis>
-              <LightText>{item.regiUserId}</LightText>
+              <LightText onClick={handleClick}>{`by ${getUserDisplayName(
+                item.createdBy,
+              )}`}</LightText>
             </Ellipsis>
-            <LightText>{item.regiDate}</LightText>
+            <LightText onClick={handleClick}>
+              {getDateFormat(item.createdAt, 'MM.dd')}
+            </LightText>
           </Row>
         </Description>
       </InnerWrapper>
@@ -87,7 +101,7 @@ export default NotificationItem;
 const Wrapper = styled.div`
   height: 4rem;
   padding: 0 1.188rem;
-  cursor: pointer;
+  opacity: ${({ isRead }) => (isRead ? '0.4' : '1')};
 `;
 
 const InnerWrapper = styled.div`
@@ -115,6 +129,7 @@ const IconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 50%;
+  cursor: pointer;
   &:hover {
     background-color: #faf8f7;
   }
@@ -134,18 +149,25 @@ const PhotoWrapper = styled.div`
   margin-right: 0.75rem;
 `;
 
-const BoldText = styled.span`
+const UnderLineText = styled.span`
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const BoldText = styled(UnderLineText)`
   font-weight: bold;
   font-size: 0.813rem;
   color: #000000;
 `;
 
-const NormalText = styled.span`
+const NormalText = styled(UnderLineText)`
   font-size: 0.75rem;
   color: #666666;
 `;
 
-const LightText = styled.span`
+const LightText = styled(UnderLineText)`
   font-size: 0.625rem;
   color: #aaaaaa;
   white-space: nowrap;
