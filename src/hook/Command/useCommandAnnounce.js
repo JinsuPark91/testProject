@@ -24,10 +24,9 @@ export const useCommandAnnounce = () => {
 
         if (!isBotRoom && !commandStore.get(command)) {
           commandStore.register('platform', command, handler, {
-            // TODO: 임시 번역
             desc: {
               ko: '서비스 알림으로 이동합니다.',
-              en: 'Go to Service Announce.',
+              en: 'Go to Service Alert.',
             },
           });
         } else if (isBotRoom && commandStore.get(command)) {

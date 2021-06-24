@@ -21,9 +21,8 @@ export const useCommandLogout = handleOpen => {
       if (!commandStore.get(command)) {
         commandStore.register('platform', command, handler, {
           desc: {
-            // TODO: UI string 발간 이후 수정할 것
-            ko: '로그아웃을 합니다',
-            en: 'logout from WAPL',
+            ko: '로그아웃합니다',
+            en: 'Logout from WAPL',
           },
         });
       } else {
