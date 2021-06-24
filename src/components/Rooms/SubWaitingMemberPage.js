@@ -177,6 +177,9 @@ const SubWaitingMemberPage = ({ roomId }) => {
           text: t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_08', {
             num: store.selectedRequestMembers.size,
           }),
+          onClose: () => {
+            uiStore.closeToast();
+          },
         });
 
         store.selectedRequestMembers.clear();

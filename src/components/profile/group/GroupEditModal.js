@@ -113,14 +113,18 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
     let updatedInfo = {};
 
     if (newAddress !== getCurrentSpaceAddress()) {
-      const res = await spaceStore.searchSpaceByDomain({
-        domain: newAddress,
-      });
-      if (res) {
-        setUrlWarningText(t('CM_PROFILE_SPACE_STANDARD'));
-        setIsUrlWarningVisible(true);
-        return;
-      }
+      // FIXME: 서비스 에러로 인해 주석처리
+      // 동일 url 체크 로직
+      // 새로운 서비스 추가 후 반영해야 함
+
+      // const res = await spaceStore.searchSpaceByDomain({
+      //   domain: newAddress,
+      // });
+      // if (res) {
+      //   setUrlWarningText(t('CM_PROFILE_SPACE_STANDARD'));
+      //   setIsUrlWarningVisible(true);
+      //   return;
+      // }
 
       if (newSpaceName !== currentSpace?.name) {
         updatedInfo = {

@@ -190,13 +190,13 @@ const MainProfile = observer(({ userId = null }) => {
     handleMoveTalk(roomInfo);
   };
 
+  // 나간 1:1 방에도 히스토리 따라가야 하는지 추후 확인 필요
   const handleTalkClick = async () => {
     const myUserId = userStore.myProfile.id;
     handleProfileMenuClick(
       myUserId,
       userId,
       handleMoveTalkHistory,
-      handleMoveTalk, // 나간 1:1 방에도 히스토리 따라가야 하는지 기획 확인 필요
       handleMoveTalk,
     );
   };
@@ -209,7 +209,6 @@ const MainProfile = observer(({ userId = null }) => {
       myUserId,
       userId,
       handleMoveMeetingHistory,
-      handleMoveMeeting,
       handleMoveMeeting,
     );
   };

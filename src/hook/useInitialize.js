@@ -72,7 +72,6 @@ const useInitialize = () => {
       resourceId,
       handleMoveTalkHistory,
       handleMoveTalk,
-      handleMoveTalk,
     );
   };
   const handleMeetingClick = async () => {
@@ -81,8 +80,16 @@ const useInitialize = () => {
       resourceId,
       handleMoveMeetingHistory,
       handleMoveMeeting,
-      handleMoveMeeting,
     );
+  };
+
+  const handleError = () => {
+    if (process.env.REACT_APP_ENV === 'local') {
+      setTimeout(() => {
+        history.push('/logout');
+      }, 1000);
+    } else
+      window.location.href = `${window.location.protocol}//${mainURL}/domain/${domainName}`;
   };
 
   useEffect(() => {
@@ -154,13 +161,7 @@ const useInitialize = () => {
         setIsLoaded(true);
       })
       .catch(err => {
-        if (process.env.REACT_APP_ENV === 'local') {
-          setTimeout(() => {
-            history.push('/logout');
-          }, 1000);
-        } else {
-          window.location.href = `${window.location.protocol}//${mainURL}/domain/${domainName}`;
-        }
+        handleError();
         console.log(err);
       });
 
@@ -169,6 +170,13 @@ const useInitialize = () => {
       Promise.all([
         // 룸을 불러오자
         roomStore.fetchRoomList({ myUserId }),
+        // 그룹 LNB reload
+        spaceStore.fetchSpaces({
+          userId: myUserId,
+          isLocal: process.env.REACT_APP_ENV === 'local',
+        }),
+        // 프렌드 리스트 reload
+        friendStore.fetchFriends({ myUserId }),
       ])
         .then(() => {
           // talk init (fetch room 이후.)
@@ -176,13 +184,7 @@ const useInitialize = () => {
           EventBus.dispatch('Platform:reconnectWebSocket');
         })
         .catch(err => {
-          if (process.env.REACT_APP_ENV === 'local') {
-            setTimeout(() => {
-              history.push('/logout');
-            }, 1000);
-          } else {
-            window.location.href = `${window.location.protocol}//${mainURL}/domain/${domainName}`;
-          }
+          handleError();
           console.log(err);
         });
     });
