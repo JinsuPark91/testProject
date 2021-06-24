@@ -1,7 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { WaplSymbol } from './Icons';
 
 const getStyle = (index, count, defaultDiameter) => {
   switch (count) {
@@ -37,7 +36,7 @@ const getStyle = (index, count, defaultDiameter) => {
 
 function Photos({
   srcList,
-  isBotRoom = false,
+  isClickable = true,
   onClick = () => {},
   defaultDiameter = 2.125,
   className,
@@ -64,9 +63,9 @@ function Photos({
 
   return (
     <Wrapper
-      isBotRoom={isBotRoom}
+      isClickable={isClickable}
       onClick={e => {
-        if (!isBotRoom) onClick(e);
+        if (isClickable) onClick(e);
       }}
       defaultDiameter={defaultDiameter}
       className={className}
@@ -82,17 +81,7 @@ const Wrapper = styled.div`
   position: relative;
   width: ${({ defaultDiameter }) => defaultDiameter}rem;
   height: ${({ defaultDiameter }) => defaultDiameter}rem;
-  cursor: ${({ isBotRoom }) => (isBotRoom ? 'default' : 'pointer')};
-`;
-
-const SymbolWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  background: #fff;
-  border-radius: 50%;
+  cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'default')};
 `;
 
 const UserPhoto = styled.div`

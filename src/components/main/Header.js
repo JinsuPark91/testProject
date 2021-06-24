@@ -505,7 +505,7 @@ const Header = () => {
                   <Observer>
                     {() => (
                       <StyledPhotos
-                        isBotRoom={isBotRoom()}
+                        isClickable={!isBotRoom()}
                         className="header__photo"
                         srcList={roomStore.getRoomPhoto(findRoom()?.id)}
                         onClick={handleClickRoomPhoto}

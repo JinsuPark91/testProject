@@ -199,7 +199,7 @@ const Header = ({ roomId, onSearch }) => {
 
           return (
             <Photos
-              isBotRoom={info.isBotRoom}
+              isClickable={!info.isBotRoom}
               srcList={roomStore.getRoomPhoto(info.id)}
               onClick={handlePhotoClick}
               className="header__room-photo"

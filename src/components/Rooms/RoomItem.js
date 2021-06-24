@@ -382,7 +382,7 @@ const RoomItemContent = React.memo(
                     <Photos
                       defaultDiameter="2.13"
                       srcList={userPhotos}
-                      isBotRoom={roomInfo.isBotRoom}
+                      isClickable={!roomInfo.isBotRoom}
                       onClick={handleClickRootPhoto}
                       className="photos rooms__item__photo"
                     />
@@ -521,8 +521,8 @@ const RoomItem = ({
   roomInfo,
   onClick,
   onMenuClick,
-  onClickMenuItem = () => { },
-  onClickRoomPhoto = () => { },
+  onClickMenuItem = () => {},
+  onClickRoomPhoto = () => {},
 }) => {
   const { handlerStore } = useStores();
   const isMyRoom = roomInfo.type === 'WKS0001';
