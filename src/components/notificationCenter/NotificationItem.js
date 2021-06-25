@@ -17,11 +17,9 @@ const NotificationItem = ({ style, item }) => {
   const { uiStore } = useStores();
 
   const handleDelete = async e => {
-    e.stopPropagation();
-
     await notificationStore.deleteNotification({
-      id: item.notificationId,
-      type: item.notificationType,
+      notiId: item.id,
+      type: item.type,
     });
   };
 
