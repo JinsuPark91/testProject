@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useCoreStores, Icons } from 'teespace-core';
 import { AlarmPlainMessage } from 'teespace-talk-app';
 import { Trans } from 'react-i18next';
+import { useObserver } from 'mobx-react';
 import { DateTime } from 'luxon';
 import { useStores } from '../../stores';
 import Photos from '../Photos';
@@ -15,20 +16,21 @@ const NotificationItem = ({ style, item }) => {
   const { notificationStore, roomStore, userStore } = useCoreStores();
   const { uiStore } = useStores();
 
-  const handleDelete = e => {
+  const handleDelete = async e => {
     e.stopPropagation();
 
-    notificationStore.deleteNotification({
+    await notificationStore.deleteNotification({
       id: item.notificationId,
       type: item.notificationType,
     });
   };
 
   const handleClick = async () => {
-    await notificationStore.readNotification({
-      type: item.type,
-      notiId: item.id,
-    });
+    if (!item.isRead)
+      await notificationStore.readNotification({
+        type: item.type,
+        notiId: item.id,
+      });
 
     if (!item.roomId) return;
     push(`/s/${item.roomId}/talk`);
@@ -41,7 +43,7 @@ const NotificationItem = ({ style, item }) => {
   const getDateFormat = (timestamp, format) =>
     DateTime.fromFormat(timestamp, 'yyyy-MM-dd HH:mm:ss.S z').toFormat(format);
 
-  return (
+  return useObserver(() => (
     <Wrapper style={style} isRead={item.isRead}>
       <InnerWrapper>
         {/* 사진 */}
@@ -74,13 +76,8 @@ const NotificationItem = ({ style, item }) => {
               </NormalText>
             </Ellipsis>
 
-            <IconWrapper>
-              <CloseIcon
-                width={0.75}
-                height={0.75}
-                fillColor="#6b6b6b"
-                onClick={handleDelete}
-              />
+            <IconWrapper onClick={handleDelete}>
+              <CloseIcon width={0.75} height={0.75} fillColor="#6b6b6b" />
             </IconWrapper>
           </Row>
 
@@ -98,7 +95,7 @@ const NotificationItem = ({ style, item }) => {
         </Description>
       </InnerWrapper>
     </Wrapper>
-  );
+  ));
 };
 
 export default NotificationItem;

@@ -58,7 +58,10 @@ const NotificationCenter = ({ visible, onClose }) => {
                 {() => (
                   <Tab
                     title={t('CM_NOTI_CENTER_01')}
-                    unreadCount={notificationStore.mention.unreadCount}
+                    unreadCount={
+                      notificationStore.mention.totalCount -
+                      notificationStore.mention.totalReadCount
+                    }
                   />
                 )}
               </Observer>
@@ -89,7 +92,10 @@ const NotificationCenter = ({ visible, onClose }) => {
                 {() => (
                   <Tab
                     title={t('CM_NOTI_CENTER_04')}
-                    unreadCount={notificationStore.history.unreadCount}
+                    unreadCount={
+                      notificationStore.history.totalCount -
+                      notificationStore.history.totalReadCount
+                    }
                   />
                 )}
               </Observer>

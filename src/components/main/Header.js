@@ -480,10 +480,7 @@ const Header = () => {
   const themeContext = useContext(ThemeContext);
 
   const existNewAlarm = appName => {
-    return (
-      appName === 'noti' &&
-      (notificationStore.mentions.length || notificationStore.histories.length)
-    );
+    return appName === 'noti' && notificationStore.isExistUnreadNoti;
   };
 
   return (
