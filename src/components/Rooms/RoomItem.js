@@ -372,7 +372,7 @@ const RoomItemContent = React.memo(
                   const userId = userIdArr.filter(
                     Id => Id !== userStore.myProfile.id,
                   )[0];
-                  userStatus = userStore.userProfiles[userId].status;
+                  userStatus = userStore?.userProfiles[userId]?.status;
                   userPhotos = roomStore.getRoomPhoto(roomInfo.id, 1);
                 } else {
                   userPhotos = roomStore.getRoomPhoto(roomInfo.id, 4);
@@ -521,8 +521,8 @@ const RoomItem = ({
   roomInfo,
   onClick,
   onMenuClick,
-  onClickMenuItem = () => {},
-  onClickRoomPhoto = () => {},
+  onClickMenuItem = () => { },
+  onClickRoomPhoto = () => { },
 }) => {
   const { handlerStore } = useStores();
   const isMyRoom = roomInfo.type === 'WKS0001';
