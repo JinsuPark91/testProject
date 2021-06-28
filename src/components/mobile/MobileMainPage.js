@@ -39,8 +39,8 @@ const MobileMainPage = () => {
         isLocal: process.env.REACT_APP_ENV === 'local',
       }),
       userStore.fetchRoomUserProfileList({}),
-      friendStore.fetchFriends({ myUserId }),
-      roomStore.fetchRoomList({ myUserId }),
+      friendStore.fetchFriends(),
+      roomStore.fetchRoomList(),
     ]).then(async () => {
       EventBus.dispatch('Platform:initLNB');
       if (friendStore.friendInfoList.length) {

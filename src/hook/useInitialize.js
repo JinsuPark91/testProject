@@ -100,11 +100,11 @@ const useInitialize = () => {
         isLocal: process.env.REACT_APP_ENV === 'local',
       }),
       // 룸을 불러오자
-      roomStore.fetchRoomList({ myUserId }),
+      roomStore.fetchRoomList(),
       // 유저 프로필을 불러오자
       userStore.fetchRoomUserProfileList({}),
       // 프렌드 리스트를 불러오자
-      friendStore.fetchFriends({ myUserId }),
+      friendStore.fetchFriends(),
       // 접속 정보를 불러오자.
       historyStore.fetchHistories(),
       // 알림 세팅을 불러오자
@@ -169,14 +169,14 @@ const useInitialize = () => {
     WWMS.setOnReconnect(() => {
       Promise.all([
         // 룸을 불러오자
-        roomStore.fetchRoomList({ myUserId }),
+        roomStore.fetchRoomList(),
         // 그룹 LNB reload
         spaceStore.fetchSpaces({
           userId: myUserId,
           isLocal: process.env.REACT_APP_ENV === 'local',
         }),
         // 프렌드 리스트 reload
-        friendStore.fetchFriends({ myUserId }),
+        friendStore.fetchFriends(),
       ])
         .then(() => {
           // talk init (fetch room 이후.)
