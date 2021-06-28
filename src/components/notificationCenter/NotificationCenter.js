@@ -32,7 +32,6 @@ const NotificationCenter = ({ visible, onClose }) => {
   const Tab = ({ title, unreadCount }) => (
     <TabWrapper>
       <div>{title}</div>
-      {console.log(unreadCount)}
       {unreadCount ? (
         <TabUnreadCount>
           {unreadCount > 99 ? '99+' : unreadCount}
