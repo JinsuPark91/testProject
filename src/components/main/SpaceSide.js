@@ -68,17 +68,18 @@ const SpaceDropdownItem = React.memo(
   },
 );
 
+const boxHeight = 2.813;
+
 const SpaceSide = () => {
   const { t } = useTranslation();
+  const themeContext = useContext(ThemeContext);
   const { userStore, spaceStore } = useCoreStores();
   const { spaceList } = spaceStore;
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
   const spaceNum = spaceList.length;
-  const viewNum = Math.floor(windowHeight / remToPixel(2.813)) - 2;
-
-  const lnbSpace = spaceNum > viewNum ? spaceList.slice(0, viewNum) : spaceList;
-  const dropdownSpace = spaceNum > viewNum ? spaceList.slice(viewNum) : [];
+  const viewNum = Math.floor(windowHeight / remToPixel(boxHeight)) - 2;
+  const dropdownGroupVisible = spaceNum > viewNum;
 
   const resizeWindow = throttle(() => {
     setWindowHeight(window.innerHeight);
@@ -105,8 +106,6 @@ const SpaceSide = () => {
     } else window.location.href = getMainWaplURL('/select-space-type');
   };
 
-  const themeContext = useContext(ThemeContext);
-
   return (
     <Wrapper>
       <Tooltip
@@ -125,7 +124,11 @@ const SpaceSide = () => {
       <HorizontalBar width={1.25} />
       <Observer>
         {() => {
-          return lnbSpace.map(spaceInfo => (
+          const lnbGroup = dropdownGroupVisible
+            ? spaceStore.spaceList?.slice(0, viewNum)
+            : spaceStore.spaceList;
+
+          return lnbGroup.map(spaceInfo => (
             <SpaceItem
               key={spaceInfo.id}
               checked={spaceInfo.id === spaceStore.currentSpace.id}
@@ -140,11 +143,12 @@ const SpaceSide = () => {
 
       <Observer>
         {() => {
-          if (dropdownSpace.length === 0) return null;
+          if (!dropdownGroupVisible) return null;
+          const dropdownGroup = spaceStore.spaceList?.slice(viewNum);
 
           const spaceMenu = (
             <Menu style={{ width: '12.375rem' }}>
-              {dropdownSpace.map(spaceInfo => (
+              {dropdownGroup.map(spaceInfo => (
                 <Menu.Item key={spaceInfo.id}>
                   <SpaceDropdownItem
                     key={spaceInfo.id}

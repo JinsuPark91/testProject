@@ -242,19 +242,18 @@ const FriendItem = observer(
     const userStatus = friendInfo.status;
 
     const renderStatusIcon = code => {
-      console.log(code);
-      if (code === 'STA0001') {
+      if (code === 'STA0001')
         return <ProfileEmotionNormalIcon width={0.875} height={0.875} />;
-      }
-      if (code === 'STA0002') {
+
+      if (code === 'STA0002')
         return <ProfileEmotionMissedIcon width={0.875} height={0.875} />;
-      }
-      if (code === 'STA0003') {
+
+      if (code === 'STA0003')
         return <ProfileEmotionVacationIcon width={0.875} height={0.875} />;
-      }
-      if (code === 'STA0004') {
+
+      if (code === 'STA0004')
         return <ProfileEmotionMeetingIcon width={0.875} height={0.875} />;
-      }
+
       return null;
     };
 
