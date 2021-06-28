@@ -184,10 +184,10 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
           </>
         }
       >
-        {/* <GroupImageField
+        <GroupImageField
           groupPhoto={groupPhoto}
           handleChange={handleChangePhoto}
-        /> */}
+        />
         <GroupNameField
           spaceName={newSpaceName}
           handleChange={handleChangeName}

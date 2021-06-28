@@ -3,6 +3,7 @@ import { Button } from 'antd';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { useCoreStores, ItemSelector, Modal } from 'teespace-core';
+import { useStores } from '../../stores';
 
 function RoomAddMemberModal({
   visible = false,
@@ -16,6 +17,7 @@ function RoomAddMemberModal({
   const [blockedMembers, setBlockedMembers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const { roomStore, userStore } = useCoreStores();
+  const { uiStore } = useStores();
 
   useEffect(() => {
     if (roomId && visible) {
@@ -74,6 +76,13 @@ function RoomAddMemberModal({
           roomId,
           userIdList,
         });
+        uiStore.openToast({
+          text: t('CM_ROOM_INVITE_BLOCK_ROOM_TOOLTIP', {
+            num: userIdList.length,
+          }),
+          onClose: () => uiStore.closeToast(),
+        });
+        onCancel();
       } else {
         const {
           result,
