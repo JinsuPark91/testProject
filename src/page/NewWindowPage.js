@@ -40,14 +40,14 @@ const NewWindowPage = () => {
       });
 
       // 룸을 불러오자
-      const roomInfo = await roomStore.fetchRoom({ roomId, myUserId });
+      const roomInfo = await roomStore.fetchRoom({ roomId });
       const channelInfo = roomInfo.channelList.find(
         channel =>
           channel.type === (mainApp === 'talk' ? 'CHN0001' : 'CHN0005'),
       );
 
       // 프렌드 리스트를 불러오자
-      await friendStore.fetchFriends({ myUserId });
+      await friendStore.fetchFriends();
       setChannelId(channelInfo.id);
 
       await userStore.getMyDomainSetting();
