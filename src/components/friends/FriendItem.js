@@ -154,7 +154,6 @@ const AllAction = React.memo(({ itemId }) => {
       itemId,
       roomInfo => OpenMiniTalk(roomInfo),
       roomInfo => OpenMiniTalk(roomInfo),
-      newRoomInfo => OpenMiniTalk(newRoomInfo),
     );
   };
 
