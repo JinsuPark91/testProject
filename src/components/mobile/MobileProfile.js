@@ -125,13 +125,7 @@ const MobileProfile = observer(({ userId = null }) => {
 
   const handleTalkClick = async () => {
     const myUserId = userStore.myProfile.id;
-    handleProfileMenuClick(
-      myUserId,
-      userId,
-      handleMoveTalk,
-      handleMoveTalk,
-      handleMoveTalk,
-    );
+    handleProfileMenuClick(myUserId, userId, handleMoveTalk, handleMoveTalk);
   };
 
   const handleChangetoEditMode = () => {

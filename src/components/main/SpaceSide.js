@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, Dropdown, Menu } from 'antd';
 import { Observer } from 'mobx-react';
 import { ThemeContext } from 'styled-components';
+import { useStores } from '../../stores';
 import MovePage from '../../utils/MovePage';
 import { getMainWaplURL } from '../../utils/UrlUtil';
 import { remToPixel } from '../../utils/GeneralUtil';
@@ -75,6 +76,7 @@ const SpaceSide = () => {
   const themeContext = useContext(ThemeContext);
   const { userStore, spaceStore } = useCoreStores();
   const { spaceList } = spaceStore;
+  const { uiStore } = useStores();
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
   const spaceNum = spaceList.length;
@@ -134,7 +136,11 @@ const SpaceSide = () => {
               checked={spaceInfo.id === spaceStore.currentSpace.id}
               spaceName={spaceInfo.name}
               backgroundURL={spaceInfo.profilePhotoURL}
-              spaceUnreadCount={spaceInfo.totalUnreadRoomCount}
+              spaceUnreadCount={
+                spaceStore.currentSpace?.id === spaceInfo.id
+                  ? uiStore.totalUnreadCount
+                  : spaceInfo.totalUnreadRoomCount
+              }
               spaceDomain={spaceInfo.domain}
             />
           ));

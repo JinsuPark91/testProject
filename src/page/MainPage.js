@@ -195,9 +195,6 @@ const MainPage = () => {
           roomInfo => {
             moveTalk(roomInfo.id);
           },
-          roomInfo => {
-            moveTalk(roomInfo.id);
-          },
         );
       },
     );
