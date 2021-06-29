@@ -3,15 +3,17 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { useCoreStores, Icons } from 'teespace-core';
 import { AlarmPlainMessage } from 'teespace-talk-app';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useObserver } from 'mobx-react';
 import { DateTime } from 'luxon';
 import { useStores } from '../../stores';
+
 import Photos from '../Photos';
 
 const { CloseIcon } = Icons;
 
 const NotificationItem = ({ style, item }) => {
+  const { t } = useTranslation();
   const { push } = useHistory();
   const { notificationStore, roomStore, userStore } = useCoreStores();
   const { uiStore } = useStores();
@@ -57,10 +59,15 @@ const NotificationItem = ({ style, item }) => {
           {/* 상단 */}
           <Row>
             <Ellipsis>
-              <NormalText onClick={handleClick}>
-                {item.type === 'mention' ? (
+              {item.type === 'mention' ? (
+                <MentionWrapper>
+                  <BoldText style={{ marginRight: '0.25rem' }}>
+                    {t('CM_NOTI_CENTER_02')}
+                  </BoldText>
                   <MentionMessage noticeBody={item.bodyComponent} />
-                ) : (
+                </MentionWrapper>
+              ) : (
+                <NormalText onClick={handleClick}>
                   <Trans
                     i18nKey={item.bodyKey}
                     components={{
@@ -70,8 +77,8 @@ const NotificationItem = ({ style, item }) => {
                       value: item.bodyValue,
                     }}
                   />
-                )}
-              </NormalText>
+                </NormalText>
+              )}
             </Ellipsis>
 
             <IconWrapper onClick={handleDelete}>
@@ -120,6 +127,21 @@ const Ellipsis = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow-x: hidden;
+`;
+
+const MentionWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  & > div {
+    display: flex;
+    min-width: 0;
+
+    & > p {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow-x: hidden;
+    }
+  }
 `;
 
 const IconWrapper = styled.div`
