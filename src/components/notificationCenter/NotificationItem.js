@@ -3,15 +3,18 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { useCoreStores, Icons } from 'teespace-core';
 import { AlarmPlainMessage } from 'teespace-talk-app';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useObserver } from 'mobx-react';
 import { DateTime } from 'luxon';
+import { LeftCircleFilled } from '@ant-design/icons';
 import { useStores } from '../../stores';
+
 import Photos from '../Photos';
 
 const { CloseIcon } = Icons;
 
 const NotificationItem = ({ style, item }) => {
+  const { t } = useTranslation();
   const { push } = useHistory();
   const { notificationStore, roomStore, userStore } = useCoreStores();
   const { uiStore } = useStores();
@@ -31,7 +34,23 @@ const NotificationItem = ({ style, item }) => {
       });
 
     if (!item.roomId) return;
-    push(`/s/${item.roomId}/talk`);
+
+    let routePath = `/s/${item.roomId}/talk`;
+    switch (item.channelId) {
+      case 'CHN0003':
+        routePath += '?sub=note';
+        break;
+      case 'CHN0005':
+        routePath += '?sub=calendar';
+        break;
+      case 'CHN0006':
+        routePath += '?sub=drive';
+        break;
+      default:
+        break;
+    }
+
+    push(routePath);
     uiStore.isNotificationCenterVisible = false;
   };
 
@@ -53,14 +72,19 @@ const NotificationItem = ({ style, item }) => {
           />
         </PhotoWrapper>
 
-        <Description>
+        <Description onClick={handleClick}>
           {/* 상단 */}
-          <Row>
+          <Row style={{ paddingRight: '0.75rem' }}>
             <Ellipsis>
-              <NormalText onClick={handleClick}>
-                {item.type === 'mention' ? (
+              {item.type === 'mention' ? (
+                <MentionWrapper>
+                  <BoldText style={{ marginRight: '0.25rem' }}>
+                    {t('CM_NOTI_CENTER_02')}
+                  </BoldText>
                   <MentionMessage noticeBody={item.bodyComponent} />
-                ) : (
+                </MentionWrapper>
+              ) : (
+                <NormalText>
                   <Trans
                     i18nKey={item.bodyKey}
                     components={{
@@ -70,27 +94,25 @@ const NotificationItem = ({ style, item }) => {
                       value: item.bodyValue || '(제목 없음)'
                     }}
                   />
-                )}
-              </NormalText>
+                </NormalText>
+              )}
             </Ellipsis>
-
-            <IconWrapper onClick={handleDelete}>
-              <CloseIcon width={0.75} height={0.75} fillColor="#6b6b6b" />
-            </IconWrapper>
           </Row>
 
           {/* 하단 */}
           <Row>
             <Ellipsis>
-              <LightText onClick={handleClick}>{`by ${getUserDisplayName(
+              <LightText>{`by ${getUserDisplayName(
                 item.createdBy,
               )}`}</LightText>
             </Ellipsis>
-            <LightText onClick={handleClick}>
-              {getDateFormat(item.createdAt, 'MM.dd')}
-            </LightText>
+            <LightText>{getDateFormat(item.createdAt, 'MM.dd')}</LightText>
           </Row>
         </Description>
+
+        <IconWrapper onClick={handleDelete}>
+          <CloseIcon width={0.75} height={0.75} fillColor="#6b6b6b" />
+        </IconWrapper>
       </InnerWrapper>
     </Wrapper>
   ));
@@ -105,6 +127,7 @@ const Wrapper = styled.div`
 `;
 
 const InnerWrapper = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   height: 100%;
@@ -114,6 +137,11 @@ const InnerWrapper = styled.div`
 const Description = styled.div`
   flex: 1;
   min-width: 0;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const Ellipsis = styled.div`
@@ -122,7 +150,26 @@ const Ellipsis = styled.div`
   overflow-x: hidden;
 `;
 
+const MentionWrapper = styled.div`
+  display: flex;
+  align-items: center;
+
+  & > div {
+    display: flex;
+    min-width: 0;
+
+    & > p {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow-x: hidden;
+    }
+  }
+`;
+
 const IconWrapper = styled.div`
+  position: absolute;
+  top: 1rem;
+  right: 0;
   display: flex;
   flex: 0 0 1rem;
   height: 1rem;
@@ -149,25 +196,18 @@ const PhotoWrapper = styled.div`
   margin-right: 0.75rem;
 `;
 
-const UnderLineText = styled.span`
-  cursor: pointer;
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const BoldText = styled(UnderLineText)`
+const BoldText = styled.span`
   font-weight: bold;
   font-size: 0.813rem;
   color: #000000;
 `;
 
-const NormalText = styled(UnderLineText)`
+const NormalText = styled.span`
   font-size: 0.75rem;
   color: #666666;
 `;
 
-const LightText = styled(UnderLineText)`
+const LightText = styled.span`
   font-size: 0.625rem;
   color: #aaaaaa;
   white-space: nowrap;
