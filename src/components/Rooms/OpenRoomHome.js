@@ -66,6 +66,7 @@ function OpenRoomHome({ visible, onCancel }) {
     createModalVisible: false,
     keyword: '',
     currentOpenRoom: null,
+    onRequest: false,
   }));
 
   const { roomStore, userStore } = useCoreStores();
@@ -115,7 +116,10 @@ function OpenRoomHome({ visible, onCancel }) {
 
   const handleConfirmEnter = async () => {
     const myUserId = userStore.myProfile.id;
+    if (store.onRequest) return;
+
     try {
+      store.onRequest = true;
       const res = await roomStore.enterRoom({
         myUserId,
         roomId: store.currentOpenRoom.id,
@@ -132,6 +136,8 @@ function OpenRoomHome({ visible, onCancel }) {
     } catch (err) {
       console.error('ROOM ENTER ERROR : ', err);
       openFailRoomEnter();
+    } finally {
+      store.onRequest = false;
     }
   };
 
