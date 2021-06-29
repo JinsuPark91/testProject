@@ -55,9 +55,9 @@ const NotificationItem = ({ style, item }) => {
           />
         </PhotoWrapper>
 
-        <Description>
+        <Description onClick={handleClick}>
           {/* 상단 */}
-          <Row>
+          <Row style={{ paddingRight: '0.75rem' }}>
             <Ellipsis>
               {item.type === 'mention' ? (
                 <MentionWrapper>
@@ -67,7 +67,7 @@ const NotificationItem = ({ style, item }) => {
                   <MentionMessage noticeBody={item.bodyComponent} />
                 </MentionWrapper>
               ) : (
-                <NormalText onClick={handleClick}>
+                <NormalText>
                   <Trans
                     i18nKey={item.bodyKey}
                     components={{
@@ -80,24 +80,22 @@ const NotificationItem = ({ style, item }) => {
                 </NormalText>
               )}
             </Ellipsis>
-
-            <IconWrapper onClick={handleDelete}>
-              <CloseIcon width={0.75} height={0.75} fillColor="#6b6b6b" />
-            </IconWrapper>
           </Row>
 
           {/* 하단 */}
           <Row>
             <Ellipsis>
-              <LightText onClick={handleClick}>{`by ${getUserDisplayName(
+              <LightText>{`by ${getUserDisplayName(
                 item.createdBy,
               )}`}</LightText>
             </Ellipsis>
-            <LightText onClick={handleClick}>
-              {getDateFormat(item.createdAt, 'MM.dd')}
-            </LightText>
+            <LightText>{getDateFormat(item.createdAt, 'MM.dd')}</LightText>
           </Row>
         </Description>
+
+        <IconWrapper onClick={handleDelete}>
+          <CloseIcon width={0.75} height={0.75} fillColor="#6b6b6b" />
+        </IconWrapper>
       </InnerWrapper>
     </Wrapper>
   ));
@@ -112,6 +110,7 @@ const Wrapper = styled.div`
 `;
 
 const InnerWrapper = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   height: 100%;
@@ -121,6 +120,11 @@ const InnerWrapper = styled.div`
 const Description = styled.div`
   flex: 1;
   min-width: 0;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const Ellipsis = styled.div`
@@ -132,6 +136,7 @@ const Ellipsis = styled.div`
 const MentionWrapper = styled.div`
   display: flex;
   align-items: center;
+
   & > div {
     display: flex;
     min-width: 0;
@@ -145,6 +150,9 @@ const MentionWrapper = styled.div`
 `;
 
 const IconWrapper = styled.div`
+  position: absolute;
+  top: 1rem;
+  right: 0;
   display: flex;
   flex: 0 0 1rem;
   height: 1rem;
@@ -171,25 +179,18 @@ const PhotoWrapper = styled.div`
   margin-right: 0.75rem;
 `;
 
-const UnderLineText = styled.span`
-  cursor: pointer;
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const BoldText = styled(UnderLineText)`
+const BoldText = styled.span`
   font-weight: bold;
   font-size: 0.813rem;
   color: #000000;
 `;
 
-const NormalText = styled(UnderLineText)`
+const NormalText = styled.span`
   font-size: 0.75rem;
   color: #666666;
 `;
 
-const LightText = styled(UnderLineText)`
+const LightText = styled.span`
   font-size: 0.625rem;
   color: #aaaaaa;
   white-space: nowrap;
