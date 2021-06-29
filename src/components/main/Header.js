@@ -9,7 +9,6 @@ import {
   Tooltip,
   AddFriendsByInvitationDialog,
   ThemeStore,
-  NotificationStore,
 } from 'teespace-core';
 import MeetingApp from 'teespace-meeting-app';
 import { useTranslation } from 'react-i18next';
@@ -121,23 +120,12 @@ const apps = [
     isUsedInMyRoom: true,
     isUsedInProfile: true,
   },
-  {
-    name: 'noti',
-    tooltip: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_29',
-    icons: {
-      active: <AlarmOnActiveIcon />,
-      disabled: <AlarmOnIcon />,
-      default: <AlarmOnIcon />,
-    },
-    isUsedInMyRoom: true,
-    isUsedInProfile: true,
-  },
 ];
 
 const AppIcon = React.memo(
   ({
     isActive,
-    isNewAlarm,
+    isNewAlarm = false,
     appName,
     i18n,
     onClick,
@@ -394,7 +382,6 @@ const Header = () => {
   };
 
   const isActive = name => {
-    if (name === 'noti') return uiStore.isNotificationCenterVisible;
     if (name === 'meeting')
       return !!uiStore.getWindow('meeting', findRoom()?.id);
     return uiStore.subApp === name;
@@ -478,10 +465,6 @@ const Header = () => {
   useCommand.OpenApp('meeting', handleOpenApp('meeting'));
 
   const themeContext = useContext(ThemeContext);
-
-  const existNewAlarm = appName => {
-    return appName === 'noti' && notificationStore.isExistUnreadNoti;
-  };
 
   return (
     <Wrapper>
@@ -651,7 +634,6 @@ const Header = () => {
                   <AppIconbutton key={name}>
                     <AppIcon
                       isActive={isActive(name)}
-                      isNewAlarm={existNewAlarm(name)}
                       color={themeContext.HeaderIcon}
                       appName={name}
                       i18n={tooltip}
@@ -672,9 +654,30 @@ const Header = () => {
         </Observer>
       </AppIconContainer>
 
-      <UserMenu>
+      <AppIconContainer>
+        <Observer>
+          {() => (
+            <AppIconbutton>
+              <AppIcon
+                isActive={uiStore.isNotificationCenterVisible}
+                isNewAlarm={notificationStore.isExistUnreadNoti}
+                color={themeContext.HeaderIcon}
+                appName="noti"
+                i18n="CM_B2C_CONTENTS_AREA_EMPTY_PAGE_29"
+                onClick={handleAppClick}
+                defaultIcon={<AlarmOnIcon />}
+                activeIcon={<AlarmOnActiveIcon />}
+                disabledIcon={<AlarmOnIcon />}
+                disabled={false}
+              />
+            </AppIconbutton>
+          )}
+        </Observer>
+      </AppIconContainer>
+
+      <AppIconContainer style={{ padding: '0 0 0 1rem' }}>
         <HeaderProfile />
-      </UserMenu>
+      </AppIconContainer>
     </Wrapper>
   );
 };

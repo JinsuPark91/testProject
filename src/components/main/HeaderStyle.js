@@ -47,8 +47,7 @@ export const AppIconContainer = styled.div`
   position: relative;
   align-items: center;
   padding: 0 0.6875rem;
-  &:before,
-  &:after {
+  &:before {
     content: '';
     display: inline-block;
     position: absolute;
@@ -60,9 +59,6 @@ export const AppIconContainer = styled.div`
   }
   &:before {
     left: 0;
-  }
-  &:after {
-    right: 0;
   }
 `;
 
