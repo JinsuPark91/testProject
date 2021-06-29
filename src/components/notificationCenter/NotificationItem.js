@@ -6,6 +6,7 @@ import { AlarmPlainMessage } from 'teespace-talk-app';
 import { Trans, useTranslation } from 'react-i18next';
 import { useObserver } from 'mobx-react';
 import { DateTime } from 'luxon';
+import { LeftCircleFilled } from '@ant-design/icons';
 import { useStores } from '../../stores';
 
 import Photos from '../Photos';
@@ -33,7 +34,23 @@ const NotificationItem = ({ style, item }) => {
       });
 
     if (!item.roomId) return;
-    push(`/s/${item.roomId}/talk`);
+
+    let routePath = `/s/${item.roomId}/talk`;
+    switch (item.channelId) {
+      case 'CHN0003':
+        routePath += '?sub=note';
+        break;
+      case 'CHN0005':
+        routePath += '?sub=calendar';
+        break;
+      case 'CHN0006':
+        routePath += '?sub=drive';
+        break;
+      default:
+        break;
+    }
+
+    push(routePath);
     uiStore.isNotificationCenterVisible = false;
   };
 
