@@ -18,7 +18,9 @@ const CommonSettingPage = ({ roomInfo }) => {
 
   const localStore = useLocalStore(() => ({
     newName:
-      roomInfo.oriName.substring(0, 50) || roomInfo.name.substring(0, 50) || '',
+      roomInfo.oriName?.substring(0, 50) ||
+      roomInfo.name?.substring(0, 50) ||
+      '',
     isChanged: false,
   }));
 
