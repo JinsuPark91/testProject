@@ -229,6 +229,8 @@ function OpenRoomHome({ visible, onCancel }) {
   const handleJoin = async roomInfo => {
     store.currentOpenRoom = roomInfo;
 
+    if (roomInfo.isRequested) return;
+
     if (roomInfo.isBanned) {
       openFailRoomEnter();
     } else if (roomInfo.isJoined) {
@@ -293,6 +295,12 @@ function OpenRoomHome({ visible, onCancel }) {
     closeCreateModal();
   };
 
+  const getOpenRoomText = roomInfo => {
+    if (roomInfo.isJoined) return t('CM_OPEN_ROOM_HOME_10');
+    if (roomInfo.isRequested) return t('CM_OPEN_ROOM_HOME_11');
+    return '';
+  };
+
   const getRoomItems = searchKeyword => {
     const rooms = roomStore
       .getOpenRoomArray()
@@ -334,10 +342,9 @@ function OpenRoomHome({ visible, onCancel }) {
                 </div>
               )}
             </Observer>
-
-            <JoinedText>
-              {roomInfo.isJoined ? t('CM_OPEN_ROOM_HOME_10') : ''}
-            </JoinedText>
+            <Observer>
+              {() => <JoinedText>{getOpenRoomText(roomInfo)}</JoinedText>}
+            </Observer>
             <RoomButton roomInfo={roomInfo} onClick={handleJoin} />
           </RoomListItem>
         );
@@ -481,9 +488,7 @@ function OpenRoomHome({ visible, onCancel }) {
                                   {roomInfo.customName || roomInfo.name}
                                 </RecomRoomTitle>
                                 <JoinedText>
-                                  {roomInfo.isJoined
-                                    ? t('CM_OPEN_ROOM_HOME_10')
-                                    : ''}
+                                  {getOpenRoomText(roomInfo)}
                                 </JoinedText>
                                 <RoomButton
                                   roomInfo={roomInfo}

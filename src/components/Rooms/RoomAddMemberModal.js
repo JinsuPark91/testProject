@@ -17,7 +17,7 @@ function RoomAddMemberModal({
   const [blockedMembers, setBlockedMembers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const { roomStore, userStore } = useCoreStores();
-  const { uiStore } = useStores();
+  const { uiStore, roomSettingStore } = useStores();
 
   useEffect(() => {
     if (roomId && visible) {
@@ -97,6 +97,10 @@ function RoomAddMemberModal({
 
         if (!result) throw Error('[Platform] Invite Member failed.');
         onInviteUsers(selectedUsers, resultRoomId);
+
+        // 내가 어드민인 오픈 룸에서는 입장 대기 멤버 최신화
+        if (roomInfo.type === 'WKS0003' && roomInfo.adminId === myUserId)
+          roomSettingStore.fetchRequestMembers({ roomId });
       }
     } catch (e) {
       console.error('[Platform] Invite Member Error : ', e);
