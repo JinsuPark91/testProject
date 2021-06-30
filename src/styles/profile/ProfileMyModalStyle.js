@@ -382,3 +382,8 @@ export const SettingBar = styled.span`
   background-color: #7b7671;
   border-radius: 50%;
 `;
+export const StatusSelectorWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+`;

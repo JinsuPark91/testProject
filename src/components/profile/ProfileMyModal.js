@@ -10,6 +10,7 @@ import {
   logEvent,
   AddFriendsByInvitationDialog,
   AddFriendsBySearch,
+  StatusSelector,
 } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import { useObserver, Observer } from 'mobx-react';
@@ -45,8 +46,8 @@ import {
   SettingButton,
   SettingBar,
   LanguageIconWrap,
+  StatusSelectorWrapper,
 } from '../../styles/profile/ProfileMyModalStyle';
-import { ReactComponent as SquareSpaceIcon } from '../../assets/card_view.svg';
 
 const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   const { t, i18n } = useTranslation();
@@ -56,7 +57,6 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
 
   const [isCreated, setIsCreated] = useState(created);
   const [settingDialogVisible, setSettingDialogVisible] = useState(false);
-  const [spaceListVisible, setSpaceListVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
@@ -84,7 +84,6 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   const handleSettingDialogOpen = useCallback(() => {
     setIsCreated(false);
     setSettingDialogVisible(true);
-    // setSpaceListVisible(false);
   }, []);
   const handleCloseSettingDialog = useCallback(() => {
     setSettingDialogVisible(false);
@@ -105,7 +104,6 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   }, [thumbPhoto]);
 
   const handleCancel = useCallback(() => {
-    // setSpaceListVisible(false);
     setTimeout(() => onCancel(), 1);
   }, [onCancel]);
 
@@ -199,6 +197,9 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
 
   const userContent = !isEditMode ? (
     <>
+      <StatusSelectorWrapper>
+        <StatusSelector selectable userId={myProfile.id} />
+      </StatusSelectorWrapper>
       <UserImage>
         <img src={thumbPhoto} onLoad={revokeURL} alt="" />
       </UserImage>

@@ -52,11 +52,8 @@ const StatusSelector = ({ selectable = false }) => {
   };
 
   const handleVisibleChange = visible => {
-    if (visible) {
-      setIsSelected(true);
-    } else {
-      setIsSelected(false);
-    }
+    if (visible) setIsSelected(true);
+    else setIsSelected(false);
   };
 
   useEffect(() => {
@@ -65,18 +62,18 @@ const StatusSelector = ({ selectable = false }) => {
   }, []);
 
   const renderIcon = (code, isForSelector) => {
-    if (code === 'STA0001') {
+    if (code === 'STA0001')
       return <ProfileEmoticonNormalIcon width={0.875} height={0.875} />;
-    }
-    if (code === 'STA0002') {
+
+    if (code === 'STA0002')
       return <ProfileEmoticonMissedIcon width={0.875} height={0.875} />;
-    }
-    if (code === 'STA0003') {
+
+    if (code === 'STA0003')
       return <ProfileEmoticonVacationIcon width={0.875} height={0.875} />;
-    }
-    if (code === 'STA0004') {
+
+    if (code === 'STA0004')
       return <ProfileEmoticonMeetingIcon width={0.875} height={0.875} />;
-    }
+
     if (isForSelector) {
       return (
         <CommonAddIcon

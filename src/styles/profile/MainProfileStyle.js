@@ -467,6 +467,6 @@ export const ButtonCancel = styled(Button)`
 
 export const StatusSelectorWrapper = styled.div`
   position: absolute;
-  top: 13.45rem;
+  top: 9.45rem;
   z-index: 100;
 `;
