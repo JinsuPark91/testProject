@@ -329,6 +329,8 @@
   "CM_ROOM_SETTING_BAISC_10": "Do you want to delete this room?",
   "CM_ROOM_SETTING_BAISC_11": "This action cannot be undone.",
   "CM_ROOM_SETTING_BAISC_12": "Changed to a private room",
+  "CM_ROOM_SETTING_BASIC_13": "TBD",
+  "CM_ROOM_SETTING_BASIC_14": "TBD",
   "CM_ROOM_SETTING_MANAGE_PEOPLE_01": "Participants",
   "CM_ROOM_SETTING_MANAGE_PEOPLE_02": "Joined <style>{{num}}</style>",
   "CM_REMOVE": "Remove",

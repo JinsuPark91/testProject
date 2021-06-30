@@ -329,6 +329,8 @@
   "CM_ROOM_SETTING_BAISC_10": "해당 룸을 삭제하시겠습니까?",
   "CM_ROOM_SETTING_BAISC_11": "한 번 삭제한 룸은 복구할 수 없습니다.",
   "CM_ROOM_SETTING_BAISC_12": "프라이빗 룸으로 전환됨",
+  "CM_ROOM_SETTING_BASIC_13" : "참여 승인 필요",
+  "CM_ROOM_SETTING_BASIC_14" : "On 시, 룸 관리자의 승인이 있어야 룸에 참여 가능합니다.",
   "CM_ROOM_SETTING_MANAGE_PEOPLE_01": "참여 인원",
   "CM_ROOM_SETTING_MANAGE_PEOPLE_02": "참여 <style>{{num}}</style>명",
   "CM_REMOVE": "강제 퇴장",
