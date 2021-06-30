@@ -183,15 +183,15 @@ const Table = () => {
   );
 };
 
-const SubWaitingMemberPage = ({ roomId }) => {
+const SubWaitingMemberPage = ({ roomInfo }) => {
   const { t } = useTranslation();
   const { roomSettingStore: store, uiStore } = useStores();
 
   const handleUnblock = async () => {
     const userIdList = Array.from(store.selectedBanMembers.keys());
-    const result = await store.disableBan({ roomId, userIdList });
+    const result = await store.disableBan({ roomId: roomInfo.id, userIdList });
     if (result) {
-      await store.fetchBlockedMembers({ roomId });
+      await store.fetchBlockedMembers({ roomId: roomInfo.id });
       uiStore.openToast({
         text: t('CM_ROOM_SETTING_MANAGE_PEOPLE_04', {
           num: store.selectedBanMembers.size,

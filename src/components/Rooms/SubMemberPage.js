@@ -277,18 +277,21 @@ const Table = ({ roomId }) => {
   );
 };
 
-const MemberPage = ({ roomId }) => {
+const MemberPage = ({ roomInfo }) => {
   const { t } = useTranslation();
   const { roomSettingStore: store, uiStore } = useStores();
 
   const handleKickoutOK = async () => {
     try {
       const userIdList = Array.from(store.selectedRoomMembers.keys());
-      const result = await store.kickoutMembers({ roomId, userIdList });
+      const result = await store.kickoutMembers({
+        roomId: roomInfo.id,
+        userIdList,
+      });
       if (result) {
         await Promise.all([
           // store.fetchMembers({ roomId }),  // MemberSettingPage의 WWMS hanlder에서 호출
-          store.fetchBlockedMembers({ roomId }),
+          store.fetchBlockedMembers({ roomId: roomInfo.id }),
         ]);
       }
 
@@ -331,7 +334,7 @@ const MemberPage = ({ roomId }) => {
   };
 
   const handleInviteOk = async () => {
-    await store.fetchMembers({ roomId });
+    await store.fetchMembers({ roomId: roomInfo.id });
     store.inviteVisible = false;
   };
 
@@ -355,7 +358,7 @@ const MemberPage = ({ roomId }) => {
         {() => (
           <RoomAddMemberModal
             visible={store.inviteVisible}
-            roomId={roomId}
+            roomId={roomInfo.id}
             onInviteUsers={handleInviteOk}
             onCancel={handleInviteCancel}
           />
@@ -433,7 +436,7 @@ const MemberPage = ({ roomId }) => {
         </div>
       </div>
 
-      <Table roomId={roomId} />
+      <Table roomId={roomInfo.id} />
     </>
   );
 };

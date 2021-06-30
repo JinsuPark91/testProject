@@ -4,6 +4,7 @@ import styled, { ThemeContext } from 'styled-components';
 import { Observer } from 'mobx-react';
 import { Tabs } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { useCoreStores } from 'teespace-core';
 import { ArrowLeftIcon, CancelIcon } from '../Icons';
 import { useStores } from '../../stores';
 import MemberSettingPage from './MemberSettingPage';
@@ -13,9 +14,11 @@ const { TabPane } = Tabs;
 
 const RoomSetting = ({ roomId }) => {
   const { roomSettingStore: store } = useStores();
+  const { roomStore } = useCoreStores();
   const { t } = useTranslation();
   const history = useHistory();
   const location = useLocation();
+  const roomInfo = roomStore.getRoom(roomId);
 
   useEffect(() => {
     store.tabKey = location?.state?.mainTab || 'common';
@@ -39,7 +42,7 @@ const RoomSetting = ({ roomId }) => {
 
   const themeContext = useContext(ThemeContext);
 
-  return (
+  return roomInfo ? (
     <Wrapper>
       <Header>
         <Centered>
@@ -67,7 +70,7 @@ const RoomSetting = ({ roomId }) => {
               onChange={handleTabChange}
             >
               <TabPane key="common" tab={t('CM_ROOM_SETTING_BAISC_01')}>
-                <CommonSettingPage roomId={roomId} />
+                <CommonSettingPage roomInfo={roomInfo} />
               </TabPane>
 
               {/* AlarmBadge 추가 시 알림 뱃지 노출 */}
@@ -80,14 +83,14 @@ const RoomSetting = ({ roomId }) => {
                   </>
                 }
               >
-                <MemberSettingPage roomId={roomId} />
+                <MemberSettingPage roomInfo={roomInfo} />
               </TabPane>
             </StyledTabs>
           )}
         </Observer>
       </Content>
     </Wrapper>
-  );
+  ) : null;
 };
 
 export default RoomSetting;

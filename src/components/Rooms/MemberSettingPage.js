@@ -71,28 +71,26 @@ const SubTab = ({ isOpenRoom = false }) => {
   );
 };
 
-const MemberSettingPage = ({ roomId }) => {
-  const { roomStore } = useCoreStores();
+const MemberSettingPage = ({ roomInfo }) => {
   const { roomSettingStore: store } = useStores();
-  const roomInfo = roomStore.getRoom(roomId);
 
   useEffect(() => {
     Promise.all([
-      store.fetchMembers({ roomId }),
-      store.fetchRequestMembers({ roomId }),
-      store.fetchBlockedMembers({ roomId }),
+      store.fetchMembers({ roomId: roomInfo.id }),
+      store.fetchRequestMembers({ roomId: roomInfo.id }),
+      store.fetchBlockedMembers({ roomId: roomInfo.id }),
     ]);
 
     const handleSystemMessage = message => {
-      if (message.SPACE_ID !== roomId) return;
+      if (message.SPACE_ID !== roomInfo.id) return;
 
       switch (message.NOTI_TYPE) {
         case 'addMember':
         case 'removeMember':
-          store.fetchMembers({ roomId });
+          store.fetchMembers({ roomId: roomInfo.id });
           break;
         case 'memberRequest':
-          store.fetchRequestMembers({ roomId });
+          store.fetchRequestMembers({ roomId: roomInfo.id });
           break;
         default:
           break;
@@ -107,17 +105,15 @@ const MemberSettingPage = ({ roomId }) => {
   const subPage = () => {
     switch (store.subTabKey) {
       case 'member':
-        return <SubMemberPage roomId={roomId} />;
+        return <SubMemberPage roomInfo={roomInfo} />;
       case 'request':
-        return <SubWaitingMemberPage roomId={roomId} />;
+        return <SubWaitingMemberPage roomInfo={roomInfo} />;
       case 'ban':
-        return <SubBlockedMemberPage roomId={roomId} />;
+        return <SubBlockedMemberPage roomInfo={roomInfo} />;
       default:
         return null;
     }
   };
-
-  if (!roomInfo) return null;
 
   return (
     <Wrapper>

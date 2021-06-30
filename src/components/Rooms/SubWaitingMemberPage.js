@@ -139,7 +139,7 @@ const Table = () => {
   );
 };
 
-const SubWaitingMemberPage = ({ roomId }) => {
+const SubWaitingMemberPage = ({ roomInfo }) => {
   const { t } = useTranslation();
   const { roomSettingStore: store, uiStore } = useStores();
 
@@ -147,9 +147,12 @@ const SubWaitingMemberPage = ({ roomId }) => {
     const userIdList = Array.from(store.selectedRequestMembers.keys());
 
     try {
-      const result = await store.acceptUsers({ roomId, userIdList });
+      const result = await store.acceptUsers({
+        roomId: roomInfo.id,
+        userIdList,
+      });
       if (result) {
-        await store.fetchRequestMembers({ roomId });
+        await store.fetchRequestMembers({ roomId: roomInfo.id });
         uiStore.openToast({
           text: t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_07', {
             num: store.selectedRequestMembers.size,
@@ -170,9 +173,12 @@ const SubWaitingMemberPage = ({ roomId }) => {
     const userIdList = Array.from(store.selectedRequestMembers.keys());
 
     try {
-      const result = await store.rejectUsers({ roomId, userIdList });
+      const result = await store.rejectUsers({
+        roomId: roomInfo.id,
+        userIdList,
+      });
       if (result) {
-        await store.fetchRequestMembers({ roomId });
+        await store.fetchRequestMembers({ roomId: roomInfo.id });
         uiStore.openToast({
           text: t('CM_ROOM_SETTING_REQUEST_MANAGE_PEOPLE_08', {
             num: store.selectedRequestMembers.size,
