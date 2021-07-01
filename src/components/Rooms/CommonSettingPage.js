@@ -198,7 +198,7 @@ const CommonSettingPage = ({ roomInfo }) => {
             <SettingWrapper>
               <SettingTitleWrapper>
                 <SettingTitleText>
-                  {t('CM_ROOM_SETTING_BASIC_13')}
+                  {t('CM_CREATE_OPEN_ROOM_POPUP_01')}
                 </SettingTitleText>
 
                 <Switch
@@ -207,7 +207,7 @@ const CommonSettingPage = ({ roomInfo }) => {
                 />
               </SettingTitleWrapper>
               <SettingDescriptionText>
-                {t('CM_ROOM_SETTING_BASIC_14')}
+                {t('CM_CREATE_OPEN_ROOM_POPUP_02')}
               </SettingDescriptionText>
             </SettingWrapper>
           ) : null
