@@ -140,9 +140,9 @@ const MainPage = () => {
         const { status } = response;
         switch (status) {
           case 403:
-            transaction(() => {
-              uiStore.toastText = t('TEMP_GUEST_ACCESS_DENIED');
-              uiStore.isToastVisible = true;
+            uiStore.openToast({
+              text: t('TEMP_GUEST_ACCESS_DENIED'),
+              onClose: () => uiStore.closeToast(),
             });
             break;
           default:
