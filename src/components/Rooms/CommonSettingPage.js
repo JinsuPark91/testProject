@@ -17,10 +17,7 @@ const CommonSettingPage = ({ roomInfo }) => {
   const { roomStore, userStore } = useCoreStores();
 
   const localStore = useLocalStore(() => ({
-    newName:
-      roomInfo.oriName?.substring(0, 50) ||
-      roomInfo.name?.substring(0, 50) ||
-      '',
+    newName: roomInfo.name.substring(0, 50) || '',
     isChanged: false,
   }));
 
@@ -172,7 +169,7 @@ const CommonSettingPage = ({ roomInfo }) => {
               maxLength={50}
               value={localStore.newName}
               onChange={handleChange}
-              placeholder={roomInfo?.oriName}
+              placeholder={roomInfo?.oriName || roomInfo.name}
             />
           )}
         </Observer>

@@ -74,7 +74,7 @@ const NotificationItem = ({ style, item }) => {
 
         <Description onClick={handleClick}>
           {/* 상단 */}
-          <Row style={{ paddingRight: '0.75rem' }}>
+          <Row style={{ paddingRight: '1.25rem' }}>
             <Ellipsis>
               {item.type === 'mention' ? (
                 <MentionWrapper>
@@ -91,7 +91,7 @@ const NotificationItem = ({ style, item }) => {
                       style: <BoldText />,
                     }}
                     values={{
-                      value: item.bodyValue || '(제목 없음)'
+                      value: item.bodyValue || '(제목 없음)',
                     }}
                   />
                 </NormalText>
@@ -120,18 +120,21 @@ const NotificationItem = ({ style, item }) => {
 
 export default NotificationItem;
 
-const Wrapper = styled.div`
-  height: 4rem;
-  padding: 0 1.188rem;
-  opacity: ${({ isRead }) => (isRead ? '0.4' : '1')};
-`;
-
 const InnerWrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   height: 100%;
-  border-bottom: 1px solid #eeedeb;
+  border-bottom: 1px solid ${props => props.theme.LineSub};
+`;
+
+const Wrapper = styled.div`
+  height: 4rem;
+  padding: 0 1.188rem;
+  opacity: ${({ isRead }) => (isRead ? '0.4' : '1')};
+  &:last-child ${InnerWrapper} {
+    border-bottom: 0;
+  }
 `;
 
 const Description = styled.div`
@@ -168,21 +171,20 @@ const MentionWrapper = styled.div`
 
 const IconWrapper = styled.div`
   position: absolute;
-  top: 1rem;
+  top: 0.75rem;
   right: 0;
   display: flex;
-  flex: 0 0 1rem;
-  height: 1rem;
+  padding: 0.25rem;
   justify-content: center;
   align-items: center;
-  border-radius: 50%;
+  border-radius: 0.25rem;
   cursor: pointer;
   &:hover {
-    background-color: #faf8f7;
+    background-color: ${props => props.theme.StateBright};
   }
 
   &:active {
-    background-color: #f2efec;
+    background-color: ${props => props.theme.StateDark};
   }
 `;
 
@@ -199,12 +201,12 @@ const PhotoWrapper = styled.div`
 const BoldText = styled.span`
   font-weight: bold;
   font-size: 0.813rem;
-  color: #000000;
+  color: ${props => props.theme.TextMain};
 `;
 
 const NormalText = styled.span`
   font-size: 0.75rem;
-  color: #666666;
+  color: ${props => props.theme.LineSub};
 `;
 
 const LightText = styled.span`

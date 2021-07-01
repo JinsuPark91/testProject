@@ -44,78 +44,76 @@ const NotificationCenter = ({ visible, onClose }) => {
     <StyledModal
       closable={false}
       mask={false}
-      width="100%"
+      width="22.375rem"
       visible={visible}
       onCancel={handleClose}
       footer={null}
-      style={{ top: '3.7rem' }}
+      style={{ top: '3.7rem', margin: '0 0.625rem 0 auto' }}
     >
-      <Wrapper>
-        <Tabs defaultActiveKey="mention">
-          <TabPane
-            tab={
-              <Observer>
-                {() => (
-                  <Tab
-                    title={t('CM_NOTI_CENTER_01')}
-                    unreadCount={notificationStore.mention.totalUnReadCount}
-                  />
-                )}
-              </Observer>
-            }
-            key="mention"
-          >
+      <Tabs defaultActiveKey="mention">
+        <TabPane
+          tab={
             <Observer>
               {() => (
-                <NotificationList
-                  type="mention"
-                  items={notificationStore.mentions}
-                  hasMore={notificationStore.mention.hasMore}
-                  isLoading={notificationStore.mention.isLoading}
-                  loadMore={() => {
-                    notificationStore.fetchNotificationList({
-                      type: 'mention',
-                      offset: notificationStore.mentions.length,
-                      limit: LIMIT,
-                    });
-                  }}
+                <Tab
+                  title={t('CM_NOTI_CENTER_01')}
+                  unreadCount={notificationStore.mention.totalUnReadCount}
                 />
               )}
             </Observer>
-          </TabPane>
-          <TabPane
-            tab={
-              <Observer>
-                {() => (
-                  <Tab
-                    title={t('CM_NOTI_CENTER_04')}
-                    unreadCount={notificationStore.history.totalUnReadCount}
-                  />
-                )}
-              </Observer>
-            }
-            key="history"
-          >
+          }
+          key="mention"
+        >
+          <Observer>
+            {() => (
+              <NotificationList
+                type="mention"
+                items={notificationStore.mentions}
+                hasMore={notificationStore.mention.hasMore}
+                isLoading={notificationStore.mention.isLoading}
+                loadMore={() => {
+                  notificationStore.fetchNotificationList({
+                    type: 'mention',
+                    offset: notificationStore.mentions.length,
+                    limit: LIMIT,
+                  });
+                }}
+              />
+            )}
+          </Observer>
+        </TabPane>
+        <TabPane
+          tab={
             <Observer>
               {() => (
-                <NotificationList
-                  type="history"
-                  items={notificationStore.histories}
-                  hasMore={notificationStore.history.hasMore}
-                  isLoading={notificationStore.history.isLoading}
-                  loadMore={() => {
-                    notificationStore.fetchNotificationList({
-                      type: 'history',
-                      offset: notificationStore.histories.length,
-                      limit: LIMIT,
-                    });
-                  }}
+                <Tab
+                  title={t('CM_NOTI_CENTER_04')}
+                  unreadCount={notificationStore.history.totalUnReadCount}
                 />
               )}
             </Observer>
-          </TabPane>
-        </Tabs>
-      </Wrapper>
+          }
+          key="history"
+        >
+          <Observer>
+            {() => (
+              <NotificationList
+                type="history"
+                items={notificationStore.histories}
+                hasMore={notificationStore.history.hasMore}
+                isLoading={notificationStore.history.isLoading}
+                loadMore={() => {
+                  notificationStore.fetchNotificationList({
+                    type: 'history',
+                    offset: notificationStore.histories.length,
+                    limit: LIMIT,
+                  });
+                }}
+              />
+            )}
+          </Observer>
+        </TabPane>
+      </Tabs>
     </StyledModal>
   );
 };
@@ -123,14 +121,9 @@ const NotificationCenter = ({ visible, onClose }) => {
 export default NotificationCenter;
 
 const StyledModal = styled(Modal)`
-  &.ant-modal {
-    justify-content: flex-end;
+  .ant-modal-content {
+    width: 100%;
   }
-`;
-
-const Wrapper = styled.div`
-  width: 22.375rem;
-  background: #fff;
 `;
 
 const TabWrapper = styled.div`
