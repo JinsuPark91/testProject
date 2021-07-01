@@ -33,7 +33,7 @@ const NotificationItem = ({ style, item }) => {
         notiId: item.id,
       });
 
-    if (!item.roomId) return;
+    if (!item.roomId || !roomStore.getRoom(item.roomId)) return;
 
     let routePath = `/s/${item.roomId}/talk`;
     switch (item.channelId) {
