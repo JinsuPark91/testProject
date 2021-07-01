@@ -91,29 +91,30 @@ const Buttons = styled.div`
 `;
 
 const Button = styled.button`
-  background-color: #fff;
-  border: 0;
-  font-size: 0.75rem;
-  color: #666666;
   margin: 0 0.125rem;
   padding: 0 0.5rem;
+  font-size: 0.75rem;
+  color: ${props => props.theme.TextSub};
+  border: 0;
   border-radius: 0.25rem;
+  background-color: transparent;
 
   &:not(:disabled):hover {
-    background-color: #faf8f7;
+    background-color: ${props => props.theme.StateBright};
   }
 
   &:not(:disabled):active {
-    background-color: #f2efec;
+    background-color: ${props => props.theme.StateDark};
   }
 
   &:disabled {
-    color: #bbbbbb;
+    color: ${props => props.theme.DisabledText2};
     cursor: not-allowed;
   }
 `;
 
 const Middot = styled.div`
+  color: ${props => props.theme.TextSub2};
   &:after {
     font-size: 1rem;
     font-weight: bold;
@@ -149,12 +150,12 @@ const EmptyMessage = styled.div`
 
 const BoldText = styled.span`
   font-size: 0.875rem;
-  color: #666666;
+  color: ${props => props.theme.TextMain};
   font-weight: bold;
-  margin-bottom: 0.375rem;
 `;
 
 const Text = styled.span`
+  margin-top: 0.375rem;
   font-size: 0.75rem;
-  color: #666666;
+  color: ${props => props.theme.TextSub};
 `;
