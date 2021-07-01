@@ -31,6 +31,7 @@ const uiStore = observable({
   */
   isSearchVisible: false,
 
+  isEstVisible: false,
   isNotificationCenterVisible: false,
 
   // Common Toast, Message
@@ -39,13 +40,13 @@ const uiStore = observable({
   toastTimeout: 1000,
   toastSize: 'medium',
   toastLinks: [],
-  toastOnClose: () => { },
+  toastOnClose: () => {},
   openToast({
     text = '',
     timeout = 1000,
     size = 'medium',
     links = [],
-    onClose = () => { },
+    onClose = () => {},
   }) {
     transaction(() => {
       this.toastText = text;
@@ -63,7 +64,7 @@ const uiStore = observable({
       this.toastTimeout = 1000;
       this.toastSize = 'medium';
       this.toastLinks = [];
-      this.toastOnClose = () => { };
+      this.toastOnClose = () => {};
     });
   },
   isMessageVisible: false,

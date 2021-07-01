@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon/common/window_max</title>
+    <g id="Icon/common/window_max" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M20,16.997 C20,18.65 18.654,19.996 17,19.996 L7,19.996 C5.346,19.996 4,18.65 4,16.997 L4,6.999 C4,5.346 5.346,4 7,4 L17,4 C18.654,4 20,5.346 20,6.999 L20,16.997 Z M17,2 L7,2 C4.243,2 2,4.242 2,6.999 L2,16.997 C2,19.754 4.243,21.996 7,21.996 L17,21.996 C19.757,21.996 22,19.754 22,16.997 L22,6.999 C22,4.242 19.757,2 17,2 L17,2 Z" id="Fill-1" fill="#000000"></path>
+    </g>
+</svg>

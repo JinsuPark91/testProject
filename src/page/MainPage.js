@@ -14,7 +14,6 @@ import { beforeRoute as noteBeforeRoute } from 'teespace-note-app';
 import { WindowMail, beforeRoute as mailBeforeRoute } from 'teespace-mail-app';
 import { Prompt } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { transaction } from 'mobx';
 import { Observer } from 'mobx-react';
 import SpaceSide from '../components/main/SpaceSide';
 import LeftSide from '../components/main/LeftSide';
@@ -28,6 +27,7 @@ import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 import { handleProfileMenuClick } from '../utils/ProfileUtil';
 import { NotificationCenter } from '../components/notificationCenter';
 import { useInitialize } from '../hook';
+import Est from '../components/common/Est';
 
 const MainPage = () => {
   const { t } = useTranslation();
@@ -352,6 +352,7 @@ const MainPage = () => {
       <WindowManager />
       <WindowMail />
 
+      <Observer>{() => <Est visible={uiStore.isEstVisible} />}</Observer>
       {/* History Save */}
       <Prompt
         message={(location, action) => {

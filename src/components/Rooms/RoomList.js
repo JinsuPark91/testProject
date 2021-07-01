@@ -404,6 +404,11 @@ const RoomList = React.memo(() => {
           return configStore.isActivateComponent('Platform', 'LNB:Logo') ? (
             <ButtonWrapper isScrollEnd={store.isScrollEnd}>
               <WaplLogo textColor={themeContext.BasicDark} />
+              <Dummy
+                onDoubleClick={() => {
+                  uiStore.isEstVisible = true;
+                }}
+              />
             </ButtonWrapper>
           ) : null;
         }}
@@ -476,6 +481,7 @@ const AddRoomIconWrapper = styled.div`
 
 const ButtonWrapper = styled.div`
   display: flex;
+  position: relative;
   align-items: center;
   justify-content: space-between;
   padding: 0.69rem 0.94rem;
@@ -512,6 +518,14 @@ const EmptyDescription = styled.div`
   font-size: 0.75rem;
   color: #666;
   margin-bottom: 3.125rem;
+`;
+
+const Dummy = styled.div`
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 0.3rem;
+  height: 0.3rem;
 `;
 
 export const FriendSearch = styled(WaplSearch)`
