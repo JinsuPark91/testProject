@@ -91,7 +91,7 @@ const NotificationItem = ({ style, item }) => {
                       style: <BoldText />,
                     }}
                     values={{
-                      value: item.bodyValue || '(제목 없음)'
+                      value: item.bodyValue,
                     }}
                   />
                 </NormalText>
