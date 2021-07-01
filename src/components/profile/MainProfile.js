@@ -338,16 +338,28 @@ const MainProfile = observer(({ userId = null }) => {
     return number;
   }, []);
 
+  const getUserOrgText = count => {
+    let userOrgText = '';
+    const userOrgTextArr = count
+      ? profile?.getFullCompanyJob(count).split(',')
+      : profile?.getFullCompanyJob().split(',');
+    userOrgTextArr.forEach(elem => {
+      userOrgText = `${userOrgText + elem}\n`;
+    });
+
+    if (userOrgText) return userOrgText;
+    return '-';
+  };
+
   const getUserOrgInfo = () => {
     const VIEW_COUNT = 3;
     const userOrgCount = profile?.concurrentCount;
-    const userOrgSubText =
-      profile?.getFullCompanyJob(VIEW_COUNT).replaceAll(',', '\n') || '-';
+    const userOrgSubText = getUserOrgText(VIEW_COUNT);
 
     if (userOrgCount <= VIEW_COUNT)
       return <UserOrgText>{userOrgSubText}</UserOrgText>;
 
-    const userOrgFullText = profile?.getFullCompanyJob().replaceAll(',', '\n');
+    const userOrgFullText = getUserOrgText();
     return (
       <Tooltip
         placement="bottom"
