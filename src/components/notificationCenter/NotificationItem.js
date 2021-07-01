@@ -37,6 +37,12 @@ const NotificationItem = ({ style, item }) => {
 
     let routePath = `/s/${item.roomId}/talk`;
     switch (item.channelId) {
+      case 'CHN0002 ': {
+        const myId = userStore.myProfile.id;
+        const { roomInfo } = roomStore.getDMRoom(myId, myId);
+        if (roomInfo) routePath = `/m/${roomInfo.id}/mail`;
+        break;
+      }
       case 'CHN0003':
         routePath += '?sub=note';
         break;
