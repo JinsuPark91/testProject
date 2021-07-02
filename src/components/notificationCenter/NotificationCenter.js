@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useCoreStores, Tabs, Modal } from 'teespace-core';
-import { Observer, useLocalStore } from 'mobx-react';
+import { Observer } from 'mobx-react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import NotificationList from './NotificationList';
@@ -50,7 +50,7 @@ const NotificationCenter = ({ visible, onClose }) => {
       footer={null}
       style={{ top: '3.7rem', margin: '0 0.625rem 0 auto' }}
     >
-      <Tabs defaultActiveKey="mention">
+      <StyledTabs defaultActiveKey="mention">
         <TabPane
           tab={
             <Observer>
@@ -113,7 +113,7 @@ const NotificationCenter = ({ visible, onClose }) => {
             )}
           </Observer>
         </TabPane>
-      </Tabs>
+      </StyledTabs>
     </StyledModal>
   );
 };
@@ -123,6 +123,12 @@ export default NotificationCenter;
 const StyledModal = styled(Modal)`
   .ant-modal-content {
     width: 100%;
+  }
+`;
+
+const StyledTabs = styled(Tabs)`
+  .ant-tabs-nav-operations {
+    display: none !important;
   }
 `;
 
