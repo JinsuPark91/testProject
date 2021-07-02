@@ -212,7 +212,7 @@ const BoldText = styled.span`
 
 const NormalText = styled.span`
   font-size: 0.75rem;
-  color: ${props => props.theme.LineSub};
+  color: ${props => props.theme.TextSub};
 `;
 
 const LightText = styled.span`
