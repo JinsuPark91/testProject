@@ -15,13 +15,36 @@ const store = observable({
   state: 'init',
 
   get isMoreSelect() {
-    return this.items.length - this.selectedCount > 1;
+    return (
+      this.items.filter(item => !item.isOpened).length - this.selectedCount > 1
+    );
   },
 
   setState(state) {
     if (state === 'init' || state === 'ready' || state === 'done') {
       this.state = state;
     }
+  },
+
+  open(id) {
+    const target = this.items.filter(item => item.id === id)?.[0];
+    if (!target?.isOpened && store.state === 'ready') {
+      transaction(() => {
+        target.isOpened = true;
+        store.state = 'done';
+        store.selectedCount += 1;
+      });
+    }
+  },
+
+  randomOpen() {
+    transaction(() => {
+      const filteredItems = this.items.filter(item => !item.isOpened);
+      filteredItems[
+        Math.floor(Math.random() * filteredItems.length)
+      ].isOpened = true;
+      this.state = 'done';
+    });
   },
 
   suffle() {
@@ -48,6 +71,7 @@ const store = observable({
 class ItemModel {
   constructor({ value }) {
     extendObservable(this, {
+      id: `item-${store.items.length}`,
       value,
       isOpened: false,
     });
@@ -56,13 +80,7 @@ class ItemModel {
 
 const Item = ({ info }) => {
   const handleOpen = () => {
-    if (!info.isOpened && store.state === 'ready') {
-      transaction(() => {
-        info.isOpened = true;
-        store.state = 'done';
-        store.selectedCount += 1;
-      });
-    }
+    store.open(info.id);
   };
 
   return useObserver(() =>
@@ -139,6 +157,10 @@ const Est = ({ visible }) => {
     store.setState('ready');
   };
 
+  const handleOpen = () => {
+    store.randomOpen();
+  };
+
   const handleSuffle = () => {
     store.suffle();
   };
@@ -167,7 +189,15 @@ const Est = ({ visible }) => {
     if (store.state === 'ready') {
       return (
         <>
-          <Button size="small" type="solid" onClick={handleSuffle}>
+          <Button size="small" type="solid" onClick={handleOpen}>
+            뽑기
+          </Button>
+          <Button
+            style={{ marginLeft: '0.5rem' }}
+            size="small"
+            type="solid"
+            onClick={handleSuffle}
+          >
             섞기
           </Button>
         </>
