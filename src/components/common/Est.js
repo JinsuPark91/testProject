@@ -10,14 +10,15 @@ import { useStores } from '../../stores';
 
 const store = observable({
   items: [],
-  selectedCount: 0,
   // init, ready, done
   state: 'init',
 
-  get isMoreSelect() {
-    return (
-      this.items.filter(item => !item.isOpened).length - this.selectedCount > 1
-    );
+  get selectedItems() {
+    return this.items.filter(item => item.isOpened);
+  },
+
+  get unselectedItems() {
+    return this.items.filter(item => !item.isOpened);
   },
 
   setState(state) {
@@ -31,20 +32,17 @@ const store = observable({
     if (!target?.isOpened && store.state === 'ready') {
       transaction(() => {
         target.isOpened = true;
-        store.state = 'done';
-        store.selectedCount += 1;
+
+        if (this.unselectedItems.length < 1) this.state = 'done';
       });
     }
   },
 
   randomOpen() {
-    transaction(() => {
-      const filteredItems = this.items.filter(item => !item.isOpened);
-      filteredItems[
-        Math.floor(Math.random() * filteredItems.length)
-      ].isOpened = true;
-      this.state = 'done';
-    });
+    const target = this.unselectedItems[
+      Math.floor(Math.random() * this.unselectedItems.length)
+    ];
+    if (target) this.open(target.id);
   },
 
   suffle() {
@@ -55,7 +53,6 @@ const store = observable({
     transaction(() => {
       this.state = 'init';
       this.items = [];
-      this.selectedCount = 0;
     });
   },
 
@@ -169,10 +166,6 @@ const Est = ({ visible }) => {
     store.reset();
   };
 
-  const handleRetry = () => {
-    store.retry();
-  };
-
   const getButtons = () => {
     if (store.state === 'init') {
       return (
@@ -203,13 +196,7 @@ const Est = ({ visible }) => {
         </>
       );
     }
-    if (store.state === 'done') {
-      return store.isMoreSelect ? (
-        <Button size="small" type="solid" onClick={handleRetry}>
-          한번더 뽑기
-        </Button>
-      ) : null;
-    }
+
     return null;
   };
 

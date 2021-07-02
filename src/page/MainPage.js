@@ -27,7 +27,7 @@ import { getQueryParams, getQueryString } from '../utils/UrlUtil';
 import { handleProfileMenuClick } from '../utils/ProfileUtil';
 import { NotificationCenter } from '../components/notificationCenter';
 import { useInitialize } from '../hook';
-import Est from '../components/common/Est';
+// import Est from '../components/common/Est';
 
 const MainPage = () => {
   const { t } = useTranslation();
@@ -352,7 +352,7 @@ const MainPage = () => {
       <WindowManager />
       <WindowMail />
 
-      <Observer>{() => <Est visible={uiStore.isEstVisible} />}</Observer>
+      {/* <Observer>{() => <Est visible={uiStore.isEstVisible} />}</Observer> */}
       {/* History Save */}
       <Prompt
         message={(location, action) => {
