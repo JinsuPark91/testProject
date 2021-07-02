@@ -137,7 +137,8 @@ export const ContentBody = styled.div`
   height: 100%;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: 3rem;
 `;
 
 export const UserImageWrapper = styled.div`
@@ -466,7 +467,7 @@ export const ButtonCancel = styled(Button)`
 `;
 
 export const StatusSelectorWrapper = styled.div`
-  position: absolute;
-  top: 9.45rem;
-  z-index: 100;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.25rem;
 `;

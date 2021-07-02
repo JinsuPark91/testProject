@@ -461,12 +461,13 @@ const MainProfile = observer(({ userId = null }) => {
               </BookMarkButton>
             )}
           </ContentTop>
-          {!isEditMode && (
-            <StatusSelectorWrapper>
-              <StatusSelector userId={userId} selectable={isSelectable()} />
-            </StatusSelectorWrapper>
-          )}
+
           <ContentBody>
+            {!isEditMode && (
+              <StatusSelectorWrapper>
+                <StatusSelector userId={userId} selectable={isSelectable()} />
+              </StatusSelectorWrapper>
+            )}
             <UserImageWrapper position="br">
               <UserImage src={renderProfilePhoto} />
               {isMyId() && isEditMode && (
