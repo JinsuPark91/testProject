@@ -61,7 +61,8 @@ const NotificationItem = ({ style, item }) => {
   };
 
   const getUserDisplayName = userId =>
-    userStore.userProfiles[userId].displayName;
+    // displayName 없으면, 탈퇴한 멤버
+    userStore.userProfiles[userId].displayName || '(탈퇴한 멤버)';
 
   const getDateFormat = (timestamp, format) =>
     DateTime.fromFormat(timestamp, 'yyyy-MM-dd HH:mm:ss.S z').toFormat(format);
