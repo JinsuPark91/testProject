@@ -6,12 +6,46 @@ import { AlarmPlainMessage } from 'teespace-talk-app';
 import { Trans, useTranslation } from 'react-i18next';
 import { useObserver } from 'mobx-react';
 import { DateTime } from 'luxon';
-import { LeftCircleFilled } from '@ant-design/icons';
 import { useStores } from '../../stores';
+import {
+  NoteIcon,
+  CalendarIcon,
+  DriveIcon,
+  MailIcon,
+  ChattingIcon,
+} from '../Icons';
 
 import Photos from '../Photos';
 
 const { CloseIcon } = Icons;
+
+const ICON_PROPS = { width: 0.875, height: 0.875, color: '#fff' };
+const APP_INFO = {
+  CHN0001: {
+    icon: <ChattingIcon {...ICON_PROPS} />,
+    color: '#cccccc',
+  },
+
+  CHN0002: {
+    icon: <MailIcon {...ICON_PROPS} />,
+    color: '#232d3b',
+  },
+
+  CHN0003: {
+    icon: <NoteIcon {...ICON_PROPS} />,
+    color: '#47bdd6',
+  },
+
+  CHN0005: {
+    icon: <CalendarIcon {...ICON_PROPS} />,
+    color: '#f3bf48',
+  },
+
+  CHN0006: {
+    icon: <DriveIcon {...ICON_PROPS} />,
+    color: '#205855',
+  },
+};
 
 const NotificationItem = ({ style, item }) => {
   const { t } = useTranslation();
@@ -67,62 +101,84 @@ const NotificationItem = ({ style, item }) => {
   const getDateFormat = (timestamp, format) =>
     DateTime.fromFormat(timestamp, 'yyyy-MM-dd HH:mm:ss.S z').toFormat(format);
 
-  return useObserver(() => (
-    <Wrapper style={style} isRead={item.isRead}>
-      <InnerWrapper>
-        {/* 사진 */}
-        <PhotoWrapper>
-          <Photos
-            srcList={roomStore.getRoomPhoto(item.roomId, 4)}
-            isClickable={false}
-            defaultDiameter="2.625"
-          />
-        </PhotoWrapper>
+  const renderAppIcon = () => {
+    const { color, icon } = APP_INFO[item.channelId];
+    return <AppIconWrapper color={color}>{icon}</AppIconWrapper>;
+  };
 
-        <Description onClick={handleClick}>
-          {/* 상단 */}
-          <Row style={{ paddingRight: '1.25rem' }}>
-            <Ellipsis>
-              {item.type === 'mention' ? (
-                <MentionWrapper>
-                  <BoldText style={{ marginRight: '0.25rem' }}>
-                    {t('CM_NOTI_CENTER_02')}
-                  </BoldText>
-                  <MentionMessage noticeBody={item.bodyComponent} />
-                </MentionWrapper>
-              ) : (
-                <NormalText>
-                  <Trans
-                    i18nKey={item.bodyKey}
-                    components={{
-                      style: <BoldText />,
-                    }}
-                    values={{
-                      value: item.bodyValue || '(제목 없음)',
-                    }}
-                  />
-                </NormalText>
-              )}
-            </Ellipsis>
-          </Row>
+  const renderPhoto = roomId => {
+    // 2개면 : push
+    // 3개면 : push
+    // 4개면 : replace
+    const emptyImage =
+      'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+    const srcList = roomStore.getRoomPhoto(roomId, 4);
+    const { length } = srcList;
+    if (length === 2 || length === 3) {
+      srcList.push(emptyImage);
+    } else if (length === 4) {
+      srcList[length - 1] = emptyImage;
+    }
 
-          {/* 하단 */}
-          <Row>
-            <Ellipsis>
-              <LightText>{`by ${getUserDisplayName(
-                item.createdBy,
-              )}`}</LightText>
-            </Ellipsis>
-            <LightText>{getDateFormat(item.createdAt, 'MM.dd')}</LightText>
-          </Row>
-        </Description>
+    return (
+      <PhotoWrapper>
+        <Photos srcList={srcList} isClickable={false} defaultDiameter="2.625" />
+        {renderAppIcon()}
+      </PhotoWrapper>
+    );
+  };
 
-        <IconWrapper onClick={handleDelete}>
-          <CloseIcon width={0.75} height={0.75} fillColor="#6b6b6b" />
-        </IconWrapper>
-      </InnerWrapper>
-    </Wrapper>
-  ));
+  return useObserver(() => {
+    return (
+      <Wrapper style={style} isRead={item.isRead}>
+        <InnerWrapper>
+          {/* 사진 */}
+          {renderPhoto(item.roomId)}
+
+          <Description onClick={handleClick}>
+            {/* 상단 */}
+            <Row style={{ paddingRight: '1.25rem' }}>
+              <Ellipsis>
+                {item.type === 'mention' ? (
+                  <MentionWrapper>
+                    <BoldText style={{ marginRight: '0.25rem' }}>
+                      {t('CM_NOTI_CENTER_02')}
+                    </BoldText>
+                    <MentionMessage noticeBody={item.bodyComponent} />
+                  </MentionWrapper>
+                ) : (
+                  <NormalText>
+                    <Trans
+                      i18nKey={item.bodyKey}
+                      components={{
+                        style: <BoldText />,
+                      }}
+                      values={{
+                        value: item.bodyValue || '(제목 없음)',
+                      }}
+                    />
+                  </NormalText>
+                )}
+              </Ellipsis>
+            </Row>
+
+            {/* 하단 */}
+            <Row>
+              <Ellipsis>
+                <LightText>{`by ${getUserDisplayName(
+                  item.createdBy,
+                )}`}</LightText>
+              </Ellipsis>
+              <LightText>{getDateFormat(item.createdAt, 'MM.dd')}</LightText>
+            </Row>
+          </Description>
+          <IconWrapper onClick={handleDelete}>
+            <CloseIcon width={0.75} height={0.75} fillColor="#6b6b6b" />
+          </IconWrapper>
+        </InnerWrapper>
+      </Wrapper>
+    );
+  });
 };
 
 export default NotificationItem;
@@ -133,6 +189,19 @@ const InnerWrapper = styled.div`
   align-items: center;
   height: 100%;
   border-bottom: 1px solid ${props => props.theme.LineSub};
+`;
+
+const AppIconWrapper = styled.div`
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: ${({ color }) => color};
+  border-radius: 50%;
+  width: 1.375rem;
+  height: 1.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Wrapper = styled.div`
@@ -202,6 +271,7 @@ const Row = styled.div`
 `;
 
 const PhotoWrapper = styled.div`
+  position: relative;
   margin-right: 0.75rem;
 `;
 
