@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Observer } from 'mobx-react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { Divider } from 'antd';
 import { useCoreStores } from 'teespace-core';
@@ -71,6 +72,7 @@ const MyItem = React.memo(() => {
 });
 
 const MobileFriend = () => {
+  const { t } = useTranslation();
   const { friendStore } = useCoreStores();
   const [isEditMode, setIsEditMode] = useState(false);
 
@@ -93,11 +95,13 @@ const MobileFriend = () => {
               <>
                 <MyItem />
                 {noFriend ? (
-                  <NoFriendText>프렌즈가 없습니다.</NoFriendText>
+                  <NoFriendText>
+                    {t('CM_B2B_CREATE_ROOM_POPUP_FRIENDS_04')}
+                  </NoFriendText>
                 ) : (
                   <>
                     <FriendListHeader>
-                      <FriendTitle>프렌즈</FriendTitle>
+                      <FriendTitle>{t('CM_FRIENDS')}</FriendTitle>
                       <Num>{friendNum}</Num>
                     </FriendListHeader>
                     {friendList.map(friendInfo => (

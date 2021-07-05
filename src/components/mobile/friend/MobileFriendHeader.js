@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { Observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
 import { Button } from 'antd';
 import { AddFriendsIcon, EditIcon, CloseIcon } from '../Icon';
@@ -84,6 +84,7 @@ const ProfileImgBox = styled.div`
 `;
 
 const MobileFriendHeader = ({ isEditMode, handleEditMode }) => {
+  const { t } = useTranslation();
   const history = useHistory();
   const { userStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
@@ -99,14 +100,14 @@ const MobileFriendHeader = ({ isEditMode, handleEditMode }) => {
         <ButtonBox onClick={handleEditMode}>
           <IconButton type="ghost" icon={<CloseIcon />} />
         </ButtonBox>
-        <EditTitle>편집</EditTitle>
+        <EditTitle>{t('CM_ROOMLIST_EDIT_01')}</EditTitle>
       </Header>
     );
   }
 
   return (
     <FriendHeader>
-      <HeaderTitle>프렌즈</HeaderTitle>
+      <HeaderTitle>{t('CM_FRIENDS')}</HeaderTitle>
       <ButtonsBox>
         <IconButton
           onClick={handleAddFriend}

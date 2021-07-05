@@ -11,11 +11,6 @@ const uiStore = observable({
   resourceType: null,
 
   /*
-    모바일 웹뷰용 Footer visibility
-  */
-  isFooterVisible: true,
-
-  /*
     Tab Type : 선택된 탭 s / f / m
     (탭 이동시에는 url 변경 없어야 하기 때문)
   */
@@ -25,6 +20,13 @@ const uiStore = observable({
   subApp: null,
   subAppState: undefined,
   layout: 'collapse',
+
+  /*
+    Mobile Footer visibility
+  */
+  isFooterVisible() {
+    return this.resourceType !== 'profile' && this.resourceType !== 'image';
+  },
 
   /*
     Talk Search Input visibility
