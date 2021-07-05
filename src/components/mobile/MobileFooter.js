@@ -1,7 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react';
-import { useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import { Tabs } from 'antd';
 import { ChattingIcon } from '../Icons';
@@ -89,11 +88,9 @@ const { TabPane } = FooterTab;
 
 const MobileFooter = () => {
   const { uiStore } = useStores();
-  const { userStore } = useCoreStores();
   const history = useHistory();
-  const myUserId = userStore.myProfile.id;
 
-  const handleSelectTab = key => history.push(`/${key}/${myUserId}`);
+  const handleSelectTab = key => history.push(`/${key}`);
 
   const newBadgeView = number => {
     if (!number || number <= 0) return null;

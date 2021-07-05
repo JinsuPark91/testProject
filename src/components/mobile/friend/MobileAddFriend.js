@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { useCoreStores, MobileMemberList } from 'teespace-core';
 import styled from 'styled-components';
@@ -38,6 +39,7 @@ const Title = styled.h3`
 `;
 
 const MobileAddFriend = () => {
+  const { t } = useTranslation();
   const history = useHistory();
   const { userStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
@@ -59,7 +61,7 @@ const MobileAddFriend = () => {
         <ButtonBox onClick={handleCancel}>
           <IconButton type="ghost" icon={<ArrowBackIcon />} />
         </ButtonBox>
-        <Title>프렌즈 추가</Title>
+        <Title>{t('CM_ADD_PHOTO_FRIENDS')}</Title>
       </Header>
       <MobileMemberList height={height} isAddFriend />
     </>

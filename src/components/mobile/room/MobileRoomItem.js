@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCoreStores, MobileMessage } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -126,11 +127,13 @@ const MobileRoomItem = ({
   roomEditMode,
   handleRoomIdList,
 }) => {
+  const { t } = useTranslation();
+  const history = useHistory();
+  const { userStore } = useCoreStores();
+
   const [isMessageVisible, setIsMessageVisible] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isRoomModalVisible, setIsRoomModalVisible] = useState(false);
-  const history = useHistory();
-  const { userStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
   const isMyRoom = roomInfo.type === 'WKS0001';
   const isDMRoom = roomInfo.isDirectMsg;
@@ -241,13 +244,13 @@ const MobileRoomItem = ({
       {isMessageVisible && (
         <MobileMessage
           visible={isMessageVisible}
-          title="룸 관리자인 룸은 나갈 수 없습니다."
+          title={t('CM_DEL_ROOM_GROUP_05')}
           type="warning"
           btns={[
             {
               type: 'outlined',
               shape: 'round',
-              text: '확인',
+              text: t('CM_LOGIN_POLICY_03'),
               onClick: () => setIsMessageVisible(false),
             },
           ]}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCoreStores, MobileMessage } from 'teespace-core';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -73,6 +74,7 @@ const MobileRoomHeader = ({
   handleRoomEditMode,
   roomIdDeleteList,
 }) => {
+  const { t } = useTranslation();
   const history = useHistory();
   const { userStore, roomStore } = useCoreStores();
   const [isMessageVisible, setIsMessageVisible] = useState(false);
@@ -107,29 +109,29 @@ const MobileRoomHeader = ({
           <IconButtonBox onClick={handleRoomEditMode}>
             <IconButton type="ghost" icon={<CloseIcon />} />
           </IconButtonBox>
-          <EditTitle>편집</EditTitle>
+          <EditTitle>{t('CM_ROOMLIST_EDIT_01')}</EditTitle>
           <IconButtonBox>
             <TextButton onClick={handleLeaveClick} type="ghost">
-              나가기
+              {t('CM_LEAVE')}
             </TextButton>
           </IconButtonBox>
         </Header>
         {isMessageVisible && (
           <MobileMessage
             visible={isMessageVisible}
-            title="룸에서 나가시겠습니까?"
+            title={t('CM_Q_LEAVE_ROOM')}
             type="warning"
             btns={[
               {
                 type: 'outlined',
                 shape: 'round',
-                text: '취소',
+                text: t('CM_CANCEL'),
                 onClick: handleCancel,
               },
               {
                 type: 'solid',
                 shape: 'round',
-                text: '나가기',
+                text: t('CM_LEAVE'),
                 onClick: handleLeaveRoom,
               },
             ]}
@@ -141,7 +143,7 @@ const MobileRoomHeader = ({
 
   return (
     <>
-      <HeaderTitle>룸</HeaderTitle>
+      <HeaderTitle>{t('CM_ROOM')}</HeaderTitle>
       <ButtonBox>
         <IconButton
           onClick={handleRoomEditMode}
