@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
@@ -47,6 +48,7 @@ import {
 } from './MobileProfileStyle';
 
 const MobileProfile = observer(({ userId = null }) => {
+  const { t } = useTranslation();
   const history = useHistory();
   const { uiStore } = useStores();
   const { userStore, authStore } = useCoreStores();
@@ -169,9 +171,7 @@ const MobileProfile = observer(({ userId = null }) => {
     resetLocalInputData();
   };
 
-  // 추후 Talk에서의 프로필 고려 필요
-  const handleMoveFriend = () =>
-    history.push(`/friend/${userStore.myProfile.id}`);
+  const handleMoveFriend = () => history.push(`/friend`);
 
   const handleImageClick = () => {
     if (!isEditMode) history.push(`/image/${userId}`);
@@ -186,10 +186,10 @@ const MobileProfile = observer(({ userId = null }) => {
               <ButtonBox onClick={handleExit}>
                 <IconButton type="ghost" icon={<CloseIcon color="#fff" />} />
               </ButtonBox>
-              <EditTitle>프로필 편집</EditTitle>
+              <EditTitle>{t('CM_EDIT_PROFILE')}</EditTitle>
               <ButtonBox>
                 <TextButton onClick={handleConfirm} type="ghost">
-                  저장
+                  {t('CM_SAVE')}
                 </TextButton>
               </ButtonBox>
             </TextHeader>
@@ -300,7 +300,7 @@ const MobileProfile = observer(({ userId = null }) => {
                 <UserInfoItem style={{ alignItems: 'flex-start' }}>
                   <StyleOfficeIcon iconimg="address" />
                   <UserInfoText>
-                    <span>{profile?.getFullCompanyJob() || '-'}</span>
+                    <span>{profile?.getFullCompanyJob(1) || '-'}</span>
                     {isEditMode && (
                       <LockIconBox>
                         <LockLineIcon width="0.88" height="0.88" />
@@ -323,7 +323,7 @@ const MobileProfile = observer(({ userId = null }) => {
                           ? companyNum
                           : profile?.companyNum || ``
                       }
-                      placeholder="회사 전화를 입력하세요."
+                      placeholder={t('CM_B3C_CONTENTS_AREA_EMPTY_PAGE_30')}
                     />
                   ) : (
                     <UserInfoText>
@@ -341,7 +341,7 @@ const MobileProfile = observer(({ userId = null }) => {
                       setPhone(e.target.value);
                     }}
                     value={phone !== undefined ? phone : profile?.phone || ``}
-                    placeholder="휴대폰 번호를 입력하세요."
+                    placeholder={t('CM_B2C_CONTENTS_AREA_EMPTY_PAGE_35')}
                   />
                 ) : (
                   <UserInfoText>
@@ -357,12 +357,12 @@ const MobileProfile = observer(({ userId = null }) => {
         <Sidebar>
           <StyledButton onClick={handleTalkClick}>
             <FriendsIcon />
-            <Text>{isMyId() ? '나와의 Talk' : '1:1 Talk'}</Text>
+            <Text>{isMyId() ? t('CM_MY_TALK_13') : '1:1 Talk'}</Text>
           </StyledButton>
           {isMyId() && (
             <StyledButton onClick={handleChangetoEditMode}>
               <StyleIcon iconimg="profile" />
-              <Text>프로필 편집</Text>
+              <Text>{t('CM_EDIT_PROFILE')}</Text>
             </StyledButton>
           )}
         </Sidebar>

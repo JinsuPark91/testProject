@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { MobileItemSelector, useCoreStores } from 'teespace-core';
 import styled from 'styled-components';
 import { Button } from 'antd';
@@ -60,6 +61,7 @@ const remToPixel = rem => {
 };
 
 const MobileRoomCreatePage = ({ onTabChange }) => {
+  const { t } = useTranslation();
   const history = useHistory();
   const { userStore, roomStore } = useCoreStores();
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -106,9 +108,10 @@ const MobileRoomCreatePage = ({ onTabChange }) => {
         <ButtonBox onClick={handleCancel}>
           <IconButton type="ghost" icon={<ArrowBackIcon />} />
         </ButtonBox>
-        <Title>프라이빗 룸 만들기</Title>
+        <Title>{t('CM_CREATE_PRIVATE_ROOM_02')}</Title>
         <InviteButton onClick={handleCreateRoom} type="text">
-          초대 {selectedUsers.length || ''}
+          {t('CM_B2B_CREATE_ROOM_POPUP_FRIENDS_09')}{' '}
+          {selectedUsers.length || ''}
         </InviteButton>
       </Header>
       <MobileItemSelector

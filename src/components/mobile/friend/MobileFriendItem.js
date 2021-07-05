@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 import { Button } from 'antd';
 import { Observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
@@ -68,6 +69,7 @@ const NewBadge = styled.div`
 `;
 
 const MobileFriendItem = ({ friendInfo, isMe, isEditMode }) => {
+  const { t } = useTranslation();
   const history = useHistory();
   const { userStore, friendStore } = useCoreStores();
   const [isMessageVisible, setIsMessageVisible] = useState(false);
@@ -119,26 +121,28 @@ const MobileFriendItem = ({ friendInfo, isMe, isEditMode }) => {
         )}
         {!isMe && isEditMode && (
           <TextBtn type="ghost" onClick={handleClickDelete}>
-            삭제
+            {t('CM_DEL')}
           </TextBtn>
         )}
       </Wrapper>
       {isMessageVisible && (
         <MobileMessage
           visible={isMessageVisible}
-          title={`${friendInfo?.displayName}님을 프렌즈 목록에서 삭제하시겠습니까?`}
+          title={t('CM_DEL_FRIENDS_01', {
+            name: friendInfo?.displayName,
+          })}
           type="warning"
           btns={[
             {
               type: 'outlined',
               shape: 'round',
-              text: '취소',
+              text: t('CM_CANCEL'),
               onClick: () => setIsMessageVisible(false),
             },
             {
               type: 'solid',
               shape: 'round',
-              text: '확인',
+              text: t('CM_LOGIN_POLICY_03'),
               onClick: handleDeleteFriend,
             },
           ]}

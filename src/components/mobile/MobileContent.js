@@ -97,4 +97,4 @@ const MobileContent = () => {
   );
 };
 
-export default MobileContent;
+export default React.memo(MobileContent);

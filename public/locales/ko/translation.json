@@ -510,6 +510,7 @@
   "TEMP_DELETE_FRIEND": "프렌즈 삭제",
   "TEMP_GUEST_ACCESS_DENIED": "게스트는 사용할 수 없는 기능입니다.",
   "CM_INVALID_ROOM": "존재하지 않는 룸 입니다.",
+  "CM_ROOMLIST_EDIT_01": "편집",
   "CM_STATUS_SET": "내 상태 추가",
   "CM_STATUS_NONE": "상태 없음",
   "CM_STATUS_ONLINE": "연락 가능",

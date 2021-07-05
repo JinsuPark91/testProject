@@ -4,7 +4,11 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import '../../App.less';
 import { create } from 'mobx-persist';
-import { PortalProvider, useCoreStores } from 'teespace-core';
+import {
+  PortalProvider,
+  useCoreStores,
+  CoreInitializeTranslation,
+} from 'teespace-core';
 import { useTalkApp } from 'teespace-talk-app';
 import { initApp as initDriveApp } from 'teespace-drive-app';
 import {
@@ -57,6 +61,7 @@ const MobileApp = () => {
   if (!isHydrating) return <></>;
   return (
     <DndProvider backend={HTML5Backend}>
+      <CoreInitializeTranslation />
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
