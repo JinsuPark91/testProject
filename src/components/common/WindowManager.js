@@ -59,8 +59,7 @@ const WindowManager = () => {
               <Window key={window.id} windowInfo={window} />
             ))}
             <FloatingButton
-              // visible={talkWindows.length}
-              visible={false}
+              visible={talkWindows.length}
               rooms={talkWindows}
               count={5}
               onItemClick={roomInfo => {

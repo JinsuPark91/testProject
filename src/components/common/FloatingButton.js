@@ -38,9 +38,9 @@ const ChildItem = ({ roomInfo, onItemClick, onItemClose }) => {
       >
         <div>{roomInfo.name.slice(0, 4)}</div>
       </Tooltip>
-      <div style={{ height: '1rem' }}>
-        {roomInfo.userCount > 3 ? roomInfo.userCount : ''}
-      </div>
+      {roomInfo.userCount > 2 ? (
+        <div style={{ height: '1rem' }}>{roomInfo.userCount}</div>
+      ) : null}
       <Tooltip
         placement="bottom"
         title={t('CM_POPUP_TALK_MULTI_02')}
@@ -237,7 +237,8 @@ const AllCloseButton = styled.div`
   height: 1.88rem;
   justify-content: center;
   align-items: center;
-  background: #ffffff;
+  color: #666;
+  background: #fff;
   border: 1px solid #d0ccc7;
   border-radius: 0.25rem;
   font-size: 0.75rem;
@@ -249,13 +250,13 @@ const AllCloseButton = styled.div`
   box-shadow: 0 0 5px 0 #c6ced6;
 
   &:hover {
-    border: 1px solid #232d3b;
+    background: #faf8f7;
   }
 
   &:active {
-    color: #ffffff;
-    border: unset;
-    background: #17202b;
+    color: #000
+    background: #ffffff;
+    border: 1px solid #7b7671;
   }
 `;
 
