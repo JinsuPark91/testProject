@@ -19,7 +19,6 @@ import {
   Title,
   AppIconContainer,
   AppIconbutton,
-  UserMenu,
   TitleText,
   UserCountText,
   IconWrapper,
@@ -64,7 +63,7 @@ const getIconStyle = (isDisabled = false) => {
   };
 };
 
-const apps = [
+const firstApps = [
   {
     name: 'drive',
     tooltip: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_18',
@@ -73,6 +72,7 @@ const apps = [
       disabled: <DriveIcon {...getIconStyle(true)} />,
       default: <DriveIcon {...getIconStyle()} />,
     },
+    isUsedInBotRoom: false,
     isUsedInMyRoom: true,
     isUsedInProfile: true,
   },
@@ -84,6 +84,7 @@ const apps = [
       disabled: <CalendarIcon {...getIconStyle(true)} />,
       default: <CalendarIcon {...getIconStyle()} />,
     },
+    isUsedInBotRoom: false,
     isUsedInMyRoom: true,
     isUsedInProfile: true,
   },
@@ -95,6 +96,7 @@ const apps = [
       disabled: <NoteIcon />,
       default: <NoteIcon />,
     },
+    isUsedInBotRoom: false,
     isUsedInMyRoom: true,
     isUsedInProfile: true,
   },
@@ -106,9 +108,13 @@ const apps = [
       disabled: <MeetingIcon />,
       default: <MeetingIcon />,
     },
+    isUsedInBotRoom: false,
     isUsedInMyRoom: false,
     isUsedInProfile: false,
   },
+];
+
+const secondApps = [
   {
     name: 'files',
     tooltip: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_16',
@@ -117,6 +123,22 @@ const apps = [
       disabled: <ViewFileIcon />,
       default: <ViewFileIcon />,
     },
+    isUsedInBotRoom: false,
+    isUsedInMyRoom: true,
+    isUsedInProfile: true,
+  },
+];
+
+const thirdApps = [
+  {
+    name: 'noti',
+    tooltip: 'CM_B2C_CONTENTS_AREA_EMPTY_PAGE_29',
+    icons: {
+      active: <AlarmOnActiveIcon />,
+      disabled: <AlarmOnIcon />,
+      default: <AlarmOnIcon />,
+    },
+    isUsedInBotRoom: true,
     isUsedInMyRoom: true,
     isUsedInProfile: true,
   },
@@ -384,6 +406,7 @@ const Header = () => {
   const isActive = name => {
     if (name === 'meeting')
       return !!uiStore.getWindow('meeting', findRoom()?.id);
+    if (name === 'noti') return uiStore.isNotificationCenterVisible;
     return uiStore.subApp === name;
   };
 
@@ -465,6 +488,37 @@ const Header = () => {
   useCommand.OpenApp('meeting', handleOpenApp('meeting'));
 
   const themeContext = useContext(ThemeContext);
+
+  const renderAppIcon = ({
+    name,
+    tooltip,
+    icons,
+    isUsedInMyRoom,
+    isUsedInProfile,
+    isUsedInBotRoom,
+  }) => {
+    const props = {
+      isActive: isActive(name),
+      color: themeContext.HeaderIcon,
+      appName: name,
+      isNewAlarm: name === 'noti' ? notificationStore.isExistUnreadNoti : false,
+      i18n: tooltip,
+      onClick: handleAppClick,
+      defaultIcon: icons.default,
+      activeIcon: icons.active,
+      disabledIcon: icons.disabled,
+      disabled:
+        (isBotRoom() && !isUsedInBotRoom) ||
+        (isMyRoom() && !isUsedInMyRoom) ||
+        (uiStore.resourceType === 'f' && !isUsedInProfile),
+    };
+
+    return (
+      <AppIconbutton key={name}>
+        <AppIcon {...props} />
+      </AppIconbutton>
+    );
+  };
 
   return (
     <Wrapper>
@@ -623,32 +677,30 @@ const Header = () => {
         <Observer>{() => store.appConfirm}</Observer>
         <Observer>
           {() =>
-            apps.map(
-              ({ name, tooltip, icons, isUsedInMyRoom, isUsedInProfile }) =>
+            firstApps.map(
+              ({
+                name,
+                tooltip,
+                icons,
+                isUsedInMyRoom,
+                isUsedInProfile,
+                isUsedInBotRoom,
+              }) =>
                 configStore.isActivateForCNU(
                   `${name.charAt(0).toUpperCase()}${name.slice(
                     1,
                     name.length,
                   )}`,
-                ) ? (
-                  <AppIconbutton key={name}>
-                    <AppIcon
-                      isActive={isActive(name)}
-                      color={themeContext.HeaderIcon}
-                      appName={name}
-                      i18n={tooltip}
-                      onClick={handleAppClick}
-                      defaultIcon={icons.default}
-                      activeIcon={icons.active}
-                      disabledIcon={icons.disabled}
-                      disabled={
-                        isBotRoom() ||
-                        (isMyRoom() && !isUsedInMyRoom) ||
-                        (uiStore.resourceType === 'f' && !isUsedInProfile)
-                      }
-                    />
-                  </AppIconbutton>
-                ) : null,
+                )
+                  ? renderAppIcon({
+                      name,
+                      tooltip,
+                      icons,
+                      isUsedInMyRoom,
+                      isUsedInProfile,
+                      isUsedInBotRoom,
+                    })
+                  : null,
             )
           }
         </Observer>
@@ -656,22 +708,51 @@ const Header = () => {
 
       <AppIconContainer>
         <Observer>
-          {() => (
-            <AppIconbutton>
-              <AppIcon
-                isActive={uiStore.isNotificationCenterVisible}
-                isNewAlarm={notificationStore.isExistUnreadNoti}
-                color={themeContext.HeaderIcon}
-                appName="noti"
-                i18n="CM_B2C_CONTENTS_AREA_EMPTY_PAGE_29"
-                onClick={handleAppClick}
-                defaultIcon={<AlarmOnIcon />}
-                activeIcon={<AlarmOnActiveIcon />}
-                disabledIcon={<AlarmOnIcon />}
-                disabled={false}
-              />
-            </AppIconbutton>
-          )}
+          {() =>
+            secondApps.map(
+              ({
+                name,
+                tooltip,
+                icons,
+                isUsedInMyRoom,
+                isUsedInProfile,
+                isUsedInBotRoom,
+              }) =>
+                renderAppIcon({
+                  name,
+                  tooltip,
+                  icons,
+                  isUsedInMyRoom,
+                  isUsedInProfile,
+                  isUsedInBotRoom,
+                }),
+            )
+          }
+        </Observer>
+      </AppIconContainer>
+
+      <AppIconContainer>
+        <Observer>
+          {() =>
+            thirdApps.map(
+              ({
+                name,
+                tooltip,
+                icons,
+                isUsedInMyRoom,
+                isUsedInProfile,
+                isUsedInBotRoom,
+              }) =>
+                renderAppIcon({
+                  name,
+                  tooltip,
+                  icons,
+                  isUsedInMyRoom,
+                  isUsedInProfile,
+                  isUsedInBotRoom,
+                }),
+            )
+          }
         </Observer>
       </AppIconContainer>
 
