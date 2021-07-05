@@ -329,8 +329,8 @@
   "CM_ROOM_SETTING_BAISC_10": "해당 룸을 삭제하시겠습니까?",
   "CM_ROOM_SETTING_BAISC_11": "한 번 삭제한 룸은 복구할 수 없습니다.",
   "CM_ROOM_SETTING_BAISC_12": "프라이빗 룸으로 전환됨",
-  "CM_ROOM_SETTING_BASIC_13" : "참여 승인 필요",
-  "CM_ROOM_SETTING_BASIC_14" : "On 시, 룸 관리자의 승인이 있어야 룸에 참여 가능합니다.",
+  "CM_ROOM_SETTING_BASIC_13": "참여 승인 필요",
+  "CM_ROOM_SETTING_BASIC_14": "On 시, 룸 관리자의 승인이 있어야 룸에 참여 가능합니다.",
   "CM_ROOM_SETTING_MANAGE_PEOPLE_01": "참여 인원",
   "CM_ROOM_SETTING_MANAGE_PEOPLE_02": "참여 <style>{{num}}</style>명",
   "CM_REMOVE": "강제 퇴장",
@@ -510,5 +510,12 @@
   "CM_TEMP_MINI_CHAT": "미니 채팅",
   "TEMP_DELETE_FRIEND": "프렌즈 삭제",
   "TEMP_GUEST_ACCESS_DENIED": "게스트는 사용할 수 없는 기능입니다.",
-  "CM_INVALID_ROOM": "존재하지 않는 룸 입니다."
+  "CM_INVALID_ROOM": "존재하지 않는 룸 입니다.",
+
+  "CM_STATUS_SET": "내 상태 추가",
+  "CM_STATUS_NONE": "상태 없음",
+  "CM_STATUS_ONLINE": "연락 가능",
+  "CM_STATUS_VACATION": "휴가 중",
+  "CM_STATUS_MEETING": "회의 중",
+  "CM_STATUS_MISSED": "부재 중"
 }
