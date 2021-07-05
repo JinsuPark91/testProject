@@ -231,6 +231,8 @@ const FriendItem = observer(
       setVisibleRemoveFriendMessage,
     ] = useState(false);
 
+    const themeContext = useContext(ThemeContext);
+
     const {
       ProfileEmotionNormalIcon,
       ProfileEmotionMissedIcon,
@@ -254,6 +256,21 @@ const FriendItem = observer(
         return <ProfileEmotionMeetingIcon width={0.875} height={0.875} />;
 
       return null;
+    };
+
+    const getStatusI18nKey = key => {
+      switch (key) {
+        case 'STA0001':
+          return 'CM_STATUS_ONLINE';
+        case 'STA0002':
+          return 'CM_STATUS_MISSED';
+        case 'STA0003':
+          return 'CM_STATUS_VACATION';
+        case 'STA0004':
+          return 'CM_STATUS_MEETING';
+        default:
+          return '';
+      }
     };
 
     const myUserId = userStore.myProfile.id;
@@ -414,7 +431,15 @@ const FriendItem = observer(
             itemId={itemId}
             handleClickPhoto={handleSelectPhoto}
           />
-          <StatusIconWrapper>{renderStatusIcon(userStatus)}</StatusIconWrapper>
+          <Tooltip
+            title={t(getStatusI18nKey(userStatus))}
+            placement="bottom"
+            color={themeContext.CoreLight}
+          >
+            <StatusIconWrapper>
+              {renderStatusIcon(userStatus)}
+            </StatusIconWrapper>
+          </Tooltip>
           <TextWrapper>
             <TextComponent
               displayName={displayName}

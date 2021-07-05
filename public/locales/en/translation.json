@@ -502,7 +502,6 @@
   "CM_PROFILE_MENU_CHANGE_LANGUAGE_POPUP_02": "Unsaved data may be deleted.",
   "CM_PROFILE_EDIT_CHANGE_IMAGE": "Change Image",
   "CM_VIEW_ALL_USER": "View All Users",
-
   "CM_TEMP_AM": "AM",
   "CM_TEMP_PM": "PM",
   "TEST_REQUEST": "Send request?",
@@ -511,7 +510,6 @@
   "TEMP_DELETE_FRIEND": "Delete friend",
   "TEMP_GUEST_ACCESS_DENIED": "Access denied",
   "CM_INVALID_ROOM": "The room does not exist.",
-
   "CM_STATUS_SET": "set a status",
   "CM_STATUS_NONE": "none",
   "CM_STATUS_ONLINE": "online",

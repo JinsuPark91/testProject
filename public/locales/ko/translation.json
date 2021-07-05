@@ -502,7 +502,6 @@
   "CM_PROFILE_MENU_CHANGE_LANGUAGE_POPUP_02": "저장하지 않은 데이터가 삭제될 수 있습니다.",
   "CM_PROFILE_EDIT_CHANGE_IMAGE": "그룹 이미지 변경",
   "CM_VIEW_ALL_USER": "전체 구성원 보기",
-
   "CM_TEMP_AM": "오전",
   "CM_TEMP_PM": "오후",
   "TEST_REQUEST": "입장 요청 하시겠습니까?",
@@ -511,7 +510,6 @@
   "TEMP_DELETE_FRIEND": "프렌즈 삭제",
   "TEMP_GUEST_ACCESS_DENIED": "게스트는 사용할 수 없는 기능입니다.",
   "CM_INVALID_ROOM": "존재하지 않는 룸 입니다.",
-
   "CM_STATUS_SET": "내 상태 추가",
   "CM_STATUS_NONE": "상태 없음",
   "CM_STATUS_ONLINE": "연락 가능",

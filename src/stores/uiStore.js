@@ -217,24 +217,18 @@ const uiStore = observable({
   // profileEmoticon 용 store
   statusCode: 'STA0000',
   get statusText() {
-    let text;
     switch (this.statusCode) {
       case 'STA0001':
-        text = '연락 가능';
-        break;
+        return 'CM_STATUS_ONLINE';
       case 'STA0002':
-        text = '부재중';
-        break;
+        return 'CM_STATUS_MISSED';
       case 'STA0003':
-        text = '휴가중';
-        break;
+        return 'CM_STATUS_VACATION';
       case 'STA0004':
-        text = '회의중';
-        break;
+        return 'CM_STATUS_MEETING';
       default:
-        text = '내 상태 추가';
+        return 'CM_STATUS_SET';
     }
-    return text;
   },
   setStatusCode(data) {
     this.statusCode = data;

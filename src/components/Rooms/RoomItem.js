@@ -350,6 +350,21 @@ const RoomItemContent = React.memo(
       return null;
     };
 
+    const getStatusI18nKey = key => {
+      switch (key) {
+        case 'STA0001':
+          return 'CM_STATUS_ONLINE';
+        case 'STA0002':
+          return 'CM_STATUS_MISSED';
+        case 'STA0003':
+          return 'CM_STATUS_VACATION';
+        case 'STA0004':
+          return 'CM_STATUS_MEETING';
+        default:
+          return '';
+      }
+    };
+
     return (
       <>
         <List.Item.Meta
@@ -386,9 +401,15 @@ const RoomItemContent = React.memo(
                       onClick={handleClickRootPhoto}
                       className="photos rooms__item__photo"
                     />
-                    <StatusIconWrapper>
-                      {renderStatusIcon(userStatus)}
-                    </StatusIconWrapper>
+                    <Tooltip
+                      title={t(getStatusI18nKey(userStatus))}
+                      placement="bottom"
+                      color={themeContext.CoreLight}
+                    >
+                      <StatusIconWrapper>
+                        {renderStatusIcon(userStatus)}
+                      </StatusIconWrapper>
+                    </Tooltip>
                   </>
                 );
               }}
@@ -521,8 +542,8 @@ const RoomItem = ({
   roomInfo,
   onClick,
   onMenuClick,
-  onClickMenuItem = () => { },
-  onClickRoomPhoto = () => { },
+  onClickMenuItem = () => {},
+  onClickRoomPhoto = () => {},
 }) => {
   const { handlerStore } = useStores();
   const isMyRoom = roomInfo.type === 'WKS0001';
