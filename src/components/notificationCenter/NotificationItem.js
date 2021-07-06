@@ -67,7 +67,28 @@ const NotificationItem = ({ style, item }) => {
         notiId: item.id,
       });
 
-    if (!item.roomId || !roomStore.getRoom(item.roomId)) return;
+    // click시 아무동작도 하지 말아야할 조건이 모인 로직, true 일 경우, 아무동작도 수행하지 않음
+    function isNotPassable() {
+      // item이 roomId를 가지고있지 않은 경우, 해당 room이 존재하지 않는 경우
+      if (!item.roomId || !roomStore.getRoom(item.roomId)) return true;
+
+      const room = roomStore.getRoom(item.roomId);
+
+      // 삭제된 방에서 온 것일 경우
+      if (room.deleted) return true;
+
+      // 탈퇴유저가 보낸 것일 경우
+      const creatorId = item.createdBy;
+      if (userStore[creatorId].isWithdrawn) return true;
+
+      // 내가 없는 방에서 온 것일 경우
+      const memberIdList = room.memberIdListString.split(',') || [];
+      if (memberIdList.includes(userStore.myProfile.id)) return true;
+
+      return false;
+    }
+
+    if (isNotPassable()) return;
 
     let routePath = `/s/${item.roomId}/talk`;
     switch (item.channelId) {
