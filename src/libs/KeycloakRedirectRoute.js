@@ -37,23 +37,27 @@ function KeycloakRedirectRoute({ component: Component, ...rest }) {
     API.refreshTokenHandler = refreshTokenHandler;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  if (process.env.REACT_APP_ENV === 'local') {
-    [domainName] = new URL(process.env.REACT_APP_DOMAIN_URL).hostname.split(
-      '.',
-    );
-    loginInfo = {
-      id: keycloak.tokenParsed.preferred_username,
-      deviceType: 'PC',
-      domainUrl: domainName,
-      isLocal: 'local',
-    };
+  if (keycloak.authenticated) {
+    if (process.env.REACT_APP_ENV === 'local') {
+      [domainName] = new URL(process.env.REACT_APP_DOMAIN_URL).hostname.split(
+        '.',
+      );
+      loginInfo = {
+        id: keycloak.tokenParsed.preferred_username,
+        deviceType: 'PC',
+        domainUrl: domainName,
+        isLocal: 'local',
+      };
+    } else {
+      [domainName] = url.split(`//`)[1].split(`.`);
+      loginInfo = {
+        deviceType: 'PC',
+        domainUrl: '',
+      };
+    }
   } else {
-    [domainName] = url.split(`//`)[1].split(`.`);
-    loginInfo = {
-      deviceType: 'PC',
-      domainUrl: '',
-    };
+    keycloak.login({ redirectUri: `${window.location.origin}` });
+    return null;
   }
 
   return (

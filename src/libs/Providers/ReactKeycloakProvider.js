@@ -37,8 +37,8 @@ export default ({ children }) => {
       onEvent={eventLogger}
       LoadingComponent={<></>}
       initOptions={{
-        onLoad: 'login-required',
-        redirectUri: '',
+        onLoad: 'check-sso',
+        silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
       }}
     >
       {children}
