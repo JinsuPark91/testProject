@@ -529,236 +529,263 @@ const Header = () => {
           onCancel={handleCancelInviteModal}
         />
       )}
-      <TitleWrapper>
-        <Observer>
-          {() =>
-            uiStore.resourceType !== 'f' && (
-              <>
-                <Title>
-                  {/* 룸 사진 */}
-                  <Observer>
-                    {() => (
-                      <StyledPhotos
-                        isClickable={!isBotRoom()}
-                        className="header__photo"
-                        srcList={roomStore.getRoomPhoto(findRoom()?.id)}
-                        onClick={handleClickRoomPhoto}
-                      />
-                    )}
-                  </Observer>
-
-                  {/* 오픈룸 아이콘 */}
-                  <Observer>
-                    {() =>
-                      findRoom()?.type === 'WKS0003' && (
-                        <div
-                          style={{ display: 'flex', marginRight: '0.25rem' }}
-                        >
-                          <OpenChatBgIcon
-                            width={1.125}
-                            height={1.125}
-                            color="rgb(0, 73, 61)"
+      <Observer>
+        {() => (
+          <TitleWrapper
+            style={{
+              width: `calc(${uiStore.sizes[0]}% + 0.3125rem)`,
+              paddingLeft: '0.63rem',
+            }}
+          >
+            <Observer>
+              {() =>
+                uiStore.resourceType !== 'f' && (
+                  <>
+                    <Title>
+                      {/* 룸 사진 */}
+                      <Observer>
+                        {() => (
+                          <StyledPhotos
+                            isClickable={!isBotRoom()}
+                            className="header__photo"
+                            srcList={roomStore.getRoomPhoto(findRoom()?.id)}
+                            onClick={handleClickRoomPhoto}
                           />
-                        </div>
-                      )
-                    }
-                  </Observer>
-
-                  {/* 룸 이름 */}
-                  <Observer>
-                    {() => <TitleText>{getRoomName()}</TitleText>}
-                  </Observer>
-
-                  {/* 유저 수 */}
-                  <Observer>
-                    {() =>
-                      !(isMyRoom() || isDMRoom()) ? (
-                        <UserCountText>{getUserCount()}</UserCountText>
-                      ) : null
-                    }
-                  </Observer>
-
-                  {/* 모달 */}
-                  <Observer>{() => getProfileModal()}</Observer>
-                </Title>
-
-                <Observer>
-                  {() =>
-                    uiStore.resourceType !== 'm' && (
-                      <SystemIconContainer>
-                        {uiStore.layout !== 'expand' && (
-                          <>
-                            <Tooltip
-                              placement="bottom"
-                              title={t('CM_TEMP_MINI_CHAT')}
-                              color={themeContext.CoreLight}
-                            >
-                              <IconWrapper
-                                className="header__export-button"
-                                onClick={handleExport}
-                              >
-                                <ExportIcon
-                                  width={1.25}
-                                  height={1.25}
-                                  color={themeStore.theme.HeaderIcon}
-                                />
-                              </IconWrapper>
-                            </Tooltip>
-                            <Tooltip
-                              placement="bottom"
-                              title={t('CM_ROOMTITLE_TOOLTIP_02')}
-                              color={themeContext.CoreLight}
-                            >
-                              <IconWrapper
-                                className="header__search-button"
-                                onClick={handleSearch}
-                              >
-                                <SearchIcon
-                                  width={1.25}
-                                  height={1.25}
-                                  color={themeStore.theme.HeaderIcon}
-                                />
-                              </IconWrapper>
-                            </Tooltip>
-                          </>
                         )}
-                        <Observer>
-                          {() =>
-                            !isMyRoom() &&
-                            !(
-                              userStore.myProfile?.isGuest ||
-                              findRoom()?.isBotRoom
-                            ) && (
+                      </Observer>
+
+                      {/* 오픈룸 아이콘 */}
+                      <Observer>
+                        {() =>
+                          findRoom()?.type === 'WKS0003' && (
+                            <div
+                              style={{
+                                display: 'flex',
+                                marginRight: '0.25rem',
+                              }}
+                            >
+                              <OpenChatBgIcon
+                                width={1.125}
+                                height={1.125}
+                                color="rgb(0, 73, 61)"
+                              />
+                            </div>
+                          )
+                        }
+                      </Observer>
+
+                      {/* 룸 이름 */}
+                      <Observer>
+                        {() => <TitleText>{getRoomName()}</TitleText>}
+                      </Observer>
+
+                      {/* 유저 수 */}
+                      <Observer>
+                        {() =>
+                          !(isMyRoom() || isDMRoom()) ? (
+                            <UserCountText>{getUserCount()}</UserCountText>
+                          ) : null
+                        }
+                      </Observer>
+
+                      {/* 모달 */}
+                      <Observer>{() => getProfileModal()}</Observer>
+                    </Title>
+
+                    <Observer>
+                      {() =>
+                        uiStore.resourceType !== 'm' && (
+                          <SystemIconContainer>
+                            {uiStore.layout !== 'expand' && (
                               <>
                                 <Tooltip
                                   placement="bottom"
-                                  title={t('CM_ROOM_INVITE_USER')}
+                                  title={t('CM_TEMP_MINI_CHAT')}
                                   color={themeContext.CoreLight}
                                 >
                                   <IconWrapper
-                                    className="header__invite-button"
-                                    onClick={handleAddMember}
+                                    className="header__export-button"
+                                    onClick={handleExport}
                                   >
-                                    <AddAcountIcon
+                                    <ExportIcon
                                       width={1.25}
                                       height={1.25}
                                       color={themeStore.theme.HeaderIcon}
                                     />
                                   </IconWrapper>
                                 </Tooltip>
-
-                                <Observer>
-                                  {() => (
-                                    <RoomAddMemberModal
-                                      visible={store.visible.addMemberModal}
-                                      roomId={
-                                        store.inviteRoomId || findRoom()?.id
-                                      }
-                                      onInviteUsers={handleInviteUsers}
-                                      onCancel={handleCancelInviteUsers}
+                                <Tooltip
+                                  placement="bottom"
+                                  title={t('CM_ROOMTITLE_TOOLTIP_02')}
+                                  color={themeContext.CoreLight}
+                                >
+                                  <IconWrapper
+                                    className="header__search-button"
+                                    onClick={handleSearch}
+                                  >
+                                    <SearchIcon
+                                      width={1.25}
+                                      height={1.25}
+                                      color={themeStore.theme.HeaderIcon}
                                     />
-                                  )}
-                                </Observer>
+                                  </IconWrapper>
+                                </Tooltip>
                               </>
-                            )
-                          }
-                        </Observer>
-                      </SystemIconContainer>
-                    )
-                  }
-                </Observer>
-              </>
-            )
-          }
-        </Observer>
-      </TitleWrapper>
+                            )}
+                            <Observer>
+                              {() =>
+                                !isMyRoom() &&
+                                !(
+                                  userStore.myProfile?.isGuest ||
+                                  findRoom()?.isBotRoom
+                                ) && (
+                                  <>
+                                    <Tooltip
+                                      placement="bottom"
+                                      title={t('CM_ROOM_INVITE_USER')}
+                                      color={themeContext.CoreLight}
+                                    >
+                                      <IconWrapper
+                                        className="header__invite-button"
+                                        onClick={handleAddMember}
+                                      >
+                                        <AddAcountIcon
+                                          width={1.25}
+                                          height={1.25}
+                                          color={themeStore.theme.HeaderIcon}
+                                        />
+                                      </IconWrapper>
+                                    </Tooltip>
 
-      <AppIconContainer>
-        <Observer>{() => store.appConfirm}</Observer>
-        <Observer>
-          {() =>
-            firstApps.map(
-              ({
-                name,
-                tooltip,
-                icons,
-                isUsedInMyRoom,
-                isUsedInProfile,
-                isUsedInBotRoom,
-              }) =>
-                configStore.isActivateForCNU(
-                  `${name.charAt(0).toUpperCase()}${name.slice(
-                    1,
-                    name.length,
-                  )}`,
+                                    <Observer>
+                                      {() => (
+                                        <RoomAddMemberModal
+                                          visible={store.visible.addMemberModal}
+                                          roomId={
+                                            store.inviteRoomId || findRoom()?.id
+                                          }
+                                          onInviteUsers={handleInviteUsers}
+                                          onCancel={handleCancelInviteUsers}
+                                        />
+                                      )}
+                                    </Observer>
+                                  </>
+                                )
+                              }
+                            </Observer>
+                          </SystemIconContainer>
+                        )
+                      }
+                    </Observer>
+                  </>
                 )
-                  ? renderAppIcon({
+              }
+            </Observer>
+          </TitleWrapper>
+        )}
+      </Observer>
+
+      <Observer>
+        {() => (
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              width:
+                uiStore.layout === 'collapse'
+                  ? `${uiStore.sizes[1]}%`
+                  : 'unset',
+            }}
+          >
+            <AppIconContainer>
+              <Observer>{() => store.appConfirm}</Observer>
+              <Observer>
+                {() =>
+                  firstApps.map(
+                    ({
                       name,
                       tooltip,
                       icons,
                       isUsedInMyRoom,
                       isUsedInProfile,
                       isUsedInBotRoom,
-                    })
-                  : null,
-            )
-          }
-        </Observer>
-      </AppIconContainer>
+                    }) =>
+                      configStore.isActivateForCNU(
+                        `${name.charAt(0).toUpperCase()}${name.slice(
+                          1,
+                          name.length,
+                        )}`,
+                      )
+                        ? renderAppIcon({
+                            name,
+                            tooltip,
+                            icons,
+                            isUsedInMyRoom,
+                            isUsedInProfile,
+                            isUsedInBotRoom,
+                          })
+                        : null,
+                  )
+                }
+              </Observer>
+            </AppIconContainer>
 
-      <AppIconContainer>
-        <Observer>
-          {() =>
-            secondApps.map(
-              ({
-                name,
-                tooltip,
-                icons,
-                isUsedInMyRoom,
-                isUsedInProfile,
-                isUsedInBotRoom,
-              }) =>
-                renderAppIcon({
-                  name,
-                  tooltip,
-                  icons,
-                  isUsedInMyRoom,
-                  isUsedInProfile,
-                  isUsedInBotRoom,
-                }),
-            )
-          }
-        </Observer>
-      </AppIconContainer>
+            <AppIconContainer>
+              <Observer>
+                {() =>
+                  secondApps.map(
+                    ({
+                      name,
+                      tooltip,
+                      icons,
+                      isUsedInMyRoom,
+                      isUsedInProfile,
+                      isUsedInBotRoom,
+                    }) =>
+                      renderAppIcon({
+                        name,
+                        tooltip,
+                        icons,
+                        isUsedInMyRoom,
+                        isUsedInProfile,
+                        isUsedInBotRoom,
+                      }),
+                  )
+                }
+              </Observer>
+            </AppIconContainer>
 
-      <AppIconContainer>
-        <Observer>
-          {() =>
-            thirdApps.map(
-              ({
-                name,
-                tooltip,
-                icons,
-                isUsedInMyRoom,
-                isUsedInProfile,
-                isUsedInBotRoom,
-              }) =>
-                renderAppIcon({
-                  name,
-                  tooltip,
-                  icons,
-                  isUsedInMyRoom,
-                  isUsedInProfile,
-                  isUsedInBotRoom,
-                }),
-            )
-          }
-        </Observer>
-      </AppIconContainer>
+            <AppIconContainer>
+              <Observer>
+                {() =>
+                  thirdApps.map(
+                    ({
+                      name,
+                      tooltip,
+                      icons,
+                      isUsedInMyRoom,
+                      isUsedInProfile,
+                      isUsedInBotRoom,
+                    }) =>
+                      renderAppIcon({
+                        name,
+                        tooltip,
+                        icons,
+                        isUsedInMyRoom,
+                        isUsedInProfile,
+                        isUsedInBotRoom,
+                      }),
+                  )
+                }
+              </Observer>
+            </AppIconContainer>
 
-      <AppIconContainer style={{ padding: '0 0 0 1rem' }}>
-        <HeaderProfile />
-      </AppIconContainer>
+            <AppIconContainer style={{ padding: '0 0.81rem 0 0.9rem' }}>
+              <HeaderProfile />
+            </AppIconContainer>
+          </div>
+        )}
+      </Observer>
     </Wrapper>
   );
 };

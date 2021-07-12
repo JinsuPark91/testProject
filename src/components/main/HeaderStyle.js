@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Photos from '../Photos';
 
 export const NewAlarm = styled.div`
@@ -14,7 +14,6 @@ export const NewAlarm = styled.div`
 export const Wrapper = styled.div`
   display: flex;
   height: 3.13rem;
-  padding: 0 0.81rem 0 0.63rem;
   align-items: center;
   box-sizing: border-box;
   border-bottom: 1px solid ${props => props.theme.LineMain};
@@ -26,6 +25,18 @@ export const TitleWrapper = styled.div`
   align-items: center;
   min-width: 0;
   flex: auto;
+  position: relative;
+  &:after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    width: 1px;
+    height: 1.5rem;
+    margin-top: -0.75rem;
+    background-color: ${props => props.theme.LineMain};
+    right: 0;
+  }
 `;
 
 export const Title = styled.div`
@@ -47,7 +58,7 @@ export const AppIconContainer = styled.div`
   position: relative;
   align-items: center;
   padding: 0 0.6875rem;
-  &:before {
+  &:after {
     content: '';
     display: inline-block;
     position: absolute;
@@ -56,9 +67,7 @@ export const AppIconContainer = styled.div`
     height: 1.5rem;
     margin-top: -0.75rem;
     background-color: ${props => props.theme.LineMain};
-  }
-  &:before {
-    left: 0;
+    right: 0;
   }
 `;
 

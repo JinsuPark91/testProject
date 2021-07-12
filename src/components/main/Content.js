@@ -9,6 +9,7 @@ import { DriveApp, DriveAllApp } from 'teespace-drive-app';
 import { App as MeetingApp } from 'teespace-meeting-app';
 import { useCoreStores, AppState } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
+import { throttle } from 'lodash';
 import RoomSetting from '../Rooms/RoomSetting';
 import { useStores } from '../../stores';
 import { Wrapper, Splitter } from './ContentStyle';
@@ -53,6 +54,10 @@ const Content = () => {
     }
     return null;
   };
+
+  const handleSplitDrag = throttle(sizes => {
+    uiStore.sizes = sizes;
+  }, 200);
 
   const handleSplitDragStart = () => {
     const splitter = splitRef?.current?.parent;
@@ -187,6 +192,7 @@ const Content = () => {
               }}
               onDragStart={handleSplitDragStart}
               onDragEnd={handleSplitDragEnd}
+              onDrag={handleSplitDrag}
               ref={splitRef}
             >
               <MainAppContainer>

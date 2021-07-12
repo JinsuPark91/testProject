@@ -36,6 +36,8 @@ const uiStore = observable({
   isEstVisible: false,
   isNotificationCenterVisible: false,
 
+  sizes: [42.1176, 57.8824],
+
   // Common Toast, Message
   isToastVisible: false,
   toastText: '',
