@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 // import { NoteApp } from 'teespace-note-app';
 // import { CalendarApp } from 'teespace-calendar-app';
+import { useTranslation } from 'react-i18next';
 import { Observer } from 'mobx-react';
 import styled from 'styled-components';
 import { useStores } from '../../stores';
@@ -26,6 +27,7 @@ const Container = styled.div`
 `;
 
 const MobileContent = () => {
+  const { i18n } = useTranslation();
   const { uiStore } = useStores();
   const [isMemberSelected, setIsMemberSelected] = useState(false);
 
@@ -54,6 +56,7 @@ const MobileContent = () => {
           <MobileTalk
             roomId={getRoomId()}
             channelId={getChannelId('CHN0001')}
+            language={i18n.language}
             isMini={false}
             option={{ isAutoFocus: false }}
           />

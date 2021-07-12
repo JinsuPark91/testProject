@@ -88,7 +88,7 @@ const MobileRoomCreatePage = ({ onTabChange }) => {
     history.push(`/talk/${roomId}`);
   };
 
-  const handleCancel = () => history.push(`/room/${myUserId}`);
+  const handleCancel = () => history.push(`/room`);
 
   const handleSelectedUserChange = useCallback(({ userArray }) => {
     const filteredUsers = userArray.filter(

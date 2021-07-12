@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Tooltip } from 'teespace-core';
+import { Tooltip } from 'antd'; // 사라지지 않게 하기 위해 antd 적용
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { isBasicPlan } from '../../../utils/GeneralUtil';
