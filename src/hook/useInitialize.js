@@ -109,25 +109,18 @@ const useInitialize = () => {
       historyStore.fetchHistories(),
       // 알림 세팅을 불러오자
       userStore.getAlarmList(myUserId),
+      // 언어, 테마 설정을 가져오자
+      userStore.getMyDomainSetting(),
     ])
       .then(async res => {
         // roomStore fetch 후에 Talk init 하자 (lastMessage, unreadCount, ...)
         EventBus.dispatch('Platform:initLNB');
-
-        // 프렌즈 프로필은 모두 가져오자
-        if (friendStore.friendInfoList.length) {
-          const friendIdList = friendStore.friendInfoList.map(
-            elem => elem.friendId,
-          );
-          await userStore.fetchProfileList(friendIdList);
-        }
 
         // 알람 리스트 적용
         const [, , , , , alarmList] = res;
         AlarmSetting.initAlarmSet(alarmList);
 
         // 계정 langauge 적용. 없으면 브라우저 기본 langauge로 업데이트 한다.
-        await userStore.getMyDomainSetting();
         if (!userStore.myProfile.language) {
           await userStore.updateMyDomainSetting({
             language: i18n.language,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { Talk } from 'teespace-talk-app';
 import { App as MeetingApp } from 'teespace-meeting-app';
 import { EventBus, useCoreStores, ProfileInfoModal } from 'teespace-core';
@@ -12,6 +12,7 @@ import Photos from '../components/Photos';
 import { SearchIcon } from '../components/Icons';
 import WindowManager from '../components/common/WindowManager';
 import { useStores } from '../stores';
+import { handleProfileMenuClick } from '../utils/ProfileUtil';
 import { isDarkMode } from '../utils/GeneralUtil';
 
 const NewWindowPage = () => {
@@ -24,43 +25,42 @@ const NewWindowPage = () => {
     themeStore,
   } = useCoreStores();
   const { i18n } = useTranslation();
+  const { uiStore } = useStores();
+  const history = useHistory();
   const myUserId = userStore.myProfile.id;
 
-  const [channelId, setChannelId] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const getChannelId = type => {
+    return roomStore
+      .getRoomMap()
+      .get(roomId)
+      ?.channelList?.find(channel => channel.type === type)?.id;
+  };
 
   const init = async () => {
     try {
-      // EventBus.dispatch('Platform:initLNB');
+      Promise.all([
+        spaceStore.fetchSpaces({
+          userId: myUserId,
+          isLocal: process.env.REACT_APP_ENV === 'local',
+        }),
+        friendStore.fetchFriends(),
+        roomStore.fetchRoom({ roomId }),
+        userStore.getMyDomainSetting(),
+      ]).then(async () => {
+        if (!userStore.myProfile.language) {
+          await userStore.updateMyDomainSetting({
+            language: i18n.language,
+          });
+        } else i18n.changeLanguage(userStore.myProfile.language);
 
-      // 스페이스를 불러오자
-      await spaceStore.fetchSpaces({
-        userId: myUserId,
-        isLocal: process.env.REACT_APP_ENV === 'local',
+        const platformTheme = userStore.myProfile.theme;
+        if (platformTheme && platformTheme !== 'system')
+          themeStore.setTheme(platformTheme);
+        else if (isDarkMode()) themeStore.setTheme('dark');
+        setIsLoaded(true);
       });
-
-      // 룸을 불러오자
-      const roomInfo = await roomStore.fetchRoom({ roomId });
-      const channelInfo = roomInfo.channelList.find(
-        channel =>
-          channel.type === (mainApp === 'talk' ? 'CHN0001' : 'CHN0005'),
-      );
-
-      // 프렌드 리스트를 불러오자
-      await friendStore.fetchFriends();
-      setChannelId(channelInfo.id);
-
-      await userStore.getMyDomainSetting();
-      if (!userStore.myProfile.language) {
-        await userStore.updateMyDomainSetting({
-          language: i18n.language,
-        });
-      } else i18n.changeLanguage(userStore.myProfile.language);
-
-      const platformTheme = userStore.myProfile.theme;
-      if (platformTheme && platformTheme !== 'system')
-        themeStore.setTheme(platformTheme);
-      else if (isDarkMode()) themeStore.setTheme('dark');
     } catch (err) {
       console.error('Mini Talk Error : ', err);
     }
@@ -68,23 +68,49 @@ const NewWindowPage = () => {
 
   useEffect(() => {
     init();
+
+    const openMeetingHandler = EventBus.on(
+      'onMeetingOpen',
+      ({ roomId: targetRoomId }) => {
+        uiStore.openWindow({
+          id: targetRoomId,
+          type: 'meeting',
+          name: null,
+          userCount: null,
+          handler: null,
+        });
+      },
+    );
+    const directMessageHandler = EventBus.on(
+      'Platform:directMessage',
+      ({ userId }) => {
+        const moveTalk = targetRoomId =>
+          history.push(`/s/${targetRoomId}/talk`);
+
+        handleProfileMenuClick(
+          myUserId,
+          userId,
+          roomInfo => moveTalk(roomInfo.id),
+          roomInfo => moveTalk(roomInfo.id),
+        );
+      },
+    );
+
+    return () => {
+      EventBus.off('onMeetingOpen', openMeetingHandler);
+      EventBus.off('Platform:directMessage', directMessageHandler);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (roomId && channelId) {
-      setIsLoaded(true);
-    }
-  }, [roomId, channelId]);
+  const openSearch = () => EventBus.dispatch('Talk:OpenSearch');
 
-  if (!isLoaded) {
+  if (!isLoaded)
     return (
       <Loader>
         <img src={LoadingImg} alt="loader" />
       </Loader>
     );
-  }
-
-  const openSearch = () => EventBus.dispatch('Talk:OpenSearch');
 
   switch (mainApp) {
     case 'talk':
@@ -96,7 +122,7 @@ const NewWindowPage = () => {
             <Talk
               language={i18n.language}
               roomId={roomId}
-              channelId={channelId}
+              channelId={getChannelId('CHN0001')}
               layoutState="expand"
               isMini
             />
@@ -110,7 +136,7 @@ const NewWindowPage = () => {
           <MeetingApp
             language={i18n.language}
             roomId={roomId}
-            channelId={channelId}
+            channelId={getChannelId('CHN0005')}
             layoutState="expand"
           />
         </>

@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
-import { useCoreStores } from 'teespace-core';
 import { Button } from 'antd';
 import { getRoomName } from '../MobileUtil';
 import { ArrowBackIcon } from '../Icon';
@@ -30,12 +29,7 @@ const Title = styled.h3`
 
 const MobileTalkHeader = () => {
   const history = useHistory();
-  const { userStore } = useCoreStores();
-  const { myProfile } = userStore;
-
-  const handleGoBack = () => {
-    history.push(`/room/${myProfile.id}`);
-  };
+  const handleGoBack = () => history.push(`/room`);
 
   return (
     <>

@@ -6,7 +6,7 @@ export const handleProfileMenuClick = async (
   handleVisibleRoom,
   handleNoRoom,
 ) => {
-  const { roomInfo } = RoomStore.getDMRoom(targetUserId);
+  const { roomInfo } = RoomStore.getDMRoom(myUserId, targetUserId);
   // 이미 룸리스트에 있는 경우
   try {
     if (roomInfo && roomInfo.isVisible) {
@@ -24,7 +24,7 @@ export const handleProfileMenuClick = async (
       creatorId: myUserId,
       userList: [{ userId: targetUserId }],
     });
-    const newRoomInfo = RoomStore.getDMRoom(targetUserId)?.roomInfo;
+    const newRoomInfo = RoomStore.getDMRoom(myUserId, targetUserId)?.roomInfo;
     handleNoRoom(newRoomInfo);
   } catch (e) {
     console.error(`Error is${e}`);

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { EventBus, useCoreStores } from 'teespace-core';
+import { useTranslation } from 'react-i18next';
 import { Observer } from 'mobx-react';
 import styled from 'styled-components';
 import { useStores } from '../../stores';
@@ -26,6 +27,7 @@ const Loader = styled.div`
 
 const MobileMainPage = () => {
   const { resourceType, resourceId } = useParams();
+  const { i18n } = useTranslation();
   const { uiStore } = useStores();
   const { spaceStore, userStore, friendStore, roomStore } = useCoreStores();
   const [isLoading, setIsLoading] = useState(true);
@@ -40,14 +42,16 @@ const MobileMainPage = () => {
       userStore.fetchRoomUserProfileList({}),
       friendStore.fetchFriends(),
       roomStore.fetchRoomList(),
+      userStore.getMyDomainSetting(),
     ]).then(async () => {
       EventBus.dispatch('Platform:initLNB');
-      if (friendStore.friendInfoList.length) {
-        const friendIdList = friendStore.friendInfoList.map(
-          elem => elem.friendId,
-        );
-        await userStore.fetchProfileList(friendIdList);
-      }
+
+      if (!userStore.myProfile.language) {
+        await userStore.updateMyDomainSetting({
+          language: i18n.language,
+        });
+      } else i18n.changeLanguage(userStore.myProfile.language);
+
       setIsLoading(false);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

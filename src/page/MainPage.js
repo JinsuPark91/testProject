@@ -23,7 +23,7 @@ import { useStores } from '../stores';
 import LoadingImg from '../assets/WAPL_Loading.gif';
 import FaviconChanger from '../components/common/FaviconChanger';
 import WindowManager from '../components/common/WindowManager';
-import { getQueryParams, getQueryString } from '../utils/UrlUtil';
+import { getMainURL, getQueryParams, getQueryString } from '../utils/UrlUtil';
 import { handleProfileMenuClick } from '../utils/ProfileUtil';
 import { NotificationCenter } from '../components/notificationCenter';
 import { useInitialize } from '../hook';
@@ -199,6 +199,27 @@ const MainPage = () => {
       },
     );
 
+    const updateURLHandler = EventBus.on('Platform:updateURL', ({ domain }) => {
+      uiStore.openMessage({
+        title: t('CM_LOGIN_POLICY_10'),
+        subTitle: t('CM_LOGIN_POLICY_11'),
+        type: 'warning',
+        buttons: [
+          {
+            type: 'outlined',
+            shape: 'round',
+            text: t('CM_LOGIN_POLICY_03'),
+            onClick: () => {
+              uiStore.closeMessage();
+              window.location.href = `${
+                window.location.protocol
+              }//${domain}.${getMainURL()}`;
+            },
+          },
+        ],
+      });
+    });
+
     WWMS.addHandler('SYSTEM', 'platform_wwms', handleSystemMessage);
 
     return () => {
@@ -210,6 +231,7 @@ const MainPage = () => {
       EventBus.off('CoreRequest:forbidden', errorHandler);
       EventBus.off('Platform:banMembers', roomSettingHandler);
       EventBus.off('Platform:directMessage', directMessageHandler);
+      EventBus.off('Platform:updateURL', updateURLHandler);
       WWMS.removeHandler('SYSTEM', 'platform_wwms');
     };
   }, []);
