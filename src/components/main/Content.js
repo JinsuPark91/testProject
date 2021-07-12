@@ -57,7 +57,7 @@ const Content = () => {
 
   const handleSplitDrag = throttle(sizes => {
     uiStore.sizes = sizes;
-  }, 200);
+  }, 50);
 
   const handleSplitDragStart = () => {
     const splitter = splitRef?.current?.parent;
