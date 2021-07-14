@@ -115,6 +115,11 @@ function RoomAddMemberModal({
     return [...new Set(originMemberIds.concat(blockedMemberIds))];
   };
 
+  const getBlockedMemberIds = () => {
+    const blockedMemberIds = blockedMembers.map(member => member.id);
+    return blockedMemberIds;
+  };
+
   const getDefaultSelectedUsers = () => {
     return members.concat(blockedMembers);
   };
@@ -136,6 +141,7 @@ function RoomAddMemberModal({
           defaultSelectedUsers={getDefaultSelectedUsers()}
           showMeOnFriendTab={false}
           height={25} // rem
+          blockedMembers={getBlockedMemberIds()}
         />
 
         <ButtonContainer>

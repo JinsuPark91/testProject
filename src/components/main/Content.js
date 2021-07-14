@@ -54,6 +54,10 @@ const Content = () => {
     return null;
   };
 
+  const handleSplitDrag = sizes => {
+    uiStore.sizes = sizes;
+  };
+
   const handleSplitDragStart = () => {
     const splitter = splitRef?.current?.parent;
     const gutter = splitter.childNodes[1];
@@ -187,6 +191,7 @@ const Content = () => {
               }}
               onDragStart={handleSplitDragStart}
               onDragEnd={handleSplitDragEnd}
+              onDrag={handleSplitDrag}
               ref={splitRef}
             >
               <MainAppContainer>

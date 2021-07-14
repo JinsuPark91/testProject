@@ -133,7 +133,7 @@ const SpaceSide = () => {
           return lnbGroup.map(spaceInfo => (
             <SpaceItem
               key={spaceInfo.id}
-              checked={spaceInfo.id === spaceStore.currentSpace.id}
+              checked={spaceInfo.id === spaceStore.currentSpace?.id}
               spaceName={spaceInfo.name}
               backgroundURL={spaceInfo.profilePhotoURL}
               spaceUnreadCount={
@@ -158,7 +158,7 @@ const SpaceSide = () => {
                 <Menu.Item key={spaceInfo.id}>
                   <SpaceDropdownItem
                     key={spaceInfo.id}
-                    checked={spaceInfo.id === spaceStore.currentSpace.id}
+                    checked={spaceInfo.id === spaceStore.currentSpace?.id}
                     spaceName={spaceInfo.name}
                     backgroundURL={spaceInfo.profilePhotoURL}
                     spaceUnreadCount={spaceInfo.totalUnreadRoomCount}

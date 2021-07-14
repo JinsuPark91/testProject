@@ -1,7 +1,8 @@
 import React, { useState, useCallback } from 'react';
-import { Message, useCoreStores } from 'teespace-core';
+import { useCoreStores } from 'teespace-core';
 import { Button } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { useStores } from '../../../stores';
 import GroupNameField from './GroupNameField';
 import GroupUrlField from './GroupUrlField';
 import GroupImageField from './GroupImageField';
@@ -14,6 +15,7 @@ import { Wrapper } from '../../../styles/profile/SpaceEditModalStyle';
 
 const GroupEditModal = ({ onClose, onSuccess }) => {
   const { t } = useTranslation();
+  const { uiStore } = useStores();
   const { userStore, spaceStore } = useCoreStores();
   const { currentSpace } = spaceStore;
 
@@ -30,8 +32,6 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
 
   const [isUrlWarningVisible, setIsUrlWarningVisible] = useState(false);
   const [urlWarningText, setUrlWarningText] = useState('');
-
-  const [isWarningPopupVisible, setIsWarningPopupVisible] = useState(false);
 
   const isUnchanged = () => {
     return (
@@ -74,12 +74,33 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
   }, [newAddress, t]);
 
   const handleCloseModal = () => {
-    if (isWarningPopupVisible) setIsUrlWarningVisible(false);
+    if (uiStore.isMessageVisible) uiStore.isMessageVisible = false;
     else onClose();
   };
   const handleCancel = () => {
     if (isUnchanged()) onClose();
-    else setIsWarningPopupVisible(true);
+    else
+      uiStore.openMessage({
+        title: t('CM_Q_EXIT_SAVE'),
+        type: 'warning',
+        buttons: [
+          {
+            type: 'solid',
+            text: t('CM_LEAVE'),
+            onClick: () => {
+              uiStore.isMessageVisible = false;
+              onClose();
+            },
+          },
+          {
+            type: 'outlined',
+            text: t('CM_CANCEL'),
+            onClick: () => {
+              uiStore.isMessageVisible = false;
+            },
+          },
+        ],
+      });
   };
 
   const handleConfirm = async () => {
@@ -95,30 +116,10 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
       return;
     }
 
-    // 사진 업데이트
-    let extension;
-    if (groupPhotoFile !== undefined) {
-      if (groupPhotoFile) extension = getFileExtension(groupPhotoFile);
-      else if (groupPhotoFile === null) extension = 'default';
-
-      await spaceStore.updateCurrentSpaceProfilePhoto({
-        extension,
-        file: groupPhotoFile,
-        deviceType: 'PC',
-      });
-    }
-
-    const userId = userStore.myProfile.id;
-    const isLocal = process.env.REACT_APP_ENV === 'local';
     let updatedInfo = {};
-
     if (newAddress !== getCurrentSpaceAddress()) {
-      // FIXME: 서비스 에러로 인해 주석처리
-      // 동일 url 체크 로직
-      // 새로운 서비스 추가 후 반영해야 함
-
       // const res = await spaceStore.searchSpaceByDomain({
-      //   domain: newAddress,
+      //   domain: 'b2b',
       // });
       // if (res) {
       //   setUrlWarningText(t('CM_PROFILE_SPACE_STANDARD'));
@@ -143,11 +144,29 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
     }
 
     try {
-      await spaceStore.updateCurrentSpace({
-        userId,
-        updatedInfo,
-        isLocal,
-      });
+      // 사진 업데이트
+      let extension;
+      if (groupPhotoFile !== undefined) {
+        if (groupPhotoFile) extension = getFileExtension(groupPhotoFile);
+        else if (groupPhotoFile === null) extension = 'default';
+
+        await spaceStore.updateCurrentSpaceProfilePhoto({
+          extension,
+          file: groupPhotoFile,
+          deviceType: 'PC',
+        });
+      }
+
+      if (Object.keys(updatedInfo).length !== 0) {
+        const userId = userStore.myProfile.id;
+        const isLocal = process.env.REACT_APP_ENV === 'local';
+        await spaceStore.updateCurrentSpace({
+          userId,
+          updatedInfo,
+          isLocal,
+        });
+      }
+
       setIsUrlWarningVisible(false);
       setTimeout(() => {
         onSuccess();
@@ -159,65 +178,46 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
   };
 
   return (
-    <>
-      <Wrapper
-        visible
-        onCancel={handleCloseModal}
-        mask
-        maskTransitionName=""
-        centered
-        title={t('CM_SPACE_EDIT')}
-        width="27.5rem"
-        footer={
-          <>
-            <Button
-              style={{ marginRight: '0.5rem' }}
-              type="solid"
-              onClick={handleConfirm}
-              disabled={isDisabled()}
-            >
-              {t('CM_SAVE')}
-            </Button>
-            <Button type="outlined" onClick={handleCancel}>
-              {t('CM_CANCEL')}
-            </Button>
-          </>
-        }
-      >
-        <GroupImageField
-          groupPhoto={groupPhoto}
-          handleChange={handleChangePhoto}
-        />
-        <GroupNameField
-          spaceName={newSpaceName}
-          handleChange={handleChangeName}
-        />
-        <GroupUrlField
-          urlAddress={newAddress}
-          handleChange={handleChangeUrl}
-          handleBlur={handleBlurUrl}
-          warningVisible={isUrlWarningVisible}
-          warningText={urlWarningText}
-        />
-      </Wrapper>
-      <Message
-        visible={isWarningPopupVisible}
-        title={t('CM_Q_EXIT_SAVE')}
-        type="warning"
-        btns={[
-          {
-            type: 'solid',
-            text: t('CM_LEAVE'),
-            onClick: onClose,
-          },
-          {
-            type: 'outlined',
-            text: t('CM_CANCEL'),
-            onClick: () => setIsWarningPopupVisible(false),
-          },
-        ]}
+    <Wrapper
+      visible
+      onCancel={handleCloseModal}
+      mask
+      maskTransitionName=""
+      centered
+      title={t('CM_SPACE_EDIT')}
+      width="27.5rem"
+      footer={
+        <>
+          <Button
+            style={{ marginRight: '0.5rem' }}
+            type="solid"
+            onClick={handleConfirm}
+            disabled={isDisabled()}
+          >
+            {t('CM_SAVE')}
+          </Button>
+          <Button type="outlined" onClick={handleCancel}>
+            {t('CM_CANCEL')}
+          </Button>
+        </>
+      }
+    >
+      <GroupImageField
+        groupPhoto={groupPhoto}
+        handleChange={handleChangePhoto}
       />
-    </>
+      <GroupNameField
+        spaceName={newSpaceName}
+        handleChange={handleChangeName}
+      />
+      <GroupUrlField
+        urlAddress={newAddress}
+        handleChange={handleChangeUrl}
+        handleBlur={handleBlurUrl}
+        warningVisible={isUrlWarningVisible}
+        warningText={urlWarningText}
+      />
+    </Wrapper>
   );
 };
 

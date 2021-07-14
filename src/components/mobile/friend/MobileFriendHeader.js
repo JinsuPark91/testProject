@@ -92,7 +92,7 @@ const MobileFriendHeader = ({ isEditMode, handleEditMode }) => {
 
   const handleClickMyProfile = () => history.push(`/profile/${myUserId}`);
 
-  const handleAddFriend = () => history.push(`/addfriend/${myUserId}`);
+  const handleAddFriend = () => history.push(`/addfriend`);
 
   if (isEditMode) {
     return (

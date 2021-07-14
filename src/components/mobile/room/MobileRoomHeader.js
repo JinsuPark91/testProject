@@ -80,7 +80,7 @@ const MobileRoomHeader = ({
   const [isMessageVisible, setIsMessageVisible] = useState(false);
   const myUserId = userStore.myProfile.id;
 
-  const handleCreateRoom = () => history.push(`/addroom/${myUserId}`);
+  const handleCreateRoom = () => history.push(`/addroom`);
 
   const handleLeaveClick = () => {
     if (!roomIdDeleteList.length) return;
