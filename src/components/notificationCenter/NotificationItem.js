@@ -79,11 +79,10 @@ const NotificationItem = ({ style, item }) => {
       // 탈퇴유저가 보낸 것일 경우
       const creatorId = item.createdBy;
       if (userStore.userProfiles[creatorId].isWithdrawn) return true;
-
+      
       // 내가 없는 방에서 온 것일 경우
       const memberIdList = room.memberIdListString.split(',') || [];
-      if (memberIdList.includes(userStore.myProfile.id)) return true;
-
+      if (!memberIdList.includes(userStore.myProfile.id)) return true;
       return false;
     }
 
