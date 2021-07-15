@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useCoreStores, Switch, Checkbox, AlarmSetting } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import ContentTitle from './ContentTitle';
-import { ReactComponent as SoundIcon } from '../../assets/sound_on.svg';
+// import { ReactComponent as SoundIcon } from '../../assets/sound_on.svg';
 import AlarmSound from '../../assets/alarm_sound.wav';
 import { ALARM_TYPE, ALARM_TYPE_SEND } from './SettingConstants';
 import { isBasicPlan } from '../../utils/GeneralUtil';
