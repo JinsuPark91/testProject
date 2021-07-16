@@ -58,7 +58,6 @@ const ContentAccount = () => {
   const [changed, setChanged] = useState(false);
   const [advertise, setAdvertise] = useState(myProfileData.isTermAd);
 
-  console.log(myProfileData);
   const getProfilePhoto = () => {
     return userStore.getProfilePhotoURL(myUserId, 'small');
   };
@@ -104,7 +103,6 @@ const ContentAccount = () => {
         isTermAd: targetValue,
       });
       setAdvertise(targetValue);
-      console.log(myProfileData.isTermAd);
     } catch (error) {
       console.log(`changeName Error is ${error}`);
     }
@@ -113,8 +111,6 @@ const ContentAccount = () => {
   const handleOpenCancel = useCallback(() => {
     MovePage('withdrawal/select-type', true);
   }, []);
-
-  console.log(`동의내역${userStore.myProfile.isTermAd}`);
 
   return (
     <>
