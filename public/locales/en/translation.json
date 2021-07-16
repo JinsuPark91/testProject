@@ -516,5 +516,6 @@
   "CM_STATUS_ONLINE": "online",
   "CM_STATUS_VACATION": "vacation",
   "CM_STATUS_MEETING": "meeting",
-  "CM_STATUS_MISSED": "missed"
+  "CM_STATUS_MISSED": "missed",
+  "CM_SERVICE_ALARM_BUTTON_10": "No longer accessible."
 }

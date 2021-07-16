@@ -516,5 +516,6 @@
   "CM_STATUS_ONLINE": "연락 가능",
   "CM_STATUS_VACATION": "휴가 중",
   "CM_STATUS_MEETING": "회의 중",
-  "CM_STATUS_MISSED": "부재 중"
+  "CM_STATUS_MISSED": "부재 중",
+  "CM_SERVICE_ALARM_BUTTON_10": "더 이상 접근할 수 없습니다."
 }
