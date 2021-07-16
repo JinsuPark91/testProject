@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 
 export const ContentTitleWrap = styled.div`
+  display: flex;
   margin: 0 1.25rem;
   padding: 1.25rem 0;
   ${props =>
@@ -8,6 +9,14 @@ export const ContentTitleWrap = styled.div`
     css`
       border-bottom: 1px solid ${props.theme.LineMain};
     `}
+`;
+
+export const TitleArea = styled.div`
+  flex: 1;
+`;
+
+export const AttachmentArea = styled.div`
+  margin-left: 1.25rem;
 `;
 
 export const Title = styled.p`

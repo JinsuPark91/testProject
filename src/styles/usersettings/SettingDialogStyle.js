@@ -28,7 +28,7 @@ export const ContentArea = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  height: 73vh;
+  height: 67vh;
 `;
 
 export const StyledMenu = styled(Menu)`
@@ -85,7 +85,7 @@ export const Name = styled.p`
 export const Data = styled.div`
   overflow: hidden;
   display: flex;
-  padding-right: 3rem;
+  padding-right: 6rem;
   font-weight: 500;
   .ant-btn {
     padding: 0 0.81rem;

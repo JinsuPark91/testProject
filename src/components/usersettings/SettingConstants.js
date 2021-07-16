@@ -4,6 +4,7 @@ export const SELECTED_TAB = {
   PROFILE: '4',
   ALARM: '5',
   SECESSION: '6',
+  ACCOUNT: '7',
 };
 
 export const ALARM_TYPE = {

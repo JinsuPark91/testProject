@@ -2067,3 +2067,32 @@ export const MobileAlarmIcon = React.memo(({ width = 1, height = 1 }) => {
     </svg>
   );
 });
+
+export const CheckIcon = React.memo(
+  ({ width = 1, height = 1, color = '#000' }) => {
+    const defaultWidth = 24;
+    const defaultHeight = 24;
+
+    return (
+      <svg
+        width={`${width}rem`}
+        height={`${height}rem`}
+        viewBox={`0 0 ${width * REM_UNIT} ${height * REM_UNIT}`}
+        version="1.1"
+      >
+        <g
+          stroke="none"
+          strokeWidth="1"
+          fill="none"
+          transform={`scale(${(width * REM_UNIT) / defaultWidth}, ${
+            (height * REM_UNIT) / defaultHeight
+          })`}
+        >
+          <g fill={color}>
+            <path d="M19.697 7.283c-.396-.387-1.03-.375-1.414.02l-8.277 8.523-4.28-4.515c-.38-.399-1.014-.417-1.415-.037-.4.38-.417 1.013-.037 1.414L8.937 17.6c.291.26.663.392 1.043.392.398 0 .804-.146 1.135-.44l8.602-8.855c.385-.396.376-1.029-.02-1.414" />
+          </g>
+        </g>
+      </svg>
+    );
+  },
+);
