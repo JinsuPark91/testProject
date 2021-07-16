@@ -154,12 +154,21 @@ const MainPage = () => {
     const roomSettingHandler = EventBus.on(
       'Platform:roomSetting',
       ({ roomId, mainTab, subTab }) => {
+        let messageText;
         const targetRoom = roomStore.getRoom(roomId);
-        if (targetRoom) {
-          history.push(`/s/${roomId}/setting`, { mainTab, subTab });
-        } else {
+
+        // 룸이 없는 경우
+        if (!targetRoom) messageText = t('CM_INVALID_ROOM');
+        // 더 이상 룸 관리자가 아니거나 프라이빗 룸으로 전환한 경우
+        else if (
+          targetRoom.adminId !== myUserId ||
+          targetRoom.type !== 'WKS0003'
+        )
+          messageText = t('CM_SERVICE_ALARM_BUTTON_10');
+
+        if (messageText) {
           uiStore.openMessage({
-            title: t('CM_INVALID_ROOM'),
+            title: messageText,
             buttons: [
               {
                 type: 'solid',
@@ -171,7 +180,10 @@ const MainPage = () => {
               },
             ],
           });
+          return;
         }
+
+        history.push(`/s/${roomId}/setting`, { mainTab, subTab });
       },
     );
 

@@ -118,14 +118,19 @@ const GroupEditModal = ({ onClose, onSuccess }) => {
 
     let updatedInfo = {};
     if (newAddress !== getCurrentSpaceAddress()) {
-      // const res = await spaceStore.searchSpaceByDomain({
-      //   domain: 'b2b',
-      // });
-      // if (res) {
-      //   setUrlWarningText(t('CM_PROFILE_SPACE_STANDARD'));
-      //   setIsUrlWarningVisible(true);
-      //   return;
-      // }
+      try {
+        const res = await userStore.isExistDomain({
+          url: newAddress,
+        });
+
+        if (res) {
+          setUrlWarningText(t('CM_PROFILE_SPACE_STANDARD'));
+          setIsUrlWarningVisible(true);
+          return;
+        }
+      } catch (e) {
+        console.log('Domain Check Service Failed...');
+      }
 
       if (newSpaceName !== currentSpace?.name) {
         updatedInfo = {

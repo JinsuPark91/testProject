@@ -50,14 +50,14 @@ const uiStore = observable({
     timeout = 1000,
     size = 'medium',
     links = [],
-    onClose = () => {},
+    onClose,
   }) {
     transaction(() => {
       this.toastText = text;
       this.toastTimeout = timeout;
       this.toastSize = size;
       this.toastLinks = links;
-      this.toastOnClose = onClose;
+      this.toastOnClose = onClose || this.closeToast.bind(this);
       this.isToastVisible = true;
     });
   },
