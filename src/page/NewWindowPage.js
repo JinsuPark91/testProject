@@ -313,7 +313,6 @@ const Content = styled.div`
   & > div,
   & > div > div:nth-child(2) {
     @media (max-width: 1024px) {
-      position: relative;
     }
   }
 `;
