@@ -19,7 +19,9 @@ import {
 const ContentTheme = () => {
   const { t } = useTranslation();
   const { userStore, themeStore } = useCoreStores();
-  const [value, setValue] = useState(userStore.myProfile.theme || 'system');
+  const [value, setValue] = useState(
+    userStore.myDomainSetting.theme || 'system',
+  );
 
   const handleChange = e => {
     const targetValue = e.target.value;

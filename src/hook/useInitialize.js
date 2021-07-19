@@ -121,14 +121,14 @@ const useInitialize = () => {
         AlarmSetting.initAlarmSet(alarmList);
 
         // 계정 langauge 적용. 없으면 브라우저 기본 langauge로 업데이트 한다.
-        if (!userStore.myProfile.language) {
+        if (!userStore.myDomainSetting.language) {
           await userStore.updateMyDomainSetting({
             language: i18n.language,
           });
-        } else i18n.changeLanguage(userStore.myProfile.language);
+        } else i18n.changeLanguage(userStore.myDomainSetting.language);
 
         // 기본 테마 설정
-        const platformTheme = userStore.myProfile.theme;
+        const platformTheme = userStore.myDomainSetting.theme;
         if (platformTheme && platformTheme !== 'system')
           themeStore.setTheme(platformTheme);
         else if (isDarkMode()) themeStore.setTheme('dark');
