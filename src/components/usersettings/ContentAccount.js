@@ -88,6 +88,8 @@ const ContentAccount = () => {
       try {
         await userStore.updateMyDomainSetting({ pw });
         setIsPwEdit(false);
+        setValidPWLength(false);
+        setValidPWChar(false);
         uiStore.openToast({
           text: t('CM_CHANGE_SAVE'),
           onClose: () => {
@@ -110,6 +112,8 @@ const ContentAccount = () => {
 
   const handleCancelChangePw = () => {
     setIsPwEdit(false);
+    setValidPWLength(false);
+    setValidPWChar(false);
   };
 
   const handleChangeAdvertise = async e => {

@@ -8,11 +8,14 @@ export const AccountContent = styled.div`
 `;
 
 export const ImageBox = styled.div`
+  overflow: hidden;
   width: 2.125rem;
   height: 2.125rem;
+  border-radius: 50%;
   img {
     width: 100%;
     height: 100%;
+    object-fit: cover;
   }
 `;
 
