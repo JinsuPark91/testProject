@@ -117,6 +117,7 @@ const ContentAccount = () => {
     try {
       await userStore.updateMyDomainSetting({
         isTermAd: targetValue,
+        isTermPersonalOpt: targetValue,
       });
       setAdvertise(targetValue);
     } catch (error) {
