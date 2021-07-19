@@ -354,8 +354,8 @@ const ContentAccount = () => {
             <ItemTitle>{t('CM_ADVERTISE_AGREE_POLICY')}</ItemTitle>
             <ItemInfo>
               <Radio.Group onChange={handleChangeAdvertise} value={advertise}>
-                <Radio value="y"> {t('CM_AGREE_BUTTON_01')}</Radio>
-                <Radio value="n"> {t('CM_AGREE_BUTTON_02')}</Radio>
+                <Radio value> {t('CM_AGREE_BUTTON_01')}</Radio>
+                <Radio value={false}> {t('CM_AGREE_BUTTON_02')}</Radio>
               </Radio.Group>
             </ItemInfo>
           </ContentItem>
