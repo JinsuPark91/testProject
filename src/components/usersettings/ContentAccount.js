@@ -90,10 +90,13 @@ const ContentAccount = () => {
 
   const handleChangePwInput = useCallback(() => setChanged(true), [setChanged]);
 
-  const handleCancelChange = () => {
+  const handleCancelChangeName = () => {
     setIsNameEdit(false);
-    setIsPwEdit(false);
     setName(myProfileData.name);
+  };
+
+  const handleCancelChangePw = () => {
+    setIsPwEdit(false);
   };
 
   const handleChangeAdvertise = async e => {
@@ -152,7 +155,7 @@ const ContentAccount = () => {
                     >
                       {t('CM_SAVE')}
                     </Button>
-                    <Button size="small" onClick={handleCancelChange}>
+                    <Button size="small" onClick={handleCancelChangeName}>
                       {t('CM_CANCEL')}
                     </Button>
                   </>
@@ -304,7 +307,7 @@ const ContentAccount = () => {
                       >
                         {t('CM_SAVE')}
                       </Button>
-                      <Button size="small" onClick={handleCancelChange}>
+                      <Button size="small" onClick={handleCancelChangePw}>
                         {t('CM_CANCEL')}
                       </Button>
                     </Form.Item>
