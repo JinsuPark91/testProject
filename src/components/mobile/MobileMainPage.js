@@ -46,11 +46,11 @@ const MobileMainPage = () => {
     ]).then(async () => {
       EventBus.dispatch('Platform:initLNB');
 
-      if (!userStore.myProfile.language) {
+      if (!userStore.myDomainSetting.language) {
         await userStore.updateMyDomainSetting({
           language: i18n.language,
         });
-      } else i18n.changeLanguage(userStore.myProfile.language);
+      } else i18n.changeLanguage(userStore.myDomainSetting.language);
 
       setIsLoading(false);
     });

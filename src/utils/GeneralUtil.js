@@ -14,7 +14,7 @@ export const isBasicPlan = () => {
 };
 
 export const getLanguage = () => {
-  const { language } = UserStore.myProfile;
+  const { language } = UserStore.myDomainSetting;
   if (!language) return fallbackLanguage;
 
   const match = language.match(/en|ko/g);
