@@ -142,6 +142,7 @@ function RoomAddMemberModal({
           showMeOnFriendTab={false}
           height={25} // rem
           blockedMembers={getBlockedMemberIds()}
+          isRoomInvite
         />
 
         <ButtonContainer>

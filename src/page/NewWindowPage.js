@@ -49,13 +49,13 @@ const NewWindowPage = () => {
         roomStore.fetchRoom({ roomId }),
         userStore.getMyDomainSetting(),
       ]).then(async () => {
-        if (!userStore.myProfile.language) {
+        if (!userStore.myDomainSetting.language) {
           await userStore.updateMyDomainSetting({
             language: i18n.language,
           });
-        } else i18n.changeLanguage(userStore.myProfile.language);
+        } else i18n.changeLanguage(userStore.myDomainSetting.language);
 
-        const platformTheme = userStore.myProfile.theme;
+        const platformTheme = userStore.myDomainSetting.theme;
         if (platformTheme && platformTheme !== 'system')
           themeStore.setTheme(platformTheme);
         else if (isDarkMode()) themeStore.setTheme('dark');
@@ -313,7 +313,6 @@ const Content = styled.div`
   & > div,
   & > div > div:nth-child(2) {
     @media (max-width: 1024px) {
-      position: relative;
     }
   }
 `;
