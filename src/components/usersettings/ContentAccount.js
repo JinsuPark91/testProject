@@ -22,6 +22,7 @@ import {
 import ContentTitle from './ContentTitle';
 import { CheckIcon } from '../Icons';
 import MovePage from '../../utils/MovePage';
+import { useStores } from '../../stores';
 
 const NoticeItem = ({ pass, text }) => {
   const themeContext = useContext(ThemeContext);
@@ -46,6 +47,7 @@ const checkPasswordValid = pwdValue => {
 const ContentAccount = () => {
   const { t } = useTranslation();
   const { userStore, authStore } = useCoreStores();
+  const { uiStore } = useStores();
   const myDomainData = userStore.myDomainSetting;
   const myUserId = userStore.myProfile.id;
 
@@ -65,10 +67,16 @@ const ContentAccount = () => {
     try {
       await userStore.updateMyDomainSetting({ name });
       setIsNameEdit(false);
+      uiStore.openToast({
+        text: t('CM_CHANGE_SAVE'),
+        onClose: () => {
+          uiStore.closeToast();
+        },
+      });
     } catch (error) {
       console.log(`changeName Error is ${error}`);
     }
-  }, [name, userStore]);
+  }, [name, t, uiStore, userStore]);
 
   const handleChangePw = () => {
     setIsPwEdit(true);
@@ -80,11 +88,17 @@ const ContentAccount = () => {
       try {
         await userStore.updateMyDomainSetting({ pw });
         setIsPwEdit(false);
+        uiStore.openToast({
+          text: t('CM_CHANGE_SAVE'),
+          onClose: () => {
+            uiStore.closeToast();
+          },
+        });
       } catch (error) {
         console.log(`changeName Error is ${error}`);
       }
     },
-    [userStore],
+    [t, uiStore, userStore],
   );
 
   const handleChangePwInput = useCallback(() => setChanged(true), [setChanged]);
