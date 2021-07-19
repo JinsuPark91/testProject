@@ -3,7 +3,6 @@ import { useCoreStores, Form, Button, Input } from 'teespace-core';
 import { Radio } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { updateMyProfile } from '../../utils/ProfileUtil';
 import {
   AccountContent,
   ContentBox,
@@ -47,16 +46,16 @@ const checkPasswordValid = pwdValue => {
 const ContentAccount = () => {
   const { t } = useTranslation();
   const { userStore, authStore } = useCoreStores();
-  const myProfileData = userStore.myProfile;
+  const myDomainData = userStore.myDomainSetting;
   const myUserId = userStore.myProfile.id;
 
-  const [name, setName] = useState(myProfileData.name);
+  const [name, setName] = useState(myDomainData.name);
   const [isNameEdit, setIsNameEdit] = useState(false);
   const [isPwEdit, setIsPwEdit] = useState(false);
   const [validPWLength, setValidPWLength] = useState(false);
   const [validPWChar, setValidPWChar] = useState(false);
   const [changed, setChanged] = useState(false);
-  const [advertise, setAdvertise] = useState(myProfileData.isTermAd);
+  const [advertise, setAdvertise] = useState(myDomainData.isTermAd);
 
   const getProfilePhoto = () => {
     return userStore.getProfilePhotoURL(myUserId, 'small');
@@ -64,12 +63,12 @@ const ContentAccount = () => {
 
   const handleChangeName = useCallback(async () => {
     try {
-      await updateMyProfile({ name });
+      await userStore.updateMyDomainSetting({ name });
       setIsNameEdit(false);
     } catch (error) {
       console.log(`changeName Error is ${error}`);
     }
-  }, [name]);
+  }, [name, userStore]);
 
   const handleChangePw = () => {
     setIsPwEdit(true);
@@ -92,7 +91,7 @@ const ContentAccount = () => {
 
   const handleCancelChangeName = () => {
     setIsNameEdit(false);
-    setName(myProfileData.name);
+    setName(myDomainData.name);
   };
 
   const handleCancelChangePw = () => {
@@ -130,7 +129,7 @@ const ContentAccount = () => {
         <ContentBox>
           <ContentItem>
             <ItemTitle>{t('CM_EDIT_MYPAGE_08')}</ItemTitle>
-            <ItemInfo>{myProfileData?.loginId}</ItemInfo>
+            <ItemInfo>{myDomainData?.userLoginId}</ItemInfo>
           </ContentItem>
           <ContentItem>
             <ItemTitle>{t('CM_EDIT_MYPAGE_02')}</ItemTitle>
@@ -138,12 +137,12 @@ const ContentAccount = () => {
               {isNameEdit ? (
                 <EditNameInput
                   maxLength={20}
-                  placeholder={myProfileData.name}
+                  placeholder={myDomainData.name}
                   value={name}
                   onChange={input => setName(input)}
                 />
               ) : (
-                <>{myProfileData?.name || '-'}</>
+                <>{myDomainData?.name || '-'}</>
               )}
               <ButtonBox>
                 {isNameEdit ? (
@@ -315,8 +314,8 @@ const ContentAccount = () => {
                 </Form>
               ) : (
                 <>
-                  마지막 변경일:
-                  <PwInfo>{myProfileData.pwModDate || '-'}</PwInfo>
+                  {t('CM_EDIT_MYPAGE_03')}
+                  <PwInfo>{myDomainData.pwModDate || '-'}</PwInfo>
                   <ButtonBox>
                     <Button size="small" onClick={() => handleChangePw(true)}>
                       {t('CM_CHANGE')}
