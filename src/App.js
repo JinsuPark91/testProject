@@ -46,6 +46,7 @@ import {
   LogoutComponent,
 } from './libs/auth';
 import { getQueryParams } from './utils/UrlUtil';
+import MainWaplWorksPage from './page/MainWaplWorksPage';
 
 const hydrate = create();
 
@@ -135,7 +136,11 @@ function App() {
                     component={<SignUpCompletePage />}
                   />
                   <PrivateAuthRoute
-                    path="/:resourceType(s|f|m)/:resourceId/:mainApp?"
+                    path="/works"
+                    component={MainWaplWorksPage}
+                  />
+                  <PrivateAuthRoute
+                    path="/:resourceType(s|f|m|works)/:resourceId/:mainApp?"
                     component={isMini ? NewWindowPage : MainPage}
                   />
                   <PrivateAuthRoute path="/admin" component={AdminPage} />

@@ -146,9 +146,14 @@ const useInitialize = () => {
               break;
           }
         }
+        // Works 설정이면 바로 웍스로 이동
+        else if (window.env.REACT_APP_WORKS_ONLY === 'yes') {
+          history.push('/works');
+        }
         // NOTE : 마지막 접속 URL 로 Redirect 시킨다.
-        else if (historyStore.lastHistory)
+        else if (historyStore.lastHistory) {
           history.push(historyStore.lastHistory.lastUrl);
+        }
       })
       .then(() => {
         setIsLoaded(true);
