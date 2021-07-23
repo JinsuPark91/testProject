@@ -3464,9 +3464,9 @@
     form-data "^3.0.0"
 
 "@types/node@*":
-  version "16.4.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.4.0.tgz#2c219eaa3b8d1e4d04f4dd6e40bc68c7467d5272"
-  integrity sha512-HrJuE7Mlqcjj+00JqMWpZ3tY8w7EUd+S0U3L1+PQSWiXZbOgyQDvi+ogoUxaHApPJq5diKxYBQwA3iIlNcPqOg==
+  version "16.4.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.4.1.tgz#9fad171a5b701613ee8a6f4ece3c88b1034b1b03"
+  integrity sha512-UW7cbLqf/Wu5XH2RKKY1cHwUNLicIDRLMraYKz+HHAerJ0ZffUEk+fMnd8qU2JaS6cAy0r8tsaf7yqHASf/Y0Q==
 
 "@types/node@^14.0.1", "@types/node@^14.0.10", "@types/node@^14.14.19":
   version "14.17.5"
@@ -4457,9 +4457,9 @@ anymatch@^3.0.0, anymatch@^3.0.3, anymatch@~3.1.2:
     picomatch "^2.0.4"
 
 apexcharts@^3.6.7:
-  version "3.27.2"
-  resolved "https://registry.yarnpkg.com/apexcharts/-/apexcharts-3.27.2.tgz#95598439158c7d2aa0ef3909606a935c891bb621"
-  integrity sha512-FjW0OW6Oq9kbWJiF6wIZEsMNNHme6WNv3eh+p4azuWVELNY/LigXU+01s4TP+Obplhy6byV9bw9x7GhrbN2YsQ==
+  version "3.27.3"
+  resolved "https://registry.yarnpkg.com/apexcharts/-/apexcharts-3.27.3.tgz#1b921ac64dea2f28a2b1aad4b396b38464223849"
+  integrity sha512-1ZrqiQT0VahkqW0kVjf5QVURYGaHMlGN08BoIZG2c2U/gY2AtnEoFN4r9q4d/pYYYKvI9AyLBHq0otzcVGrHAw==
   dependencies:
     svg.draggable.js "^2.2.2"
     svg.easing.js "^2.0.0"
@@ -7617,7 +7617,7 @@ debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
   dependencies:
     ms "2.1.2"
 
-debuglog@^1.0.1:
+debuglog@*, debuglog@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/debuglog/-/debuglog-1.0.1.tgz#aa24ffb9ac3df9a2351837cfb2d279360cd78492"
   integrity sha1-qiT/uaw9+aI1GDfPstJ5NgzXhJI=
@@ -8270,7 +8270,12 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-electron-to-chromium@^1.3.378, electron-to-chromium@^1.3.564, electron-to-chromium@^1.3.723:
+electron-to-chromium@^1.3.378, electron-to-chromium@^1.3.723:
+  version "1.3.785"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.785.tgz#79f546c69a6be4f30913aaace361bc746f26df48"
+  integrity sha512-WmCgAeURsMFiyoJ646eUaJQ7GNfvMRLXo+GamUyKVNEM4MqTAsXyC0f38JEB4N3BtbD0tlAKozGP5E2T9K3YGg==
+
+electron-to-chromium@^1.3.564:
   version "1.3.784"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.784.tgz#c370be79374b02b7f13e8a8fb0d7a02641161dac"
   integrity sha512-JTPxdUibkefeomWNaYs8lI/x/Zb4cOhZWX+d7kpzsNKzUd07pNuo/AcHeNJ/qgEchxM1IAxda9aaGUhKN/poOg==
@@ -11253,7 +11258,7 @@ import-local@^2.0.0:
     pkg-dir "^3.0.0"
     resolve-cwd "^2.0.0"
 
-imurmurhash@^0.1.4:
+imurmurhash@*, imurmurhash@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/imurmurhash/-/imurmurhash-0.1.4.tgz#9218b9b2b928a238b13dc4fb6b6d576f231453ea"
   integrity sha1-khi5srkoojixPcT7a21XbyMUU+o=
@@ -13493,6 +13498,11 @@ lockfile@^1.0.4:
   dependencies:
     signal-exit "^3.0.2"
 
+lodash._baseindexof@*:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/lodash._baseindexof/-/lodash._baseindexof-3.1.0.tgz#fe52b53a1c6761e42618d654e4a25789ed61822c"
+  integrity sha1-/lK1OhxnYeQmGNZU5KJXie1hgiw=
+
 lodash._baseuniq@~4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash._baseuniq/-/lodash._baseuniq-4.6.0.tgz#0ebb44e456814af7905c6212fa2c9b2d51b841e8"
@@ -13501,10 +13511,32 @@ lodash._baseuniq@~4.6.0:
     lodash._createset "~4.0.0"
     lodash._root "~3.0.0"
 
+lodash._bindcallback@*:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/lodash._bindcallback/-/lodash._bindcallback-3.0.1.tgz#e531c27644cf8b57a99e17ed95b35c748789392e"
+  integrity sha1-5THCdkTPi1epnhftlbNcdIeJOS4=
+
+lodash._cacheindexof@*:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/lodash._cacheindexof/-/lodash._cacheindexof-3.0.2.tgz#3dc69ac82498d2ee5e3ce56091bafd2adc7bde92"
+  integrity sha1-PcaayCSY0u5ePOVgkbr9Ktx73pI=
+
+lodash._createcache@*:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/lodash._createcache/-/lodash._createcache-3.1.2.tgz#56d6a064017625e79ebca6b8018e17440bdcf093"
+  integrity sha1-VtagZAF2JeeevKa4AY4XRAvc8JM=
+  dependencies:
+    lodash._getnative "^3.0.0"
+
 lodash._createset@~4.0.0:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/lodash._createset/-/lodash._createset-4.0.3.tgz#0f4659fbb09d75194fa9e2b88a6644d363c9fe26"
   integrity sha1-D0ZZ+7CddRlPqeK4imZE02PJ/iY=
+
+lodash._getnative@*, lodash._getnative@^3.0.0:
+  version "3.9.1"
+  resolved "https://registry.yarnpkg.com/lodash._getnative/-/lodash._getnative-3.9.1.tgz#570bc7dede46d61cdcde687d65d3eecbaa3aaff5"
+  integrity sha1-VwvH3t5G1hzc3mh9ZdPuy6o6r/U=
 
 lodash._reinterpolate@^3.0.0:
   version "3.0.0"
@@ -13590,6 +13622,11 @@ lodash.memoize@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
   integrity sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4=
+
+lodash.restparam@*:
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/lodash.restparam/-/lodash.restparam-3.6.1.tgz#936a4e309ef330a7645ed4145986c85ae5b20805"
+  integrity sha1-k2pOMJ7zMKdkXtQUWYbIWuWyCAU=
 
 lodash.sortby@^4.7.0:
   version "4.7.0"
@@ -18963,7 +19000,12 @@ regenerator-runtime@^0.11.0:
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
   integrity sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==
 
-regenerator-runtime@^0.13.3, regenerator-runtime@^0.13.4, regenerator-runtime@^0.13.7:
+regenerator-runtime@^0.13.3, regenerator-runtime@^0.13.4:
+  version "0.13.9"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.9.tgz#8925742a98ffd90814988d7566ad30ca3b263b52"
+  integrity sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==
+
+regenerator-runtime@^0.13.7:
   version "0.13.7"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.7.tgz#cac2dacc8a1ea675feaabaeb8ae833898ae46f55"
   integrity sha512-a54FxoJDIr27pgf7IgeQGxmqUNYrcV338lf/6gH456HZ/PhX+5BcwHXG9ajESmwe6WRO0tAzRUrRmNONWgkrew==
@@ -21309,8 +21351,7 @@ tar@^6.0.2:
 
 "teespace-calendar-app@git+ssh://git@192.168.158.12:teespace/teespace-calendar-app#develop":
   version "0.1.38"
-  uid "50dd850f354ea2c6535892b0a89b45259731274e"
-  resolved "git+ssh://git@192.168.158.12:teespace/teespace-calendar-app#50dd850f354ea2c6535892b0a89b45259731274e"
+  resolved "git+ssh://git@192.168.158.12:teespace/teespace-calendar-app#2688eff7b8e4d9f731f43fc10adef321aaccc48c"
   dependencies:
     "@ant-design/icons" "^4.2.2"
     "@craco/craco" "^5.6.4"
@@ -21362,7 +21403,7 @@ tar@^6.0.2:
 
 "teespace-core@git+http://192.168.158.12:9000/teespace/teespace-core#develop":
   version "0.1.35"
-  resolved "git+http://192.168.158.12:9000/teespace/teespace-core#07c223cd2eeb9ee07aee6c5dc0f9cf25bde8f72a"
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-core#2c0ce2170bd7ab23578911ed9a84442426b25955"
   dependencies:
     "@ant-design/icons" "^4.3.0"
     "@craco/craco" "^5.6.4"
@@ -21402,8 +21443,8 @@ tar@^6.0.2:
 
 "teespace-core@git+ssh://git@192.168.158.12:teespace/teespace-core#develop":
   version "0.1.35"
-  uid "07c223cd2eeb9ee07aee6c5dc0f9cf25bde8f72a"
-  resolved "git+ssh://git@192.168.158.12:teespace/teespace-core#07c223cd2eeb9ee07aee6c5dc0f9cf25bde8f72a"
+  uid "2c0ce2170bd7ab23578911ed9a84442426b25955"
+  resolved "git+ssh://git@192.168.158.12:teespace/teespace-core#2c0ce2170bd7ab23578911ed9a84442426b25955"
   dependencies:
     "@ant-design/icons" "^4.3.0"
     "@craco/craco" "^5.6.4"
@@ -21443,8 +21484,8 @@ tar@^6.0.2:
 
 "teespace-core@git+ssh://git@192.168.158.12:teespace/teespace-core.git#develop":
   version "0.1.35"
-  uid "07c223cd2eeb9ee07aee6c5dc0f9cf25bde8f72a"
-  resolved "git+ssh://git@192.168.158.12:teespace/teespace-core.git#07c223cd2eeb9ee07aee6c5dc0f9cf25bde8f72a"
+  uid "2c0ce2170bd7ab23578911ed9a84442426b25955"
+  resolved "git+ssh://git@192.168.158.12:teespace/teespace-core.git#2c0ce2170bd7ab23578911ed9a84442426b25955"
   dependencies:
     "@ant-design/icons" "^4.3.0"
     "@craco/craco" "^5.6.4"
@@ -21581,7 +21622,7 @@ tar@^6.0.2:
 
 "teespace-mail-app@git+http://192.168.158.12:9000/teespace/teespace-mail-app#develop":
   version "0.1.0"
-  resolved "git+http://192.168.158.12:9000/teespace/teespace-mail-app#2c8a2fa2b5d4194843a44f43f1c0dfe12a626f61"
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-mail-app#b661388b0df7a05e66abd42a9c59536f14a691ce"
   dependencies:
     "@craco/craco" "^5.6.4"
     "@ctrl/tinycolor" "^3.4.0"
@@ -21637,7 +21678,7 @@ tar@^6.0.2:
 
 "teespace-note-app@git+http://192.168.158.12:9000/teespace/teespace-note-app#develop":
   version "0.1.2"
-  resolved "git+http://192.168.158.12:9000/teespace/teespace-note-app#2e79d1d12425cabb29ee0db97d9d43dafb181dce"
+  resolved "git+http://192.168.158.12:9000/teespace/teespace-note-app#401e7aa8ab101a496db299a136e53b50e284464e"
   dependencies:
     "@babel/preset-flow" "^7.14.5"
     "@craco/craco" "^5.6.4"
@@ -21676,8 +21717,7 @@ tar@^6.0.2:
 
 "teespace-note-app@git+ssh://git@192.168.158.12:teespace/teespace-note-app#develop":
   version "0.1.2"
-  uid "2e79d1d12425cabb29ee0db97d9d43dafb181dce"
-  resolved "git+ssh://git@192.168.158.12:teespace/teespace-note-app#2e79d1d12425cabb29ee0db97d9d43dafb181dce"
+  resolved "git+ssh://git@192.168.158.12:teespace/teespace-note-app#4054d50739d7e276f877279f013f37799e8f4755"
   dependencies:
     "@babel/preset-flow" "^7.14.5"
     "@craco/craco" "^5.6.4"
@@ -22404,9 +22444,9 @@ uglify-js@1.x:
   integrity sha1-S1v/+Rhu/7qoiOTJ6UvZ/EyUkp0=
 
 uglify-js@^3.1.4:
-  version "3.13.10"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.13.10.tgz#a6bd0d28d38f592c3adb6b180ea6e07e1e540a8d"
-  integrity sha512-57H3ACYFXeo1IaZ1w02sfA71wI60MGco/IQFjOqK+WtKoprh7Go2/yvd2HPtoJILO2Or84ncLccI4xoHMTSbGg==
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.14.0.tgz#2d723a0afee81e0d08db9354a9c277006e942386"
+  integrity sha512-R/tiGB1ZXp2BC+TkRGLwj8xUZgdfT2f4UZEgX6aVjJ5uttPrr4fYmwTWDGqVnBCLbOXRMY6nr/BTbwCtVfps0g==
 
 uid-number@0.0.6, uid-number@^0.0.6:
   version "0.0.6"
@@ -23015,7 +23055,7 @@ walker@1.x, walker@^1.0.7, walker@~1.0.5:
 
 "wapl-works@git+http://192.168.158.12:9000/teespace/works-app#wapl-works-test":
   version "0.1.0"
-  resolved "git+http://192.168.158.12:9000/teespace/works-app#0d064be133966834a2f59142c9db395d93f7cac6"
+  resolved "git+http://192.168.158.12:9000/teespace/works-app#36515bd2ce7fd87202c3a2c0748bccb1057e3b6f"
   dependencies:
     "@craco/craco" "^5.8.0"
     "@react-keycloak/web" "^3.4.0"
