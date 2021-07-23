@@ -51,6 +51,9 @@ export const StyledMenu = styled(Menu)`
     &.ant-menu-item-selected {
       background-color: ${props => props.theme.SubStateDark};
     }
+    &:hover {
+      color: ${props => props.theme.TextMain};
+    }
     &:active {
       background-color: ${props => props.theme.SubStateDark};
     }

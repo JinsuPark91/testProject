@@ -93,7 +93,7 @@ const SettingDialog = ({ visible, onCancel }) => {
             onClick={({ item, key }) => handleTabClick(key)}
           >
             <Menu.ItemGroup key="0" title={t('CM_SETTING_06')}>
-              <Menu.Item key="7">계정 정보</Menu.Item>
+              <Menu.Item key="7">{t('CM_EDIT_MYPAGE_01')}</Menu.Item>
               <Menu.Item key="1">{t('CM_SETTING_GENERAL_04')}</Menu.Item>
               <Menu.Item key="2">{t('CM_SETTING_GENERAL_01')}</Menu.Item>
             </Menu.ItemGroup>
