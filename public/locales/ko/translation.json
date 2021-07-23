@@ -521,5 +521,12 @@
   "CM_STATUS_VACATION": "휴가 중",
   "CM_STATUS_MEETING": "회의 중",
   "CM_STATUS_MISSED": "부재 중",
-  "CM_SERVICE_ALARM_BUTTON_10": "더 이상 접근할 수 없습니다."
+  "CM_SERVICE_ALARM_BUTTON_10": "더 이상 접근할 수 없습니다.",
+  "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_1": "비밀번호를 입력해 주세요.",
+  "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_2": "현재 비밀번호를 정확히 입력해 주세요.",
+  "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_3": "입력 가능한 비밀번호는 최소 9자, 최대 20자 입니다.",
+  "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_4":"영문 대/소문자, 숫자, 특수문자(!@#$%^&*()<>?) 중 3가지 이상을 조합하여 사용해야 합니다.",
+  "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_5":"현재 사용 중인 비밀번호입니다. 다른 비밀번호를 입력해 주세요.",
+  "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_6":"비밀번호 확인을 위해 다시 입력해 주세요.",
+  "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_7":"입력한 비밀번호와 재입력한 비밀번호가 일치하지 않습니다. 다시 확인해 주세요."
 }

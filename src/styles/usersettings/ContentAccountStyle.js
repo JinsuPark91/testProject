@@ -38,7 +38,7 @@ export const ContentItem = styled.div`
 `;
 
 export const ItemTitle = styled.div`
-  min-width: 13.13rem;
+  width: 13.13rem;
   padding-right: 1.25rem;
 `;
 
@@ -54,6 +54,7 @@ export const ItemInfo = styled.div`
 
   .ant-radio-wrapper {
     vertical-align: middle;
+    color: ${({ theme }) => theme.TextMain};
   }
 `;
 
@@ -62,6 +63,7 @@ export const FormItemWrap = styled.div`
   font-size: 0.75rem;
   line-height: 1.125rem;
   color: ${({ theme }) => theme.TextMain};
+  word-break: break-all;
 `;
 
 export const ItemLabel = styled.div`
@@ -75,7 +77,7 @@ export const TextLink = styled.button`
   border: none;
   background-color: transparent;
   text-decoration: underline;
-  color: ${({ theme }) => theme.GreenVivid};
+  color: ${({ theme }) => theme.TextPoinGreen};
 `;
 
 export const ButtonBox = styled.div`
