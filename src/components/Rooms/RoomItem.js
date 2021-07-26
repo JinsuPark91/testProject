@@ -439,7 +439,11 @@ const RoomItemContent = React.memo(
                 {() =>
                   roomInfo.isAlarmUsed ? null : (
                     <TitleIconWrapper>
-                      <DisableAlarmIcon width={0.8} height={0.8} />
+                      <DisableAlarmIcon
+                        width={0.75}
+                        height={0.75}
+                        color="#7b7671"
+                      />
                     </TitleIconWrapper>
                   )
                 }
@@ -788,8 +792,8 @@ const UnreadCountWrap = styled.div`
 
 const TitleIconWrapper = styled.div`
   display: flex;
-  flex: 0 0 0.81rem;
-  padding: 0 0.15rem;
+  flex: 0 0 0.75rem;
+  padding: 0 0.25rem;
 `;
 const IconWrapper = styled.div`
   display: none;
