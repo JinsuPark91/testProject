@@ -95,7 +95,7 @@
     "teespace-talk-app": "git+http://192.168.158.12:9000/teespace/teespace-talk-app#develop",
     "use-long-press": "^1.0.5",
     "use-open-window": "^1.2.5",
-    "wapl-works": "git+http://192.168.158.12:9000/teespace/works-app#wapl-works-test",
+    "wapl-works": "git+http://192.168.158.12:9000/teespace/works-app#develop",
     "webpack": "4.42.0"
   },
   "scripts": {
