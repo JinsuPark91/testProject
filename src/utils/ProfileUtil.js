@@ -23,6 +23,7 @@ export const handleProfileMenuClick = async (
     await RoomStore.createRoom({
       creatorId: myUserId,
       userList: [{ userId: targetUserId }],
+      language: UserStore.myProfile.language,
     });
     const newRoomInfo = RoomStore.getDMRoom(myUserId, targetUserId)?.roomInfo;
     handleNoRoom(newRoomInfo);

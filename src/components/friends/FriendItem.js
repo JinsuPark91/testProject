@@ -289,6 +289,7 @@ const FriendItem = observer(
         await roomStore.createRoom({
           creatorId: myUserId,
           userList: [{ userId: itemId }],
+          language: userStore.myProfile.language,
         });
         const newRoomInfo = roomStore.getDMRoom(myUserId, itemId)?.roomInfo;
         return newRoomInfo;

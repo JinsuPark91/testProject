@@ -16,6 +16,7 @@ const MobileCreateRoomPage = () => {
           creatorId: userStore.myProfile.id,
           userList: [{ userId }],
           type: 'private',
+          language: userStore.myProfile.language,
         };
         const { roomId } = await roomStore.createRoom(data);
         const existRoom = roomStore.getRoomMap().get(roomId);

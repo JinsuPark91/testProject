@@ -77,6 +77,7 @@ const MobileRoomCreatePage = ({ onTabChange }) => {
       creatorId: myUserId,
       userList,
       type: 'private',
+      language: userStore.myProfile.language,
     });
     const checkRoom = roomStore.getRoomMap().get(roomId);
 

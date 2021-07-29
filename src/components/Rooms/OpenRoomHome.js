@@ -270,6 +270,7 @@ function OpenRoomHome({ visible, onCancel }) {
       })),
       type: 'open',
       isJoinable,
+      language: userStore.myProfile.language,
     };
 
     closeHomeModal();
@@ -336,9 +337,8 @@ function OpenRoomHome({ visible, onCancel }) {
                   <RecomRoomTitle>
                     {roomInfo.customName || roomInfo.name}
                   </RecomRoomTitle>
-                  <AdminText>{`${t('CM_ROOM_ADMIN')} ${
-                    roomInfo.adminName
-                  }`}</AdminText>
+                  <AdminText>{`${t('CM_ROOM_ADMIN')} ${roomInfo.adminName
+                    }`}</AdminText>
                 </div>
               )}
             </Observer>

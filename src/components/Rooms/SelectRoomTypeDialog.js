@@ -66,7 +66,7 @@ const StyledInfoText = styled.p`
   line-height: 1rem;
 `;
 
-function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
+function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => { } }) {
   const { t } = useTranslation();
   const { userStore, roomStore } = useCoreStores();
   const { uiStore } = useStores();
@@ -111,6 +111,7 @@ function SelectRoomTypeDialog({ visible, onCancel, onCreateRoom = () => {} }) {
       userList: selectedUsers.map(user => ({
         userId: user.friendId || user.id,
       })),
+      language: userStore.myProfile.language,
     };
 
     if (selectedUsers.length > 1 && isChangeName && !!roomName) {
