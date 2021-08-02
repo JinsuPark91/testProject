@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Wrapper = styled.div`
   margin-left: 1.25rem;
@@ -15,19 +15,6 @@ export const ThemeItem = styled.li`
   margin-right: 3.31rem;
   &:last-child {
     margin-right: 0;
-  }
-  .ant-radio-wrapper {
-    font-size: 0.75rem;
-    line-height: 0.94rem;
-    color: ${props => props.theme.TextMain};
-    &-checked {
-      + div::after {
-        border: 2px solid #ec6222;
-      }
-    }
-    span.ant-radio + * {
-      padding: 0 0.25rem;
-    }
   }
 `;
 
@@ -50,6 +37,68 @@ export const ThemeImage = styled.div`
 
 export const ThemeThumb = styled.img`
   width: 100%;
+`;
+
+export const RadioBox = styled.span`
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+
+  input {
+    overflow: hidden;
+    position: absolute;
+    clip: rect(0 0 0 0);
+    margin: -1px;
+    width: 1px;
+    height: 1px;
+  }
+`;
+
+export const RadioCircle = styled.span`
+  display: inline-block;
+  position: relative;
+  width: 0.9375rem;
+  height: 0.9375rem;
+  margin-right: 0.375rem;
+  background-color: ${props => props.theme.StateNormal};
+  border: 1px solid ${props => props.theme.LineOut};
+  border-radius: 50%;
+  &:after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.4375rem;
+    height: 0.4375rem;
+    background-color: #fff;
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(1) translate(-50%, -50%);
+  }
+`;
+
+export const RadioWrap = styled.label`
+  cursor: pointer;
+  margin-bottom: 0;
+
+  ${({ checked }) =>
+    checked &&
+    css`
+      ${ThemeImage}:after {
+        border: 0.125rem solid ${props => props.theme.Orange};
+      }
+
+      ${RadioCircle} {
+        background-color: ${props => props.theme.CoreNormal};
+        border-color: ${props => props.theme.CoreNormal};
+        &:after {
+          opacity: 1;
+          transition: all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+        }
+      }
+    `}
 `;
 
 export const SystemText = styled.span`

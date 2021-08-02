@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Radio } from 'antd';
 import { useCoreStores } from 'teespace-core';
 import ContentTitle from './ContentTitle';
 import { isDarkMode } from '../../utils/GeneralUtil';
@@ -14,6 +13,9 @@ import {
   ThemeImage,
   ThemeThumb,
   SystemText,
+  RadioWrap,
+  RadioBox,
+  RadioCircle,
 } from '../../styles/usersettings/ContentThemeStyle';
 
 const ContentTheme = () => {
@@ -40,6 +42,30 @@ const ContentTheme = () => {
     setValue(targetValue);
   };
 
+  const ThemeRadio = ({ imgSrc, RadioValue, text }) => {
+    const checked = value === RadioValue;
+
+    return (
+      <RadioWrap htmlFor={RadioValue} checked={checked}>
+        <ThemeImage>
+          <ThemeThumb alt={`${RadioValue}Theme`} src={imgSrc} />
+        </ThemeImage>
+        <RadioBox>
+          <input
+            id={RadioValue}
+            type="radio"
+            name="theme"
+            value={RadioValue}
+            checked={checked}
+            readOnly
+          />
+          <RadioCircle />
+          <span>{text}</span>
+        </RadioBox>
+      </RadioWrap>
+    );
+  };
+
   return (
     <>
       <ContentTitle
@@ -48,29 +74,30 @@ const ContentTheme = () => {
         divider={false}
       />
       <Wrapper>
-        <Radio.Group onChange={handleChange} value={value}>
-          <ThemeList>
-            <ThemeItem>
-              <ThemeImage>
-                <ThemeThumb alt="systemTheme" src={SystemTheme} />
-              </ThemeImage>
-              <Radio value="system">{t('CM_SETTING_09')}</Radio>
-              <SystemText>{t('CM_SETTING_10')}</SystemText>
-            </ThemeItem>
-            <ThemeItem>
-              <ThemeImage>
-                <ThemeThumb alt="lightTheme" src={LightTheme} />
-              </ThemeImage>
-              <Radio value="white">{t('CM_SETTING_11')}</Radio>
-            </ThemeItem>
-            <ThemeItem>
-              <ThemeImage>
-                <ThemeThumb alt="darkTheme" src={DarkTheme} />
-              </ThemeImage>
-              <Radio value="dark">{t('CM_SETTING_12')}</Radio>
-            </ThemeItem>
-          </ThemeList>
-        </Radio.Group>
+        <ThemeList onChange={handleChange}>
+          <ThemeItem>
+            <ThemeRadio
+              imgSrc={SystemTheme}
+              RadioValue="system"
+              text={t('CM_SETTING_09')}
+            />
+            <SystemText>{t('CM_SETTING_10')}</SystemText>
+          </ThemeItem>
+          <ThemeItem>
+            <ThemeRadio
+              imgSrc={LightTheme}
+              RadioValue="white"
+              text={t('CM_SETTING_11')}
+            />
+          </ThemeItem>
+          <ThemeItem>
+            <ThemeRadio
+              imgSrc={DarkTheme}
+              RadioValue="dark"
+              text={t('CM_SETTING_12')}
+            />
+          </ThemeItem>
+        </ThemeList>
       </Wrapper>
     </>
   );
