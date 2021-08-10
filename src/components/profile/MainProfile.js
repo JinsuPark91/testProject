@@ -56,13 +56,8 @@ const MainProfile = observer(({ userId = null }) => {
   const history = useHistory();
   const { t } = useTranslation();
 
-  const {
-    userStore,
-    friendStore,
-    authStore,
-    roomStore,
-    configStore,
-  } = useCoreStores();
+  const { userStore, friendStore, authStore, roomStore, configStore } =
+    useCoreStores();
   const themeContext = useContext(ThemeContext);
   const { uiStore, historyStore } = useStores();
   const [isEditMode, setEditMode] = useState(false);
@@ -78,12 +73,10 @@ const MainProfile = observer(({ userId = null }) => {
   const [localBackgroundPhoto, setLocalBackgroundPhoto] = useState(undefined);
   const [localProfilePhoto, setLocalProfilePhoto] = useState(undefined);
   // 프로필 이미지 변경시 파일 객체
-  const [changedProfilePhotoFile, setChangedProfilePhotoFile] = useState(
-    undefined,
-  );
-  const [changedBackgroundPhotoFile, setChangedBackgroundPhotoFile] = useState(
-    undefined,
-  );
+  const [changedProfilePhotoFile, setChangedProfilePhotoFile] =
+    useState(undefined);
+  const [changedBackgroundPhotoFile, setChangedBackgroundPhotoFile] =
+    useState(undefined);
 
   const isMyId = () => userId === userStore.myProfile.id;
   const profile = isMyId()
@@ -281,13 +274,11 @@ const MainProfile = observer(({ userId = null }) => {
         buttons: [
           {
             type: 'solid',
-            shape: 'round',
             text: t('CM_LEAVE'),
             onClick: handleExit,
           },
           {
             type: 'outlined',
-            shape: 'round',
             text: t('CM_CANCEL'),
             onClick: () => {
               uiStore.closeMessage();
@@ -498,7 +489,7 @@ const MainProfile = observer(({ userId = null }) => {
                     }
                   >
                     <CameraBox>
-                      <CameraIcon width="1.88" height="1.88" color="#fff" />
+                      <CameraIcon width="1.88" height="1.88" />
                     </CameraBox>
                   </Dropdown>
                 </ImageChange>

@@ -395,6 +395,7 @@ export const UserStatusMsg = styled.p`
   font-size: 0.88rem;
   line-height: 1.25rem;
   color: #ffffff;
+  color: #ffffff;
   letter-spacing: 0;
   text-align: center;
 `;
@@ -456,8 +457,15 @@ export const ImageChange = styled.div`
 
 export const CameraBox = styled.span`
   line-height: 0;
+  color: rgba(255, 255, 255, 0.5);
   z-index: 5;
   cursor: pointer;
+  &:hover {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  &.ant-dropdown-open {
+    color: #fff;
+  }
 `;
 
 export const ButtonCancel = styled(Button)`
@@ -469,5 +477,5 @@ export const ButtonCancel = styled(Button)`
 export const StatusSelectorWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.875rem;
 `;
