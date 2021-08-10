@@ -232,6 +232,12 @@ const MainPage = () => {
       });
     });
 
+    const openToastHandler = EventBus.on('Platform:openToast', ({ text }) => {
+      uiStore.openToast({
+        text,
+      });
+    });
+
     WWMS.addHandler('SYSTEM', 'platform_wwms', handleSystemMessage);
 
     return () => {
@@ -244,6 +250,7 @@ const MainPage = () => {
       EventBus.off('Platform:banMembers', roomSettingHandler);
       EventBus.off('Platform:directMessage', directMessageHandler);
       EventBus.off('Platform:updateURL', updateURLHandler);
+      EventBus.off('Platform:openToast', openToastHandler);
       WWMS.removeHandler('SYSTEM', 'platform_wwms');
     };
   }, []);

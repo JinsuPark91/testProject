@@ -255,6 +255,8 @@ const RoomList = React.memo(() => {
     <Wrapper>
       <Observer>
         {() => {
+          if (!store.visible.roomMemberModal) return null;
+
           return (
             <RoomInquiryModal
               roomId={store.targetRoom?.id}

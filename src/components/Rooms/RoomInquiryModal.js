@@ -14,6 +14,7 @@ import {
   ProfileInfoModal,
   ProfileModal,
   Tooltip,
+  EventBus,
 } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import Photos from '../Photos';
@@ -279,12 +280,29 @@ function RoomInquiryModal({
 
   useEffect(() => {
     if (roomId && visible) {
-      const myUserId = userStore.myProfile.id;
       roomStore
-        .fetchRoomMemberList({ myUserId, roomId })
+        .fetchRoomMemberList({ roomId })
         .then(roomMembers => setMembers(roomMembers));
     }
   }, [roomId, visible]);
+
+  useEffect(() => {
+    const updateMemberHandler = EventBus.on(
+      'Platform:updateRoomMember',
+      props => {
+        const targetRoomId = props?.roomId || roomId;
+        if (roomId) {
+          roomStore
+            .fetchRoomMemberList({ roomId: targetRoomId })
+            .then(roomMembers => setMembers(roomMembers));
+        }
+      },
+    );
+    return () => {
+      EventBus.off('Platform:updateRoomMember', updateMemberHandler);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomId]);
 
   const updateRoomSetting = async options => {
     try {
@@ -429,9 +447,15 @@ function RoomInquiryModal({
           </GroupTitle>
         )}
       </Observer>
-      <GroupNumber>
-        {t('CM_PPL_NUMBER', { num: roomInfo?.userCount })}
-      </GroupNumber>
+      <Observer>
+        {() => {
+          return (
+            <GroupNumber>
+              {t('CM_PPL_NUMBER', { num: roomInfo?.userCount })}
+            </GroupNumber>
+          );
+        }}
+      </Observer>
       <SettingBox>
         {isEditMode ? (
           <>
@@ -547,7 +571,6 @@ function RoomInquiryModal({
         style={{ top, left, margin: 'unset' }}
         visible={visible}
         width={width}
-        footer={null}
         onCancel={handleCancel}
         topButton
         type="room"
@@ -555,7 +578,6 @@ function RoomInquiryModal({
         subContent={subContent}
         footer={getFooter()}
       />
-
       <RoomAddMemberModal
         visible={userSelectDialogVisible}
         roomId={roomInfo?.id}
