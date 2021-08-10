@@ -17,13 +17,8 @@ import { isDarkMode } from '../utils/GeneralUtil';
 
 const NewWindowPage = () => {
   const { resourceId: roomId, mainApp } = useParams();
-  const {
-    roomStore,
-    userStore,
-    spaceStore,
-    friendStore,
-    themeStore,
-  } = useCoreStores();
+  const { roomStore, userStore, spaceStore, friendStore, themeStore } =
+    useCoreStores();
   const { i18n } = useTranslation();
   const { uiStore } = useStores();
   const history = useHistory();
@@ -178,7 +173,7 @@ const Header = ({ roomId, onSearch }) => {
   const getModal = () => {
     const info = getRoom();
     if (!info) return null;
-    if (info.isMyRoom || info.userCount === 2) {
+    if (info.isMyRoom || info.isDirectMsg) {
       const userIds = info.isMyRoom
         ? userStore.myProfile.id
         : info.memberIdListString
@@ -202,15 +197,18 @@ const Header = ({ roomId, onSearch }) => {
         />
       );
     }
+
     return (
-      <RoomInquiryModal
-        roomId={roomId}
-        visible={modalVisible}
-        onCancel={handleModalClose}
-        width="17.5rem"
-        top="3.5rem"
-        left="0"
-      />
+      modalVisible && (
+        <RoomInquiryModal
+          roomId={roomId}
+          visible={modalVisible}
+          onCancel={handleModalClose}
+          width="17.5rem"
+          top="3.5rem"
+          left="0"
+        />
+      )
     );
   };
 

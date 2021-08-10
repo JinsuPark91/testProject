@@ -200,6 +200,7 @@ const Header = () => {
   const {
     roomStore,
     userStore,
+    authStore,
     configStore,
     themeStore,
     notificationStore,
@@ -430,7 +431,7 @@ const Header = () => {
         />
       );
     }
-    if (findRoom()?.userCount === 2) {
+    if (isDMRoom()) {
       const dmUserId = findRoom()
         .memberIdListString.split(',')
         .find(userId => userId !== userStore.myProfile.id);
@@ -453,15 +454,18 @@ const Header = () => {
         />
       );
     }
+
     return (
-      <RoomInquiryModal
-        roomId={findRoom()?.id}
-        visible={store.visible.roomProfileModal}
-        onCancel={handleCancelRoomMemeberModal}
-        width="17.5rem"
-        top="3.5rem"
-        left={getLeftDistance(0.19)}
-      />
+      store.visible.roomProfileModal && (
+        <RoomInquiryModal
+          roomId={findRoom()?.id}
+          visible={store.visible.roomProfileModal}
+          onCancel={handleCancelRoomMemeberModal}
+          width="17.5rem"
+          top="3.5rem"
+          left={getLeftDistance(0.19)}
+        />
+      )
     );
   };
 

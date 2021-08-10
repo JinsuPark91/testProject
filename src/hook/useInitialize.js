@@ -7,13 +7,8 @@ import { isDarkMode } from '../utils/GeneralUtil';
 import { handleProfileMenuClick } from '../utils/ProfileUtil';
 
 const useInitialize = () => {
-  const {
-    spaceStore,
-    roomStore,
-    userStore,
-    friendStore,
-    themeStore,
-  } = useCoreStores();
+  const { spaceStore, roomStore, userStore, friendStore, themeStore } =
+    useCoreStores();
   const { uiStore, historyStore } = useStores();
   const [isLoaded, setIsLoaded] = useState(false);
 
