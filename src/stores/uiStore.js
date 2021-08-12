@@ -158,6 +158,7 @@ const uiStore = observable({
   // windows 관련
   talkWindowMap: new Map(),
   meetingWindowMap: new Map(),
+  floatBtnVisible: false,
 
   _getMap(type) {
     switch (type) {
@@ -216,6 +217,14 @@ const uiStore = observable({
       const { id: windowId } = window;
       this.closeWindow(type, windowId);
     });
+  },
+
+  get isFloatBtnVisible() {
+    return this.floatBtnVisible;
+  },
+
+  setFloatBtnVisible(bool) {
+    this.floatBtnVisible = bool;
   },
 
   // profileEmoticon 용 store
