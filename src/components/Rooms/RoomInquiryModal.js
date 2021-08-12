@@ -291,7 +291,7 @@ function RoomInquiryModal({
       'Platform:updateRoomMember',
       props => {
         const targetRoomId = props?.roomId || roomId;
-        if (roomId) {
+        if (targetRoomId) {
           roomStore
             .fetchRoomMemberList({ roomId: targetRoomId })
             .then(roomMembers => setMembers(roomMembers));
