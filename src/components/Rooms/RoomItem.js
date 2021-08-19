@@ -320,7 +320,7 @@ const RoomItemContent = React.memo(
           </OpenChatIconBox>
         );
 
-      if (isMyRoom) return <RoomTypeIcon>나</RoomTypeIcon>;
+      if (isMyRoom) return <RoomTypeIcon>{t('CM_FRIENDLIST_04')}</RoomTypeIcon>;
       if (roomInfo.isBotRoom)
         return <RoomTypeIcon>{t('CM_NOTI')}</RoomTypeIcon>;
 

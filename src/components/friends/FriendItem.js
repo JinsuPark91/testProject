@@ -51,6 +51,7 @@ const ProfilePhoto = React.memo(
 );
 
 const TextComponent = React.memo(({ displayName, fullCompanyJob, mode }) => {
+  const { t } = useTranslation();
   const fullDisplayName = (() => {
     switch (mode) {
       case 'me':
@@ -65,7 +66,7 @@ const TextComponent = React.memo(({ displayName, fullCompanyJob, mode }) => {
 
   return (
     <TextComponentBox>
-      {mode === 'me' && <MeWrapper>나</MeWrapper>}
+      {mode === 'me' && <MeWrapper>{t('CM_FRIENDLIST_04')}</MeWrapper>}
       <TitleForName>{fullDisplayName}</TitleForName>
     </TextComponentBox>
   );
@@ -215,21 +216,15 @@ const FriendItem = observer(
     } = friendInfo;
     const fullCompanyJob = friendInfo.getFullCompanyJob(1);
     const history = useHistory();
-    const {
-      friendStore,
-      userStore,
-      roomStore,
-      componentStore,
-    } = useCoreStores();
+    const { friendStore, userStore, roomStore, componentStore } =
+      useCoreStores();
     const FileDndDialog = componentStore.get('Talk:FileDndDialog');
     const [isDndDialogVisible, setDndDialogVisible] = useState(false);
     const [dndTargetFiles, setDndTargetFiles] = useState([]);
 
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    const [
-      visibleRemoveFriendMessage,
-      setVisibleRemoveFriendMessage,
-    ] = useState(false);
+    const [visibleRemoveFriendMessage, setVisibleRemoveFriendMessage] =
+      useState(false);
 
     const themeContext = useContext(ThemeContext);
 

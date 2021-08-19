@@ -522,6 +522,7 @@
   "CM_STATUS_MEETING": "meeting",
   "CM_STATUS_MISSED": "missed",
   "CM_SERVICE_ALARM_BUTTON_10": "No longer accessible.",
+  "CM_FRIENDLIST_04": "Me",
   "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_1": "Enter your password.",
   "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_2": "Enter your current password correctly.",
   "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_3": "Your password must be between 9 and 20 characters long.",
