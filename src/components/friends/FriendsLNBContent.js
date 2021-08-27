@@ -18,14 +18,8 @@ const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
     setSelectedId(value);
     setIsInfoModalVisible(true);
   }, []);
-
-  const handleOpenToast = useCallback(value => {
-    uiStore.openToast({
-      text: value,
-      onClose: () => {
-        uiStore.closeToast();
-      },
-    });
+  const handleCloseInfoModal = useCallback(() => {
+    setIsInfoModalVisible(false);
   }, []);
 
   return (
@@ -34,7 +28,6 @@ const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
         searchKeyword={searchKeyword}
         handleShadow={handleShadow}
         handleOpenInfoModal={handleOpenInfoModal}
-        handleOpenToast={handleOpenToast}
       />
       {isInfoModalVisible && (
         <ProfileInfoModal
@@ -49,7 +42,7 @@ const FriendsLNBContent = ({ searchKeyword, handleShadow }) => {
               handler: null,
             });
           }}
-          onClose={() => setIsInfoModalVisible(false)}
+          onClose={handleCloseInfoModal}
           position={{ left: getLeftDistance() }}
         />
       )}

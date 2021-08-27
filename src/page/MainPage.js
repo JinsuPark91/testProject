@@ -90,14 +90,18 @@ const MainPage = () => {
     const resId = uiStore.resourceId;
 
     switch (message.NOTI_TYPE) {
+      // 유저 탈퇴
+      case 'deleteFriend': {
+        if (resType === 'f' && resId === message.USER_ID)
+          history.push(`/f/${myUserId}/profile`);
+        break;
+      }
       // 강퇴 또는 나가기
       case 'exitRoom':
       case 'deleteRoom': {
         const myRoomId = roomStore.getDMRoom(myUserId, myUserId)?.roomInfo?.id;
-
-        if (resType === 's' && resId === message.SPACE_ID) {
+        if (resType === 's' && resId === message.SPACE_ID)
           history.push(`/s/${myRoomId}/talk`);
-        }
         break;
       }
       default:
