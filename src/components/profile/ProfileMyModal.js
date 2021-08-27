@@ -69,10 +69,8 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
 
   const [isRoomDialogVisible, setIsRoomDialogVisible] = useState(false);
   const [isGroupEditModalVisible, setIsGroupEditModalVisible] = useState(false);
-  const [
-    isNewSpaceErrorMessagVisible,
-    setIsNewSpaceErrorMessageVisible,
-  ] = useState(false);
+  const [isNewSpaceErrorMessagVisible, setIsNewSpaceErrorMessageVisible] =
+    useState(false);
 
   const { myProfile } = userStore;
   const { isGuest } = myProfile;
@@ -108,11 +106,12 @@ const ProfileMyModal = ({ onCancel, visible = false, created = false }) => {
   }, [onCancel]);
 
   const handleOpenInviteModal = useCallback(
-    (mailAddr = []) => () => {
-      setInvitePeople(mailAddr);
-      setIsInviteDialogOpen(true);
-      logEvent('threedot', 'clickInviteMemberBtn');
-    },
+    (mailAddr = []) =>
+      () => {
+        setInvitePeople(mailAddr);
+        setIsInviteDialogOpen(true);
+        logEvent('threedot', 'clickInviteMemberBtn');
+      },
     [],
   );
   const handleCancelInviteModal = useCallback(() => {

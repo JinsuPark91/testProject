@@ -78,6 +78,36 @@ const useInitialize = () => {
     );
   };
 
+  const handleLastHistory = () => {
+    const PROFILE = 'profile';
+    const MAIL = 'mail';
+    const { lastHistory } = historyStore;
+
+    // 존재하는 유저인지 확인
+    if (lastHistory.roomId?.includes(PROFILE)) {
+      const userId = lastHistory.lastUrl?.split('/')[2];
+      const found = friendStore.friendInfoList.find(
+        elem => elem.friendId === userId,
+      );
+
+      if (!found) history.push(`/f/${myUserId}/profile`);
+      else history.push(lastHistory.lastUrl);
+    }
+    // 메일의 경우 아직 처리할 부분 없음
+    else if (lastHistory.roomId?.includes(MAIL)) {
+      history.push(lastHistory.lastUrl);
+    }
+    // 입장 가능한 룸인지 확인
+    else {
+      const found = roomStore
+        .getRoomArray(true)
+        .find(elem => elem.id === lastHistory.roomId);
+
+      if (!found) history.push(`/f/${myUserId}/profile`);
+      else history.push(lastHistory.lastUrl);
+    }
+  };
+
   const handleError = () => {
     if (process.env.REACT_APP_ENV === 'local') {
       setTimeout(() => {
@@ -146,9 +176,7 @@ const useInitialize = () => {
           history.push('/works');
         }
         // NOTE : 마지막 접속 URL 로 Redirect 시킨다.
-        else if (historyStore.lastHistory) {
-          history.push(historyStore.lastHistory.lastUrl);
-        }
+        else if (historyStore.lastHistory) handleLastHistory();
       })
       .then(() => {
         setIsLoaded(true);
@@ -161,18 +189,14 @@ const useInitialize = () => {
     // NOTE : RECONNECT 임시 처리
     WWMS.setOnReconnect(() => {
       Promise.all([
-        // 룸을 불러오자
         roomStore.fetchRoomList(),
-        // 그룹 LNB reload
         spaceStore.fetchSpaces({
           userId: myUserId,
           isLocal: process.env.REACT_APP_ENV === 'local',
         }),
-        // 프렌드 리스트 reload
         friendStore.fetchFriends(),
       ])
         .then(() => {
-          // talk init (fetch room 이후.)
           // NOTE: 이벤트명은 core에서 불릴 것 같지만, 플랫폼에서 불러줌
           EventBus.dispatch('Platform:reconnectWebSocket');
         })

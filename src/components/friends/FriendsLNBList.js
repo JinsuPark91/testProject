@@ -38,14 +38,13 @@ const FriendsLNBList = ({
   searchKeyword,
   handleShadow,
   handleOpenInfoModal,
-  handleOpenToast,
 }) => {
   const { t } = useTranslation();
   const { uiStore } = useStores();
   const { userStore, friendStore } = useCoreStores();
 
   const store = useLocalStore(() => ({
-    friendActiveId: '',
+    friendActiveId: uiStore.resourceId,
     favFriendActiveId: '',
   }));
 
@@ -90,7 +89,6 @@ const FriendsLNBList = ({
               activeFriendId === friendInfo.friendId
             }
             handleOpenInfoModal={handleOpenInfoModal}
-            handleOpenToast={handleOpenToast}
           />
         ))}
       </>
