@@ -204,7 +204,6 @@ const FriendItem = observer(
     onClick,
     friendInfo,
     handleOpenInfoModal,
-    handleOpenToast,
   }) => {
     const { t } = useTranslation();
     const {
@@ -357,7 +356,9 @@ const FriendItem = observer(
       } catch (error) {
         console.log(error);
       }
-      handleOpenToast(t('CM_BOOKMARK_03'));
+      uiStore.openToast({
+        text: t('CM_BOOKMARK_03'),
+      });
     };
 
     const handleCancelBookmark = async ({ domEvent: e }) => {
@@ -367,7 +368,9 @@ const FriendItem = observer(
         friendId: itemId,
         isFav: false,
       });
-      handleOpenToast(t('CM_BOOKMARK_02'));
+      uiStore.openToast({
+        text: t('CM_BOOKMARK_02'),
+      });
     };
 
     const handleMoveItem = targetId => {

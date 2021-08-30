@@ -27,20 +27,23 @@ const AddButton = React.memo(({ onOpen }) => {
 });
 
 const AddFriendsButton = () => {
-  const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
+  const [addFriendModalVisible, setAddFriendModalVisible] = useState(false);
 
-  const handleOpenFriendsModal = useCallback(() => {
-    setIsAddFriendModalVisible(true);
+  const handleOpen = useCallback(() => {
+    setAddFriendModalVisible(true);
     logEvent('main', 'clickAddFriendsBtn');
+  }, []);
+  const handleClose = useCallback(() => {
+    setAddFriendModalVisible(false);
   }, []);
 
   return (
     <>
-      <AddButton onOpen={handleOpenFriendsModal} />
-      {isAddFriendModalVisible && (
+      <AddButton onOpen={handleOpen} />
+      {addFriendModalVisible && (
         <AddFriendsBySearch
           isViewMode={false}
-          onCancelAddFriends={() => setIsAddFriendModalVisible(false)}
+          onCancelAddFriends={handleClose}
           isTopOrg={false}
           isMeVisible={false}
         />
