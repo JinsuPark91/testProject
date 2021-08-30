@@ -185,7 +185,6 @@ const useInitialize = () => {
           await roomStore.fetchOpenRoomList(myUserId);
           const openRoom = roomStore.getOpenRoomMap().get(resourceId);
           if (openRoom) {
-            console.log('오픈룸이 존재합니다, 오픈룸관련 modal 띄웁니다.');
             // 오픈룸 입장관련 함수 호출
             openRoomModal({ openRoom, history });
           } else {

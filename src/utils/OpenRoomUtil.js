@@ -125,22 +125,15 @@ export default function openRoomModal({ openRoom, history }) {
     console.log('이미 입장요청 했습니다.');
   } else if (openRoom.isJoined) {
     // 이미 입장한 방이면 바로 보내기
-    console.log('이미 입장한 방입니다. 오픈룸으로 바로 이동합니다.');
     history.push(`/s/${openRoom.id}/talk`);
   } else if (openRoom.isBanned) {
-    console.log(
-      '참여제한이 걸려있는 방입니다. 룸 관리자의 참여 제한 해제가 필요합니다.',
-    );
+    // 참여제한 된 방
     openFailRoomEnter();
   } else if (openRoom.isJoinable) {
     // 바로 입장 가능
-    console.log('임장가능한 방입니다. 룸에 입장하시겠습니까?');
     openEnterModal();
   } else {
     // 요청 후 입장 가능
-    console.log(
-      '입장요청이 필요한 방입니다. 룸관리자에게 입장요청 하겠습니까?',
-    );
     openRequestModal();
   }
 }
