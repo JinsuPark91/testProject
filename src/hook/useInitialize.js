@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useCoreStores, EventBus, AlarmSetting, WWMS } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
 import { useStores } from '../stores';
 import { isDarkMode } from '../utils/GeneralUtil';
 import { handleProfileMenuClick } from '../utils/ProfileUtil';
+import openRoomModal from '../utils/OpenRoomUtil';
 
 const useInitialize = () => {
   const { spaceStore, roomStore, userStore, friendStore, themeStore } =
@@ -129,6 +131,7 @@ const useInitialize = () => {
         else if (isDarkMode()) themeStore.setTheme('dark');
 
         // 스페이스 화면에서 1:1 Talk나 1:1 Meeting을 선택한 경우
+
         if (resourceType === 'f' && profileAction) {
           switch (profileAction) {
             case 'talk':
@@ -148,6 +151,19 @@ const useInitialize = () => {
         // NOTE : 마지막 접속 URL 로 Redirect 시킨다.
         else if (historyStore.lastHistory) {
           history.push(historyStore.lastHistory.lastUrl);
+        }
+
+        if (resourceType === 's' && resourceId) {
+          await roomStore.fetchOpenRoomList(myUserId);
+          const openRoom = roomStore.getOpenRoomMap().get(resourceId);
+          if (openRoom) {
+            console.log('오픈룸이 존재합니다, 오픈룸관련 modal 띄웁니다.');
+            // 오픈룸 입장관련 함수 호출
+            openRoomModal({ openRoom, history });
+          } else {
+            console.log('존재하지 않음!');
+            // 존재하지 않음 페이지로 보내기
+          }
         }
       })
       .then(() => {
