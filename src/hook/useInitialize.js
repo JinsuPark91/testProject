@@ -160,8 +160,9 @@ const useInitialize = () => {
           themeStore.setTheme(platformTheme);
         else if (isDarkMode()) themeStore.setTheme('dark');
 
-        // 스페이스 화면에서 1:1 Talk나 1:1 Meeting을 선택한 경우
+        let needToUseLastHistory = false;
 
+        // 스페이스 화면에서 1:1 Talk나 1:1 Meeting을 선택한 경우
         if (resourceType === 'f' && profileAction) {
           switch (profileAction) {
             case 'talk':
@@ -179,18 +180,31 @@ const useInitialize = () => {
           history.push('/works');
         }
         // NOTE : 마지막 접속 URL 로 Redirect 시킨다.
-        else if (historyStore.lastHistory) handleLastHistory();
+        else if (historyStore.lastHistory) needToUseLastHistory = true;
 
         if (resourceType === 's' && resourceId) {
           await roomStore.fetchOpenRoomList(myUserId);
           const openRoom = roomStore.getOpenRoomMap().get(resourceId);
           if (openRoom) {
             // 오픈룸 입장관련 함수 호출
+            if (needToUseLastHistory) handleLastHistory();
             openRoomModal({ openRoom, history });
-          } else {
-            console.log('존재하지 않음!');
-            // 존재하지 않음 페이지로 보내기
+          } else if (!roomStore.getRoom(resourceId)) {
+            needToUseLastHistory = false;
+
+            let pageName = '';
+            if (mainURL === 'teespace.com') {
+              pageName = 'invalid';
+              window.location.href = `${window.location.protocol}//${mainURL}/domain/${pageName}`;
+            } else if (mainURL === 'tmax.wapl.ai') {
+              pageName = 'tmax';
+              window.location.href = `${window.location.protocol}//wapl.ai/domain/${pageName}`;
+            } else {
+              window.location.href = `${window.location.protocol}//${mainURL}/domain/${pageName}`;
+            }
           }
+        } else if (needToUseLastHistory) {
+          handleLastHistory();
         }
       })
       .then(() => {
