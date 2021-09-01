@@ -9,6 +9,8 @@ export default function openRoomModal({ openRoom, history }) {
   const { uiStore } = rootStore;
   const openFailRoomEnter = () => {
     uiStore.openMessage({
+      roomInfo: openRoom,
+      isOpenRoom: true,
       title: i18n.t('CM_OPEN_ROOM_HOME_16'),
       subTitle: i18n.t('CM_OPEN_ROOM_HOME_17'),
       buttons: [
@@ -64,6 +66,8 @@ export default function openRoomModal({ openRoom, history }) {
   const openEnterModal = () => {
     uiStore.openMessage({
       title: openRoom.name,
+      roomInfo: openRoom,
+      isOpenRoom: true,
       subTitle: i18n.t('CM_OPEN_ROOM_HOME_06'),
       type: 'custom',
       customBadge: (
@@ -94,7 +98,9 @@ export default function openRoomModal({ openRoom, history }) {
   const openRequestModal = () => {
     uiStore.openMessage({
       title: openRoom.name,
-      subTitle: i18n.t('TEST_REQUEST'),
+      roomInfo: openRoom,
+      isOpenRoom: true,
+      subTitle: i18n.t('CM_OPEN_ROOM_HOME_13'),
       type: 'custom',
       customBadge: (
         <CustomBadge>
@@ -107,7 +113,7 @@ export default function openRoomModal({ openRoom, history }) {
       buttons: [
         {
           type: 'solid',
-          text: i18n.t('TEST_REQUEST_OK'),
+          text: i18n.t('CM_OPEN_ROOM_HOME_14'),
           onClick: handleRequestOK,
         },
         {

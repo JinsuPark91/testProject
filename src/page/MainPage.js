@@ -227,9 +227,8 @@ const MainPage = () => {
             text: t('CM_LOGIN_POLICY_03'),
             onClick: () => {
               uiStore.closeMessage();
-              window.location.href = `${
-                window.location.protocol
-              }//${domain}.${getMainURL()}`;
+              window.location.href = `${window.location.protocol
+                }//${domain}.${getMainURL()}`;
             },
           },
         ],
@@ -382,6 +381,8 @@ const MainPage = () => {
           <Message
             visible={uiStore.isMessageVisible}
             type={uiStore.messageType}
+            roomInfo={uiStore.roomInfo}
+            isOpenRoom={uiStore.isOpenRoom}
             title={uiStore.messageTitle}
             subtitle={uiStore.messageSubTitle}
             btns={uiStore.messageButton}

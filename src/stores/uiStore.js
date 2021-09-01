@@ -44,7 +44,7 @@ const uiStore = observable({
   toastTimeout: 1000,
   toastSize: 'medium',
   toastLinks: [],
-  toastOnClose: () => {},
+  toastOnClose: () => { },
   openToast({
     text = '',
     timeout = 1000,
@@ -68,7 +68,7 @@ const uiStore = observable({
       this.toastTimeout = 1000;
       this.toastSize = 'medium';
       this.toastLinks = [];
-      this.toastOnClose = () => {};
+      this.toastOnClose = () => { };
     });
   },
   isMessageVisible: false,
@@ -81,8 +81,10 @@ const uiStore = observable({
     type = '',
     title = '',
     subTitle = '',
+    roomInfo = {},
     buttons = [],
     customBadge = null,
+    isOpenRoom = false,
   }) {
     transaction(() => {
       this.messageType = type;
@@ -91,6 +93,8 @@ const uiStore = observable({
       this.messageButton = buttons;
       this.messageCustomBadge = customBadge;
       this.isMessageVisible = true;
+      this.roomInfo = roomInfo;
+      this.isOpenRoom = isOpenRoom;
     });
   },
   closeMessage() {
@@ -101,6 +105,8 @@ const uiStore = observable({
       this.messageSubTitle = '';
       this.messageButton = [];
       this.messageCustomBadge = null;
+      this.roomInfo = {};
+      this.isOpenRoom = null;
     });
   },
 
