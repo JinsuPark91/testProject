@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { EventBus, useCoreStores } from 'teespace-core';
+import { EventBus, useCoreStores, Message } from 'teespace-core';
 import { useTranslation } from 'react-i18next';
 import { Observer } from 'mobx-react';
 import styled from 'styled-components';
@@ -42,6 +42,7 @@ const MobileMainPage = () => {
       userStore.fetchRoomUserProfileList({}),
       friendStore.fetchFriends(),
       roomStore.fetchRoomList(),
+      roomStore.fetchOpenRoomList(),
       userStore.getMyDomainSetting(),
     ]).then(async () => {
       EventBus.dispatch('Platform:initLNB');
@@ -78,6 +79,20 @@ const MobileMainPage = () => {
           if (uiStore.isFooterVisible()) return <MobileFooter />;
           return null;
         }}
+      </Observer>
+      <Observer>
+        {() => (
+          <Message
+            visible={uiStore.isMessageVisible}
+            type={uiStore.messageType}
+            roomInfo={uiStore.roomInfo}
+            isOpenRoom={uiStore.isOpenRoom}
+            title={uiStore.messageTitle}
+            subtitle={uiStore.messageSubTitle}
+            btns={uiStore.messageButton}
+            customBadge={uiStore.messageCustomBadge}
+          />
+        )}
       </Observer>
     </Wrapper>
   );
