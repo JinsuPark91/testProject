@@ -193,15 +193,12 @@ const useInitialize = () => {
             needToUseLastHistory = false;
 
             let pageName = '';
-            if (conURL === 'teespace.com') {
+            if (mainURL === 'teespace.com') {
               pageName = 'invalid';
-              window.location.href = `${window.location.protocol}//${conURL}/domain/${pageName}`;
-            } else if (conURL === 'tmax.wapl.ai') {
+            } else if (mainURL === 'wapl.ai') {
               pageName = 'tmax';
-              window.location.href = `${window.location.protocol}//wapl.ai/domain/${pageName}`;
-            } else {
-              window.location.href = `${window.location.protocol}//${mainURL}/domain/${pageName}`;
             }
+            window.location.href = `${window.location.protocol}//${mainURL}/domain/${pageName}`;
           }
         } else if (needToUseLastHistory) {
           handleLastHistory();
