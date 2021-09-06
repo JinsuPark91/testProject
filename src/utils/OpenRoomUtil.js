@@ -5,7 +5,7 @@ import { i18n } from '../i18n';
 import Photos from '../components/Photos';
 import { rootStore } from '../stores';
 
-export default function openRoomModal({ openRoom, history }) {
+export default function openRoomModal({ openRoom, history, isMobile = false }) {
   const { uiStore } = rootStore;
   const openFailRoomEnter = () => {
     uiStore.openMessage({
