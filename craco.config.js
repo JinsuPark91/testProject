@@ -1,5 +1,6 @@
 const path = require('path');
 const CracoLessPlugin = require('craco-less');
+const TerserPlugin = require('terser-webpack-plugin');
 const TalkLinkPlugin = require('teespace-talk-app/link');
 
 // TalkLinkPlugin(externalPublicPath = 'public')
@@ -13,6 +14,14 @@ const cracoWebpackConfig = {
     'teespace-core': path.resolve(__dirname, 'node_modules/teespace-core'),
     antd: path.resolve(__dirname, 'node_modules/antd'),
     'styled-components': require.resolve('styled-components'),
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        parallel: true,
+      }),
+    ],
   },
 };
 
