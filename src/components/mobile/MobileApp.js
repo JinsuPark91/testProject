@@ -35,7 +35,6 @@ const hydrate = create();
 const MobileApp = () => {
   const [isHydrating, setIsHydrating] = useState(false);
   const { userStore } = useCoreStores();
-  const isLocal = process.env.REACT_APP_ENV === 'local';
 
   useTalkApp();
   // initialize apps
@@ -59,6 +58,7 @@ const MobileApp = () => {
   }, []);
 
   if (!isHydrating) return <></>;
+
   return (
     <DndProvider backend={HTML5Backend}>
       <CoreInitializeTranslation />
@@ -111,5 +111,4 @@ const MobileApp = () => {
   );
 };
 
-// room|create|select|talk|note|calendar
 export default MobileApp;

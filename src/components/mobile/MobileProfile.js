@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import { Dropdown, Menu } from 'antd';
 import { observer } from 'mobx-react';
 import { useCoreStores } from 'teespace-core';
-import { useStores } from '../../stores';
 import { LockLineIcon, CameraIcon, ImageIcon } from '../Icons';
 import { CloseIcon } from './Icon';
 import {
@@ -50,10 +49,8 @@ import {
 const MobileProfile = observer(({ userId = null }) => {
   const { t } = useTranslation();
   const history = useHistory();
-  const { uiStore } = useStores();
   const { userStore, authStore } = useCoreStores();
   const [isEditMode, setEditMode] = useState(false);
-  const [isChange, setIsChange] = useState(false);
   const [userType, setUserType] = useState('');
 
   // NOTE. Setting state to undefined means the state is not changed
@@ -136,20 +133,16 @@ const MobileProfile = observer(({ userId = null }) => {
   };
 
   const handleChangeBackground = file => {
-    setIsChange(true);
     setLocalBackgroundPhoto(URL.createObjectURL(file));
   };
   const handleChangeDefaultBackground = () => {
-    setIsChange(true);
     setLocalBackgroundPhoto(null);
   };
 
   const handleChangePhoto = file => {
-    setIsChange(true);
     setLocalProfilePhoto(URL.createObjectURL(file));
   };
   const handleChangeDefaultPhoto = () => {
-    setIsChange(true);
     setLocalProfilePhoto(null);
   };
 
@@ -161,12 +154,10 @@ const MobileProfile = observer(({ userId = null }) => {
     });
 
     resetLocalInputData();
-    setIsChange(false);
     setEditMode(false);
   };
 
   const handleExit = () => {
-    setIsChange(false);
     setEditMode(false);
     resetLocalInputData();
   };
@@ -283,7 +274,6 @@ const MobileProfile = observer(({ userId = null }) => {
                   maxLength={20}
                   placeholder={profile?.displayName}
                   onChange={e => {
-                    setIsChange(true);
                     setNick(e);
                   }}
                   value={nick !== undefined ? nick : profile?.displayName}
@@ -315,7 +305,6 @@ const MobileProfile = observer(({ userId = null }) => {
                   {isEditMode ? (
                     <StyleInput
                       onChange={e => {
-                        setIsChange(true);
                         setCompanyNum(e.target.value);
                       }}
                       value={
@@ -337,7 +326,6 @@ const MobileProfile = observer(({ userId = null }) => {
                 {isEditMode ? (
                   <StyleInput
                     onChange={e => {
-                      setIsChange(true);
                       setPhone(e.target.value);
                     }}
                     value={phone !== undefined ? phone : profile?.phone || ``}

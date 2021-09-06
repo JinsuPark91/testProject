@@ -5,6 +5,7 @@ import roomSettingStore from './roomSettingStore';
 import historyStore from './historyStore';
 import friendUiStore from './friendUiStore';
 import handlerStore from './handlerStore';
+import mobileStore from './mobileStore';
 
 const rootStore = {
   uiStore,
@@ -12,6 +13,7 @@ const rootStore = {
   historyStore,
   friendUiStore,
   handlerStore,
+  mobileStore,
 };
 
 const useStores = () => {
