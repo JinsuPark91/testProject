@@ -176,30 +176,39 @@ export default function KsignRedirectRoute({ component: Component, ...rest }) {
     let domainName;
     let loginInfo;
 
-    if (process.env.REACT_APP_ENV === 'local') {
-      [domainName] = new URL(process.env.REACT_APP_DOMAIN_URL).hostname.split(
-        '.',
-      );
-      loginInfo = {
-        id: keycloak.tokenParsed.preferred_username,
-        deviceType: 'PC',
-        domainUrl: domainName,
-        isLocal: 'local',
-        ssoType,
-      };
-    } else {
-      [domainName] = url.split(`//`)[1].split(`.`);
-      loginInfo = {
-        deviceType: 'PC',
-        domainUrl: '',
-        ssoType,
-      };
-    }
     return (
       <Route
         {...rest}
         render={props => {
           (async () => {
+            if (keycloak.authenticated) {
+              if (process.env.REACT_APP_ENV === 'local') {
+                [domainName] = new URL(
+                  process.env.REACT_APP_DOMAIN_URL,
+                ).hostname.split('.');
+                loginInfo = {
+                  id: keycloak.tokenParsed.preferred_username,
+                  deviceType: 'PC',
+                  domainUrl: domainName,
+                  isLocal: 'local',
+                };
+              } else {
+                [domainName] = url.split(`//`)[1].split(`.`);
+                loginInfo = {
+                  deviceType: 'PC',
+                  domainUrl: '',
+                };
+              }
+            } else {
+              const isRedirectOpenRoom = props.location.state?.from.pathname;
+              keycloak.login({
+                redirectUri: isRedirectOpenRoom
+                  ? `${window.location.origin}/${isRedirectOpenRoom}`
+                  : `${window.location.origin}`,
+              });
+              return null;
+            }
+
             try {
               if (
                 authStore.user?.loginId &&
