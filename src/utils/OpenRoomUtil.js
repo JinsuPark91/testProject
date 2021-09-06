@@ -130,15 +130,17 @@ export default function openRoomModal({ openRoom, history, isMobile = false }) {
       ],
     });
   };
-
+  if (isMobile && !openRoom.isJoined) {
+    history.push(`/friend`);
+  }
   if (openRoom.isRequested) {
     console.log('이미 입장요청 했습니다.');
   } else if (openRoom.isJoined) {
     // 이미 입장한 방이면 바로 보내기
     if (isMobile) {
       history.push(`/talk/${openRoom.id}`);
-    } else { 
-      history.push(`/s/${openRoom.id}/talk`); 
+    } else {
+      history.push(`/s/${openRoom.id}/talk`);
     }
   } else if (openRoom.isBanned) {
     // 참여제한 된 방

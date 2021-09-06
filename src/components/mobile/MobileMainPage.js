@@ -14,6 +14,7 @@ import { useStores } from '../../stores';
 import MobileContent from './MobileContent';
 import MobileFooter from './MobileFooter';
 import MobileLoader from './MobileLoader';
+import openRoomModal from '../../utils/OpenRoomUtil';
 
 const MobileMainPage = () => {
   const { resourceType, resourceId } = useParams();
@@ -43,6 +44,29 @@ const MobileMainPage = () => {
           language: i18n.language,
         });
       } else i18n.changeLanguage(userStore.myDomainSetting.language);
+
+      if (resourceType === 'talk' && resourceId) {
+        await roomStore.fetchOpenRoomList(myUserId);
+        const openRoom = roomStore.getOpenRoomMap().get(resourceId);
+        if (openRoom) {
+          // 오픈룸 입장관련 함수 호출
+          openRoomModal({ openRoom, history, isMobile: true });
+        } else if (!roomStore.getRoom(resourceId)) {
+          // 잘못된 주소, 혹은 없는 room일 경우, 안내페이지로 이동
+
+          const url = window.location.origin; //  http://xxx.dev.teespace.net
+          const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
+          const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
+
+          let pageName = '';
+          if (mainURL === 'teespace.com') {
+            pageName = 'invalid';
+          } else if (mainURL === 'wapl.ai') {
+            pageName = 'tmax';
+          }
+          window.location.href = `${window.location.protocol}//${mainURL}/mobile/domain/${pageName}`;
+        }
+      }
 
       setLoading(false);
     });
@@ -145,6 +169,8 @@ const MobileMainPage = () => {
             subtitle={uiStore.messageSubTitle}
             btns={uiStore.messageButton}
             customBadge={uiStore.messageCustomBadge}
+            roomInfo={uiStore.roomInfo}
+            isOpenRoom={uiStore.isOpenRoom}
           />
         )}
       </Observer>
