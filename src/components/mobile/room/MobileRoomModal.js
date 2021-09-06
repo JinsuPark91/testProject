@@ -1,13 +1,17 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { useCoreStores, EventBus } from 'teespace-core';
+import { useHistory } from 'react-router-dom';
 import { Modal, Menu } from 'antd';
 
 const RoomModal = ({ roomInfo, onCancel }) => {
+  const { t } = useTranslation();
   const { roomStore, userStore } = useCoreStores();
   const myUserId = userStore.myProfile.id;
-
-  const handleCancel = () => onCancel();
+  const isDMRoom = roomInfo.isDirectMsg;
+  const isAdmin = roomInfo.adminId === myUserId;
+  const history = useHistory();
 
   const handleRead = () => {
     onCancel();
@@ -27,30 +31,44 @@ const RoomModal = ({ roomInfo, onCancel }) => {
     }
   };
 
+  const handleSetting = () => history.push(`/setting/${roomInfo?.id}`);
+
+  const handleMember = () => history.push(`/memberManagement/${roomInfo?.id}/`);
+
   return (
     <>
       <ModalWrapper
         width="10rem"
         visible
-        onCancel={handleCancel}
+        onCancel={onCancel}
         footer={null}
         closable={false}
         centered
       >
         <StyledMenu>
           <Menu.Item key="read" onClick={handleRead}>
-            읽음
+            {t('CM_ROOM_CONTEXTMENU_05')}
           </Menu.Item>
           {roomInfo.isAlarmUsed ? (
             <Menu.Item key="enableAlarm" onClick={() => handleAlarm(false)}>
-              알림 끄기
+              {t('CM_CHANGE_NAME_04')}
             </Menu.Item>
           ) : (
             <Menu.Item key="disableAlarm" onClick={() => handleAlarm(true)}>
-              알림 켜기
+              {t('CM_NOTI_SETTING_01')}
             </Menu.Item>
           )}
-          {/* <Menu.Item key="changeName">이름 변경</Menu.Item> */}
+          {!isDMRoom && isAdmin && (
+            <>
+              <Menu.Item key="setting" onClick={handleSetting}>
+                {t('CM_ROOM_SETTING')}
+              </Menu.Item>
+              <Menu.Item key="memberManagement" onClick={handleMember}>
+                {t('CM_ROOM_CONTEXTMENU_EXIT_MANAGER_03')}
+              </Menu.Item>
+            </>
+          )}
+          {/* <Menu.Item key="changeName">{t('CM_CHANGE_NAME_02')}</Menu.Item> */}
         </StyledMenu>
       </ModalWrapper>
     </>
@@ -59,26 +77,28 @@ const RoomModal = ({ roomInfo, onCancel }) => {
 
 const ModalWrapper = styled(Modal)`
   .ant-modal-body {
-    padding: 0;
+    padding: 0.5rem 0;
   }
 `;
-
 const StyledMenu = styled(Menu)`
-  background: #ffffff;
-  border: 1px solid #d0ccc7;
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 0.25rem;
+  &.ant-menu-vertical {
+    overflow: hidden;
+    border-radius: 0.25rem;
 
-  .ant-menu-item {
-    font-size: 0.75rem;
-    color: #000;
+    .ant-menu-item {
+      margin: 0;
+      font-size: 0.75rem;
+      color: #000;
 
-    &:hover {
-      background-color: #faf8f7;
-    }
-    &:active,
-    &:focus {
-      background-color: #f2efec;
+      &:hover {
+        background-color: #faf8f7;
+        color: #000;
+      }
+      &:active,
+      &:focus,
+      &.ant-menu-item-selected {
+        background-color: #f2efec;
+      }
     }
   }
 `;

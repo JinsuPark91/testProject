@@ -1,20 +1,7 @@
 import React from 'react';
 import { Talk } from 'teespace-talk-app';
-import styled, { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 import MobileTalkHeader from './MobileTalkHeader';
-
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  background-color: #fff;
-  padding: 0.06rem 1rem 0.06rem 0.25rem;
-  z-index: 100;
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-`;
 
 const MobileTalkStyle = createGlobalStyle`
 @media (max-width: 1024px) {
@@ -23,7 +10,7 @@ const MobileTalkStyle = createGlobalStyle`
     height: 100%;
     
     .talk-root-wrapper {
-      height: calc(100% - 6.01rem);
+      height: calc(100% - 2.88rem);
       top: 2.88rem;
       position: fixed;
     }
@@ -36,25 +23,17 @@ const MobileTalkStyle = createGlobalStyle`
 }
 `;
 
-const MobileTalk = ({
-  roomId,
-  channelId,
-  isSearchInputVisible,
-  onSearchClose,
-  isMini,
-}) => {
+const MobileTalk = ({ roomId, channelId, language, isMini, option }) => {
   return (
     <div id="mobile-talk">
       <MobileTalkStyle />
-      <Header>
-        <MobileTalkHeader />
-      </Header>
+      <MobileTalkHeader />
       <Talk
         roomId={roomId}
         channelId={channelId}
-        isSearchInputVisible={isSearchInputVisible}
-        onSearchClose={onSearchClose}
+        language={language}
         isMini={isMini}
+        option={option}
       />
     </div>
   );

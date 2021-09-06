@@ -523,11 +523,22 @@
   "CM_STATUS_MISSED": "missed",
   "CM_SERVICE_ALARM_BUTTON_10": "No longer accessible.",
   "CM_FRIENDLIST_04": "Me",
+  "CM_CREATEROOM_1": "New Room",
+  "CM_CREATEROOM_PRIVATEROOM_13": "Room Name",
   "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_1": "Enter your password.",
   "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_2": "Enter your current password correctly.",
   "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_3": "Your password must be between 9 and 20 characters long.",
   "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_4":"Your password must contain a combination of at least 3 of the following: uppercase letter, lowercase letter, number, and special character. Available special characters are as follows: !, @, #, $, %, ^, &, *, (, ), <, >, and ?. ",
   "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_5":"The password is currently in use. Please try another.",
   "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_6":"Confirm your password.",
-  "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_7":"The new password you entered do not match password confirm."
+  "MSG_HYPERAUTH_ACCOUNTSETTING_CHANGEPASSWORD_ERROR_7":"The new password you entered do not match password confirm.",
+  "CM_ROOM_CONTEXTMENU_CHANGENAME_01":"Change Name",
+  "CM_ROOM_CONTEXTMENU_EXIT_MANAGER_03":"Room Users",
+  "CM_ROOM_CONTEXTMENU_05": "Mark as Read",
+  "CM_ROOMLIST_EDIT_02":"Select All",
+  "MANAGEMEMBERS_PARTICIPANTS":"Assign as Room Administrator",
+  "TALK_ROOMMENU_SETTING_JOIN_APPROVAL_01":"Do you want to change approval status?",
+  "TALK_ROOMMENU_SETTING_JOIN_APPROVAL_02":"All users waiting for approval to join will be admitted to the room.",
+  "TALK_ROOMMENU_MANAGEMEMBERS_PARTICIPANTS_05":"You can manage a removed user\nfrom the Blocked list.",
+  "TALK_ROOMMENU_MANAGEMEMBERS_PARTICIPANTS_06":"Admin"
 }

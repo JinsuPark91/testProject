@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 // import { NoteApp } from 'teespace-note-app';
 // import { CalendarApp } from 'teespace-calendar-app';
 import { useTranslation } from 'react-i18next';
 import { Observer } from 'mobx-react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useStores } from '../../stores';
 import MobileFriend from './friend/MobileFriend';
 import MobileAddFriend from './friend/MobileAddFriend';
@@ -11,27 +11,19 @@ import MobileProfile from './MobileProfile';
 import MobileProfileImage from './MobileProfileImage';
 import MobileRoom from './room/MobileRoom';
 import MobileRoomCreatePage from './room/MobileRoomCreatePage';
+import MobileOpenRoom from './room/open/MobileOpenRoom';
+import MobileOpenRoomOptionPage from './room/open/MobileOpenRoomOptionPage';
+import MobileOpenRoomCreatePage from './room/open/MobileOpenRoomCreatePage';
 import MobileTalk from './apps/MobileTalk';
 // import MobileSelect from './apps/MobileSelect';
 import { getRoomId, findRoom } from './MobileUtil';
-
-const Container = styled.div`
-  padding-top: 2.88rem;
-  padding-bottom: 3.13rem;
-  height: 100%;
-  overflow-y: ${props =>
-    props.appType === 'addfriend' ||
-    (props.appType === 'addroom' && props.isMemberSelected)
-      ? ''
-      : 'auto'};
-`;
+import MobileRoomSetting from './room/setting/MobileRoomSetting';
+import MobileRoomEditName from './room/setting/MobileRoomEditName';
+import MobileRoomEditMember from './room/setting/MobileRoomEditMember';
 
 const MobileContent = () => {
   const { i18n } = useTranslation();
   const { uiStore } = useStores();
-  const [isMemberSelected, setIsMemberSelected] = useState(false);
-
-  const handleToggleSelected = () => setIsMemberSelected(!isMemberSelected);
 
   const getChannelId = type => {
     return findRoom()?.channelList?.find(channel => channel.type === type)?.id;
@@ -49,8 +41,14 @@ const MobileContent = () => {
         return <MobileProfileImage userId={uiStore.resourceId} />;
       case 'room':
         return <MobileRoom />;
-      case 'addroom':
-        return <MobileRoomCreatePage onTabChange={handleToggleSelected} />;
+      case 'createroom':
+        return <MobileRoomCreatePage />;
+      case 'open':
+        return <MobileOpenRoom />;
+      case 'openoption':
+        return <MobileOpenRoomOptionPage />;
+      case 'createopen':
+        return <MobileOpenRoomCreatePage />;
       case 'talk':
         return (
           <MobileTalk
@@ -61,8 +59,12 @@ const MobileContent = () => {
             option={{ isAutoFocus: false }}
           />
         );
-      // 2021. 3월 배포 제외
-      // case 'select':
+      case 'setting':
+        return <MobileRoomSetting roomId={getRoomId()} />;
+      case 'editName':
+        return <MobileRoomEditName roomId={getRoomId()} />;
+      case 'memberManagement':
+        return <MobileRoomEditMember roomId={getRoomId()} />;
       //   return (
       //     <MobileSelect />
       // case 'calendar':
@@ -89,10 +91,7 @@ const MobileContent = () => {
   return (
     <Observer>
       {() => (
-        <Container
-          appType={uiStore.resourceType}
-          isMemberSelected={isMemberSelected}
-        >
+        <Container appType={uiStore.resourceType}>
           {getApplication(uiStore.resourceType)}
         </Container>
       )}
@@ -101,3 +100,25 @@ const MobileContent = () => {
 };
 
 export default React.memo(MobileContent);
+
+const Container = styled.div`
+  padding-top: 2.88rem;
+  ${props => {
+    switch (props.appType) {
+      default:
+        return css`
+          padding-bottom: 3.13rem;
+        `;
+      case 'editMember':
+        return css`
+          padding-bottom: 4.25rem;
+        `;
+      case 'setting':
+      case 'editName':
+        return css``;
+    }
+  }}
+  height: 100%;
+  overflow-y: ${props =>
+    props.appType === 'addfriend' || props.appType === 'open' ? '' : 'auto'};
+`;

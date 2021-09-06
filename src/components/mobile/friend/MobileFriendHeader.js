@@ -4,32 +4,18 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { useCoreStores } from 'teespace-core';
 import { Button } from 'antd';
+import {
+  Header,
+  FriendHeader,
+  HeaderText,
+  ButtonBox,
+  IconButton,
+} from '../style/MobileHeaderStyle';
 import { AddFriendsIcon, EditIcon, CloseIcon } from '../Icon';
 import settingicon from '../../../assets/setting_2.svg';
 
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  background-color: #fff;
-  padding: 0.06rem 1rem 0.06rem 0.25rem;
-  z-index: 100;
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-`;
-
-const FriendHeader = styled(Header)`
-  padding: 0.06rem 0.25rem 0.06rem 1rem;
-`;
-
-const HeaderTitle = styled.h3`
-  font-size: 1.13rem;
+const HeaderTitle = styled(HeaderText)`
   color: #232d3b;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   user-select: none;
 `;
 const EditTitle = styled.h3`
@@ -37,20 +23,8 @@ const EditTitle = styled.h3`
   color: #232d3b;
   user-select: none;
 `;
-
-const ButtonBox = styled.div`
-  display: flex;
-  align-items: center;
-`;
-const ButtonsBox = styled.div`
-  display: flex;
-  align-items: center;
+const ButtonsBox = styled(ButtonBox)`
   margin-left: auto;
-`;
-const IconButton = styled(Button)`
-  width: 2.75rem;
-  height: 2.75rem;
-  background-color: transparent;
 `;
 const ProfileButton = styled(Button)`
   width: 2.75rem;
