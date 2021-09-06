@@ -5,7 +5,7 @@ import { i18n } from '../i18n';
 import Photos from '../components/Photos';
 import { rootStore } from '../stores';
 
-export default function openRoomModal({ openRoom, history }) {
+export default function openRoomModal({ openRoom, history, isMobile = false }) {
   const { uiStore } = rootStore;
   const openFailRoomEnter = () => {
     uiStore.openMessage({
@@ -39,7 +39,11 @@ export default function openRoomModal({ openRoom, history }) {
       if (!res.result) {
         openFailRoomEnter();
       } else if (res?.roomId) {
-        history.push(`/s/${openRoom.id}/talk`);
+        if (isMobile) {
+          history.push(`/talk/${openRoom.id}`);
+        } else {
+          history.push(`/s/${openRoom.id}/talk`);
+        }
         uiStore.closeMessage();
       }
       logEvent('room', 'clickEnterOpenRoomBtn');
@@ -131,7 +135,11 @@ export default function openRoomModal({ openRoom, history }) {
     console.log('이미 입장요청 했습니다.');
   } else if (openRoom.isJoined) {
     // 이미 입장한 방이면 바로 보내기
-    history.push(`/s/${openRoom.id}/talk`);
+    if (isMobile) {
+      history.push(`/talk/${openRoom.id}`);
+    } else { 
+      history.push(`/s/${openRoom.id}/talk`); 
+    }
   } else if (openRoom.isBanned) {
     // 참여제한 된 방
     openFailRoomEnter();
