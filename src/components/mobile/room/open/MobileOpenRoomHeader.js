@@ -1,16 +1,16 @@
 import React from 'react';
-import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
-import { getRoomName } from '../MobileUtil';
+import { useTranslation } from 'react-i18next';
 import {
   Header,
-  HeaderText,
   ButtonBox,
   IconButton,
-} from '../style/MobileHeaderStyle';
-import { ArrowBackIcon } from '../Icon';
+  HeaderText,
+} from '../../style/MobileHeaderStyle';
+import { ArrowBackIcon } from '../../Icon';
 
-const MobileTalkHeader = () => {
+const MobileOpenRoomHeader = () => {
+  const { t } = useTranslation();
   const history = useHistory();
   const handleGoBack = () => history.push(`/room`);
 
@@ -19,14 +19,9 @@ const MobileTalkHeader = () => {
       <ButtonBox onClick={handleGoBack}>
         <IconButton type="ghost" icon={<ArrowBackIcon />} />
       </ButtonBox>
-      <Title>{getRoomName()}</Title>
+      <HeaderText>{t('CM_OPEN_ROOM_HOME_01')}</HeaderText>
     </Header>
   );
 };
 
-export default MobileTalkHeader;
-
-const Title = styled(HeaderText)`
-  color: #205855;
-  width: calc(100% - 5rem);
-`;
+export default MobileOpenRoomHeader;

@@ -25,7 +25,7 @@ const uiStore = observable({
     Mobile Footer visibility
   */
   isFooterVisible() {
-    return this.resourceType !== 'profile' && this.resourceType !== 'image';
+    return this.resourceType === 'friend' || this.resourceType === 'room';
   },
 
   /*
