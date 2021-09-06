@@ -1,10 +1,17 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { CoreStoreProvider, API, initGA, ThemeStore } from 'teespace-core';
+import {
+  CoreStoreProvider,
+  GlobalCommonStyles,
+  API,
+  initGA,
+  ThemeStore,
+} from 'teespace-core';
 import { I18nextProvider } from 'react-i18next';
 import { ThemeProvider } from 'styled-components';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { Observer } from 'mobx-react';
 import { i18n } from './i18n';
 import MobileApp from './components/mobile/MobileApp';
 // import WebApp from './App';
@@ -123,6 +130,7 @@ ReactDOM.render(
         <Observer>
           {() => (
             <ThemeProvider theme={ThemeStore.theme}>
+              <GlobalCommonStyles />
               <BrowserRouter>
                 <Switch>
                   <Route path="/mobile" component={MobileApp} />
