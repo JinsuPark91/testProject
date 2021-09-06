@@ -39,7 +39,11 @@ export default function openRoomModal({ openRoom, history, isMobile = false }) {
       if (!res.result) {
         openFailRoomEnter();
       } else if (res?.roomId) {
-        history.push(`/s/${openRoom.id}/talk`);
+        if (isMobile) {
+          history.push(`/talk/${openRoom.id}`);
+        } else {
+          history.push(`/s/${openRoom.id}/talk`);
+        }
         uiStore.closeMessage();
       }
       logEvent('room', 'clickEnterOpenRoomBtn');
