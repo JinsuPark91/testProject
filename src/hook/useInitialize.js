@@ -191,14 +191,8 @@ const useInitialize = () => {
             openRoomModal({ openRoom, history });
           } else if (!roomStore.getRoom(resourceId)) {
             needToUseLastHistory = false;
-
-            let pageName = '';
-            if (mainURL === 'teespace.com') {
-              pageName = 'invalid';
-            } else if (mainURL === 'wapl.ai') {
-              pageName = 'tmax';
-            }
-            window.location.href = `${window.location.protocol}//${mainURL}/domain/${pageName}`;
+            const groupName = url.split(`//`)[0];
+            window.location.href = `${window.location.protocol}//${mainURL}/domain/${groupName}`;
           }
         } else if (needToUseLastHistory) {
           handleLastHistory();
