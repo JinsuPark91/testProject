@@ -57,9 +57,18 @@ export default function openRoomModal({ openRoom, history, isMobile = false }) {
 
   const handleRequestOK = async () => {
     try {
-      await RoomStore.requestEnterRoom({
-        roomId: openRoom.id,
-      });
+      if (openRoom.isRequested) {
+        uiStore.openToast({
+          text: i18n.t('CM_OPEN_ROOM_HOME_12'),
+          onClose: () => {
+            uiStore.closeToast();
+          },
+        });
+      } else {
+        await RoomStore.requestEnterRoom({
+          roomId: openRoom.id,
+        });
+      }
     } catch (err) {
       console.log('입장 요청 에러');
     }
@@ -134,7 +143,7 @@ export default function openRoomModal({ openRoom, history, isMobile = false }) {
     history.push(`/friend`);
   }
   if (openRoom.isRequested) {
-    console.log('이미 입장요청 했습니다.');
+    openRequestModal();
   } else if (openRoom.isJoined) {
     // 이미 입장한 방이면 바로 보내기
     if (isMobile) {
