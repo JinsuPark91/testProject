@@ -55,16 +55,10 @@ const MobileMainPage = () => {
           // 잘못된 주소, 혹은 없는 room일 경우, 안내페이지로 이동
 
           const url = window.location.origin; //  http://xxx.dev.teespace.net
+          const groupName = url.split(`//`)[0];
           const conURL = url.split(`//`)[1]; // xxx.dev.teespace.net
           const mainURL = conURL.slice(conURL.indexOf('.') + 1, conURL.length); // dev.teespace.net
-
-          let pageName = '';
-          if (mainURL === 'teespace.com') {
-            pageName = 'invalid';
-          } else if (mainURL === 'wapl.ai') {
-            pageName = 'tmax';
-          }
-          window.location.href = `${window.location.protocol}//${mainURL}/mobile/domain/${pageName}`;
+          window.location.href = `${window.location.protocol}//${mainURL}/mobile/domain/${groupName}`;
         }
       }
 
