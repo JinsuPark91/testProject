@@ -235,7 +235,15 @@ function OpenRoomHome({ visible, onCancel }) {
   const handleJoin = async roomInfo => {
     store.currentOpenRoom = roomInfo;
 
-    if (roomInfo.isRequested) return;
+    if (roomInfo.isRequested) {
+      uiStore.openToast({
+        text: t('CM_OPEN_ROOM_HOME_12'),
+        onClose: () => {
+          uiStore.closeToast();
+        },
+      });
+      return;
+    }
 
     if (roomInfo.isBanned) {
       openFailRoomEnter();
