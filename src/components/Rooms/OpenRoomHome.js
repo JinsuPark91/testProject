@@ -102,6 +102,8 @@ function OpenRoomHome({ visible, onCancel }) {
     uiStore.openMessage({
       title: t('CM_OPEN_ROOM_HOME_16'),
       subTitle: t('CM_OPEN_ROOM_HOME_17'),
+      isOpenRoom: true,
+      roomInfo: store.currentOpenRoom,
       buttons: [
         {
           type: 'solid',
@@ -145,6 +147,8 @@ function OpenRoomHome({ visible, onCancel }) {
     uiStore.openMessage({
       title: store.currentOpenRoom.name,
       subTitle: t('CM_OPEN_ROOM_HOME_06'),
+      isOpenRoom: true,
+      roomInfo: store.currentOpenRoom,
       type: 'custom',
       customBadge: (
         <CustomBadge>
@@ -188,6 +192,8 @@ function OpenRoomHome({ visible, onCancel }) {
     uiStore.openMessage({
       title: store.currentOpenRoom.name,
       subTitle: t('TEST_REQUEST'),
+      isOpenRoom: true,
+      roomInfo: store.currentOpenRoom,
       type: 'custom',
       customBadge: (
         <CustomBadge>

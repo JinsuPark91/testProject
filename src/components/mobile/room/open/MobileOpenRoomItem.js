@@ -23,6 +23,8 @@ const MobileOpenRoomItem = ({ roomInfo, style }) => {
     uiStore.openMessage({
       title: t('CM_OPEN_ROOM_HOME_16'),
       subTitle: t('CM_OPEN_ROOM_HOME_17'),
+      isOpenRoom: true,
+      roomInfo,
       buttons: [
         {
           type: 'solid',
@@ -76,6 +78,8 @@ const MobileOpenRoomItem = ({ roomInfo, style }) => {
       uiStore.openMessage({
         title: t('CM_OPEN_ROOM_HOME_16'),
         subTitle: t('CM_OPEN_ROOM_HOME_17'),
+        isOpenRoom: true,
+        roomInfo,
         buttons: [
           {
             type: 'solid',
@@ -96,6 +100,8 @@ const MobileOpenRoomItem = ({ roomInfo, style }) => {
       uiStore.openMessage({
         title: roomInfo.customName || roomInfo.name,
         subTitle: t('CM_OPEN_ROOM_HOME_06'),
+        isOpenRoom: true,
+        roomInfo,
         type: 'custom',
         customBadge: (
           <CustomBadge>
@@ -124,6 +130,8 @@ const MobileOpenRoomItem = ({ roomInfo, style }) => {
     uiStore.openMessage({
       title: roomInfo.customName || roomInfo.name,
       subTitle: t('TEST_REQUEST'),
+      isOpenRoom: true,
+      roomInfo,
       type: 'custom',
       customBadge: (
         <CustomBadge>
